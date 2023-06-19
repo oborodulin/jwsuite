@@ -1,0 +1,15 @@
+<resources>
+    <!--Группы -->
+    <integer name="def_group1">1</integer>
+    <integer name="def_group2">2</integer>
+    <integer name="def_group3">3</integer>
+    <integer name="def_group4">4</integer>
+    <integer name="def_group5">5</integer>
+    <integer name="def_group6">6</integer>
+    <integer name="def_group7">7</integer>
+    <integer name="def_group8">8</integer>
+    <integer name="def_group9">9</integer>
+    <integer name="def_group10">10</integer>
+    <integer name="def_group11">11</integer>
+    <integer name="def_group12">12</integer>
+</resources>

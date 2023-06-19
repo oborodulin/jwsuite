@@ -1,0 +1,35 @@
+<resources>
+    <!--Услуги по-умолчанию -->
+    <string name="service_rent">Квартплата</string>
+    <string name="service_electricity">Эл. энергия</string>
+    <string name="service_gas">Газ</string>
+    <string name="service_cold_water">Вода</string>
+    <string name="service_waste">Стоки</string>
+    <string name="service_heating">Отопление</string>
+    <string name="service_hot_water">Горячая вода</string>
+    <string name="service_garbage">Вывоз мусора</string>
+    <string name="service_doorphone">Домофон</string>
+    <string name="service_internet">Интернет</string>
+    <string name="service_phone">Телефон</string>
+    <string name="service_ugso">УГСО</string>
+
+    <!--Значения полей данных по-умолчанию -->
+    <!--Плательщик 1-->
+    <string name="def_payer1_erc_code">000000000000000</string>
+    <string name="def_payer1_full_name">Собственник жилья 1</string>
+    <string name="def_payer1_address">Адрес 1 не указан</string>
+    <!--Плательщик 2-->
+    <string name="def_payer2_erc_code">999999999999999</string>
+    <string name="def_payer2_full_name">Собственник жилья 2</string>
+    <string name="def_payer2_address">Адрес 2 не указан</string>
+    <!--Плательщик 3-->
+    <string name="def_payer3_erc_code">999999900000000</string>
+    <string name="def_payer3_full_name">Собственник жилья 3</string>
+    <string name="def_payer3_address">Адрес 3 не указан</string>
+    <!--Приборы -->
+    <string name="def_meter_num">б/н</string>
+
+    <!--Локализация -->
+    <string name="lang_name_ru">Русский</string>
+    <string name="lang_name_en">Английский</string>
+</resources>

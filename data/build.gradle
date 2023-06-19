@@ -1,0 +1,105 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+android {
+    namespace 'com.oborodulin.jwsuite.data'
+    compileSdk cfg.sdk.compileVersion
+
+    defaultConfig {
+        minSdk cfg.sdk.minVersion
+        targetSdk cfg.sdk.targetVersion
+
+        kapt {
+            //ERROR : error.NonExistentClass Kotlin In multi module Dagger project
+            //https://kotlinlang.org/docs/reference/kapt.html#non-existent-type-correction
+            correctErrorTypes = true
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility cfg.jvm.compatibility.source
+        targetCompatibility cfg.jvm.compatibility.target
+    }
+    kotlinOptions {
+        jvmTarget = cfg.jvm.target
+    }
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+        //test.java.srcDirs += files("$projectDir/schemas".toString())
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+dependencies {
+    implementation(project(':common'))
+    implementation(project(':domain'))
+
+    // Logging
+    implementation deps.logging.timber
+    implementation deps.logging.logger
+
+    // Room
+    kapt deps.room.compiler
+    implementation deps.room.runtime
+    implementation deps.room.ktx
+
+    // Hilt
+    implementation deps.dagger.hilt
+    kapt deps.dagger.compiler
+    implementation deps.hilt.navigationCompose
+
+    implementation deps.jvm.inject
+    implementation deps.coroutines.android
+    implementation deps.coroutines.core
+
+    // Networking
+    implementation deps.retrofit2.retrofit
+    implementation deps.retrofit2.converterGson
+    implementation deps.retrofit2.converterScalars
+    implementation deps.okhttp3.loggingInterceptor
+
+    implementation deps.androidx.coreKtx
+
+    // Testing: Local
+    testImplementation deps.test.extJunitKtx
+    testImplementation deps.test.runner
+
+    testImplementation deps.test.junit
+    testImplementation deps.test.robolectric
+    testImplementation deps.test.mockito
+    testImplementation deps.test.coroutines
+    testImplementation deps.coroutines.android
+    testImplementation deps.test.archCore
+    testImplementation deps.test.core
+    testImplementation deps.test.truth
+    testImplementation deps.dagger.testing
+    testImplementation deps.test.turbine
+    kaptTest deps.dagger.hiltCompiler
+}

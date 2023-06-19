@@ -1,0 +1,16 @@
+package com.oborodulin.jwsuite.data.local.db.mappers.geostreet
+
+import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.domain.model.GeoStreet
+import java.util.UUID
+
+class GeoStreetToGeoStreetEntityMapper : Mapper<GeoStreet, GeoStreetEntity> {
+    override fun map(input: GeoStreet) = GeoStreetEntity(
+        streetId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
+        streetHashCode = input.streetHashCode,
+        roadType = input.roadType,
+        isPrivateSector = input.isPrivateSector,
+        localitiesId = input.localityId
+    )
+}

@@ -1,0 +1,117 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+android {
+    namespace 'com.oborodulin.jwsuite'
+    compileSdk cfg.sdk.compileVersion
+
+    defaultConfig {
+        applicationId cfg.app.applicationId
+        minSdk cfg.sdk.minVersion
+        targetSdk cfg.sdk.targetVersion
+        versionCode cfg.app.versionCode
+        versionName cfg.app.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+        testInstrumentationRunnerArguments useTestStorageService: 'true'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+            }
+        }
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility cfg.jvm.compatibility.source
+        targetCompatibility cfg.jvm.compatibility.target
+    }
+    kotlinOptions {
+        // work-runtime-ktx 2.1.0 and above now requires Java 8
+        jvmTarget = cfg.jvm.target
+
+        // Enable Coroutines and Flow APIs
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.FlowPreview"
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion versions.composeKotlinExt
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':data')
+    implementation project(':domain')
+    implementation project(':presentation')
+
+    // Logging
+    implementation deps.logging.timber
+    implementation deps.logging.logger
+
+    // Room
+    kapt deps.room.compiler
+    implementation deps.room.runtime
+    implementation deps.room.ktx
+
+    // Dagger - Hilt
+    kapt deps.dagger.compiler
+    implementation deps.dagger.hilt
+
+    implementation deps.androidx.coreKtx
+    implementation deps.lifecycle.runtimeKtx
+
+    // Compose
+    def composeBom = platform(deps.compose.bom)
+    implementation composeBom
+    androidTestImplementation composeBom
+    // Integration with activities
+    implementation deps.activity.compose
+    // Compose Material Design
+    implementation deps.compose.material3Bom
+    // Animations
+    implementation deps.compose.animationBom
+    // Android Studio Preview support
+    implementation deps.compose.uiPreviewBom
+    debugImplementation deps.compose.uiToolingBom
+    debugImplementation deps.test.uiManifestBom
+    debugImplementation deps.androidx.poolingcontainer
+    // Integration with ViewModels
+    implementation deps.lifecycle.viewmodelCompose
+    implementation deps.navigation.compose
+    // UI
+    implementation deps.compose.uiBom
+    implementation deps.compose.uiGraphicsBom
+
+/*
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+ */
+}

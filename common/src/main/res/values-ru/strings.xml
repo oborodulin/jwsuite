@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Home-Common</string>
+    <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ -->
+    <string name="success">успешно</string>
+    <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>
+    <string name="name_too_short_error">Наименование слишком короткое!</string>
+    <string name="card_number_too_short_error">Номер карты слишком короткий!</string>
+
+    <!--ОБЩИЕ МЕТКИ UI -->
+    <!--кнопки -->
+    <string name="btn_save_lbl">Сохранить</string>
+    <string name="btn_cancel_lbl">Отменить</string>
+    <string name="btn_ok_lbl">ОК</string>
+    <!--диалог -->
+    <string name="dlg_confirm_title">Подтверждение</string>
+
+    <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
+    <string name="day_unit">д.</string>
+    <string name="month_unit">мес.</string>
+    <string name="person_unit">чел.</string>
+    <string name="m2_unit">м2</string>
+    <string name="m3_unit">м3</string>
+    <string name="kWh_unit">КВт*ч</string>
+    <string name="Gcal_unit">Гкал</string>
+    <string name="Gcalm2_unit">Гкал/м2</string>
+    <string name="GJ_unit">ГДж</string>
+    <string name="MWh_unit">МВт*ч</string>
+
+    <!--ЗАПОЛНИТЕЛИ (Compose Preview) -->
+    <string name="preview_blank_title">Заголовок</string>
+    <string name="preview_blank_descr">Описание</string>
+    <string name="preview_list_item_text">List Item Content</string>
+    <string name="preview_blank_text_field_lbl">Метка поля</string>
+    <string name="preview_blank_text_field_val">Содержимое</string>
+    <string name="preview_blank_text_field_err">текст ошибки</string>
+</resources>

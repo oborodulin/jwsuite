@@ -1,0 +1,104 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+android {
+    namespace 'com.oborodulin.home.common'
+    compileSdk cfg.sdk.compileVersion
+
+    defaultConfig {
+        minSdk cfg.sdk.minVersion
+        targetSdk cfg.sdk.targetVersion
+
+        // Desugaring: Required when setting minSdkVersion to 20 or lower
+        // multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility cfg.jvm.compatibility.source
+        targetCompatibility cfg.jvm.compatibility.target
+
+        // Desugaring: Newer versions of the Android Gradle plugin (starting with 4.0) are able to use desugaring to
+        // backport new APIs to older versions of Android.
+        // You can read more about it here: https://jakewharton.com/d8-library-desugaring/
+        // https://www.rockandnull.com/java-time-android/
+        //coreLibraryDesugaringEnabled true
+    }
+    kotlinOptions {
+        jvmTarget = cfg.jvm.target
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion versions.composeKotlinExt
+    }
+}
+//kotlin {
+//    sourceSets.all {
+//        languageSettings {
+//            languageVersion = "2.0"
+//        }
+//    }
+//}
+dependencies {
+    // Logging
+    implementation deps.logging.timber
+    implementation deps.logging.logger
+
+    // Hilt
+    implementation deps.dagger.hilt
+    kapt deps.dagger.compiler
+    implementation deps.hilt.navigationCompose
+
+    implementation deps.coroutines.core
+    implementation deps.jvm.inject
+    implementation deps.kotlin.reflect
+
+    // XML-parser
+    implementation deps.xml.xmlpull
+    implementation deps.google.gson
+
+    // Compose
+    def composeBom = platform(deps.compose.bom)
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation deps.compose.uiBom
+    implementation deps.compose.material3Bom
+    implementation deps.compose.uiToolingBom
+    implementation deps.compose.uiPreviewBom
+    // Coil
+    implementation deps.coil.compose
+    // Lottie
+    implementation deps.lottie.compose
+    // Desugaring
+    //coreLibraryDesugaring deps.tools.desugar
+    // i18n
+    implementation deps.i18n.nv
+
+    implementation deps.lifecycle.viewmodel
+
+    implementation deps.androidx.coreKtx
+    implementation deps.androidx.appcompat
+    implementation deps.google.material
+
+    // Compose preview
+    debugImplementation deps.androidx.poolingcontainer
+
+    // Testing dependencies
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.extJunit
+    androidTestImplementation deps.test.espressoCore
+}

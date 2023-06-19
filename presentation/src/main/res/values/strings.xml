@@ -1,0 +1,16 @@
+<resources>
+    <!--НАВИГАЦИЯ: -->
+    <!--основная -->
+    <string name="nav_item_accounting">Учёт</string>
+    <string name="nav_item_servicing">Тарифы</string>
+    <string name="nav_item_metering">Приборы</string>
+    <string name="nav_item_reporting">Квитанции</string>
+    <!--дополнительная -->
+    <string name="nav_item_payer">Плательщик</string>
+    <string name="nav_item_service">Услуга</string>
+    <string name="nav_item_payer_service">Услуга плательщика</string>
+    <string name="nav_item_rate">Тариф</string>
+
+    <!--BUTTONS: -->
+    <string name="btn_pay_text">Оплатить</string>
+</resources>

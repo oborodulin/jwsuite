@@ -1,0 +1,134 @@
+<resources>
+    <!--Услуги по-умолчанию -->
+    <string name="service_rent">Квартплата</string>
+    <string name="service_electricity">Эл. энергия</string>
+    <string name="service_gas">Газ</string>
+    <string name="service_cold_water">Вода</string>
+    <string name="service_waste">Стоки</string>
+    <string name="service_heating">Отопление</string>
+    <string name="service_hot_water">Горячая вода</string>
+    <string name="service_garbage">Вывоз мусора</string>
+    <string name="service_doorphone">Домофон</string>
+    <string name="service_internet">Интернет</string>
+    <string name="service_phone">Телефон</string>
+    <string name="service_ugso">УГСО</string>
+
+    <!--Значения полей данных по-умолчанию -->
+    <!--Собрание 1-->
+    <string name="def_congregation1_num">1</string>
+    <string name="def_congregation1_name">Хорошее настроение</string>
+    <string name="def_congregation1_card_mark">Х</string>
+    <!--Собрание 2-->
+    <string name="def_congregation2_num">2</string>
+    <string name="def_congregation2_name">Добро пожаловать</string>
+    <string name="def_congregation2_card_mark">Д</string>
+    <!--Члены собрания 1 группа 1-->
+    <!--Иванов-->
+    <string name="def_ivanov_member_num">1</string>
+    <string name="def_ivanov_member_name">Сергей</string>
+    <string name="def_ivanov_member_surname">Иванов</string>
+    <string name="def_ivanov_member_patronymic">Михайлович</string>
+    <string name="def_ivanov_member_pseudonym">ИС11</string>
+    <string name="def_ivanov_member_birth_date">12–29–1980</string>
+    <!--Петров-->
+    <string name="def_petrov_member_num">2</string>
+    <string name="def_petrov_member_name">Валентин</string>
+    <string name="def_petrov_member_surname">Петров</string>
+    <string name="def_petrov_member_patronymic">Александрович</string>
+    <string name="def_petrov_member_pseudonym">ПВ12</string>
+    <string name="def_petrov_member_birth_date">01–21–1975</string>
+    <!--Члены собрания 1 группа 2-->
+    <!--Сидоров-->
+    <string name="def_sidorov_member_num">1</string>
+    <string name="def_sidorov_member_name">Иван</string>
+    <string name="def_sidorov_member_surname">Сидоров</string>
+    <string name="def_sidorov_member_patronymic">Сергеевич</string>
+    <string name="def_sidorov_member_pseudonym">СИ21</string>
+    <string name="def_sidorov_member_birth_date">08–13–1978</string>
+    <!--Члены собрания 2 группа 1-->
+    <!--Тарасова-->
+    <string name="def_tarasova_member_num">1</string>
+    <string name="def_tarasova_member_name">Ирина</string>
+    <string name="def_tarasova_member_surname">Тарасова</string>
+    <string name="def_tarasova_member_patronymic">Матвеевна</string>
+    <string name="def_tarasova_member_pseudonym">ТИ21</string>
+    <string name="def_tarasova_member_birth_date">10–15–1983</string>
+    <!--Шевчук-->
+    <string name="def_shevchuk_member_num">2</string>
+    <string name="def_shevchuk_member_name">Николай</string>
+    <string name="def_shevchuk_member_surname">Шевчук</string>
+    <string name="def_shevchuk_member_patronymic">Владимирович</string>
+    <string name="def_shevchuk_member_pseudonym">ШН22</string>
+    <string name="def_shevchuk_member_birth_date">01–21–1975</string>
+    <!--Члены собрания 2 группа 2-->
+    <!--Матвейчук-->
+    <string name="def_matveychuk_member_num">1</string>
+    <string name="def_matveychuk_member_name">Александр</string>
+    <string name="def_matveychuk_member_surname">Матвейчук</string>
+    <string name="def_matveychuk_member_patronymic">Степанович</string>
+    <string name="def_matveychuk_member_pseudonym">АС21</string>
+    <string name="def_matveychuk_member_birth_date">05–09–1973</string>
+
+    <!--ГЕОГРАФИЯ -->
+    <!--Области -->
+    <string name="def_reg_donetsk_code">80</string>
+    <string name="def_reg_donetsk_name">Донецкая</string>
+    <string name="def_reg_luhansk_code">81</string>
+    <string name="def_reg_luhansk_name">Луганская</string>
+    <!--Районы областей -->
+    <string name="def_reg_maryinsky_short_name">МРН</string>
+    <string name="def_reg_maryinsky_name">Марьинский</string>
+    <string name="def_reg_donetsky_short_name">ДЩН</string>
+    <string name="def_reg_donetsky_name">Донецкий</string>
+    <!--Населённые пункты (города, пгт, посёлки и пр.) -->
+    <string name="def_donetsk_code">7856</string>
+    <string name="def_donetsk_name">Донецк</string>
+    <string name="def_makeevka_code">785632</string>
+    <string name="def_makeevka_name">Макеевка</string>
+    <string name="def_luhansk_code">7857</string>
+    <string name="def_luhansk_name">Луганск</string>
+    <string name="def_marinka_code">7858</string>
+    <string name="def_marinka_name">Марьинка</string>
+    <string name="def_mospino_code">7859</string>
+    <string name="def_mospino_name">Моспино</string>
+    <!--Районы населённых пунктов -->
+    <string name="def_budyonovsky_short_name">БДН</string>
+    <string name="def_budyonovsky_name">Будённовский</string>
+    <string name="def_kievsky_short_name">КВК</string>
+    <string name="def_kievsky_name">Киевский</string>
+    <string name="def_kuybyshevsky_short_name">КБШ</string>
+    <string name="def_kuybyshevsky_name">Куйбышевский</string>
+    <string name="def_voroshilovsky_short_name">ВРШ</string>
+    <string name="def_voroshilovsky_name">Ворошиловский</string>
+    <!--Микрорайоны населённых пунктов -->
+    <string name="def_cvetochny_short_name">ЦВТ</string>
+    <string name="def_cvetochny_name">Цветочный</string>
+    <string name="def_don_short_name">ДОН</string>
+    <string name="def_don_name">Донской</string>
+    <!--Улицы Донецка -->
+    <string name="def_strelkovojDivizii_name">230-Стрелковой дивизии</string>
+    <string name="def_nezavisimosti_name">Независимости</string>
+    <!--ч/с -->
+    <string name="def_baratynskogo_name">Баратынского</string>
+    <string name="def_patorgynskogo_name">Паторжинского</string>
+    <string name="def_belogorodskaya_name">Белогородская</string>
+    <!--Улицы Моспино -->
+    <string name="def_novomospino_name">Новомоспино</string>
+    <string name="def_gertsena_name">Герцена</string>
+
+    <!--УЧАСТКИ-->
+    <!--Категории-->
+    <string name="def_house_territory_category_code">HOUSES</string>
+    <string name="def_house_territory_category_mark">Д</string>
+    <string name="def_house_territory_category_name">Подомовые</string>
+    <string name="def_floor_territory_category_code">FLOORS</string>
+    <string name="def_floor_territory_category_mark">Э</string>
+    <string name="def_floor_territory_category_name">Поэтажные</string>
+    <string name="def_room_territory_category_code">ROOMS</string>
+    <string name="def_room_territory_category_mark">К</string>
+    <string name="def_room_territory_category_name">Поквартирные</string>
+
+    <!--Локализация -->
+    <string name="lang_name_ru">Русский</string>
+    <string name="lang_name_en">Английский</string>
+</resources>

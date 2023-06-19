@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="village_types">
+        <!--Посёлок -->
+        <item>пос</item>
+        <!--Микрорайон -->
+        <item>мкр</item>
+    </string-array>
+</resources>

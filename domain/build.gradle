@@ -1,0 +1,75 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+android {
+    namespace 'com.oborodulin.jwsuite.domain'
+    compileSdk cfg.sdk.compileVersion
+
+    defaultConfig {
+        minSdk cfg.sdk.minVersion
+        targetSdk cfg.sdk.targetVersion
+        kapt {
+            //ERROR : error.NonExistentClass Kotlin In multi module Dagger project
+            //https://kotlinlang.org/docs/reference/kapt.html#non-existent-type-correction
+            correctErrorTypes = true
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility cfg.jvm.compatibility.source
+        targetCompatibility cfg.jvm.compatibility.target
+    }
+    kotlinOptions {
+        jvmTarget = cfg.jvm.target
+    }
+}
+
+dependencies {
+    implementation(project(':common'))
+
+    // Logging
+    implementation deps.logging.timber
+    implementation deps.logging.logger
+
+    // Hilt
+    implementation deps.dagger.hilt
+    kapt deps.dagger.compiler
+    implementation deps.hilt.navigationCompose
+
+    implementation deps.coroutines.core
+    implementation deps.jvm.inject
+
+    implementation deps.retrofit2.retrofit
+
+    implementation deps.androidx.coreKtx
+    implementation deps.androidx.appcompat
+    implementation deps.google.material
+
+    // Testing: Local
+    implementation deps.test.extJunitKtx
+    implementation deps.test.runner
+
+    testImplementation deps.test.junit
+    testImplementation deps.test.robolectric
+    testImplementation deps.test.mockito
+    testImplementation deps.test.coroutines
+    testImplementation deps.coroutines.android
+    testImplementation deps.test.extJunit
+    testImplementation deps.test.core
+    testImplementation deps.test.truth
+    testImplementation deps.dagger.testing
+    testImplementation deps.test.turbine
+    kaptTest deps.dagger.hiltCompiler
+}

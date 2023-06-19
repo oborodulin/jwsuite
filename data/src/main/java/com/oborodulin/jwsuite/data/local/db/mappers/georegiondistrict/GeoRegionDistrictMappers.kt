@@ -1,0 +1,9 @@
+package com.oborodulin.jwsuite.data.local.db.mappers.georegiondistrict
+
+data class GeoRegionDistrictMappers(
+    val geoRegionDistrictViewListToGeoRegionDistrictListMapper: GeoRegionDistrictViewListToGeoRegionDistrictListMapper,
+    val geoRegionDistrictViewToGeoRegionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+    val geoRegionDistrictListToGeoRegionDistrictEntityListMapper: GeoRegionDistrictListToGeoRegionDistrictEntityListMapper,
+    val geoRegionDistrictToGeoRegionDistrictEntityMapper: GeoRegionDistrictToGeoRegionDistrictEntityMapper,
+    val geoRegionDistrictToGeoRegionDistrictTlEntityMapper: GeoRegionDistrictToGeoRegionDistrictTlEntityMapper
+)

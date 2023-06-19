@@ -1,0 +1,16 @@
+package com.oborodulin.jwsuite.domain.model
+
+import com.oborodulin.home.common.domain.model.DomainModel
+import java.util.UUID
+
+data class Room(
+    val houseId: UUID,
+    val entranceId: UUID? = null,
+    val floorId: UUID? = null,
+    val territoryId: UUID? = null,
+    val roomNum: Int,
+    val isIntercom: Boolean? = null,
+    val isResidential: Boolean = true,
+    val isForeignLanguage: Boolean = false,
+    val territoryDesc: String? = null
+) : DomainModel()
