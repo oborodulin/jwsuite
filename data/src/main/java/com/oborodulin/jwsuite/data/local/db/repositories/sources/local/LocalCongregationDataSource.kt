@@ -25,7 +25,8 @@ interface LocalCongregationDataSource {
 
     // Members:
     suspend fun insertMember(
-        congregation: CongregationEntity, member: MemberEntity, activityDate: OffsetDateTime
+        congregation: CongregationEntity, member: MemberEntity,
+        activityDate: OffsetDateTime = OffsetDateTime.now()
     )
 
     suspend fun updateMember(congregationMember: CongregationMemberCrossRefEntity)
@@ -35,7 +36,8 @@ interface LocalCongregationDataSource {
 
     // Territories:
     suspend fun insertTerritory(
-        congregation: CongregationEntity, territory: TerritoryEntity, startUsingDate: OffsetDateTime
+        congregation: CongregationEntity, territory: TerritoryEntity,
+        startUsingDate: OffsetDateTime = OffsetDateTime.now()
     )
 
     suspend fun updateTerritory(congregationTerritory: CongregationTerritoryCrossRefEntity)

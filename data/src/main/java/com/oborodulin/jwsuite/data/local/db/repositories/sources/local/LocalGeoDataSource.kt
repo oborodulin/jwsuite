@@ -113,17 +113,4 @@ interface LocalGeoDataSource {
     suspend fun deleteMicrodistrictStreet(districtStreet: GeoDistrictStreetEntity)
     suspend fun deleteMicrodistrictStreet(districtStreetId: UUID)
     suspend fun deleteMicrodistrictStreets(microdistrictId: UUID)
-
-    // Streets:
-    fun getLocalityStreets(localityId: UUID): Flow<List<GeoStreetView>>
-    fun getLocalityDistrictStreets(localityDistrictId: UUID): Flow<List<GeoStreetView>>
-    fun getMicrodistrictStreets(microdistrictId: UUID): Flow<List<GeoStreetView>>
-    fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
-    fun getStreet(streetId: UUID): Flow<GeoStreetView>
-    suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)
-    suspend fun updateStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)
-    suspend fun deleteStreet(street: GeoStreetEntity)
-    suspend fun deleteStreetById(streetId: UUID)
-    suspend fun deleteStreets(streets: List<GeoStreetEntity>)
-    suspend fun deleteAllStreets()
 }

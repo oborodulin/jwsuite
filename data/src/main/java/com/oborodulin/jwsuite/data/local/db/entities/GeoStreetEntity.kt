@@ -29,7 +29,8 @@ data class GeoStreetEntity(
     @PrimaryKey val streetId: UUID = UUID.randomUUID(),
     val streetHashCode: Int,
     val roadType: RoadType = RoadType.STREET,
-    val isPrivateSector: Boolean = false,
+    val isPrivateSector: Boolean = false,   // all street is private sector
+    val estimatedHouses: Int? = null,       // estimated houses of the street
     @ColumnInfo(index = true) val localitiesId: UUID
 ) : BaseEntity() {
 

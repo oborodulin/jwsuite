@@ -11,6 +11,7 @@ class GeoLocalityViewToGeoLocalityMapper : Mapper<GeoLocalityView, GeoLocality> 
             regionDistrictId = input.data.regionDistrictsId,
             localityCode = input.data.localityCode,
             localityType = input.data.localityType,
+            localityShortName = input.tl.localityShortName,
             localityName = input.tl.localityName
         )
         locality.id = input.data.localityId

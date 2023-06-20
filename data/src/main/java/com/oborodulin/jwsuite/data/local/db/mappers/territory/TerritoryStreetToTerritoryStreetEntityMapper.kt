@@ -11,6 +11,7 @@ class TerritoryStreetToTerritoryStreetEntityMapper :
         territoryStreetId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         isEven = input.isEven,
         isPrivateSector = input.isPrivateSector,
+        estimatedHouses = input.estimatedHouses,
         streetsId = input.street.id!!,
         territoriesId = input.territoryId
     )

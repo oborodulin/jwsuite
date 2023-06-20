@@ -82,14 +82,19 @@
     <string name="def_reg_donetsky_name">Донецкий</string>
     <!--Населённые пункты (города, пгт, посёлки и пр.) -->
     <string name="def_donetsk_code">7856</string>
+    <string name="def_donetsk_short_name">ДОН</string>
     <string name="def_donetsk_name">Донецк</string>
     <string name="def_makeevka_code">785632</string>
+    <string name="def_makeevka_short_name">МКВ</string>
     <string name="def_makeevka_name">Макеевка</string>
     <string name="def_luhansk_code">7857</string>
+    <string name="def_luhansk_short_name">ЛГН</string>
     <string name="def_luhansk_name">Луганск</string>
     <string name="def_marinka_code">7858</string>
+    <string name="def_marinka_short_name">МРН</string>
     <string name="def_marinka_name">Марьинка</string>
     <string name="def_mospino_code">7859</string>
+    <string name="def_mospino_short_name">МСП</string>
     <string name="def_mospino_name">Моспино</string>
     <!--Районы населённых пунктов -->
     <string name="def_budyonovsky_short_name">БДН</string>

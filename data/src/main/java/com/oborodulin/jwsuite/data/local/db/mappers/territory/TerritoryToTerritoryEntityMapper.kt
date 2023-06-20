@@ -15,6 +15,9 @@ class TerritoryToTerritoryEntityMapper : Mapper<Territory, TerritoryEntity> {
         isInPerimeter = input.isInPerimeter,
         isProcessed = input.isProcessed,
         territoryDesc = input.territoryDesc,
+        microdistrictsId = input.microdistrictId,
+        localityDistrictsId = input.localityDistrictId,
+        localitiesId = input.locality.id!!,
         territoryCategoriesId = input.territoryCategory.id!!,
         congregationsId = input.congregation.id!!
     )

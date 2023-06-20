@@ -9,6 +9,7 @@ data class GeoStreet(
     val streetHashCode: Int,
     val roadType: RoadType = RoadType.STREET,
     val isPrivateSector: Boolean = false,
+    val estimatedHouses: Int? = null,
     val streetName: String,
     val houses: List<House> = emptyList()
 ) : DomainModel()

@@ -9,6 +9,8 @@ import com.oborodulin.jwsuite.domain.util.AppSettingParam
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryMemberMark
 import com.oborodulin.jwsuite.domain.util.VillageType
 import java.math.BigDecimal
 import java.time.*
@@ -98,6 +100,18 @@ object JwSuiteTypeConverters {
 
     @TypeConverter
     fun fromMemberType(value: MemberType) = value.name
+
+    @TypeConverter
+    fun toTerritoryMemberMark(value: String) = enumValueOf<TerritoryMemberMark>(value)
+
+    @TypeConverter
+    fun fromTerritoryMemberMark(value: TerritoryMemberMark) = value.name
+
+    @TypeConverter
+    fun toTerritoryDistrictType(value: String) = enumValueOf<TerritoryDistrictType>(value)
+
+    @TypeConverter
+    fun fromTerritoryDistrictType(value: TerritoryDistrictType) = value.name
 
     @TypeConverter
     fun toAppSettingParam(value: String) = enumValueOf<AppSettingParam>(value)

@@ -32,6 +32,7 @@ data class TerritoryStreetEntity(
     @PrimaryKey val territoryStreetId: UUID = UUID.randomUUID(),
     val isEven: Boolean? = null,
     val isPrivateSector: Boolean? = null,
+    val estimatedHouses: Int? = null, // estimated houses of the territory street
     @ColumnInfo(index = true) val streetsId: UUID,
     @ColumnInfo(index = true) val territoriesId: UUID
 ) : BaseEntity() {
@@ -42,32 +43,34 @@ data class TerritoryStreetEntity(
         fun defaultTerritoryStreet(
             territoryId: UUID = UUID.randomUUID(), territoryStreetId: UUID = UUID.randomUUID(),
             streetId: UUID = UUID.randomUUID(),
-            isEven: Boolean? = null, isPrivateSector: Boolean? = null
+            isEven: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
         ) = TerritoryStreetEntity(
             territoriesId = territoryId, territoryStreetId = territoryStreetId,
             streetsId = streetId,
-            isEven = isEven, isPrivateSector = isPrivateSector
+            isEven = isEven, isPrivateSector = isPrivateSector, estimatedHouses = estimatedHouses
         )
 
         fun evenTerritoryStreet(
-            territoryId: UUID, streetId: UUID, isPrivateSector: Boolean? = null
+            territoryId: UUID, streetId: UUID, isPrivateSector: Boolean? = null,
+            estimatedHouses: Int? = null
         ) = defaultTerritoryStreet(
             territoryId = territoryId, streetId = streetId, isEven = true,
-            isPrivateSector = isPrivateSector
+            isPrivateSector = isPrivateSector, estimatedHouses = estimatedHouses
         )
 
         fun oddTerritoryStreet(
-            territoryId: UUID, streetId: UUID, isPrivateSector: Boolean? = null
+            territoryId: UUID, streetId: UUID, isPrivateSector: Boolean? = null,
+            estimatedHouses: Int? = null
         ) = defaultTerritoryStreet(
             territoryId = territoryId, streetId = streetId, isEven = false,
-            isPrivateSector = isPrivateSector
+            isPrivateSector = isPrivateSector, estimatedHouses = estimatedHouses
         )
 
         fun privateSectorTerritoryStreet(
-            territoryId: UUID, streetId: UUID, isEven: Boolean? = null
+            territoryId: UUID, streetId: UUID, isEven: Boolean? = null, estimatedHouses: Int? = null
         ) = defaultTerritoryStreet(
             territoryId = territoryId, streetId = streetId,
-            isEven = isEven, isPrivateSector = true
+            isEven = isEven, isPrivateSector = true, estimatedHouses = estimatedHouses
         )
 
     }

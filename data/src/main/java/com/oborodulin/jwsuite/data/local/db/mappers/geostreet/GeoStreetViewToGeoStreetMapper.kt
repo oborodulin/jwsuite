@@ -11,6 +11,7 @@ class GeoStreetViewToGeoStreetMapper : Mapper<GeoStreetView, GeoStreet> {
             streetHashCode = input.data.streetHashCode,
             roadType = input.data.roadType,
             isPrivateSector = input.data.isPrivateSector,
+            estimatedHouses = input.data.estimatedHouses,
             streetName = input.tl.streetName
         )
         street.id = input.data.streetId

@@ -9,6 +9,7 @@ data class GeoLocality(
     val regionDistrictId: UUID? = null,
     val localityCode: String,
     val localityType: LocalityType,
+    val localityShortName: String,
     val localityName: String,
     val districts: List<GeoLocalityDistrict> = emptyList(),
     val streets: List<GeoStreet> = emptyList()

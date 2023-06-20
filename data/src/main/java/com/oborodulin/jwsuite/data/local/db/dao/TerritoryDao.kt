@@ -3,10 +3,15 @@ package com.oborodulin.jwsuite.data.local.db.dao
 import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.*
 import com.oborodulin.jwsuite.data.local.db.entities.pojo.TerritoryWithMembers
+import com.oborodulin.jwsuite.data.local.db.views.FavoriteCongregationView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryDistrictView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryPrivateSectorView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
+import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.time.OffsetDateTime
 import java.util.*
 
 @Dao
@@ -36,10 +41,18 @@ interface TerritoryDao {
     fun findDistinctByCongregationId(congregationId: UUID) =
         findByCongregationId(congregationId).distinctUntilChanged()
 
+    @Query(
+        """
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.territoriesId = t.territoryId
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.congregationsId    
+        """
+    )
+    fun findByFavoriteCongregation(): Flow<List<TerritoryView>>
+
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE congregationsId = :congregationId AND territoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
     fun findByTerritoryNum(
         congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int
-    ): Flow<TerritoryEntity>
+    ): Flow<List<TerritoryView>>
 
     @Transaction
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE congregationsId = :congregationId ORDER BY territoryNum")
@@ -47,65 +60,50 @@ interface TerritoryDao {
 
     @Query(
         """
-    SELECT t.* FROM (
-        SELECT ct.territoriesId  
-        FROM  ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            JOIN ${TerritoryStreetEntity.TABLE_NAME} ts ON ts.territoriesId = ct.territoriesId AND ct.congregationsId = :congregationId
-            JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = ts.streetsId AND s.localitiesId = :localityId
-        UNION ALL
-        SELECT ct.territoriesId  
-        FROM  ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            JOIN ${HouseEntity.TABLE_NAME} h ON h.territoriesId = ct.territoriesId AND ct.congregationsId = :congregationId
-            JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = h.streetsId AND s.localitiesId = :localityId
-        GROUP BY territoriesId
-         ) lt JOIN ${TerritoryView.VIEW_NAME} t ON t.territoryId = lt.territoriesId 
-    """
+    SELECT td.* 
+    FROM ${TerritoryDistrictView.VIEW_NAME} td LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = td.congregationId
+    WHERE td.isPrivateSector = :isPrivateSector AND td.congregationId = ifnull(:congregationId, fcv.congregationId) 
+        """
     )
-    fun findByCongregationIdAndLocalityId(congregationId: UUID, localityId: UUID):
-            Flow<List<TerritoryView>>
+    fun findTerritoryDistrictsByPrivateSectorMarkAndCongregationId(
+        isPrivateSector: Boolean, congregationId: UUID? = null
+    ): Flow<List<TerritoryDistrictView>>
 
     @Query(
         """
-    SELECT t.* FROM (
-        SELECT ct.territoriesId  
-        FROM  ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            JOIN ${TerritoryStreetEntity.TABLE_NAME} ts ON ts.territoriesId = ct.territoriesId AND ct.congregationsId = :congregationId
-            JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = ts.streetsId
-            JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.streetsId = s.streetId AND ds.microdistrictsId = :microdistrictId
-        UNION ALL
-        SELECT ct.territoriesId  
-        FROM  ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            JOIN ${HouseEntity.TABLE_NAME} h ON h.territoriesId = ct.territoriesId AND ct.congregationsId = :congregationId
-            JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = h.streetsId
-            JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.streetsId = s.streetId AND ifnull(h.microdistrictsId, ds.microdistrictsId) = :microdistrictId
-        GROUP BY territoriesId
-         ) mt JOIN ${TerritoryView.VIEW_NAME} t ON t.territoryId = mt.territoriesId 
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.congregationsId
+    WHERE t.congregationsId = ifnull(:congregationId, fcv.congregationId) AND t.localitiesId = :localityId 
+        AND tpsv.isPrivateSector = :isPrivateSector AND t.isActive = $DB_TRUE AND t.localityDistrictsId IS NULL AND t.microdistrictsId IS NULL 
     """
     )
-    fun findByCongregationIdAndMicrodistrictId(congregationId: UUID, microdistrictId: UUID):
-            Flow<List<TerritoryView>>
+    fun findByLocalityIdAndPrivateSectorMarkAndCongregationId(
+        localityId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
+    ): Flow<List<TerritoryView>>
 
     @Query(
         """
-    SELECT t.* FROM (
-        SELECT ct.territoriesId  
-        FROM  ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            JOIN ${TerritoryStreetEntity.TABLE_NAME} ts ON ts.territoriesId = ct.territoriesId AND ct.congregationsId = :congregationId
-            JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = ts.streetsId
-            JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.streetsId = s.streetId AND ds.localityDistrictsId = :localityDistrictId AND ds.microdistrictsId IS NULL
-        UNION ALL
-        SELECT ct.territoriesId  
-        FROM  ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            JOIN ${HouseEntity.TABLE_NAME} h ON h.territoriesId = ct.territoriesId AND ct.congregationsId = :congregationId
-            JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = h.streetsId
-            JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.streetsId = s.streetId AND ifnull(h.localityDistrictsId, ds.localityDistrictsId) = :localityDistrictId 
-                                                            AND ds.microdistrictsId IS NULL
-        GROUP BY territoriesId
-         ) mt JOIN ${TerritoryView.VIEW_NAME} t ON t.territoryId = mt.territoriesId 
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.congregationsId
+    WHERE t.congregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
+        AND t.isActive = $DB_TRUE AND t.localityDistrictsId = :localityDistrictId AND t.microdistrictsId IS NULL 
     """
     )
-    fun findByCongregationIdAndLocalityDistrictId(congregationId: UUID, localityDistrictId: UUID):
-            Flow<List<TerritoryView>>
+    fun findByLocalityDistrictIdAndPrivateSectorMarkAndCongregationId(
+        localityDistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
+    ): Flow<List<TerritoryView>>
+
+    @Query(
+        """
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.congregationsId
+    WHERE t.congregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
+        AND t.isActive = $DB_TRUE AND t.microdistrictsId = :microdistrictId 
+    """
+    )
+    fun findByMicrodistrictIdAndPrivateSectorMarkAndCongregationId(
+        microdistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
+    ): Flow<List<TerritoryView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -120,13 +118,32 @@ interface TerritoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg territoryMember: TerritoryMemberCrossRefEntity)
 
-    suspend fun insert(territory: TerritoryEntity, member: MemberEntity) =
-        insert(
-            TerritoryMemberCrossRefEntity(
-                territoriesId = territory.territoryId,
-                membersId = member.memberId
-            )
+    suspend fun insert(
+        territory: TerritoryEntity, member: MemberEntity,
+        receivingDate: OffsetDateTime = OffsetDateTime.now()
+    ) = insert(
+        TerritoryMemberCrossRefEntity(
+            territoriesId = territory.territoryId,
+            membersId = member.memberId,
+            receivingDate = receivingDate
         )
+    )
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg territoryStreet: TerritoryStreetEntity)
+
+    suspend fun insert(
+        territory: TerritoryEntity, street: GeoStreetEntity,
+        isEven: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
+    ) = insert(
+        TerritoryStreetEntity(
+            territoriesId = territory.territoryId,
+            streetsId = street.streetId,
+            isEven = isEven,
+            isPrivateSector = isPrivateSector,
+            estimatedHouses = estimatedHouses
+        )
+    )
 
     // UPDATES:
     @Update
@@ -137,6 +154,9 @@ interface TerritoryDao {
 
     @Update
     suspend fun update(vararg territoryMembers: TerritoryMemberCrossRefEntity)
+
+    @Update
+    suspend fun update(vararg territoryStreet: TerritoryStreetEntity)
 
     // DELETES:
     @Delete
@@ -159,6 +179,15 @@ interface TerritoryDao {
 
     @Query("DELETE FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
     suspend fun deleteMembersByTerritoryId(territoryId: UUID)
+
+    @Delete
+    suspend fun deleteStreet(vararg territoryStreet: TerritoryStreetEntity)
+
+    @Query("DELETE FROM ${TerritoryStreetEntity.TABLE_NAME} WHERE territoryStreetId = :territoryStreetId")
+    suspend fun deleteStreetById(territoryStreetId: UUID)
+
+    @Query("DELETE FROM ${TerritoryStreetEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    suspend fun deleteStreetsByTerritoryId(territoryId: UUID)
 
     @Query("DELETE FROM ${TerritoryEntity.TABLE_NAME}")
     suspend fun deleteAll()

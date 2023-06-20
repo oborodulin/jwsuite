@@ -6,7 +6,6 @@ import com.oborodulin.jwsuite.data.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data.local.db.dao.GeoRegionDistrictDao
-import com.oborodulin.jwsuite.data.local.db.dao.GeoStreetDao
 import com.oborodulin.jwsuite.data.local.db.entities.GeoDistrictStreetEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoLocalityDistrictTlEntity
@@ -19,12 +18,9 @@ import com.oborodulin.jwsuite.data.local.db.entities.GeoRegionDistrictTlEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetEntity
-import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoDataSource
-import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetView
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -39,7 +35,6 @@ class LocalGeoDataSourceImpl @Inject constructor(
     private val localityDao: GeoLocalityDao,
     private val localityDistrictDao: GeoLocalityDistrictDao,
     private val microdistrictDao: GeoMicrodistrictDao,
-    private val streetDao: GeoStreetDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoDataSource {
     // Regions:
@@ -269,43 +264,4 @@ class LocalGeoDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             microdistrictDao.deleteStreetsByMicrodistrictId(microdistrictId)
         }
-
-    // Streets:
-    override fun getLocalityStreets(localityId: UUID) = streetDao.findByLocalityId(localityId)
-
-    override fun getLocalityDistrictStreets(localityDistrictId: UUID) =
-        streetDao.findByLocalityDistrictId(localityDistrictId)
-
-    override fun getMicrodistrictStreets(microdistrictId: UUID) =
-        streetDao.findByMicrodistrictId(microdistrictId)
-
-    override fun getTerritoryStreets(territoryId: UUID) = streetDao.findByTerritoryId(territoryId)
-
-    override fun getStreet(streetId: UUID) = streetDao.findDistinctById(streetId)
-    override suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity) =
-        withContext(dispatcher) {
-            streetDao.insert(street, textContent)
-        }
-
-    override suspend fun updateStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity) =
-        withContext(dispatcher) {
-            streetDao.update(street, textContent)
-        }
-
-    override suspend fun deleteStreet(street: GeoStreetEntity) = withContext(dispatcher) {
-        streetDao.delete(street)
-    }
-
-    override suspend fun deleteStreetById(streetId: UUID) = withContext(dispatcher) {
-        streetDao.deleteById(streetId)
-    }
-
-    override suspend fun deleteStreets(streets: List<GeoStreetEntity>) =
-        withContext(dispatcher) {
-            streetDao.delete(streets)
-        }
-
-    override suspend fun deleteAllStreets() = withContext(dispatcher) {
-        streetDao.deleteAll()
-    }
 }

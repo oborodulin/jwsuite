@@ -37,7 +37,9 @@ private const val TAG = "JwSuiteDatabase"
         CongregationTerritoryCrossRefEntity::class],
     views = [GeoRegionView::class, GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
-        CongregationView::class, TerritoryView::class, TerritoryStreetView::class],
+        CongregationView::class, FavoriteCongregationView::class, TerritoryPrivateSectorView::class,
+        TerritoryView::class, TerritoryStreetView::class, TerritoryDistrictView::class,
+        TerritoryInfoView::class],
     version = 1
 )
 @TypeConverters(JwSuiteTypeConverters::class)

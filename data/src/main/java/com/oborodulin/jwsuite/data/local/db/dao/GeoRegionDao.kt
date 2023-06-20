@@ -27,9 +27,8 @@ interface GeoRegionDao {
 
     @Query(
         """
-        SELECT r.* FROM ${CongregationEntity.TABLE_NAME} c JOIN ${GeoLocalityEntity.TABLE_NAME} l ON l.localityId = c.localitiesId
-            JOIN ${GeoRegionView.VIEW_NAME} r ON r.regionId = l.regionsId AND r.regionLocCode = :locale
-        WHERE c.isFavorite = ${Constants.DB_TRUE}
+        SELECT r.* FROM ${GeoRegionView.VIEW_NAME} r JOIN ${GeoLocalityEntity.TABLE_NAME} l ON l.regionsId = r.regionId AND r.regionLocCode = :locale
+            JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.localitiesId = l.localityId  
     """
     )
     fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language):

@@ -2,17 +2,24 @@ package com.oborodulin.jwsuite.data.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationViewToCongregationMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.model.Territory
 
 class TerritoryViewToTerritoryMapper(
     private val congregationMapper: CongregationViewToCongregationMapper,
-    private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper
+    private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
+    private val localityMapper: GeoLocalityViewToGeoLocalityMapper
 ) : Mapper<TerritoryView, Territory> {
     override fun map(input: TerritoryView): Territory {
         val territory = Territory(
             congregation = congregationMapper.map(input.congregation),
             territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
+            locality = localityMapper.map(input.locality),
+            localityDistrictId = input.territory.localityDistrictsId,
+            districtShortName = input.districtShortName,
+            microdistrictId = input.territory.microdistrictsId,
+            microdistrictShortName = input.microdistrictShortName,
             territoryNum = input.territory.territoryNum,
             isBusiness = input.territory.isBusiness,
             isGroupMinistry = input.territory.isGroupMinistry,

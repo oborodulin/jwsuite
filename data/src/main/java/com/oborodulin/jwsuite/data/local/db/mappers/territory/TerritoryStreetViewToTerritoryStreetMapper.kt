@@ -8,12 +8,12 @@ import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 class TerritoryStreetViewToTerritoryStreetMapper(private val streetMapper: GeoStreetViewToGeoStreetMapper) :
     Mapper<TerritoryStreetView, TerritoryStreet> {
     override fun map(input: TerritoryStreetView): TerritoryStreet {
-        val street = streetMapper.map(input.street)
         val territoryStreet = TerritoryStreet(
             territoryId = input.territoriesId,
-            street = street,
+            street = streetMapper.map(input.street),
             isEven = input.isEven,
-            isPrivateSector = input.isPrivateSector
+            isPrivateSector = input.isPrivateSector,
+            estimatedHouses = input.estimatedHouses
         )
         territoryStreet.id = input.territoryStreetId
         return territoryStreet

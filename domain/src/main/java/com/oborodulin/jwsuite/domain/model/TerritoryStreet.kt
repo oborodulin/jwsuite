@@ -7,5 +7,6 @@ data class TerritoryStreet(
     val territoryId: UUID,
     val street: GeoStreet,
     val isEven: Boolean? = null,
-    val isPrivateSector: Boolean? = null
+    val isPrivateSector: Boolean? = null,
+    val estimatedHouses: Int? = null
 ) : DomainModel()

@@ -11,6 +11,7 @@ class GeoStreetToGeoStreetEntityMapper : Mapper<GeoStreet, GeoStreetEntity> {
         streetHashCode = input.streetHashCode,
         roadType = input.roadType,
         isPrivateSector = input.isPrivateSector,
+        estimatedHouses = input.estimatedHouses,
         localitiesId = input.localityId
     )
 }

@@ -10,7 +10,7 @@ import java.util.*
 @Dao
 interface RoomDao {
     // READS:
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME}")
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} ORDER BY housesId, roomNum")
     fun findAll(): Flow<List<RoomEntity>>
 
     @ExperimentalCoroutinesApi
@@ -27,6 +27,26 @@ interface RoomDao {
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
+
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE entrancesId = :entranceId")
+    fun findByEntranceId(entranceId: UUID): Flow<List<RoomEntity>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByEntranceId(entranceId: UUID) =
+        findByEntranceId(entranceId).distinctUntilChanged()
+
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE floorsId = :floorId")
+    fun findByFloorId(floorId: UUID): Flow<List<RoomEntity>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByFloorId(floorId: UUID) = findByFloorId(floorId).distinctUntilChanged()
+
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    fun findByTerritoryId(territoryId: UUID): Flow<List<RoomEntity>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByTerritoryId(territoryId: UUID) =
+        findByTerritoryId(territoryId).distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
