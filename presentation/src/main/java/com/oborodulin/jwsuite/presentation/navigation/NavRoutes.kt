@@ -8,24 +8,28 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ACCOUNTING
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_BILLING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GROUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_METERING
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PAYER
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PAYER_SERVICE
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_RATE
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REPORTING
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SERVICE
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
+import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.GroupInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.TerritoryInput
 import timber.log.Timber
 import java.util.UUID
 
 private const val TAG = "Presentation.NavRoutes"
 
-private const val ARG_PAYER_ID = "payerId"
-private const val ARG_SERVICE_ID = "serviceId"
-private const val ARG_PAYER_SERVICE_ID = "payerServiceId"
-private const val ARG_RATE_ID = "rateId"
+private const val ARG_CONGREGATION_ID = "congregationId"
+private const val ARG_GROUP_ID = "groupId"
+private const val ARG_MEMBER_ID = "memberId"
+private const val ARG_TERRITORY_ID = "territoryId"
 
 /**
  * Created by oborodulin on 12.December.2021
@@ -39,163 +43,168 @@ sealed class NavRoutes constructor(
     object Home : NavRoutes(
         ROUTE_HOME,
         R.drawable.outline_account_balance_wallet_black_24,
-        R.string.nav_item_accounting
+        R.string.nav_item_dashboarding
     )
 
-    object Accounting : NavRoutes(
-        ROUTE_ACCOUNTING,
+    object Dashboarding : NavRoutes(
+        ROUTE_DASHBOARDING,
         R.drawable.outline_account_balance_wallet_black_24,
-        R.string.nav_item_accounting
+        R.string.nav_item_dashboarding
     )
 
-    object Billing : NavRoutes(
-        ROUTE_BILLING,
+    object Congregating : NavRoutes(
+        ROUTE_CONGREGATING,
         R.drawable.outline_monetization_on_black_24,
-        R.string.nav_item_servicing
+        R.string.nav_item_congregating
     )
 
-    object Metering : NavRoutes(
-        ROUTE_METERING,
+    object Territoring : NavRoutes(
+        ROUTE_TERRITORING,
         R.drawable.ic_electric_meter_24,
-        R.string.nav_item_metering
+        R.string.nav_item_territoring
     )
 
-    object Reporting :
-        NavRoutes(ROUTE_REPORTING, R.drawable.outline_receipt_black_24, R.string.nav_item_reporting)
+    object Ministring :
+        NavRoutes(
+            ROUTE_MINISTRING,
+            R.drawable.outline_receipt_black_24,
+            R.string.nav_item_ministring
+        )
 
-    object Payer : NavRoutes(
-        String.format(ROUTE_PAYER, "{$ARG_PAYER_ID}"),
+    object Congregation : NavRoutes(
+        String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
         R.drawable.outline_person_black_24,
-        R.string.nav_item_payer,
-        arguments = listOf(navArgument(ARG_PAYER_ID) {
+        R.string.nav_item_congregate,
+        arguments = listOf(navArgument(ARG_CONGREGATION_ID) {
             type = NavType.StringType
             nullable = true
             //defaultValue = null
         })
     ) {
-        fun routeForPayer(payerInput: PayerInput? = null): String {
-            val route = when (payerInput) {
+        fun routeForCongregation(congregationInput: CongregationInput? = null): String {
+            val route = when (congregationInput) {
                 null -> baseRoute()
-                else -> String.format(ROUTE_PAYER, payerInput.payerId)
+                else -> String.format(ROUTE_CONGREGATION, congregationInput.congregationId)
             }
             //val route = String.format(ROUTE_PAYER, payerId)
-            Timber.tag(TAG).d("Payer - routeForPayer(...): '%s'", route)
+            Timber.tag(TAG).d("Congregation - routeForCongregation(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): PayerInput {
-            val payerInput =
-                PayerInput(UUID.fromString(entry.arguments?.getString(ARG_PAYER_ID) ?: ""))
-            Timber.tag(TAG).d("Payer - fromEntry(...): '%s'", payerInput)
-            return payerInput
-        }
-    }
-
-    object PayerService : NavRoutes(
-        String.format(ROUTE_PAYER_SERVICE, "{$ARG_PAYER_SERVICE_ID}"),
-        R.drawable.outline_domain_black_24,
-        R.string.nav_item_payer_service,
-        arguments = listOf(navArgument(ARG_PAYER_SERVICE_ID) {
-            type = NavType.StringType
-            nullable = true
-            //defaultValue = null
-        })
-    ) {
-        fun routeForPayerService(payerServiceInput: PayerServiceInput? = null): String {
-            val route = when (payerServiceInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_PAYER_SERVICE, payerServiceInput.payerServiceId)
-            }
-            //val route = String.format(ROUTE_PAYER_SERVICE, payerId)
-            Timber.tag(TAG).d("PayerService - routeForPayerService(...): '%s'", route)
-            return route
-        }
-
-        fun fromEntry(entry: NavBackStackEntry): PayerServiceInput {
-            val payerServiceInput =
-                PayerServiceInput(
+        fun fromEntry(entry: NavBackStackEntry): CongregationInput {
+            val congregationInput =
+                CongregationInput(
                     UUID.fromString(
-                        entry.arguments?.getString(ARG_PAYER_SERVICE_ID) ?: ""
+                        entry.arguments?.getString(ARG_CONGREGATION_ID) ?: ""
                     )
                 )
-            Timber.tag(TAG).d("PayerService - fromEntry(...): '%s'", payerServiceInput)
-            return payerServiceInput
+            Timber.tag(TAG).d("Congregation - fromEntry(...): '%s'", congregationInput)
+            return congregationInput
         }
     }
 
-    object Service : NavRoutes(
-        String.format(ROUTE_SERVICE, "{$ARG_SERVICE_ID}"),
+    object Group : NavRoutes(
+        String.format(ROUTE_GROUP, "{$ARG_GROUP_ID}"),
         R.drawable.outline_domain_black_24,
-        R.string.nav_item_service,
-        arguments = listOf(navArgument(ARG_SERVICE_ID) {
+        R.string.nav_item_group,
+        arguments = listOf(navArgument(ARG_GROUP_ID) {
             type = NavType.StringType
             nullable = true
             //defaultValue = null
         })
     ) {
-        fun routeForService(serviceInput: ServiceInput? = null): String {
-            val route = when (serviceInput) {
+        fun routeForGroup(groupInput: GroupInput? = null): String {
+            val route = when (groupInput) {
                 null -> baseRoute()
-                else -> String.format(ROUTE_SERVICE, serviceInput.serviceId)
+                else -> String.format(ROUTE_GROUP, groupInput.groupId)
             }
             //val route = String.format(ROUTE_SERVICE, payerId)
-            Timber.tag(TAG).d("Service - routeForService(...): '%s'", route)
+            Timber.tag(TAG).d("Group - routeForGroup(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): ServiceInput {
-            val serviceInput =
-                ServiceInput(UUID.fromString(entry.arguments?.getString(ARG_SERVICE_ID) ?: ""))
-            Timber.tag(TAG).d("Service - fromEntry(...): '%s'", serviceInput)
-            return serviceInput
+        fun fromEntry(entry: NavBackStackEntry): GroupInput {
+            val groupInput =
+                GroupInput(UUID.fromString(entry.arguments?.getString(ARG_GROUP_ID) ?: ""))
+            Timber.tag(TAG).d("Group - fromEntry(...): '%s'", groupInput)
+            return groupInput
         }
     }
 
-    object Rate : NavRoutes(
-        String.format(ROUTE_RATE, "{$ARG_RATE_ID}"),
+    object Member : NavRoutes(
+        String.format(ROUTE_MEMBER, "{$ARG_MEMBER_ID}"),
         R.drawable.outline_domain_black_24,
-        R.string.nav_item_rate,
-        arguments = listOf(navArgument(ARG_RATE_ID) {
+        R.string.nav_item_member,
+        arguments = listOf(navArgument(ARG_MEMBER_ID) {
             type = NavType.StringType
             nullable = true
             //defaultValue = null
         })
     ) {
-        fun routeForRate(rateInput: RateInput? = null): String {
-            val route = when (rateInput) {
+        fun routeForMember(memberInput: MemberInput? = null): String {
+            val route = when (memberInput) {
                 null -> baseRoute()
-                else -> String.format(ROUTE_RATE, rateInput.rateId)
+                else -> String.format(ROUTE_MEMBER, memberInput.memberId)
             }
-            //val route = String.format(ROUTE_RATE, payerId)
-            Timber.tag(TAG).d("Rate - routeForRate(...): '%s'", route)
+            //val route = String.format(ROUTE_PAYER_SERVICE, payerId)
+            Timber.tag(TAG).d("Member - routeForMember(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): RateInput {
-            val rateInput =
-                RateInput(UUID.fromString(entry.arguments?.getString(ARG_RATE_ID) ?: ""))
-            Timber.tag(TAG).d("Rate - fromEntry(...): '%s'", rateInput)
-            return rateInput
+        fun fromEntry(entry: NavBackStackEntry): MemberInput {
+            val memberInput = MemberInput(
+                UUID.fromString(entry.arguments?.getString(ARG_MEMBER_ID) ?: "")
+            )
+            Timber.tag(TAG).d("Member - fromEntry(...): '%s'", memberInput)
+            return memberInput
+        }
+    }
+
+    object Territory : NavRoutes(
+        String.format(ROUTE_TERRITORY, "{$ARG_TERRITORY_ID}"),
+        R.drawable.outline_domain_black_24,
+        R.string.nav_item_territory,
+        arguments = listOf(navArgument(ARG_TERRITORY_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForTerritory(territoryInput: TerritoryInput? = null): String {
+            val route = when (territoryInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_TERRITORY, territoryInput.territoryId)
+            }
+            //val route = String.format(ROUTE_RATE, payerId)
+            Timber.tag(TAG).d("Territory - routeForTerritory(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
+            val territoryInput =
+                TerritoryInput(UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID) ?: ""))
+            Timber.tag(TAG).d("Territory - fromEntry(...): '%s'", territoryInput)
+            return territoryInput
         }
     }
 
     fun baseRoute() = this.route.substringBefore('/')
 
     companion object {
-        fun bottomNavBarRoutes() = listOf(Accounting, Billing, Metering, Reporting)
+        fun bottomNavBarRoutes() = listOf(Dashboarding, Congregating, Territoring, Ministring)
 
         fun isShowBackButton(route: String?) = when (route) {
-            Payer.route -> true
+            Congregation.route -> true
             else -> false
         }
 
         fun titleByRoute(context: Context, route: String): String {
             return when (route) {
-                Accounting.route -> context.getString(Accounting.titleResId)
-                Payer.route -> context.getString(Payer.titleResId)
-                Billing.route -> context.getString(Billing.titleResId)
-                Metering.route -> context.getString(Metering.titleResId)
-                Reporting.route -> context.getString(Reporting.titleResId)
+                Dashboarding.route -> context.getString(Dashboarding.titleResId)
+                Congregating.route -> context.getString(Congregating.titleResId)
+                Territoring.route -> context.getString(Territoring.titleResId)
+                Ministring.route -> context.getString(Ministring.titleResId)
+                Congregation.route -> context.getString(Congregation.titleResId)
                 else -> ""
             }
         }

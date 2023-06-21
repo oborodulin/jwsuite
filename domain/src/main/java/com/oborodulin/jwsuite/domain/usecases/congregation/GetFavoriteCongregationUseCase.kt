@@ -1,22 +1,21 @@
-package com.oborodulin.jwsuite.domain.usecases
+package com.oborodulin.jwsuite.domain.usecases.congregation
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.*
 
-class GetPayerUseCase(
+class GetFavoriteCongregationUseCase(
     configuration: Configuration,
     private val congregationsRepository: CongregationsRepository
-) : UseCase<GetPayerUseCase.Request, GetPayerUseCase.Response>(configuration) {
+) : UseCase<GetFavoriteCongregationUseCase.Request, GetFavoriteCongregationUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> =
-        congregationsRepository.get(request.id).map {
+        congregationsRepository.getFavorite().map {
             Response(it)
         }
 
-    data class Request(val id: UUID) : UseCase.Request
+    object Request : UseCase.Request
     data class Response(val congregation: Congregation) : UseCase.Response
 }

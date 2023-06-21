@@ -3,6 +3,11 @@ package com.oborodulin.jwsuite.domain.di
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,33 +24,33 @@ object UseCasesModule {
     fun provideGetPayerUseCase(
         configuration: UseCase.Configuration,
         congregationsRepository: CongregationsRepository
-    ): GetPayerUseCase = GetPayerUseCase(configuration, congregationsRepository)
+    ): GetCongregationUseCase = GetCongregationUseCase(configuration, congregationsRepository)
 
     @Singleton
     @Provides
     fun provideFavoritePayerUseCase(
         configuration: UseCase.Configuration,
         congregationsRepository: CongregationsRepository
-    ): FavoritePayerUseCase = FavoritePayerUseCase(configuration, congregationsRepository)
+    ): MakeFavoriteCongregationUseCase = MakeFavoriteCongregationUseCase(configuration, congregationsRepository)
 
     @Singleton
     @Provides
     fun provideGetFavoritePayerUseCase(
         configuration: UseCase.Configuration,
         congregationsRepository: CongregationsRepository
-    ): GetFavoritePayerUseCase = GetFavoritePayerUseCase(configuration, congregationsRepository)
+    ): GetFavoriteCongregationUseCase = GetFavoriteCongregationUseCase(configuration, congregationsRepository)
 
     @Singleton
     @Provides
     fun provideDeletePayerUseCase(
         configuration: UseCase.Configuration,
         congregationsRepository: CongregationsRepository
-    ): DeletePayerUseCase = DeletePayerUseCase(configuration, congregationsRepository)
+    ): DeleteCongregationUseCase = DeleteCongregationUseCase(configuration, congregationsRepository)
 
     @Singleton
     @Provides
     fun provideSavePayerUseCase(
         configuration: UseCase.Configuration,
         congregationsRepository: CongregationsRepository
-    ): SavePayerUseCase = SavePayerUseCase(configuration, congregationsRepository)
+    ): SaveCongregationUseCase = SaveCongregationUseCase(configuration, congregationsRepository)
 }

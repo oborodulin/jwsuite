@@ -85,6 +85,17 @@ dependencies {
 
     implementation deps.androidx.coreKtx
     implementation deps.lifecycle.runtimeKtx
+    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.livedataKtx
+    implementation deps.lifecycle.viewmodelKtx
+    implementation deps.glide.glide
+
+    // Coroutines
+    implementation deps.coroutines.android
+    implementation deps.coroutines.core
+
+    // Work
+    implementation deps.work.runtimeKtx
 
     // Compose
     def composeBom = platform(deps.compose.bom)

@@ -76,6 +76,7 @@ dependencies {
     implementation deps.hilt.navigationCompose
 
     implementation deps.jvm.inject
+    // Coroutines
     implementation deps.coroutines.android
     implementation deps.coroutines.core
 

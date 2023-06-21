@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite
+package com.oborodulin.jwsuite.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

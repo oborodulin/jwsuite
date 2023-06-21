@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.navigation
+package com.oborodulin.jwsuite.presentation.navigation.inputs
 
 import java.util.UUID
 
