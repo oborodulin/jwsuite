@@ -27,7 +27,7 @@ interface GeoRegionDao {
 
     @Query(
         """
-        SELECT r.* FROM ${GeoRegionView.VIEW_NAME} r JOIN ${GeoLocalityEntity.TABLE_NAME} l ON l.regionsId = r.regionId AND r.regionLocCode = :locale
+        SELECT r.* FROM ${GeoRegionView.VIEW_NAME} r JOIN ${GeoLocalityEntity.TABLE_NAME} l ON l.lRegionsId = r.regionId AND r.regionLocCode = :locale
             JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.localitiesId = l.localityId  
     """
     )

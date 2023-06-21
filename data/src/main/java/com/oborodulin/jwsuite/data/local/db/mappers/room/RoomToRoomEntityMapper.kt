@@ -9,13 +9,13 @@ class RoomToRoomEntityMapper : Mapper<Room, RoomEntity> {
     override fun map(input: Room) = RoomEntity(
         roomId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         roomNum = input.roomNum,
-        isIntercom = input.isIntercom,
-        isResidential = input.isResidential,
-        isForeignLanguage = input.isForeignLanguage,
-        territoryDesc = input.territoryDesc,
-        territoriesId = input.territoryId,
-        floorsId = input.floorId,
-        entrancesId = input.entranceId,
-        housesId = input.houseId
+        isIntercomRoom = input.isIntercom,
+        isResidentialRoom = input.isResidential,
+        isForeignLangRoom = input.isForeignLanguage,
+        roomDesc = input.territoryDesc,
+        rTerritoriesId = input.territoryId,
+        rFloorsId = input.floorId,
+        rEntrancesId = input.entranceId,
+        rHousesId = input.houseId
     )
 }

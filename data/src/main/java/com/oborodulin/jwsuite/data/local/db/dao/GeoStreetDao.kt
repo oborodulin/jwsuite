@@ -28,7 +28,7 @@ interface GeoStreetDao {
     fun findDistinctById(streetId: UUID) = findById(streetId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE localitiesId = :localityId AND isPrivateSector = ifnull(:isPrivateSector, isPrivateSector) AND streetLocCode = :locale"
+        "SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE sLocalitiesId = :localityId AND isStreetPrivateSector = ifnull(:isPrivateSector, isStreetPrivateSector) AND streetLocCode = :locale"
     )
     fun findByLocalityIdAndPrivateSectorMark(
         localityId: UUID, isPrivateSector: Boolean? = null,
@@ -43,8 +43,8 @@ interface GeoStreetDao {
     @Query(
         """
         SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd 
-            ON sd.streetsId = sw.streetId AND sd.localityDistrictsId = :localityDistrictId 
-                AND sw.isPrivateSector = ifnull(:isPrivateSector, sw.isPrivateSector) AND sw.streetLocCode = :locale
+            ON sd.dsStreetsId = sw.streetId AND sd.dsLocalityDistrictsId = :localityDistrictId 
+                AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) AND sw.streetLocCode = :locale
         """
     )
     fun findByLocalityDistrictIdAndPrivateSectorMark(
@@ -62,8 +62,8 @@ interface GeoStreetDao {
     @Query(
         """
         SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd 
-            ON sd.streetsId = sw.streetId AND sd.microdistrictsId = :microdistrictId 
-                AND sw.isPrivateSector = ifnull(:isPrivateSector, sw.isPrivateSector) AND sw.streetLocCode = :locale
+            ON sd.dsStreetsId = sw.streetId AND sd.dsMicrodistrictsId = :microdistrictId 
+                AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) AND sw.streetLocCode = :locale
         """
     )
     fun findByMicrodistrictIdAndPrivateSectorMark(
@@ -91,11 +91,11 @@ interface GeoStreetDao {
 
     @Query(
         """
-        SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd ON sd.streetsId = sw.streetId 
-        WHERE sw.localitiesId = :localityId
-            AND sw.isPrivateSector = ifnull(:isPrivateSector, sw.isPrivateSector) 
-            AND ifnull(sd.localityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(sd.localityDistrictsId, '')) 
-            AND ifnull(sd.microdistrictsId, '') = ifnull(:microdistrictId, ifnull(sd.microdistrictsId, '')) 
+        SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd ON sd.dsStreetsId = sw.streetId 
+        WHERE sw.sLocalitiesId = :localityId
+            AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) 
+            AND ifnull(sd.dsLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(sd.dsLocalityDistrictsId, '')) 
+            AND ifnull(sd.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(sd.dsMicrodistrictsId, '')) 
             AND sw.streetName LIKE '%' || :streetName || '%'
     """
     )

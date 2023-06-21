@@ -35,11 +35,13 @@ private const val TAG = "JwSuiteDatabase"
         HouseEntity::class, EntranceEntity::class, FloorEntity::class, RoomEntity::class,
         TerritoryMemberReportEntity::class,
         CongregationTerritoryCrossRefEntity::class],
-    views = [GeoRegionView::class, GeoRegionDistrictView::class, GeoLocalityView::class,
+    views = [
+        GeoRegionView::class, GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryDistrictView::class,
-        TerritoryInfoView::class],
+        //TerritoryInfoView::class
+    ],
     version = 1
 )
 @TypeConverters(JwSuiteTypeConverters::class)
@@ -229,13 +231,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 val donskoy = insertDefMicrodistrict(
                     db,
                     GeoMicrodistrictEntity.donskoyMicrodistrict(
-                        context, budyonovsky.localitiesId, budyonovsky.localityDistrictId
+                        context, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
                     )
                 )
                 val cvetochny = insertDefMicrodistrict(
                     db,
                     GeoMicrodistrictEntity.cvetochnyMicrodistrict(
-                        context, budyonovsky.localitiesId, budyonovsky.localityDistrictId
+                        context, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
                     )
                 )
 

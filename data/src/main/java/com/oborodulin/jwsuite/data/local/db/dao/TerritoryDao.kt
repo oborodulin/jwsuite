@@ -17,7 +17,7 @@ import java.util.*
 @Dao
 interface TerritoryDao {
     // READS:
-    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} ORDER BY congregationsId, territoryNum")
+    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} ORDER BY tCongregationsId, territoryNum")
     fun findAll(): Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
@@ -31,8 +31,8 @@ interface TerritoryDao {
 
     @Query(
         """
-    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.territoriesId = t.territoryId 
-    WHERE ct.congregationsId = :congregationId
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId 
+    WHERE ct.ctCongregationsId = :congregationId
         """
     )
     fun findByCongregationId(congregationId: UUID): Flow<List<TerritoryView>>
@@ -43,19 +43,19 @@ interface TerritoryDao {
 
     @Query(
         """
-    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.territoriesId = t.territoryId
-        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.congregationsId    
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.ctCongregationsId    
         """
     )
     fun findByFavoriteCongregation(): Flow<List<TerritoryView>>
 
-    @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE congregationsId = :congregationId AND territoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
+    @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
     fun findByTerritoryNum(
         congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int
     ): Flow<List<TerritoryView>>
 
     @Transaction
-    @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE congregationsId = :congregationId ORDER BY territoryNum")
+    @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId ORDER BY territoryNum")
     fun findTerritoryWithMembers(congregationId: UUID): Flow<List<TerritoryWithMembers>>
 
     @Query(
@@ -72,9 +72,9 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.congregationsId
-    WHERE t.congregationsId = ifnull(:congregationId, fcv.congregationId) AND t.localitiesId = :localityId 
-        AND tpsv.isPrivateSector = :isPrivateSector AND t.isActive = $DB_TRUE AND t.localityDistrictsId IS NULL AND t.microdistrictsId IS NULL 
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
+    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.localitiesId = :localityId 
+        AND tpsv.isPrivateSector = :isPrivateSector AND t.isActive = $DB_TRUE AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL 
     """
     )
     fun findByLocalityIdAndPrivateSectorMarkAndCongregationId(
@@ -84,9 +84,9 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.congregationsId
-    WHERE t.congregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
-        AND t.isActive = $DB_TRUE AND t.localityDistrictsId = :localityDistrictId AND t.microdistrictsId IS NULL 
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
+    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
+        AND t.isActive = $DB_TRUE AND t.tLocalityDistrictsId = :localityDistrictId AND t.tMicrodistrictsId IS NULL 
     """
     )
     fun findByLocalityDistrictIdAndPrivateSectorMarkAndCongregationId(
@@ -96,9 +96,9 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.congregationsId
-    WHERE t.congregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
-        AND t.isActive = $DB_TRUE AND t.microdistrictsId = :microdistrictId 
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
+    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
+        AND t.isActive = $DB_TRUE AND t.tMicrodistrictsId = :microdistrictId 
     """
     )
     fun findByMicrodistrictIdAndPrivateSectorMarkAndCongregationId(
@@ -123,8 +123,8 @@ interface TerritoryDao {
         receivingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
         TerritoryMemberCrossRefEntity(
-            territoriesId = territory.territoryId,
-            membersId = member.memberId,
+            tmcTerritoriesId = territory.territoryId,
+            tmcMembersId = member.memberId,
             receivingDate = receivingDate
         )
     )
@@ -137,11 +137,11 @@ interface TerritoryDao {
         isEven: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
     ) = insert(
         TerritoryStreetEntity(
-            territoriesId = territory.territoryId,
-            streetsId = street.streetId,
-            isEven = isEven,
-            isPrivateSector = isPrivateSector,
-            estimatedHouses = estimatedHouses
+            tsTerritoriesId = territory.territoryId,
+            tsStreetsId = street.streetId,
+            isEvenSide = isEven,
+            isTerStreetPrivateSector = isPrivateSector,
+            estTerStreetHouses = estimatedHouses
         )
     )
 
@@ -177,7 +177,7 @@ interface TerritoryDao {
     @Query("DELETE FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME} WHERE territoryMemberId = :territoryMemberId")
     suspend fun deleteMemberById(territoryMemberId: UUID)
 
-    @Query("DELETE FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    @Query("DELETE FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME} WHERE tmcTerritoriesId = :territoryId")
     suspend fun deleteMembersByTerritoryId(territoryId: UUID)
 
     @Delete
@@ -186,7 +186,7 @@ interface TerritoryDao {
     @Query("DELETE FROM ${TerritoryStreetEntity.TABLE_NAME} WHERE territoryStreetId = :territoryStreetId")
     suspend fun deleteStreetById(territoryStreetId: UUID)
 
-    @Query("DELETE FROM ${TerritoryStreetEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    @Query("DELETE FROM ${TerritoryStreetEntity.TABLE_NAME} WHERE tsTerritoriesId = :territoryId")
     suspend fun deleteStreetsByTerritoryId(territoryId: UUID)
 
     @Query("DELETE FROM ${TerritoryEntity.TABLE_NAME}")

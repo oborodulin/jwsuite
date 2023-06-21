@@ -13,22 +13,22 @@ import java.util.UUID
 @DatabaseView(
     viewName = TerritoryInfoView.VIEW_NAME,
     value = """
-SELECT ts.territoriesId AS territoryId, sv.streetId, sv.roadType, sv.streetName, 
-    sv.streetLocCode, ts.isEven, ifnull(ts.estimatedHouses, sv.estimatedHouses) AS estimatedHouses,
-    ifnull(sv.isPrivateSector, ts.isPrivateSector) AS isPrivateStreet, h.*
-FROM ${TerritoryStreetEntity.TABLE_NAME} ts JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = ts.streetsId
-    LEFT JOIN ${HouseEntity.TABLE_NAME} h ON h.streetsId = ts.streetsId AND ifnull(h.territoriesId, ts.territoriesId) = ts.territoriesId 
+SELECT ts.tsTerritoriesId AS territoryId, sv.streetId, sv.roadType, sv.streetName, 
+    sv.streetLocCode, ts.isEvenSide, ifnull(ts.estTerStreetHouses, sv.estStreetHouses) AS estimatedHouses,
+    ifnull(sv.isStreetPrivateSector, ts.isTerStreetPrivateSector) AS isPrivateStreet, h.*
+FROM ${TerritoryStreetEntity.TABLE_NAME} ts JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = ts.tsStreetsId
+    LEFT JOIN ${HouseEntity.TABLE_NAME} h ON h.hStreetsId = ts.tsStreetsId AND ifnull(h.hTerritoriesId, ts.tsTerritoriesId) = ts.tsTerritoriesId 
 --    LEFT JOIN ${EntranceEntity.TABLE_NAME} e ON e.entranceId = ''
 --    LEFT JOIN ${FloorEntity.TABLE_NAME} f ON f.floorId = ''
 --    LEFT JOIN ${RoomEntity.TABLE_NAME} r ON r.roomId = ''
 UNION ALL
-SELECT ifnull(h.territoriesId, ifnull(e.territoriesId, ifnull(f.territoriesId, ifnull(r.territoriesId)))) AS territoryId, sv.streetId, sv.roadType, sv.streetName, 
-    sv.streetLocCode, null AS isEven, sv.estimatedHouses, sv.isPrivateSector AS isPrivateStreet, h.*, e.*, f.*, r.*
-FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.streetsId
-    LEFT JOIN ${EntranceEntity.TABLE_NAME} e ON e.housesId = h.houseId
-    LEFT JOIN ${FloorEntity.TABLE_NAME} f ON f.housesId = h.houseId AND ifnull(f.entrancesId, ifnull(e.entranceId, '')) = ifnull(e.entranceId, '')
-    LEFT JOIN ${RoomEntity.TABLE_NAME} r ON r.housesId = h.houseId AND ifnull(r.entrancesId, ifnull(e.entranceId, '')) = ifnull(e.entranceId, '')
-                                            AND ifnull(r.floorsId, ifnull(f.floorId, '')) = ifnull(f.floorId, '')
+SELECT ifnull(h.hTerritoriesId, ifnull(e.eTerritoriesId, ifnull(f.fTerritoriesId, ifnull(r.rTerritoriesId)))) AS territoryId, sv.streetId, sv.roadType, sv.streetName, 
+    sv.streetLocCode, null AS isEven, sv.estStreetHouses, sv.isStreetPrivateSector AS isPrivateStreet, h.*, e.*, f.*, r.*
+FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId
+    LEFT JOIN ${EntranceEntity.TABLE_NAME} e ON e.eHousesId = h.houseId
+    LEFT JOIN ${FloorEntity.TABLE_NAME} f ON f.fHousesId = h.houseId AND ifnull(f.fEntrancesId, ifnull(e.entranceId, '')) = ifnull(e.entranceId, '')
+    LEFT JOIN ${RoomEntity.TABLE_NAME} r ON r.rHousesId = h.houseId AND ifnull(r.rEntrancesId, ifnull(e.entranceId, '')) = ifnull(e.entranceId, '')
+                                            AND ifnull(r.rFloorsId, ifnull(f.floorId, '')) = ifnull(f.floorId, '')
 """
 )
 class TerritoryInfoView(

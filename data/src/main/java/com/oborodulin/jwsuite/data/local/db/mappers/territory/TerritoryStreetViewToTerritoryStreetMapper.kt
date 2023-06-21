@@ -9,13 +9,13 @@ class TerritoryStreetViewToTerritoryStreetMapper(private val streetMapper: GeoSt
     Mapper<TerritoryStreetView, TerritoryStreet> {
     override fun map(input: TerritoryStreetView): TerritoryStreet {
         val territoryStreet = TerritoryStreet(
-            territoryId = input.territoriesId,
-            street = streetMapper.map(input.street),
-            isEven = input.isEven,
-            isPrivateSector = input.isPrivateSector,
-            estimatedHouses = input.estimatedHouses
+            territoryId = input.territoryStreet.tsTerritoriesId,
+            street = streetMapper.map(input.geoStreet),
+            isEven = input.territoryStreet.isEvenSide,
+            isPrivateSector = input.territoryStreet.isTerStreetPrivateSector,
+            estimatedHouses = input.territoryStreet.estTerStreetHouses
         )
-        territoryStreet.id = input.territoryStreetId
+        territoryStreet.id = input.territoryStreet.territoryStreetId
         return territoryStreet
     }
 }

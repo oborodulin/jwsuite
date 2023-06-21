@@ -29,7 +29,7 @@ interface MemberDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByGroupId(groupId: UUID) = findByGroupId(groupId).distinctUntilChanged()
 
-    @Query("SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.membersId = m.memberId WHERE cm.congregationsId = :congregationId")
+    @Query("SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId WHERE cm.cmCongregationsId = :congregationId")
     fun findByCongregationId(congregationId: UUID): Flow<List<MemberEntity>>
 
     @ExperimentalCoroutinesApi

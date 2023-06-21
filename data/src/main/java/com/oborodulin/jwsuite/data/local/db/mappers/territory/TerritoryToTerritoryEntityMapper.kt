@@ -10,15 +10,15 @@ class TerritoryToTerritoryEntityMapper : Mapper<Territory, TerritoryEntity> {
         territoryId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         territoryNum = input.territoryNum,
         isActive = input.isActive,
-        isBusiness = input.isBusiness,
+        isBusinessTerritory = input.isBusiness,
         isGroupMinistry = input.isGroupMinistry,
         isInPerimeter = input.isInPerimeter,
         isProcessed = input.isProcessed,
         territoryDesc = input.territoryDesc,
-        microdistrictsId = input.microdistrictId,
-        localityDistrictsId = input.localityDistrictId,
-        localitiesId = input.locality.id!!,
-        territoryCategoriesId = input.territoryCategory.id!!,
-        congregationsId = input.congregation.id!!
+        tMicrodistrictsId = input.microdistrictId,
+        tLocalityDistrictsId = input.localityDistrictId,
+        tLocalitiesId = input.locality.id!!,
+        tTerritoryCategoriesId = input.territoryCategory.id!!,
+        tCongregationsId = input.congregation.id!!
     )
 }

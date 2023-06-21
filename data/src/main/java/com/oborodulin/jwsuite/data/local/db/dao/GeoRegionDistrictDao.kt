@@ -26,7 +26,7 @@ interface GeoRegionDistrictDao {
     fun findDistinctById(regionDistrictId: UUID) = findById(regionDistrictId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE regionsId = :regionId AND districtLocCode = :locale"
+        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND districtLocCode = :locale"
     )
     fun findByRegionId(regionId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<GeoRegionDistrictView>>
@@ -34,7 +34,7 @@ interface GeoRegionDistrictDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByRegionId(regionId: UUID) = findByRegionId(regionId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE regionsId = :regionId AND districtName LIKE '%' || :districtName || '%'")
+    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND districtName LIKE '%' || :districtName || '%'")
     fun findByDistrictName(regionId: UUID, districtName: String): Flow<List<GeoRegionDistrictView>>
 
     // INSERTS:

@@ -9,14 +9,14 @@ class EntranceToEntranceEntityMapper : Mapper<Entrance, EntranceEntity> {
     override fun map(input: Entrance) = EntranceEntity(
         entranceId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         entranceNum = input.entranceNum,
-        isSecurity = input.isSecurity,
-        isIntercom = input.isIntercom,
-        isResidential = input.isResidential,
-        floorsQty = input.floorsQty,
-        roomsByFloor = input.roomsByFloor,
-        estimatedRooms = input.estimatedRooms,
-        territoryDesc = input.territoryDesc,
-        territoriesId = input.territoryId,
-        housesId = input.houseId
+        isSecurityEntrance = input.isSecurity,
+        isIntercomEntrance = input.isIntercom,
+        isResidentialEntrance = input.isResidential,
+        entranceFloorsQty = input.floorsQty,
+        roomsByEntranceFloor = input.roomsByFloor,
+        estEntranceRooms = input.estimatedRooms,
+        entranceDesc = input.territoryDesc,
+        eTerritoriesId = input.territoryId,
+        eHousesId = input.houseId
     )
 }

@@ -7,16 +7,16 @@ import com.oborodulin.jwsuite.domain.model.Entrance
 class EntranceEntityToEntranceMapper : Mapper<EntranceEntity, Entrance> {
     override fun map(input: EntranceEntity): Entrance {
         val entrance = Entrance(
-            houseId = input.housesId,
-            territoryId = input.territoriesId,
+            houseId = input.eHousesId,
+            territoryId = input.eTerritoriesId,
             entranceNum = input.entranceNum,
-            isSecurity = input.isSecurity,
-            isIntercom = input.isIntercom,
-            isResidential = input.isResidential,
-            floorsQty = input.floorsQty,
-            roomsByFloor = input.roomsByFloor,
-            estimatedRooms = input.estimatedRooms,
-            territoryDesc = input.territoryDesc,
+            isSecurity = input.isSecurityEntrance,
+            isIntercom = input.isIntercomEntrance,
+            isResidential = input.isResidentialEntrance,
+            floorsQty = input.entranceFloorsQty,
+            roomsByFloor = input.roomsByEntranceFloor,
+            estimatedRooms = input.estEntranceRooms,
+            territoryDesc = input.entranceDesc,
         )
         entrance.id = input.entranceId
         return entrance

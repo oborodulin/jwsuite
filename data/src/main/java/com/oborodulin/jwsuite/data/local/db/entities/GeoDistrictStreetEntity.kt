@@ -11,30 +11,30 @@ import java.util.UUID
 @Entity(
     tableName = GeoDistrictStreetEntity.TABLE_NAME,
     indices = [Index(
-        value = ["localityDistrictsId", "microdistrictsId", "streetsId"],
+        value = ["dsLocalityDistrictsId", "dsMicrodistrictsId", "dsStreetsId"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = GeoMicrodistrictEntity::class,
-        parentColumns = arrayOf("microdistrictId"), childColumns = arrayOf("microdistrictsId"),
+        parentColumns = arrayOf("microdistrictId"), childColumns = arrayOf("dsMicrodistrictsId"),
         onDelete = ForeignKey.CASCADE, deferred = true
     ), ForeignKey(
         entity = GeoLocalityDistrictEntity::class,
         parentColumns = arrayOf("localityDistrictId"),
-        childColumns = arrayOf("localityDistrictsId"),
+        childColumns = arrayOf("dsLocalityDistrictsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = GeoStreetEntity::class,
-        parentColumns = arrayOf("streetId"), childColumns = arrayOf("streetsId"),
+        parentColumns = arrayOf("streetId"), childColumns = arrayOf("dsStreetsId"),
         onDelete = ForeignKey.CASCADE, deferred = true
     )]
 )
 data class GeoDistrictStreetEntity(
     @PrimaryKey val districtStreetId: UUID = UUID.randomUUID(),
-    @ColumnInfo(index = true) val microdistrictsId: UUID? = null,
-    @ColumnInfo(index = true) val localityDistrictsId: UUID,
-    @ColumnInfo(index = true) val streetsId: UUID
+    @ColumnInfo(index = true) val dsMicrodistrictsId: UUID? = null,
+    @ColumnInfo(index = true) val dsLocalityDistrictsId: UUID,
+    @ColumnInfo(index = true) val dsStreetsId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -44,8 +44,8 @@ data class GeoDistrictStreetEntity(
             districtStreetId: UUID = UUID.randomUUID(), streetId: UUID = UUID.randomUUID(),
             localityDistrictId: UUID = UUID.randomUUID(), microdistrictId: UUID? = null
         ) = GeoDistrictStreetEntity(
-            districtStreetId = districtStreetId, streetsId = streetId,
-            localityDistrictsId = localityDistrictId, microdistrictsId = microdistrictId
+            districtStreetId = districtStreetId, dsStreetsId = streetId,
+            dsLocalityDistrictsId = localityDistrictId, dsMicrodistrictsId = microdistrictId
         )
 
     }
@@ -55,9 +55,9 @@ data class GeoDistrictStreetEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("District Street Entity ")
-            .append(" [streetsId = ").append(streetsId)
-            .append("; localityDistrictsId = ").append(localityDistrictsId)
-        microdistrictsId?.let { str.append("; microdistrictsId = ").append(it) }
+            .append(" [streetsId = ").append(dsStreetsId)
+            .append("; localityDistrictsId = ").append(dsLocalityDistrictsId)
+        dsMicrodistrictsId?.let { str.append("; microdistrictsId = ").append(it) }
         str.append("] districtStreetId = ").append(districtStreetId)
         return str.toString()
     }

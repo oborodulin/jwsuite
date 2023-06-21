@@ -27,7 +27,7 @@ interface GeoLocalityDao {
     fun findDistinctById(localityId: UUID) = findById(localityId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE regionsId = :regionId AND localityLocCode = :locale"
+        "SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE lRegionsId = :regionId AND localityLocCode = :locale"
     )
     fun findByRegionId(regionId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<GeoLocalityView>>
@@ -36,7 +36,7 @@ interface GeoLocalityDao {
     fun findDistinctByRegionId(payerId: UUID) = findByRegionId(payerId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE regionDistrictsId = :regionDistrictId AND localityLocCode = :locale"
+        "SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE lRegionDistrictsId = :regionDistrictId AND localityLocCode = :locale"
     )
     fun findByRegionDistrictId(
         regionDistrictId: UUID, locale: String? = Locale.getDefault().language
@@ -49,8 +49,8 @@ interface GeoLocalityDao {
     @Query(
         """
        SELECT * FROM ${GeoLocalityView.VIEW_NAME} 
-        WHERE regionsId = :regionId 
-            AND ifnull(regionDistrictsId, '') = ifnull(:regionDistrictId, ifnull(regionDistrictsId, '')) 
+        WHERE lRegionsId = :regionId 
+            AND ifnull(lRegionDistrictsId, '') = ifnull(:regionDistrictId, ifnull(lRegionDistrictsId, '')) 
             AND localityName LIKE '%' || :localityName || '%' 
     """
     )

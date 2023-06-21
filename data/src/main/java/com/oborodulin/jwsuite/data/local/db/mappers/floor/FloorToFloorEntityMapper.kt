@@ -9,14 +9,14 @@ class FloorToFloorEntityMapper : Mapper<Floor, FloorEntity> {
     override fun map(input: Floor) = FloorEntity(
         floorId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         floorNum = input.floorNum,
-        isSecurity = input.isSecurity,
-        isIntercom = input.isIntercom,
-        isResidential = input.isResidential,
+        isSecurityFloor = input.isSecurity,
+        isIntercomFloor = input.isIntercom,
+        isResidentialFloor = input.isResidential,
         roomsByFloor = input.roomsByFloor,
-        estimatedRooms = input.estimatedRooms,
-        territoryDesc = input.territoryDesc,
-        territoriesId = input.territoryId,
-        entrancesId = input.entranceId,
-        housesId = input.houseId
+        estFloorRooms = input.estimatedRooms,
+        floorDesc = input.territoryDesc,
+        fTerritoriesId = input.territoryId,
+        fEntrancesId = input.entranceId,
+        fHousesId = input.houseId
     )
 }

@@ -6,30 +6,34 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
+import com.oborodulin.jwsuite.domain.util.BuildingType
 import java.util.UUID
 
 @Entity(
     tableName = HouseEntity.TABLE_NAME,
-    indices = [Index(value = ["streetsId", "zipCode", "houseNum", "buildingNum"], unique = true)],
+    indices = [Index(
+        value = ["hStreetsId", "zipCode", "houseNum", "buildingNum"],
+        unique = true
+    )],
     foreignKeys = [ForeignKey(
         entity = GeoStreetEntity::class,
         parentColumns = arrayOf("streetId"),
-        childColumns = arrayOf("streetsId"),
+        childColumns = arrayOf("hStreetsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = GeoMicrodistrictEntity::class,
-        parentColumns = arrayOf("microdistrictId"), childColumns = arrayOf("microdistrictsId"),
+        parentColumns = arrayOf("microdistrictId"), childColumns = arrayOf("hMicrodistrictsId"),
         onDelete = ForeignKey.CASCADE, deferred = true
     ), ForeignKey(
         entity = GeoLocalityDistrictEntity::class,
         parentColumns = arrayOf("localityDistrictId"),
-        childColumns = arrayOf("localityDistrictsId"),
+        childColumns = arrayOf("hLocalityDistrictsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = TerritoryEntity::class,
-        parentColumns = arrayOf("territoryId"), childColumns = arrayOf("territoriesId"),
+        parentColumns = arrayOf("territoryId"), childColumns = arrayOf("hTerritoriesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -39,22 +43,22 @@ data class HouseEntity(
     val zipCode: String? = null,
     val houseNum: Int,
     val buildingNum: String? = null,
-    val isBusiness: Boolean = false,
-    val isSecurity: Boolean = false,
-    val isIntercom: Boolean? = null,
-    val isResidential: Boolean = true,
-    val entrancesQty: Int? = null, // number of entrances of the house
-    val floorsQty: Int? = null, // number of floors of the house
-    val roomsByFloor: Int? = null, // number rooms by one floor of the house
-    val estimatedRooms: Int? = null, // estimated rooms of the house (if null then entrancesQty * floorsQty * roomsByFloor)
-    val isForeignLanguage: Boolean = false,
-    val isPrivateSector: Boolean = false,
-    val isHostel: Boolean = false,
-    val territoryDesc: String? = null,
-    @ColumnInfo(index = true) val territoriesId: UUID? = null,
-    @ColumnInfo(index = true) val microdistrictsId: UUID? = null,
-    @ColumnInfo(index = true) val localityDistrictsId: UUID? = null,
-    @ColumnInfo(index = true) val streetsId: UUID
+    val buildingType: BuildingType = BuildingType.HOUSE,
+    val isBusinessHouse: Boolean = false,
+    val isSecurityHouse: Boolean = false,
+    val isIntercomHouse: Boolean? = null,
+    val isResidentialHouse: Boolean = true,
+    val houseEntrancesQty: Int? = null, // number of entrances of the house
+    val floorsByEntrance: Int? = null, // number of floors of the entrance
+    val roomsByHouseFloor: Int? = null, // number rooms by one floor and one entrance of the house
+    val estHouseRooms: Int? = null, // estimated rooms of the house (if null then houseEntrancesQty * floorsByEntrance * roomsByHouseFloor)
+    val isForeignLangHouse: Boolean = false,
+    val isHousePrivateSector: Boolean = false,
+    val houseDesc: String? = null,
+    @ColumnInfo(index = true) val hTerritoriesId: UUID? = null,
+    @ColumnInfo(index = true) val hMicrodistrictsId: UUID? = null,
+    @ColumnInfo(index = true) val hLocalityDistrictsId: UUID? = null,
+    @ColumnInfo(index = true) val hStreetsId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -65,20 +69,20 @@ data class HouseEntity(
             localityDistrictId: UUID? = null, houseId: UUID = UUID.randomUUID(),
             zipCode: String? = null, houseNum: Int, buildingNum: String? = null,
             isBusiness: Boolean = false,
-            entrancesQty: Int? = null, floorsQty: Int? = null, roomsByFloor: Int? = null,
+            entrancesQty: Int? = null, floorsByEntrance: Int? = null, roomsByFloor: Int? = null,
             estimatedRooms: Int? = null, isForeignLanguage: Boolean = false,
-            isPrivateSector: Boolean = false, isHostel: Boolean = false,
+            isPrivateSector: Boolean = false, buildingType: BuildingType = BuildingType.HOUSE,
             territoryDesc: String? = null
         ) = HouseEntity(
-            streetsId = streetId, localityDistrictsId = localityDistrictId,
-            microdistrictsId = microdistrictId,
+            hStreetsId = streetId, hLocalityDistrictsId = localityDistrictId,
+            hMicrodistrictsId = microdistrictId,
             houseId = houseId,
             zipCode = zipCode, houseNum = houseNum, buildingNum = buildingNum,
-            isBusiness = isBusiness,
-            entrancesQty = entrancesQty, floorsQty = floorsQty, roomsByFloor = roomsByFloor,
-            estimatedRooms = estimatedRooms, isForeignLanguage = isForeignLanguage,
-            isPrivateSector = isPrivateSector, isHostel = isHostel,
-            territoryDesc = territoryDesc
+            isBusinessHouse = isBusiness, houseEntrancesQty = entrancesQty,
+            floorsByEntrance = floorsByEntrance, roomsByHouseFloor = roomsByFloor,
+            estHouseRooms = estimatedRooms,
+            isForeignLangHouse = isForeignLanguage, isHousePrivateSector = isPrivateSector,
+            buildingType = buildingType, houseDesc = territoryDesc
         )
 
     }
@@ -86,7 +90,7 @@ data class HouseEntity(
     override fun id() = this.houseId
 
     override fun key(): Int {
-        var result = streetsId.hashCode()
+        var result = hStreetsId.hashCode()
         result = result * 31 + houseNum.hashCode()
         zipCode?.let { result = result * 31 + it.hashCode() }
         buildingNum?.let { result = result * 31 + it.hashCode() }
@@ -95,10 +99,11 @@ data class HouseEntity(
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("House Entity №").append(houseNum)
+        str.append("House Entity ").append(buildingType).append(" №").append(houseNum)
         buildingNum?.let { str.append(" - ").append(it) }
         zipCode?.let { str.append(". ZIP Code: ").append(it) }
-        str.append(" [streetId = ").append(streetsId).append("] houseId = ").append(houseId)
+        str.append(" [houseStreetsId = ").append(hStreetsId)
+            .append("] houseId = ").append(houseId)
         return str.toString()
     }
 }

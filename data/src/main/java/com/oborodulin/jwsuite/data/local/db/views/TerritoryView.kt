@@ -10,12 +10,12 @@ import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 @DatabaseView(
     viewName = TerritoryView.VIEW_NAME,
     value = """
-SELECT t.*, cv.*, tc.*, l.*, ld.districtShortName, md.microdistrictShortName
-FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${CongregationView.VIEW_NAME} cv ON cv.congregationId = t.congregationsId
-    JOIN ${TerritoryCategoryEntity.TABLE_NAME} tc ON tc.territoryCategoryId = t.territoryCategoriesId
-    JOIN ${GeoLocalityView.VIEW_NAME} l ON l.localityId = t.localitiesId
-    LEFT JOIN ${GeoLocalityDistrictEntity.TABLE_NAME} ld ON ld.localityDistrictId = t.localityDistrictsId
-    LEFT JOIN ${GeoMicrodistrictEntity.TABLE_NAME} md ON md.microdistrictId = t.microdistrictsId
+SELECT t.*, cv.*, tc.*, l.*, ld.*, md.*
+FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${CongregationView.VIEW_NAME} cv ON cv.congregationId = t.tCongregationsId
+    JOIN ${TerritoryCategoryEntity.TABLE_NAME} tc ON tc.territoryCategoryId = t.tTerritoryCategoriesId
+    JOIN ${GeoLocalityView.VIEW_NAME} l ON l.localityId = t.tLocalitiesId
+    LEFT JOIN ${GeoLocalityDistrictEntity.TABLE_NAME} ld ON ld.localityDistrictId = t.tLocalityDistrictsId
+    LEFT JOIN ${GeoMicrodistrictEntity.TABLE_NAME} md ON md.microdistrictId = t.tMicrodistrictsId
 ORDER BY cv.territoryMark, t.territoryNum
 """
 )
@@ -28,8 +28,10 @@ class TerritoryView(
     val territoryCategory: TerritoryCategoryEntity,
     @Embedded
     val locality: GeoLocalityView,
-    val districtShortName: String?,
-    val microdistrictShortName: String?
+    @Embedded
+    val localityDistrict: GeoLocalityDistrictEntity?,
+    @Embedded
+    val microdistrict: GeoMicrodistrictEntity?
 ) {
     companion object {
         const val VIEW_NAME = "territories_view"

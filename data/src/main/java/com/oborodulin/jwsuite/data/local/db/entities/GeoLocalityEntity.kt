@@ -13,17 +13,17 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityEntity.TABLE_NAME,
-    indices = [Index(value = ["regionsId", "regionDistrictsId", "localityCode"], unique = true)],
+    indices = [Index(value = ["lRegionsId", "lRegionDistrictsId", "localityCode"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
-        childColumns = arrayOf("regionsId"),
+        childColumns = arrayOf("lRegionsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = GeoRegionDistrictEntity::class,
         parentColumns = arrayOf("regionDistrictId"),
-        childColumns = arrayOf("regionDistrictsId"),
+        childColumns = arrayOf("lRegionDistrictsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -32,8 +32,8 @@ data class GeoLocalityEntity(
     @PrimaryKey val localityId: UUID = UUID.randomUUID(),
     val localityCode: String,
     val localityType: LocalityType,
-    @ColumnInfo(index = true) val regionDistrictsId: UUID? = null,
-    @ColumnInfo(index = true) val regionsId: UUID
+    @ColumnInfo(index = true) val lRegionDistrictsId: UUID? = null,
+    @ColumnInfo(index = true) val lRegionsId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -44,7 +44,7 @@ data class GeoLocalityEntity(
             districtId: UUID? = null,
             localityCode: String, localityType: LocalityType
         ) = GeoLocalityEntity(
-            localityId = localityId, regionsId = regionId, regionDistrictsId = districtId,
+            localityId = localityId, lRegionsId = regionId, lRegionDistrictsId = districtId,
             localityCode = localityCode, localityType = localityType
         )
 
@@ -82,9 +82,9 @@ data class GeoLocalityEntity(
     override fun id() = this.localityId
 
     override fun key(): Int {
-        var result = regionsId.hashCode()
+        var result = lRegionsId.hashCode()
         result = result * 31 + localityCode.hashCode()
-        regionDistrictsId?.let { result = result * 31 + it.hashCode() }
+        lRegionDistrictsId?.let { result = result * 31 + it.hashCode() }
         return result
     }
 
@@ -92,7 +92,7 @@ data class GeoLocalityEntity(
         val str = StringBuffer()
         str.append("Locality Entity ").append(localityType)
             .append(" '").append(localityCode).append("'")
-        regionDistrictsId?.let { str.append(" [regionDistrictsId = ").append(it).append("]") }
+        lRegionDistrictsId?.let { str.append(" [regionDistrictsId = ").append(it).append("]") }
         str.append(" localityId = ").append(localityId)
         return str.toString()
     }

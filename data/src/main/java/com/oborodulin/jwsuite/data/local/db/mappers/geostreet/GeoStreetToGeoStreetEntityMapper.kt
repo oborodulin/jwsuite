@@ -10,8 +10,8 @@ class GeoStreetToGeoStreetEntityMapper : Mapper<GeoStreet, GeoStreetEntity> {
         streetId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         streetHashCode = input.streetHashCode,
         roadType = input.roadType,
-        isPrivateSector = input.isPrivateSector,
-        estimatedHouses = input.estimatedHouses,
-        localitiesId = input.localityId
+        isStreetPrivateSector = input.isPrivateSector,
+        estStreetHouses = input.estimatedHouses,
+        sLocalitiesId = input.localityId
     )
 }

@@ -13,19 +13,19 @@ import java.util.UUID
 @Entity(
     tableName = TerritoryMemberCrossRefEntity.TABLE_NAME,
     indices = [Index(
-        value = ["territoriesId", "membersId", "receivingDate"],
+        value = ["tmcTerritoriesId", "tmcMembersId", "receivingDate"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = TerritoryEntity::class,
         parentColumns = arrayOf("territoryId"),
-        childColumns = arrayOf("territoriesId"),
+        childColumns = arrayOf("tmcTerritoriesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = MemberEntity::class,
         parentColumns = arrayOf("memberId"),
-        childColumns = arrayOf("membersId"),
+        childColumns = arrayOf("tmcMembersId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -36,8 +36,8 @@ data class TerritoryMemberCrossRefEntity(
     val deliveryDate: OffsetDateTime? = null,
     // warning: servicesId column references a foreign key but it is not part of an index.
     // This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
-    @ColumnInfo(index = true) val territoriesId: UUID,
-    @ColumnInfo(index = true) val membersId: UUID
+    @ColumnInfo(index = true) val tmcTerritoriesId: UUID,
+    @ColumnInfo(index = true) val tmcMembersId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -48,7 +48,7 @@ data class TerritoryMemberCrossRefEntity(
             receivingDate: OffsetDateTime = OffsetDateTime.now(),
             deliveryDate: OffsetDateTime? = null
         ) = TerritoryMemberCrossRefEntity(
-            territoriesId = territoryId, membersId = memberId,
+            tmcTerritoriesId = territoryId, tmcMembersId = memberId,
             receivingDate = receivingDate, deliveryDate = deliveryDate
         )
     }
@@ -56,8 +56,8 @@ data class TerritoryMemberCrossRefEntity(
     override fun id() = this.territoryMemberId
 
     override fun key(): Int {
-        var result = territoriesId.hashCode()
-        result = result * 31 + membersId.hashCode()
+        var result = tmcTerritoriesId.hashCode()
+        result = result * 31 + tmcMembersId.hashCode()
         result = result * 31 + receivingDate.hashCode()
         return result
     }
@@ -69,8 +69,8 @@ data class TerritoryMemberCrossRefEntity(
             .append(" - ").append(
                 if (deliveryDate != null) DateTimeFormatter.ISO_LOCAL_DATE.format(deliveryDate) else "..."
             )
-        str.append(" [territoriesId = ").append(territoriesId)
-            .append("; membersId = ").append(membersId)
+        str.append(" [territoriesId = ").append(tmcTerritoriesId)
+            .append("; membersId = ").append(tmcMembersId)
             .append("] territoryMemberId = ").append(territoryMemberId)
         return str.toString()
     }

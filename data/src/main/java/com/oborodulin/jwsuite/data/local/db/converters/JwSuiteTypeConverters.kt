@@ -6,6 +6,7 @@ import androidx.room.TypeConverter
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Constants.CONV_COEFF_BIGDECIMAL
 import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.RoadType
@@ -114,7 +115,14 @@ object JwSuiteTypeConverters {
     fun fromTerritoryDistrictType(value: TerritoryDistrictType) = value.name
 
     @TypeConverter
+    fun toBuildingType(value: String) = enumValueOf<BuildingType>(value)
+
+    @TypeConverter
+    fun fromBuildingType(value: BuildingType) = value.name
+
+    @TypeConverter
     fun toAppSettingParam(value: String) = enumValueOf<AppSettingParam>(value)
+
 
     @TypeConverter
     fun fromAppSettingParam(value: AppSettingParam) = value.name

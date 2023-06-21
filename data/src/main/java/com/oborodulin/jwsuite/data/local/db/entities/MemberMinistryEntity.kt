@@ -12,11 +12,11 @@ import java.util.UUID
 
 @Entity(
     tableName = MemberMinistryEntity.TABLE_NAME,
-    indices = [Index(value = ["membersId", "ministryDate"], unique = true)],
+    indices = [Index(value = ["mmMembersId", "ministryDate"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = MemberEntity::class,
         parentColumns = arrayOf("memberId"),
-        childColumns = arrayOf("membersId"),
+        childColumns = arrayOf("mmMembersId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -30,7 +30,7 @@ data class MemberMinistryEntity(
     val publicationsQty: Int? = null,
     val studiesQty: Int? = null,
     val ministryDesc: String? = null,
-    @ColumnInfo(index = true) val membersId: UUID
+    @ColumnInfo(index = true) val mmMembersId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -42,7 +42,7 @@ data class MemberMinistryEntity(
             hoursQty: Int? = null, returnVisitsQty: Int? = null, mediaQty: Int? = null,
             publicationsQty: Int? = null, studiesQty: Int? = null, ministryDesc: String? = null
         ) = MemberMinistryEntity(
-            membersId = memberId, memberMinistryId = memberMinistryId,
+            mmMembersId = memberId, memberMinistryId = memberMinistryId,
             ministryDate = ministryDate, hoursQty = hoursQty, returnVisitsQty = returnVisitsQty,
             mediaQty = mediaQty, publicationsQty = publicationsQty, studiesQty = studiesQty,
             ministryDesc = ministryDesc
@@ -53,7 +53,7 @@ data class MemberMinistryEntity(
     override fun id() = this.memberMinistryId
 
     override fun key(): Int {
-        var result = membersId.hashCode()
+        var result = mmMembersId.hashCode()
         result = result * 31 + ministryDate.hashCode()
         return result
     }

@@ -12,11 +12,11 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoRegionDistrictEntity.TABLE_NAME,
-    indices = [Index(value = ["regionsId", "districtShortName"], unique = true)],
+    indices = [Index(value = ["rRegionsId", "districtShortName"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
-        childColumns = arrayOf("regionsId"),
+        childColumns = arrayOf("rRegionsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -24,7 +24,7 @@ import java.util.UUID
 data class GeoRegionDistrictEntity(
     @PrimaryKey val regionDistrictId: UUID = UUID.randomUUID(),
     val districtShortName: String,
-    @ColumnInfo(index = true) val regionsId: UUID,
+    @ColumnInfo(index = true) val rRegionsId: UUID,
 ) : BaseEntity() {
 
     companion object {
@@ -34,7 +34,7 @@ data class GeoRegionDistrictEntity(
             regionDistrictId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),
             districtShortName: String
         ) = GeoRegionDistrictEntity(
-            regionsId = regionId, regionDistrictId = regionDistrictId,
+            rRegionsId = regionId, regionDistrictId = regionDistrictId,
             districtShortName = districtShortName
         )
 
@@ -53,7 +53,7 @@ data class GeoRegionDistrictEntity(
     override fun id() = this.regionDistrictId
 
     override fun key(): Int {
-        var result = regionsId.hashCode()
+        var result = rRegionsId.hashCode()
         result = result * 31 + districtShortName.hashCode()
         return result
     }
@@ -61,7 +61,7 @@ data class GeoRegionDistrictEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Region District Entity '").append(districtShortName).append("' ")
-            .append(" [regionsId = ").append(regionsId)
+            .append(" [regionsId = ").append(rRegionsId)
             .append("] regionDistrictId = ").append(regionDistrictId)
         return str.toString()
     }

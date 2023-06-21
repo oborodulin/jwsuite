@@ -12,31 +12,31 @@ import java.util.UUID
 @Entity(
     tableName = TerritoryMemberReportEntity.TABLE_NAME,
     indices = [Index(
-        value = ["territoryMembersId", "territoryStreetsId", "housesId", "roomsId"],
+        value = ["tmrTerritoryMembersId", "tmrTerritoryStreetsId", "tmrHousesId", "tmrRoomsId"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = TerritoryMemberCrossRefEntity::class,
         parentColumns = arrayOf("territoryMemberId"),
-        childColumns = arrayOf("territoryMembersId"),
+        childColumns = arrayOf("tmrTerritoryMembersId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = RoomEntity::class,
         parentColumns = arrayOf("roomId"),
-        childColumns = arrayOf("roomsId"),
+        childColumns = arrayOf("tmrRoomsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = HouseEntity::class,
         parentColumns = arrayOf("houseId"),
-        childColumns = arrayOf("housesId"),
+        childColumns = arrayOf("tmrHousesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = TerritoryStreetEntity::class,
         parentColumns = arrayOf("territoryStreetId"),
-        childColumns = arrayOf("territoryStreetsId"),
+        childColumns = arrayOf("tmrTerritoryStreetsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -49,10 +49,10 @@ data class TerritoryMemberReportEntity(
     val age: Int? = null,
     val isProcessed: Boolean = false,
     val territoryReportDesc: String? = null,
-    @ColumnInfo(index = true) val roomsId: UUID? = null,
-    @ColumnInfo(index = true) val housesId: UUID? = null,
-    @ColumnInfo(index = true) val territoryStreetsId: UUID? = null,
-    @ColumnInfo(index = true) val territoryMembersId: UUID
+    @ColumnInfo(index = true) val tmrRoomsId: UUID? = null,
+    @ColumnInfo(index = true) val tmrHousesId: UUID? = null,
+    @ColumnInfo(index = true) val tmrTerritoryStreetsId: UUID? = null,
+    @ColumnInfo(index = true) val tmrTerritoryMembersId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -68,9 +68,9 @@ data class TerritoryMemberReportEntity(
             isProcessed: Boolean = false,
             territoryReportDesc: String? = null
         ) = TerritoryMemberReportEntity(
-            territoryMembersId = territoryMemberId,
+            tmrTerritoryMembersId = territoryMemberId,
             territoryMemberReportId = territoryMemberReportId,
-            territoryStreetsId = territoryStreetId, housesId = houseId, roomsId = roomId,
+            tmrTerritoryStreetsId = territoryStreetId, tmrHousesId = houseId, tmrRoomsId = roomId,
             territoryMemberMark = territoryMemberMark, languageCode = languageCode,
             gender = gender, age = age,
             isProcessed = isProcessed, territoryReportDesc = territoryReportDesc
@@ -81,10 +81,10 @@ data class TerritoryMemberReportEntity(
     override fun id() = this.territoryMemberReportId
 
     override fun key(): Int {
-        var result = territoryMembersId.hashCode()
-        territoryStreetsId?.let { result = result * 31 + it.hashCode() }
-        housesId?.let { result = result * 31 + it.hashCode() }
-        roomsId?.let { result = result * 31 + it.hashCode() }
+        var result = tmrTerritoryMembersId.hashCode()
+        tmrTerritoryStreetsId?.let { result = result * 31 + it.hashCode() }
+        tmrHousesId?.let { result = result * 31 + it.hashCode() }
+        tmrRoomsId?.let { result = result * 31 + it.hashCode() }
         return result
     }
 
@@ -93,9 +93,9 @@ data class TerritoryMemberReportEntity(
         str.append("Territory Member Report Entity ")
             .append(" [territoryMemberMark = ").append(territoryMemberMark)
             .append("; isProcessed = ").append(isProcessed)
-        territoryStreetsId?.let { str.append("; territoryStreetsId = ").append(it) }
-        housesId?.let { str.append("; housesId = ").append(it) }
-        roomsId?.let { str.append("; roomsId = ").append(it) }
+        tmrTerritoryStreetsId?.let { str.append("; territoryStreetsId = ").append(it) }
+        tmrHousesId?.let { str.append("; housesId = ").append(it) }
+        tmrRoomsId?.let { str.append("; roomsId = ").append(it) }
         territoryReportDesc?.let { str.append("; territoryReportDesc = ").append(it) }
         str.append("] territoryMemberReportId = ").append(territoryMemberReportId)
         return str.toString()

@@ -19,7 +19,7 @@ data class Territory(
     val isProcessed: Boolean = false,
     val isActive: Boolean = true,
     val territoryDesc: String? = null,
-    val streets: MutableList<TerritoryStreet> = mutableListOf(),
+    val territoryStreets: MutableList<TerritoryStreet> = mutableListOf(),
     val houses: MutableList<House> = mutableListOf(),
     val entrances: MutableList<Entrance> = mutableListOf(),
     val floors: MutableList<Floor> = mutableListOf(),

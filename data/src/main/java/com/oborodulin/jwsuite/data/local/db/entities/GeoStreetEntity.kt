@@ -14,13 +14,13 @@ import java.util.UUID
 @Entity(
     tableName = GeoStreetEntity.TABLE_NAME,
     indices = [Index(
-        value = ["localitiesId", "streetHashCode", "roadType", "isPrivateSector"],
+        value = ["sLocalitiesId", "streetHashCode", "roadType", "isStreetPrivateSector"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = GeoLocalityEntity::class,
         parentColumns = arrayOf("localityId"),
-        childColumns = arrayOf("localitiesId"),
+        childColumns = arrayOf("sLocalitiesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -29,9 +29,9 @@ data class GeoStreetEntity(
     @PrimaryKey val streetId: UUID = UUID.randomUUID(),
     val streetHashCode: Int,
     val roadType: RoadType = RoadType.STREET,
-    val isPrivateSector: Boolean = false,   // all street is private sector
-    val estimatedHouses: Int? = null,       // estimated houses of the street
-    @ColumnInfo(index = true) val localitiesId: UUID
+    val isStreetPrivateSector: Boolean = false,     // all street is private sector
+    val estStreetHouses: Int? = null,               // estimated houses of the street
+    @ColumnInfo(index = true) val sLocalitiesId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -41,8 +41,8 @@ data class GeoStreetEntity(
             localityId: UUID = UUID.randomUUID(), streetHashCode: Int,
             roadType: RoadType = RoadType.STREET, isPrivateSector: Boolean = false,
         ) = GeoStreetEntity(
-            localitiesId = localityId, streetHashCode = streetHashCode, roadType = roadType,
-            isPrivateSector = isPrivateSector
+            sLocalitiesId = localityId, streetHashCode = streetHashCode, roadType = roadType,
+            isStreetPrivateSector = isPrivateSector
         )
 
         fun strelkovojDiviziiStreet(ctx: Context, localityId: UUID = UUID.randomUUID()) =
@@ -91,17 +91,17 @@ data class GeoStreetEntity(
     override fun id() = this.streetId
 
     override fun key(): Int {
-        var result = localitiesId.hashCode()
+        var result = sLocalitiesId.hashCode()
         result = result * 31 + streetHashCode.hashCode()
         result = result * 31 + roadType.hashCode()
-        result = result * 31 + isPrivateSector.hashCode()
+        result = result * 31 + isStreetPrivateSector.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Street Entity '").append(roadType).append("'")
-            .append(" [localitiesId = ").append(localitiesId)
+            .append(" [localitiesId = ").append(sLocalitiesId)
             .append("; streetHashCode = ").append(streetHashCode)
             .append("] streetId = ").append(streetId)
         return str.toString()

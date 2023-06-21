@@ -8,7 +8,7 @@ class GeoRegionDistrictViewToGeoRegionDistrictMapper :
     Mapper<GeoRegionDistrictView, GeoRegionDistrict> {
     override fun map(input: GeoRegionDistrictView): GeoRegionDistrict {
         val regionDistrict = GeoRegionDistrict(
-            regionId = input.data.regionsId,
+            regionId = input.data.rRegionsId,
             districtShortName = input.data.districtShortName,
             districtName = input.tl.districtName
         )

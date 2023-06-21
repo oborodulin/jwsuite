@@ -13,19 +13,19 @@ import java.util.UUID
 @Entity(
     tableName = CongregationMemberCrossRefEntity.TABLE_NAME,
     indices = [Index(
-        value = ["membersId", "membersId", "receivingDate"],
+        value = ["cmCongregationsId", "cmMembersId", "receivingDate"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = CongregationEntity::class,
         parentColumns = arrayOf("congregationId"),
-        childColumns = arrayOf("congregationsId"),
+        childColumns = arrayOf("cmCongregationsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = MemberEntity::class,
         parentColumns = arrayOf("memberId"),
-        childColumns = arrayOf("membersId"),
+        childColumns = arrayOf("cmMembersId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -33,8 +33,8 @@ import java.util.UUID
 data class CongregationMemberCrossRefEntity(
     @PrimaryKey val congregationMemberId: UUID = UUID.randomUUID(),
     val activityDate: OffsetDateTime = OffsetDateTime.now(),
-    @ColumnInfo(index = true) val congregationsId: UUID,
-    @ColumnInfo(index = true) val membersId: UUID
+    @ColumnInfo(index = true) val cmCongregationsId: UUID,
+    @ColumnInfo(index = true) val cmMembersId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -44,7 +44,7 @@ data class CongregationMemberCrossRefEntity(
             congregationId: UUID, memberId: UUID,
             activityDate: OffsetDateTime = OffsetDateTime.now()
         ) = CongregationMemberCrossRefEntity(
-            congregationsId = congregationId, membersId = memberId,
+            cmCongregationsId = congregationId, cmMembersId = memberId,
             activityDate = activityDate
         )
     }
@@ -52,8 +52,8 @@ data class CongregationMemberCrossRefEntity(
     override fun id() = this.congregationMemberId
 
     override fun key(): Int {
-        var result = congregationsId.hashCode()
-        result = result * 31 + membersId.hashCode()
+        var result = cmCongregationsId.hashCode()
+        result = result * 31 + cmMembersId.hashCode()
         result = result * 31 + activityDate.hashCode()
         return result
     }
@@ -62,8 +62,8 @@ data class CongregationMemberCrossRefEntity(
         val str = StringBuffer()
         str.append("Territory Member Entity").append(" from ")
             .append(DateTimeFormatter.ISO_LOCAL_DATE.format(activityDate))
-            .append(" [congregationsId = ").append(congregationsId)
-            .append("; membersId = ").append(membersId)
+            .append(" [congregationsId = ").append(cmCongregationsId)
+            .append("; membersId = ").append(cmMembersId)
             .append("] congregationMemberId = ").append(congregationMemberId)
         return str.toString()
     }

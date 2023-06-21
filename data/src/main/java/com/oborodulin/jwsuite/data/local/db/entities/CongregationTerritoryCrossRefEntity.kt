@@ -13,19 +13,19 @@ import java.util.UUID
 @Entity(
     tableName = CongregationTerritoryCrossRefEntity.TABLE_NAME,
     indices = [Index(
-        value = ["congregationsId", "territoriesId", "startUsingDate"],
+        value = ["ctCongregationsId", "ctTerritoriesId", "startUsingDate"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = CongregationEntity::class,
         parentColumns = arrayOf("congregationId"),
-        childColumns = arrayOf("congregationsId"),
+        childColumns = arrayOf("ctCongregationsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = TerritoryEntity::class,
         parentColumns = arrayOf("territoryId"),
-        childColumns = arrayOf("territoriesId"),
+        childColumns = arrayOf("ctTerritoriesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -36,8 +36,8 @@ data class CongregationTerritoryCrossRefEntity(
     val endUsingDate: OffsetDateTime? = null,
     // warning: servicesId column references a foreign key but it is not part of an index.
     // This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
-    @ColumnInfo(index = true) val territoriesId: UUID,
-    @ColumnInfo(index = true) val congregationsId: UUID
+    @ColumnInfo(index = true) val ctTerritoriesId: UUID,
+    @ColumnInfo(index = true) val ctCongregationsId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -48,7 +48,7 @@ data class CongregationTerritoryCrossRefEntity(
             startUsingDate: OffsetDateTime = OffsetDateTime.now(),
             endUsingDate: OffsetDateTime? = null,
         ) = CongregationTerritoryCrossRefEntity(
-            congregationsId = congregationId, territoriesId = territoryId,
+            ctCongregationsId = congregationId, ctTerritoriesId = territoryId,
             startUsingDate = startUsingDate, endUsingDate = endUsingDate
         )
     }
@@ -56,8 +56,8 @@ data class CongregationTerritoryCrossRefEntity(
     override fun id() = this.congregationTerritoryId
 
     override fun key(): Int {
-        var result = congregationsId.hashCode()
-        result = result * 31 + territoriesId.hashCode()
+        var result = ctCongregationsId.hashCode()
+        result = result * 31 + ctTerritoriesId.hashCode()
         result = result * 31 + startUsingDate.hashCode()
         return result
     }
@@ -69,8 +69,8 @@ data class CongregationTerritoryCrossRefEntity(
             .append(" - ").append(
                 if (endUsingDate != null) DateTimeFormatter.ISO_LOCAL_DATE.format(endUsingDate) else "..."
             )
-        str.append(" [congregationsId = ").append(congregationsId)
-            .append("; territoriesId = ").append(territoriesId)
+        str.append(" [congregationsId = ").append(ctCongregationsId)
+            .append("; territoriesId = ").append(ctTerritoriesId)
             .append("] congregationTerritoryId = ").append(congregationTerritoryId)
         return str.toString()
     }

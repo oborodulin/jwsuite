@@ -24,14 +24,14 @@ interface GeoMicrodistrictDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(microdistrictId: UUID) = findById(microdistrictId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE localitiesId = :localityId")
+    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalitiesId = :localityId")
     fun findByLocalityId(localityId: UUID): Flow<GeoMicrodistrictView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE localityDistrictsId = :localityDistrictId")
+    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalityDistrictsId = :localityDistrictId")
     fun findByLocalityDistrictId(localityDistrictId: UUID): Flow<List<GeoMicrodistrictView>>
 
     @ExperimentalCoroutinesApi
@@ -41,8 +41,8 @@ interface GeoMicrodistrictDao {
     @Query(
         """
        SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} 
-        WHERE localitiesId = :localityId
-            AND ifnull(localityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(localityDistrictsId, '')) 
+        WHERE mLocalitiesId = :localityId
+            AND ifnull(mLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(mLocalityDistrictsId, '')) 
             AND microdistrictName LIKE '%' || :microdistrictName || '%' 
     """
     )
@@ -80,9 +80,9 @@ interface GeoMicrodistrictDao {
     suspend fun insert(microdistrict: GeoMicrodistrictEntity, street: GeoStreetEntity) =
         insert(
             GeoDistrictStreetEntity(
-                localityDistrictsId = microdistrict.localityDistrictsId,
-                microdistrictsId = microdistrict.microdistrictId,
-                streetsId = street.streetId
+                dsLocalityDistrictsId = microdistrict.mLocalityDistrictsId,
+                dsMicrodistrictsId = microdistrict.microdistrictId,
+                dsStreetsId = street.streetId
             )
         )
 
@@ -126,7 +126,7 @@ interface GeoMicrodistrictDao {
     @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE districtStreetId = :districtStreetId")
     suspend fun deleteStreetById(districtStreetId: UUID)
 
-    @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE microdistrictsId = :microdistrictId")
+    @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE dsMicrodistrictsId = :microdistrictId")
     suspend fun deleteStreetsByMicrodistrictId(microdistrictId: UUID)
 
     @Query("DELETE FROM ${GeoMicrodistrictEntity.TABLE_NAME}")

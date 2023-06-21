@@ -11,35 +11,33 @@ import java.util.UUID
 @Entity(
     tableName = TerritoryEntity.TABLE_NAME,
     indices = [Index(
-        value = ["congregationsId", "territoryCategoriesId", "localitiesId", "localityDistrictsId", "microdistrictsId", "territoryNum"],
+        value = ["tCongregationsId", "tTerritoryCategoriesId", "tLocalitiesId", "tLocalityDistrictsId", "tMicrodistrictsId", "territoryNum"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = GeoMicrodistrictEntity::class,
-        parentColumns = arrayOf("microdistrictId"), childColumns = arrayOf("microdistrictsId"),
+        parentColumns = arrayOf("microdistrictId"), childColumns = arrayOf("tMicrodistrictsId"),
         onDelete = ForeignKey.CASCADE, deferred = true
     ), ForeignKey(
         entity = GeoLocalityDistrictEntity::class,
         parentColumns = arrayOf("localityDistrictId"),
-        childColumns = arrayOf("localityDistrictsId"),
+        childColumns = arrayOf("tLocalityDistrictsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = GeoLocalityEntity::class,
-        parentColumns = arrayOf("localityId"),
-        childColumns = arrayOf("localitiesId"),
+        parentColumns = arrayOf("localityId"), childColumns = arrayOf("tLocalitiesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = TerritoryCategoryEntity::class,
         parentColumns = arrayOf("territoryCategoryId"),
-        childColumns = arrayOf("territoryCategoriesId"),
+        childColumns = arrayOf("tTerritoryCategoriesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = CongregationEntity::class,
-        parentColumns = arrayOf("congregationId"),
-        childColumns = arrayOf("congregationsId"),
+        parentColumns = arrayOf("congregationId"), childColumns = arrayOf("tCongregationsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -48,16 +46,16 @@ data class TerritoryEntity(
     @PrimaryKey val territoryId: UUID = UUID.randomUUID(),
     val territoryNum: Int,
     val isActive: Boolean = true,
-    val isBusiness: Boolean = false,
+    val isBusinessTerritory: Boolean = false,
     val isGroupMinistry: Boolean = false,
     val isInPerimeter: Boolean = false,
     val isProcessed: Boolean = false,
     val territoryDesc: String? = null,
-    @ColumnInfo(index = true) val microdistrictsId: UUID? = null,
-    @ColumnInfo(index = true) val localityDistrictsId: UUID? = null,
-    @ColumnInfo(index = true) val localitiesId: UUID,
-    @ColumnInfo(index = true) val territoryCategoriesId: UUID,
-    @ColumnInfo(index = true) val congregationsId: UUID
+    @ColumnInfo(index = true) val tMicrodistrictsId: UUID? = null,
+    @ColumnInfo(index = true) val tLocalityDistrictsId: UUID? = null,
+    @ColumnInfo(index = true) val tLocalitiesId: UUID,
+    @ColumnInfo(index = true) val tTerritoryCategoriesId: UUID,
+    @ColumnInfo(index = true) val tCongregationsId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -71,11 +69,11 @@ data class TerritoryEntity(
             territoryNum: Int, isBusiness: Boolean = false, isInPerimeter: Boolean = false,
             isProcessed: Boolean = false, isActive: Boolean = true, territoryDesc: String? = null
         ) = TerritoryEntity(
-            congregationsId = congregationId, territoryCategoriesId = territoryCategoryId,
-            localitiesId = localityId, localityDistrictsId = localityDistrictId,
-            microdistrictsId = microdistrictId,
+            tCongregationsId = congregationId, tTerritoryCategoriesId = territoryCategoryId,
+            tLocalitiesId = localityId, tLocalityDistrictsId = localityDistrictId,
+            tMicrodistrictsId = microdistrictId,
             territoryId = territoryId,
-            territoryNum = territoryNum, isBusiness = isBusiness, isInPerimeter = isInPerimeter,
+            territoryNum = territoryNum, isBusinessTerritory = isBusiness, isInPerimeter = isInPerimeter,
             isProcessed = isProcessed, isActive = isActive, territoryDesc = territoryDesc
         )
 
@@ -96,28 +94,28 @@ data class TerritoryEntity(
     override fun id() = this.territoryId
 
     override fun key(): Int {
-        var result = congregationsId.hashCode()
-        result = result * 31 + territoryCategoriesId.hashCode()
-        result = result * 31 + localitiesId.hashCode()
+        var result = tCongregationsId.hashCode()
+        result = result * 31 + tTerritoryCategoriesId.hashCode()
+        result = result * 31 + tLocalitiesId.hashCode()
         result = result * 31 + territoryNum.hashCode()
-        localityDistrictsId?.let { result = result * 31 + it.hashCode() }
-        microdistrictsId?.let { result = result * 31 + it.hashCode() }
+        tLocalityDistrictsId?.let { result = result * 31 + it.hashCode() }
+        tMicrodistrictsId?.let { result = result * 31 + it.hashCode() }
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Territory Entity №").append(territoryNum)
-            .append(" [congregationsId = ").append(congregationsId)
+            .append(" [congregationsId = ").append(tCongregationsId)
             .append("; isActive = ").append(isActive)
-            .append("; isBusiness = ").append(isBusiness)
+            .append("; isBusiness = ").append(isBusinessTerritory)
             .append("; isGroupMinistry = ").append(isGroupMinistry)
             .append("; isInPerimeter = ").append(isInPerimeter)
             .append("; isProcessed = ").append(isProcessed)
-        localityDistrictsId?.let { str.append("; localityDistrictsId = ").append(it) }
-        microdistrictsId?.let { str.append("; microdistrictsId = ").append(it) }
-        str.append("; localitiesId = ").append(localitiesId)
-            .append("; territoryCategoriesId = ").append(territoryCategoriesId)
+        tLocalityDistrictsId?.let { str.append("; localityDistrictsId = ").append(it) }
+        tMicrodistrictsId?.let { str.append("; microdistrictsId = ").append(it) }
+        str.append("; localitiesId = ").append(tLocalitiesId)
+            .append("; territoryCategoriesId = ").append(tTerritoryCategoriesId)
             .append("] territoryId = ").append(territoryId)
         return str.toString()
     }

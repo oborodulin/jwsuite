@@ -10,7 +10,7 @@ import java.util.*
 @Dao
 interface RoomDao {
     // READS:
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} ORDER BY housesId, roomNum")
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} ORDER BY rHousesId, roomNum")
     fun findAll(): Flow<List<RoomEntity>>
 
     @ExperimentalCoroutinesApi
@@ -22,26 +22,26 @@ interface RoomDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE housesId = :houseId")
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rHousesId = :houseId")
     fun findByHouseId(houseId: UUID): Flow<List<RoomEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE entrancesId = :entranceId")
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rEntrancesId = :entranceId")
     fun findByEntranceId(entranceId: UUID): Flow<List<RoomEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByEntranceId(entranceId: UUID) =
         findByEntranceId(entranceId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE floorsId = :floorId")
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rFloorsId = :floorId")
     fun findByFloorId(floorId: UUID): Flow<List<RoomEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFloorId(floorId: UUID) = findByFloorId(floorId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rTerritoriesId = :territoryId")
     fun findByTerritoryId(territoryId: UUID): Flow<List<RoomEntity>>
 
     @ExperimentalCoroutinesApi

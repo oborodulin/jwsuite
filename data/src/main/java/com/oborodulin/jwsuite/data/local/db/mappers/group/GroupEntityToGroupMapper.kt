@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.domain.model.Group
 
 class GroupEntityToGroupMapper : Mapper<GroupEntity, Group> {
     override fun map(input: GroupEntity): Group {
-        val group = Group(congregationId = input.congregationsId, groupNum = input.groupNum)
+        val group = Group(congregationId = input.gCongregationsId, groupNum = input.groupNum)
         group.id = input.groupId
         return group
     }

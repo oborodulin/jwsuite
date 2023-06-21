@@ -19,14 +19,14 @@ FROM (SELECT (CASE
                 WHEN ld.localityDistrictId IS NOT NULL THEN $TDT_LOCALITY_DISTRICT_VAL
                 ELSE $TDT_LOCALITY_VAL
             END) AS territoryDistrictType, 
-            t.territoryId, ct.congregationsId AS congregationId, 
+            t.territoryId, ct.ctCongregationsId AS congregationId, 
             ifnull(md.microdistrictId, ifnull(ld.localityDistrictId, l.localityId))  AS districtId,
             ifnull(md.microdistrictName, ifnull(ld.districtName, l.localityName)) AS districtName  
     FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct JOIN ${TerritoryEntity.TABLE_NAME} t 
-            ON t.territoryId = ct.territoriesId AND t.isActive = $DB_TRUE AND ct.endUsingDate IS NULL
-        JOIN ${GeoLocalityView.VIEW_NAME} l ON l.localityId = t.localitiesId
-        LEFT JOIN ${GeoLocalityDistrictView.VIEW_NAME} ld ON ld.localityDistrictId = t.localityDistrictsId
-        LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} md ON md.microdistrictId = t.microdistrictsId) td
+            ON t.territoryId = ct.ctTerritoriesId AND t.isActive = $DB_TRUE AND ct.endUsingDate IS NULL
+        JOIN ${GeoLocalityView.VIEW_NAME} l ON l.localityId = t.tLocalitiesId
+        LEFT JOIN ${GeoLocalityDistrictView.VIEW_NAME} ld ON ld.localityDistrictId = t.tLocalityDistrictsId
+        LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} md ON md.microdistrictId = t.tMicrodistrictsId) td
             JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = td.territoriesId
 GROUP BY td.territoryDistrictType, td.congregationId, td.districtId, td.districtName, tpsv.isPrivateSector
 """

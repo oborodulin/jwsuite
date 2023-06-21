@@ -1,8 +1,6 @@
 package com.oborodulin.jwsuite.data.local.db.repositories
 
-import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalFloorDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoStreetDataSource
@@ -24,18 +22,16 @@ class TerritoriesRepositoryImpl @Inject constructor(
     private val localEntranceDataSource: LocalEntranceDataSource,
     private val localFloorDataSource: LocalFloorDataSource,
     private val localRoomDataSource: LocalRoomDataSource,
-    private val territoryMappers: TerritoryMappers,
-    private val territoryStreetMappers: TerritoryStreetMappers,
-    private val houseMappers: HouseMappers
+    private val mappers: TerritoryMappers
 ) : TerritoriesRepository {
     override fun getCongregationTerritories(congregationId: UUID?) = when (congregationId) {
         null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
         else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
-    }.map(territoryMappers.territoryViewListToTerritoryListMapper::map)
+    }.map(mappers.territoryViewListToTerritoryListMapper::map)
 
     override fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID) =
         localTerritoryDataSource.getCongregationTerritoryDistricts(isPrivateSector, congregationId)
-            .map(territoryMappers.territoryDistrictViewListToTerritoryDistrictListMapper::map)
+            .map(mappers.territoryDistrictViewListToTerritoryDistrictListMapper::map)
 
     override fun getDistrictTerritories(
         territoryDistrictType: TerritoryDistrictType, districtId: UUID, isPrivateSector: Boolean,
@@ -52,28 +48,27 @@ class TerritoriesRepositoryImpl @Inject constructor(
         TerritoryDistrictType.MICRO_DISTRICT -> localTerritoryDataSource.getMicrodistrictTerritories(
             districtId, isPrivateSector, congregationId
         )
-    }.map(territoryMappers.territoryViewListToTerritoryListMapper::map)
+    }.map(mappers.territoryViewListToTerritoryListMapper::map)
 
-    override fun getStreets(territoryId: UUID) =
+    override fun getTerritoryStreets(territoryId: UUID) =
         localGeoStreetDataSource.getTerritoryStreets(territoryId)
-            .map(territoryStreetMappers.territoryStreetViewListToTerritoryStreetListMapper::map)
+            .map(mappers.territoryStreetViewListToTerritoryStreetListMapper::map)
 
-    override fun getHouses(territoryId: UUID) =
-        localHouseDataSource.getTerritoryHouses(territoryId)
-            .map(houseMappers.houseEntityListToHouseListMapper::map)
+    override fun getHouses(territoryId: UUID) = localHouseDataSource.getTerritoryHouses(territoryId)
+        .map(mappers.houseEntityListToHouseListMapper::map)
 
     override fun get(territoryId: UUID) =
         localTerritoryDataSource.getTerritory(territoryId)
-            .map(territoryMappers.territoryViewToTerritoryMapper::map)
+            .map(mappers.territoryViewToTerritoryMapper::map)
 
     override fun save(territory: Territory) = flow {
         if (territory.id == null) {
             localTerritoryDataSource.insertTerritory(
-                territoryMappers.territoryToTerritoryEntityMapper.map(territory)
+                mappers.territoryToTerritoryEntityMapper.map(territory)
             )
         } else {
             localTerritoryDataSource.updateTerritory(
-                territoryMappers.territoryToTerritoryEntityMapper.map(territory)
+                mappers.territoryToTerritoryEntityMapper.map(territory)
             )
         }
         emit(territory)
@@ -81,7 +76,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override fun delete(territory: Territory) = flow {
         localTerritoryDataSource.deleteTerritory(
-            territoryMappers.territoryToTerritoryEntityMapper.map(territory)
+            mappers.territoryToTerritoryEntityMapper.map(territory)
         )
         this.emit(territory)
     }

@@ -10,23 +10,23 @@ import java.util.UUID
 
 @Entity(
     tableName = FloorEntity.TABLE_NAME,
-    indices = [Index(value = ["housesId", "entrancesId", "floorNum"], unique = true)],
+    indices = [Index(value = ["fHousesId", "fEntrancesId", "floorNum"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = EntranceEntity::class,
         parentColumns = arrayOf("entranceId"),
-        childColumns = arrayOf("entrancesId"),
+        childColumns = arrayOf("fEntrancesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = HouseEntity::class,
         parentColumns = arrayOf("houseId"),
-        childColumns = arrayOf("housesId"),
+        childColumns = arrayOf("fHousesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = TerritoryEntity::class,
         parentColumns = arrayOf("territoryId"),
-        childColumns = arrayOf("territoriesId"),
+        childColumns = arrayOf("fTerritoriesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -34,15 +34,15 @@ import java.util.UUID
 data class FloorEntity(
     @PrimaryKey val floorId: UUID = UUID.randomUUID(),
     val floorNum: Int,
-    val isSecurity: Boolean = false,
-    val isIntercom: Boolean? = null,
-    val isResidential: Boolean = true,
+    val isSecurityFloor: Boolean = false,
+    val isIntercomFloor: Boolean? = null,
+    val isResidentialFloor: Boolean = true,
     val roomsByFloor: Int? = null, // number rooms by one floor of the entrance
-    val estimatedRooms: Int? = null, // estimated rooms of the house (if null then roomsByFloor)
-    val territoryDesc: String? = null,
-    @ColumnInfo(index = true) val territoriesId: UUID? = null,
-    @ColumnInfo(index = true) val entrancesId: UUID? = null,
-    @ColumnInfo(index = true) val housesId: UUID
+    val estFloorRooms: Int? = null, // estimated rooms of the house (if null then roomsByFloor)
+    val floorDesc: String? = null,
+    @ColumnInfo(index = true) val fTerritoriesId: UUID? = null,
+    @ColumnInfo(index = true) val fEntrancesId: UUID? = null,
+    @ColumnInfo(index = true) val fHousesId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -56,12 +56,12 @@ data class FloorEntity(
             isResidential: Boolean, roomsByFloor: Int? = null,
             estimatedRooms: Int? = null, territoryDesc: String? = null
         ) = FloorEntity(
-            housesId = houseId, entrancesId = entranceId, territoriesId = territoryId,
+            fHousesId = houseId, fEntrancesId = entranceId, fTerritoriesId = territoryId,
             floorId = floorId,
-            floorNum = floorNum, isSecurity = isSecurity, isIntercom = isIntercom,
-            isResidential = isResidential, roomsByFloor = roomsByFloor,
-            estimatedRooms = estimatedRooms,
-            territoryDesc = territoryDesc
+            floorNum = floorNum, isSecurityFloor = isSecurity, isIntercomFloor = isIntercom,
+            isResidentialFloor = isResidential, roomsByFloor = roomsByFloor,
+            estFloorRooms = estimatedRooms,
+            floorDesc = territoryDesc
         )
 
     }
@@ -69,7 +69,7 @@ data class FloorEntity(
     override fun id() = this.floorId
 
     override fun key(): Int {
-        var result = housesId.hashCode()
+        var result = fHousesId.hashCode()
         result = result * 31 + floorNum.hashCode()
         return result
     }
@@ -77,9 +77,9 @@ data class FloorEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("House Floor Entity №").append(floorNum)
-        str.append(" [houseId = ").append(housesId)
-            .append("; entrancesId = ").append(entrancesId)
-            .append("; territoriesId = ").append(territoriesId)
+        str.append(" [houseId = ").append(fHousesId)
+            .append("; entrancesId = ").append(fEntrancesId)
+            .append("; territoriesId = ").append(fTerritoriesId)
             .append("] floorId = ").append(floorId)
         return str.toString()
     }

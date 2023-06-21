@@ -8,8 +8,8 @@ class GeoMicrodistrictViewToGeoMicrodistrictMapper :
     Mapper<GeoMicrodistrictView, GeoMicrodistrict> {
     override fun map(input: GeoMicrodistrictView): GeoMicrodistrict {
         val microdistrict = GeoMicrodistrict(
-            localityId = input.data.localitiesId,
-            localityDistrictId = input.data.localityDistrictsId,
+            localityId = input.data.mLocalitiesId,
+            localityDistrictId = input.data.mLocalityDistrictsId,
             microdistrictType = input.data.microdistrictType,
             microdistrictShortName = input.data.microdistrictShortName,
             microdistrictName = input.tl.microdistrictName

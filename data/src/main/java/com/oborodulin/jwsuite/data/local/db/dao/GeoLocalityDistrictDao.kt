@@ -25,14 +25,14 @@ interface GeoLocalityDistrictDao {
     fun findDistinctById(localityDistrictId: UUID) =
         findById(localityDistrictId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE localitiesId = :localityId")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId")
     fun findByLocalityId(localityId: UUID): Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE localitiesId = :localityId AND districtName LIKE '%' || :districtName || '%'")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId AND districtName LIKE '%' || :districtName || '%'")
     fun findByDistrictName(localityId: UUID, districtName: String):
             Flow<List<GeoLocalityDistrictView>>
 
@@ -66,8 +66,8 @@ interface GeoLocalityDistrictDao {
     suspend fun insert(localityDistrict: GeoLocalityDistrictEntity, street: GeoStreetEntity) =
         insert(
             GeoDistrictStreetEntity(
-                localityDistrictsId = localityDistrict.localityDistrictId,
-                streetsId = street.streetId
+                dsLocalityDistrictsId = localityDistrict.localityDistrictId,
+                dsStreetsId = street.streetId
             )
         )
 
@@ -111,7 +111,7 @@ interface GeoLocalityDistrictDao {
     @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE districtStreetId = :districtStreetId")
     suspend fun deleteStreetById(districtStreetId: UUID)
 
-    @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE localityDistrictsId = :localityDistrictId")
+    @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE dsLocalityDistrictsId = :localityDistrictId")
     suspend fun deleteStreetsByLocalityDistrictId(localityDistrictId: UUID)
 
     @Query("DELETE FROM ${GeoLocalityDistrictEntity.TABLE_NAME}")

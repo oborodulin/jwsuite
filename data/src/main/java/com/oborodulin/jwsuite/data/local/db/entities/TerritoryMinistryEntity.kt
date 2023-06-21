@@ -13,31 +13,31 @@ import java.util.UUID
 @Entity(
     tableName = TerritoryMinistryEntity.TABLE_NAME,
     indices = [Index(
-        value = ["membersId", "territoriesId", "housesId", "roomsId", "dateOfVisit"],
+        value = ["tmMembersId", "tmTerritoriesId", "tmHousesId", "tmRoomsId", "dateOfVisit"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = RoomEntity::class,
         parentColumns = arrayOf("roomId"),
-        childColumns = arrayOf("roomsId"),
+        childColumns = arrayOf("tmRoomsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = HouseEntity::class,
         parentColumns = arrayOf("houseId"),
-        childColumns = arrayOf("housesId"),
+        childColumns = arrayOf("tmHousesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = TerritoryEntity::class,
         parentColumns = arrayOf("territoryId"),
-        childColumns = arrayOf("territoriesId"),
+        childColumns = arrayOf("tmTerritoriesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = MemberEntity::class,
         parentColumns = arrayOf("memberId"),
-        childColumns = arrayOf("membersId"),
+        childColumns = arrayOf("tmMembersId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -51,10 +51,10 @@ data class TerritoryMinistryEntity(
     val subject: String? = null,
     val nextQuestion: String? = null,
     val ministryDesc: String? = null,
-    @ColumnInfo(index = true) val roomsId: UUID? = null,
-    @ColumnInfo(index = true) val housesId: UUID? = null,
-    @ColumnInfo(index = true) val territoriesId: UUID,
-    @ColumnInfo(index = true) val membersId: UUID
+    @ColumnInfo(index = true) val tmRoomsId: UUID? = null,
+    @ColumnInfo(index = true) val tmHousesId: UUID? = null,
+    @ColumnInfo(index = true) val tmTerritoriesId: UUID,
+    @ColumnInfo(index = true) val tmMembersId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -68,8 +68,8 @@ data class TerritoryMinistryEntity(
             gender: Boolean? = null, age: Int? = null,
             subject: String? = null, nextQuestion: String? = null, ministryDesc: String? = null
         ) = TerritoryMinistryEntity(
-            membersId = memberId, territoryMinistryId = territoryMinistryId,
-            territoriesId = territoryId, housesId = houseId, roomsId = roomId,
+            tmMembersId = memberId, territoryMinistryId = territoryMinistryId,
+            tmTerritoriesId = territoryId, tmHousesId = houseId, tmRoomsId = roomId,
             dateOfVisit = dateOfVisit, personsName = personsName, gender = gender, age = age,
             subject = subject, nextQuestion = nextQuestion, ministryDesc = ministryDesc
         )
@@ -78,11 +78,11 @@ data class TerritoryMinistryEntity(
     override fun id() = this.territoryMinistryId
 
     override fun key(): Int {
-        var result = membersId.hashCode()
-        result = result * 31 + territoriesId.hashCode()
+        var result = tmMembersId.hashCode()
+        result = result * 31 + tmTerritoriesId.hashCode()
         result = result * 31 + dateOfVisit.hashCode()
-        housesId?.let { result = result * 31 + it.hashCode() }
-        roomsId?.let { result = result * 31 + it.hashCode() }
+        tmHousesId?.let { result = result * 31 + it.hashCode() }
+        tmRoomsId?.let { result = result * 31 + it.hashCode() }
         return result
     }
 

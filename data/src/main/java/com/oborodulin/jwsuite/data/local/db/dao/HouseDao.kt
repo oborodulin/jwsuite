@@ -10,7 +10,7 @@ import java.util.*
 @Dao
 interface HouseDao {
     // READS:
-    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME} ORDER BY streetsId, houseNum, buildingNum")
+    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME} ORDER BY hStreetsId, houseNum, buildingNum")
     fun findAll(): Flow<List<HouseEntity>>
 
     @ExperimentalCoroutinesApi
@@ -22,13 +22,13 @@ interface HouseDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME} WHERE streetsId = :streetId")
+    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME} WHERE hStreetsId = :streetId")
     fun findByStreetId(streetId: UUID): Flow<List<HouseEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByStreetId(streetId: UUID) = findByStreetId(streetId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME} WHERE hTerritoriesId = :territoryId")
     fun findByTerritoryId(territoryId: UUID): Flow<List<HouseEntity>>
 
     @ExperimentalCoroutinesApi

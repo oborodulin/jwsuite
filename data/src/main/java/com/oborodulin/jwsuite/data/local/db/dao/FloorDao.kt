@@ -22,14 +22,14 @@ interface FloorDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${FloorEntity.TABLE_NAME} WHERE entrancesId = :entranceId")
+    @Query("SELECT * FROM ${FloorEntity.TABLE_NAME} WHERE fEntrancesId = :entranceId")
     fun findByEntranceId(entranceId: UUID): Flow<List<FloorEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByEntranceId(entranceId: UUID) =
         findByEntranceId(entranceId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${FloorEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    @Query("SELECT * FROM ${FloorEntity.TABLE_NAME} WHERE fTerritoriesId = :territoryId")
     fun findByTerritoryId(territoryId: UUID): Flow<List<FloorEntity>>
 
     @ExperimentalCoroutinesApi

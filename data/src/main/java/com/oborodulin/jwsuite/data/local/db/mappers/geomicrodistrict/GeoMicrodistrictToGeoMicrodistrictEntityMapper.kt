@@ -11,7 +11,7 @@ class GeoMicrodistrictToGeoMicrodistrictEntityMapper :
         microdistrictId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
-        localitiesId = input.localityId,
-        localityDistrictsId = input.localityDistrictId
+        mLocalitiesId = input.localityId,
+        mLocalityDistrictsId = input.localityDistrictId
     )
 }

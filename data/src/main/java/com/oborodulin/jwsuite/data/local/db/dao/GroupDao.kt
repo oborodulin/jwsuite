@@ -10,7 +10,7 @@ import java.util.*
 @Dao
 interface GroupDao {
     // READS:
-    @Query("SELECT * FROM ${GroupEntity.TABLE_NAME} ORDER BY congregationsId, groupNum")
+    @Query("SELECT * FROM ${GroupEntity.TABLE_NAME} ORDER BY gCongregationsId, groupNum")
     fun findAll(): Flow<List<GroupEntity>>
 
     @ExperimentalCoroutinesApi
@@ -22,7 +22,7 @@ interface GroupDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GroupEntity.TABLE_NAME} WHERE congregationsId = :congregationId ORDER BY groupNum")
+    @Query("SELECT * FROM ${GroupEntity.TABLE_NAME} WHERE gCongregationsId = :congregationId ORDER BY groupNum")
     fun findByCongregationId(congregationId: UUID): Flow<List<GroupEntity>>
 
     @ExperimentalCoroutinesApi

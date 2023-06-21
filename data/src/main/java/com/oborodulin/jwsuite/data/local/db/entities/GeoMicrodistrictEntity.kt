@@ -14,19 +14,19 @@ import java.util.UUID
 @Entity(
     tableName = GeoMicrodistrictEntity.TABLE_NAME,
     indices = [Index(
-        value = ["localitiesId", "localityDistrictsId", "villageType", "villageShortName"],
+        value = ["mLocalitiesId", "mLocalityDistrictsId", "villageType", "villageShortName"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
         entity = GeoLocalityDistrictEntity::class,
         parentColumns = arrayOf("localityDistrictId"),
-        childColumns = arrayOf("localityDistrictsId"),
+        childColumns = arrayOf("mLocalityDistrictsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
         entity = GeoLocalityEntity::class,
         parentColumns = arrayOf("localityId"),
-        childColumns = arrayOf("localitiesId"),
+        childColumns = arrayOf("mLocalitiesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -35,8 +35,8 @@ data class GeoMicrodistrictEntity(
     @PrimaryKey val microdistrictId: UUID = UUID.randomUUID(),
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
     val microdistrictShortName: String,
-    @ColumnInfo(index = true) val localityDistrictsId: UUID,
-    @ColumnInfo(index = true) val localitiesId: UUID
+    @ColumnInfo(index = true) val mLocalityDistrictsId: UUID,
+    @ColumnInfo(index = true) val mLocalitiesId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -48,7 +48,7 @@ data class GeoMicrodistrictEntity(
             microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
             microdistrictShortName: String
         ) = GeoMicrodistrictEntity(
-            localitiesId = localityId, localityDistrictsId = localityDistrictId,
+            mLocalitiesId = localityId, mLocalityDistrictsId = localityDistrictId,
             microdistrictId = microdistrictId, microdistrictType = microdistrictType,
             microdistrictShortName = microdistrictShortName
         )
@@ -74,10 +74,10 @@ data class GeoMicrodistrictEntity(
     override fun id() = this.microdistrictId
 
     override fun key(): Int {
-        var result = localitiesId.hashCode()
+        var result = mLocalitiesId.hashCode()
         result = result * 31 + microdistrictType.hashCode()
         result = result * 31 + microdistrictShortName.hashCode()
-        localityDistrictsId?.let { result = result * 31 + it.hashCode() }
+        mLocalityDistrictsId?.let { result = result * 31 + it.hashCode() }
         return result
     }
 
@@ -85,8 +85,8 @@ data class GeoMicrodistrictEntity(
         val str = StringBuffer()
         str.append("Microdistrict Entity ").append(microdistrictType).append(" '")
             .append(microdistrictShortName).append("'")
-            .append(" [localitiesId = ").append(localitiesId)
-        localityDistrictsId?.let { str.append("; localityDistrictsId = ").append(it) }
+            .append(" [localitiesId = ").append(mLocalitiesId)
+        mLocalityDistrictsId?.let { str.append("; localityDistrictsId = ").append(it) }
         str.append("] villageId = ").append(microdistrictId)
         return str.toString()
     }

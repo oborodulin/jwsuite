@@ -12,11 +12,11 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityDistrictEntity.TABLE_NAME,
-    indices = [Index(value = ["localitiesId", "districtShortName"], unique = true)],
+    indices = [Index(value = ["ldLocalitiesId", "districtShortName"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoLocalityEntity::class,
         parentColumns = arrayOf("localityId"),
-        childColumns = arrayOf("localitiesId"),
+        childColumns = arrayOf("ldLocalitiesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -24,7 +24,7 @@ import java.util.UUID
 data class GeoLocalityDistrictEntity(
     @PrimaryKey val localityDistrictId: UUID = UUID.randomUUID(),
     val districtShortName: String,
-    @ColumnInfo(index = true) val localitiesId: UUID,
+    @ColumnInfo(index = true) val ldLocalitiesId: UUID,
 ) : BaseEntity() {
 
     companion object {
@@ -34,7 +34,7 @@ data class GeoLocalityDistrictEntity(
             localityDistrictId: UUID = UUID.randomUUID(), localityId: UUID = UUID.randomUUID(),
             districtShortName: String
         ) = GeoLocalityDistrictEntity(
-            localitiesId = localityId, localityDistrictId = localityDistrictId,
+            ldLocalitiesId = localityId, localityDistrictId = localityDistrictId,
             districtShortName = districtShortName
         )
 
@@ -62,7 +62,7 @@ data class GeoLocalityDistrictEntity(
     override fun id() = this.localityDistrictId
 
     override fun key(): Int {
-        var result = localitiesId.hashCode()
+        var result = ldLocalitiesId.hashCode()
         result = result * 31 + districtShortName.hashCode()
         return result
     }
@@ -70,7 +70,7 @@ data class GeoLocalityDistrictEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Locality District Entity '").append(districtShortName).append("' ")
-            .append(" [localitiesId = ").append(localitiesId)
+            .append(" [localitiesId = ").append(ldLocalitiesId)
             .append("] localityDistrictId = ").append(localityDistrictId)
         return str.toString()
     }

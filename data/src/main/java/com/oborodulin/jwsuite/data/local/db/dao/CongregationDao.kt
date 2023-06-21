@@ -64,8 +64,8 @@ interface CongregationDao {
         activityDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
         CongregationMemberCrossRefEntity(
-            congregationsId = congregation.congregationId,
-            membersId = member.memberId,
+            cmCongregationsId = congregation.congregationId,
+            cmMembersId = member.memberId,
             activityDate = activityDate
         )
     )
@@ -78,8 +78,8 @@ interface CongregationDao {
         startUsingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
         CongregationTerritoryCrossRefEntity(
-            congregationsId = congregation.congregationId,
-            territoriesId = territory.territoryId,
+            ctCongregationsId = congregation.congregationId,
+            ctTerritoriesId = territory.territoryId,
             startUsingDate = startUsingDate
         )
     )
@@ -116,7 +116,7 @@ interface CongregationDao {
     @Query("DELETE FROM ${CongregationMemberCrossRefEntity.TABLE_NAME} WHERE congregationMemberId = :congregationMemberId")
     suspend fun deleteMemberById(congregationMemberId: UUID)
 
-    @Query("DELETE FROM ${CongregationMemberCrossRefEntity.TABLE_NAME} WHERE congregationsId = :congregationId")
+    @Query("DELETE FROM ${CongregationMemberCrossRefEntity.TABLE_NAME} WHERE cmCongregationsId = :congregationId")
     suspend fun deleteMembersByCongregationId(congregationId: UUID)
 
     @Delete
@@ -125,7 +125,7 @@ interface CongregationDao {
     @Query("DELETE FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} WHERE congregationTerritoryId = :congregationTerritoryId")
     suspend fun deleteTerritoryById(congregationTerritoryId: UUID)
 
-    @Query("DELETE FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} WHERE congregationsId = :congregationId")
+    @Query("DELETE FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} WHERE ctCongregationsId = :congregationId")
     suspend fun deleteTerritoriesByCongregationId(congregationId: UUID)
 
     @Query("DELETE FROM ${CongregationEntity.TABLE_NAME}")

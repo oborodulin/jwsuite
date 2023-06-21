@@ -22,13 +22,13 @@ interface EntranceDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${EntranceEntity.TABLE_NAME} WHERE housesId = :houseId")
+    @Query("SELECT * FROM ${EntranceEntity.TABLE_NAME} WHERE eHousesId = :houseId")
     fun findByHouseId(houseId: UUID): Flow<List<EntranceEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${EntranceEntity.TABLE_NAME} WHERE territoriesId = :territoryId")
+    @Query("SELECT * FROM ${EntranceEntity.TABLE_NAME} WHERE eTerritoriesId = :territoryId")
     fun findByTerritoryId(territoryId: UUID): Flow<List<EntranceEntity>>
 
     @ExperimentalCoroutinesApi

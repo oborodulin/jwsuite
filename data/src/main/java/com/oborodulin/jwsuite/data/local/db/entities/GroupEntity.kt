@@ -12,11 +12,11 @@ import java.util.UUID
 
 @Entity(
     tableName = GroupEntity.TABLE_NAME,
-    indices = [Index(value = ["congregationsId", "groupNum"], unique = true)],
+    indices = [Index(value = ["gCongregationsId", "groupNum"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = CongregationEntity::class,
         parentColumns = arrayOf("congregationId"),
-        childColumns = arrayOf("congregationsId"),
+        childColumns = arrayOf("gCongregationsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -24,7 +24,7 @@ import java.util.UUID
 data class GroupEntity(
     @PrimaryKey val groupId: UUID = UUID.randomUUID(),
     val groupNum: Int,
-    @ColumnInfo(index = true) val congregationsId: UUID
+    @ColumnInfo(index = true) val gCongregationsId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -34,7 +34,7 @@ data class GroupEntity(
             groupId: UUID = UUID.randomUUID(), congregationId: UUID = UUID.randomUUID(),
             groupNum: Int
         ) = GroupEntity(
-            congregationsId = congregationId, groupId = groupId, groupNum = groupNum
+            gCongregationsId = congregationId, groupId = groupId, groupNum = groupNum
         )
 
         fun group1(ctx: Context, congregationId: UUID) = defaultGroup(
@@ -102,7 +102,7 @@ data class GroupEntity(
     override fun id() = this.groupId
 
     override fun key(): Int {
-        var result = congregationsId.hashCode()
+        var result = gCongregationsId.hashCode()
         result = result * 31 + groupNum.hashCode()
         return result
     }
@@ -110,7 +110,7 @@ data class GroupEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Group Entity №").append(groupNum)
-            .append(" [congregationsId = ").append(congregationsId)
+            .append(" [congregationsId = ").append(gCongregationsId)
             .append("] groupId = ").append(groupId)
         return str.toString()
     }

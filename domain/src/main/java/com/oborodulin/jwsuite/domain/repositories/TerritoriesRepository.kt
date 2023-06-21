@@ -18,7 +18,8 @@ interface TerritoriesRepository {
         congregationId: UUID? = null
     ): Flow<List<Territory>>
 
-    fun getStreets(territoryId: UUID): Flow<List<TerritoryStreet>>
+    fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreet>>
+    fun getHouseStreets(territoryId: UUID): Flow<List<TerritoryStreet>>
     fun getHouses(territoryId: UUID): Flow<List<House>>
 
     fun get(territoryId: UUID): Flow<Territory>

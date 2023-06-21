@@ -7,16 +7,16 @@ import com.oborodulin.jwsuite.domain.model.Floor
 class FloorEntityToFloorMapper : Mapper<FloorEntity, Floor> {
     override fun map(input: FloorEntity): Floor {
         val floor = Floor(
-            houseId = input.housesId,
-            entranceId = input.entrancesId,
-            territoryId = input.territoriesId,
+            houseId = input.fHousesId,
+            entranceId = input.fEntrancesId,
+            territoryId = input.fTerritoriesId,
             floorNum = input.floorNum,
-            isSecurity = input.isSecurity,
-            isIntercom = input.isIntercom,
-            isResidential = input.isResidential,
+            isSecurity = input.isSecurityFloor,
+            isIntercom = input.isIntercomFloor,
+            isResidential = input.isResidentialFloor,
             roomsByFloor = input.roomsByFloor,
-            estimatedRooms = input.estimatedRooms,
-            territoryDesc = input.territoryDesc
+            estimatedRooms = input.estFloorRooms,
+            territoryDesc = input.floorDesc
         )
         floor.id = input.floorId
         return floor
