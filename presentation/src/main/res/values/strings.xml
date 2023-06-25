@@ -6,11 +6,50 @@
     <string name="nav_item_territoring">Участки</string>
     <string name="nav_item_ministring">Служение</string>
     <!--дополнительная -->
-    <string name="nav_item_congregate">Собрание</string>
+    <string name="nav_item_congregation">Собрание</string>
     <string name="nav_item_group">Группа</string>
     <string name="nav_item_member">Возвещатель</string>
     <string name="nav_item_territory">Участок</string>
 
     <!--BUTTONS: -->
     <string name="btn_pay_text">Оплатить</string>
+
+    <!--МЕНЮ собрания -->
+    <string name="congregation_add">Добавить</string>
+    <string name="congregation_delete">Удалить</string>
+    <string name="congregation_select_all">Выбрать все</string>
+
+    <!--МЕНЮ: -->
+    <!--собрания -->
+    <string name="new_congregation_menu_item">Новое собрание</string>
+
+    <!--СПИСОК: -->
+    <!--собраний -->
+    <string name="congregation_list_empty_text">Собраний пока нет. Добавте, пожалуйста, хотя бы одно</string>
+
+    <!--ФОРМА: -->
+    <!--Собрание -->
+    <string name="congregation_subheader">Собрание</string>
+    <string name="congregation_new_subheader">Новое собрание</string>
+    <string name="congregation_num_hint">№</string>
+    <string name="congregation_name_hint">Наименование</string>
+    <string name="territory_mark_hint">Буква участка</string>
+    <string name="total_area_hint">Общая площадь</string>
+    <string name="living_space_hint">Жилая площадь</string>
+    <string name="heated_volume_hint">Отапливаемый объём</string>
+    <string name="payment_day_hint">Крайнее число оплаты услуг</string>
+    <string name="payment_day_helper">Любое число месяца с 1-го по 28-е</string>
+    <string name="payer_properties_label">Дополнительные параметры</string>
+    <string name="persons_num_hint">Кол-во прописанных человек</string>
+
+    <!--ДИАЛОГИ -->
+    <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
+
+    <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
+    <!--формы собрания-->
+    <string name="erc_code_empty_error">Укажите, пожалуйста, код ЕРЦ!</string>
+    <string name="full_name_empty_error">Укажите, пожалуйста, фамилию и инициалы!</string>
+    <string name="address_empty_error">Укажите, пожалуйста, адрес!</string>
+    <string name="payment_day_empty_error">Укажите, пожалуйста, крайнее число оплаты!</string>
+    <string name="persons_num_empty_error">Укажите, пожалуйста, кол-во прописанных человек!</string>
 </resources>

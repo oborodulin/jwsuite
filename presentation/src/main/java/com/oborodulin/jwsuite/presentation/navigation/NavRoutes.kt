@@ -73,8 +73,8 @@ sealed class NavRoutes constructor(
 
     object Congregation : NavRoutes(
         String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
-        R.drawable.outline_person_black_24,
-        R.string.nav_item_congregate,
+        R.drawable.ic_person_24,
+        R.string.nav_item_congregation,
         arguments = listOf(navArgument(ARG_CONGREGATION_ID) {
             type = NavType.StringType
             nullable = true

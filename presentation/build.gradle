@@ -83,6 +83,8 @@ dependencies {
     implementation deps.compose.uiGraphicsBom
     // Compose Constraint Layout
     implementation deps.androidx.constraintlayoutCompose
+    // Compose lifecycle
+    implementation deps.lifecycle.runtimeCompose
 
     // Hilt
     implementation deps.dagger.hilt

@@ -40,7 +40,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 /**
- * Created by tfakioglu on 12.December.2021
+ * Created by o.borodulin 10.June.2023
  */
 private const val TAG = "Common.UI"
 private val EMPTY: OnListItemEvent = {}

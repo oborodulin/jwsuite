@@ -25,7 +25,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.oborodulin.home.common.ui.theme.Typography
 
 /**
- * Created by tfakioglu on 12.December.2021
+ * Created by o.borodulin 10.June.2023
  */
 
 @Composable

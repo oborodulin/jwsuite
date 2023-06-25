@@ -4,9 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.oborodulin.home.accounting.ui.AccountingScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.congregating.CongregatingScreen
+import com.oborodulin.jwsuite.presentation.ui.dashboarding.DashboardingScreen
 import timber.log.Timber
 
 private const val TAG = "App.navigation.NavBarNavigationHost"
@@ -19,35 +20,43 @@ fun NavBarNavigationHost(
 ) {
     Timber.tag(TAG).d("NavBarNavigationHost(...) called")
     NavHost(
-        appState.navBarNavController, startDestination = NavRoutes.Accounting.route
+        appState.navBarNavController, startDestination = NavRoutes.Dashboarding.route
     ) {
-        composable(NavRoutes.Accounting.route) {
-            // accounting: Payers; Meters values (metering); Payments: PayerServiceSubtotals and etc. (billing)
+        composable(NavRoutes.Dashboarding.route) {
+            // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
             Timber.tag(TAG)
-                .d("Navigation Graph: to AccountingScreen [route = '%s']", it.destination.route)
-            AccountingScreen(
+                .d("Navigation Graph: to DashboardingScreen [route = '%s']", it.destination.route)
+            DashboardingScreen(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
             ) //setFabOnClick = setFabOnClick
         }
-        composable(route = NavRoutes.Billing.route, arguments = NavRoutes.Billing.arguments) {
-            // billing: [Payer Services, Services] (servicing); Rates; Rate promotions
+        composable(
+            route = NavRoutes.Congregating.route, arguments = NavRoutes.Congregating.arguments
+        ) {
+            // congregating: [Congregation, Members]; [Groups, Members]
             Timber.tag(TAG)
-                .d("Navigation Graph: to BillingScreen [route = '%s']", it.destination.route)
-            //BillingScreen(navController)
+                .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
+            CongregatingScreen(
+                appState = appState,
+                nestedScrollConnection = nestedScrollConnection,
+                bottomBar = bottomBar
+            )
         }
-        composable(route = NavRoutes.Metering.route, arguments = NavRoutes.Metering.arguments) {
-            // metering: Meters; Meter values, Meter verifications
+        composable(
+            route = NavRoutes.Territoring.route, arguments = NavRoutes.Territoring.arguments
+        ) {
+            // territoring: []Meters; Meter values, Meter verifications
             Timber.tag(TAG)
-                .d("Navigation Graph: to MeteringScreen [route = '%s']", it.destination.route)
-            //MeteringScreen(navController)
+                .d("Navigation Graph: to TerritoringScreen [route = '%s']", it.destination.route)
+            //TerritoringScreen(navController)
         }
-        composable(route = NavRoutes.Reporting.route, arguments = NavRoutes.Reporting.arguments) {
+        composable(route = NavRoutes.Ministring.route, arguments = NavRoutes.Ministring.arguments) {
             // Receipts
             Timber.tag(TAG)
-                .d("Navigation Graph: to ReportingScreen [route = '%s']", it.destination.route)
-            //ReportingScreen(navController)
+                .d("Navigation Graph: to MinistringScreen [route = '%s']", it.destination.route)
+            //MinistringScreen(navController)
         }
     }
 }

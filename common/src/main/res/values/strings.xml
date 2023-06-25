@@ -11,6 +11,7 @@
     <string name="btn_save_lbl">Сохранить</string>
     <string name="btn_cancel_lbl">Отменить</string>
     <string name="btn_ok_lbl">ОК</string>
+    <string name="btn_add_lbl">Добавить</string>
     <!--диалог -->
     <string name="dlg_confirm_title">Подтверждение</string>
 

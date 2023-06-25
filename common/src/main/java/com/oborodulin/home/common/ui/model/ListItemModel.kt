@@ -6,7 +6,7 @@ import java.math.BigDecimal
 import java.util.UUID
 
 open class ListItemModel(
-    var itemId: UUID,
+    val itemId: UUID,
     val headline: String,
     val supportingText: String? = null,
     val value: BigDecimal? = null
