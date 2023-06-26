@@ -26,6 +26,6 @@ class HouseToHouseEntityMapper : Mapper<House, HouseEntity> {
         hTerritoriesId = input.territoryId,
         hMicrodistrictsId = input.microdistrictId,
         hLocalityDistrictsId = input.localityDistrictId,
-        hStreetsId = input.streetId
+        hStreetsId = input.street.id!!
     )
 }

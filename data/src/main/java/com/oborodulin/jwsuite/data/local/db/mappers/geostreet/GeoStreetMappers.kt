@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.geostreet
 
 data class GeoStreetMappers(
-    val geoStreetViewListToGeoStreetListMapper: GeoStreetViewListToGeoStreetListMapper,
+    val geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
     val geoStreetViewToGeoStreetMapper: GeoStreetViewToGeoStreetMapper,
-    val geoStreetListToGeoStreetEntityListMapper: GeoStreetListToGeoStreetEntityListMapper,
+    val geoStreetsListToGeoStreetEntityListMapper: GeoStreetsListToGeoStreetEntityListMapper,
     val geoStreetToGeoStreetEntityMapper: GeoStreetToGeoStreetEntityMapper,
     val geoStreetToGeoStreetTlEntityMapper: GeoStreetToGeoStreetTlEntityMapper
 )

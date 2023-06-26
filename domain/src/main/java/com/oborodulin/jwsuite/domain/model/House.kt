@@ -5,7 +5,7 @@ import com.oborodulin.jwsuite.domain.util.BuildingType
 import java.util.UUID
 
 data class House(
-    val streetId: UUID,
+    val street: GeoStreet,
     val localityDistrictId: UUID? = null,
     val microdistrictId: UUID? = null,
     val territoryId: UUID? = null,

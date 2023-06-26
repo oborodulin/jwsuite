@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.member
 
 data class MemberMappers(
-    val memberEntityListToMemberListMapper: MemberEntityListToMemberListMapper,
+    val memberEntityListToMembersListMapper: MemberEntityListToMembersListMapper,
     val memberEntityToMemberMapper: MemberEntityToMemberMapper,
-    val memberListToMemberEntityListMapper: MemberListToMemberEntityListMapper,
+    val membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
     val memberToMemberEntityMapper: MemberToMemberEntityMapper
 )

@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.floor
 
 data class FloorMappers(
-    val floorEntityListToFloorListMapper: FloorEntityListToFloorListMapper,
+    val floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
     val floorEntityToFloorMapper: FloorEntityToFloorMapper,
-    val floorListToFloorEntityListMapper: FloorListToFloorEntityListMapper,
+    val floorsListToFloorEntityListMapper: FloorsListToFloorEntityListMapper,
     val floorToFloorEntityMapper: FloorToFloorEntityMapper
 )

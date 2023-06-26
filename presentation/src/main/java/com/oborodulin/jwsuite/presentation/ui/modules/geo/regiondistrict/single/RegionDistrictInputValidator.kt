@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single
 
-import com.oborodulin.home.accounting.R
+import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import java.math.BigDecimal
 

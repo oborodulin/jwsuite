@@ -42,7 +42,6 @@ fun SingleSelectDialog(
     title: String,
     optionsList: List<ListItemModel>,
     defaultSelected: Int,
-    addButtonText: String,
     onOptionClick: (ListItemModel) -> Unit,
     onAddButtonClick: () -> Unit,
     onDismissRequest: () -> Unit
@@ -93,7 +92,7 @@ fun SingleSelectDialog(
                         },
                         shape = MaterialTheme.shapes.medium
                     ) {
-                        Text(text = addButtonText)
+                        Text(text = stringResource(R.string.btn_add_lbl))
                     }
                 }
             }
@@ -144,7 +143,6 @@ fun PreviewSingleSelectDialog() {
         title = stringResource(R.string.preview_blank_title),
         optionsList = items,
         defaultSelected = items.indexOf(currentSelectedItem),
-        addButtonText = stringResource(R.string.btn_add_lbl),
         onOptionClick = { item -> println(item.headline) },
         onAddButtonClick = { showDialog = true }
     ) {

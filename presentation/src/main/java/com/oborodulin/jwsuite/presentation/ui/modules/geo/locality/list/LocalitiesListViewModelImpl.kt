@@ -24,7 +24,7 @@ import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Accounting.ui.PayersListViewModel"
+private const val TAG = "Geo.ui.PayersListViewModel"
 
 @HiltViewModel
 class LocalitiesListViewModelImpl @Inject constructor(

@@ -23,60 +23,64 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.oborodulin.home.accounting.R
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationListItem
-import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListUiAction
-import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListView
-import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListViewModel
-import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.congregating.model.RegionsListItem
+import com.oborodulin.home.billing.ui.subtotals.RegionServiceSubtotalsListUiAction
+import com.oborodulin.home.billing.ui.subtotals.RegionServiceSubtotalsListView
+import com.oborodulin.home.billing.ui.subtotals.RegionServiceSubtotalsListViewModel
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.dialog.SingleSelectDialog
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.metering.ui.value.MeterValuesListUiAction
 import com.oborodulin.home.metering.ui.value.MeterValuesListView
 import com.oborodulin.home.metering.ui.value.MeterValuesListViewModel
-import com.oborodulin.home.metering.ui.value.MeterValuesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.RegionsInput
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.*
 
-private const val TAG = "Accounting.ui.PayersListView"
+private const val TAG = "Geo.ui.RegionsListView"
 
 @Composable
-fun PayersListView(
+fun RegionsListView(
     appState: AppState,
-    payersListViewModel: RegionsListViewModelImpl = hiltViewModel(),
-    meterValuesListViewModel: MeterValuesListViewModelImpl = hiltViewModel(),
-    payerServiceSubtotalsListViewModel: PayerServiceSubtotalsListViewModelImpl = hiltViewModel(),
+    viewModel: RegionsListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    congregationInput: CongregationInput
+    selectedRegionId: UUID
 ) {
-    Timber.tag(TAG).d("PayersListView(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("RegionsListView(...) called: selectedRegionId = %s", selectedRegionId)
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("PayersListView: LaunchedEffect() BEFORE collect ui state flow")
-        payersListViewModel.submitAction(RegionsListUiAction.Load)
+        Timber.tag(TAG).d("RegionsListView: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(RegionsListUiAction.Load)
     }
-    payersListViewModel.uiStateFlow.collectAsState().value.let { state ->
+    viewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        CommonScreen(state = state) {
-            PayersAccounting(
-                payers = it,
-                appState = appState,
-                regionsListViewModel = payersListViewModel,
-                payerServiceSubtotalsListViewModel = payerServiceSubtotalsListViewModel,
-                meterValuesListViewModel = meterValuesListViewModel,
-                navController = navController,
-                congregationInput = congregationInput
+        CommonScreen(state = state) { regionsList ->
+            SingleSelectDialog(
+                title = stringResource(R.string.dlg_title_select_region),
+                optionsList = regionsList,
+                defaultSelected = regionsList.indexOf(regionsList.first { it.id == selectedRegionId }),
+                onOptionClick:(ListItemModel) -> Unit,
+            onAddButtonClick: () -> Unit,
+            onDismissRequest: () -> Unit
+
+            payers = it,
+            appState = appState,
+            regionsListViewModel = viewModel,
+            payerServiceSubtotalsListViewModel = payerServiceSubtotalsListViewModel,
+            meterValuesListViewModel = meterValuesListViewModel,
+            navController = navController,
+            congregationInput = congregationInput
             )
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("PayersListView: LaunchedEffect() AFTER collect ui state flow")
-        payersListViewModel.singleEventFlow.collectLatest {
+        Timber.tag(TAG).d("RegionsListView: LaunchedEffect() AFTER collect ui state flow")
+        viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is RegionsListUiSingleEvent.OpenPayerScreen -> {
+                is RegionsListUiSingleEvent.OpenRegionScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -85,15 +89,15 @@ fun PayersListView(
 }
 
 @Composable
-fun PayersList(
-    payers: List<CongregationListItem>,
-    congregationInput: CongregationInput,
-    onFavorite: (CongregationListItem) -> Unit,
-    onClick: (CongregationListItem) -> Unit,
-    onEdit: (CongregationListItem) -> Unit,
-    onDelete: (CongregationListItem) -> Unit
+fun RegionsList(
+    payers: List<RegionsListItem>,
+    congregationInput: RegionsInput,
+    onFavorite: (RegionsListItem) -> Unit,
+    onClick: (RegionsListItem) -> Unit,
+    onEdit: (RegionsListItem) -> Unit,
+    onDelete: (RegionsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("PayersList(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("RegionsList(...) called: payerInput = %s", congregationInput)
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (payers.isNotEmpty()) {
         val listState = rememberLazyListState()
@@ -108,7 +112,7 @@ fun PayersList(
                 payers[index].let { payer ->
                     val isSelected =
                         ((selectedIndex == -1) and ((congregationInput.congregationId == payer.id) || payer.isFavorite)) || (selectedIndex == index)
-                    PayerListItemComponent(
+                    RegionListItemComponent(
                         icon = com.oborodulin.jwsuite.presentation.R.drawable.outline_house_black_36,
                         item = payer,
                         itemActions = listOf(
@@ -175,16 +179,16 @@ fun PayersList(
 }
 
 @Composable
-fun PayersAccounting(
-    payers: List<CongregationListItem>,
+fun RegionsAccounting(
+    payers: List<RegionsListItem>,
     appState: AppState,
     regionsListViewModel: RegionsListViewModel,
-    payerServiceSubtotalsListViewModel: PayerServiceSubtotalsListViewModel,
+    payerServiceSubtotalsListViewModel: RegionServiceSubtotalsListViewModel,
     meterValuesListViewModel: MeterValuesListViewModel,
     navController: NavController,
-    congregationInput: CongregationInput
+    congregationInput: RegionsInput
 ) {
-    Timber.tag(TAG).d("PayersAccounting(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("RegionsAccounting(...) called: payerInput = %s", congregationInput)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -208,12 +212,12 @@ fun PayersAccounting(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            PayersList(payers,
+            RegionsList(payers,
                 congregationInput = congregationInput,
                 onFavorite = { payer ->
                     regionsListViewModel.handleActionJob(action = {
                         regionsListViewModel.submitAction(
-                            RegionsListUiAction.FavoritePayer(payer.id)
+                            RegionsListUiAction.FavoriteRegion(payer.id)
                         )
                     },
                         afterAction = {
@@ -233,7 +237,7 @@ fun PayersAccounting(
                     appState.actionBarSubtitle.value = payer.address
                     with(payerServiceSubtotalsListViewModel) {
                         setPrimaryObjectData(arrayListOf(payer.id.toString()))
-                        submitAction(PayerServiceSubtotalsListUiAction.Load(payer.id))
+                        submitAction(RegionServiceSubtotalsListUiAction.Load(payer.id))
                     }
                     with(meterValuesListViewModel) {
                         clearInputFieldsStates()
@@ -243,14 +247,14 @@ fun PayersAccounting(
                 },
                 onEdit = { payer ->
                     regionsListViewModel.submitAction(
-                        RegionsListUiAction.EditPayer(
+                        RegionsListUiAction.EditRegion(
                             payer.id
                         )
                     )
                 }
             ) { payer ->
                 regionsListViewModel.handleActionJob(action = {
-                    regionsListViewModel.submitAction(RegionsListUiAction.DeletePayer(payer.id))
+                    regionsListViewModel.submitAction(RegionsListUiAction.DeleteRegion(payer.id))
                 },
                     afterAction = {
                         meterValuesListViewModel.submitAction(MeterValuesListUiAction.Init)
@@ -287,7 +291,7 @@ fun PayersAccounting(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            PayerServiceSubtotalsListView(
+            RegionServiceSubtotalsListView(
                 viewModel = payerServiceSubtotalsListViewModel,
                 navController = navController,
                 payerInput = congregationInput
@@ -300,10 +304,10 @@ fun PayersAccounting(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewPayersAccounting() {
-    PayersList(
+fun PreviewRegionsAccounting() {
+    RegionsList(
         payers = RegionsListViewModelImpl.previewList(LocalContext.current),
-        congregationInput = CongregationInput(UUID.randomUUID()),
+        congregationInput = RegionsInput(UUID.randomUUID()),
         onFavorite = {},
         onClick = {},
         onEdit = {},

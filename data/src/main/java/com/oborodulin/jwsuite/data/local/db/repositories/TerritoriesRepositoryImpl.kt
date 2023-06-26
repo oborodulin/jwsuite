@@ -27,7 +27,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
     override fun getCongregationTerritories(congregationId: UUID?) = when (congregationId) {
         null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
         else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
-    }.map(mappers.territoryViewListToTerritoryListMapper::map)
+    }.map(mappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID) =
         localTerritoryDataSource.getCongregationTerritoryDistricts(isPrivateSector, congregationId)
@@ -48,14 +48,24 @@ class TerritoriesRepositoryImpl @Inject constructor(
         TerritoryDistrictType.MICRO_DISTRICT -> localTerritoryDataSource.getMicrodistrictTerritories(
             districtId, isPrivateSector, congregationId
         )
-    }.map(mappers.territoryViewListToTerritoryListMapper::map)
+    }.map(mappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getTerritoryStreets(territoryId: UUID) =
         localGeoStreetDataSource.getTerritoryStreets(territoryId)
-            .map(mappers.territoryStreetViewListToTerritoryStreetListMapper::map)
+            .map(mappers.territoryStreetViewListToTerritoryStreetsListMapper::map)
 
     override fun getHouses(territoryId: UUID) = localHouseDataSource.getTerritoryHouses(territoryId)
-        .map(mappers.houseEntityListToHouseListMapper::map)
+        .map(mappers.houseViewListToHousesListMapper::map)
+
+    override fun getEntrances(territoryId: UUID) =
+        localEntranceDataSource.getTerritoryEntrances(territoryId)
+            .map(mappers.entranceEntityListToEntrancesListMapper::map)
+
+    override fun getFloors(territoryId: UUID) = localFloorDataSource.getTerritoryFloors(territoryId)
+        .map(mappers.floorEntityListToFloorsListMapper::map)
+
+    override fun getRooms(territoryId: UUID) = localRoomDataSource.getTerritoryRooms(territoryId)
+        .map(mappers.roomEntityListToRoomsListMapper::map)
 
     override fun get(territoryId: UUID) =
         localTerritoryDataSource.getTerritory(territoryId)

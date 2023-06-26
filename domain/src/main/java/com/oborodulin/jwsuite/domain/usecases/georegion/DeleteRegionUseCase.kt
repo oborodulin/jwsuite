@@ -1,18 +1,18 @@
 package com.oborodulin.jwsuite.domain.usecases.georegion
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
+import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class DeleteRegionUseCase(
     configuration: Configuration,
-    private val congregationsRepository: GeoRegionsRepository
+    private val regionsRepository: GeoRegionsRepository
 ) : UseCase<DeleteRegionUseCase.Request, DeleteRegionUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return congregationsRepository.deleteById(request.regionId)
+        return regionsRepository.deleteById(request.regionId)
             .map {
                 Response
             }

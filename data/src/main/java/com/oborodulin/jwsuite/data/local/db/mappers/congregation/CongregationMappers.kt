@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.congregation
 
 data class CongregationMappers(
-    val congregationViewListToCongregationListMapper: CongregationViewListToCongregationListMapper,
+    val congregationViewListToCongregationsListMapper: CongregationViewListToCongregationsListMapper,
     val congregationViewToCongregationMapper: CongregationViewToCongregationMapper,
-    val congregationListToCongregationEntityListMapper: CongregationListToCongregationEntityListMapper,
+    val congregationsListToCongregationEntityListMapper: CongregationsListToCongregationEntityListMapper,
     val congregationToCongregationEntityMapper: CongregationToCongregationEntityMapper,
     val favoriteCongregationViewToCongregationMapper: FavoriteCongregationViewToCongregationMapper
 )

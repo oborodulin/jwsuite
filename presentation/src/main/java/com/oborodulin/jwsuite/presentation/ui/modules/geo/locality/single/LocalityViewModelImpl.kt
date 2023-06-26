@@ -22,7 +22,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Accounting.ui.PayerViewModel"
+private const val TAG = "Geo.ui.PayerViewModel"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel

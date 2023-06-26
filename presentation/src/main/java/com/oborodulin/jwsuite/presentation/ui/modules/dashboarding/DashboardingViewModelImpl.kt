@@ -80,11 +80,7 @@ class DashboardingViewModelImpl @Inject constructor(
                 override val uiStateFlow =
                     MutableStateFlow(
                         UiState.Success(
-                            DashboardingUi(
-                                favoriteCongregation = previewCongregationModel(
-                                    ctx
-                                )
-                            )
+                            DashboardingUi(favoriteCongregation = previewCongregationModel(ctx))
                         )
                     )
                 override val singleEventFlow = Channel<DashboardingUiSingleEvent>().receiveAsFlow()

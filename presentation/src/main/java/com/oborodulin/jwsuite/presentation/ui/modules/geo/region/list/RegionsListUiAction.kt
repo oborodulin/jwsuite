@@ -5,7 +5,6 @@ import java.util.*
 
 sealed class RegionsListUiAction : UiAction {
     object Load : RegionsListUiAction()
-    data class EditPayer(val payerId: UUID) : RegionsListUiAction()
-    data class DeletePayer(val payerId: UUID) : RegionsListUiAction()
-    data class FavoritePayer(val payerId: UUID) : RegionsListUiAction()
+    data class EditRegion(val regionId: UUID) : RegionsListUiAction()
+    data class DeleteRegion(val regionId: UUID) : RegionsListUiAction()
 }

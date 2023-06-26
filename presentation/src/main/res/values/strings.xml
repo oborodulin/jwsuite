@@ -43,6 +43,7 @@
     <string name="persons_num_hint">Кол-во прописанных человек</string>
 
     <!--ДИАЛОГИ -->
+    <string name="dlg_title_select_region">Выберите область</string>
     <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->

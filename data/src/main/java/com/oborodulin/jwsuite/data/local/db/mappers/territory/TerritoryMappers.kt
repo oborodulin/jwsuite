@@ -1,22 +1,22 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.territory
 
-import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceEntityListToEntranceListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorEntityListToFloorListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseEntityListToHouseListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityListToRoomListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceEntityListToEntrancesListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorEntityListToFloorsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewListToHousesListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityListToRoomsListMapper
 
 data class TerritoryMappers(
-    val territoryViewListToTerritoryListMapper: TerritoryViewListToTerritoryListMapper,
+    val territoryViewListToTerritoriesListMapper: TerritoryViewListToTerritoriesListMapper,
     val territoryViewToTerritoryMapper: TerritoryViewToTerritoryMapper,
-    val territoryListToTerritoryEntityListMapper: TerritoryListToTerritoryEntityListMapper,
+    val territoriesListToTerritoryEntityListMapper: TerritoriesListToTerritoryEntityListMapper,
     val territoryToTerritoryEntityMapper: TerritoryToTerritoryEntityMapper,
     val territoryDistrictViewListToTerritoryDistrictListMapper: TerritoryDistrictViewListToTerritoryDistrictListMapper,
     val territoryDistrictViewToTerritoryDistrictMapper: TerritoryDistrictViewToTerritoryDistrictMapper,
-    val territoryStreetViewListToTerritoryStreetListMapper: TerritoryStreetViewListToTerritoryStreetListMapper,
-    val geoStreetViewListToGeoStreetListMapper: GeoStreetViewListToGeoStreetListMapper,
-    val houseEntityListToHouseListMapper: HouseEntityListToHouseListMapper,
-    val entranceEntityListToEntranceListMapper: EntranceEntityListToEntranceListMapper,
-    val floorEntityListToFloorListMapper: FloorEntityListToFloorListMapper,
-    val roomEntityListToRoomListMapper: RoomEntityListToRoomListMapper
+    val territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
+    val geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
+    val houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
+    val entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
+    val floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
+    val roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper
 )

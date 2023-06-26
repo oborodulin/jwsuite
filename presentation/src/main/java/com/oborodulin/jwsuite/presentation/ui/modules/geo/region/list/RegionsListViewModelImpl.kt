@@ -3,36 +3,38 @@ package com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationListItem
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.converters.CongregationsListConverter
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
-import com.oborodulin.home.domain.usecases.DeletePayerUseCase
-import com.oborodulin.home.domain.usecases.FavoritePayerUseCase
-import com.oborodulin.home.accounting.domain.usecases.GetPayersUseCase
-import com.oborodulin.home.accounting.domain.usecases.PayerUseCases
+import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionsUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.ui.model.RegionsListItem
+import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.math.BigDecimal
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Accounting.ui.PayersListViewModel"
+private const val TAG = "Geo.ui.RegionsListViewModelImpl"
 
 @HiltViewModel
 class RegionsListViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val payerUseCases: PayerUseCases,
-    private val congregationsListConverter: CongregationsListConverter
+    private val regionUseCases: RegionUseCases,
+    private val regionsListConverter: RegionsListConverter
 ) : RegionsListViewModel,
-    MviViewModel<List<CongregationListItem>, UiState<List<CongregationListItem>>, RegionsListUiAction, RegionsListUiSingleEvent>(
+    MviViewModel<List<RegionsListItem>, UiState<List<RegionsListItem>>, RegionsListUiAction, RegionsListUiSingleEvent>(
         state = state
     ) {
 
@@ -40,68 +42,46 @@ class RegionsListViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: RegionsListUiAction): Job {
         Timber.tag(TAG)
-            .d("handleAction(PayersListUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RegionsListUiAction.Load -> {
-                loadPayers()
+                loadRegions()
             }
-            is RegionsListUiAction.EditPayer -> {
+
+            is RegionsListUiAction.EditRegion -> {
                 submitSingleEvent(
-                    RegionsListUiSingleEvent.OpenPayerScreen(
+                    RegionsListUiSingleEvent.OpenRegionScreen(
                         NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.payerId)
+                            CongregationInput(action.regionId)
                         )
                     )
                 )
             }
-            is RegionsListUiAction.DeletePayer -> {
-                deletePayer(action.payerId)
+
+            is RegionsListUiAction.DeleteRegion -> {
+                deleteRegion(action.regionId)
             }
-            is RegionsListUiAction.FavoritePayer -> {
-                favoritePayer(action.payerId)
-            }
-            /*is PostListUiAction.UserClick -> {
-                updateInteraction(action.interaction)
-                submitSingleEvent(
-                    PostListUiSingleEvent.OpenUserScreen(
-                        NavRoutes.User.routeForUser(
-                            UserInput(action.userId)
-                        )
-                    )
-                )
-            }*/
         }
         return job
     }
 
-    private fun loadPayers(): Job {
-        Timber.tag(TAG).d("loadPayers() called")
+    private fun loadRegions(): Job {
+        Timber.tag(TAG).d("loadRegions() called")
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.getPayersUseCase.execute(GetPayersUseCase.Request).map {
-                congregationsListConverter.convert(it)
+            regionUseCases.getRegionsUseCase.execute(GetRegionsUseCase.Request).map {
+                regionsListConverter.convert(it)
+            }.collect {
+                submitState(it)
             }
-                .collect {
-                    submitState(it)
-                }
         }
         return job
     }
 
-    private fun deletePayer(payerId: UUID): Job {
-        Timber.tag(TAG).d("deletePayer() called: payerId = %s", payerId.toString())
+    private fun deleteRegion(regionId: UUID): Job {
+        Timber.tag(TAG).d("deleteRegion() called: regionId = %s", regionId.toString())
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.deletePayerUseCase.execute(
-                DeletePayerUseCase.Request(payerId)
-            ).collect {}
-        }
-        return job
-    }
-
-    private fun favoritePayer(payerId: UUID): Job {
-        Timber.tag(TAG).d("favoritePayer() called: payerId = %s", payerId.toString())
-        val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.favoritePayerUseCase.execute(
-                FavoritePayerUseCase.Request(payerId)
+            regionUseCases.deleteRegionUseCase.execute(
+                DeleteRegionUseCase.Request(regionId)
             ).collect {}
         }
         return job
@@ -125,30 +105,15 @@ class RegionsListViewModelImpl @Inject constructor(
             }
 
         fun previewList(ctx: Context) = listOf(
-            CongregationListItem(
+            RegionsListItem(
                 id = UUID.randomUUID(),
-                fullName = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer1_full_name),
-                address = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer1_address),
-                totalArea = BigDecimal("61"),
-                livingSpace = BigDecimal("59"),
-                paymentDay = 20,
-                personsNum = 2,
-                isFavorite = true,
-                fromPaymentDate = Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00"),
-                toPaymentDate = Utils.toOffsetDateTime("2022-09-01T14:29:10.212+03:00"),
-                totalDebt = BigDecimal("123456.78")
+                regionCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_donetsk_code),
+                regionName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_donetsk_name)
             ),
-            CongregationListItem(
+            RegionsListItem(
                 id = UUID.randomUUID(),
-                fullName = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer2_full_name),
-                address = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer2_address),
-                totalArea = BigDecimal("89"),
-                livingSpace = BigDecimal("76"),
-                paymentDay = 20,
-                personsNum = 1,
-                fromPaymentDate = Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00"),
-                toPaymentDate = Utils.toOffsetDateTime("2022-09-01T14:29:10.212+03:00"),
-                totalDebt = BigDecimal("876543.21")
+                regionCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_luhansk_code),
+                regionName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_luhansk_name)
             )
         )
     }

@@ -14,7 +14,7 @@ class CongregationsRepositoryImpl @Inject constructor(
     private val mappers: CongregationMappers
 ) : CongregationsRepository {
     override fun getAll() = localCongregationDataSource.getCongregations()
-        .map(mappers.congregationViewListToCongregationListMapper::map)
+        .map(mappers.congregationViewListToCongregationsListMapper::map)
 
     override fun get(congregationId: UUID) =
         localCongregationDataSource.getCongregation(congregationId).map(mappers.congregationViewToCongregationMapper::map)

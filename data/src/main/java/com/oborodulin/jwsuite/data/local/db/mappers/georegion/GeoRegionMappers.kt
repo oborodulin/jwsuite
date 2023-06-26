@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.georegion
 
 data class GeoRegionMappers(
-    val geoRegionViewListToGeoRegionListMapper: GeoRegionViewListToGeoRegionListMapper,
+    val geoRegionViewListToGeoRegionsListMapper: GeoRegionViewListToGeoRegionsListMapper,
     val geoRegionViewToGeoRegionMapper: GeoRegionViewToGeoRegionMapper,
-    val geoRegionListToGeoRegionEntityListMapper: GeoRegionListToGeoRegionEntityListMapper,
+    val geoRegionsListToGeoRegionEntityListMapper: GeoRegionsListToGeoRegionEntityListMapper,
     val geoRegionToGeoRegionEntityMapper: GeoRegionToGeoRegionEntityMapper,
     val geoRegionToGeoRegionTlEntityMapper: GeoRegionToGeoRegionTlEntityMapper
 )

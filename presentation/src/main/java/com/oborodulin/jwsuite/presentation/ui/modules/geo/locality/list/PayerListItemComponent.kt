@@ -41,7 +41,7 @@ import java.util.Locale
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Accounting.ui.PayerListItemComponent"
+private const val TAG = "Geo.ui.PayerListItemComponent"
 private val EMPTY: OnListItemEvent = {}
 
 @Composable

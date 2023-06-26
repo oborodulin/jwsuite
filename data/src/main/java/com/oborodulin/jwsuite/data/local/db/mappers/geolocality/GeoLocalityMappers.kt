@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.geolocality
 
 data class GeoLocalityMappers(
-    val geoLocalityViewListToGeoLocalityListMapper: GeoLocalityViewListToGeoLocalityListMapper,
+    val geoLocalityViewListToGeoLocalitiesListMapper: GeoLocalityViewListToGeoLocalitiesListMapper,
     val geoLocalityViewToGeoLocalityMapper: GeoLocalityViewToGeoLocalityMapper,
-    val geoLocalityListToGeoLocalityEntityListMapper: GeoLocalityListToGeoLocalityEntityListMapper,
+    val geoLocalitiesListToGeoLocalityEntityListMapper: GeoLocalitiesListToGeoLocalityEntityListMapper,
     val geoLocalityToGeoLocalityEntityMapper: GeoLocalityToGeoLocalityEntityMapper,
     val geoLocalityToGeoLocalityTlEntityMapper: GeoLocalityToGeoLocalityTlEntityMapper
 )

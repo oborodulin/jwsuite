@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.entrance
 
 data class EntranceMappers(
-    val entranceEntityListToEntranceListMapper: EntranceEntityListToEntranceListMapper,
+    val entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
     val entranceEntityToEntranceMapper: EntranceEntityToEntranceMapper,
-    val entranceListToEntranceEntityListMapper: EntranceListToEntranceEntityListMapper,
+    val entrancesListToEntranceEntityListMapper: EntrancesListToEntranceEntityListMapper,
     val entranceToEntranceEntityMapper: EntranceToEntranceEntityMapper
 )

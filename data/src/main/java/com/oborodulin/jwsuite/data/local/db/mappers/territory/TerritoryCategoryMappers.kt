@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.territory
 
 data class TerritoryCategoryMappers(
-    val territoryCategoryEntityListToTerritoryCategoryListMapper: TerritoryCategoryEntityListToTerritoryCategoryListMapper,
+    val territoryCategoryEntityListToTerritoryCategoriesListMapper: TerritoryCategoryEntityListToTerritoryCategoriesListMapper,
     val territoryCategoryEntityToTerritoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-    val territoryCategoryListToTerritoryCategoryEntityListMapper: TerritoryCategoryListToTerritoryCategoryEntityListMapper,
+    val territoryCategoriesListToTerritoryCategoryEntityListMapper: TerritoryCategoriesListToTerritoryCategoryEntityListMapper,
     val territoryCategoryToTerritoryCategoryEntityMapper: TerritoryCategoryToTerritoryCategoryEntityMapper
 )

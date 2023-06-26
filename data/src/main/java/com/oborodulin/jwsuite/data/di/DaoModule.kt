@@ -2,11 +2,21 @@ package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.local.db.dao.AppSettingDao
-import com.oborodulin.jwsuite.data.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data.local.db.dao.CongregationDao
-import com.oborodulin.jwsuite.data.local.db.dao.GroupDao
-import com.oborodulin.jwsuite.data.local.db.dao.GeoLocalityDistrictDao
+import com.oborodulin.jwsuite.data.local.db.dao.EntranceDao
+import com.oborodulin.jwsuite.data.local.db.dao.FloorDao
 import com.oborodulin.jwsuite.data.local.db.dao.GeoLocalityDao
+import com.oborodulin.jwsuite.data.local.db.dao.GeoLocalityDistrictDao
+import com.oborodulin.jwsuite.data.local.db.dao.GeoMicrodistrictDao
+import com.oborodulin.jwsuite.data.local.db.dao.GeoRegionDao
+import com.oborodulin.jwsuite.data.local.db.dao.GeoRegionDistrictDao
+import com.oborodulin.jwsuite.data.local.db.dao.GeoStreetDao
+import com.oborodulin.jwsuite.data.local.db.dao.GroupDao
+import com.oborodulin.jwsuite.data.local.db.dao.HouseDao
+import com.oborodulin.jwsuite.data.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data.local.db.dao.RoomDao
+import com.oborodulin.jwsuite.data.local.db.dao.TerritoryCategoryDao
+import com.oborodulin.jwsuite.data.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data.local.db.mappers.*
 import com.oborodulin.jwsuite.data.local.db.repositories.*
 import com.oborodulin.jwsuite.domain.usecases.*
@@ -25,24 +35,71 @@ object DaoModule {
     @Provides
     fun provideAppSettingDao(db: JwSuiteDatabase): AppSettingDao = db.appSettingDao()
 
+    // Geo:
     @Singleton
     @Provides
-    fun providePayerDao(db: JwSuiteDatabase): CongregationDao = db.territoryDao()
+    fun provideGeoRegionDao(db: JwSuiteDatabase): GeoRegionDao = db.geoRegionDao()
 
     @Singleton
     @Provides
-    fun provideMeterDao(db: JwSuiteDatabase): GeoRegionDao = db.geoRegionDao()
+    fun provideGeoRegionDistrictDao(db: JwSuiteDatabase): GeoRegionDistrictDao =
+        db.geoRegionDistrictDao()
 
     @Singleton
     @Provides
-    fun provideServiceDao(db: JwSuiteDatabase): GeoLocalityDao = db.congregationDao()
+    fun provideGeoLocalityDao(db: JwSuiteDatabase): GeoLocalityDao = db.geoLocalityDao()
 
     @Singleton
     @Provides
-    fun provideRateDao(db: JwSuiteDatabase): GroupDao = db.groupDao()
+    fun provideGeoLocalityDistrictDao(db: JwSuiteDatabase): GeoLocalityDistrictDao =
+        db.geoLocalityDistrictDao()
 
     @Singleton
     @Provides
-    fun provideReceiptDao(db: JwSuiteDatabase): GeoLocalityDistrictDao = db.memberDao()
+    fun provideGeoMicrodistrictDao(db: JwSuiteDatabase): GeoMicrodistrictDao =
+        db.geoMicrodistrictDao()
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetDao(db: JwSuiteDatabase): GeoStreetDao = db.geoStreetDao()
+
+    // Congregation:
+    @Singleton
+    @Provides
+    fun provideCongregationDao(db: JwSuiteDatabase): CongregationDao = db.congregationDao()
+
+    @Singleton
+    @Provides
+    fun provideGroupDao(db: JwSuiteDatabase): GroupDao = db.groupDao()
+
+    @Singleton
+    @Provides
+    fun provideMemberDao(db: JwSuiteDatabase): MemberDao = db.memberDao()
+
+    // Territory:
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoryDao(db: JwSuiteDatabase): TerritoryCategoryDao =
+        db.territoryCategoryDao()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryDao(db: JwSuiteDatabase): TerritoryDao = db.territoryDao()
+
+    @Singleton
+    @Provides
+    fun provideHouseDao(db: JwSuiteDatabase): HouseDao = db.houseDao()
+
+    @Singleton
+    @Provides
+    fun provideEntranceDao(db: JwSuiteDatabase): EntranceDao = db.entranceDao()
+
+    @Singleton
+    @Provides
+    fun provideFloorDao(db: JwSuiteDatabase): FloorDao = db.floorDao()
+
+    @Singleton
+    @Provides
+    fun provideRoomDao(db: JwSuiteDatabase): RoomDao = db.roomDao()
 
 }

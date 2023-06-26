@@ -40,6 +40,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryDistrictView::class,
+        HouseView::class
         //TerritoryInfoView::class
     ],
     version = 1
@@ -729,12 +730,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         private fun insertDefStreetDistrict(
             db: SupportSQLiteDatabase, street: GeoStreetEntity,
-            localityDistrict: GeoLocalityDistrictEntity? = null,
+            localityDistrict: GeoLocalityDistrictEntity,
             microdistrict: GeoMicrodistrictEntity? = null
         ) {
             val streetDistrict = GeoDistrictStreetEntity.defaultDistrictStreet(
                 streetId = street.streetId,
-                localityDistrictId = localityDistrict?.localityDistrictId,
+                localityDistrictId = localityDistrict.localityDistrictId,
                 microdistrictId = microdistrict?.microdistrictId
             )
             db.insert(

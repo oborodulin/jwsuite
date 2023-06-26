@@ -2,13 +2,13 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.conver
 
 import com.oborodulin.home.common.ui.state.CommonResultConverter
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationListToCongregationListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationsListToCongregationsListItemMapper
 
 class CongregationsListConverter(
-    private val mapper: CongregationListToCongregationListItemMapper
+    private val mapper: CongregationsListToCongregationsListItemMapper
 ) :
-    CommonResultConverter<GetCongregationsUseCase.Response, List<CongregationListItem>>() {
+    CommonResultConverter<GetCongregationsUseCase.Response, List<CongregationsListItem>>() {
     override fun convertSuccess(data: GetCongregationsUseCase.Response) =
         mapper.map(data.congregations)
 }

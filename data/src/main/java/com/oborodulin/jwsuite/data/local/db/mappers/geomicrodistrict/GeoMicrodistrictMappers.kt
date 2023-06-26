@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.geomicrodistrict
 
 data class GeoMicrodistrictMappers(
-    val geoMicrodistrictViewListToGeoMicrodistrictListMapper: GeoMicrodistrictViewListToGeoMicrodistrictListMapper,
+    val geoMicrodistrictViewListToGeoMicrodistrictsListMapper: GeoMicrodistrictViewListToGeoMicrodistrictsListMapper,
     val geoMicrodistrictViewToGeoMicrodistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
-    val geoMicrodistrictListToGeoMicrodistrictEntityListMapper: GeoMicrodistrictListToGeoMicrodistrictEntityListMapper,
+    val geoMicrodistrictsListToGeoMicrodistrictEntityListMapper: GeoMicrodistrictsListToGeoMicrodistrictEntityListMapper,
     val geoMicrodistrictToGeoMicrodistrictEntityMapper: GeoMicrodistrictToGeoMicrodistrictEntityMapper,
     val geoMicrodistrictToGeoMicrodistrictTlEntityMapper: GeoMicrodistrictToGeoMicrodistrictTlEntityMapper
 )

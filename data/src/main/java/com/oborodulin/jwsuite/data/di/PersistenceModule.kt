@@ -19,7 +19,7 @@ object PersistenceModule {
     // Database:
     @Singleton
     @Provides
-    fun provideHomeDatabase(
+    fun provideJwSuiteDatabase(
         @ApplicationContext appContext: Context, jsonLogger: Gson
     ): JwSuiteDatabase = JwSuiteDatabase.getInstance(appContext, jsonLogger)
 }

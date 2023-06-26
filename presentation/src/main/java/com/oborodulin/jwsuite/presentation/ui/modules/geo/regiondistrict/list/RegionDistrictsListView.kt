@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.oborodulin.home.accounting.R
+import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationListItem
 import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListUiAction
 import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListView
@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.*
 
-private const val TAG = "Accounting.ui.PayersListView"
+private const val TAG = "Geo.ui.PayersListView"
 
 @Composable
 fun PayersListView(

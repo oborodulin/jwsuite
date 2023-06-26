@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.group
 
 data class GroupMappers(
-    val groupEntityListToGroupListMapper: GroupEntityListToGroupListMapper,
+    val groupEntityListToGroupsListMapper: GroupEntityListToGroupsListMapper,
     val groupEntityToGroupMapper: GroupEntityToGroupMapper,
-    val groupListToGroupEntityListMapper: GroupListToGroupEntityListMapper,
+    val groupsListToGroupEntityListMapper: GroupsListToGroupEntityListMapper,
     val groupToGroupEntityMapper: GroupToGroupEntityMapper
 )
