@@ -95,7 +95,10 @@ dependencies {
     implementation deps.navigation.compose
 
     // Paging
+    //implementation deps.google.accompanistPager
+    implementation deps.google.accompanistPagerIndicators
     implementation deps.paging.compose
+
     // Sweet Toast
     implementation deps.TalhaFaki.composableSweetToast
     // Lottie
@@ -116,4 +119,5 @@ dependencies {
     testImplementation deps.test.junit
     androidTestImplementation deps.test.extJunit
     androidTestImplementation deps.test.espressoCore
-    androidTestImplementation deps.test.uiJunit4Bom}
+    androidTestImplementation deps.test.uiJunit4Bom
+}

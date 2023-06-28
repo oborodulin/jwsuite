@@ -14,26 +14,26 @@
     <!--BUTTONS: -->
     <string name="btn_pay_text">Оплатить</string>
 
-    <!--МЕНЮ плательщика -->
+    <!--МЕНЮ собрания -->
     <string name="congregation_add">Добавить</string>
     <string name="congregation_delete">Удалить</string>
     <string name="congregation_select_all">Выбрать все</string>
 
     <!--МЕНЮ: -->
-    <!--плательщика -->
-    <string name="new_congregation_menu_item">Новый плательщик</string>
+    <!--собрания -->
+    <string name="new_congregation_menu_item">Новое собрание</string>
 
     <!--СПИСОК: -->
-    <!--плательщиков -->
-    <string name="congregation_list_empty_text">Плательщиков пока нет. Добавте, пожалуйста, хотя бы одного</string>
+    <!--собраний -->
+    <string name="congregation_list_empty_text">Собраний пока нет. Добавте, пожалуйста, хотя бы одно</string>
 
     <!--ФОРМА: -->
-    <!--плательщика -->
-    <string name="congregation_subheader">Плательщик</string>
-    <string name="congregation_new_subheader">Новый плательщик</string>
-    <string name="congregation_num_hint">Код ЕРЦ</string>
-    <string name="congregation_name_hint">Фамилия и инициалы</string>
-    <string name="territory_mark_hint">Адрес</string>
+    <!--Собрание -->
+    <string name="congregation_subheader">Собрание</string>
+    <string name="congregation_new_subheader">Новое собрание</string>
+    <string name="congregation_num_hint">№</string>
+    <string name="congregation_name_hint">Наименование</string>
+    <string name="territory_mark_hint">Буква участка</string>
     <string name="total_area_hint">Общая площадь</string>
     <string name="living_space_hint">Жилая площадь</string>
     <string name="heated_volume_hint">Отапливаемый объём</string>
@@ -44,10 +44,10 @@
 
     <!--ДИАЛОГИ -->
     <string name="dlg_title_select_region">Выберите область</string>
-    <string name="dlg_confirm_del_congregation">Удалить плательщика %1$s?</string>
+    <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
-    <!--формы плательщика-->
+    <!--формы собрания-->
     <string name="erc_code_empty_error">Укажите, пожалуйста, код ЕРЦ!</string>
     <string name="full_name_empty_error">Укажите, пожалуйста, фамилию и инициалы!</string>
     <string name="address_empty_error">Укажите, пожалуйста, адрес!</string>

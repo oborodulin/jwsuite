@@ -51,8 +51,6 @@ fun rememberAppState(
  */
 @Stable
 class AppState(
-    //val accountingScaffoldState: ScaffoldState,
-    //val payerScaffoldState: ScaffoldState,
     val commonNavController: NavHostController,
     val navBarNavController: NavHostController,
     val appName: String,

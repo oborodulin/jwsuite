@@ -57,20 +57,20 @@ import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetToGeoStre
 import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetsListToGeoStreetEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupEntityListToGroupsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupEntityToGroupMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupToGroupEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupViewListToGroupsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupViewToGroupMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupsListToGroupEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewListToHousesListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewToHouseMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseToHouseEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewListToHousesListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewToHouseMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HousesListToHouseEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberEntityListToMembersListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberEntityToMemberMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberToMemberEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberViewListToMembersListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MembersListToMemberEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityListToRoomsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityToRoomMapper
@@ -433,12 +433,13 @@ object DataMappersModule {
     // Groups:
     @Singleton
     @Provides
-    fun provideGroupEntityToGroupMapper(): GroupEntityToGroupMapper = GroupEntityToGroupMapper()
+    fun provideGroupViewToGroupMapper(mapper: CongregationViewToCongregationMapper): GroupViewToGroupMapper =
+        GroupViewToGroupMapper(congregationMapper = mapper)
 
     @Singleton
     @Provides
-    fun provideGroupEntityListToGroupsListMapper(mapper: GroupEntityToGroupMapper): GroupEntityListToGroupsListMapper =
-        GroupEntityListToGroupsListMapper(mapper = mapper)
+    fun provideGroupViewListToGroupsListMapper(mapper: GroupViewToGroupMapper): GroupViewListToGroupsListMapper =
+        GroupViewListToGroupsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -452,13 +453,13 @@ object DataMappersModule {
     @Singleton
     @Provides
     fun provideGroupMappers(
-        groupEntityListToGroupsListMapper: GroupEntityListToGroupsListMapper,
-        groupEntityToGroupMapper: GroupEntityToGroupMapper,
+        groupViewListToGroupsListMapper: GroupViewListToGroupsListMapper,
+        groupViewToGroupMapper: GroupViewToGroupMapper,
         groupsListToGroupEntityListMapper: GroupsListToGroupEntityListMapper,
         groupToGroupEntityMapper: GroupToGroupEntityMapper
     ): GroupMappers = GroupMappers(
-        groupEntityListToGroupsListMapper,
-        groupEntityToGroupMapper,
+        groupViewListToGroupsListMapper,
+        groupViewToGroupMapper,
         groupsListToGroupEntityListMapper,
         groupToGroupEntityMapper
     )
@@ -466,13 +467,13 @@ object DataMappersModule {
     // Members:
     @Singleton
     @Provides
-    fun provideMemberEntityToMemberMapper(): MemberEntityToMemberMapper =
-        MemberEntityToMemberMapper()
+    fun provideMemberViewToMemberMapper(mapper: GroupViewToGroupMapper): MemberViewToMemberMapper =
+        MemberViewToMemberMapper(groupMapper = mapper)
 
     @Singleton
     @Provides
-    fun provideMemberEntityListToMembersListMapper(mapper: MemberEntityToMemberMapper): MemberEntityListToMembersListMapper =
-        MemberEntityListToMembersListMapper(mapper = mapper)
+    fun provideMMemberViewListToMembersListMapper(mapper: MemberViewToMemberMapper): MemberViewListToMembersListMapper =
+        MemberViewListToMembersListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -487,13 +488,13 @@ object DataMappersModule {
     @Singleton
     @Provides
     fun provideMemberMappers(
-        memberEntityListToMembersListMapper: MemberEntityListToMembersListMapper,
-        memberEntityToMemberMapper: MemberEntityToMemberMapper,
+        memberViewListToMembersListMapper: MemberViewListToMembersListMapper,
+        memberViewToMemberMapper: MemberViewToMemberMapper,
         membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
         memberToMemberEntityMapper: MemberToMemberEntityMapper
     ): MemberMappers = MemberMappers(
-        memberEntityListToMembersListMapper,
-        memberEntityToMemberMapper,
+        memberViewListToMembersListMapper,
+        memberViewToMemberMapper,
         membersListToMemberEntityListMapper,
         memberToMemberEntityMapper
     )

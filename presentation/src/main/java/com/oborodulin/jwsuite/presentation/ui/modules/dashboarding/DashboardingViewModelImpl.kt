@@ -61,13 +61,11 @@ class DashboardingViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             congregatingUseCases.getFavoriteCongregationUseCase.execute(
                 GetFavoriteCongregationUseCase.Request
-            )
-                .map {
-                    congregationConverter.convert(it)
-                }
-                .collect {
-                    submitState(it)
-                }
+            ).map {
+                congregationConverter.convert(it)
+            }.collect {
+                submitState(it)
+            }
         }
         return job
     }
@@ -96,7 +94,7 @@ class DashboardingViewModelImpl @Inject constructor(
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
                 locality =,
-                isFavorite = true,
+                isFavorite = true
             )
             congregationUi.id = UUID.randomUUID()
             return congregationUi

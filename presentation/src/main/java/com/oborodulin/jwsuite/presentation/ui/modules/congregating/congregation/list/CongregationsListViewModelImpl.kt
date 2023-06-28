@@ -5,23 +5,27 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
+import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationListItem
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.converters.CongregationsListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.math.BigDecimal
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Congregating.ui.CongregationsListViewModel"
@@ -32,7 +36,7 @@ class CongregationsListViewModelImpl @Inject constructor(
     private val congregationUseCases: CongregationUseCases,
     private val congregationsListConverter: CongregationsListConverter
 ) : CongregationsListViewModel,
-    MviViewModel<List<CongregationListItem>, UiState<List<CongregationListItem>>, CongregationsListUiAction, CongregationsListUiSingleEvent>(
+    MviViewModel<List<CongregationsListItem>, UiState<List<CongregationsListItem>>, CongregationsListUiAction, CongregationsListUiSingleEvent>(
         state = state
     ) {
 
@@ -60,19 +64,9 @@ class CongregationsListViewModelImpl @Inject constructor(
                 deleteCongregation(action.congregationId)
             }
 
-            is CongregationsListUiAction.FavoriteCongregation -> {
+            is CongregationsListUiAction.MakeFavoriteCongregation -> {
                 makeFavoriteCongregation(action.congregationId)
             }
-            /*is PostListUiAction.UserClick -> {
-                updateInteraction(action.interaction)
-                submitSingleEvent(
-                    PostListUiSingleEvent.OpenUserScreen(
-                        NavRoutes.User.routeForUser(
-                            UserInput(action.userId)
-                        )
-                    )
-                )
-            }*/
         }
         return job
     }
@@ -91,21 +85,23 @@ class CongregationsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deleteCongregation(payerId: UUID): Job {
-        Timber.tag(TAG).d("deleteCongregation() called: payerId = %s", payerId.toString())
+    private fun deleteCongregation(congregationId: UUID): Job {
+        Timber.tag(TAG)
+            .d("deleteCongregation() called: congregationId = %s", congregationId.toString())
         val job = viewModelScope.launch(errorHandler) {
             congregationUseCases.deleteCongregationUseCase.execute(
-                DeleteCongregationUseCase.Request(payerId)
+                DeleteCongregationUseCase.Request(congregationId)
             ).collect {}
         }
         return job
     }
 
-    private fun makeFavoriteCongregation(payerId: UUID): Job {
-        Timber.tag(TAG).d("makeFavoriteCongregation() called: payerId = %s", payerId.toString())
+    private fun makeFavoriteCongregation(congregationId: UUID): Job {
+        Timber.tag(TAG)
+            .d("makeFavoriteCongregation() called: congregationId = %s", congregationId.toString())
         val job = viewModelScope.launch(errorHandler) {
             congregationUseCases.makeFavoriteCongregationUseCase.execute(
-                MakeFavoriteCongregationUseCase.Request(payerId)
+                MakeFavoriteCongregationUseCase.Request(congregationId)
             ).collect {}
         }
         return job
@@ -129,31 +125,23 @@ class CongregationsListViewModelImpl @Inject constructor(
                 override fun setPrimaryObjectData(value: ArrayList<String>) {}
             }
 
+        //Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00")
         fun previewList(ctx: Context) = listOf(
-            CongregationListItem(
+            CongregationsListItem(
                 id = UUID.randomUUID(),
-                fullName = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer1_full_name),
-                address = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer1_address),
-                totalArea = BigDecimal("61"),
-                livingSpace = BigDecimal("59"),
-                paymentDay = 20,
-                personsNum = 2,
-                isFavorite = true,
-                fromPaymentDate = Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00"),
-                toPaymentDate = Utils.toOffsetDateTime("2022-09-01T14:29:10.212+03:00"),
-                totalDebt = BigDecimal("123456.78")
+                congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
+                congregationName = ctx.resources.getString(R.string.def_congregation1_name),
+                territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
+                locality =,
+                isFavorite = true
             ),
-            CongregationListItem(
+            CongregationsListItem(
                 id = UUID.randomUUID(),
-                fullName = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer2_full_name),
-                address = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer2_address),
-                totalArea = BigDecimal("89"),
-                livingSpace = BigDecimal("76"),
-                paymentDay = 20,
-                personsNum = 1,
-                fromPaymentDate = Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00"),
-                toPaymentDate = Utils.toOffsetDateTime("2022-09-01T14:29:10.212+03:00"),
-                totalDebt = BigDecimal("876543.21")
+                congregationNum = ctx.resources.getString(R.string.def_congregation2_num),
+                congregationName = ctx.resources.getString(R.string.def_congregation2_name),
+                territoryMark = ctx.resources.getString(R.string.def_congregation2_card_mark),
+                locality =,
+                isFavorite = true
             )
         )
     }

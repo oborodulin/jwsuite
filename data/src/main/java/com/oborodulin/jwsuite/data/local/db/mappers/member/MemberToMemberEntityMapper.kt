@@ -8,7 +8,7 @@ import java.util.UUID
 class MemberToMemberEntityMapper : Mapper<Member, MemberEntity> {
     override fun map(input: Member) = MemberEntity(
         memberId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
-        groupsId = input.groupId,
+        groupsId = input.group.id!!,
         memberNum = input.memberNum,
         memberName = input.memberName,
         surname = input.surname,

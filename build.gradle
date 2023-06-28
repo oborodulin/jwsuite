@@ -3,10 +3,11 @@ buildscript {
     // Define versions in a single place
     ext {
         versions = [
+                accompanist            : '0.31.4-beta',
                 appCompat              : '1.6.1',
                 compose                : '1.4.3',
                 composeActivity        : '1.7.1',
-                composeBom             : '2023.05.01',
+                composeBom             : '2023.06.01',
                 composeKotlinExt       : '1.4.7', //Support for Kotlin 1.8.21
                 composeMaterial3       : '1.1.0',
                 composeNavigation      : '2.5.3',
@@ -137,8 +138,12 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                 i18n                : [nv: "com.neovisionaries:nv-i18n:$versions.nvi18n"],
                 glide               : [compiler: "com.github.bumptech.glide:compiler:$versions.glide",
                                        glide   : "com.github.bumptech.glide:glide:$versions.glide"],
-                google              : [material: "com.google.android.material:material:$versions.material",
-                                       gson    : "com.google.code.gson:gson:$versions.gson"],
+                google              : [// Pager
+                                       accompanistPager          : "com.google.accompanist:accompanist-pager:$versions.accompanist",
+                                       // Pager Indicators
+                                       accompanistPagerIndicators: "com.google.accompanist:accompanist-pager-indicators:$versions.accompanist",
+                                       material                  : "com.google.android.material:material:$versions.material",
+                                       gson                      : "com.google.code.gson:gson:$versions.gson"],
                 hilt                : [navigationCompose: "androidx.hilt:hilt-navigation-compose:$versions.hiltNavCompose"],
                 jvm                 : [inject: "javax.inject:javax.inject:$versions.inject"],
                 kotlin              : [gradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",

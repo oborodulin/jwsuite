@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list
+package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -23,37 +23,49 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListUiAction
+import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListView
+import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListViewModel
+import com.oborodulin.home.billing.ui.subtotals.PayerServiceSubtotalsListViewModelImpl
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.metering.ui.value.MeterValuesListUiAction
+import com.oborodulin.home.metering.ui.value.MeterValuesListView
+import com.oborodulin.home.metering.ui.value.MeterValuesListViewModel
+import com.oborodulin.home.metering.ui.value.MeterValuesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.*
 
-private const val TAG = "Congregating.ui.CongregationsListView"
+private const val TAG = "Geo.ui.PayersListView"
 
 @Composable
-fun CongregationsListView(
+fun PayersListView(
     appState: AppState,
-    payersListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
+    payersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    meterValuesListViewModel: MeterValuesListViewModelImpl = hiltViewModel(),
+    payerServiceSubtotalsListViewModel: PayerServiceSubtotalsListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    congregationInput: CongregationInput
+    congregationInput: CongregationInput? = null,
+    groupInput: GroupInput? = null
 ) {
-    Timber.tag(TAG).d("CongregationsListView(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("PayersListView(...) called: payerInput = %s", congregationInput)
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() BEFORE collect ui state flow")
-        payersListViewModel.submitAction(CongregationsListUiAction.Load)
+        Timber.tag(TAG).d("PayersListView: LaunchedEffect() BEFORE collect ui state flow")
+        payersListViewModel.submitAction(MembersListUiAction.Load)
     }
     payersListViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            CongregationsCongregating(
+            PayersAccounting(
                 payers = it,
                 appState = appState,
-                congregationsListViewModel = payersListViewModel,
+                membersListViewModel = payersListViewModel,
                 payerServiceSubtotalsListViewModel = payerServiceSubtotalsListViewModel,
                 meterValuesListViewModel = meterValuesListViewModel,
                 navController = navController,
@@ -62,11 +74,11 @@ fun CongregationsListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() AFTER collect ui state flow")
+        Timber.tag(TAG).d("PayersListView: LaunchedEffect() AFTER collect ui state flow")
         payersListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is CongregationsListUiSingleEvent.OpenCongregationScreen -> {
+                is MembersListUiSingleEvent.OpenPayerScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -75,7 +87,7 @@ fun CongregationsListView(
 }
 
 @Composable
-fun CongregationsList(
+fun PayersList(
     payers: List<CongregationListItem>,
     congregationInput: CongregationInput,
     onFavorite: (CongregationListItem) -> Unit,
@@ -83,7 +95,7 @@ fun CongregationsList(
     onEdit: (CongregationListItem) -> Unit,
     onDelete: (CongregationListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("CongregationsList(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("PayersList(...) called: payerInput = %s", congregationInput)
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (payers.isNotEmpty()) {
         val listState = rememberLazyListState()
@@ -98,14 +110,14 @@ fun CongregationsList(
                 payers[index].let { payer ->
                     val isSelected =
                         ((selectedIndex == -1) and ((congregationInput.congregationId == payer.id) || payer.isFavorite)) || (selectedIndex == index)
-                    CongregationListItemComponent(
+                    PayerListItemComponent(
                         icon = com.oborodulin.jwsuite.presentation.R.drawable.outline_house_black_36,
                         item = payer,
                         itemActions = listOf(
                             ComponentUiAction.EditListItem { onEdit(payer) },
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
-                                    R.string.dlg_confirm_del_congregation,
+                                    R.string.dlg_confirm_del_payer,
                                     payer.fullName
                                 )
                             ) { onDelete(payer) }),
@@ -121,9 +133,43 @@ fun CongregationsList(
             }
         }
     }
+    /*
+            list.apply {
+                val error = when {
+                    loadState.prepend is LoadState.Error -> loadState.prepend AS LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append AS LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh AS LoadState.Error
+                    else -> null
+                }
+
+                val loading = when {
+                    loadState.prepend is LoadState.Loading -> loadState.prepend AS LoadState.Loading
+                    loadState.append is LoadState.Loading -> loadState.append AS LoadState.Loading
+                    loadState.refresh is LoadState.Loading -> loadState.refresh AS LoadState.Loading
+                    else -> null
+                }
+
+                if (loading != null) {
+                    repeat((0..20).count()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = Color.DarkGray)
+                            ) {
+                                ShimmerAnimation()
+                            }
+                        }
+                    }
+                }
+
+                if (error != null) {
+                    //TODO: add error handler
+                    item { SweetError(message = error.error.localizedMessage ?: "Error") }
+                }
+            }*/
     else {
         Text(
-            text = stringResource(R.string.congregation_list_empty_text),
+            text = stringResource(R.string.payer_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -131,16 +177,16 @@ fun CongregationsList(
 }
 
 @Composable
-fun CongregationsCongregating(
+fun PayersAccounting(
     payers: List<CongregationListItem>,
     appState: AppState,
-    congregationsListViewModel: CongregationsListViewModel,
-    payerServiceSubtotalsListViewModel: CongregationServiceSubtotalsListViewModel,
+    membersListViewModel: MembersListViewModel,
+    payerServiceSubtotalsListViewModel: PayerServiceSubtotalsListViewModel,
     meterValuesListViewModel: MeterValuesListViewModel,
     navController: NavController,
     congregationInput: CongregationInput
 ) {
-    Timber.tag(TAG).d("CongregationsCongregating(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("PayersAccounting(...) called: payerInput = %s", congregationInput)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -164,12 +210,12 @@ fun CongregationsCongregating(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationsList(payers,
+            PayersList(payers,
                 congregationInput = congregationInput,
                 onFavorite = { payer ->
-                    congregationsListViewModel.handleActionJob(action = {
-                        congregationsListViewModel.submitAction(
-                            CongregationsListUiAction.MakeFavoriteCongregation(payer.id)
+                    membersListViewModel.handleActionJob(action = {
+                        membersListViewModel.submitAction(
+                            MembersListUiAction.FavoritePayer(payer.id)
                         )
                     },
                         afterAction = {
@@ -180,7 +226,7 @@ fun CongregationsCongregating(
                     )
                 },
                 onClick = { payer ->
-                    congregationsListViewModel.setPrimaryObjectData(
+                    membersListViewModel.setPrimaryObjectData(
                         arrayListOf(
                             payer.id.toString(),
                             payer.fullName
@@ -189,7 +235,7 @@ fun CongregationsCongregating(
                     appState.actionBarSubtitle.value = payer.address
                     with(payerServiceSubtotalsListViewModel) {
                         setPrimaryObjectData(arrayListOf(payer.id.toString()))
-                        submitAction(CongregationServiceSubtotalsListUiAction.Load(payer.id))
+                        submitAction(PayerServiceSubtotalsListUiAction.Load(payer.id))
                     }
                     with(meterValuesListViewModel) {
                         clearInputFieldsStates()
@@ -198,15 +244,15 @@ fun CongregationsCongregating(
                     }
                 },
                 onEdit = { payer ->
-                    congregationsListViewModel.submitAction(
-                        CongregationsListUiAction.EditCongregation(
+                    membersListViewModel.submitAction(
+                        MembersListUiAction.EditPayer(
                             payer.id
                         )
                     )
                 }
             ) { payer ->
-                congregationsListViewModel.handleActionJob(action = {
-                    congregationsListViewModel.submitAction(CongregationsListUiAction.DeleteCongregation(payer.id))
+                membersListViewModel.handleActionJob(action = {
+                    membersListViewModel.submitAction(MembersListUiAction.DeletePayer(payer.id))
                 },
                     afterAction = {
                         meterValuesListViewModel.submitAction(MeterValuesListUiAction.Init)
@@ -243,7 +289,7 @@ fun CongregationsCongregating(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationServiceSubtotalsListView(
+            PayerServiceSubtotalsListView(
                 viewModel = payerServiceSubtotalsListViewModel,
                 navController = navController,
                 payerInput = congregationInput
@@ -256,9 +302,9 @@ fun CongregationsCongregating(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewCongregationsCongregating() {
-    CongregationsList(
-        payers = CongregationsListViewModelImpl.previewList(LocalContext.current),
+fun PreviewPayersAccounting() {
+    PayersList(
+        payers = MembersListViewModelImpl.previewList(LocalContext.current),
         congregationInput = CongregationInput(UUID.randomUUID()),
         onFavorite = {},
         onClick = {},
