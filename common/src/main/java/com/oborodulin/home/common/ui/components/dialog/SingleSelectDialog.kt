@@ -34,24 +34,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.toast
+import java.util.Locale
 
 @Composable
 fun SingleSelectDialog(
     title: String,
-    optionsList: List<ListItemModel>,
+    items: List<ListItemModel>,
     defaultSelected: Int,
-    onOptionClick: (ListItemModel) -> Unit,
+    onClick: OnListItemEvent,
     onAddButtonClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     var selectedOption by remember { mutableStateOf(defaultSelected) }
-
     Dialog(onDismissRequest = { onDismissRequest.invoke() }) {
         Surface(
             modifier = Modifier
@@ -62,7 +65,10 @@ fun SingleSelectDialog(
             Column(modifier = Modifier.padding(10.dp)) {
                 Text(text = title)
                 Spacer(modifier = Modifier.height(10.dp))
-                if (optionsList.isNotEmpty()) {
+                if (items.isNotEmpty()) {
+                    val searchState = remember { mutableStateOf(TextFieldValue("")) }
+                    SearchComponent(searchState)
+                    var filteredItems: List<ListItemModel>
                     LazyColumn(
                         state = rememberLazyListState(),
                         modifier = Modifier
@@ -70,13 +76,27 @@ fun SingleSelectDialog(
                             .padding(8.dp)
                             .focusable(enabled = true)
                     ) {
-                        items(optionsList.size) { index ->
+                        val searchedText = searchState.value.text
+                        filteredItems = if (searchedText.isEmpty()) {
+                            items
+                        } else {
+                            val resultList = mutableListOf<ListItemModel>()
+                            for (item in items) {
+                                if (item.headline.lowercase(Locale.getDefault())
+                                        .contains(searchedText.lowercase(Locale.getDefault()))
+                                ) {
+                                    resultList.add(item)
+                                }
+                            }
+                            resultList
+                        }
+                        items(filteredItems.size) { index ->
                             SingleSelectRadioButton(
-                                optionsList[index],
-                                optionsList[selectedOption]
+                                filteredItems[index],
+                                filteredItems[selectedOption]
                             ) { selectedValue ->
-                                selectedOption = optionsList.indexOf(selectedValue)
-                                onOptionClick.invoke(optionsList[selectedOption])
+                                selectedOption = filteredItems.indexOf(selectedValue)
+                                onClick(filteredItems[selectedOption])
                                 onDismissRequest.invoke()
                             }
                         }
@@ -150,7 +170,7 @@ fun PreviewSingleSelectDialog() {
     }
     SingleSelectDialog(
         title = stringResource(R.string.preview_blank_title),
-        optionsList = items,
+        items = items,
         defaultSelected = items.indexOf(currentSelectedItem),
         onOptionClick = { item -> println(item.headline) },
         onAddButtonClick = { showDialog = true }

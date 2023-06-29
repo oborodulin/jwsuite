@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components
+package com.oborodulin.home.common.ui.components.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchView(state: MutableState<TextFieldValue>) {
+fun SearchComponent(state: MutableState<TextFieldValue>) {
 //    val containerColor = FilledTextFieldTokens.ContainerColor.toColor()
     TextField(
         value = state.value,
@@ -86,7 +86,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewSearchView() {
+fun PreviewSearchComponent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    SearchView(textState)
+    SearchComponent(textState)
 }

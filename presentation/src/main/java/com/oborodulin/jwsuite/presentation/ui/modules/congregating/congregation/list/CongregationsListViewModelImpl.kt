@@ -28,7 +28,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.ui.CongregationsListViewModel"
+private const val TAG = "Congregating.ui.CongregationsListViewModelImpl"
 
 @HiltViewModel
 class CongregationsListViewModelImpl @Inject constructor(
@@ -125,7 +125,6 @@ class CongregationsListViewModelImpl @Inject constructor(
                 override fun setPrimaryObjectData(value: ArrayList<String>) {}
             }
 
-        //Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00")
         fun previewList(ctx: Context) = listOf(
             CongregationsListItem(
                 id = UUID.randomUUID(),
@@ -141,7 +140,6 @@ class CongregationsListViewModelImpl @Inject constructor(
                 congregationName = ctx.resources.getString(R.string.def_congregation2_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation2_card_mark),
                 locality =,
-                isFavorite = true
             )
         )
     }

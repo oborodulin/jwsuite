@@ -6,6 +6,8 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class GeoRegionDistrictSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoLocalitySaveException(cause: Throwable) : UseCaseException(cause)
     class CongregationSaveException(cause: Throwable) : UseCaseException(cause)
+    class GroupSaveException(cause: Throwable) : UseCaseException(cause)
+    class MemberSaveException(cause: Throwable) : UseCaseException(cause)
 
     class UnknownException(cause: Throwable) : UseCaseException(cause)
 

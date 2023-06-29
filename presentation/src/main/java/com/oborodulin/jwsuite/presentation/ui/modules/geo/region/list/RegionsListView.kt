@@ -59,7 +59,7 @@ fun RegionsListView(
         CommonScreen(state = state) { regionsList ->
             SingleSelectDialog(
                 title = stringResource(R.string.dlg_title_select_region),
-                optionsList = regionsList,
+                items = regionsList,
                 defaultSelected = regionsList.indexOf(regionsList.first { it.id == selectedRegionId }),
                 onOptionClick:(ListItemModel) -> Unit,
             onAddButtonClick: () -> Unit,

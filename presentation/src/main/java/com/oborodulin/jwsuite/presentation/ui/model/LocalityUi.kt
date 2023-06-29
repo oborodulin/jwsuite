@@ -5,10 +5,10 @@ import com.oborodulin.jwsuite.domain.util.LocalityType
 import java.util.UUID
 
 data class LocalityUi(
-    val regionId: UUID,
+    val regionId: UUID = UUID.randomUUID(),
     val regionDistrictId: UUID? = null,
-    val localityCode: String,
-    val localityType: LocalityType,
-    val localityShortName: String,
-    val localityName: String
+    val localityCode: String = "",
+    val localityType: LocalityType = LocalityType.CITY,
+    val localityShortName: String = "",
+    val localityName: String = ""
 ) : ModelUi()

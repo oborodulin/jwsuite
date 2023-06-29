@@ -1,11 +1,12 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list
 
 import com.oborodulin.home.common.ui.state.UiAction
-import java.util.*
+import java.util.UUID
 
 sealed class MembersListUiAction : UiAction {
-    object Load : MembersListUiAction()
-    data class EditPayer(val payerId: UUID) : MembersListUiAction()
-    data class DeletePayer(val payerId: UUID) : MembersListUiAction()
-    data class FavoritePayer(val payerId: UUID) : MembersListUiAction()
+    data class Load(val congregationId: UUID? = null, val groupId: UUID? = null) :
+        MembersListUiAction()
+
+    data class EditMember(val memberId: UUID) : MembersListUiAction()
+    data class DeleteMember(val memberId: UUID) : MembersListUiAction()
 }

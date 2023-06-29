@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data.local.db.dao
 
 import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.GroupEntity
+import com.oborodulin.jwsuite.data.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data.local.db.views.GroupView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,12 @@ interface GroupDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByCongregationId(congregationId: UUID) =
         findByCongregationId(congregationId).distinctUntilChanged()
+
+    @Query("SELECT g.* FROM ${GroupView.VIEW_NAME} g JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = g.gCongregationsId ORDER BY groupNum")
+    fun findByFavoriteCongregation(): Flow<List<GroupView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByFavoriteCongregation() = findByFavoriteCongregation().distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

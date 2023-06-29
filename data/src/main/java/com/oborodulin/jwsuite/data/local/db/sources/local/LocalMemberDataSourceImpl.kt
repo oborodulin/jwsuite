@@ -25,27 +25,27 @@ class LocalMemberDataSourceImpl @Inject constructor(
 
     override fun getMember(memberId: UUID) = memberDao.findDistinctById(memberId)
 
-    override suspend fun insertGroup(member: MemberEntity) = withContext(dispatcher) {
+    override suspend fun insertMember(member: MemberEntity) = withContext(dispatcher) {
         memberDao.insert(member)
     }
 
-    override suspend fun updateGroup(member: MemberEntity) = withContext(dispatcher) {
+    override suspend fun updateMember(member: MemberEntity) = withContext(dispatcher) {
         memberDao.update(member)
     }
 
-    override suspend fun deleteGroup(member: MemberEntity) = withContext(dispatcher) {
+    override suspend fun deleteMember(member: MemberEntity) = withContext(dispatcher) {
         memberDao.delete(member)
     }
 
-    override suspend fun deleteGroupById(memberId: UUID) = withContext(dispatcher) {
+    override suspend fun deleteMemberById(memberId: UUID) = withContext(dispatcher) {
         memberDao.deleteById(memberId)
     }
 
-    override suspend fun deleteGroups(members: List<MemberEntity>) = withContext(dispatcher) {
+    override suspend fun deleteMembers(members: List<MemberEntity>) = withContext(dispatcher) {
         memberDao.delete(members)
     }
 
-    override suspend fun deleteAllGroups() = withContext(dispatcher) {
+    override suspend fun deleteAllMembers() = withContext(dispatcher) {
         memberDao.deleteAll()
     }
 

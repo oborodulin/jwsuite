@@ -8,6 +8,8 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation.ui.dashboarding.DashboardingScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.CongregatingScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.DashboardingScreen
 import timber.log.Timber
 
 private const val TAG = "App.navigation.NavBarNavigationHost"
@@ -35,7 +37,7 @@ fun NavBarNavigationHost(
         composable(
             route = NavRoutes.Congregating.route, arguments = NavRoutes.Congregating.arguments
         ) {
-            // congregating: [Congregation, Members]; [Groups, Members]
+            // congregating: [Congregation, Members]; [Groups (favorite congregation), Members]
             Timber.tag(TAG)
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             CongregatingScreen(

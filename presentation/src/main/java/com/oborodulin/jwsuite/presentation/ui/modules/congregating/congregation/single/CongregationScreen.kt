@@ -8,7 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
@@ -41,6 +40,7 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
 import com.oborodulin.jwsuite.presentation.rememberAppState
@@ -55,7 +55,7 @@ fun CongregationScreen(
     viewModel: CongregationViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null
 ) {
-    Timber.tag(TAG).d("CongregationScreen(...) called: payerInput = %s", congregationInput)
+    Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
     LaunchedEffect(congregationInput?.congregationId) {
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
         when (congregationInput) {
@@ -72,16 +72,14 @@ fun CongregationScreen(
         HomeComposableTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                //scaffoldState = appState.payerScaffoldState,
                 topBarTitleId = topBarTitleId,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Filled.ArrowBack, null)
+                        Icon(Icons.Outlined.Close, null)
                     }
                 }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
-                    //viewModel.initFieldStatesByUiModel(payerModel)
                     Congregation(appState, viewModel) {
                         viewModel.submitAction(CongregationUiAction.Save)
                     }
@@ -108,14 +106,11 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all payer fields")
-    val ercCode by viewModel.ercCode.collectAsStateWithLifecycle()
-    val fullName by viewModel.fullName.collectAsStateWithLifecycle()
-    val address by viewModel.address.collectAsStateWithLifecycle()
-    val totalArea by viewModel.totalArea.collectAsStateWithLifecycle()
-    val livingSpace by viewModel.livingSpace.collectAsStateWithLifecycle()
-    val heatedVolume by viewModel.heatedVolume.collectAsStateWithLifecycle()
-    val paymentDay by viewModel.paymentDay.collectAsStateWithLifecycle()
-    val personsNum by viewModel.personsNum.collectAsStateWithLifecycle()
+    val localityId by viewModel.localityId.collectAsStateWithLifecycle()
+    val congregationNum by viewModel.congregationNum.collectAsStateWithLifecycle()
+    val congregationName by viewModel.congregationName.collectAsStateWithLifecycle()
+    val territoryMark by viewModel.territoryMark.collectAsStateWithLifecycle()
+    val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
 
     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
 
@@ -146,10 +141,36 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
     ) {
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.ERC_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.LOCALITY_ID.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.ERC_CODE,
+                        focusedField = CongregationFields.LOCALITY_ID,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.congregation_locality_hint,
+            leadingIcon = {
+                Icon(
+                    painterResource(R.drawable.outline_space_dashboard_black_36),
+                    null
+                )
+            },
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = localityId,
+            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.LocalityId(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NUM.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = CongregationFields.CONGREGATION_NUM,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -166,23 +187,23 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = ercCode,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.ErcCode(it)) },
+            inputWrapper = congregationNum,
+            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.CongregationNum(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.FULL_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.FULL_NAME,
+                        focusedField = CongregationFields.CONGREGATION_NAME,
                         isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.congregation_name_hint,
             leadingIcon = {
                 Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.ic_person_36),
+                    painterResource(R.drawable.ic_person_36),
                     null
                 )
             },
@@ -194,24 +215,30 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                 )
             },
             //  visualTransformation = ::creditCardFilter,
-            inputWrapper = fullName,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.FullName(it)) },
+            inputWrapper = congregationName,
+            onValueChange = {
+                viewModel.onTextFieldEntered(
+                    CongregationInputEvent.CongregationName(
+                        it
+                    )
+                )
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[CongregationFields.ADDRESS.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.TERRITORY_MARK.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.ADDRESS,
+                        focusedField = CongregationFields.TERRITORY_MARK,
                         isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.territory_mark_hint,
             leadingIcon = {
                 Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.outline_house_black_36),
+                    painterResource(R.drawable.outline_house_black_36),
                     null
                 )
             },
@@ -224,86 +251,8 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                 )
             },
             //  visualTransformation = ::creditCardFilter,
-            inputWrapper = address,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.Address(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.TOTAL_AREA.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.TOTAL_AREA,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.total_area_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.outline_space_dashboard_black_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = totalArea,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.TotalArea(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.LIVING_SPACE.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.LIVING_SPACE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.living_space_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.ic_aspect_ratio_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = livingSpace,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.LivingSpace(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.HEATED_VOLUME.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.HEATED_VOLUME,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.heated_volume_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.outline_outbox_black_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = heatedVolume,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.HeatedVolume(it)) },
+            inputWrapper = territoryMark,
+            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         ExposedDropdownMenuBoxComponent(
@@ -315,7 +264,7 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.payment_day_hint,
+            labelResId = R.string.congregation_locality_hint,
             leadingIcon = {
                 Icon(
                     painterResource(com.oborodulin.home.common.R.drawable.outline_calendar_month_black_36),
@@ -328,39 +277,11 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = paymentDay,
+            inputWrapper = localityId,
             listItems = (1..28).map { it.toString() },
             onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.PaymentDay(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction,
             //colors = ExposedDropdownMenuDefaults.textFieldColors()
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.PERSONS_NUM.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.PERSONS_NUM,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.persons_num_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.outline_people_black_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                    //imeAction = ImeAction.Done
-                )
-            },
-            inputWrapper = personsNum,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.PersonsNum(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-            //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
         )
         Spacer(Modifier.height(8.dp))
         Button(onClick = {

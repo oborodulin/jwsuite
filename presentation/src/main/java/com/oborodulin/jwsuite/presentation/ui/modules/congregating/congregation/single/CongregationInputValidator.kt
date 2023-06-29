@@ -1,86 +1,40 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single
 
-import com.oborodulin.home.accounting.R
 import com.oborodulin.home.common.ui.components.field.util.Validatable
-import java.math.BigDecimal
+import com.oborodulin.jwsuite.presentation.R
 
-private const val TAG = "Accounting.ui.PayerInputValidator"
+private const val TAG = "Congregating.ui.CongregationInputValidator"
 
 sealed class CongregationInputValidator : Validatable {
-    object ErcCode : CongregationInputValidator() {
+    object CongregationNum : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.erc_code_empty_error
+                inputs[0].isEmpty() -> R.string.congregation_num_empty_error
                 //etc..
                 else -> null
             }
     }
 
-    object FullName : CongregationInputValidator() {
+    object CongregationName : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.full_name_empty_error
+                inputs[0].isEmpty() -> R.string.congregation_name_empty_error
                 else -> null
             }
     }
 
-    object Address : CongregationInputValidator() {
+    object TerritoryMark : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.address_empty_error
+                inputs[0].isEmpty() -> R.string.territory_mark_empty_error
                 else -> null
             }
     }
 
-    object TotalArea : CongregationInputValidator() {
+    object LocalityId : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isNotEmpty() -> {
-                    if ((inputs[0].replace(',', '.').toBigDecimalOrNull()
-                            ?: BigDecimal.ZERO) <= BigDecimal.ZERO
-                    ) com.oborodulin.home.common.R.string.number_negative_error else null
-                }
-                else -> null
-            }
-    }
-
-    object LivingSpace : CongregationInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
-            when {
-                inputs[0].isNotEmpty() -> {
-                    if ((inputs[0].replace(',', '.').toBigDecimalOrNull()
-                            ?: BigDecimal.ZERO) <= BigDecimal.ZERO
-                    ) com.oborodulin.home.common.R.string.number_negative_error else null
-                }
-                else -> null
-            }
-    }
-
-    object HeatedVolume : CongregationInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
-            when {
-                inputs[0].isNotEmpty() ->
-                    if ((inputs[0].replace(',', '.').toBigDecimalOrNull()
-                            ?: BigDecimal.ZERO) <= BigDecimal.ZERO
-                    ) com.oborodulin.home.common.R.string.number_negative_error else null
-                else -> null
-            }
-    }
-
-    object PaymentDay : CongregationInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
-            when {
-                inputs[0].isEmpty() || (inputs[0].toIntOrNull()
-                    ?: 0) <= 0 -> R.string.payment_day_empty_error
-                else -> null
-            }
-    }
-
-    object PersonsNum : CongregationInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
-            when {
-                inputs[0].isEmpty() || (inputs[0].toIntOrNull()
-                    ?: 0) <= 0 -> R.string.persons_num_empty_error
+                inputs[0].isEmpty() -> R.string.congregation_locality_empty_error
                 else -> null
             }
     }

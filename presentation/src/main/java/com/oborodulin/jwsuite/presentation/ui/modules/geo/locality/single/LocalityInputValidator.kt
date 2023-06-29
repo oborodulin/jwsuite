@@ -10,7 +10,7 @@ sealed class LocalityInputValidator : Validatable {
     object ErcCode : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.erc_code_empty_error
+                inputs[0].isEmpty() -> R.string.congregation_num_empty_error
                 //etc..
                 else -> null
             }
@@ -19,7 +19,7 @@ sealed class LocalityInputValidator : Validatable {
     object FullName : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.full_name_empty_error
+                inputs[0].isEmpty() -> R.string.congregation_name_empty_error
                 else -> null
             }
     }
@@ -27,7 +27,7 @@ sealed class LocalityInputValidator : Validatable {
     object Address : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.address_empty_error
+                inputs[0].isEmpty() -> R.string.territory_mark_empty_error
                 else -> null
             }
     }
@@ -71,7 +71,7 @@ sealed class LocalityInputValidator : Validatable {
         override fun errorIdOrNull(vararg inputs: String): Int? =
             when {
                 inputs[0].isEmpty() || (inputs[0].toIntOrNull()
-                    ?: 0) <= 0 -> R.string.payment_day_empty_error
+                    ?: 0) <= 0 -> R.string.congregation_locality_empty_error
                 else -> null
             }
     }

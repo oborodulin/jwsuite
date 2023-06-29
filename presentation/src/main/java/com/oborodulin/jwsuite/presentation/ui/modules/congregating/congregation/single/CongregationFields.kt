@@ -3,15 +3,11 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class CongregationFields : Focusable {
-    PAYER_ID,
-    ERC_CODE,
-    FULL_NAME,
-    ADDRESS,
-    TOTAL_AREA,
-    LIVING_SPACE,
-    HEATED_VOLUME,
-    PAYMENT_DAY,
-    PERSONS_NUM,
+    CONGREGATION_ID,
+    LOCALITY_ID,
+    CONGREGATION_NUM,
+    CONGREGATION_NAME,
+    TERRITORY_MARK,
     IS_FAVORITE;
 
     override fun key(): String {

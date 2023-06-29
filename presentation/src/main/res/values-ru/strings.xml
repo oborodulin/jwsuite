@@ -24,33 +24,37 @@
     <string name="new_congregation_menu_item">Новое собрание</string>
 
     <!--СПИСОК: -->
-    <!--собраний -->
     <string name="congregation_list_empty_text">Собраний пока нет. Добавте, пожалуйста, хотя бы одно</string>
+    <string name="member_list_empty_text">Возвещателей пока нет. Добавте, пожалуйста, хотя бы одного</string>
+
+    <!--ЭКРАН: -->
+    <!--Собрание -->
+    <string name="congregation_tab_members">Возвещатели</string>
+    <string name="congregation_tab_groups">Группы</string>
 
     <!--ФОРМА: -->
     <!--Собрание -->
     <string name="congregation_subheader">Собрание</string>
     <string name="congregation_new_subheader">Новое собрание</string>
+    <string name="congregation_locality_hint">Населённый пункт</string>
     <string name="congregation_num_hint">№</string>
     <string name="congregation_name_hint">Наименование</string>
-    <string name="territory_mark_hint">Буква участка</string>
-    <string name="total_area_hint">Общая площадь</string>
-    <string name="living_space_hint">Жилая площадь</string>
-    <string name="heated_volume_hint">Отапливаемый объём</string>
-    <string name="payment_day_hint">Крайнее число оплаты услуг</string>
-    <string name="payment_day_helper">Любое число месяца с 1-го по 28-е</string>
-    <string name="payer_properties_label">Дополнительные параметры</string>
-    <string name="persons_num_hint">Кол-во прописанных человек</string>
+    <string name="territory_mark_hint">Код территории</string>
+    <string name="territory_mark_helper">Любая буква участка</string>
 
     <!--ДИАЛОГИ -->
+    <!--заголовки-->
     <string name="dlg_title_select_region">Выберите область</string>
+    <!--подтверждения-->
     <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
+    <string name="dlg_confirm_del_member">Удалить возвещателя %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <!--формы собрания-->
-    <string name="erc_code_empty_error">Укажите, пожалуйста, код ЕРЦ!</string>
-    <string name="full_name_empty_error">Укажите, пожалуйста, фамилию и инициалы!</string>
-    <string name="address_empty_error">Укажите, пожалуйста, адрес!</string>
-    <string name="payment_day_empty_error">Укажите, пожалуйста, крайнее число оплаты!</string>
+    <string name="congregation_num_empty_error">Укажите, пожалуйста, номер!</string>
+    <string name="congregation_name_empty_error">Укажите, пожалуйста, наименование!</string>
+    <string name="territory_mark_empty_error">Укажите, пожалуйста, код территории!</string>
+    <string name="congregation_locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
+
     <string name="persons_num_empty_error">Укажите, пожалуйста, кол-во прописанных человек!</string>
 </resources>

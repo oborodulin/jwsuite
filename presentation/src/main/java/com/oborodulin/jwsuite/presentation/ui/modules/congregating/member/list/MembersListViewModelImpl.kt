@@ -3,36 +3,41 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationListItem
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.converters.CongregationsListConverter
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Utils
-import com.oborodulin.home.domain.usecases.DeletePayerUseCase
-import com.oborodulin.home.domain.usecases.FavoritePayerUseCase
-import com.oborodulin.home.accounting.domain.usecases.GetPayersUseCase
-import com.oborodulin.home.accounting.domain.usecases.PayerUseCases
+import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.MembersListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.math.BigDecimal
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.PayersListViewModel"
+private const val TAG = "Congregating.ui.MembersListViewModelImpl"
 
 @HiltViewModel
 class MembersListViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val payerUseCases: PayerUseCases,
-    private val congregationsListConverter: CongregationsListConverter
+    private val useCases: MemberUseCases,
+    private val converter: MembersListConverter
 ) : MembersListViewModel,
-    MviViewModel<List<CongregationListItem>, UiState<List<CongregationListItem>>, MembersListUiAction, MembersListUiSingleEvent>(
+    MviViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, MembersListUiAction, MembersListUiSingleEvent>(
         state = state
     ) {
 
@@ -40,46 +45,37 @@ class MembersListViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: MembersListUiAction): Job {
         Timber.tag(TAG)
-            .d("handleAction(PayersListUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is MembersListUiAction.Load -> {
-                loadPayers()
+                loadMembers(action.congregationId, action.groupId)
             }
-            is MembersListUiAction.EditPayer -> {
+
+            is MembersListUiAction.EditMember -> {
                 submitSingleEvent(
-                    MembersListUiSingleEvent.OpenPayerScreen(
+                    MembersListUiSingleEvent.OpenMemberScreen(
                         NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.payerId)
+                            CongregationInput(action.memberId)
                         )
                     )
                 )
             }
-            is MembersListUiAction.DeletePayer -> {
-                deletePayer(action.payerId)
+
+            is MembersListUiAction.DeleteMember -> {
+                deleteMember(action.memberId)
             }
-            is MembersListUiAction.FavoritePayer -> {
-                favoritePayer(action.payerId)
-            }
-            /*is PostListUiAction.UserClick -> {
-                updateInteraction(action.interaction)
-                submitSingleEvent(
-                    PostListUiSingleEvent.OpenUserScreen(
-                        NavRoutes.User.routeForUser(
-                            UserInput(action.userId)
-                        )
-                    )
-                )
-            }*/
         }
         return job
     }
 
-    private fun loadPayers(): Job {
-        Timber.tag(TAG).d("loadPayers() called")
+    private fun loadMembers(congregationId: UUID?, groupId: UUID?): Job {
+        Timber.tag(TAG)
+            .d("loadMembers() called: congregationId = %s, groupId = %s", congregationId, groupId)
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.getPayersUseCase.execute(GetPayersUseCase.Request).map {
-                congregationsListConverter.convert(it)
-            }
+            useCases.getMembersUseCase.execute(GetMembersUseCase.Request(congregationId, groupId))
+                .map {
+                    converter.convert(it)
+                }
                 .collect {
                     submitState(it)
                 }
@@ -87,22 +83,10 @@ class MembersListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deletePayer(payerId: UUID): Job {
-        Timber.tag(TAG).d("deletePayer() called: payerId = %s", payerId.toString())
+    private fun deleteMember(memberId: UUID): Job {
+        Timber.tag(TAG).d("deleteMember() called: memberId = %s", memberId.toString())
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.deletePayerUseCase.execute(
-                DeletePayerUseCase.Request(payerId)
-            ).collect {}
-        }
-        return job
-    }
-
-    private fun favoritePayer(payerId: UUID): Job {
-        Timber.tag(TAG).d("favoritePayer() called: payerId = %s", payerId.toString())
-        val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.favoritePayerUseCase.execute(
-                FavoritePayerUseCase.Request(payerId)
-            ).collect {}
+            useCases.deleteMemberUseCase.execute(DeleteMemberUseCase.Request(memberId)).collect {}
         }
         return job
     }
@@ -125,30 +109,25 @@ class MembersListViewModelImpl @Inject constructor(
             }
 
         fun previewList(ctx: Context) = listOf(
-            CongregationListItem(
+            MembersListItem(
                 id = UUID.randomUUID(),
-                fullName = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer1_full_name),
-                address = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer1_address),
-                totalArea = BigDecimal("61"),
-                livingSpace = BigDecimal("59"),
-                paymentDay = 20,
-                personsNum = 2,
-                isFavorite = true,
-                fromPaymentDate = Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00"),
-                toPaymentDate = Utils.toOffsetDateTime("2022-09-01T14:29:10.212+03:00"),
-                totalDebt = BigDecimal("123456.78")
+                group = GroupsListViewModelImpl.previewList(ctx)[0],
+                memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
+                memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
+                surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
+                patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
+                pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
+                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
             ),
-            CongregationListItem(
+            MembersListItem(
                 id = UUID.randomUUID(),
-                fullName = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer2_full_name),
-                address = ctx.resources.getString(com.oborodulin.home.data.R.string.def_payer2_address),
-                totalArea = BigDecimal("89"),
-                livingSpace = BigDecimal("76"),
-                paymentDay = 20,
-                personsNum = 1,
-                fromPaymentDate = Utils.toOffsetDateTime("2022-08-01T14:29:10.212+03:00"),
-                toPaymentDate = Utils.toOffsetDateTime("2022-09-01T14:29:10.212+03:00"),
-                totalDebt = BigDecimal("876543.21")
+                group =,
+                memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
+                memberName = ctx.resources.getString(R.string.def_tarasova_member_name),
+                surname = ctx.resources.getString(R.string.def_tarasova_member_surname),
+                patronymic = ctx.resources.getString(R.string.def_tarasova_member_patronymic),
+                pseudonym = ctx.resources.getString(R.string.def_tarasova_member_pseudonym),
+                dateOfBirth = Utils.toOffsetDateTime("1979-08-01T14:29:10.212+03:00")
             )
         )
     }

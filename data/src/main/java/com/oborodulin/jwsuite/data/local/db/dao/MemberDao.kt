@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data.local.db.dao
 import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.CongregationMemberCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data.local.db.views.MemberView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -11,36 +12,36 @@ import java.util.*
 @Dao
 interface MemberDao {
     // READS:
-    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME}")
-    fun findAll(): Flow<List<MemberEntity>>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME}")
+    fun findAll(): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
-    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME} WHERE memberId = :memberId")
-    fun findById(memberId: UUID): Flow<MemberEntity>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE memberId = :memberId")
+    fun findById(memberId: UUID): Flow<MemberView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME} WHERE groupsId = :groupId")
-    fun findByGroupId(groupId: UUID): Flow<List<MemberEntity>>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE groupsId = :groupId")
+    fun findByGroupId(groupId: UUID): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByGroupId(groupId: UUID) = findByGroupId(groupId).distinctUntilChanged()
 
-    @Query("SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId WHERE cm.cmCongregationsId = :congregationId")
-    fun findByCongregationId(congregationId: UUID): Flow<List<MemberEntity>>
+    @Query("SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId WHERE cm.cmCongregationsId = :congregationId")
+    fun findByCongregationId(congregationId: UUID): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByCongregationId(congregationId: UUID) =
         findByCongregationId(congregationId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME} WHERE groupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
-    fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberEntity>>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE groupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
+    fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberView>>
 
-    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME} WHERE groupsId = :groupId AND pseudonym LIKE '%' || :pseudonym || '%'")
-    fun findByPseudonym(groupId: UUID, pseudonym: String): Flow<List<MemberEntity>>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE groupsId = :groupId AND pseudonym LIKE '%' || :pseudonym || '%'")
+    fun findByPseudonym(groupId: UUID, pseudonym: String): Flow<List<MemberView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

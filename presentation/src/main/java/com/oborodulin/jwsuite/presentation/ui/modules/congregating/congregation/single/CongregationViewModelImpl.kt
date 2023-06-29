@@ -2,18 +2,19 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationUi
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.converters.CongregationConverter
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.mappers.PayerUiToPayerMapper
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.domain.usecases.GetPayerUseCase
-import com.oborodulin.home.accounting.domain.usecases.PayerUseCases
-import com.oborodulin.home.domain.usecases.SavePayerUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
+import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -22,93 +23,66 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Accounting.ui.PayerViewModel"
+private const val TAG = "Congregating.ui.CongregationViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class CongregationViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val payerUseCases: PayerUseCases,
-    private val congregationConverter: CongregationConverter,
-    private val payerUiToPayerMapper: PayerUiToPayerMapper
+    private val useCases: CongregationUseCases,
+    private val converter: CongregationConverter,
+    private val mapper: CongregationUiToCongregationMapper
 ) : CongregationViewModel,
     SingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
         state,
-        CongregationFields.ERC_CODE
+        CongregationFields.CONGREGATION_NUM
     ) {
-    private val payerId: StateFlow<InputWrapper> by lazy {
+    private val congregationId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.PAYER_ID.name,
+            CongregationFields.CONGREGATION_ID.name,
             InputWrapper()
         )
     }
-    override val ercCode: StateFlow<InputWrapper> by lazy {
+    override val localityId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.ERC_CODE.name,
+            CongregationFields.LOCALITY_ID.name,
             InputWrapper()
         )
     }
-    override val fullName: StateFlow<InputWrapper> by lazy {
+    override val congregationNum: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.FULL_NAME.name,
+            CongregationFields.CONGREGATION_NUM.name,
             InputWrapper()
         )
     }
-    override val address: StateFlow<InputWrapper> by lazy {
+    override val congregationName: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.ADDRESS.name,
+            CongregationFields.CONGREGATION_NAME.name,
             InputWrapper()
         )
     }
-    override val totalArea: StateFlow<InputWrapper> by lazy {
+    override val territoryMark: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.TOTAL_AREA.name,
+            CongregationFields.TERRITORY_MARK.name,
             InputWrapper()
         )
     }
-    override val livingSpace: StateFlow<InputWrapper> by lazy {
+    override val isFavorite: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.LIVING_SPACE.name,
-            InputWrapper()
-        )
-    }
-    override val heatedVolume: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.HEATED_VOLUME.name,
-            InputWrapper()
-        )
-    }
-    override val paymentDay: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.PAYMENT_DAY.name,
-            InputWrapper()
-        )
-    }
-    override val personsNum: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.PERSONS_NUM.name,
+            CongregationFields.IS_FAVORITE.name,
             InputWrapper()
         )
     }
 
     override val areInputsValid =
         combine(
-            combine(
-                ercCode,
-                fullName,
-                address,
-                totalArea
-            ) { ercCode, fullName, address, totalArea ->
-                ercCode.errorId == null && fullName.errorId == null && address.errorId == null && totalArea.errorId == null
-            },
-            combine(
-                livingSpace,
-                heatedVolume,
-                paymentDay,
-                personsNum
-            ) { livingSpace, heatedVolume, paymentDay, personsNum ->
-                livingSpace.errorId == null && heatedVolume.errorId == null && paymentDay.errorId == null && personsNum.errorId == null
-            }) { fieldsPartOne, fieldsPartTwo -> fieldsPartOne && fieldsPartTwo }.stateIn(
+            localityId,
+            congregationNum,
+            congregationName,
+            territoryMark
+        ) { localityId, congregationNum, congregationName, territoryMark ->
+            localityId.errorId == null && congregationNum.errorId == null && congregationName.errorId == null && territoryMark.errorId == null
+        }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             false
@@ -117,27 +91,30 @@ class CongregationViewModelImpl @Inject constructor(
     override fun initState(): UiState<CongregationUi> = UiState.Loading
 
     override suspend fun handleAction(action: CongregationUiAction): Job {
-        Timber.tag(TAG).d("handleAction(PayerUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(CongregationUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is CongregationUiAction.Create -> {
                 submitState(UiState.Success(CongregationUi()))
             }
+
             is CongregationUiAction.Load -> {
-                loadPayer(action.payerId)
+                loadCongregation(action.congregationId)
             }
+
             is CongregationUiAction.Save -> {
-                savePayer()
+                saveCongregation()
             }
         }
         return job
     }
 
-    private fun loadPayer(payerId: UUID): Job {
-        Timber.tag(TAG).d("loadPayer(UUID) called: %s", payerId.toString())
+    private fun loadCongregation(congregationId: UUID): Job {
+        Timber.tag(TAG)
+            .d("loadCongregation(UUID) called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.getPayerUseCase.execute(GetPayerUseCase.Request(payerId))
+            useCases.getCongregationUseCase.execute(GetCongregationUseCase.Request(congregationId))
                 .map {
-                    congregationConverter.convert(it)
+                    converter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -146,24 +123,22 @@ class CongregationViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun savePayer(): Job {
+    private fun saveCongregation(): Job {
+        val locality = LocalityUi()
+        locality.id = UUID.fromString(localityId.value.value)
         val congregationUi = CongregationUi(
-            id = if (payerId.value.value.isNotEmpty()) {
-                UUID.fromString(payerId.value.value)
-            } else null,
-            congregationNum = ercCode.value.value,
-            congregationName = fullName.value.value,
-            territoryMark = address.value.value,
-            totalArea = totalArea.value.value.toBigDecimalOrNull(),
-            livingSpace = livingSpace.value.value.toBigDecimalOrNull(),
-            heatedVolume = heatedVolume.value.value.toBigDecimalOrNull(),
-            paymentDay = paymentDay.value.value.toInt(),
-            personsNum = personsNum.value.value.toInt()
+            congregationNum = congregationNum.value.value,
+            congregationName = congregationName.value.value,
+            territoryMark = territoryMark.value.value,
+            locality = locality
         )
-        Timber.tag(TAG).d("savePayer() called: UI model %s", congregationUi)
+        congregationUi.id = if (congregationId.value.value.isNotEmpty()) {
+            UUID.fromString(congregationId.value.value)
+        } else null
+        Timber.tag(TAG).d("saveCongregation() called: UI model %s", congregationUi)
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.savePayerUseCase.execute(
-                SavePayerUseCase.Request(payerUiToPayerMapper.map(congregationUi))
+            useCases.saveCongregationUseCase.execute(
+                SaveCongregationUseCase.Request(mapper.map(congregationUi))
             ).collect {}
         }
         return job
@@ -175,26 +150,32 @@ class CongregationViewModelImpl @Inject constructor(
         super.initFieldStatesByUiModel(uiModel)
         val congregationUi = uiModel as CongregationUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(PayerModel) called: payerModel = %s", congregationUi)
+            .d(
+                "initFieldStatesByUiModel(CongregationUi) called: CongregationUi = %s",
+                congregationUi
+            )
         congregationUi.id?.let {
-            initStateValue(CongregationFields.PAYER_ID, payerId, it.toString())
+            initStateValue(CongregationFields.CONGREGATION_ID, congregationId, it.toString())
         }
-        initStateValue(CongregationFields.ERC_CODE, ercCode, congregationUi.congregationNum)
-        initStateValue(CongregationFields.FULL_NAME, fullName, congregationUi.congregationName)
-        initStateValue(CongregationFields.ADDRESS, address, congregationUi.territoryMark)
-        initStateValue(CongregationFields.TOTAL_AREA, totalArea, congregationUi.totalArea?.toString() ?: "")
         initStateValue(
-            CongregationFields.LIVING_SPACE,
-            livingSpace,
-            congregationUi.livingSpace?.toString() ?: ""
+            CongregationFields.CONGREGATION_NUM,
+            congregationNum,
+            congregationUi.congregationNum
         )
         initStateValue(
-            CongregationFields.HEATED_VOLUME,
-            heatedVolume,
-            congregationUi.heatedVolume?.toString() ?: ""
+            CongregationFields.CONGREGATION_NAME,
+            congregationName,
+            congregationUi.congregationName
         )
-        initStateValue(CongregationFields.PAYMENT_DAY, paymentDay, congregationUi.paymentDay.toString())
-        initStateValue(CongregationFields.PERSONS_NUM, personsNum, congregationUi.personsNum.toString())
+        initStateValue(
+            CongregationFields.TERRITORY_MARK,
+            territoryMark, congregationUi.territoryMark
+        )
+        initStateValue(
+            CongregationFields.LOCALITY_ID,
+            localityId,
+            congregationUi.locality.id.toString() ?: ""
+        )
         return null
     }
 
@@ -203,107 +184,80 @@ class CongregationViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is CongregationInputEvent.ErcCode ->
-                        when (CongregationInputValidator.ErcCode.errorIdOrNull(event.input)) {
-                            null -> setStateValue(CongregationFields.ERC_CODE, ercCode, event.input, true)
-                            else -> setStateValue(CongregationFields.ERC_CODE, ercCode, event.input)
-                        }
-                    is CongregationInputEvent.FullName ->
-                        when (CongregationInputValidator.FullName.errorIdOrNull(event.input)) {
+                    is CongregationInputEvent.LocalityId ->
+                        when (CongregationInputValidator.LocalityId.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                CongregationFields.FULL_NAME, fullName, event.input,
+                                CongregationFields.LOCALITY_ID, localityId, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                CongregationFields.LOCALITY_ID, localityId, event.input
+                            )
+                        }
+
+                    is CongregationInputEvent.CongregationNum ->
+                        when (CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                CongregationFields.CONGREGATION_NUM,
+                                congregationNum, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                CongregationFields.CONGREGATION_NUM, congregationNum, event.input
+                            )
+                        }
+
+                    is CongregationInputEvent.CongregationName ->
+                        when (CongregationInputValidator.CongregationName.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                CongregationFields.CONGREGATION_NAME, congregationName, event.input,
                                 true
                             )
-                            else -> setStateValue(CongregationFields.FULL_NAME, fullName, event.input)
-                        }
-                    is CongregationInputEvent.Address ->
-                        when (CongregationInputValidator.Address.errorIdOrNull(event.input)) {
-                            null -> setStateValue(CongregationFields.ADDRESS, address, event.input, true)
-                            else -> setStateValue(CongregationFields.ADDRESS, address, event.input)
-                        }
-                    is CongregationInputEvent.TotalArea ->
-                        when (CongregationInputValidator.TotalArea.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.TOTAL_AREA, totalArea, event.input, true
-                            )
-                            else -> setStateValue(CongregationFields.TOTAL_AREA, totalArea, event.input)
-                        }
-                    is CongregationInputEvent.LivingSpace ->
-                        when (CongregationInputValidator.LivingSpace.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.LIVING_SPACE, livingSpace, event.input, true
-                            )
+
                             else -> setStateValue(
-                                CongregationFields.LIVING_SPACE, livingSpace, event.input
+                                CongregationFields.CONGREGATION_NAME, congregationName, event.input
                             )
                         }
-                    is CongregationInputEvent.HeatedVolume ->
-                        when (CongregationInputValidator.HeatedVolume.errorIdOrNull(event.input)) {
+
+                    is CongregationInputEvent.TerritoryMark ->
+                        when (CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                CongregationFields.HEATED_VOLUME, heatedVolume, event.input, true
+                                CongregationFields.TERRITORY_MARK,
+                                territoryMark, event.input, true
                             )
+
                             else -> setStateValue(
-                                CongregationFields.HEATED_VOLUME, heatedVolume, event.input
+                                CongregationFields.TERRITORY_MARK, territoryMark, event.input
                             )
-                        }
-                    is CongregationInputEvent.PaymentDay ->
-                        when (CongregationInputValidator.PaymentDay.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.PAYMENT_DAY, paymentDay, event.input, true
-                            )
-                            else -> setStateValue(CongregationFields.PAYMENT_DAY, paymentDay, event.input)
-                        }
-                    is CongregationInputEvent.PersonsNum ->
-                        when (CongregationInputValidator.PersonsNum.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.PERSONS_NUM, personsNum, event.input, true
-                            )
-                            else -> setStateValue(CongregationFields.PERSONS_NUM, personsNum, event.input)
                         }
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is CongregationInputEvent.ErcCode ->
+                    is CongregationInputEvent.LocalityId ->
                         setStateValue(
-                            CongregationFields.ERC_CODE, ercCode,
-                            CongregationInputValidator.ErcCode.errorIdOrNull(event.input)
+                            CongregationFields.LOCALITY_ID, localityId,
+                            CongregationInputValidator.LocalityId.errorIdOrNull(event.input)
                         )
-                    is CongregationInputEvent.FullName ->
+
+                    is CongregationInputEvent.CongregationNum ->
                         setStateValue(
-                            CongregationFields.FULL_NAME, fullName,
-                            CongregationInputValidator.FullName.errorIdOrNull(event.input)
+                            CongregationFields.CONGREGATION_NUM, congregationNum,
+                            CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)
                         )
-                    is CongregationInputEvent.Address ->
+
+                    is CongregationInputEvent.CongregationName ->
                         setStateValue(
-                            CongregationFields.ADDRESS, address,
-                            CongregationInputValidator.Address.errorIdOrNull(event.input)
+                            CongregationFields.CONGREGATION_NAME, congregationName,
+                            CongregationInputValidator.CongregationName.errorIdOrNull(event.input)
                         )
-                    is CongregationInputEvent.TotalArea ->
+
+                    is CongregationInputEvent.TerritoryMark ->
                         setStateValue(
-                            CongregationFields.TOTAL_AREA, totalArea,
-                            CongregationInputValidator.TotalArea.errorIdOrNull(event.input)
-                        )
-                    is CongregationInputEvent.LivingSpace ->
-                        setStateValue(
-                            CongregationFields.LIVING_SPACE, livingSpace,
-                            CongregationInputValidator.LivingSpace.errorIdOrNull(event.input)
-                        )
-                    is CongregationInputEvent.HeatedVolume ->
-                        setStateValue(
-                            CongregationFields.HEATED_VOLUME, heatedVolume,
-                            CongregationInputValidator.HeatedVolume.errorIdOrNull(event.input)
-                        )
-                    is CongregationInputEvent.PaymentDay ->
-                        setStateValue(
-                            CongregationFields.PAYMENT_DAY, paymentDay,
-                            CongregationInputValidator.PaymentDay.errorIdOrNull(event.input)
-                        )
-                    is CongregationInputEvent.PersonsNum ->
-                        setStateValue(
-                            CongregationFields.PERSONS_NUM, personsNum,
-                            CongregationInputValidator.PersonsNum.errorIdOrNull(event.input)
+                            CongregationFields.TERRITORY_MARK,
+                            territoryMark,
+                            CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)
                         )
                 }
             }
@@ -312,29 +266,38 @@ class CongregationViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        CongregationInputValidator.ErcCode.errorIdOrNull(ercCode.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.ERC_CODE.name, errorId = it))
+        CongregationInputValidator.LocalityId.errorIdOrNull(localityId.value.value)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = CongregationFields.LOCALITY_ID.name,
+                    errorId = it
+                )
+            )
         }
-        CongregationInputValidator.FullName.errorIdOrNull(fullName.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.FULL_NAME.name, errorId = it))
+        CongregationInputValidator.CongregationNum.errorIdOrNull(congregationNum.value.value)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = CongregationFields.CONGREGATION_NUM.name,
+                    errorId = it
+                )
+            )
         }
-        CongregationInputValidator.Address.errorIdOrNull(address.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.ADDRESS.name, errorId = it))
-        }
-        CongregationInputValidator.TotalArea.errorIdOrNull(totalArea.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.TOTAL_AREA.name, errorId = it))
-        }
-        CongregationInputValidator.LivingSpace.errorIdOrNull(livingSpace.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.LIVING_SPACE.name, errorId = it))
-        }
-        CongregationInputValidator.HeatedVolume.errorIdOrNull(heatedVolume.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.HEATED_VOLUME.name, errorId = it))
-        }
-        CongregationInputValidator.PaymentDay.errorIdOrNull(paymentDay.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.PAYMENT_DAY.name, errorId = it))
-        }
-        CongregationInputValidator.PersonsNum.errorIdOrNull(personsNum.value.value)?.let {
-            inputErrors.add(InputError(fieldName = CongregationFields.PERSONS_NUM.name, errorId = it))
+        CongregationInputValidator.CongregationName.errorIdOrNull(congregationName.value.value)
+            ?.let {
+                inputErrors.add(
+                    InputError(
+                        fieldName = CongregationFields.CONGREGATION_NAME.name,
+                        errorId = it
+                    )
+                )
+            }
+        CongregationInputValidator.TerritoryMark.errorIdOrNull(territoryMark.value.value)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = CongregationFields.TERRITORY_MARK.name,
+                    errorId = it
+                )
+            )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
@@ -344,15 +307,10 @@ class CongregationViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                //PayerFields.ERC_CODE.name -> ercCode.update{ it.copy(errorId = error.errorId) }
-                CongregationFields.ERC_CODE.name -> ercCode.value.copy(errorId = error.errorId)
-                CongregationFields.FULL_NAME.name -> fullName.value.copy(errorId = error.errorId)
-                CongregationFields.ADDRESS.name -> address.value.copy(errorId = error.errorId)
-                CongregationFields.TOTAL_AREA.name -> totalArea.value.copy(errorId = error.errorId)
-                CongregationFields.LIVING_SPACE.name -> livingSpace.value.copy(errorId = error.errorId)
-                CongregationFields.HEATED_VOLUME.name -> heatedVolume.value.copy(errorId = error.errorId)
-                CongregationFields.PAYMENT_DAY.name -> paymentDay.value.copy(errorId = error.errorId)
-                CongregationFields.PERSONS_NUM.name -> personsNum.value.copy(errorId = error.errorId)
+                CongregationFields.LOCALITY_ID.name -> localityId.value.copy(errorId = error.errorId)
+                CongregationFields.CONGREGATION_NUM.name -> congregationNum.value.copy(errorId = error.errorId)
+                CongregationFields.CONGREGATION_NAME.name -> congregationName.value.copy(errorId = error.errorId)
+                CongregationFields.TERRITORY_MARK.name -> territoryMark.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -364,14 +322,11 @@ class CongregationViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val ercCode = MutableStateFlow(InputWrapper())
-                override val fullName = MutableStateFlow(InputWrapper())
-                override val address = MutableStateFlow(InputWrapper())
-                override val totalArea = MutableStateFlow(InputWrapper())
-                override val livingSpace = MutableStateFlow(InputWrapper())
-                override val heatedVolume = MutableStateFlow(InputWrapper())
-                override val paymentDay = MutableStateFlow(InputWrapper())
-                override val personsNum = MutableStateFlow(InputWrapper())
+                override val localityId = MutableStateFlow(InputWrapper())
+                override val congregationNum = MutableStateFlow(InputWrapper())
+                override val congregationName = MutableStateFlow(InputWrapper())
+                override val territoryMark = MutableStateFlow(InputWrapper())
+                override val isFavorite = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
@@ -387,40 +342,3 @@ class CongregationViewModelImpl @Inject constructor(
             }
     }
 }
-/*
-        private val _payerState = mutableStateOf(Payer())
-
-    private val payerState: State<Payer>
-        get() = _payerState
-    fun onEvent(event: PayerEvent) {
-        when (event) {
-            is PayerEvent.SavePayer -> viewModelScope.launch {
-                //payerUseCases.savePayerUseCase(payerState.value)
-            }
-            is PayerEvent.ChangeErcCode -> _payerState.value =
-                payerState.value.copy(ercCode = event.newErcCode)
-            is PayerEvent.ChangeFullName -> _payerState.value =
-                payerState.value.copy(fullName = event.newFullName)
-            is PayerEvent.ChangeAddress -> _payerState.value =
-                payerState.value.copy(address = event.newAddress)
-            is PayerEvent.ChangeTotalArea -> _payerState.value =
-                payerState.value.copy(totalArea = event.newTotalArea)
-            is PayerEvent.ChangeLivingSpace -> _payerState.value =
-                payerState.value.copy(livingSpace = event.newLivingSpace)
-            is PayerEvent.ChangeHeatedVolume -> _payerState.value =
-                payerState.value.copy(heatedVolume = event.newHeatedVolume)
-            is PayerEvent.ChangePaymentDay -> _payerState.value =
-                payerState.value.copy(paymentDay = event.newPaymentDay)
-            is PayerEvent.ChangePersonsNum -> _payerState.value =
-                payerState.value.copy(personsNum = event.newPersonsNum)
-        }
-    }
-    fun fetchPayer(id: UUID) {
-        viewModelScope.launch() {
-            /*payerUseCases.getPayer(id).collect {
-                _payerState.value = it
-            }*/
-        }
-    }
-}
- */

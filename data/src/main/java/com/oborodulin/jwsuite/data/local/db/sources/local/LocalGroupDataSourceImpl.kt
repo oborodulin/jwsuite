@@ -18,7 +18,10 @@ class LocalGroupDataSourceImpl @Inject constructor(
     private val groupDao: GroupDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGroupDataSource {
-    override fun getCongregationGroups(congregationId: UUID) = groupDao.findByCongregationId(congregationId)
+    override fun getCongregationGroups(congregationId: UUID) =
+        groupDao.findByCongregationId(congregationId)
+
+    override fun getFavoriteCongregationGroups() = groupDao.findByFavoriteCongregation()
 
     override fun getGroup(groupId: UUID) = groupDao.findDistinctById(groupId)
 

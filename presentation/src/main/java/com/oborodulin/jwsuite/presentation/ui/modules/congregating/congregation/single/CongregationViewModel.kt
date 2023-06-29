@@ -13,14 +13,11 @@ interface CongregationViewModel {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
-    val ercCode: StateFlow<InputWrapper>
-    val fullName: StateFlow<InputWrapper>
-    val address: StateFlow<InputWrapper>
-    val totalArea: StateFlow<InputWrapper>
-    val livingSpace: StateFlow<InputWrapper>
-    val heatedVolume: StateFlow<InputWrapper>
-    val paymentDay: StateFlow<InputWrapper>
-    val personsNum: StateFlow<InputWrapper>
+    val localityId: StateFlow<InputWrapper>
+    val congregationNum: StateFlow<InputWrapper>
+    val congregationName: StateFlow<InputWrapper>
+    val territoryMark: StateFlow<InputWrapper>
+    val isFavorite: StateFlow<InputWrapper>
 
     val areInputsValid: StateFlow<Boolean>
 
