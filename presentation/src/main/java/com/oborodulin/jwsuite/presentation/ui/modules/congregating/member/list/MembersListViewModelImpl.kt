@@ -12,7 +12,7 @@ import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.MembersListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -111,7 +111,7 @@ class MembersListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             MembersListItem(
                 id = UUID.randomUUID(),
-                group = GroupsListViewModelImpl.previewList(ctx)[0],
+                group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
                 memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
                 surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
@@ -121,7 +121,7 @@ class MembersListViewModelImpl @Inject constructor(
             ),
             MembersListItem(
                 id = UUID.randomUUID(),
-                group =,
+                group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
                 memberName = ctx.resources.getString(R.string.def_tarasova_member_name),
                 surname = ctx.resources.getString(R.string.def_tarasova_member_surname),

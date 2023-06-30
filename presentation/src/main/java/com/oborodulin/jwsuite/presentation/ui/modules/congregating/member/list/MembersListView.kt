@@ -115,7 +115,7 @@ fun MembersList(
         }
     } else {
         Text(
-            text = stringResource(R.string.member_list_empty_text),
+            text = stringResource(R.string.members_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )

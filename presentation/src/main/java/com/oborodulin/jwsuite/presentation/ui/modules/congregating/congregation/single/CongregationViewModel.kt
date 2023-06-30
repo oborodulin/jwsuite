@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single
 
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
@@ -13,7 +14,7 @@ interface CongregationViewModel {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
-    val localityId: StateFlow<InputWrapper>
+    val locality: StateFlow<InputListItemWrapper>
     val congregationNum: StateFlow<InputWrapper>
     val congregationName: StateFlow<InputWrapper>
     val territoryMark: StateFlow<InputWrapper>

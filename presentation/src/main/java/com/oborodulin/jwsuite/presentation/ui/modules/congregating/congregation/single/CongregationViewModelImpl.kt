@@ -1,13 +1,16 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
@@ -43,10 +46,10 @@ class CongregationViewModelImpl @Inject constructor(
             InputWrapper()
         )
     }
-    override val localityId: StateFlow<InputWrapper> by lazy {
+    override val locality: StateFlow<InputListItemWrapper> by lazy {
         state.getStateFlow(
             CongregationFields.LOCALITY_ID.name,
-            InputWrapper()
+            InputListItemWrapper()
         )
     }
     override val congregationNum: StateFlow<InputWrapper> by lazy {
@@ -76,7 +79,7 @@ class CongregationViewModelImpl @Inject constructor(
 
     override val areInputsValid =
         combine(
-            localityId,
+            locality,
             congregationNum,
             congregationName,
             territoryMark
@@ -125,11 +128,12 @@ class CongregationViewModelImpl @Inject constructor(
 
     private fun saveCongregation(): Job {
         val locality = LocalityUi()
-        locality.id = UUID.fromString(localityId.value.value)
+        locality.id = this.locality.value.item.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,
             congregationName = congregationName.value.value,
             territoryMark = territoryMark.value.value,
+            isFavorite = isFavorite.value.value.toBoolean(),
             locality = locality
         )
         congregationUi.id = if (congregationId.value.value.isNotEmpty()) {
@@ -158,6 +162,11 @@ class CongregationViewModelImpl @Inject constructor(
             initStateValue(CongregationFields.CONGREGATION_ID, congregationId, it.toString())
         }
         initStateValue(
+            CongregationFields.LOCALITY_ID,
+            locality,
+            ListItemModel(congregationUi.locality.id, congregationUi.locality.localityName)
+        )
+        initStateValue(
             CongregationFields.CONGREGATION_NUM,
             congregationNum,
             congregationUi.congregationNum
@@ -171,11 +180,6 @@ class CongregationViewModelImpl @Inject constructor(
             CongregationFields.TERRITORY_MARK,
             territoryMark, congregationUi.territoryMark
         )
-        initStateValue(
-            CongregationFields.LOCALITY_ID,
-            localityId,
-            congregationUi.locality.id.toString() ?: ""
-        )
         return null
     }
 
@@ -184,16 +188,17 @@ class CongregationViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is CongregationInputEvent.LocalityId ->
-                        when (CongregationInputValidator.LocalityId.errorIdOrNull(event.input)) {
+                    is CongregationInputEvent.Locality -> {
+                        when (CongregationInputValidator.LocalityId.errorIdOrNull(event.input.itemId.toString())) {
                             null -> setStateValue(
-                                CongregationFields.LOCALITY_ID, localityId, event.input, true
+                                CongregationFields.LOCALITY_ID, locality, event.input, true
                             )
 
                             else -> setStateValue(
-                                CongregationFields.LOCALITY_ID, localityId, event.input
+                                CongregationFields.LOCALITY_ID, locality, event.input
                             )
                         }
+                    }
 
                     is CongregationInputEvent.CongregationNum ->
                         when (CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)) {
@@ -235,10 +240,10 @@ class CongregationViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is CongregationInputEvent.LocalityId ->
+                    is CongregationInputEvent.Locality ->
                         setStateValue(
-                            CongregationFields.LOCALITY_ID, localityId,
-                            CongregationInputValidator.LocalityId.errorIdOrNull(event.input)
+                            CongregationFields.LOCALITY_ID, locality,
+                            CongregationInputValidator.LocalityId.errorIdOrNull(event.input.itemId.toString())
                         )
 
                     is CongregationInputEvent.CongregationNum ->
@@ -266,14 +271,15 @@ class CongregationViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        CongregationInputValidator.LocalityId.errorIdOrNull(localityId.value.value)?.let {
-            inputErrors.add(
-                InputError(
-                    fieldName = CongregationFields.LOCALITY_ID.name,
-                    errorId = it
+        CongregationInputValidator.LocalityId.errorIdOrNull(locality.value.item.itemId.toString())
+            ?.let {
+                inputErrors.add(
+                    InputError(
+                        fieldName = CongregationFields.LOCALITY_ID.name,
+                        errorId = it
+                    )
                 )
-            )
-        }
+            }
         CongregationInputValidator.CongregationNum.errorIdOrNull(congregationNum.value.value)?.let {
             inputErrors.add(
                 InputError(
@@ -307,7 +313,7 @@ class CongregationViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                CongregationFields.LOCALITY_ID.name -> localityId.value.copy(errorId = error.errorId)
+                CongregationFields.LOCALITY_ID.name -> locality.value.copy(errorId = error.errorId)
                 CongregationFields.CONGREGATION_NUM.name -> congregationNum.value.copy(errorId = error.errorId)
                 CongregationFields.CONGREGATION_NAME.name -> congregationName.value.copy(errorId = error.errorId)
                 CongregationFields.TERRITORY_MARK.name -> territoryMark.value.copy(errorId = error.errorId)
@@ -322,7 +328,7 @@ class CongregationViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val localityId = MutableStateFlow(InputWrapper())
+                override val locality = MutableStateFlow(InputListItemWrapper())
                 override val congregationNum = MutableStateFlow(InputWrapper())
                 override val congregationName = MutableStateFlow(InputWrapper())
                 override val territoryMark = MutableStateFlow(InputWrapper())
@@ -340,5 +346,17 @@ class CongregationViewModelImpl @Inject constructor(
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
             }
+
+        fun previewCongregationUi(ctx: Context): CongregationUi {
+            val congregationUi = CongregationUi(
+                congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
+                congregationName = ctx.resources.getString(R.string.def_congregation1_name),
+                territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
+                locality = LocalityUi(),
+                isFavorite = true
+            )
+            congregationUi.id = UUID.randomUUID()
+            return congregationUi
+        }
     }
 }

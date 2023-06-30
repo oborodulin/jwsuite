@@ -139,7 +139,7 @@ fun CongregationsList(
         }
     } else {
         Text(
-            text = stringResource(R.string.congregation_list_empty_text),
+            text = stringResource(R.string.congregations_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )

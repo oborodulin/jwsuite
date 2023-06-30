@@ -3,7 +3,16 @@ package com.oborodulin.home.common.ui.state
 import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.Focusable
+import com.oborodulin.home.common.ui.components.field.util.FocusedTextField
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapped
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.InputsWrapper
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
+import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -49,7 +58,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
 
     abstract suspend fun observeInputEvents()
 
-
+    //InputWrapper:
     fun initStateValue(field: F, property: StateFlow<InputWrapper>, value: String) {
         Timber.tag(TAG)
             .d("initStateValue(...): exist state %s = '%s'", field.key(), state[field.key()])
@@ -77,6 +86,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
     }
 
+    //InputsWrapper:
     fun initStateValue(
         field: F, properties: StateFlow<InputsWrapper>, value: String, key: String
     ) {
@@ -139,6 +149,37 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         state[field.key()] = properties.value.copy(inputs = properties.value.inputs.toMutableMap())
     }
 
+    //InputListItemWrapper:
+    fun initStateValue(field: F, property: StateFlow<InputListItemWrapper>, item: ListItemModel) {
+        Timber.tag(TAG)
+            .d("initStateValue(...): exist state %s = '%s'", field.key(), state[field.key()])
+        if (property.value.isEmpty) {
+            Timber.tag(TAG).d("initStateValue(...): %s = '%s'", field.key(), item)
+            setStateValue(field, property, item)
+        }
+    }
+
+    fun setStateValue(
+        field: F, property: StateFlow<InputListItemWrapper>, item: ListItemModel,
+        isValid: Boolean = false
+    ) {
+        Timber.tag(TAG)
+            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), item, isValid)
+        if (isValid) {
+            state[field.key()] = property.value.copy(item = item, errorId = null, isEmpty = false)
+        } else {
+            state[field.key()] = property.value.copy(item = item, isEmpty = false)
+        }
+    }
+
+    fun setStateValue(
+        field: F, property: StateFlow<InputListItemWrapper>, @StringRes errorId: Int?
+    ) {
+        Timber.tag(TAG)
+            .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
+        state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
+    }
+
     fun onTextFieldEntered(inputEvent: Inputable) {
         Timber.tag(TAG).d("onTextFieldEntered: %s", inputEvent.javaClass.name)
         inputEvents.trySend(inputEvent)
@@ -165,6 +206,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
                     //clearInputFieldsStates()
                     //_events.send(ScreenEvent.ShowToast(com.oborodulin.home.common.R.string.success))
                 }
+
                 else -> displayInputErrors(inputErrors)
             }
         }

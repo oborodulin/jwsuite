@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,17 +34,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.components.field.util.toInputWrapper
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
 import com.oborodulin.jwsuite.presentation.rememberAppState
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -52,22 +58,23 @@ private const val TAG = "Congregating.ui.CongregationScreen"
 @Composable
 fun CongregationScreen(
     appState: AppState,
-    viewModel: CongregationViewModelImpl = hiltViewModel(),
+    congregationViewModel: CongregationViewModelImpl = hiltViewModel(),
+    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
     LaunchedEffect(congregationInput?.congregationId) {
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
         when (congregationInput) {
-            null -> viewModel.submitAction(CongregationUiAction.Create)
-            else -> viewModel.submitAction(CongregationUiAction.Load(congregationInput.congregationId))
+            null -> congregationViewModel.submitAction(CongregationUiAction.Create)
+            else -> congregationViewModel.submitAction(CongregationUiAction.Load(congregationInput.congregationId))
         }
     }
     val topBarTitleId = when (congregationInput) {
         null -> R.string.congregation_new_subheader
         else -> R.string.congregation_subheader
     }
-    viewModel.uiStateFlow.collectAsState().value.let { state ->
+    congregationViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         HomeComposableTheme { //(darkTheme = true)
             ScaffoldComponent(
@@ -80,8 +87,8 @@ fun CongregationScreen(
                 }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
-                    Congregation(appState, viewModel) {
-                        viewModel.submitAction(CongregationUiAction.Save)
+                    Congregation(appState, congregationViewModel, localitiesListViewModel) {
+                        congregationViewModel.submitAction(CongregationUiAction.Save)
                     }
                 }
             }
@@ -91,28 +98,33 @@ fun CongregationScreen(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit: () -> Unit) {
+fun Congregation(
+    appState: AppState,
+    congregationViewModel: CongregationViewModel,
+    localitiesListViewModel: LocalitiesListViewModel,
+    onSubmit: () -> Unit
+) {
     Timber.tag(TAG).d("Congregation(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
+    val events = remember(congregationViewModel.events, lifecycleOwner) {
+        congregationViewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all payer fields")
-    val localityId by viewModel.localityId.collectAsStateWithLifecycle()
-    val congregationNum by viewModel.congregationNum.collectAsStateWithLifecycle()
-    val congregationName by viewModel.congregationName.collectAsStateWithLifecycle()
-    val territoryMark by viewModel.territoryMark.collectAsStateWithLifecycle()
-    val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
+    val locality by congregationViewModel.locality.collectAsStateWithLifecycle()
+    val congregationNum by congregationViewModel.congregationNum.collectAsStateWithLifecycle()
+    val congregationName by congregationViewModel.congregationName.collectAsStateWithLifecycle()
+    val territoryMark by congregationViewModel.territoryMark.collectAsStateWithLifecycle()
+    val isFavorite by congregationViewModel.isFavorite.collectAsStateWithLifecycle()
 
-    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+    val areInputsValid by congregationViewModel.areInputsValid.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all payer fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -139,19 +151,37 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        var showSingleSelectDialog by remember { mutableStateOf(false) }
+        var showNewLocalityDialog by remember { mutableStateOf(false) }
+
+        if (showNewLocalityDialog) {
+            LocalContext.current.toast("another Full-screen Dialog")
+        }
+        if (showSingleSelectDialog) {
+            SearchSingleSelectDialog(
+                title = stringResource(R.string.congregation_locality_hint),
+                viewModel = localitiesListViewModel,
+                onListItemClick = { item -> println(item.headline) },
+                onAddButtonClick = { showNewLocalityDialog = true }
+            ) {
+                showNewLocalityDialog = false
+            }
+        }
+
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.LOCALITY_ID.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    congregationViewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.LOCALITY_ID,
                         isFocused = focusState.isFocused
                     )
-                },
+                }
+                .clickable { showSingleSelectDialog = true },
             labelResId = R.string.congregation_locality_hint,
             leadingIcon = {
                 Icon(
-                    painterResource(R.drawable.outline_space_dashboard_black_36),
+                    painterResource(R.drawable.ic_location_city_36),
                     null
                 )
             },
@@ -161,15 +191,21 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = localityId,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.LocalityId(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            inputWrapper = locality.toInputWrapper(),
+            onValueChange = {
+                congregationViewModel.onTextFieldEntered(
+                    CongregationInputEvent.Locality(
+                        ListItemModel(headline = it)
+                    )
+                )
+            },
+            onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NUM.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    congregationViewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_NUM,
                         isFocused = focusState.isFocused
                     )
@@ -188,14 +224,20 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                 )
             },
             inputWrapper = congregationNum,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.CongregationNum(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onValueChange = {
+                congregationViewModel.onTextFieldEntered(
+                    CongregationInputEvent.CongregationNum(
+                        it
+                    )
+                )
+            },
+            onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    congregationViewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -203,7 +245,7 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
             labelResId = R.string.congregation_name_hint,
             leadingIcon = {
                 Icon(
-                    painterResource(R.drawable.ic_person_36),
+                    painterResource(R.drawable.ic_abc_36),
                     null
                 )
             },
@@ -217,20 +259,20 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = congregationName,
             onValueChange = {
-                viewModel.onTextFieldEntered(
+                congregationViewModel.onTextFieldEntered(
                     CongregationInputEvent.CongregationName(
                         it
                     )
                 )
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .height(90.dp)
                 .focusRequester(focusRequesters[CongregationFields.TERRITORY_MARK.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    congregationViewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.TERRITORY_MARK,
                         isFocused = focusState.isFocused
                     )
@@ -238,7 +280,7 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
             labelResId = R.string.territory_mark_hint,
             leadingIcon = {
                 Icon(
-                    painterResource(R.drawable.outline_house_black_36),
+                    painterResource(R.drawable.ic_map_marker_36),
                     null
                 )
             },
@@ -252,9 +294,16 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryMark,
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onValueChange = {
+                congregationViewModel.onTextFieldEntered(
+                    CongregationInputEvent.TerritoryMark(
+                        it
+                    )
+                )
+            },
+            onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
+        /*
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.PAYMENT_DAY.name]!!.focusRequester)
@@ -277,18 +326,19 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = localityId,
+            inputWrapper = locality,
             listItems = (1..28).map { it.toString() },
             onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.PaymentDay(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction,
             //colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
+        */
         Spacer(Modifier.height(8.dp))
         Button(onClick = {
-            viewModel.onContinueClick {
+            congregationViewModel.onContinueClick {
                 Timber.tag(TAG).d("CongregationScreen(...): Start viewModelScope.launch")
-                viewModel.viewModelScope().launch {
-                    viewModel.actionsJobFlow.collect {
+                congregationViewModel.viewModelScope().launch {
+                    congregationViewModel.actionsJobFlow.collect {
                         Timber.tag(TAG).d(
                             "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
                             it?.toString()
@@ -312,6 +362,7 @@ fun Congregation(appState: AppState, viewModel: CongregationViewModel, onSubmit:
 fun PreviewCongregation() {
     Congregation(
         appState = rememberAppState(),
-        viewModel = CongregationViewModelImpl.previewModel,
+        congregationViewModel = CongregationViewModelImpl.previewModel,
+        localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
         onSubmit = {})
 }

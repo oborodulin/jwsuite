@@ -1,16 +1,19 @@
 package com.oborodulin.home.common.ui.model
 
 import android.content.Context
+import android.os.Parcelable
 import com.oborodulin.home.common.R
+import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 import java.util.UUID
 
+@Parcelize
 open class ListItemModel(
-    val itemId: UUID,
-    val headline: String,
+    val itemId: UUID? = null,
+    val headline: String = "",
     val supportingText: String? = null,
     val value: BigDecimal? = null
-) {
+) : Parcelable {
     companion object {
         fun defaultListItemModel(ctx: Context) = ListItemModel(
             itemId = UUID.randomUUID(),

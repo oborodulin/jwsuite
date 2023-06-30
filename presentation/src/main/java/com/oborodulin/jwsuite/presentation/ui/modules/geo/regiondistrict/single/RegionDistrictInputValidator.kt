@@ -8,32 +8,32 @@ private const val TAG = "Geo.ui.LocalityInputValidator"
 
 sealed class RegionDistrictInputValidator : Validatable {
     object ErcCode : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.congregation_num_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.congregation_num_empty_error
                 //etc..
                 else -> null
             }
     }
 
     object FullName : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.congregation_name_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.congregation_name_empty_error
                 else -> null
             }
     }
 
     object Address : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isEmpty() -> R.string.territory_mark_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.territory_mark_empty_error
                 else -> null
             }
     }
 
     object TotalArea : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNotEmpty() -> {
                     if ((inputs[0].replace(',', '.').toBigDecimalOrNull()
@@ -45,7 +45,7 @@ sealed class RegionDistrictInputValidator : Validatable {
     }
 
     object LivingSpace : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNotEmpty() -> {
                     if ((inputs[0].replace(',', '.').toBigDecimalOrNull()
@@ -57,7 +57,7 @@ sealed class RegionDistrictInputValidator : Validatable {
     }
 
     object HeatedVolume : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNotEmpty() ->
                     if ((inputs[0].replace(',', '.').toBigDecimalOrNull()
@@ -68,7 +68,7 @@ sealed class RegionDistrictInputValidator : Validatable {
     }
 
     object PaymentDay : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isEmpty() || (inputs[0].toIntOrNull()
                     ?: 0) <= 0 -> R.string.congregation_locality_empty_error
@@ -77,7 +77,7 @@ sealed class RegionDistrictInputValidator : Validatable {
     }
 
     object PersonsNum : RegionDistrictInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String): Int? =
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isEmpty() || (inputs[0].toIntOrNull()
                     ?: 0) <= 0 -> R.string.persons_num_empty_error

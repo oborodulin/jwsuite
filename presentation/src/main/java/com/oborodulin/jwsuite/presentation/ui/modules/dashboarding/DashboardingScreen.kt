@@ -126,7 +126,7 @@ fun CongregationSection(
             if (congregation != null) {
                 Text(text = congregation.congregationName)
             } else {
-                Text(text = stringResource(R.string.congregation_list_empty_text))
+                Text(text = stringResource(R.string.congregations_list_empty_text))
             }
         }
 

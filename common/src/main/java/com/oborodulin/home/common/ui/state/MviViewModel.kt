@@ -7,7 +7,12 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -16,9 +21,9 @@ private const val TAG = "Common.MviViewModel"
 abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent>(
     private val state: SavedStateHandle
 ) :
-    ViewModel() {
+    ViewModel(), MviViewModelated<T> {
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
-    val uiStateFlow: StateFlow<S> = _uiStateFlow
+    override val uiStateFlow: StateFlow<S> = _uiStateFlow
 
     private val _actionsFlow: MutableSharedFlow<A> = MutableSharedFlow()
     private val _actionsJobFlow: MutableSharedFlow<Job?> = MutableSharedFlow()

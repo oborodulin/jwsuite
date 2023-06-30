@@ -58,28 +58,28 @@ fun CongregationsListView(
             CongregationsList(
                 congregations = it,
                 congregationInput = congregationInput,
-                onClick = { congregation ->
-                    congregationsListViewModel.setPrimaryObjectData(
-                        arrayListOf(
-                            congregation.id.toString(),
-                            congregation.congregationName
-                        )
-                    )
-                    appState.actionBarSubtitle.value = congregation.congregationName
-                    with(membersListViewModel) {
-                        setPrimaryObjectData(arrayListOf(congregation.id.toString()))
-                        submitAction(MembersListUiAction.Load(congregation.id))
-                    }
-                },
                 onEdit = { congregation ->
                     congregationsListViewModel.submitAction(
                         CongregationsListUiAction.EditCongregation(congregation.id)
                     )
+                },
+                onDelete = { congregation ->
+                    congregationsListViewModel.submitAction(
+                        CongregationsListUiAction.DeleteCongregation(congregation.id)
+                    )
                 }
             ) { congregation ->
-                congregationsListViewModel.submitAction(
-                    CongregationsListUiAction.DeleteCongregation(congregation.id)
+                congregationsListViewModel.setPrimaryObjectData(
+                    arrayListOf(
+                        congregation.id.toString(),
+                        congregation.congregationName
+                    )
                 )
+                appState.actionBarSubtitle.value = congregation.congregationName
+                with(membersListViewModel) {
+                    setPrimaryObjectData(arrayListOf(congregation.id.toString()))
+                    submitAction(MembersListUiAction.Load(congregation.id))
+                }
             }
         }
     }
@@ -100,9 +100,9 @@ fun CongregationsListView(
 fun CongregationsList(
     congregations: List<CongregationsListItem>,
     congregationInput: CongregationInput?,
-    onClick: (CongregationsListItem) -> Unit,
     onEdit: (CongregationsListItem) -> Unit,
-    onDelete: (CongregationsListItem) -> Unit
+    onDelete: (CongregationsListItem) -> Unit,
+    onClick: (CongregationsListItem) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsList(...) called")
     var selectedIndex by remember { mutableIntStateOf(-1) } // by
@@ -139,7 +139,7 @@ fun CongregationsList(
         }
     } else {
         Text(
-            text = stringResource(R.string.congregation_list_empty_text),
+            text = stringResource(R.string.congregations_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -153,7 +153,7 @@ fun PreviewCongregationsCongregating() {
     CongregationsList(
         congregations = CongregationsListViewModelImpl.previewList(LocalContext.current),
         congregationInput = CongregationInput(UUID.randomUUID()),
-        onClick = {},
         onEdit = {},
-        onDelete = {})
+        onDelete = {},
+        onClick = {})
 }

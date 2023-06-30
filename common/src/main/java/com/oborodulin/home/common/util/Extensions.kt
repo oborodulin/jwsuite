@@ -3,7 +3,8 @@ package com.oborodulin.home.common.util
 import android.content.Context
 import android.widget.Toast
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 fun Context.toast(messageId: Int) {
     Toast.makeText(this, getString(messageId), Toast.LENGTH_SHORT).show()
