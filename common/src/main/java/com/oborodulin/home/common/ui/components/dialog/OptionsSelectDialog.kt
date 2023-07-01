@@ -14,15 +14,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.items.OptionSelectRadioButton
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.toast
 
@@ -107,33 +105,6 @@ fun OptionSelectDialog(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun OptionSelectRadioButton(
-    value: ListItemModel,
-    selectedValue: ListItemModel,
-    onClickListener: (ListItemModel) -> Unit
-) {
-    Row(Modifier
-        .fillMaxWidth()
-        .selectable(
-            selected = (value == selectedValue),
-            onClick = { onClickListener(value) }
-        )
-        .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = (value == selectedValue),
-            onClick = { onClickListener(value) }
-        )
-        Text(
-            text = value.headline,
-            style = MaterialTheme.typography.bodyMedium.merge(),
-            modifier = Modifier.padding(start = 16.dp)
-        )
     }
 }
 

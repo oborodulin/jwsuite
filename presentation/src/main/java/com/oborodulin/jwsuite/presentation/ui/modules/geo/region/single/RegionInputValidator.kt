@@ -71,7 +71,7 @@ sealed class RegionInputValidator : Validatable {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isEmpty() || (inputs[0].toIntOrNull()
-                    ?: 0) <= 0 -> R.string.congregation_locality_empty_error
+                    ?: 0) <= 0 -> R.string.locality_empty_error
                 else -> null
             }
     }

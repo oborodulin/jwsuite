@@ -116,13 +116,13 @@ fun LocalityDialog(
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all locality fields")
-    val ercCode by viewModel.ercCode.collectAsStateWithLifecycle()
-    val fullName by viewModel.fullName.collectAsStateWithLifecycle()
-    val address by viewModel.address.collectAsStateWithLifecycle()
-    val totalArea by viewModel.totalArea.collectAsStateWithLifecycle()
-    val livingSpace by viewModel.livingSpace.collectAsStateWithLifecycle()
+    val ercCode by viewModel.localityCode.collectAsStateWithLifecycle()
+    val fullName by viewModel.localityShortName.collectAsStateWithLifecycle()
+    val address by viewModel.localityName.collectAsStateWithLifecycle()
+    val totalArea by viewModel.region.collectAsStateWithLifecycle()
+    val livingSpace by viewModel.regionDistrict.collectAsStateWithLifecycle()
     val heatedVolume by viewModel.heatedVolume.collectAsStateWithLifecycle()
-    val paymentDay by viewModel.paymentDay.collectAsStateWithLifecycle()
+    val paymentDay by viewModel.localityType.collectAsStateWithLifecycle()
     val personsNum by viewModel.personsNum.collectAsStateWithLifecycle()
 
     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
@@ -245,7 +245,7 @@ fun LocalityDialog(
                     },
                     //  visualTransformation = ::creditCardFilter,
                     inputWrapper = address,
-                    onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.RegionId(it)) },
+                    onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
                     onImeKeyAction = viewModel::moveFocusImeAction
                 )
                 TextFieldComponent(
@@ -271,7 +271,7 @@ fun LocalityDialog(
                         )
                     },
                     inputWrapper = totalArea,
-                    onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrictId(it)) },
+                    onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it)) },
                     onImeKeyAction = viewModel::moveFocusImeAction
                 )
                 TextFieldComponent(

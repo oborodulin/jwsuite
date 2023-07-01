@@ -11,7 +11,7 @@ import java.util.*
 @Dao
 interface GeoRegionDistrictDao {
     // READS:
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE districtLocCode = :locale")
+    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE districtLocCode = :locale ORDER BY rRegionsId, districtName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionDistrictView>>
 
     @ExperimentalCoroutinesApi
@@ -26,7 +26,7 @@ interface GeoRegionDistrictDao {
     fun findDistinctById(regionDistrictId: UUID) = findById(regionDistrictId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND districtLocCode = :locale"
+        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND districtLocCode = :locale ORDER BY districtName"
     )
     fun findByRegionId(regionId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<GeoRegionDistrictView>>

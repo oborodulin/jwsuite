@@ -180,8 +180,8 @@ object DataMappersModule {
     // RegionDistricts:
     @Singleton
     @Provides
-    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(): GeoRegionDistrictViewToGeoRegionDistrictMapper =
-        GeoRegionDistrictViewToGeoRegionDistrictMapper()
+    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(mapper: GeoRegionViewToGeoRegionMapper): GeoRegionDistrictViewToGeoRegionDistrictMapper =
+        GeoRegionDistrictViewToGeoRegionDistrictMapper(regionMapper = mapper)
 
     @Singleton
     @Provides
@@ -222,8 +222,12 @@ object DataMappersModule {
     // Localities:
     @Singleton
     @Provides
-    fun provideGeoLocalityViewToGeoLocalityMapper(): GeoLocalityViewToGeoLocalityMapper =
-        GeoLocalityViewToGeoLocalityMapper()
+    fun provideGeoLocalityViewToGeoLocalityMapper(
+        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper
+    ): GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
+        regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper
+    )
 
     @Singleton
     @Provides

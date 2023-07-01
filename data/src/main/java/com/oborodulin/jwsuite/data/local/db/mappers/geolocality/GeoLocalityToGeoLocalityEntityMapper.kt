@@ -10,7 +10,7 @@ class GeoLocalityToGeoLocalityEntityMapper : Mapper<GeoLocality, GeoLocalityEnti
         localityId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         localityCode = input.localityCode,
         localityType = input.localityType,
-        lRegionDistrictsId = input.regionDistrictId,
-        lRegionsId = input.regionId
+        lRegionDistrictsId = input.regionDistrict?.id,
+        lRegionsId = input.region.id!!
     )
 }

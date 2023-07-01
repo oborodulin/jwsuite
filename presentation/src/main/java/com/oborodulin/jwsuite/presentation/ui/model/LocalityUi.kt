@@ -2,11 +2,10 @@ package com.oborodulin.jwsuite.presentation.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.util.LocalityType
-import java.util.UUID
 
 data class LocalityUi(
-    val regionId: UUID = UUID.randomUUID(),
-    val regionDistrictId: UUID? = null,
+    val region: RegionUi = RegionUi(),
+    val regionDistrict: RegionDistrictUi? = null,
     val localityCode: String = "",
     val localityType: LocalityType = LocalityType.CITY,
     val localityShortName: String = "",

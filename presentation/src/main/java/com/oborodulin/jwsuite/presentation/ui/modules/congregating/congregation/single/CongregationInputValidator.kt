@@ -6,10 +6,10 @@ import com.oborodulin.jwsuite.presentation.R
 private const val TAG = "Congregating.ui.CongregationInputValidator"
 
 sealed class CongregationInputValidator : Validatable {
-    object LocalityId : CongregationInputValidator() {
+    object Locality : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.congregation_locality_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
                 else -> null
             }
     }

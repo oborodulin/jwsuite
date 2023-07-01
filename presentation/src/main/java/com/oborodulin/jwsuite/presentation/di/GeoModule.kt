@@ -50,13 +50,13 @@ object GeoModule {
     // RegionDistricts:
     @Singleton
     @Provides
-    fun provideRegionDistrictToRegionDistrictUiMapper(): RegionDistrictToRegionDistrictUiMapper =
-        RegionDistrictToRegionDistrictUiMapper()
+    fun provideRegionDistrictToRegionDistrictUiMapper(mapper: RegionToRegionUiMapper): RegionDistrictToRegionDistrictUiMapper =
+        RegionDistrictToRegionDistrictUiMapper(regionMapper = mapper)
 
     @Singleton
     @Provides
-    fun provideRegionDistrictUiToRegionDistrictMapper(): RegionDistrictUiToRegionDistrictMapper =
-        RegionDistrictUiToRegionDistrictMapper()
+    fun provideRegionDistrictUiToRegionDistrictMapper(mapper: RegionUiToRegionMapper): RegionDistrictUiToRegionDistrictMapper =
+        RegionDistrictUiToRegionDistrictMapper(regionUiMapper = mapper)
 
     @Singleton
     @Provides
@@ -71,13 +71,21 @@ object GeoModule {
     // Localities:
     @Singleton
     @Provides
-    fun provideLocalityToLocalityUiMapper(): LocalityToLocalityUiMapper =
-        LocalityToLocalityUiMapper()
+    fun provideLocalityToLocalityUiMapper(
+        regionMapper: RegionToRegionUiMapper,
+        regionDistrictMapper: RegionDistrictToRegionDistrictUiMapper
+    ): LocalityToLocalityUiMapper = LocalityToLocalityUiMapper(
+        regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper
+    )
 
     @Singleton
     @Provides
-    fun provideLocalityUiToLocalityMapper(): LocalityUiToLocalityMapper =
-        LocalityUiToLocalityMapper()
+    fun provideLocalityUiToLocalityMapper(
+        regionUiMapper: RegionUiToRegionMapper,
+        regionUiDistrictMapper: RegionDistrictUiToRegionDistrictMapper
+    ): LocalityUiToLocalityMapper = LocalityUiToLocalityMapper(
+        regionUiMapper = regionUiMapper, regionUiDistrictMapper = regionUiDistrictMapper
+    )
 
     @Singleton
     @Provides

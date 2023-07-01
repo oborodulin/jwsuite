@@ -3,12 +3,17 @@ package com.oborodulin.jwsuite.presentation.ui.model.mappers.locality
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.GeoLocality
 import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.region.RegionToRegionUiMapper
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.regiondistrict.RegionDistrictToRegionDistrictUiMapper
 
-class LocalityToLocalityUiMapper : Mapper<GeoLocality, LocalityUi> {
+class LocalityToLocalityUiMapper(
+    private val regionMapper: RegionToRegionUiMapper,
+    private val regionDistrictMapper: RegionDistrictToRegionDistrictUiMapper
+) : Mapper<GeoLocality, LocalityUi> {
     override fun map(input: GeoLocality): LocalityUi {
         val localityUi = LocalityUi(
-            regionId = input.regionId,
-            regionDistrictId = input.regionDistrictId,
+            region = regionMapper.map(input.region),
+            regionDistrict = regionDistrictMapper.map(input.regionDistrict),
             localityCode = input.localityCode,
             localityType = input.localityType,
             localityShortName = input.localityShortName,

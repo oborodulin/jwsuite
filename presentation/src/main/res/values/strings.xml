@@ -54,11 +54,16 @@
     <string name="dlg_confirm_del_locality">Удалить населённый пункт %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
+    <!--общие-->
+    <string name="region_empty_error">Укажите, пожалуйста, область!</string>
+    <string name="locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
     <!--формы собрания-->
     <string name="congregation_num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="congregation_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <string name="territory_mark_empty_error">Укажите, пожалуйста, код территории!</string>
-    <string name="congregation_locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
+    <!--формы населённого пункта-->
+    <string name="locality_code_empty_error">Укажите, пожалуйста, код!</string>
+    <string name="locality_short_name_empty_error">Укажите, пожалуйста, короткое наименование!</string>
+    <string name="locality_name_empty_error">Укажите, пожалуйста, наименование!</string>
 
-    <string name="persons_num_empty_error">Укажите, пожалуйста, кол-во прописанных человек!</string>
 </resources>

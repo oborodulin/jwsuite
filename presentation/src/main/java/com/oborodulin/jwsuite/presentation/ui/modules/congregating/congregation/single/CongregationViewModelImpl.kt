@@ -18,6 +18,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -189,7 +190,7 @@ class CongregationViewModelImpl @Inject constructor(
             .onEach { event ->
                 when (event) {
                     is CongregationInputEvent.Locality -> {
-                        when (CongregationInputValidator.LocalityId.errorIdOrNull(event.input.itemId.toString())) {
+                        when (CongregationInputValidator.Locality.errorIdOrNull(event.input.itemId.toString())) {
                             null -> setStateValue(
                                 CongregationFields.LOCALITY_ID, locality, event.input, true
                             )
@@ -243,7 +244,7 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.Locality ->
                         setStateValue(
                             CongregationFields.LOCALITY_ID, locality,
-                            CongregationInputValidator.LocalityId.errorIdOrNull(event.input.itemId.toString())
+                            CongregationInputValidator.Locality.errorIdOrNull(event.input.itemId.toString())
                         )
 
                     is CongregationInputEvent.CongregationNum ->
@@ -271,7 +272,7 @@ class CongregationViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        CongregationInputValidator.LocalityId.errorIdOrNull(locality.value.item.itemId.toString())
+        CongregationInputValidator.Locality.errorIdOrNull(locality.value.item.itemId.toString())
             ?.let {
                 inputErrors.add(
                     InputError(
@@ -352,7 +353,7 @@ class CongregationViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality = LocalityUi(),
+                locality = LocalityViewModelImpl.previewLocalityUi(ctx),
                 isFavorite = true
             )
             congregationUi.id = UUID.randomUUID()
