@@ -1,11 +1,9 @@
 package com.oborodulin.home.common.ui.components.dialog
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,13 +36,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.items.SingleSelectListItemComponent
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.ui.state.MviViewModelated
+import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.toast
 import timber.log.Timber
@@ -53,81 +52,82 @@ private const val TAG = "Common.ui.SearchSingleSelectDialog"
 
 @Composable
 fun <T : Any> SearchSingleSelectDialog(
+    isShow: MutableState<Boolean>,
     title: String,
-    viewModel: MviViewModelated<T>,
-    onListItemClick: OnListItemEvent,
+    viewModel: MviViewModeled<T>,
+    onDismissRequest: (() -> Unit)? = null,
     onAddButtonClick: () -> Unit,
-    onDismissRequest: () -> Unit
+    onListItemClick: OnListItemEvent
 ) {
-    Dialog(onDismissRequest = { onDismissRequest() }) {
-        Surface(
-            modifier = Modifier
-                .width(300.dp)
-                .wrapContentHeight(),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Text(text = title)
-                Spacer(modifier = Modifier.height(10.dp))
-                viewModel.uiStateFlow.collectAsState().value.let { state ->
-                    Timber.tag(TAG).d("Collect ui state flow: %s", state)
-                    CommonScreen(state = state) { items ->
-                        items as List<ListItemModel>
-                        if (items.isNotEmpty()) {
-                            val searchState = remember { mutableStateOf(TextFieldValue("")) }
-                            SearchComponent(searchState)
-                            var filteredItems: List<ListItemModel>
-                            LazyColumn(
-                                state = rememberLazyListState(),
-                                modifier = Modifier
-                                    .selectableGroup() // Optional, for accessibility purpose
-                                    .padding(8.dp)
-                                    .focusable(enabled = true)
-                            ) {
-                                val searchedText = searchState.value.text
-                                filteredItems = if (searchedText.isEmpty()) {
-                                    items
-                                } else {
-                                    val resultList = mutableListOf<ListItemModel>()
-                                    for (item in items) {
-                                        if (item.headline.lowercase(Locale.getDefault())
-                                                .contains(searchedText.lowercase(Locale.getDefault()))
-                                        ) {
-                                            resultList.add(item)
+    if (isShow.value) {
+        Dialog(onDismissRequest = onDismissRequest ?: { isShow.value = false }) {
+            Surface(
+                modifier = Modifier
+                    .width(300.dp)
+                    .wrapContentHeight(),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Column(modifier = Modifier.padding(10.dp)) {
+                    Text(text = title)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    viewModel.uiStateFlow.collectAsState().value.let { state ->
+                        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        CommonScreen(state = state) { items ->
+                            if (items is List<*>) {
+                                items as List<ListItemModel>
+                                if (items.isNotEmpty()) {
+                                    val searchState =
+                                        remember { mutableStateOf(TextFieldValue("")) }
+                                    SearchComponent(searchState)
+                                    var filteredItems: List<ListItemModel>
+                                    LazyColumn(
+                                        state = rememberLazyListState(),
+                                        modifier = Modifier
+                                            .selectableGroup() // Optional, for accessibility purpose
+                                            .padding(8.dp)
+                                            .focusable(enabled = true)
+                                    ) {
+                                        val searchedText = searchState.value.text
+                                        filteredItems = if (searchedText.isEmpty()) {
+                                            items
+                                        } else {
+                                            val resultList = mutableListOf<ListItemModel>()
+                                            for (item in items) {
+                                                if (item.headline.lowercase(Locale.getDefault())
+                                                        .contains(searchedText.lowercase(Locale.getDefault()))
+                                                ) {
+                                                    resultList.add(item)
+                                                }
+                                            }
+                                            resultList
                                         }
-                                    }
-                                    resultList
-                                }
-                                items(filteredItems.size) { index ->
-                                    SingleSelectListItem(filteredItems[index]) { selectedItem ->
-                                        onListItemClick(selectedItem)
-                                        onDismissRequest()
+                                        items(filteredItems.size) { index ->
+                                            SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
+                                                onDismissRequest ?: { isShow.value = false }
+                                                onListItemClick(selectedItem)
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    IconButton(
-                        onClick = {
-                            onDismissRequest()
-                            onAddButtonClick()
-                        }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                modifier = Modifier.size(36.dp),
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = ""
-                            )
-                            Spacer(modifier = Modifier.width(width = 8.dp))
-                            Text(text = stringResource(R.string.btn_add_lbl))
+                        IconButton(onClick = onAddButtonClick) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    modifier = Modifier.size(36.dp),
+                                    imageVector = Icons.Outlined.Add,
+                                    contentDescription = ""
+                                )
+                                Spacer(modifier = Modifier.width(width = 8.dp))
+                                Text(text = stringResource(R.string.btn_add_lbl))
+                            }
                         }
                     }
                 }
@@ -136,39 +136,21 @@ fun <T : Any> SearchSingleSelectDialog(
     }
 }
 
-@Composable
-fun SingleSelectListItem(item: ListItemModel, onItemClick: OnListItemEvent) {
-    Row(
-        modifier = Modifier
-            .clickable(onClick = { onItemClick(item) })
-            //.background(colorResource(id = R.color.colorPrimaryDark))
-            .height(57.dp)
-            .fillMaxWidth()
-            .padding(PaddingValues(8.dp, 16.dp))
-    ) {
-        Text(text = item.headline, fontSize = 18.sp)
-    }
-}
-
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewSearchSingleSelectDialog() {
     val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
-    var showEditDialog by remember { mutableStateOf(false) }
+    var isShowDialog = remember { mutableStateOf(true) }
+    var isShowFullScreenDialog by remember { mutableStateOf(false) }
 
-    if (showEditDialog) {
+    if (isShowFullScreenDialog) {
         LocalContext.current.toast("another Full-screen Dialog")
     }
-    /*
     SearchSingleSelectDialog(
+        isShow = isShowDialog,
         title = stringResource(R.string.preview_blank_title),
         viewModel =
-        onListItemClick = { item -> println(item.headline) },
-        onAddButtonClick = { showEditDialog = true }
-    ) {
-        showEditDialog = false
-    }
-
-     */
+        onAddButtonClick = { isShowFullScreenDialog = true }
+    ) { item -> println(item.headline) }
 }

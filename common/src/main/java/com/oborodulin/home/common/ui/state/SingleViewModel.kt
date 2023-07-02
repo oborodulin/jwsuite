@@ -28,7 +28,7 @@ private const val FOCUSED_FIELD_KEY = "focusedTextField"
 abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent, F : Focusable, W : InputWrapped>(
     private val state: SavedStateHandle,
     private val initFocusedTextField: Focusable? = null,
-) : MviViewModel<T, S, A, E>(state = state) {
+) : MviViewModel<T, S, A, E>(state = state), SingleViewModeled<T> {
 
     private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
@@ -196,7 +196,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         _events.trySend(ScreenEvent.MoveFocus())
     }
 
-    fun onContinueClick(onSuccess: () -> Unit) {
+    override fun onContinueClick(onSuccess: () -> Unit) {
         Timber.tag(TAG).d("onContinueClick(onSuccess) called")
         viewModelScope.launch(Dispatchers.Default) {
             when (val inputErrors = getInputErrorsOrNull()) {

@@ -32,10 +32,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
+import com.oborodulin.home.common.ui.components.field.CheckboxComponent
+import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.components.field.util.toInputWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
@@ -103,24 +104,20 @@ fun CongregationView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        var showSingleSelectDialog by remember { mutableStateOf(false) }
-        var showNewLocalityDialog by remember { mutableStateOf(false) }
+        val isShowLocalitiesListDialog = remember { mutableStateOf(false) }
+        var isShowNewLocalityDialog by remember { mutableStateOf(false) }
 
-        if (showNewLocalityDialog) {
+        if (isShowNewLocalityDialog) {
             LocalContext.current.toast("another Full-screen Dialog")
         }
-        if (showSingleSelectDialog) {
-            SearchSingleSelectDialog(
-                title = stringResource(R.string.congregation_locality_hint),
-                viewModel = localitiesListViewModel,
-                onListItemClick = { item -> println(item.headline) },
-                onAddButtonClick = { showNewLocalityDialog = true }
-            ) {
-                showNewLocalityDialog = false
-            }
-        }
+        SearchSingleSelectDialog(
+            isShow = isShowLocalitiesListDialog,
+            title = stringResource(R.string.locality_hint),
+            viewModel = localitiesListViewModel,
+            onAddButtonClick = { isShowNewLocalityDialog = true }
+        ) { item -> locality = locality.copy(item = item) }
 
-        TextFieldComponent(
+        ComboBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.LOCALITY_ID.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -129,26 +126,18 @@ fun CongregationView(
                         isFocused = focusState.isFocused
                     )
                 }
-                .clickable { showSingleSelectDialog = true },
-            labelResId = R.string.congregation_locality_hint,
+                .clickable { isShowLocalitiesListDialog.value = true },
+            labelResId = R.string.locality_hint,
             leadingIcon = {
                 Icon(
                     painterResource(R.drawable.ic_location_city_36),
                     null
                 )
             },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = locality.toInputWrapper(),
+            inputWrapper = locality,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.Locality(
-                        ListItemModel(headline = it)
-                    )
+                    CongregationInputEvent.Locality(ListItemModel(headline = it))
                 )
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
@@ -178,9 +167,7 @@ fun CongregationView(
             inputWrapper = congregationNum,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.CongregationNum(
-                        it
-                    )
+                    CongregationInputEvent.CongregationNum(it)
                 )
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
@@ -194,7 +181,7 @@ fun CongregationView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.congregation_name_hint,
+            labelResId = R.string.name_hint,
             leadingIcon = {
                 Icon(
                     painterResource(R.drawable.ic_abc_36),
@@ -203,7 +190,7 @@ fun CongregationView(
             },
             keyboardOptions = remember {
                 KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
+                    //capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 )
@@ -212,9 +199,7 @@ fun CongregationView(
             inputWrapper = congregationName,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.CongregationName(
-                        it
-                    )
+                    CongregationInputEvent.CongregationName(it)
                 )
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
@@ -239,7 +224,7 @@ fun CongregationView(
             maxLines = 2,
             keyboardOptions = remember {
                 KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Sentences,
+                    capitalization = KeyboardCapitalization.Characters,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 )
@@ -248,43 +233,29 @@ fun CongregationView(
             inputWrapper = territoryMark,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.TerritoryMark(
-                        it
-                    )
+                    CongregationInputEvent.TerritoryMark(it)
                 )
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
-        /*
-        ExposedDropdownMenuBoxComponent(
+        CheckboxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.PAYMENT_DAY.name]!!.focusRequester)
+                .height(90.dp)
+                .focusRequester(focusRequesters[CongregationFields.IS_FAVORITE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.PAYMENT_DAY,
+                    congregationViewModel.onTextFieldFocusChanged(
+                        focusedField = CongregationFields.IS_FAVORITE,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.congregation_locality_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.outline_calendar_month_black_36),
-                    null
+            labelResId = R.string.is_favorite_hint,
+            inputWrapper = isFavorite,
+            onCheckedChange = {
+                congregationViewModel.onTextFieldEntered(
+                    CongregationInputEvent.IsFavorite(it)
                 )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = locality,
-            listItems = (1..28).map { it.toString() },
-            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.PaymentDay(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction,
-            //colors = ExposedDropdownMenuDefaults.textFieldColors()
+            }
         )
-        */
         Spacer(Modifier.height(8.dp))
         Button(onClick = {
             congregationViewModel.onContinueClick {

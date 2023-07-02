@@ -341,7 +341,7 @@ fun LocalityDialog(
                                 isFocused = focusState.isFocused
                             )
                         },
-                    labelResId = R.string.congregation_locality_hint,
+                    labelResId = R.string.locality_hint,
                     leadingIcon = {
                         Icon(
                             painterResource(com.oborodulin.home.common.R.drawable.outline_calendar_month_black_36),

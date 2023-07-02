@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.model.ListItemModel
 
 @Composable
-fun OptionSelectRadioButton(
+fun OptionSelectRadioButtonComponent(
     value: ListItemModel,
     selectedValue: ListItemModel,
     onClickListener: (ListItemModel) -> Unit
@@ -46,8 +46,8 @@ fun OptionSelectRadioButton(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewOptionSelectRadioButton() {
-    OptionSelectRadioButton(
+fun PreviewOptionSelectRadioButtonComponent() {
+    OptionSelectRadioButtonComponent(
         value = ListItemModel.defaultListItemModel(LocalContext.current),
         selectedValue = ListItemModel.defaultListItemModel(LocalContext.current),
     ) {

@@ -23,10 +23,7 @@ import com.oborodulin.home.common.util.OnListItemEvent
 private const val TAG = "Common.UI"
 
 @Composable
-fun SearchListItemComponent(
-    item: ListItemModel,
-    onClick: OnListItemEvent
-) {
+fun SingleSelectListItemComponent(item: ListItemModel, onClick: OnListItemEvent) {
     Row(
         modifier = Modifier
             .clickable(onClick = { onClick(item) })
@@ -42,8 +39,8 @@ fun SearchListItemComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewSearchListItemComponent() {
-    SearchListItemComponent(
-        item = ListItemModel.defaultListItemModel(LocalContext.current),
-        onClick = { })
+fun PreviewSingleSelectListItemComponent() {
+    SingleSelectListItemComponent(
+        item = ListItemModel.defaultListItemModel(LocalContext.current)
+    ) { }
 }

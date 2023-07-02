@@ -164,7 +164,7 @@ fun ListItemComponent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val showDialogState = remember { mutableStateOf(false) }
+                val isShowAlert = remember { mutableStateOf(false) }
                 val spaceVal = 18
                 var itemIndex = 0
                 for (action in itemActions.filter { it.isMenuButton }) {
@@ -181,19 +181,14 @@ fun ListItemComponent(
 
                         is ComponentUiAction.DeleteListItem -> {
                             AlertDialogComponent(
-                                isShow = showDialogState.value,
+                                isShow = isShowAlert,
                                 title = { Text(stringResource(R.string.dlg_confirm_title)) },
-                                text = { Text(text = action.dialogText) },
-                                onDismiss = { showDialogState.value = false },
-                                onConfirm = {
-                                    showDialogState.value = false
-                                    action.event(item)
-                                }
-                            )
+                                text = { Text(text = action.alertText) }
+                            ) { action.event(item) }
                             Image(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .clickable { showDialogState.value = true },
+                                    .clickable { isShowAlert.value = true },
                                 painter = painterResource(R.drawable.outline_delete_black_24),
                                 contentDescription = ""
                             )

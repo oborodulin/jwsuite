@@ -34,14 +34,22 @@
     <string name="congregation_tab_groups">Группы</string>
 
     <!--ФОРМА: -->
+    <!--общие -->
+    <string name="name_hint">Наименование</string>
+    <string name="short_name_hint">Короткое наименование</string>
+    <string name="type_hint">Тип</string>
+    <string name="locality_hint">Населённый пункт</string>
     <!--Собрание -->
     <string name="congregation_subheader">Собрание</string>
     <string name="congregation_new_subheader">Новое собрание</string>
-    <string name="congregation_locality_hint">Населённый пункт</string>
     <string name="congregation_num_hint">№</string>
-    <string name="congregation_name_hint">Наименование</string>
     <string name="territory_mark_hint">Код территории</string>
     <string name="territory_mark_helper">Любая буква участка</string>
+    <string name="is_favorite_hint">Избранное</string>
+    <!--Населённый пункт -->
+    <string name="locality_subheader">Населённый пункт</string>
+    <string name="locality_new_subheader">Новый населённый пункт</string>
+    <string name="locality_code_hint">Код</string>
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->

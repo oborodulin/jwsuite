@@ -21,7 +21,7 @@ private const val TAG = "Common.MviViewModel"
 abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent>(
     private val state: SavedStateHandle
 ) :
-    ViewModel(), MviViewModelated<T> {
+    ViewModel(), MviViewModeled<T> {
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
     override val uiStateFlow: StateFlow<S> = _uiStateFlow
 
