@@ -4,7 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
-import com.oborodulin.home.common.ui.state.MviViewModeled
+import com.oborodulin.home.common.ui.state.SingleViewModeled
 import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-interface LocalityViewModel : MviViewModeled<LocalityUi> {
+interface LocalityViewModel : SingleViewModeled<LocalityUi, LocalityUiAction> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
@@ -29,5 +29,5 @@ interface LocalityViewModel : MviViewModeled<LocalityUi> {
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: LocalityFields, isFocused: Boolean)
     fun moveFocusImeAction()
-    fun onContinueClick(onSuccess: () -> Unit)
+    override fun onContinueClick(onSuccess: () -> Unit)
 }

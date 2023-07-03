@@ -7,6 +7,7 @@ sealed class LocalitiesListUiAction : UiAction {
     data class Load(val regionId: UUID, val regionDistrictId: UUID? = null) :
         LocalitiesListUiAction()
 
+   // data class FilteredLoad(val search: String) : LocalitiesListUiAction()
     data class EditLocality(val localityId: UUID) : LocalitiesListUiAction()
     data class DeleteLocality(val localityId: UUID) : LocalitiesListUiAction()
 }

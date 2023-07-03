@@ -21,7 +21,7 @@ private const val TAG = "Common.MviViewModel"
 abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent>(
     private val state: SavedStateHandle
 ) :
-    ViewModel(), MviViewModeled<T> {
+    ViewModel(), MviViewModeled<T, A> {
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
     override val uiStateFlow: StateFlow<S> = _uiStateFlow
 
@@ -87,7 +87,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         Timber.tag(TAG).d("handleActionJob(...) ended")
     }
 
-    fun submitAction(action: A): Job {
+    override fun submitAction(action: A): Job {
         Timber.tag(TAG).d("submitAction(action): emit action = %s", action.javaClass.name)
         val job = viewModelScope.launch(errorHandler) {
             _actionsFlow.emit(action)

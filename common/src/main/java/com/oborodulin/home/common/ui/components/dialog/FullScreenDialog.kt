@@ -28,20 +28,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.SingleViewModeled
+import com.oborodulin.home.common.ui.state.UiAction
 import timber.log.Timber
 
 private const val TAG = "Common.ui.FullScreenDialog"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : Any> FullScreenDialog(
+fun <T : Any, A : UiAction> FullScreenDialog(
     isShow: MutableState<Boolean>,
-    title: String,
-    viewModel: SingleViewModeled<T>,
+    viewModel: SingleViewModeled<T, A>,
     dialogView: @Composable (T) -> Unit,
     onDismissRequest: (() -> Unit)? = null,
     dismissOnBackPress: Boolean = false,
@@ -62,14 +61,16 @@ fun <T : Any> FullScreenDialog(
                     .fillMaxSize(),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-                    Text(text = title)
-                    Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
                     viewModel.uiStateFlow.collectAsState().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) {
                             TopAppBar(
-                                title = { Text(title) },
+                                title = { Text(stringResource(viewModel.dialogTitleResId!!)) },
                                 navigationIcon = {
                                     IconButton(onClick = onDismissRequest ?: {
                                         isShow.value = false
@@ -78,11 +79,13 @@ fun <T : Any> FullScreenDialog(
                                     }
                                 }, actions = {
                                     IconButton(onClick = {
+                                        isShow.value = false
                                         viewModel.onContinueClick(onSaveButtonClick)
                                     }) {
                                         Icon(Icons.Outlined.Done, null)
                                     }
                                 })
+                            Spacer(modifier = Modifier.height(8.dp))
                             dialogView(it)
                         }
                     }
@@ -99,9 +102,10 @@ fun PreviewFullScreenDialog() {
     val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
     val isShowDialog = remember { mutableStateOf(true) }
 
-    FullScreenDialog(
-        isShow = isShowDialog,
-        title = stringResource(R.string.preview_blank_title),
-        viewModel =
-    ) { item -> println(item.headline) }
+    /*   FullScreenDialog(
+           isShow = isShowDialog,
+           viewModel =
+       ) { item -> println(item.headline) }
+
+     */
 }

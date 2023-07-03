@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,8 +32,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.MviViewModeled
+import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
@@ -42,11 +46,14 @@ import java.util.UUID
 private const val TAG = "Common.ui.ComboBoxComponent"
 
 @Composable
-fun ComboBoxComponent(
+fun <T : List<*>, A : UiAction> ComboBoxComponent(
     modifier: Modifier,
+    listViewModel: MviViewModeled<T, A>,
     inputWrapper: InputListItemWrapper,
-    @StringRes labelResId: Int? = null,
+    @StringRes labelResId: Int,
+    @StringRes listTitleResId: Int,
     leadingIcon: @Composable (() -> Unit)? = null,
+    isShowItemDialog: MutableState<Boolean>,
     maxLines: Int = Int.MAX_VALUE,
     onValueChange: OnValueChange,
     onImeKeyAction: OnImeKeyAction,
@@ -56,8 +63,7 @@ fun ComboBoxComponent(
     var fieldValue by remember {
         mutableStateOf(
             TextFieldValue(
-                inputWrapper.item.headline,
-                TextRange(inputWrapper.item.headline.length)
+                inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length)
             )
         )
     }
@@ -73,11 +79,20 @@ fun ComboBoxComponent(
         fieldValue,
         inputWrapper
     )
+    val isShowListDialog = remember { mutableStateOf(false) }
+    SearchSingleSelectDialog(
+        isShow = isShowListDialog,
+        title = stringResource(listTitleResId),
+        viewModel = listViewModel,
+        onAddButtonClick = { isShowItemDialog.value = true }
+    ) { item -> fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length)) }
+
     Column {
         OutlinedTextField(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 8.dp),
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .clickable { isShowListDialog.value = true },
             enabled = false,
             readOnly = false,
             value = fieldValue,
@@ -85,7 +100,7 @@ fun ComboBoxComponent(
                 fieldValue = it
                 onValueChange(it.text)
             },
-            label = { labelResId?.let { Text(stringResource(it)) } },
+            label = { Text(stringResource(labelResId)) },
             leadingIcon = leadingIcon,
             trailingIcon = {
                 if (fieldValue.text.isEmpty()) {
@@ -116,9 +131,9 @@ fun ComboBoxComponent(
         )
         val errorMessage =
             if (inputWrapper.errorId != null) stringResource(inputWrapper.errorId) else inputWrapper.errorMsg
-        if (errorMessage != null) {
+        errorMessage?.let {
             Text(
-                text = errorMessage,
+                text = it,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(start = 16.dp)
@@ -133,7 +148,7 @@ fun ComboBoxComponent(
 fun PreviewComboBoxComponent() {
     HomeComposableTheme {
         Surface {
-            ComboBoxComponent(modifier = Modifier
+           /* ComboBoxComponent(modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
                 inputWrapper = InputListItemWrapper(
@@ -145,7 +160,7 @@ fun PreviewComboBoxComponent() {
                 ),
                 labelResId = R.string.preview_blank_text_field_lbl,
                 onValueChange = {},
-                onImeKeyAction = {})
+                onImeKeyAction = {})*/
         }
     }
 }

@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-interface LocalitiesListViewModel : MviViewModeled<List<LocalitiesListItem>> {
+interface LocalitiesListViewModel :
+    MviViewModeled<List<LocalitiesListItem>, LocalitiesListUiAction> {
     var primaryObjectData: StateFlow<ArrayList<String>>
 
     val singleEventFlow: Flow<LocalitiesListUiSingleEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
-    fun submitAction(action: LocalitiesListUiAction): Job?
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
     fun setPrimaryObjectData(value: ArrayList<String>)
 }

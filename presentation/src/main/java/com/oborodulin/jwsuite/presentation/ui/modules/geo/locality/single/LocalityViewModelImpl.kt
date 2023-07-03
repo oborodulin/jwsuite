@@ -303,7 +303,7 @@ class LocalityViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        LocalityInputValidator.Region.errorIdOrNull(region.value.item.itemId.toString())?.let {
+        LocalityInputValidator.Region.errorIdOrNull(region.value.item.headline)?.let {
             inputErrors.add(InputError(fieldName = LocalityFields.REGION_ID.name, errorId = it))
         }
         LocalityInputValidator.LocalityCode.errorIdOrNull(localityCode.value.value)?.let {
@@ -337,6 +337,7 @@ class LocalityViewModelImpl @Inject constructor(
     companion object {
         val previewModel =
             object : LocalityViewModel {
+                override var dialogTitleResId: Int? = null
                 override val uiStateFlow = MutableStateFlow(UiState.Success(LocalityUi()))
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -351,6 +352,7 @@ class LocalityViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                override fun submitAction(action: LocalityUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: LocalityFields, isFocused: Boolean

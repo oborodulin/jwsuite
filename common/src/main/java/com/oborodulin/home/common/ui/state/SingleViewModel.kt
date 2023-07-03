@@ -28,7 +28,7 @@ private const val FOCUSED_FIELD_KEY = "focusedTextField"
 abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent, F : Focusable, W : InputWrapped>(
     private val state: SavedStateHandle,
     private val initFocusedTextField: Focusable? = null,
-) : MviViewModel<T, S, A, E>(state = state), SingleViewModeled<T> {
+) : MviViewModel<T, S, A, E>(state = state), SingleViewModeled<T, A> {
 
     private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
@@ -38,6 +38,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             field = value
             state[FOCUSED_FIELD_KEY] = value.key
         }
+
+    override var dialogTitleResId: Int? = null
 
     private val _events = Channel<ScreenEvent>()
     val events = _events.receiveAsFlow()
@@ -163,12 +165,14 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputListItemWrapper>, item: ListItemModel,
         isValid: Boolean = false
     ) {
+        val listItem = if (item.headline.isEmpty()) ListItemModel() else item
         Timber.tag(TAG)
-            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), item, isValid)
+            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), listItem, isValid)
         if (isValid) {
-            state[field.key()] = property.value.copy(item = item, errorId = null, isEmpty = false)
+            state[field.key()] =
+                property.value.copy(item = listItem, errorId = null, isEmpty = false)
         } else {
-            state[field.key()] = property.value.copy(item = item, isEmpty = false)
+            state[field.key()] = property.value.copy(item = listItem, isEmpty = false)
         }
     }
 

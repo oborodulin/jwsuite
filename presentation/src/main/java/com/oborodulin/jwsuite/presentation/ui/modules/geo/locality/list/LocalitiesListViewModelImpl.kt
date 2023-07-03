@@ -50,6 +50,10 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 loadLocalities(action.regionId, action.regionDistrictId)
             }
 
+  /*          is LocalitiesListUiAction.FilteredLoad -> {
+                loadFilteredLocalities(action.search)
+            }*/
+
             is LocalitiesListUiAction.EditLocality -> {
                 submitSingleEvent(
                     LocalitiesListUiSingleEvent.OpenLocalityScreen(
@@ -81,7 +85,22 @@ class LocalitiesListViewModelImpl @Inject constructor(
         }
         return job
     }
-
+/*
+    private fun loadFilteredLocalities(search: String): Job {
+        Timber.tag(TAG).d("loadFilteredLocalities() called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getLocalitiesUseCase.execute(
+                GetLocalitiesUseCase.Request(regionId, regionDistrictId)
+            ).map {
+                converter.convert(it)
+            }
+                .collect {
+                    submitState(it)
+                }
+        }
+        return job
+    }
+*/
     private fun deleteLocality(localityId: UUID): Job {
         Timber.tag(TAG).d("deleteLocality() called: localityId = %s", localityId.toString())
         val job = viewModelScope.launch(errorHandler) {

@@ -57,6 +57,7 @@ fun RegionsListView(
     viewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) { regionsList ->
+
             SingleSelectDialog(
                 title = stringResource(R.string.dlg_title_select_region),
                 items = regionsList,

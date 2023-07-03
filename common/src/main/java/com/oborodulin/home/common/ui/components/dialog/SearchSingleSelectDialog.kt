@@ -43,6 +43,7 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.MviViewModeled
+import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.toast
 import timber.log.Timber
@@ -51,10 +52,10 @@ import java.util.Locale
 private const val TAG = "Common.ui.SearchSingleSelectDialog"
 
 @Composable
-fun <T : Any> SearchSingleSelectDialog(
+fun <T : List<*>, A : UiAction> SearchSingleSelectDialog(
     isShow: MutableState<Boolean>,
     title: String,
-    viewModel: MviViewModeled<T>,
+    viewModel: MviViewModeled<T, A>,
     onDismissRequest: (() -> Unit)? = null,
     onAddButtonClick: () -> Unit,
     onListItemClick: OnListItemEvent
@@ -73,39 +74,37 @@ fun <T : Any> SearchSingleSelectDialog(
                     viewModel.uiStateFlow.collectAsState().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) { items ->
-                            if (items is List<*>) {
-                                items as List<ListItemModel>
-                                if (items.isNotEmpty()) {
-                                    val searchState =
-                                        remember { mutableStateOf(TextFieldValue("")) }
-                                    SearchComponent(searchState)
-                                    var filteredItems: List<ListItemModel>
-                                    LazyColumn(
-                                        state = rememberLazyListState(),
-                                        modifier = Modifier
-                                            .selectableGroup() // Optional, for accessibility purpose
-                                            .padding(8.dp)
-                                            .focusable(enabled = true)
-                                    ) {
-                                        val searchedText = searchState.value.text
-                                        filteredItems = if (searchedText.isEmpty()) {
-                                            items
-                                        } else {
-                                            val resultList = mutableListOf<ListItemModel>()
-                                            for (item in items) {
-                                                if (item.headline.lowercase(Locale.getDefault())
-                                                        .contains(searchedText.lowercase(Locale.getDefault()))
-                                                ) {
-                                                    resultList.add(item)
-                                                }
+                            items as List<ListItemModel>
+                            if (items.isNotEmpty()) {
+                                val searchState =
+                                    remember { mutableStateOf(TextFieldValue("")) }
+                                SearchComponent(searchState)
+                                var filteredItems: List<ListItemModel>
+                                LazyColumn(
+                                    state = rememberLazyListState(),
+                                    modifier = Modifier
+                                        .selectableGroup() // Optional, for accessibility purpose
+                                        .padding(8.dp)
+                                        .focusable(enabled = true)
+                                ) {
+                                    val searchedText = searchState.value.text
+                                    filteredItems = if (searchedText.isEmpty()) {
+                                        items
+                                    } else {
+                                        val resultList = mutableListOf<ListItemModel>()
+                                        for (item in items) {
+                                            if (item.headline.lowercase(Locale.getDefault())
+                                                    .contains(searchedText.lowercase(Locale.getDefault()))
+                                            ) {
+                                                resultList.add(item)
                                             }
-                                            resultList
                                         }
-                                        items(filteredItems.size) { index ->
-                                            SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
-                                                onDismissRequest ?: { isShow.value = false }
-                                                onListItemClick(selectedItem)
-                                            }
+                                        resultList
+                                    }
+                                    items(filteredItems.size) { index ->
+                                        SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
+                                            onDismissRequest ?: { isShow.value = false }
+                                            onListItemClick(selectedItem)
                                         }
                                     }
                                 }
@@ -141,16 +140,19 @@ fun <T : Any> SearchSingleSelectDialog(
 @Composable
 fun PreviewSearchSingleSelectDialog() {
     val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
-    var isShowDialog = remember { mutableStateOf(true) }
+    val isShowDialog = remember { mutableStateOf(true) }
     var isShowFullScreenDialog by remember { mutableStateOf(false) }
 
     if (isShowFullScreenDialog) {
         LocalContext.current.toast("another Full-screen Dialog")
     }
+    /*
     SearchSingleSelectDialog(
         isShow = isShowDialog,
         title = stringResource(R.string.preview_blank_title),
         viewModel =
         onAddButtonClick = { isShowFullScreenDialog = true }
     ) { item -> println(item.headline) }
+
+     */
 }

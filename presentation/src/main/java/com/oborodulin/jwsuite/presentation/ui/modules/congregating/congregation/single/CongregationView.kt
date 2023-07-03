@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +21,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,20 +29,20 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
+import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.CheckboxComponent
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import kotlinx.coroutines.launch
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "Congregating.ui.CongregationView"
@@ -52,10 +50,9 @@ private const val TAG = "Congregating.ui.CongregationView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CongregationView(
-    appState: AppState,
     congregationViewModel: CongregationViewModel,
     localitiesListViewModel: LocalitiesListViewModel,
-    onSubmit: () -> Unit
+    localityViewModel: LocalityViewModel
 ) {
     Timber.tag(TAG).d("CongregationView(...) called")
     val context = LocalContext.current
@@ -76,8 +73,6 @@ fun CongregationView(
     val congregationName by congregationViewModel.congregationName.collectAsStateWithLifecycle()
     val territoryMark by congregationViewModel.territoryMark.collectAsStateWithLifecycle()
     val isFavorite by congregationViewModel.isFavorite.collectAsStateWithLifecycle()
-
-    val areInputsValid by congregationViewModel.areInputsValid.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all payer fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -104,18 +99,12 @@ fun CongregationView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val isShowLocalitiesListDialog = remember { mutableStateOf(false) }
-        var isShowNewLocalityDialog by remember { mutableStateOf(false) }
-
-        if (isShowNewLocalityDialog) {
-            LocalContext.current.toast("another Full-screen Dialog")
-        }
-        SearchSingleSelectDialog(
-            isShow = isShowLocalitiesListDialog,
-            title = stringResource(R.string.locality_hint),
-            viewModel = localitiesListViewModel,
-            onAddButtonClick = { isShowNewLocalityDialog = true }
-        ) { item -> locality = locality.copy(item = item) }
+        val isShowNewListItemDialog = remember { mutableStateOf(false) }
+        FullScreenDialog(
+            isShow = isShowNewListItemDialog,
+            viewModel = localityViewModel,
+            dialogView = {LocalityView(localityViewModel)}
+        ) { localityViewModel.submitAction(LocalityUiAction.Save) }
 
         ComboBoxComponent(
             modifier = Modifier
@@ -125,14 +114,13 @@ fun CongregationView(
                         focusedField = CongregationFields.LOCALITY_ID,
                         isFocused = focusState.isFocused
                     )
-                }
-                .clickable { isShowLocalitiesListDialog.value = true },
+                },
+            listViewModel = localitiesListViewModel,
+            isShowItemDialog = isShowNewListItemDialog,
             labelResId = R.string.locality_hint,
+            listTitleResId = R.string.dlg_title_select_locality,
             leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_location_city_36),
-                    null
-                )
+                Icon(painterResource(R.drawable.ic_location_city_36), null)
             },
             inputWrapper = locality,
             onValueChange = {
@@ -256,26 +244,6 @@ fun CongregationView(
                 )
             }
         )
-        Spacer(Modifier.height(8.dp))
-        Button(onClick = {
-            congregationViewModel.onContinueClick {
-                Timber.tag(TAG).d("CongregationView(...): Start viewModelScope.launch")
-                congregationViewModel.viewModelScope().launch {
-                    congregationViewModel.actionsJobFlow.collect {
-                        Timber.tag(TAG).d(
-                            "CongregationView(...): Start actionsJobFlow.collect [job = %s]",
-                            it?.toString()
-                        )
-                        it?.join()
-                        appState.backToBottomBarScreen()
-                    }
-                }
-                onSubmit()
-                Timber.tag(TAG).d("CongregationView(...): onSubmit() executed")
-            }
-        }, enabled = areInputsValid) {
-            Text(text = stringResource(com.oborodulin.home.common.R.string.btn_save_lbl))
-        }
     }
 }
 
@@ -284,8 +252,8 @@ fun CongregationView(
 @Composable
 fun PreviewCongregationView() {
     CongregationView(
-        appState = rememberAppState(),
         congregationViewModel = CongregationViewModelImpl.previewModel,
         localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
-        onSubmit = {})
+        localityViewModel = LocalityViewModelImpl.previewModel
+    )
 }
