@@ -29,5 +29,4 @@ interface LocalityViewModel : SingleViewModeled<LocalityUi, LocalityUiAction> {
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: LocalityFields, isFocused: Boolean)
     fun moveFocusImeAction()
-    override fun onContinueClick(onSuccess: () -> Unit)
 }

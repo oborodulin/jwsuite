@@ -353,7 +353,7 @@ class CongregationViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality = LocalityViewModelImpl.previewLocalityUi(ctx),
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
                 isFavorite = true
             )
             congregationUi.id = UUID.randomUUID()

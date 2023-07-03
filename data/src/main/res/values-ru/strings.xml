@@ -78,7 +78,7 @@
     <!--Районы областей -->
     <string name="def_reg_maryinsky_short_name">МРН</string>
     <string name="def_reg_maryinsky_name">Марьинский</string>
-    <string name="def_reg_donetsky_short_name">ДЩН</string>
+    <string name="def_reg_donetsky_short_name">ДОН</string>
     <string name="def_reg_donetsky_name">Донецкий</string>
     <!--Населённые пункты (города, пгт, посёлки и пр.) -->
     <string name="def_donetsk_code">7856</string>

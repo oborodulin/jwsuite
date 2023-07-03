@@ -50,13 +50,13 @@ class LocalityViewModelImpl @Inject constructor(
     }
     override val region: StateFlow<InputListItemWrapper> by lazy {
         state.getStateFlow(
-            LocalityFields.REGION_ID.name,
+            LocalityFields.LOCALITY_REGION.name,
             InputListItemWrapper()
         )
     }
     override val regionDistrict: StateFlow<InputListItemWrapper> by lazy {
         state.getStateFlow(
-            LocalityFields.REGION_DISTRICT_ID.name,
+            LocalityFields.LOCALITY_REGION_DISTRICT.name,
             InputListItemWrapper()
         )
     }
@@ -170,12 +170,12 @@ class LocalityViewModelImpl @Inject constructor(
             initStateValue(LocalityFields.LOCALITY_ID, localityId, it.toString())
         }
         initStateValue(
-            LocalityFields.REGION_ID,
+            LocalityFields.LOCALITY_REGION,
             region,
             ListItemModel(localityUi.region.id, localityUi.region.regionName)
         )
         initStateValue(
-            LocalityFields.REGION_DISTRICT_ID,
+            LocalityFields.LOCALITY_REGION_DISTRICT,
             regionDistrict,
             ListItemModel(
                 localityUi.regionDistrict?.id, localityUi.regionDistrict?.districtName ?: ""
@@ -208,15 +208,15 @@ class LocalityViewModelImpl @Inject constructor(
                     is LocalityInputEvent.Region ->
                         when (LocalityInputValidator.Region.errorIdOrNull(event.input.itemId.toString())) {
                             null -> setStateValue(
-                                LocalityFields.REGION_ID, region, event.input, true
+                                LocalityFields.LOCALITY_REGION, region, event.input, true
                             )
 
-                            else -> setStateValue(LocalityFields.REGION_ID, region, event.input)
+                            else -> setStateValue(LocalityFields.LOCALITY_REGION, region, event.input)
                         }
 
                     is LocalityInputEvent.RegionDistrict ->
                         setStateValue(
-                            LocalityFields.REGION_DISTRICT_ID, regionDistrict, event.input, true
+                            LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict, event.input, true
                         )
 
                     is LocalityInputEvent.LocalityCode ->
@@ -264,13 +264,13 @@ class LocalityViewModelImpl @Inject constructor(
                 when (event) {
                     is LocalityInputEvent.Region ->
                         setStateValue(
-                            LocalityFields.REGION_ID, region,
+                            LocalityFields.LOCALITY_REGION, region,
                             LocalityInputValidator.Region.errorIdOrNull(event.input.itemId.toString())
                         )
 
                     is LocalityInputEvent.RegionDistrict ->
                         setStateValue(
-                            LocalityFields.REGION_DISTRICT_ID, regionDistrict, null
+                            LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict, null
                         )
 
                     is LocalityInputEvent.LocalityCode ->
@@ -304,7 +304,7 @@ class LocalityViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         LocalityInputValidator.Region.errorIdOrNull(region.value.item.headline)?.let {
-            inputErrors.add(InputError(fieldName = LocalityFields.REGION_ID.name, errorId = it))
+            inputErrors.add(InputError(fieldName = LocalityFields.LOCALITY_REGION.name, errorId = it))
         }
         LocalityInputValidator.LocalityCode.errorIdOrNull(localityCode.value.value)?.let {
             inputErrors.add(InputError(fieldName = LocalityFields.LOCALITY_CODE.name, errorId = it))
@@ -325,7 +325,7 @@ class LocalityViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                LocalityFields.REGION_ID.name -> region.value.copy(errorId = error.errorId)
+                LocalityFields.LOCALITY_REGION.name -> region.value.copy(errorId = error.errorId)
                 LocalityFields.LOCALITY_CODE.name -> localityCode.value.copy(errorId = error.errorId)
                 LocalityFields.LOCALITY_SHORT_NAME.name -> localityShortName.value.copy(errorId = error.errorId)
                 LocalityFields.LOCALITY_NAME.name -> localityName.value.copy(errorId = error.errorId)
@@ -363,7 +363,7 @@ class LocalityViewModelImpl @Inject constructor(
                 override fun onContinueClick(onSuccess: () -> Unit) {}
             }
 
-        fun previewLocalityUi(ctx: Context): LocalityUi {
+        fun previewUiModel(ctx: Context): LocalityUi {
             val localityUi = LocalityUi(
                 region = RegionUi(),
                 //regionDistrict = ,

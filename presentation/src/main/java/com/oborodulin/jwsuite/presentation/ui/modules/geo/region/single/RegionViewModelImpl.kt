@@ -1,19 +1,21 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationUi
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.converters.CongregationConverter
-import com.oborodulin.jwsuite.presentation.ui.congregating.model.mappers.PayerUiToPayerMapper
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.domain.usecases.GetPayerUseCase
-import com.oborodulin.home.accounting.domain.usecases.PayerUseCases
-import com.oborodulin.home.domain.usecases.SavePayerUseCase
+import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
+import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
+import com.oborodulin.jwsuite.presentation.ui.model.RegionUi
+import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.region.RegionUiToRegionMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -22,122 +24,77 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.PayerViewModel"
+private const val TAG = "Geo.ui.RegionViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class RegionViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val payerUseCases: PayerUseCases,
-    private val congregationConverter: CongregationConverter,
-    private val payerUiToPayerMapper: PayerUiToPayerMapper
+    private val useCases: RegionUseCases,
+    private val converter: RegionConverter,
+    private val mapper: RegionUiToRegionMapper
 ) : RegionViewModel,
-    SingleViewModel<CongregationUi, UiState<CongregationUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
+    SingleViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
         state,
-        RegionFields.LOCALITY_CODE
+        RegionFields.REGION_CODE
     ) {
-    private val payerId: StateFlow<InputWrapper> by lazy {
+    private val regionId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            RegionFields.LOCALITY_ID.name,
+            RegionFields.REGION_ID.name,
             InputWrapper()
         )
     }
-    override val ercCode: StateFlow<InputWrapper> by lazy {
+    override val regionCode: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            RegionFields.LOCALITY_CODE.name,
+            RegionFields.REGION_CODE.name,
             InputWrapper()
         )
     }
-    override val fullName: StateFlow<InputWrapper> by lazy {
+    override val regionName: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            RegionFields.LOCALITY_NAME.name,
-            InputWrapper()
-        )
-    }
-    override val address: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.ADDRESS.name,
-            InputWrapper()
-        )
-    }
-    override val totalArea: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.TOTAL_AREA.name,
-            InputWrapper()
-        )
-    }
-    override val livingSpace: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.LIVING_SPACE.name,
-            InputWrapper()
-        )
-    }
-    override val heatedVolume: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.HEATED_VOLUME.name,
-            InputWrapper()
-        )
-    }
-    override val paymentDay: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.LOCALITY_TYPE.name,
-            InputWrapper()
-        )
-    }
-    override val personsNum: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.LOCALITY_SHORT_NAME.name,
+            RegionFields.REGION_NAME.name,
             InputWrapper()
         )
     }
 
     override val areInputsValid =
         combine(
-            combine(
-                ercCode,
-                fullName,
-                address,
-                totalArea
-            ) { ercCode, fullName, address, totalArea ->
-                ercCode.errorId == null && fullName.errorId == null && address.errorId == null && totalArea.errorId == null
-            },
-            combine(
-                livingSpace,
-                heatedVolume,
-                paymentDay,
-                personsNum
-            ) { livingSpace, heatedVolume, paymentDay, personsNum ->
-                livingSpace.errorId == null && heatedVolume.errorId == null && paymentDay.errorId == null && personsNum.errorId == null
-            }) { fieldsPartOne, fieldsPartTwo -> fieldsPartOne && fieldsPartTwo }.stateIn(
+            regionCode,
+            regionName
+        ) { regionCode, regionName ->
+            regionCode.errorId == null && regionName.errorId == null
+        }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             false
         )
 
-    override fun initState(): UiState<CongregationUi> = UiState.Loading
+    override fun initState(): UiState<RegionUi> = UiState.Loading
 
     override suspend fun handleAction(action: RegionUiAction): Job {
-        Timber.tag(TAG).d("handleAction(PayerUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(RegionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RegionUiAction.Create -> {
-                submitState(UiState.Success(CongregationUi()))
+                submitState(UiState.Success(RegionUi()))
             }
+
             is RegionUiAction.Load -> {
-                loadPayer(action.localityId)
+                loadRegion(action.regionId)
             }
+
             is RegionUiAction.Save -> {
-                savePayer()
+                saveRegion()
             }
         }
         return job
     }
 
-    private fun loadPayer(payerId: UUID): Job {
-        Timber.tag(TAG).d("loadPayer(UUID) called: %s", payerId.toString())
+    private fun loadRegion(regionId: UUID): Job {
+        Timber.tag(TAG).d("loadRegion(UUID) called: %s", regionId.toString())
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.getPayerUseCase.execute(GetPayerUseCase.Request(payerId))
+            useCases.getRegionUseCase.execute(GetRegionUseCase.Request(regionId))
                 .map {
-                    congregationConverter.convert(it)
+                    converter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -146,25 +103,18 @@ class RegionViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun savePayer(): Job {
-        val congregationUi = CongregationUi(
-            id = if (payerId.value.value.isNotEmpty()) {
-                UUID.fromString(payerId.value.value)
-            } else null,
-            congregationNum = ercCode.value.value,
-            congregationName = fullName.value.value,
-            territoryMark = address.value.value,
-            totalArea = totalArea.value.value.toBigDecimalOrNull(),
-            livingSpace = livingSpace.value.value.toBigDecimalOrNull(),
-            heatedVolume = heatedVolume.value.value.toBigDecimalOrNull(),
-            paymentDay = paymentDay.value.value.toInt(),
-            personsNum = personsNum.value.value.toInt()
+    private fun saveRegion(): Job {
+        val regionUi = RegionUi(
+            regionCode = regionCode.value.value,
+            regionName = regionName.value.value
         )
-        Timber.tag(TAG).d("savePayer() called: UI model %s", congregationUi)
+        regionUi.id = if (regionId.value.value.isNotEmpty()) {
+            UUID.fromString(regionId.value.value)
+        } else null
+        Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
         val job = viewModelScope.launch(errorHandler) {
-            payerUseCases.savePayerUseCase.execute(
-                SavePayerUseCase.Request(payerUiToPayerMapper.map(congregationUi))
-            ).collect {}
+            useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(mapper.map(regionUi)))
+                .collect {}
         }
         return job
     }
@@ -173,28 +123,14 @@ class RegionViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val congregationUi = uiModel as CongregationUi
+        val regionUi = uiModel as RegionUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(PayerModel) called: payerModel = %s", congregationUi)
-        congregationUi.id?.let {
-            initStateValue(RegionFields.LOCALITY_ID, payerId, it.toString())
+            .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", regionUi)
+        regionUi.id?.let {
+            initStateValue(RegionFields.REGION_ID, regionId, it.toString())
         }
-        initStateValue(RegionFields.LOCALITY_CODE, ercCode, congregationUi.congregationNum)
-        initStateValue(RegionFields.LOCALITY_NAME, fullName, congregationUi.congregationName)
-        initStateValue(RegionFields.ADDRESS, address, congregationUi.territoryMark)
-        initStateValue(RegionFields.TOTAL_AREA, totalArea, congregationUi.totalArea?.toString() ?: "")
-        initStateValue(
-            RegionFields.LIVING_SPACE,
-            livingSpace,
-            congregationUi.livingSpace?.toString() ?: ""
-        )
-        initStateValue(
-            RegionFields.HEATED_VOLUME,
-            heatedVolume,
-            congregationUi.heatedVolume?.toString() ?: ""
-        )
-        initStateValue(RegionFields.LOCALITY_TYPE, paymentDay, congregationUi.paymentDay.toString())
-        initStateValue(RegionFields.LOCALITY_SHORT_NAME, personsNum, congregationUi.personsNum.toString())
+        initStateValue(RegionFields.REGION_CODE, regionCode, regionUi.regionCode)
+        initStateValue(RegionFields.REGION_NAME, regionName, regionUi.regionName)
         return null
     }
 
@@ -204,61 +140,25 @@ class RegionViewModelImpl @Inject constructor(
             .onEach { event ->
                 when (event) {
                     is RegionInputEvent.RegionCode ->
-                        when (RegionInputValidator.ErcCode.errorIdOrNull(event.input)) {
-                            null -> setStateValue(RegionFields.LOCALITY_CODE, ercCode, event.input, true)
-                            else -> setStateValue(RegionFields.LOCALITY_CODE, ercCode, event.input)
+                        when (RegionInputValidator.RegionCode.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                RegionFields.REGION_CODE, regionCode, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                RegionFields.REGION_CODE, regionCode, event.input
+                            )
                         }
+
                     is RegionInputEvent.RegionName ->
-                        when (RegionInputValidator.FullName.errorIdOrNull(event.input)) {
+                        when (RegionInputValidator.RegionName.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                RegionFields.LOCALITY_NAME, fullName, event.input,
-                                true
+                                RegionFields.REGION_NAME, regionName, event.input, true
                             )
-                            else -> setStateValue(RegionFields.LOCALITY_NAME, fullName, event.input)
-                        }
-                    is RegionInputEvent.RegionId ->
-                        when (RegionInputValidator.Address.errorIdOrNull(event.input)) {
-                            null -> setStateValue(RegionFields.ADDRESS, address, event.input, true)
-                            else -> setStateValue(RegionFields.ADDRESS, address, event.input)
-                        }
-                    is RegionInputEvent.RegionDistrictId ->
-                        when (RegionInputValidator.TotalArea.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.TOTAL_AREA, totalArea, event.input, true
-                            )
-                            else -> setStateValue(RegionFields.TOTAL_AREA, totalArea, event.input)
-                        }
-                    is RegionInputEvent.LivingSpace ->
-                        when (RegionInputValidator.LivingSpace.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.LIVING_SPACE, livingSpace, event.input, true
-                            )
+
                             else -> setStateValue(
-                                RegionFields.LIVING_SPACE, livingSpace, event.input
+                                RegionFields.REGION_NAME, regionName, event.input
                             )
-                        }
-                    is RegionInputEvent.HeatedVolume ->
-                        when (RegionInputValidator.HeatedVolume.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.HEATED_VOLUME, heatedVolume, event.input, true
-                            )
-                            else -> setStateValue(
-                                RegionFields.HEATED_VOLUME, heatedVolume, event.input
-                            )
-                        }
-                    is RegionInputEvent.RegionType ->
-                        when (RegionInputValidator.PaymentDay.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.LOCALITY_TYPE, paymentDay, event.input, true
-                            )
-                            else -> setStateValue(RegionFields.LOCALITY_TYPE, paymentDay, event.input)
-                        }
-                    is RegionInputEvent.RegionShortName ->
-                        when (RegionInputValidator.PersonsNum.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.LOCALITY_SHORT_NAME, personsNum, event.input, true
-                            )
-                            else -> setStateValue(RegionFields.LOCALITY_SHORT_NAME, personsNum, event.input)
                         }
                 }
             }
@@ -267,44 +167,16 @@ class RegionViewModelImpl @Inject constructor(
                 when (event) {
                     is RegionInputEvent.RegionCode ->
                         setStateValue(
-                            RegionFields.LOCALITY_CODE, ercCode,
-                            RegionInputValidator.ErcCode.errorIdOrNull(event.input)
+                            RegionFields.REGION_CODE, regionCode,
+                            RegionInputValidator.RegionCode.errorIdOrNull(event.input)
                         )
+
                     is RegionInputEvent.RegionName ->
                         setStateValue(
-                            RegionFields.LOCALITY_NAME, fullName,
-                            RegionInputValidator.FullName.errorIdOrNull(event.input)
+                            RegionFields.REGION_NAME, regionName,
+                            RegionInputValidator.RegionName.errorIdOrNull(event.input)
                         )
-                    is RegionInputEvent.RegionId ->
-                        setStateValue(
-                            RegionFields.ADDRESS, address,
-                            RegionInputValidator.Address.errorIdOrNull(event.input)
-                        )
-                    is RegionInputEvent.RegionDistrictId ->
-                        setStateValue(
-                            RegionFields.TOTAL_AREA, totalArea,
-                            RegionInputValidator.TotalArea.errorIdOrNull(event.input)
-                        )
-                    is RegionInputEvent.LivingSpace ->
-                        setStateValue(
-                            RegionFields.LIVING_SPACE, livingSpace,
-                            RegionInputValidator.LivingSpace.errorIdOrNull(event.input)
-                        )
-                    is RegionInputEvent.HeatedVolume ->
-                        setStateValue(
-                            RegionFields.HEATED_VOLUME, heatedVolume,
-                            RegionInputValidator.HeatedVolume.errorIdOrNull(event.input)
-                        )
-                    is RegionInputEvent.RegionType ->
-                        setStateValue(
-                            RegionFields.LOCALITY_TYPE, paymentDay,
-                            RegionInputValidator.PaymentDay.errorIdOrNull(event.input)
-                        )
-                    is RegionInputEvent.RegionShortName ->
-                        setStateValue(
-                            RegionFields.LOCALITY_SHORT_NAME, personsNum,
-                            RegionInputValidator.PersonsNum.errorIdOrNull(event.input)
-                        )
+
                 }
             }
     }
@@ -312,29 +184,11 @@ class RegionViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        RegionInputValidator.ErcCode.errorIdOrNull(ercCode.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.LOCALITY_CODE.name, errorId = it))
+        RegionInputValidator.RegionCode.errorIdOrNull(regionCode.value.value)?.let {
+            inputErrors.add(InputError(fieldName = RegionFields.REGION_CODE.name, errorId = it))
         }
-        RegionInputValidator.FullName.errorIdOrNull(fullName.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.LOCALITY_NAME.name, errorId = it))
-        }
-        RegionInputValidator.Address.errorIdOrNull(address.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.ADDRESS.name, errorId = it))
-        }
-        RegionInputValidator.TotalArea.errorIdOrNull(totalArea.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.TOTAL_AREA.name, errorId = it))
-        }
-        RegionInputValidator.LivingSpace.errorIdOrNull(livingSpace.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.LIVING_SPACE.name, errorId = it))
-        }
-        RegionInputValidator.HeatedVolume.errorIdOrNull(heatedVolume.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.HEATED_VOLUME.name, errorId = it))
-        }
-        RegionInputValidator.PaymentDay.errorIdOrNull(paymentDay.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.LOCALITY_TYPE.name, errorId = it))
-        }
-        RegionInputValidator.PersonsNum.errorIdOrNull(personsNum.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegionFields.LOCALITY_SHORT_NAME.name, errorId = it))
+        RegionInputValidator.RegionName.errorIdOrNull(regionName.value.value)?.let {
+            inputErrors.add(InputError(fieldName = RegionFields.REGION_NAME.name, errorId = it))
         }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
@@ -344,15 +198,8 @@ class RegionViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                //PayerFields.ERC_CODE.name -> ercCode.update{ it.copy(errorId = error.errorId) }
-                RegionFields.LOCALITY_CODE.name -> ercCode.value.copy(errorId = error.errorId)
-                RegionFields.LOCALITY_NAME.name -> fullName.value.copy(errorId = error.errorId)
-                RegionFields.ADDRESS.name -> address.value.copy(errorId = error.errorId)
-                RegionFields.TOTAL_AREA.name -> totalArea.value.copy(errorId = error.errorId)
-                RegionFields.LIVING_SPACE.name -> livingSpace.value.copy(errorId = error.errorId)
-                RegionFields.HEATED_VOLUME.name -> heatedVolume.value.copy(errorId = error.errorId)
-                RegionFields.LOCALITY_TYPE.name -> paymentDay.value.copy(errorId = error.errorId)
-                RegionFields.LOCALITY_SHORT_NAME.name -> personsNum.value.copy(errorId = error.errorId)
+                RegionFields.REGION_CODE.name -> regionCode.value.copy(errorId = error.errorId)
+                RegionFields.REGION_NAME.name -> regionName.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -361,21 +208,18 @@ class RegionViewModelImpl @Inject constructor(
     companion object {
         val previewModel =
             object : RegionViewModel {
+                override var dialogTitleResId: Int? = null
+                override val uiStateFlow = MutableStateFlow(UiState.Success(RegionUi()))
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val ercCode = MutableStateFlow(InputWrapper())
-                override val fullName = MutableStateFlow(InputWrapper())
-                override val address = MutableStateFlow(InputWrapper())
-                override val totalArea = MutableStateFlow(InputWrapper())
-                override val livingSpace = MutableStateFlow(InputWrapper())
-                override val heatedVolume = MutableStateFlow(InputWrapper())
-                override val paymentDay = MutableStateFlow(InputWrapper())
-                override val personsNum = MutableStateFlow(InputWrapper())
+                override val regionCode = MutableStateFlow(InputWrapper())
+                override val regionName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                override fun submitAction(action: RegionUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: RegionFields, isFocused: Boolean
@@ -385,42 +229,14 @@ class RegionViewModelImpl @Inject constructor(
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
             }
-    }
-}
-/*
-        private val _payerState = mutableStateOf(Payer())
 
-    private val payerState: State<Payer>
-        get() = _payerState
-    fun onEvent(event: PayerEvent) {
-        when (event) {
-            is PayerEvent.SavePayer -> viewModelScope.launch {
-                //payerUseCases.savePayerUseCase(payerState.value)
-            }
-            is PayerEvent.ChangeErcCode -> _payerState.value =
-                payerState.value.copy(ercCode = event.newErcCode)
-            is PayerEvent.ChangeFullName -> _payerState.value =
-                payerState.value.copy(fullName = event.newFullName)
-            is PayerEvent.ChangeAddress -> _payerState.value =
-                payerState.value.copy(address = event.newAddress)
-            is PayerEvent.ChangeTotalArea -> _payerState.value =
-                payerState.value.copy(totalArea = event.newTotalArea)
-            is PayerEvent.ChangeLivingSpace -> _payerState.value =
-                payerState.value.copy(livingSpace = event.newLivingSpace)
-            is PayerEvent.ChangeHeatedVolume -> _payerState.value =
-                payerState.value.copy(heatedVolume = event.newHeatedVolume)
-            is PayerEvent.ChangePaymentDay -> _payerState.value =
-                payerState.value.copy(paymentDay = event.newPaymentDay)
-            is PayerEvent.ChangePersonsNum -> _payerState.value =
-                payerState.value.copy(personsNum = event.newPersonsNum)
-        }
-    }
-    fun fetchPayer(id: UUID) {
-        viewModelScope.launch() {
-            /*payerUseCases.getPayer(id).collect {
-                _payerState.value = it
-            }*/
+        fun previewUiModel(ctx: Context): RegionUi {
+            val regionUi = RegionUi(
+                regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
+                regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
+            )
+            regionUi.id = UUID.randomUUID()
+            return regionUi
         }
     }
 }
- */

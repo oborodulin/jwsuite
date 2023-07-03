@@ -4,12 +4,12 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class LocalityFields : Focusable {
     LOCALITY_ID,
-    REGION_ID,
-    REGION_DISTRICT_ID,
+    LOCALITY_REGION,
+    LOCALITY_REGION_DISTRICT,
     LOCALITY_CODE,
+    LOCALITY_SHORT_NAME,
     LOCALITY_TYPE,
-    LOCALITY_NAME,
-    LOCALITY_SHORT_NAME;
+    LOCALITY_NAME;
 
     override fun key(): String {
         return this.name

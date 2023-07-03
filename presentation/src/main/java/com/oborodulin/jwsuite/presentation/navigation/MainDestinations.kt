@@ -8,6 +8,10 @@ object MainDestinations {
     const val ROUTE_TERRITORING = "territoring"
     const val ROUTE_MINISTRING = "ministring"
 
+    //GEO:
+    const val ROUTE_REGION = "region/%s"
+    const val ROUTE_REGION_DISTRICT = "regionDistrict/%s"
+
     //Congregates:
     const val ROUTE_CONGREGATION = "congregation/%s"
     const val ROUTE_GROUP = "group/%s"
@@ -15,5 +19,4 @@ object MainDestinations {
 
     //Territories:
     const val ROUTE_TERRITORY = "territory/%s"
-    //GEO:
 }

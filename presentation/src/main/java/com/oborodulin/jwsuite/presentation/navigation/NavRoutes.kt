@@ -15,9 +15,12 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GRO
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionInput
 import com.oborodulin.jwsuite.presentation.navigation.inputs.GroupInput
 import com.oborodulin.jwsuite.presentation.navigation.inputs.MemberInput
 import com.oborodulin.jwsuite.presentation.navigation.inputs.TerritoryInput
@@ -26,6 +29,8 @@ import java.util.UUID
 
 private const val TAG = "Presentation.NavRoutes"
 
+private const val ARG_REGION_ID = "regionId"
+private const val ARG_REGION_DISTRICT_ID = "regionDistrictId"
 private const val ARG_CONGREGATION_ID = "congregationId"
 private const val ARG_GROUP_ID = "groupId"
 private const val ARG_MEMBER_ID = "memberId"
@@ -71,6 +76,72 @@ sealed class NavRoutes constructor(
             R.string.nav_item_ministring
         )
 
+    // Geo:
+    object Region : NavRoutes(
+        String.format(ROUTE_REGION, "{$ARG_REGION_ID}"),
+        R.drawable.ic_person_24,
+        R.string.nav_item_region,
+        arguments = listOf(navArgument(ARG_REGION_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForRegion(regionInput: GeoRegionInput? = null): String {
+            val route = when (regionInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_REGION, regionInput.regionId)
+            }
+            //val route = String.format(ROUTE_PAYER, payerId)
+            Timber.tag(TAG).d("Region - routeForRegion(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): GeoRegionInput {
+            val regionInput =
+                GeoRegionInput(
+                    UUID.fromString(
+                        entry.arguments?.getString(ARG_REGION_ID) ?: ""
+                    )
+                )
+            Timber.tag(TAG).d("Region - fromEntry(...): '%s'", regionInput)
+            return regionInput
+        }
+    }
+
+    object RegionDistrict : NavRoutes(
+        String.format(ROUTE_REGION_DISTRICT, "{$ARG_REGION_DISTRICT_ID}"),
+        R.drawable.ic_person_24,
+        R.string.nav_item_regionDistrict,
+        arguments = listOf(navArgument(ARG_REGION_DISTRICT_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForRegionDistrict(regionDistrictInput: GeoRegionDistrictInput? = null): String {
+            val route = when (regionDistrictInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_REGION_DISTRICT, regionDistrictInput.regionDistrictId)
+            }
+            //val route = String.format(ROUTE_PAYER, payerId)
+            Timber.tag(TAG).d("RegionDistrict - routeForRegionDistrict(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): GeoRegionDistrictInput {
+            val regionDistrictInput =
+                GeoRegionDistrictInput(
+                    UUID.fromString(
+                        entry.arguments?.getString(ARG_REGION_DISTRICT_ID) ?: ""
+                    )
+                )
+            Timber.tag(TAG).d("RegionDistrict - fromEntry(...): '%s'", regionDistrictInput)
+            return regionDistrictInput
+        }
+    }
+    
+    // Congregation:
     object Congregation : NavRoutes(
         String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
         R.drawable.ic_person_24,

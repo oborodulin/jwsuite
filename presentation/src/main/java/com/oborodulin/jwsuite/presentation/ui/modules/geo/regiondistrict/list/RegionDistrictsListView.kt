@@ -76,7 +76,7 @@ fun PayersListView(
         payersListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is RegionDistrictsListUiSingleEvent.OpenPayerScreen -> {
+                is RegionDistrictsListUiSingleEvent.OpenRegionDistrictScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -243,14 +243,14 @@ fun PayersAccounting(
                 },
                 onEdit = { payer ->
                     regionDistrictsListViewModel.submitAction(
-                        RegionDistrictsListUiAction.EditPayer(
+                        RegionDistrictsListUiAction.EditRegionDistrict(
                             payer.id
                         )
                     )
                 }
             ) { payer ->
                 regionDistrictsListViewModel.handleActionJob(action = {
-                    regionDistrictsListViewModel.submitAction(RegionDistrictsListUiAction.DeletePayer(payer.id))
+                    regionDistrictsListViewModel.submitAction(RegionDistrictsListUiAction.DeleteRegionDistrict(payer.id))
                 },
                     afterAction = {
                         meterValuesListViewModel.submitAction(MeterValuesListUiAction.Init)
