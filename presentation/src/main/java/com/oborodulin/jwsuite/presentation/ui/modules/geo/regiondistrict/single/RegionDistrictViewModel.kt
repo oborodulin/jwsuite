@@ -5,23 +5,20 @@ import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.state.SingleViewModeled
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-interface RegionDistrictViewModel : SingleViewModeled<LocalityUi, RegionDistrictUiAction> {
+interface RegionDistrictViewModel : SingleViewModeled<RegionDistrictUi, RegionDistrictUiAction> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
     val region: StateFlow<InputListItemWrapper>
-    val regionDistrict: StateFlow<InputListItemWrapper>
-    val localityCode: StateFlow<InputWrapper>
-    val localityShortName: StateFlow<InputWrapper>
-    val localityType: StateFlow<InputWrapper>
-    val localityName: StateFlow<InputWrapper>
+    val districtShortName: StateFlow<InputWrapper>
+    val districtName: StateFlow<InputWrapper>
 
     val areInputsValid: StateFlow<Boolean>
 
@@ -29,5 +26,4 @@ interface RegionDistrictViewModel : SingleViewModeled<LocalityUi, RegionDistrict
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: RegionDistrictFields, isFocused: Boolean)
     fun moveFocusImeAction()
-    override fun onContinueClick(onSuccess: () -> Unit)
 }

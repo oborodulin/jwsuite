@@ -12,6 +12,7 @@ import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoLocalityInput
 import com.oborodulin.jwsuite.presentation.ui.model.LocalitiesListItem
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalitiesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,9 +58,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
             is LocalitiesListUiAction.EditLocality -> {
                 submitSingleEvent(
                     LocalitiesListUiSingleEvent.OpenLocalityScreen(
-                        NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.localityId)
-                        )
+                        NavRoutes.Locality.routeForLocality(GeoLocalityInput(action.localityId))
                     )
                 )
             }

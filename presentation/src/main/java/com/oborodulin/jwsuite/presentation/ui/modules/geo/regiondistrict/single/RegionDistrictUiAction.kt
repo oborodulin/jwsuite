@@ -5,6 +5,6 @@ import java.util.UUID
 
 sealed class RegionDistrictUiAction : UiAction {
     object Create : RegionDistrictUiAction()
-    data class Load(val localityId: UUID) : RegionDistrictUiAction()
+    data class Load(val regionDistrictId: UUID) : RegionDistrictUiAction()
     object Save : RegionDistrictUiAction()
 }

@@ -11,6 +11,7 @@ object MainDestinations {
     //GEO:
     const val ROUTE_REGION = "region/%s"
     const val ROUTE_REGION_DISTRICT = "regionDistrict/%s"
+    const val ROUTE_LOCALITY = "locality/%s"
 
     //Congregates:
     const val ROUTE_CONGREGATION = "congregation/%s"

@@ -42,7 +42,11 @@ fun LocalitiesListView(
     regionInput: GeoRegionInput,
     regionDistrictInput: GeoRegionDistrictInput? = null
 ) {
-    Timber.tag(TAG).d("LocalitiesListView(...) called: regionInput = %s", regionInput)
+    Timber.tag(TAG).d(
+        "LocalitiesListView(...) called: regionInput = %s, regionDistrictInput = %s",
+        regionInput,
+        regionDistrictInput
+    )
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LocalitiesListView: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(

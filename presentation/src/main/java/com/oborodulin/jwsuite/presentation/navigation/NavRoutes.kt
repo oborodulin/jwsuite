@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CON
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GROUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
@@ -20,6 +21,8 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REG
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
 import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoLocalityInput
+import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionInput
 import com.oborodulin.jwsuite.presentation.navigation.inputs.GroupInput
 import com.oborodulin.jwsuite.presentation.navigation.inputs.MemberInput
@@ -27,13 +30,28 @@ import com.oborodulin.jwsuite.presentation.navigation.inputs.TerritoryInput
 import timber.log.Timber
 import java.util.UUID
 
+// ic_street_pin - https://www.flaticon.com/authors/srip
+// ic_district - https://www.flaticon.com/authors/orvipixel
+// ic_map_pins - https://www.flaticon.com/authors/itim2101
+// ic_territory_map - https://www.freepik.com/
+// ic_meeting - https://www.freepik.com/
+// ic_room - https://www.flaticon.com/authors/andrejs-kirma
+// ic_floor - https://www.flaticon.com/authors/icon-hubs
+// ic_floors - https://www.flaticon.com/authors/bsd
+
 private const val TAG = "Presentation.NavRoutes"
 
+// Geo:
 private const val ARG_REGION_ID = "regionId"
 private const val ARG_REGION_DISTRICT_ID = "regionDistrictId"
+private const val ARG_LOCALITY_ID = "localityId"
+
+// Congregation:
 private const val ARG_CONGREGATION_ID = "congregationId"
 private const val ARG_GROUP_ID = "groupId"
 private const val ARG_MEMBER_ID = "memberId"
+
+// Territory:
 private const val ARG_TERRITORY_ID = "territoryId"
 
 /**
@@ -47,39 +65,39 @@ sealed class NavRoutes constructor(
 ) {
     object Home : NavRoutes(
         ROUTE_HOME,
-        R.drawable.outline_account_balance_wallet_black_24,
+        R.drawable.ic_dashboard_24,
         R.string.nav_item_dashboarding
     )
 
     object Dashboarding : NavRoutes(
         ROUTE_DASHBOARDING,
-        R.drawable.outline_account_balance_wallet_black_24,
+        R.drawable.ic_dashboard_24,
         R.string.nav_item_dashboarding
     )
 
     object Congregating : NavRoutes(
         ROUTE_CONGREGATING,
-        R.drawable.outline_monetization_on_black_24,
+        R.drawable.ic_cottage_24,
         R.string.nav_item_congregating
     )
 
     object Territoring : NavRoutes(
         ROUTE_TERRITORING,
-        R.drawable.ic_electric_meter_24,
+        R.drawable.ic_territory_map_24,
         R.string.nav_item_territoring
     )
 
     object Ministring :
         NavRoutes(
             ROUTE_MINISTRING,
-            R.drawable.outline_receipt_black_24,
+            R.drawable.ic_maps_home_work_24,
             R.string.nav_item_ministring
         )
 
     // Geo:
     object Region : NavRoutes(
         String.format(ROUTE_REGION, "{$ARG_REGION_ID}"),
-        R.drawable.ic_person_24,
+        R.drawable.ic_region_24,
         R.string.nav_item_region,
         arguments = listOf(navArgument(ARG_REGION_ID) {
             type = NavType.StringType
@@ -111,8 +129,8 @@ sealed class NavRoutes constructor(
 
     object RegionDistrict : NavRoutes(
         String.format(ROUTE_REGION_DISTRICT, "{$ARG_REGION_DISTRICT_ID}"),
-        R.drawable.ic_person_24,
-        R.string.nav_item_regionDistrict,
+        R.drawable.ic_district_24,
+        R.string.nav_item_region_district,
         arguments = listOf(navArgument(ARG_REGION_DISTRICT_ID) {
             type = NavType.StringType
             nullable = true
@@ -140,11 +158,43 @@ sealed class NavRoutes constructor(
             return regionDistrictInput
         }
     }
-    
+
+    object Locality : NavRoutes(
+        String.format(ROUTE_LOCALITY, "{$ARG_LOCALITY_ID}"),
+        R.drawable.ic_location_city_24,
+        R.string.nav_item_locality,
+        arguments = listOf(navArgument(ARG_LOCALITY_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForLocality(localityInput: GeoLocalityInput? = null): String {
+            val route = when (localityInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_LOCALITY, localityInput.localityId)
+            }
+            //val route = String.format(ROUTE_PAYER, payerId)
+            Timber.tag(TAG).d("Locality - routeForLocality(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): GeoLocalityInput {
+            val localityInput =
+                GeoLocalityInput(
+                    UUID.fromString(
+                        entry.arguments?.getString(ARG_LOCALITY_ID) ?: ""
+                    )
+                )
+            Timber.tag(TAG).d("Locality - fromEntry(...): '%s'", localityInput)
+            return localityInput
+        }
+    }
+
     // Congregation:
     object Congregation : NavRoutes(
         String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
-        R.drawable.ic_person_24,
+        R.drawable.ic_cottage_24,
         R.string.nav_item_congregation,
         arguments = listOf(navArgument(ARG_CONGREGATION_ID) {
             type = NavType.StringType
@@ -176,7 +226,7 @@ sealed class NavRoutes constructor(
 
     object Group : NavRoutes(
         String.format(ROUTE_GROUP, "{$ARG_GROUP_ID}"),
-        R.drawable.outline_domain_black_24,
+        R.drawable.ic_group_24,
         R.string.nav_item_group,
         arguments = listOf(navArgument(ARG_GROUP_ID) {
             type = NavType.StringType
@@ -204,7 +254,7 @@ sealed class NavRoutes constructor(
 
     object Member : NavRoutes(
         String.format(ROUTE_MEMBER, "{$ARG_MEMBER_ID}"),
-        R.drawable.outline_domain_black_24,
+        R.drawable.ic_person_24,
         R.string.nav_item_member,
         arguments = listOf(navArgument(ARG_MEMBER_ID) {
             type = NavType.StringType
@@ -233,7 +283,7 @@ sealed class NavRoutes constructor(
 
     object Territory : NavRoutes(
         String.format(ROUTE_TERRITORY, "{$ARG_TERRITORY_ID}"),
-        R.drawable.outline_domain_black_24,
+        R.drawable.ic_map_marker_24,
         R.string.nav_item_territory,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType

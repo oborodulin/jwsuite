@@ -58,9 +58,9 @@ fun LocalityView(viewModel: RegionDistrictViewModel) {
     val region by viewModel.region.collectAsStateWithLifecycle()
     val regionDistrict by viewModel.regionDistrict.collectAsStateWithLifecycle()
     val localityCode by viewModel.localityCode.collectAsStateWithLifecycle()
-    val localityShortName by viewModel.localityShortName.collectAsStateWithLifecycle()
+    val localityShortName by viewModel.districtShortName.collectAsStateWithLifecycle()
     val localityType by viewModel.localityType.collectAsStateWithLifecycle()
-    val localityName by viewModel.localityName.collectAsStateWithLifecycle()
+    val localityName by viewModel.districtName.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all locality fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -180,10 +180,10 @@ fun LocalityView(viewModel: RegionDistrictViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionDistrictFields.LOCALITY_SHORT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_SHORT_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = RegionDistrictFields.LOCALITY_SHORT_NAME,
+                        focusedField = RegionDistrictFields.DISTRICT_SHORT_NAME,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -203,7 +203,7 @@ fun LocalityView(viewModel: RegionDistrictViewModel) {
             },
             inputWrapper = localityShortName,
             onValueChange = {
-                viewModel.onTextFieldEntered(RegionDistrictInputEvent.RegionDistrictShortName(it))
+                viewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictShortName(it))
             },
             onImeKeyAction = viewModel::moveFocusImeAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
@@ -237,10 +237,10 @@ fun LocalityView(viewModel: RegionDistrictViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionDistrictFields.LOCALITY_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = RegionDistrictFields.LOCALITY_NAME,
+                        focusedField = RegionDistrictFields.DISTRICT_NAME,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -260,7 +260,7 @@ fun LocalityView(viewModel: RegionDistrictViewModel) {
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = localityName,
             onValueChange = {
-                viewModel.onTextFieldEntered(RegionDistrictInputEvent.RegionDistrictName(it))
+                viewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictName(it))
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
