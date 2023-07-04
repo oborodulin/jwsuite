@@ -12,7 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JWSuite"
+        tools:replace="android:icon,android:theme"
         tools:targetApi="31">
+        <!--Attribute application@theme value=(@style/Theme.JWSuite) from AndroidManifest.xml:14:9-45
+	is also present at [:common] AndroidManifest.xml:13:9-42 value=(@style/Theme.Home).
+	Suggestion: add 'tools:replace="android:theme"' to <application> element at AndroidManifest.xml:5:5-37:19 to override.
+	https://stackoverflow.com/questions/25981156/tools-replace-not-replacing-in-android-manifest/34079182#34079182
+	 -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"

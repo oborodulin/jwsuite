@@ -43,6 +43,10 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.Locali
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityView
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "Congregating.ui.CongregationView"
@@ -52,7 +56,9 @@ private const val TAG = "Congregating.ui.CongregationView"
 fun CongregationView(
     congregationViewModel: CongregationViewModel,
     localitiesListViewModel: LocalitiesListViewModel,
-    localityViewModel: LocalityViewModel
+    localityViewModel: LocalityViewModel,
+    regionsListViewModel: RegionsListViewModel,
+    regionViewModel: RegionViewModel
 ) {
     Timber.tag(TAG).d("CongregationView(...) called")
     val context = LocalContext.current
@@ -99,29 +105,27 @@ fun CongregationView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val isShowNewListItemDialog = remember { mutableStateOf(false) }
+        val isShowNewLocalityDialog = remember { mutableStateOf(false) }
         FullScreenDialog(
-            isShow = isShowNewListItemDialog,
+            isShow = isShowNewLocalityDialog,
             viewModel = localityViewModel,
-            dialogView = {LocalityView(localityViewModel)}
+            dialogView = { LocalityView(localityViewModel, regionsListViewModel, regionViewModel) }
         ) { localityViewModel.submitAction(LocalityUiAction.Save) }
 
         ComboBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.LOCALITY_ID.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_LOCALITY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     congregationViewModel.onTextFieldFocusChanged(
-                        focusedField = CongregationFields.LOCALITY_ID,
+                        focusedField = CongregationFields.CONGREGATION_LOCALITY,
                         isFocused = focusState.isFocused
                     )
                 },
             listViewModel = localitiesListViewModel,
-            isShowItemDialog = isShowNewListItemDialog,
+            isShowItemDialog = isShowNewLocalityDialog,
             labelResId = R.string.locality_hint,
             listTitleResId = R.string.dlg_title_select_locality,
-            leadingIcon = {
-                Icon(painterResource(R.drawable.ic_location_city_36), null)
-            },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
             inputWrapper = locality,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(
@@ -141,10 +145,7 @@ fun CongregationView(
                 },
             labelResId = R.string.congregation_num_hint,
             leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                    null
-                )
+                Icon(painterResource(com.oborodulin.home.common.R.drawable.ic_123_36), null)
             },
             keyboardOptions = remember {
                 KeyboardOptions(
@@ -170,25 +171,23 @@ fun CongregationView(
                     )
                 },
             labelResId = R.string.name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_abc_36),
-                    null
-                )
-            },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
-                    //capitalization = KeyboardCapitalization.Words,
+                    capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = congregationName,
-            onValueChange = {
+            onValueChange = { value ->
                 congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.CongregationName(it)
+                    CongregationInputEvent.CongregationName(value)
                 )
+                CongregationInputEvent.TerritoryMark(
+                    value.replace("-[.,]", " ").split(" ")
+                        .joinToString("") { it.trim()[0].uppercase() })
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
@@ -203,13 +202,7 @@ fun CongregationView(
                     )
                 },
             labelResId = R.string.territory_mark_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_map_marker_36),
-                    null
-                )
-            },
-            maxLines = 2,
+            leadingIcon = { Icon(painterResource(R.drawable.ic_map_marker_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
@@ -220,9 +213,7 @@ fun CongregationView(
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryMark,
             onValueChange = {
-                congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.TerritoryMark(it)
-                )
+                congregationViewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it))
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
@@ -239,9 +230,7 @@ fun CongregationView(
             labelResId = R.string.is_favorite_hint,
             inputWrapper = isFavorite,
             onCheckedChange = {
-                congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.IsFavorite(it)
-                )
+                congregationViewModel.onTextFieldEntered(CongregationInputEvent.IsFavorite(it))
             }
         )
     }
@@ -254,6 +243,8 @@ fun PreviewCongregationView() {
     CongregationView(
         congregationViewModel = CongregationViewModelImpl.previewModel,
         localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
-        localityViewModel = LocalityViewModelImpl.previewModel
+        localityViewModel = LocalityViewModelImpl.previewModel,
+        regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
+        regionViewModel = RegionViewModelImpl.previewModel
     )
 }

@@ -29,38 +29,59 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
+import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "Geo.ui.LocalityView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LocalityView(viewModel: LocalityViewModel) {
+fun LocalityView(
+    localityViewModel: LocalityViewModel,
+    regionsListViewModel: RegionsListViewModel,
+    regionViewModel: RegionViewModel,
+    regionDistrictsListViewModel: RegionDistrictsListViewModel,
+    regionDistrictViewModel: RegionDistrictViewModel
+) {
     Timber.tag(TAG).d("LocalityView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
+    val events = remember(localityViewModel.events, lifecycleOwner) {
+        localityViewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all locality fields")
-    val region by viewModel.region.collectAsStateWithLifecycle()
-    val regionDistrict by viewModel.regionDistrict.collectAsStateWithLifecycle()
-    val localityCode by viewModel.localityCode.collectAsStateWithLifecycle()
-    val localityShortName by viewModel.localityShortName.collectAsStateWithLifecycle()
-    val localityType by viewModel.localityType.collectAsStateWithLifecycle()
-    val localityName by viewModel.localityName.collectAsStateWithLifecycle()
+    val region by localityViewModel.region.collectAsStateWithLifecycle()
+    val regionDistrict by localityViewModel.regionDistrict.collectAsStateWithLifecycle()
+    val localityCode by localityViewModel.localityCode.collectAsStateWithLifecycle()
+    val localityShortName by localityViewModel.localityShortName.collectAsStateWithLifecycle()
+    val localityType by localityViewModel.localityType.collectAsStateWithLifecycle()
+    val localityName by localityViewModel.localityName.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all locality fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -90,71 +111,76 @@ fun LocalityView(viewModel: LocalityViewModel) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        /*
-        TextFieldComponent(
+        val isShowNewRegionDialog = remember { mutableStateOf(false) }
+        FullScreenDialog(
+            isShow = isShowNewRegionDialog,
+            viewModel = regionViewModel,
+            dialogView = { RegionView(regionViewModel) }
+        ) { regionViewModel.submitAction(RegionUiAction.Save) }
+
+        ComboBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.TOTAL_AREA.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = LocalityFields.TOTAL_AREA,
+                    localityViewModel.onTextFieldFocusChanged(
+                        focusedField = LocalityFields.LOCALITY_REGION,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.total_area_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.outline_space_dashboard_black_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
+            listViewModel = regionsListViewModel,
+            isShowItemDialog = isShowNewRegionDialog,
+            labelResId = R.string.locality_region_hint,
+            listTitleResId = R.string.dlg_title_select_region,
+            leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
             inputWrapper = region,
             onValueChange = {
-                viewModel.onTextFieldEntered(
-                    LocalityInputEvent.RegionDistrict(
-                        it
-                    )
+                localityViewModel.onTextFieldEntered(
+                    LocalityInputEvent.Region(ListItemModel(headline = it))
                 )
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = localityViewModel::moveFocusImeAction
         )
-        TextFieldComponent(
+
+        val isShowNewRegionDistrictDialog = remember { mutableStateOf(false) }
+        FullScreenDialog(
+            isShow = isShowNewRegionDistrictDialog,
+            viewModel = regionDistrictViewModel,
+            dialogView = {
+                RegionDistrictView(
+                    regionDistrictViewModel,
+                    regionsListViewModel,
+                    regionViewModel
+                )
+            }
+        ) { regionDistrictViewModel.submitAction(RegionDistrictUiAction.Save) }
+
+        ComboBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LIVING_SPACE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = LocalityFields.LIVING_SPACE,
+                    localityViewModel.onTextFieldFocusChanged(
+                        focusedField = LocalityFields.LOCALITY_REGION,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.living_space_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.jwsuite.presentation.R.drawable.ic_aspect_ratio_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                )
-            },
+            listViewModel = regionDistrictsListViewModel,
+            isShowItemDialog = isShowNewRegionDistrictDialog,
+            labelResId = R.string.locality_region_district_hint,
+            listTitleResId = R.string.dlg_title_select_region_district,
+            leadingIcon = { Icon(painterResource(R.drawable.ic_district_36), null) },
             inputWrapper = regionDistrict,
-            onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.LivingSpace(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onValueChange = {
+                localityViewModel.onTextFieldEntered(
+                    LocalityInputEvent.RegionDistrict(ListItemModel(headline = it))
+                )
+            },
+            onImeKeyAction = localityViewModel::moveFocusImeAction
         )
-         */
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_CODE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_CODE,
                         isFocused = focusState.isFocused
                     )
@@ -174,15 +200,15 @@ fun LocalityView(viewModel: LocalityViewModel) {
             },
             inputWrapper = localityCode,
             onValueChange = {
-                viewModel.onTextFieldEntered(LocalityInputEvent.LocalityCode(it))
+                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityCode(it))
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = localityViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_SHORT_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_SHORT_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -203,16 +229,16 @@ fun LocalityView(viewModel: LocalityViewModel) {
             },
             inputWrapper = localityShortName,
             onValueChange = {
-                viewModel.onTextFieldEntered(LocalityInputEvent.LocalityShortName(it))
+                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityShortName(it))
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = localityViewModel::moveFocusImeAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_TYPE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_TYPE,
                         isFocused = focusState.isFocused
                     )
@@ -230,16 +256,16 @@ fun LocalityView(viewModel: LocalityViewModel) {
             inputWrapper = localityType,
             listItems = (1..28).map { it.toString() },
             onValueChange = {
-                viewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
+                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
             },
-            onImeKeyAction = viewModel::moveFocusImeAction,
+            onImeKeyAction = localityViewModel::moveFocusImeAction,
             //colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -260,9 +286,9 @@ fun LocalityView(viewModel: LocalityViewModel) {
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = localityName,
             onValueChange = {
-                viewModel.onTextFieldEntered(LocalityInputEvent.LocalityName(it))
+                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityName(it))
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = localityViewModel::moveFocusImeAction
         )
     }
 }
@@ -271,5 +297,11 @@ fun LocalityView(viewModel: LocalityViewModel) {
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewLocalityView() {
-    LocalityView(viewModel = LocalityViewModelImpl.previewModel)
+    LocalityView(
+        localityViewModel = LocalityViewModelImpl.previewModel,
+        regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
+        regionViewModel = RegionViewModelImpl.previewModel,
+        regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(LocalContext.current),
+        regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
+    )
 }

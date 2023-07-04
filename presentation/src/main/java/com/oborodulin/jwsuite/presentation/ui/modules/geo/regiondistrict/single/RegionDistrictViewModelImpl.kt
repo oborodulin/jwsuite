@@ -18,6 +18,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionDistrictConverter
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -47,59 +48,34 @@ class RegionDistrictViewModelImpl @Inject constructor(
         )
     }
     override val region: StateFlow<InputListItemWrapper> by lazy {
-        state.getStateFlow(
-            RegionDistrictFields.REGION_DISTRICT_REGION.name,
-            InputListItemWrapper()
-        )
+        state.getStateFlow(RegionDistrictFields.REGION_DISTRICT_REGION.name, InputListItemWrapper())
     }
     override val districtShortName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionDistrictFields.DISTRICT_SHORT_NAME.name,
-            InputWrapper()
-        )
+        state.getStateFlow(RegionDistrictFields.DISTRICT_SHORT_NAME.name, InputWrapper())
     }
     override val districtName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionDistrictFields.DISTRICT_NAME.name,
-            InputWrapper()
-        )
+        state.getStateFlow(RegionDistrictFields.DISTRICT_NAME.name, InputWrapper())
     }
 
-    override val areInputsValid =
-        combine(
-            region,
-            districtShortName,
-            districtName
-        ) { region, districtShortName, districtName ->
-            region.errorId == null && districtShortName.errorId == null && districtName.errorId == null
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+    override val areInputsValid = combine(region, districtShortName, districtName)
+    { region, districtShortName, districtName ->
+        region.errorId == null && districtShortName.errorId == null && districtName.errorId == null
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState(): UiState<RegionDistrictUi> = UiState.Loading
 
     override suspend fun handleAction(action: RegionDistrictUiAction): Job {
         Timber.tag(TAG).d("handleAction(RegionDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionDistrictUiAction.Create -> {
-                submitState(UiState.Success(RegionDistrictUi()))
-            }
-
-            is RegionDistrictUiAction.Load -> {
-                loadRegionDistrict(action.regionDistrictId)
-            }
-
-            is RegionDistrictUiAction.Save -> {
-                saveRegionDistrict()
-            }
+            is RegionDistrictUiAction.Create -> submitState(UiState.Success(RegionDistrictUi()))
+            is RegionDistrictUiAction.Load -> loadRegionDistrict(action.regionDistrictId)
+            is RegionDistrictUiAction.Save -> saveRegionDistrict()
         }
         return job
     }
 
     private fun loadRegionDistrict(regionDistrictId: UUID): Job {
-        Timber.tag(TAG).d("loadRegionDistrict(UUID) called: %s", regionDistrictId.toString())
+        Timber.tag(TAG).d("loadRegionDistrict(UUID) called: %s", regionDistrictId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionDistrictUseCase.execute(
                 GetRegionDistrictUseCase.Request(regionDistrictId)
@@ -117,7 +93,6 @@ class RegionDistrictViewModelImpl @Inject constructor(
     private fun saveRegionDistrict(): Job {
         val regionUi = RegionUi()
         regionUi.id = region.value.item.itemId
-
         val regionDistrictUi = RegionDistrictUi(
             region = regionUi,
             districtShortName = districtShortName.value.value,
@@ -149,19 +124,15 @@ class RegionDistrictViewModelImpl @Inject constructor(
             initStateValue(RegionDistrictFields.REGION_DISTRICT_ID, regionDistrictId, it.toString())
         }
         initStateValue(
-            RegionDistrictFields.REGION_DISTRICT_REGION,
-            region,
+            RegionDistrictFields.REGION_DISTRICT_REGION, region,
             ListItemModel(regionDistrictUi.region.id, regionDistrictUi.region.regionName)
         )
         initStateValue(
-            RegionDistrictFields.DISTRICT_SHORT_NAME,
-            districtShortName,
+            RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
             regionDistrictUi.districtShortName
         )
         initStateValue(
-            RegionDistrictFields.DISTRICT_NAME,
-            districtName,
-            regionDistrictUi.districtName
+            RegionDistrictFields.DISTRICT_NAME, districtName, regionDistrictUi.districtName
         )
         return null
     }
@@ -306,13 +277,11 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 override fun onContinueClick(onSuccess: () -> Unit) {}
             }
 
-        fun previewRegionDistrictUi(ctx: Context): RegionDistrictUi {
+        fun previewUiModel(ctx: Context): RegionDistrictUi {
             val regionDistrictUi = RegionDistrictUi(
-                region = RegionUi(),
-                //regionDistrict = ,
-                regionDistrictCode = ctx.resources.getString(R.string.def_donetsk_code),
-                regionDistrictShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
-                regionDistrictName = ctx.resources.getString(R.string.def_donetsk_name)
+                region = RegionViewModelImpl.previewUiModel(ctx),
+                districtShortName = ctx.resources.getString(R.string.def_reg_donetsky_short_name),
+                districtName = ctx.resources.getString(R.string.def_reg_donetsky_name)
             )
             regionDistrictUi.id = UUID.randomUUID()
             return regionDistrictUi

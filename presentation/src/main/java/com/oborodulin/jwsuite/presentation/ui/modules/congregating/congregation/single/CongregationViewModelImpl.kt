@@ -49,7 +49,7 @@ class CongregationViewModelImpl @Inject constructor(
     }
     override val locality: StateFlow<InputListItemWrapper> by lazy {
         state.getStateFlow(
-            CongregationFields.LOCALITY_ID.name,
+            CongregationFields.CONGREGATION_LOCALITY.name,
             InputListItemWrapper()
         )
     }
@@ -163,7 +163,7 @@ class CongregationViewModelImpl @Inject constructor(
             initStateValue(CongregationFields.CONGREGATION_ID, congregationId, it.toString())
         }
         initStateValue(
-            CongregationFields.LOCALITY_ID,
+            CongregationFields.CONGREGATION_LOCALITY,
             locality,
             ListItemModel(congregationUi.locality.id, congregationUi.locality.localityName)
         )
@@ -192,11 +192,11 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.Locality -> {
                         when (CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                CongregationFields.LOCALITY_ID, locality, event.input, true
+                                CongregationFields.CONGREGATION_LOCALITY, locality, event.input, true
                             )
 
                             else -> setStateValue(
-                                CongregationFields.LOCALITY_ID, locality, event.input
+                                CongregationFields.CONGREGATION_LOCALITY, locality, event.input
                             )
                         }
                     }
@@ -243,7 +243,7 @@ class CongregationViewModelImpl @Inject constructor(
                 when (event) {
                     is CongregationInputEvent.Locality ->
                         setStateValue(
-                            CongregationFields.LOCALITY_ID, locality,
+                            CongregationFields.CONGREGATION_LOCALITY, locality,
                             CongregationInputValidator.Locality.errorIdOrNull(event.input.itemId.toString())
                         )
 
@@ -276,7 +276,7 @@ class CongregationViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = CongregationFields.LOCALITY_ID.name,
+                        fieldName = CongregationFields.CONGREGATION_LOCALITY.name,
                         errorId = it
                     )
                 )
@@ -314,7 +314,7 @@ class CongregationViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                CongregationFields.LOCALITY_ID.name -> locality.value.copy(errorId = error.errorId)
+                CongregationFields.CONGREGATION_LOCALITY.name -> locality.value.copy(errorId = error.errorId)
                 CongregationFields.CONGREGATION_NUM.name -> congregationNum.value.copy(errorId = error.errorId)
                 CongregationFields.CONGREGATION_NAME.name -> congregationName.value.copy(errorId = error.errorId)
                 CongregationFields.TERRITORY_MARK.name -> territoryMark.value.copy(errorId = error.errorId)

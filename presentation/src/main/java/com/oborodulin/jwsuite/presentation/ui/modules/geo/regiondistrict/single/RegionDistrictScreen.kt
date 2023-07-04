@@ -51,10 +51,9 @@ fun LocalityScreen(
     }
     viewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        HomeComposableTheme { //(darkTheme = true)
+        HomeComposableTheme {
             ScaffoldComponent(
                 appState = appState,
-                //scaffoldState = appState.localityScaffoldState,
                 topBarTitleId = viewModel.dialogTitleResId,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {

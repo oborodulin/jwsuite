@@ -52,12 +52,14 @@
     <string name="territory_mark_hint">Код территории</string>
     <string name="territory_mark_helper">Любая буква участка</string>
     <string name="is_favorite_hint">Избранное</string>
-    <!--Населённый пункт -->
+    <!--Область -->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
     <!--Населённый пункт -->
     <string name="locality_subheader">Населённый пункт</string>
     <string name="locality_new_subheader">Новый населённый пункт</string>
+    <string name="locality_region_hint">Область</string>
+    <string name="locality_region_district_hint">Район</string>
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
