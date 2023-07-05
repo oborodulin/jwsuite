@@ -27,7 +27,7 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -38,10 +38,10 @@ private const val TAG = "Geo.ui.RegionDistrictsListView"
 fun RegionDistrictsListView(
     viewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    regionInput: GeoRegionInput
+    regionInput: RegionInput
 ) {
     Timber.tag(TAG).d("RegionDistrictsListView(...) called: regionInput = %s", regionInput)
-    LaunchedEffect(Unit) {
+    LaunchedEffect(regionInput) {
         Timber.tag(TAG).d("RegionDistrictsListView: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(RegionDistrictsListUiAction.Load(regionInput.regionId))
     }

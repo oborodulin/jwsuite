@@ -13,7 +13,7 @@ import java.util.UUID
 @Entity(
     tableName = CongregationMemberCrossRefEntity.TABLE_NAME,
     indices = [Index(
-        value = ["cmCongregationsId", "cmMembersId", "receivingDate"],
+        value = ["cmCongregationsId", "cmMembersId", "activityDate"],
         unique = true
     )],
     foreignKeys = [ForeignKey(

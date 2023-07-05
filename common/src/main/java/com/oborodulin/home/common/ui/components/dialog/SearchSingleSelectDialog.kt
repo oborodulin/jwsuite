@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,11 +57,17 @@ fun <T : List<*>, A : UiAction> SearchSingleSelectDialog(
     isShow: MutableState<Boolean>,
     title: String,
     viewModel: MviViewModeled<T, A>,
+    loadUiAction: A,
     onDismissRequest: (() -> Unit)? = null,
     onAddButtonClick: () -> Unit,
     onListItemClick: OnListItemEvent
 ) {
     if (isShow.value) {
+        LaunchedEffect(Unit) {
+            Timber.tag(TAG)
+                .d("SearchSingleSelectDialog: LaunchedEffect() BEFORE collect ui state flow")
+            viewModel.submitAction(loadUiAction)
+        }
         Dialog(onDismissRequest = onDismissRequest ?: { isShow.value = false }) {
             Surface(
                 modifier = Modifier

@@ -28,8 +28,8 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GroupInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber

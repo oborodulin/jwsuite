@@ -13,6 +13,9 @@ class GeoLocalitiesRepositoryImpl @Inject constructor(
     private val localLocalityDataSource: LocalGeoLocalityDataSource,
     private val mappers: GeoLocalityMappers
 ) : GeoLocalitiesRepository {
+    override fun getAll() = localLocalityDataSource.getAllLocalities()
+        .map(mappers.geoLocalityViewListToGeoLocalitiesListMapper::map)
+
     override fun getAllByRegion(regionId: UUID) =
         localLocalityDataSource.getRegionLocalities(regionId)
             .map(mappers.geoLocalityViewListToGeoLocalitiesListMapper::map)

@@ -12,13 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
-import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,27 +41,27 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnCheckedChange
 import timber.log.Timber
 
-private const val TAG = "Common.ui.CheckboxComponent"
+private const val TAG = "Common.ui.SwitchComponent"
 
 @Composable
-fun CheckboxComponent(
+fun SwitchComponent(
     modifier: Modifier,
     enabled: Boolean = true,
     inputWrapper: InputWrapper,
     @StringRes labelResId: Int? = null,
     onCheckedChange: OnCheckedChange,
-    colors: CheckboxColors = CheckboxDefaults.colors()
+    colors: SwitchColors = SwitchDefaults.colors()
 ) {
-    Timber.tag(TAG).d("CheckboxComponent(...) called")
+    Timber.tag(TAG).d("SwitchComponent(...) called")
     var isChecked by remember { mutableStateOf(inputWrapper.value.toBoolean()) }
     Timber.tag(TAG).d(
-        "CheckboxComponent(...): isChecked = %s; inputWrapper.value = %s",
+        "SwitchComponent(...): isChecked = %s; inputWrapper.value = %s",
         isChecked,
         inputWrapper.value
     )
     if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
     Timber.tag(TAG).d(
-        "CheckboxComponent(...): isChecked = %s; inputWrapper = %s",
+        "SwitchComponent(...): isChecked = %s; inputWrapper = %s",
         isChecked,
         inputWrapper
     )
@@ -72,7 +76,7 @@ fun CheckboxComponent(
                 )
                 .requiredHeight(ButtonDefaults.MinHeight)
                 .padding(4.dp)) {
-            Checkbox(
+            Switch(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp, horizontal = 8.dp),
@@ -81,6 +85,13 @@ fun CheckboxComponent(
                 onCheckedChange = {
                     isChecked = it
                     onCheckedChange(it)
+                },
+                thumbContent = {
+                    Icon(
+                        imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                    )
                 },
                 colors = colors
             )
@@ -108,7 +119,7 @@ fun CheckboxComponent(
 fun PreviewCheckbox() {
     HomeComposableTheme {
         Surface {
-            CheckboxComponent(modifier = Modifier
+            SwitchComponent(modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
                 inputWrapper = InputWrapper(

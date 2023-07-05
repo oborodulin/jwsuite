@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.DeleteRegionDist
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionDistrictsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,7 +52,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
                 submitSingleEvent(
                     RegionDistrictsListUiSingleEvent.OpenRegionDistrictScreen(
                         NavRoutes.RegionDistrict.routeForRegionDistrict(
-                            GeoRegionDistrictInput(action.regionDistrictId)
+                            RegionDistrictInput(action.regionDistrictId)
                         )
                     )
                 )

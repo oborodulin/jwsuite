@@ -82,6 +82,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
+    @JvmName("setInputWrapperStateValue")
     fun setStateValue(field: F, property: StateFlow<InputWrapper>, @StringRes errorId: Int?) {
         Timber.tag(TAG)
             .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
@@ -176,6 +177,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
+    @JvmName("setInputListItemWrapperStateValue")
     fun setStateValue(
         field: F, property: StateFlow<InputListItemWrapper>, @StringRes errorId: Int?
     ) {

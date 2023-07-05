@@ -27,8 +27,8 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionDistrictInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.model.LocalitiesListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -39,8 +39,8 @@ private const val TAG = "Geo.ui.LocalitiesListView"
 fun LocalitiesListView(
     viewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    regionInput: GeoRegionInput,
-    regionDistrictInput: GeoRegionDistrictInput? = null
+    regionInput: RegionInput,
+    regionDistrictInput: RegionDistrictInput? = null
 ) {
     Timber.tag(TAG).d(
         "LocalitiesListView(...) called: regionInput = %s, regionDistrictInput = %s",

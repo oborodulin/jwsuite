@@ -34,8 +34,8 @@ import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionUiAction
@@ -116,15 +116,14 @@ fun RegionDistrictView(
                     )
                 },
             listViewModel = regionsListViewModel,
+            loadListUiAction = RegionsListUiAction.Load,
             isShowItemDialog = isShowNewRegionDialog,
             labelResId = R.string.locality_region_hint,
             listTitleResId = R.string.dlg_title_select_region,
             leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
             inputWrapper = region,
             onValueChange = {
-                regionDistrictViewModel.onTextFieldEntered(
-                    RegionDistrictInputEvent.Region(ListItemModel(headline = it))
-                )
+                regionDistrictViewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
             },
             onImeKeyAction = regionDistrictViewModel::moveFocusImeAction
         )

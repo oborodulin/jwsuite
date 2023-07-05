@@ -35,14 +35,15 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionView
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictUiAction
@@ -128,16 +129,13 @@ fun LocalityView(
                     )
                 },
             listViewModel = regionsListViewModel,
+            loadListUiAction = RegionsListUiAction.Load,
             isShowItemDialog = isShowNewRegionDialog,
             labelResId = R.string.locality_region_hint,
             listTitleResId = R.string.dlg_title_select_region,
             leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
             inputWrapper = region,
-            onValueChange = {
-                localityViewModel.onTextFieldEntered(
-                    LocalityInputEvent.Region(ListItemModel(headline = it))
-                )
-            },
+            onValueChange = { localityViewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )
 
@@ -164,15 +162,14 @@ fun LocalityView(
                     )
                 },
             listViewModel = regionDistrictsListViewModel,
+            loadListUiAction = RegionDistrictsListUiAction.Load(region.item.itemId!!),
             isShowItemDialog = isShowNewRegionDistrictDialog,
             labelResId = R.string.locality_region_district_hint,
             listTitleResId = R.string.dlg_title_select_region_district,
             leadingIcon = { Icon(painterResource(R.drawable.ic_district_36), null) },
             inputWrapper = regionDistrict,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(
-                    LocalityInputEvent.RegionDistrict(ListItemModel(headline = it))
-                )
+                localityViewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it))
             },
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )

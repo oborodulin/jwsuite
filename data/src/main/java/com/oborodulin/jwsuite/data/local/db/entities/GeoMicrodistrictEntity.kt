@@ -14,7 +14,7 @@ import java.util.UUID
 @Entity(
     tableName = GeoMicrodistrictEntity.TABLE_NAME,
     indices = [Index(
-        value = ["mLocalitiesId", "mLocalityDistrictsId", "villageType", "villageShortName"],
+        value = ["mLocalitiesId", "mLocalityDistrictsId", "microdistrictType", "microdistrictShortName"],
         unique = true
     )],
     foreignKeys = [ForeignKey(

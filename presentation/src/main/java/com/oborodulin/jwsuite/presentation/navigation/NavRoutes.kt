@@ -20,13 +20,13 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REG
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
-import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoLocalityInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionDistrictInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GeoRegionInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.GroupInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.MemberInput
-import com.oborodulin.jwsuite.presentation.navigation.inputs.TerritoryInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import timber.log.Timber
 import java.util.UUID
 
@@ -105,7 +105,7 @@ sealed class NavRoutes constructor(
             //defaultValue = null
         })
     ) {
-        fun routeForRegion(regionInput: GeoRegionInput? = null): String {
+        fun routeForRegion(regionInput: RegionInput? = null): String {
             val route = when (regionInput) {
                 null -> baseRoute()
                 else -> String.format(ROUTE_REGION, regionInput.regionId)
@@ -115,9 +115,9 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): GeoRegionInput {
+        fun fromEntry(entry: NavBackStackEntry): RegionInput {
             val regionInput =
-                GeoRegionInput(
+                RegionInput(
                     UUID.fromString(
                         entry.arguments?.getString(ARG_REGION_ID) ?: ""
                     )
@@ -137,7 +137,7 @@ sealed class NavRoutes constructor(
             //defaultValue = null
         })
     ) {
-        fun routeForRegionDistrict(regionDistrictInput: GeoRegionDistrictInput? = null): String {
+        fun routeForRegionDistrict(regionDistrictInput: RegionDistrictInput? = null): String {
             val route = when (regionDistrictInput) {
                 null -> baseRoute()
                 else -> String.format(ROUTE_REGION_DISTRICT, regionDistrictInput.regionDistrictId)
@@ -147,9 +147,9 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): GeoRegionDistrictInput {
+        fun fromEntry(entry: NavBackStackEntry): RegionDistrictInput {
             val regionDistrictInput =
-                GeoRegionDistrictInput(
+                RegionDistrictInput(
                     UUID.fromString(
                         entry.arguments?.getString(ARG_REGION_DISTRICT_ID) ?: ""
                     )
@@ -169,7 +169,7 @@ sealed class NavRoutes constructor(
             //defaultValue = null
         })
     ) {
-        fun routeForLocality(localityInput: GeoLocalityInput? = null): String {
+        fun routeForLocality(localityInput: LocalityInput? = null): String {
             val route = when (localityInput) {
                 null -> baseRoute()
                 else -> String.format(ROUTE_LOCALITY, localityInput.localityId)
@@ -179,9 +179,9 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): GeoLocalityInput {
+        fun fromEntry(entry: NavBackStackEntry): LocalityInput {
             val localityInput =
-                GeoLocalityInput(
+                LocalityInput(
                     UUID.fromString(
                         entry.arguments?.getString(ARG_LOCALITY_ID) ?: ""
                     )

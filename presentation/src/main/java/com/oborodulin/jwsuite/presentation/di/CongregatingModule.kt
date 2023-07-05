@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.DeleteGroupUseCase
@@ -149,12 +150,14 @@ object CongregatingModule {
     fun provideCongregationUseCases(
         getCongregationsUseCase: GetCongregationsUseCase,
         getCongregationUseCase: GetCongregationUseCase,
+        getFavoriteCongregationUseCase: GetFavoriteCongregationUseCase,
         saveCongregationUseCase: SaveCongregationUseCase,
         deleteCongregationUseCase: DeleteCongregationUseCase,
         makeFavoriteCongregationUseCase: MakeFavoriteCongregationUseCase
     ): CongregationUseCases = CongregationUseCases(
         getCongregationsUseCase,
         getCongregationUseCase,
+        getFavoriteCongregationUseCase,
         saveCongregationUseCase,
         deleteCongregationUseCase,
         makeFavoriteCongregationUseCase

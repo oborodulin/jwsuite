@@ -1,5 +1,22 @@
 package com.oborodulin.jwsuite.presentation.di
 
+import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocality.GetAllLocalitiesUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
+import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionsUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
+import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.DeleteRegionDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
+import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
+import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
+import com.oborodulin.jwsuite.presentation.ui.model.converters.AllLocalitiesListConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalitiesListConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalityConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionConverter
@@ -123,6 +140,11 @@ object GeoModule {
     // Localities:
     @Singleton
     @Provides
+    fun provideAllLocalitiesListConverter(mapper: LocalitiesListToLocalityListItemMapper): AllLocalitiesListConverter =
+        AllLocalitiesListConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideLocalitiesListConverter(mapper: LocalitiesListToLocalityListItemMapper): LocalitiesListConverter =
         LocalitiesListConverter(mapper = mapper)
 
@@ -130,4 +152,49 @@ object GeoModule {
     @Provides
     fun provideLocalityConverter(mapper: LocalityToLocalityUiMapper): LocalityConverter =
         LocalityConverter(mapper = mapper)
+
+    // USE CASES:
+    @Singleton
+    @Provides
+    fun provideRegionUseCases(
+        getRegionsUseCase: GetRegionsUseCase,
+        getRegionUseCase: GetRegionUseCase,
+        saveRegionUseCase: SaveRegionUseCase,
+        deleteRegionUseCase: DeleteRegionUseCase
+    ): RegionUseCases = RegionUseCases(
+        getRegionsUseCase,
+        getRegionUseCase,
+        saveRegionUseCase,
+        deleteRegionUseCase
+    )
+
+    @Singleton
+    @Provides
+    fun provideRegionDistrictUseCases(
+        getRegionDistrictsUseCase: GetRegionDistrictsUseCase,
+        getRegionDistrictUseCase: GetRegionDistrictUseCase,
+        saveRegionDistrictUseCase: SaveRegionDistrictUseCase,
+        deleteRegionDistrictUseCase: DeleteRegionDistrictUseCase
+    ): RegionDistrictUseCases = RegionDistrictUseCases(
+        getRegionDistrictsUseCase,
+        getRegionDistrictUseCase,
+        saveRegionDistrictUseCase,
+        deleteRegionDistrictUseCase
+    )
+
+    @Singleton
+    @Provides
+    fun provideLocalityUseCases(
+        getLocalitiesUseCase: GetLocalitiesUseCase,
+        getAllLocalitiesUseCase: GetAllLocalitiesUseCase,
+        getLocalityUseCase: GetLocalityUseCase,
+        saveLocalityUseCase: SaveLocalityUseCase,
+        deleteLocalityUseCase: DeleteLocalityUseCase
+    ): LocalityUseCases = LocalityUseCases(
+        getLocalitiesUseCase,
+        getAllLocalitiesUseCase,
+        getLocalityUseCase,
+        saveLocalityUseCase,
+        deleteLocalityUseCase
+    )
 }

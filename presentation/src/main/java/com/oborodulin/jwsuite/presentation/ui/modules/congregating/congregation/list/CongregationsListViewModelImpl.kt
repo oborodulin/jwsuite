@@ -11,7 +11,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUse
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.inputs.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationsListConverter

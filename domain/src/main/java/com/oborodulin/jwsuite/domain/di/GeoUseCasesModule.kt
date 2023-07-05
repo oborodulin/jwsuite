@@ -6,6 +6,7 @@ import com.oborodulin.jwsuite.domain.repositories.GeoRegionDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocality.GetAllLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
@@ -84,6 +85,12 @@ object GeoUseCasesModule {
         SaveRegionDistrictUseCase(configuration, regionDistrictsRepository)
 
     // Locality:
+    @Singleton
+    @Provides
+    fun provideGetAllLocalitiesUseCase(
+        configuration: UseCase.Configuration, localitiesRepository: GeoLocalitiesRepository
+    ): GetAllLocalitiesUseCase = GetAllLocalitiesUseCase(configuration, localitiesRepository)
+
     @Singleton
     @Provides
     fun provideGetLocalityUseCase(
