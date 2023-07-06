@@ -11,13 +11,13 @@ import java.util.*
 @Dao
 interface GeoRegionDistrictDao {
     // READS:
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE districtLocCode = :locale ORDER BY rRegionsId, districtName")
+    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE regDistrictLocCode = :locale ORDER BY rRegionsId, regDistrictName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE regionDistrictId = :regionDistrictId AND districtLocCode = :locale")
+    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE regionDistrictId = :regionDistrictId AND regDistrictLocCode = :locale")
     fun findById(
         regionDistrictId: UUID, locale: String? = Locale.getDefault().language
     ): Flow<GeoRegionDistrictView>
@@ -26,7 +26,7 @@ interface GeoRegionDistrictDao {
     fun findDistinctById(regionDistrictId: UUID) = findById(regionDistrictId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND districtLocCode = :locale ORDER BY districtName"
+        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND regDistrictLocCode = :locale ORDER BY regDistrictName"
     )
     fun findByRegionId(regionId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<GeoRegionDistrictView>>
@@ -34,7 +34,7 @@ interface GeoRegionDistrictDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByRegionId(regionId: UUID) = findByRegionId(regionId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND districtName LIKE '%' || :districtName || '%'")
+    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND regDistrictName LIKE '%' || :districtName || '%'")
     fun findByDistrictName(regionId: UUID, districtName: String): Flow<List<GeoRegionDistrictView>>
 
     // INSERTS:

@@ -12,7 +12,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityDistrictEntity.TABLE_NAME,
-    indices = [Index(value = ["ldLocalitiesId", "districtShortName"], unique = true)],
+    indices = [Index(value = ["ldLocalitiesId", "locDistrictShortName"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoLocalityEntity::class,
         parentColumns = arrayOf("localityId"),
@@ -23,7 +23,7 @@ import java.util.UUID
 )
 data class GeoLocalityDistrictEntity(
     @PrimaryKey val localityDistrictId: UUID = UUID.randomUUID(),
-    val districtShortName: String,
+    val locDistrictShortName: String,
     @ColumnInfo(index = true) val ldLocalitiesId: UUID,
 ) : BaseEntity() {
 
@@ -35,7 +35,7 @@ data class GeoLocalityDistrictEntity(
             districtShortName: String
         ) = GeoLocalityDistrictEntity(
             ldLocalitiesId = localityId, localityDistrictId = localityDistrictId,
-            districtShortName = districtShortName
+            locDistrictShortName = districtShortName
         )
 
         fun bdnLocalityDistrict(ctx: Context, localityId: UUID) = defaultLocalityDistrict(
@@ -63,13 +63,13 @@ data class GeoLocalityDistrictEntity(
 
     override fun key(): Int {
         var result = ldLocalitiesId.hashCode()
-        result = result * 31 + districtShortName.hashCode()
+        result = result * 31 + locDistrictShortName.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Locality District Entity '").append(districtShortName).append("' ")
+        str.append("Locality District Entity '").append(locDistrictShortName).append("' ")
             .append(" [localitiesId = ").append(ldLocalitiesId)
             .append("] localityDistrictId = ").append(localityDistrictId)
         return str.toString()

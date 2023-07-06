@@ -9,8 +9,8 @@ class GeoLocalityDistrictViewToGeoLocalityDistrictMapper :
     override fun map(input: GeoLocalityDistrictView): GeoLocalityDistrict {
         val localityDistrict = GeoLocalityDistrict(
             localityId = input.data.ldLocalitiesId,
-            districtShortName = input.data.districtShortName,
-            districtName = input.tl.districtName
+            districtShortName = input.data.locDistrictShortName,
+            districtName = input.tl.locDistrictName
         )
         localityDistrict.id = input.data.localityDistrictId
         localityDistrict.tlId = input.tl.localityDistrictsId

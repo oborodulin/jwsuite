@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data.local.db.entities.GeoLocalityDistrictTlEntity
     viewName = GeoLocalityDistrictView.VIEW_NAME,
     value = """
 SELECT ld.*, ldtl.* FROM ${GeoLocalityDistrictEntity.TABLE_NAME} ld JOIN ${GeoLocalityDistrictTlEntity.TABLE_NAME} ldtl ON ldtl.localityDistrictsId = ld.localityDistrictId
-ORDER BY ldtl.districtName
+ORDER BY ldtl.locDistrictName
 """
 )
 class GeoLocalityDistrictView(

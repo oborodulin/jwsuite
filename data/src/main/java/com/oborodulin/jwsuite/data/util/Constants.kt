@@ -6,9 +6,18 @@ package com.oborodulin.jwsuite.data.util
 object Constants {
     const val DATABASE_NAME = "home-database.sqlite"
 
-    const val DEF_PAYMENT_DAY = 20
-    const val DEF_PERSON_NUM = 1
-    const val DEF_TWO_PERSON_NUM = 2
+    // GEO:
+    // Regions:
+    const val PX_REGION = "r_"
+    const val PX_DISTRICT_REGION = "dr_"
+    const val PX_LOCALITY_REGION = "lr_"
+    const val PX_CONGREGATION_REGION = "cd_"
+
+    // Region Districts:
+    const val PX_REGION_DISTRICT = "rd_"
+    const val PX_LOCALITY = "l_"
+    const val PX_LOCALITY_DISTRICT = "ld_"
+    const val PX_MICRODISTRICT = "md_"
 
     const val DB_TRUE = 1
     const val DB_FALSE = 0

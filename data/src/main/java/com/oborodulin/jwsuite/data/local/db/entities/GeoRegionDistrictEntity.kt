@@ -12,7 +12,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoRegionDistrictEntity.TABLE_NAME,
-    indices = [Index(value = ["rRegionsId", "districtShortName"], unique = true)],
+    indices = [Index(value = ["rRegionsId", "regDistrictShortName"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
@@ -23,7 +23,7 @@ import java.util.UUID
 )
 data class GeoRegionDistrictEntity(
     @PrimaryKey val regionDistrictId: UUID = UUID.randomUUID(),
-    val districtShortName: String,
+    val regDistrictShortName: String,
     @ColumnInfo(index = true) val rRegionsId: UUID,
 ) : BaseEntity() {
 
@@ -35,7 +35,7 @@ data class GeoRegionDistrictEntity(
             districtShortName: String
         ) = GeoRegionDistrictEntity(
             rRegionsId = regionId, regionDistrictId = regionDistrictId,
-            districtShortName = districtShortName
+            regDistrictShortName = districtShortName
         )
 
         fun maryinskyRegionDistrict(ctx: Context, regionId: UUID) = defaultRegionDistrict(
@@ -54,13 +54,13 @@ data class GeoRegionDistrictEntity(
 
     override fun key(): Int {
         var result = rRegionsId.hashCode()
-        result = result * 31 + districtShortName.hashCode()
+        result = result * 31 + regDistrictShortName.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Region District Entity '").append(districtShortName).append("' ")
+        str.append("Region District Entity '").append(regDistrictShortName).append("' ")
             .append(" [regionsId = ").append(rRegionsId)
             .append("] regionDistrictId = ").append(regionDistrictId)
         return str.toString()

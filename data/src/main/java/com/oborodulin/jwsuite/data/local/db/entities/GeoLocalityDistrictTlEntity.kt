@@ -13,7 +13,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityDistrictTlEntity.TABLE_NAME,
-    indices = [Index(value = ["localityDistrictsId", "districtLocCode"], unique = true)],
+    indices = [Index(value = ["localityDistrictsId", "locDistrictLocCode"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoLocalityDistrictEntity::class,
         parentColumns = arrayOf("localityDistrictId"),
@@ -24,8 +24,8 @@ import java.util.UUID
 )
 data class GeoLocalityDistrictTlEntity(
     @PrimaryKey val localityDistrictTlId: UUID = UUID.randomUUID(),
-    val districtLocCode: String = Locale.getDefault().language,
-    val districtName: String,
+    val locDistrictLocCode: String = Locale.getDefault().language,
+    val locDistrictName: String,
     @ColumnInfo(index = true) val localityDistrictsId: UUID,
 ) : BaseEntity() {
 
@@ -37,7 +37,7 @@ data class GeoLocalityDistrictTlEntity(
             districtName: String
         ) = GeoLocalityDistrictTlEntity(
             localityDistrictTlId = localityDistrictTlId,
-            districtName = districtName,
+            locDistrictName = districtName,
             localityDistrictsId = localityDistrictId
         )
 
@@ -94,7 +94,7 @@ data class GeoLocalityDistrictTlEntity(
 
     override fun key(): Int {
         var result = localityDistrictsId.hashCode()
-        result = result * 31 + districtLocCode.hashCode()
+        result = result * 31 + locDistrictLocCode.hashCode()
         return result
     }
 }

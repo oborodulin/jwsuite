@@ -36,7 +36,8 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryMemberReportEntity::class,
         CongregationTerritoryCrossRefEntity::class],
     views = [
-        GeoRegionView::class, GeoRegionDistrictView::class, GeoLocalityView::class,
+        GeoRegionView::class, RegionDistrictView::class, LocalityView::class,
+        GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
         TerritoryPrivateSectorView::class,
@@ -612,7 +613,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             val textContent =
                 GeoRegionDistrictTlEntity.regionDistrictTl(
                     context,
-                    regionDistrict.districtShortName, regionDistrict.regionDistrictId
+                    regionDistrict.regDistrictShortName, regionDistrict.regionDistrictId
                 )
             db.insert(
                 GeoRegionDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
@@ -661,7 +662,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             val textContent =
                 GeoLocalityDistrictTlEntity.localityDistrictTl(
                     context,
-                    localityDistrict.districtShortName, localityDistrict.localityDistrictId
+                    localityDistrict.locDistrictShortName, localityDistrict.localityDistrictId
                 )
             db.insert(
                 GeoLocalityDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,

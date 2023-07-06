@@ -32,7 +32,7 @@ interface GeoLocalityDistrictDao {
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId AND districtName LIKE '%' || :districtName || '%'")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId AND locDistrictName LIKE '%' || :districtName || '%'")
     fun findByDistrictName(localityId: UUID, districtName: String):
             Flow<List<GeoLocalityDistrictView>>
 

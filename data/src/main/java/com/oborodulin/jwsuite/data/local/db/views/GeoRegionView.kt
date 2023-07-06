@@ -13,10 +13,8 @@ ORDER BY rtl.regionName
 """
 )
 class GeoRegionView(
-    @Embedded
-    val data: GeoRegionEntity,
-    @Embedded
-    val tl: GeoRegionTlEntity,
+    @Embedded val data: GeoRegionEntity,
+    @Embedded val tl: GeoRegionTlEntity
 ) {
     companion object {
         const val VIEW_NAME = "geo_regions_view"

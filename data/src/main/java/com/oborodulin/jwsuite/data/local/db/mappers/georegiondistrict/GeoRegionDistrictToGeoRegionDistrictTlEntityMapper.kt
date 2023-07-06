@@ -9,7 +9,7 @@ class GeoRegionDistrictToGeoRegionDistrictTlEntityMapper :
     Mapper<GeoRegionDistrict, GeoRegionDistrictTlEntity> {
     override fun map(input: GeoRegionDistrict) = GeoRegionDistrictTlEntity(
         regionDistrictTlId = input.tlId ?: input.apply { tlId = UUID.randomUUID() }.tlId!!,
-        districtName = input.districtName,
+        regDistrictName = input.districtName,
         regionDistrictsId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!
     )
 }

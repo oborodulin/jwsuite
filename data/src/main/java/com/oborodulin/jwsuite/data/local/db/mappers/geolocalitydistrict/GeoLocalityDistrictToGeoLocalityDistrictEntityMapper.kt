@@ -9,7 +9,7 @@ class GeoLocalityDistrictToGeoLocalityDistrictEntityMapper :
     Mapper<GeoLocalityDistrict, GeoLocalityDistrictEntity> {
     override fun map(input: GeoLocalityDistrict) = GeoLocalityDistrictEntity(
         localityDistrictId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
-        districtShortName = input.districtShortName,
+        locDistrictShortName = input.districtShortName,
         ldLocalitiesId = input.localityId
     )
 }

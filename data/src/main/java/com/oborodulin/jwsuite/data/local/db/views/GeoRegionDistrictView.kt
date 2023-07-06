@@ -4,22 +4,21 @@ import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoRegionDistrictTlEntity
+import com.oborodulin.jwsuite.data.util.Constants.PX_DISTRICT_REGION
 
 @DatabaseView(
     viewName = GeoRegionDistrictView.VIEW_NAME,
     value = """
-SELECT rv.*, rd.*, rdtl.* 
-    FROM ${GeoRegionDistrictEntity.TABLE_NAME} rd JOIN ${GeoRegionDistrictTlEntity.TABLE_NAME} rdtl ON rdtl.regionDistrictsId = rd.regionDistrictId
-        JOIN ${GeoRegionView.VIEW_NAME} rv ON rv.regionId = rd.rRegionsId
+SELECT rv.regionId AS ${PX_DISTRICT_REGION}_regionId, rv.regionCode AS ${PX_DISTRICT_REGION}_regionCode, 
+            rv.regionTlId AS ${PX_DISTRICT_REGION}_regionTlId, rv.regionLocCode AS ${PX_DISTRICT_REGION}_regionLocCode, rv.regionName AS ${PX_DISTRICT_REGION}_regionName,
+            rv.regionsId AS ${PX_DISTRICT_REGION}_regionsId, 
+        rdv.* 
+    FROM ${RegionDistrictView.VIEW_NAME} rdv JOIN ${GeoRegionView.VIEW_NAME} rv ON rdv.rRegionsId = rv.regionId
 """
 )
 class GeoRegionDistrictView(
-    @Embedded
-    val region: GeoRegionView,
-    @Embedded
-    val data: GeoRegionDistrictEntity,
-    @Embedded
-    val tl: GeoRegionDistrictTlEntity
+    @Embedded(prefix = PX_DISTRICT_REGION) val region: GeoRegionView,
+    @Embedded val district: RegionDistrictView
 ) {
     companion object {
         const val VIEW_NAME = "geo_region_districts_view"

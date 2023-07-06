@@ -17,7 +17,7 @@ class TerritoryViewToTerritoryMapper(
             territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
             locality = localityMapper.map(input.locality),
             localityDistrictId = input.territory.tLocalityDistrictsId,
-            districtShortName = input.localityDistrict?.districtShortName,
+            districtShortName = input.localityDistrict?.locDistrictShortName,
             microdistrictId = input.territory.tMicrodistrictsId,
             microdistrictShortName = input.microdistrict?.microdistrictShortName,
             territoryNum = input.territory.territoryNum,

@@ -2,17 +2,15 @@ package com.oborodulin.jwsuite.data.local.db.mappers.georegiondistrict
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data.local.db.views.GeoRegionDistrictView
+import com.oborodulin.jwsuite.data.local.db.views.RegionDistrictView
 import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
 
-class GeoRegionDistrictViewToGeoRegionDistrictMapper(private val regionMapper: GeoRegionViewToGeoRegionMapper) :
-    Mapper<GeoRegionDistrictView, GeoRegionDistrict>,
-    NullableMapper<GeoRegionDistrictView, GeoRegionDistrict> {
-    override fun map(input: GeoRegionDistrictView): GeoRegionDistrict {
+class RegionDistrictViewToGeoRegionDistrictMapper : Mapper<RegionDistrictView, GeoRegionDistrict>,
+    NullableMapper<RegionDistrictView, GeoRegionDistrict> {
+    override fun map(input: RegionDistrictView): GeoRegionDistrict {
         val regionDistrict = GeoRegionDistrict(
-            region = regionMapper.map(input.region),
-            districtShortName = input.district.regDistrictShortName,
+            districtShortName = input.data.regDistrictShortName,
             districtName = input.tl.regDistrictName
         )
         regionDistrict.id = input.district.regionDistrictId

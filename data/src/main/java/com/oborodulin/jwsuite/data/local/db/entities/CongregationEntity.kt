@@ -16,7 +16,7 @@ import java.util.UUID
     foreignKeys = [ForeignKey(
         entity = GeoLocalityEntity::class,
         parentColumns = arrayOf("localityId"),
-        childColumns = arrayOf("localitiesId"),
+        childColumns = arrayOf("cLocalitiesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     )]
@@ -27,7 +27,7 @@ data class CongregationEntity(
     val congregationName: String,
     val territoryMark: String,
     val isFavorite: Boolean = false,
-    @ColumnInfo(index = true) val localitiesId: UUID
+    @ColumnInfo(index = true) val cLocalitiesId: UUID
 ) : BaseEntity() {
 
     companion object {
@@ -38,7 +38,7 @@ data class CongregationEntity(
             congregationNum: String, congregationName: String, territoryMark: String,
             isFavorite: Boolean = false
         ) = CongregationEntity(
-            congregationId = congregationId, localitiesId = localityId,
+            congregationId = congregationId, cLocalitiesId = localityId,
             congregationNum = congregationNum, congregationName = congregationName,
             territoryMark = territoryMark, isFavorite = isFavorite
         )
@@ -68,7 +68,7 @@ data class CongregationEntity(
         str.append("Congregation Entity №").append(congregationNum)
             .append(" '").append(congregationName).append("' [territoryMark = '")
             .append(territoryMark)
-            .append("; localitiesId = ").append(localitiesId)
+            .append("; localitiesId = ").append(cLocalitiesId)
             .append("; isFavorite = ").append(isFavorite)
             .append("'] congregationId = ").append(congregationId)
         return str.toString()
