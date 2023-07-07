@@ -11,13 +11,18 @@ object Constants {
     const val PX_REGION = "r_"
     const val PX_DISTRICT_REGION = "dr_"
     const val PX_LOCALITY_REGION = "lr_"
-    const val PX_CONGREGATION_REGION = "cd_"
+    const val PX_CONGREGATION_REGION = "cr_"
 
     // Region Districts:
     const val PX_REGION_DISTRICT = "rd_"
+    const val PX_LOCALITY_REGION_DISTRICT = "ld_"
+    const val PX_CONGREGATION_REGION_DISTRICT = "cd_"
+
+    // Localities:
     const val PX_LOCALITY = "l_"
-    const val PX_LOCALITY_DISTRICT = "ld_"
-    const val PX_MICRODISTRICT = "md_"
+    const val PX_CONGREGATION_LOCALITY = "cl_"
+    const val PX_TERRITORY_REGION = "tr_"
+    const val PX_TERRITORY_LOCALITY = "tl_"
 
     const val DB_TRUE = 1
     const val DB_FALSE = 0

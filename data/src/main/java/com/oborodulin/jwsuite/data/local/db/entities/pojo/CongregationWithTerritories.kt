@@ -15,8 +15,8 @@ data class CongregationWithTerritories(
         entityColumn = "territoryId",
         associateBy = Junction(
             CongregationTerritoryCrossRefEntity::class,
-            parentColumn = "congregationsId",
-            entityColumn = "territoriesId"
+            parentColumn = "ctCongregationsId",
+            entityColumn = "ctTerritoriesId"
         )
     )
     val territories: List<TerritoryEntity>

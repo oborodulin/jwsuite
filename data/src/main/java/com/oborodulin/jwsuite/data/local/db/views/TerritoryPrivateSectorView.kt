@@ -19,11 +19,11 @@ UNION ALL
 SELECT h.hTerritoriesId AS territoryId, ifnull(h.isHousePrivateSector, s.isStreetPrivateSector) isPrivateSector
 FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = h.hStreetsId WHERE h.hTerritoriesId IS NOT NULL 
 UNION ALL
-SELECT e.eTerritoriesId AS territoryId, $DB_FALSE AS isPrivateSector FROM ${EntranceEntity.TABLE_NAME} e WHERE e.territoryId IS NOT NULL 
+SELECT e.eTerritoriesId AS territoryId, $DB_FALSE AS isPrivateSector FROM ${EntranceEntity.TABLE_NAME} e WHERE e.eTerritoriesId IS NOT NULL 
 UNION ALL
-SELECT f.fTerritoriesId AS territoryId, $DB_FALSE AS isPrivateSector FROM ${FloorEntity.TABLE_NAME} f WHERE f.territoryId IS NOT NULL 
+SELECT f.fTerritoriesId AS territoryId, $DB_FALSE AS isPrivateSector FROM ${FloorEntity.TABLE_NAME} f WHERE f.fTerritoriesId IS NOT NULL 
 UNION ALL
-SELECT r.rTerritoriesId AS territoryId, $DB_FALSE AS isPrivateSector FROM ${RoomEntity.TABLE_NAME} r WHERE r.territoryId IS NOT NULL 
+SELECT r.rTerritoriesId AS territoryId, $DB_FALSE AS isPrivateSector FROM ${RoomEntity.TABLE_NAME} r WHERE r.rTerritoriesId IS NOT NULL 
 GROUP BY territoryId, isPrivateSector
 """
 )

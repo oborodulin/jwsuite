@@ -15,8 +15,8 @@ data class LocalityDistrictWithStreets(
         entityColumn = "streetId",
         associateBy = Junction(
             GeoDistrictStreetEntity::class,
-            parentColumn = "localityDistrictsId",
-            entityColumn = "streetsId"
+            parentColumn = "dsLocalityDistrictsId",
+            entityColumn = "dsStreetsId"
         )
     )
     val streets: List<GeoStreetEntity> = emptyList()

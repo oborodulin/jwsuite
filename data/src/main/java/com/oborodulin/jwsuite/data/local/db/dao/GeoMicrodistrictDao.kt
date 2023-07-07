@@ -12,7 +12,7 @@ import java.util.*
 @Dao
 interface GeoMicrodistrictDao {
     // READS:
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME}")
+    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} ORDER BY microdistrictName")
     fun findAll(): Flow<List<GeoMicrodistrictView>>
 
     @ExperimentalCoroutinesApi
@@ -24,14 +24,14 @@ interface GeoMicrodistrictDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(microdistrictId: UUID) = findById(microdistrictId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalitiesId = :localityId")
+    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalitiesId = :localityId ORDER BY microdistrictName")
     fun findByLocalityId(localityId: UUID): Flow<GeoMicrodistrictView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalityDistrictsId = :localityDistrictId")
+    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalityDistrictsId = :localityDistrictId ORDER BY microdistrictName")
     fun findByLocalityDistrictId(localityDistrictId: UUID): Flow<List<GeoMicrodistrictView>>
 
     @ExperimentalCoroutinesApi
@@ -44,12 +44,14 @@ interface GeoMicrodistrictDao {
         WHERE mLocalitiesId = :localityId
             AND ifnull(mLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(mLocalityDistrictsId, '')) 
             AND microdistrictName LIKE '%' || :microdistrictName || '%' 
+        ORDER BY microdistrictName
     """
     )
     fun findByMicrodistrictName(
         localityId: UUID, localityDistrictId: UUID? = null, microdistrictName: String
     ): Flow<List<GeoMicrodistrictView>>
 
+    @Transaction
     @Query("SELECT * FROM ${GeoMicrodistrictEntity.TABLE_NAME} WHERE microdistrictId = :microdistrictId")
     fun findDistrictStreetsById(microdistrictId: UUID): Flow<List<MicrodistrictWithStreets>>
 

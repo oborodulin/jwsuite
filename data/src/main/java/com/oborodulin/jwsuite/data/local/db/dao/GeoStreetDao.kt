@@ -79,7 +79,7 @@ interface GeoStreetDao {
     ).distinctUntilChanged()
 
     @Query(
-        "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.territoriesId = :territoryId AND tsv.streetLocCode = :locale"
+        "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale"
     )
     fun findByTerritoryId(
         territoryId: UUID, locale: String? = Locale.getDefault().language

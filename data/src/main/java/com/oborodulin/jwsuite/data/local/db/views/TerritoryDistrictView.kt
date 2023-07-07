@@ -24,10 +24,10 @@ FROM (SELECT (CASE
             ifnull(md.microdistrictName, ifnull(ld.locDistrictName, l.localityName)) AS districtName  
     FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct JOIN ${TerritoryEntity.TABLE_NAME} t 
             ON t.territoryId = ct.ctTerritoriesId AND t.isActive = $DB_TRUE AND ct.endUsingDate IS NULL
-        JOIN ${GeoLocalityView.VIEW_NAME} l ON l.localityId = t.tLocalitiesId
-        LEFT JOIN ${GeoLocalityDistrictView.VIEW_NAME} ld ON ld.localityDistrictId = t.tLocalityDistrictsId
-        LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} md ON md.microdistrictId = t.tMicrodistrictsId) td
-            JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = td.territoriesId
+        JOIN ${LocalityView.VIEW_NAME} l ON l.localityId = t.tLocalitiesId
+        LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ld ON ld.localityDistrictId = t.tLocalityDistrictsId
+        LEFT JOIN ${MicrodistrictView.VIEW_NAME} md ON md.microdistrictId = t.tMicrodistrictsId) td
+            JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = td.territoryId
 GROUP BY td.territoryDistrictType, td.congregationId, td.districtId, td.districtName, tpsv.isPrivateSector
 """
 )

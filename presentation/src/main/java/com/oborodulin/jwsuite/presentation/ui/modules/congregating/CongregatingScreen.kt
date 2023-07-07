@@ -59,7 +59,7 @@ private const val TAG = "Congregating.ui.CongregatingScreen"
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CongregatingScreen(
-    viewModel: CongregatingViewModelImpl = hiltViewModel(),
+    //viewModel: CongregatingViewModelImpl = hiltViewModel(),
     appState: AppState,
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit

@@ -15,8 +15,8 @@ data class MicrodistrictWithStreets(
         entityColumn = "streetId",
         associateBy = Junction(
             GeoDistrictStreetEntity::class,
-            parentColumn = "microdistrictsId",
-            entityColumn = "streetsId"
+            parentColumn = "dsMicrodistrictsId",
+            entityColumn = "dsStreetsId"
         )
     )
     val streets: List<GeoStreetEntity> = emptyList()

@@ -12,7 +12,7 @@ import java.util.*
 @Dao
 interface GeoLocalityDistrictDao {
     // READS:
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME}")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} ORDER BY locDistrictName")
     fun findAll(): Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
@@ -25,17 +25,18 @@ interface GeoLocalityDistrictDao {
     fun findDistinctById(localityDistrictId: UUID) =
         findById(localityDistrictId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId ORDER BY locDistrictName")
     fun findByLocalityId(localityId: UUID): Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId AND locDistrictName LIKE '%' || :districtName || '%'")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId AND locDistrictName LIKE '%' || :districtName || '%' ORDER BY locDistrictName")
     fun findByDistrictName(localityId: UUID, districtName: String):
             Flow<List<GeoLocalityDistrictView>>
 
+    @Transaction
     @Query("SELECT * FROM ${GeoLocalityDistrictEntity.TABLE_NAME} WHERE localityDistrictId = :localityDistrictId")
     fun findDistrictStreetsById(localityDistrictId: UUID): Flow<List<LocalityDistrictWithStreets>>
 

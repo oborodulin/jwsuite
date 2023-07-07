@@ -7,10 +7,7 @@ import com.oborodulin.jwsuite.data.local.db.entities.GeoRegionTlEntity
 
 @DatabaseView(
     viewName = GeoRegionView.VIEW_NAME,
-    value = """
-SELECT r.*, rtl.* FROM ${GeoRegionEntity.TABLE_NAME} r JOIN ${GeoRegionTlEntity.TABLE_NAME} rtl ON rtl.regionsId = r.regionId
-ORDER BY rtl.regionName
-"""
+    value = "SELECT r.*, rtl.* FROM ${GeoRegionEntity.TABLE_NAME} r JOIN ${GeoRegionTlEntity.TABLE_NAME} rtl ON rtl.regionsId = r.regionId"
 )
 class GeoRegionView(
     @Embedded val data: GeoRegionEntity,

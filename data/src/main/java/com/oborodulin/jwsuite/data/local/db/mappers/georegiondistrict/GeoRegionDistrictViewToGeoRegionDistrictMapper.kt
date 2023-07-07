@@ -12,13 +12,13 @@ class GeoRegionDistrictViewToGeoRegionDistrictMapper(private val regionMapper: G
     override fun map(input: GeoRegionDistrictView): GeoRegionDistrict {
         val regionDistrict = GeoRegionDistrict(
             region = regionMapper.map(input.region),
-            districtShortName = input.district.regDistrictShortName,
-            districtName = input.tl.regDistrictName
+            districtShortName = input.district.data.regDistrictShortName,
+            districtName = input.district.tl.regDistrictName
         )
-        regionDistrict.id = input.district.regionDistrictId
-        regionDistrict.tlId = input.tl.regionDistrictTlId
+        regionDistrict.id = input.district.data.regionDistrictId
+        regionDistrict.tlId = input.district.tl.regionDistrictTlId
         return regionDistrict
     }
 
-    override fun map(input: GeoRegionDistrictView?) = input?.let { map(it) }
+    override fun nullableMap(input: GeoRegionDistrictView?) = input?.let { map(it) }
 }

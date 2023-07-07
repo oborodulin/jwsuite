@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoryDistrictView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryPrivateSectorView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,8 +18,8 @@ import java.util.*
 @Dao
 interface TerritoryDao {
     // READS:
-    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} ORDER BY tCongregationsId, territoryNum")
-    fun findAll(): Flow<List<TerritoryView>>
+    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${PX_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryNum")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
@@ -32,10 +33,11 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId 
-    WHERE ct.ctCongregationsId = :congregationId
+    WHERE ct.ctCongregationsId = :congregationId AND t.${PX_LOCALITY}localityLocCode = :locale 
         """
     )
-    fun findByCongregationId(congregationId: UUID): Flow<List<TerritoryView>>
+    fun findByCongregationId(congregationId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByCongregationId(congregationId: UUID) =
@@ -43,13 +45,14 @@ interface TerritoryDao {
 
     @Query(
         """
-    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId
+    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
+            ON ct.ctTerritoriesId = t.territoryId  AND t.${PX_LOCALITY}localityLocCode = :locale
         JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.ctCongregationsId    
         """
     )
-    fun findByFavoriteCongregation(): Flow<List<TerritoryView>>
+    fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
-    @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
+    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
     fun findByTerritoryNum(
         congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int
     ): Flow<List<TerritoryView>>
@@ -73,7 +76,7 @@ interface TerritoryDao {
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
         LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.localitiesId = :localityId 
+    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.tLocalitiesId = :localityId 
         AND tpsv.isPrivateSector = :isPrivateSector AND t.isActive = $DB_TRUE AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL 
     """
     )

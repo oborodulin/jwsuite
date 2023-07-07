@@ -1,17 +1,8 @@
 package com.oborodulin.jwsuite.data.di
 
-import com.oborodulin.jwsuite.data.remote.NextflixService
-import com.oborodulin.jwsuite.domain.util.Constants.TMDB_BASE_URL
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /**
  * Created by o.borodulin 10.June.2023
@@ -19,7 +10,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
+/*
     @Singleton
     @Provides
     fun provideAuthInterceptor(): Interceptor {
@@ -76,4 +67,6 @@ object NetworkModule {
     fun provideDisneyService(retrofit: Retrofit): NextflixService {
         return retrofit.create(NextflixService::class.java)
     }
+
+ */
 }

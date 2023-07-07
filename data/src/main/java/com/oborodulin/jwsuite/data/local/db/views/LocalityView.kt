@@ -7,9 +7,7 @@ import com.oborodulin.jwsuite.data.local.db.entities.GeoLocalityTlEntity
 
 @DatabaseView(
     viewName = LocalityView.VIEW_NAME,
-    value = """
-SELECT l.*, ltl.* FROM ${GeoLocalityEntity.TABLE_NAME} l JOIN ${GeoLocalityTlEntity.TABLE_NAME} ltl ON ltl.localitiesId = l.localityId
-"""
+    value = "SELECT l.*, ltl.* FROM ${GeoLocalityEntity.TABLE_NAME} l JOIN ${GeoLocalityTlEntity.TABLE_NAME} ltl ON ltl.localitiesId = l.localityId"
 )
 class LocalityView(
     @Embedded val data: GeoLocalityEntity,

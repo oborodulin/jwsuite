@@ -12,6 +12,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregati
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.DashboardingUi
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.converters.FavoriteCongregationConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -93,7 +94,7 @@ class DashboardingViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality =,
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
                 isFavorite = true
             )
             congregationUi.id = UUID.randomUUID()

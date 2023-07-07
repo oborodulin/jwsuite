@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.accounting.domain.usecases.CongregatingUseCases
-import com.oborodulin.home.domain.usecases.GetFavoritePayerUseCase
+import com.oborodulin.home.domain.usecases.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregatingUi
 import com.oborodulin.jwsuite.presentation.ui.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.congregating.model.converters.FavoriteCongregationConverter
@@ -12,6 +12,10 @@ import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.data.R
 import com.oborodulin.home.data.local.db.HomeDatabase
+import com.oborodulin.jwsuite.domain.usecases.CongregatingUseCases
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregatingUi
+import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.converters.FavoriteCongregationConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +28,7 @@ import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Accounting.ui.AccountingViewModel"
+private const val TAG = "Congregating.ui.CongregatingViewModelImpl"
 
 @HiltViewModel
 class CongregatingViewModelImpl @Inject constructor(
@@ -38,29 +42,17 @@ class CongregatingViewModelImpl @Inject constructor(
     override fun initState(): UiState<CongregatingUi> = UiState.Loading
 
     override suspend fun handleAction(action: CongregatingUiAction): Job {
-        Timber.tag(TAG)
-            .d(
-                "handleAction(AccountingUiAction) called: %s [HomeDatabase.isImportExecute = %s]",
-                action.javaClass.name,
-                HomeDatabase.isImportExecute
-            )
-        if (HomeDatabase.isImportExecute) HomeDatabase.isImportDone?.await()
-        Timber.tag(TAG)
-            .d(
-                "await(): HomeDatabase.isImportExecute = %s; HomeDatabase.isImportDone = %s",
-                HomeDatabase.isImportExecute,
-                HomeDatabase.isImportDone
-            )
         val job = when (action) {
-            is CongregatingUiAction.Init -> loadFavoritePayer()
+            is CongregatingUiAction.Init -> loadFavoriteCongregation()
         }
         return job
     }
 
-    private fun loadFavoritePayer(): Job {
-        Timber.tag(TAG).d("loadFavoritePayer() called")
+    private fun loadFavoriteCongregation(): Job {
+        Timber.tag(TAG).d("loadFavoriteCongregation() called")
         val job = viewModelScope.launch(errorHandler) {
-            congregatingUseCases.getFavoritePayerUseCase.execute(GetFavoritePayerUseCase.Request)
+            congregatingUseCases.getFavoriteCongregationUseCase.execute(
+                GetFavoriteCongregationUseCase.Request)
                 .map {
                     payerConverter.convert(it)
                 }
@@ -78,7 +70,7 @@ class CongregatingViewModelImpl @Inject constructor(
             object : CongregatingViewModel {
                 override val uiStateFlow =
                     MutableStateFlow(
-                        UiState.Success(CongregatingUi(favoritePayer = previewPayerModel(ctx)))
+                        UiState.Success(CongregatingUi(favoriteCongregation = previewCongregationModel(ctx)))
                     )
                 override val singleEventFlow = Channel<CongregatingUiSingleEvent>().receiveAsFlow()
 
@@ -87,7 +79,7 @@ class CongregatingViewModelImpl @Inject constructor(
                 }
             }
 
-        fun previewPayerModel(ctx: Context) =
+        fun previewCongregationModel(ctx: Context) =
             CongregationUi(
                 id = UUID.randomUUID(),
                 congregationName = ctx.resources.getString(R.string.def_payer1_full_name),

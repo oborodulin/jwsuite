@@ -15,8 +15,8 @@ data class TerritoryWithMembers(
         entityColumn = "memberId",
         associateBy = Junction(
             TerritoryMemberCrossRefEntity::class,
-            parentColumn = "territoriesId",
-            entityColumn = "membersId"
+            parentColumn = "tmcTerritoriesId",
+            entityColumn = "tmcMembersId"
         )
     )
     val members: List<MemberEntity>

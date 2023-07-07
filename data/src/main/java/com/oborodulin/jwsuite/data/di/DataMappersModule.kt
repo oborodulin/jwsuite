@@ -222,11 +222,9 @@ object DataMappersModule {
     // Localities:
     @Singleton
     @Provides
-    fun provideGeoLocalityViewToGeoLocalityMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
-        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper
-    ): GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
-        regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper
+    fun provideGeoLocalityViewToGeoLocalityMapper(regionMapper: GeoRegionViewToGeoRegionMapper):
+            GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
+        regionMapper = regionMapper
     )
 
     @Singleton
@@ -395,8 +393,8 @@ object DataMappersModule {
     // Congregations:
     @Singleton
     @Provides
-    fun provideCongregationViewToCongregationMapper(mapper: GeoLocalityViewToGeoLocalityMapper): CongregationViewToCongregationMapper =
-        CongregationViewToCongregationMapper(localityMapper = mapper)
+    fun provideCongregationViewToCongregationMapper(): CongregationViewToCongregationMapper =
+        CongregationViewToCongregationMapper()
 
     @Singleton
     @Provides

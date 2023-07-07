@@ -13,7 +13,7 @@ class LocalityToLocalityUiMapper(
     override fun map(input: GeoLocality): LocalityUi {
         val localityUi = LocalityUi(
             region = regionMapper.map(input.region),
-            regionDistrict = regionDistrictMapper.map(input.regionDistrict),
+            regionDistrict = regionDistrictMapper.nullableMap(input.regionDistrict),
             localityCode = input.localityCode,
             localityType = input.localityType,
             localityShortName = input.localityShortName,

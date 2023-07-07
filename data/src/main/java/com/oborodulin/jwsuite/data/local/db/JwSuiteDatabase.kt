@@ -36,7 +36,8 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryMemberReportEntity::class,
         CongregationTerritoryCrossRefEntity::class],
     views = [
-        GeoRegionView::class, RegionDistrictView::class, LocalityView::class,
+        GeoRegionView::class, RegionDistrictView::class, LocalityView::class, LocalityDistrictView::class,
+        MicrodistrictView::class, StreetView::class,
         GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,

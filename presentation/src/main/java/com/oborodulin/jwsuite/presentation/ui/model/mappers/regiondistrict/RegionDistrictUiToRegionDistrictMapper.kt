@@ -19,5 +19,5 @@ class RegionDistrictUiToRegionDistrictMapper(private val regionUiMapper: RegionU
         return region
     }
 
-    override fun map(input: RegionDistrictUi?) = input?.let { map(it) }
+    override fun nullableMap(input: RegionDistrictUi?) = input?.let { map(it) }
 }

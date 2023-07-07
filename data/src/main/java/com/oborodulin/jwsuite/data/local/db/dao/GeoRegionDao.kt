@@ -12,7 +12,7 @@ import java.util.*
 @Dao
 interface GeoRegionDao {
     // READS:
-    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionLocCode = :locale")
+    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionLocCode = :locale ORDER BY regionName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionView>>
 
     @ExperimentalCoroutinesApi
@@ -28,7 +28,7 @@ interface GeoRegionDao {
     @Query(
         """
         SELECT r.* FROM ${GeoRegionView.VIEW_NAME} r JOIN ${GeoLocalityEntity.TABLE_NAME} l ON l.lRegionsId = r.regionId AND r.regionLocCode = :locale
-            JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.localitiesId = l.localityId  
+            JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.cLocalitiesId = l.localityId  
     """
     )
     fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language):

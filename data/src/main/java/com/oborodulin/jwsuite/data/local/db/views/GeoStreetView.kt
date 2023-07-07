@@ -15,10 +15,8 @@ ORDER BY stl.streetName
 """
 )
 class GeoStreetView(
-    @Embedded
-    val data: GeoStreetEntity,
-    @Embedded
-    val tl: GeoStreetTlEntity,
+    @Embedded val data: GeoStreetEntity,
+    @Embedded val tl: GeoStreetTlEntity,
 ) {
     companion object {
         const val VIEW_NAME = "geo_streets_view"
