@@ -25,6 +25,10 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -36,6 +40,10 @@ fun CongregationScreen(
     congregationViewModel: CongregationViewModelImpl = hiltViewModel(),
     localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     localityViewModel: LocalityViewModelImpl = hiltViewModel(),
+    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
+    regionViewModel: RegionViewModelImpl = hiltViewModel(),
+    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
+    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
@@ -70,14 +78,19 @@ fun CongregationScreen(
                     CongregationView(
                         congregationViewModel,
                         localitiesListViewModel,
-                        localityViewModel
+                        localityViewModel,
+                        regionsListViewModel,
+                        regionViewModel,
+                        regionDistrictsListViewModel,
+                        regionDistrictViewModel
                     )
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = {
                         congregationViewModel.onContinueClick {
-                            Timber.tag(TAG).d("CongregationScreen(...): Start viewModelScope.launch")
+                            Timber.tag(TAG)
+                                .d("CongregationScreen(...): Start viewModelScope.launch")
                             congregationViewModel.viewModelScope().launch {
-                                congregationViewModel.actionsJobFlow.collect {job ->
+                                congregationViewModel.actionsJobFlow.collect { job ->
                                     Timber.tag(TAG).d(
                                         "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
                                         job?.toString()

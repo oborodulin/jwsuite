@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -30,83 +30,71 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.ui.CongregationsListView"
+private const val TAG = "Congregating.ui.GroupsListView"
 
 @Composable
-fun CongregationsListView(
+fun GroupsListView(
     appState: AppState,
-    congregationsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
+    groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    congregationInput: CongregationInput? = null
+    congregationInput: CongregationInput? = null,
+    groupInput: GroupInput? = null
 ) {
-    Timber.tag(TAG).d("CongregationsListView(...) called")
+    Timber.tag(TAG).d("GroupsListView(...) called")
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() BEFORE collect ui state flow")
-        congregationsListViewModel.submitAction(GroupsListUiAction.Load)
+        Timber.tag(TAG).d("GroupsListView: LaunchedEffect() BEFORE collect ui state flow")
+        groupsListViewModel.submitAction(GroupsListUiAction.Load(congregationInput?.congregationId))
     }
-    congregationsListViewModel.uiStateFlow.collectAsState().value.let { state ->
+    groupsListViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            CongregationsList(
-                congregations = it,
-                congregationInput = congregationInput,
-                onClick = { congregation ->
-                    congregationsListViewModel.setPrimaryObjectData(
-                        arrayListOf(
-                            congregation.id.toString(),
-                            congregation.congregationName
-                        )
-                    )
-                    appState.actionBarSubtitle.value = congregation.congregationName
+            GroupsList(
+                groups = it,
+                groupInput = groupInput,
+                onClick = { group ->
                     with(membersListViewModel) {
-                        setPrimaryObjectData(arrayListOf(congregation.id.toString()))
-                        submitAction(MembersListUiAction.Load(congregation.id))
+                        submitAction(MembersListUiAction.Load(groupId = group.id))
                     }
                 },
-                onEdit = { congregation ->
-                    congregationsListViewModel.submitAction(
-                        GroupsListUiAction.EditGroup(congregation.id)
-                    )
+                onEdit = { group ->
+                    groupsListViewModel.submitAction(GroupsListUiAction.EditGroup(group.id))
                 }
-            ) { congregation ->
-                congregationsListViewModel.submitAction(
-                    GroupsListUiAction.DeleteGroup(congregation.id)
-                )
+            ) { group ->
+                groupsListViewModel.submitAction(GroupsListUiAction.DeleteGroup(group.id))
             }
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() AFTER collect ui state flow")
-        congregationsListViewModel.singleEventFlow.collectLatest {
+        Timber.tag(TAG).d("GroupsListView: LaunchedEffect() AFTER collect ui state flow")
+        groupsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is GroupsListUiSingleEvent.OpenGroupScreen -> {
-                    navController.navigate(it.navRoute)
-                }
+                is GroupsListUiSingleEvent.OpenGroupScreen -> navController.navigate(it.navRoute)
             }
         }
     }
 }
 
 @Composable
-fun CongregationsList(
-    congregations: List<CongregationsListItem>,
-    congregationInput: CongregationInput?,
-    onClick: (CongregationsListItem) -> Unit,
-    onEdit: (CongregationsListItem) -> Unit,
-    onDelete: (CongregationsListItem) -> Unit
+fun GroupsList(
+    groups: List<GroupsListItem>,
+    groupInput: GroupInput?,
+    onClick: (GroupsListItem) -> Unit,
+    onEdit: (GroupsListItem) -> Unit,
+    onDelete: (GroupsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("CongregationsList(...) called")
-    var selectedIndex by remember { mutableIntStateOf(-1) } // by
-    if (congregations.isNotEmpty()) {
+    Timber.tag(TAG).d("GroupsList(...) called")
+    var selectedIndex by remember { mutableStateOf(-1) } // by
+    if (groups.isNotEmpty()) {
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
@@ -114,32 +102,29 @@ fun CongregationsList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(congregations.size) { index ->
-                congregations[index].let { congregation ->
+            items(groups.size) { index ->
+                groups[index].let { group ->
                     val isSelected =
-                        ((selectedIndex == -1) and ((congregationInput?.congregationId == congregation.id) || congregation.isFavorite)) || (selectedIndex == index)
+                        ((selectedIndex == -1) and (groupInput?.groupId == group.id)) || (selectedIndex == index)
                     ListItemComponent(
-                        item = congregation,
+                        item = group,
                         itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(congregation) },
+                            ComponentUiAction.EditListItem { onEdit(group) },
                             ComponentUiAction.DeleteListItem(
-                                stringResource(
-                                    R.string.dlg_confirm_del_congregation,
-                                    congregation.congregationName
-                                )
-                            ) { onDelete(congregation) }),
+                                stringResource(R.string.dlg_confirm_del_group, group.groupNum)
+                            ) { onDelete(group) }),
                         selected = isSelected,
                         background = (if (isSelected) Color.LightGray else Color.Transparent),
                     ) {
                         if (selectedIndex != index) selectedIndex = index
-                        onClick(congregation)
+                        onClick(group)
                     }
                 }
             }
         }
     } else {
         Text(
-            text = stringResource(R.string.congregations_list_empty_text),
+            text = stringResource(R.string.groups_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -149,10 +134,10 @@ fun CongregationsList(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewCongregationsCongregating() {
-    CongregationsList(
-        congregations = GroupsListViewModelImpl.previewList(LocalContext.current),
-        congregationInput = CongregationInput(UUID.randomUUID()),
+fun PreviewGroupsCongregating() {
+    GroupsList(
+        groups = GroupsListViewModelImpl.previewList(LocalContext.current),
+        groupInput = GroupInput(UUID.randomUUID()),
         onClick = {},
         onEdit = {},
         onDelete = {})

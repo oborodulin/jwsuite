@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -105,7 +105,7 @@ fun CongregationsList(
     onClick: (CongregationsListItem) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsList(...) called")
-    var selectedIndex by remember { mutableIntStateOf(-1) } // by
+    var selectedIndex by remember { mutableStateOf(-1) } // by
     if (congregations.isNotEmpty()) {
         LazyColumn(
             state = rememberLazyListState(),
@@ -149,7 +149,7 @@ fun CongregationsList(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewCongregationsCongregating() {
+fun PreviewCongregationsList() {
     CongregationsList(
         congregations = CongregationsListViewModelImpl.previewList(LocalContext.current),
         congregationInput = CongregationInput(UUID.randomUUID()),

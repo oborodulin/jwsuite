@@ -28,6 +28,7 @@
 
     <!--СПИСОК: -->
     <string name="congregations_list_empty_text">Собраний пока нет. Добавте, пожалуйста, хотя бы одно</string>
+    <string name="groups_list_empty_text">Групп пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="members_list_empty_text">Возвещателей пока нет. Добавте, пожалуйста, хотя бы одного</string>
     <string name="regions_list_empty_text">Областей пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
@@ -68,6 +69,7 @@
     <string name="dlg_title_select_locality">Выберите населённый пункт</string>
     <!--подтверждения-->
     <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
+    <string name="dlg_confirm_del_group">Удалить группу %1$s?</string>
     <string name="dlg_confirm_del_member">Удалить возвещателя %1$s?</string>
     <string name="dlg_confirm_del_region">Удалить область %1$s?</string>
     <string name="dlg_confirm_del_region_district">Удалить район %1$s?</string>

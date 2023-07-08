@@ -6,8 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.congregating.CongregatingScreen
-import com.oborodulin.jwsuite.presentation.ui.dashboarding.DashboardingScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.DashboardingScreen
 import timber.log.Timber

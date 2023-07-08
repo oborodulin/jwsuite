@@ -104,7 +104,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("saveRegionDistrict() called: UI model %s", regionDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionDistrictUseCase.execute(
-                SaveRegionDistrictUseCase.Request(mapper.nullableMap(regionDistrictUi))
+                SaveRegionDistrictUseCase.Request(mapper.map(regionDistrictUi))
             ).collect {}
         }
         return job

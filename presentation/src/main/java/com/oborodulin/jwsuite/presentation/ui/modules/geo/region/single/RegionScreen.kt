@@ -22,7 +22,7 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -32,10 +32,10 @@ private const val TAG = "Geo.ui.RegionScreen"
 fun RegionScreen(
     appState: AppState,
     viewModel: RegionViewModelImpl = hiltViewModel(),
-    regionInput: CongregationInput? = null
+    regionInput: RegionInput? = null
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
-    LaunchedEffect(regionInput?.congregationId) {
+    LaunchedEffect(regionInput?.regionId) {
         Timber.tag(TAG).d("RegionScreen: LaunchedEffect() BEFORE collect ui state flow")
         when (regionInput) {
             null -> {
@@ -45,7 +45,7 @@ fun RegionScreen(
 
             else -> {
                 viewModel.dialogTitleResId = R.string.region_subheader
-                viewModel.submitAction(RegionUiAction.Load(regionInput.congregationId))
+                viewModel.submitAction(RegionUiAction.Load(regionInput.regionId))
             }
         }
     }

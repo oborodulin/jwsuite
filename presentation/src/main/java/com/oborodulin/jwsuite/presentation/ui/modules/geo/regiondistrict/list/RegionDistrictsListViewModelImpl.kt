@@ -44,9 +44,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(RegionDistrictsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionDistrictsListUiAction.Load -> {
-                loadRegionDistricts(action.regionId)
-            }
+            is RegionDistrictsListUiAction.Load -> loadRegionDistricts(action.regionId)
 
             is RegionDistrictsListUiAction.EditRegionDistrict -> {
                 submitSingleEvent(

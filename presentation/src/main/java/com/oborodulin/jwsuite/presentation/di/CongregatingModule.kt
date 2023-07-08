@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.presentation.di
 
-import com.oborodulin.jwsuite.domain.usecases.CongregatingUseCases
+import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
@@ -146,12 +146,6 @@ object CongregatingModule {
         MemberConverter(mapper = mapper)
 
     // USE CASES:
-    @Singleton
-    @Provides
-    fun provideCongregatingUseCases(
-        getFavoriteCongregationUseCase: GetFavoriteCongregationUseCase
-    ): CongregatingUseCases = CongregatingUseCases(getFavoriteCongregationUseCase)
-
     // Congregation:
     @Singleton
     @Provides

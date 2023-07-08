@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.model.RegionsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,23 +44,17 @@ class RegionsListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionsListUiAction.Load -> {
-                loadRegions()
-            }
+            is RegionsListUiAction.Load -> loadRegions()
 
             is RegionsListUiAction.EditRegion -> {
                 submitSingleEvent(
                     RegionsListUiSingleEvent.OpenRegionScreen(
-                        NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.regionId)
-                        )
+                        NavRoutes.Region.routeForRegion(RegionInput(action.regionId))
                     )
                 )
             }
 
-            is RegionsListUiAction.DeleteRegion -> {
-                deleteRegion(action.regionId)
-            }
+            is RegionsListUiAction.DeleteRegion -> deleteRegion(action.regionId)
         }
         return job
     }

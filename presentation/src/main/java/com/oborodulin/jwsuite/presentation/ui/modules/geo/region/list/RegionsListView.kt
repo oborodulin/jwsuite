@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -80,7 +80,7 @@ fun RegionsList(
     onClick: (RegionsListItem) -> Unit
 ) {
     Timber.tag(TAG).d("RegionsList(...) called")
-    var selectedIndex by remember { mutableIntStateOf(-1) } // by
+    var selectedIndex by remember { mutableStateOf(-1) } // by
     if (regions.isNotEmpty()) {
         LazyColumn(
             state = rememberLazyListState(),

@@ -49,9 +49,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(LocalitiesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalitiesListUiAction.LoadAll -> {
-                loadAllLocalities()
-            }
+            is LocalitiesListUiAction.LoadAll -> loadAllLocalities()
 
             is LocalitiesListUiAction.Load -> {
                 loadLocalities(action.regionId, action.regionDistrictId)
@@ -69,9 +67,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 )
             }
 
-            is LocalitiesListUiAction.DeleteLocality -> {
-                deleteLocality(action.localityId)
-            }
+            is LocalitiesListUiAction.DeleteLocality -> deleteLocality(action.localityId)
         }
         return job
     }

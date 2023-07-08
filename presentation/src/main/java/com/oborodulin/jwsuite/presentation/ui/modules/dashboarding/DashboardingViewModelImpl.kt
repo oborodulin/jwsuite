@@ -7,7 +7,7 @@ import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
-import com.oborodulin.jwsuite.domain.usecases.CongregatingUseCases
+import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.DashboardingUi
@@ -24,12 +24,12 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Dashboarding.ui.DashboardingViewModel"
+private const val TAG = "Dashboarding.ui.DashboardingViewModelImpl"
 
 @HiltViewModel
 class DashboardingViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val congregatingUseCases: CongregatingUseCases,
+    private val dashboardingUseCases: DashboardingUseCases,
     private val congregationConverter: FavoriteCongregationConverter
 ) : DashboardingViewModel,
     MviViewModel<DashboardingUi, UiState<DashboardingUi>, DashboardingUiAction, DashboardingUiSingleEvent>(
@@ -60,7 +60,7 @@ class DashboardingViewModelImpl @Inject constructor(
     private fun loadFavoriteCongregation(): Job {
         Timber.tag(TAG).d("loadFavoriteCongregation() called")
         val job = viewModelScope.launch(errorHandler) {
-            congregatingUseCases.getFavoriteCongregationUseCase.execute(
+            dashboardingUseCases.getFavoriteCongregationUseCase.execute(
                 GetFavoriteCongregationUseCase.Request
             ).map {
                 congregationConverter.convert(it)

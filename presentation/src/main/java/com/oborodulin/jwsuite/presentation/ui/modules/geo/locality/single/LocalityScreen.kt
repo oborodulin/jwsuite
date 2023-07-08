@@ -22,7 +22,11 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -31,31 +35,35 @@ private const val TAG = "Geo.ui.LocalityScreen"
 @Composable
 fun LocalityScreen(
     appState: AppState,
-    viewModel: LocalityViewModelImpl = hiltViewModel(),
-    localityInput: CongregationInput? = null
+    localityViewModel: LocalityViewModelImpl = hiltViewModel(),
+    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
+    regionViewModel: RegionViewModelImpl = hiltViewModel(),
+    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
+    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
+    localityInput: LocalityInput? = null
 ) {
     Timber.tag(TAG).d("LocalityScreen(...) called: localityInput = %s", localityInput)
-    LaunchedEffect(localityInput?.congregationId) {
+    LaunchedEffect(localityInput?.localityId) {
         Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
         when (localityInput) {
             null -> {
-                viewModel.dialogTitleResId = R.string.locality_new_subheader
-                viewModel.submitAction(LocalityUiAction.Create)
+                localityViewModel.dialogTitleResId = R.string.locality_new_subheader
+                localityViewModel.submitAction(LocalityUiAction.Create)
             }
 
             else -> {
-                viewModel.dialogTitleResId = R.string.locality_subheader
-                viewModel.submitAction(LocalityUiAction.Load(localityInput.congregationId))
+                localityViewModel.dialogTitleResId = R.string.locality_subheader
+                localityViewModel.submitAction(LocalityUiAction.Load(localityInput.localityId))
             }
         }
     }
-    viewModel.uiStateFlow.collectAsState().value.let { state ->
+    localityViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         HomeComposableTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 //scaffoldState = appState.localityScaffoldState,
-                topBarTitleId = viewModel.dialogTitleResId,
+                topBarTitleId = localityViewModel.dialogTitleResId,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
                         Icon(Icons.Filled.ArrowBack, null)
@@ -63,14 +71,18 @@ fun LocalityScreen(
                 }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                    LocalityView(viewModel)
+                    val areInputsValid by localityViewModel.areInputsValid.collectAsStateWithLifecycle()
+                    LocalityView(
+                        localityViewModel,
+                        regionsListViewModel, regionViewModel,
+                        regionDistrictsListViewModel, regionDistrictViewModel
+                    )
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = {
-                        viewModel.onContinueClick {
+                        localityViewModel.onContinueClick {
                             Timber.tag(TAG).d("LocalityScreen(...): Start viewModelScope.launch")
-                            viewModel.viewModelScope().launch {
-                                viewModel.actionsJobFlow.collect {
+                            localityViewModel.viewModelScope().launch {
+                                localityViewModel.actionsJobFlow.collect {
                                     Timber.tag(TAG).d(
                                         "LocalityScreen(...): Start actionsJobFlow.collect [job = %s]",
                                         it?.toString()
@@ -79,7 +91,7 @@ fun LocalityScreen(
                                     appState.backToBottomBarScreen()
                                 }
                             }
-                            viewModel.submitAction(LocalityUiAction.Save)
+                            localityViewModel.submitAction(LocalityUiAction.Save)
                             Timber.tag(TAG).d("LocalityScreen(...): onSubmit() executed")
                         }
                     }, enabled = areInputsValid) {

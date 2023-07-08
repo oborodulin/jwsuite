@@ -25,7 +25,7 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.rememberAppState
-import com.oborodulin.jwsuite.presentation.ui.congregating.congregation.single.CongregationScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -58,23 +58,21 @@ fun MainScreen() {
             }
         }
     }
-    HomeNavigationHost(appState = appState, nestedScrollConnection = nestedScrollConnection,
-        bottomBar = {
-            if (true) {//appState.shouldShowBottomNavBar
-                BottomNavigationComponent(
-                    modifier = Modifier
-                        .height(bottomBarHeight)
-                        .offset {
-                            IntOffset(
-                                x = 0,
-                                y = -bottomBarOffsetHeightPx.roundToInt()
-                            )
-                        },
-                    appState
-                )
-            }
+    HomeNavigationHost(appState = appState, nestedScrollConnection = nestedScrollConnection) {
+        if (true) {//appState.shouldShowBottomNavBar
+            BottomNavigationComponent(
+                modifier = Modifier
+                    .height(bottomBarHeight)
+                    .offset {
+                        IntOffset(
+                            x = 0,
+                            y = -bottomBarOffsetHeightPx.roundToInt()
+                        )
+                    },
+                appState
+            )
         }
-    )
+    }
 }
 
 @Composable
@@ -91,8 +89,7 @@ private fun HomeNavigationHost(
             CongregationScreen(appState = appState)
         }
         composable(
-            route = NavRoutes.Congregation.route,
-            arguments = NavRoutes.Congregation.arguments
+            route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
         ) {
             Timber.tag(TAG)
                 .d(

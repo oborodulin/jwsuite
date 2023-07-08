@@ -8,5 +8,5 @@ import com.oborodulin.jwsuite.presentation.ui.model.mappers.regiondistrict.Regio
 class RegionDistrictConverter(private val mapper: RegionDistrictToRegionDistrictUiMapper) :
     CommonResultConverter<GetRegionDistrictUseCase.Response, RegionDistrictUi>() {
     override fun convertSuccess(data: GetRegionDistrictUseCase.Response) =
-        mapper.nullableMap(data.regionDistrict)
+        mapper.map(data.regionDistrict)
 }
