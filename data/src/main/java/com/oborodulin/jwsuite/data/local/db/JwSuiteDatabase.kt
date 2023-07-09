@@ -143,10 +143,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     /**
      * https://stackoverflow.com/questions/5955202/how-to-remove-database-from-emulator
      */
-    class DatabaseCallback(
-        private val context: Context,
-        private val jsonLogger: Gson? = null
-    ) :
+    class DatabaseCallback(private val context: Context, private val jsonLogger: Gson? = null) :
         Callback() {
         private val currentDateTime: OffsetDateTime = OffsetDateTime.now()
 
@@ -205,7 +202,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 )
                 val mospino = insertDeftLocality(
                     db, GeoLocalityEntity.mospinoLocality(
-                        context, donRegion.regionId, maryinskyDistrict.regionDistrictId
+                        context, donRegion.regionId, donetskyDistrict.regionDistrictId
                     )
                 )
                 // LUG localities:

@@ -13,6 +13,9 @@ class GeoRegionDistrictsRepositoryImpl @Inject constructor(
     private val localRegionDistrictDataSource: LocalGeoRegionDistrictDataSource,
     private val mappers: GeoRegionDistrictMappers
 ) : GeoRegionDistrictsRepository {
+    override fun getAll() = localRegionDistrictDataSource.getAllDistricts()
+        .map(mappers.geoRegionDistrictViewListToGeoRegionDistrictsListMapper::map)
+
     override fun getAllByRegion(regionId: UUID) =
         localRegionDistrictDataSource.getRegionDistricts(regionId)
             .map(mappers.geoRegionDistrictViewListToGeoRegionDistrictsListMapper::map)

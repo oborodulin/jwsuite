@@ -19,6 +19,7 @@ class LocalGeoRegionDistrictDataSourceImpl @Inject constructor(
     private val regionDistrictDao: GeoRegionDistrictDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoRegionDistrictDataSource {
+    override fun getAllDistricts() = regionDistrictDao.findAll()
     override fun getRegionDistricts(regionId: UUID) = regionDistrictDao.findByRegionId(regionId)
     override fun getRegionDistrict(regionDistrictId: UUID) =
         regionDistrictDao.findDistinctById(regionDistrictId)

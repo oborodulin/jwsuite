@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +32,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -126,9 +128,13 @@ fun MembersList(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMembersList() {
-    MembersList(
-        members = MembersListViewModelImpl.previewList(LocalContext.current),
-        onEdit = {},
-        onDelete = {}
-    )
+    JWSuiteTheme {
+        Surface {
+            MembersList(
+                members = MembersListViewModelImpl.previewList(LocalContext.current),
+                onEdit = {},
+                onDelete = {}
+            )
+        }
+    }
 }

@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
@@ -54,7 +54,7 @@ fun DashboardingScreen(
     }
     viewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        HomeComposableTheme { //(darkTheme = true)
+        JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,

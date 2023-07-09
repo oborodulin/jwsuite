@@ -63,7 +63,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadRegionDistricts(regionId: UUID): Job {
+    private fun loadRegionDistricts(regionId: UUID? = null): Job {
         Timber.tag(TAG).d("loadRegionDistricts() called: regionId = %s", regionId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionDistrictsUseCase.execute(GetRegionDistrictsUseCase.Request(regionId))

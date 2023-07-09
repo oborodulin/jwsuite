@@ -33,6 +33,7 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.ui.RegionView"
@@ -150,5 +151,9 @@ fun RegionView(viewModel: RegionViewModel) {
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewRegionView() {
-    RegionView(viewModel = RegionViewModelImpl.previewModel)
+    JWSuiteTheme {
+        Surface {
+            RegionView(viewModel = RegionViewModelImpl.previewModel)
+        }
+    }
 }

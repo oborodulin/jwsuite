@@ -28,6 +28,7 @@ fun ExposedDropdownMenuBoxComponent(
     enabled: Boolean = true,
     readOnly: Boolean = true,
     inputWrapper: InputWrapper,
+    resourceResolver: @Composable ((String) -> String)? = null,
     listItems: List<String> = listOf(),
     @StringRes labelResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -40,9 +41,17 @@ fun ExposedDropdownMenuBoxComponent(
     },
     onValueChange: OnValueChange,
     onImeKeyAction: OnImeKeyAction,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    val fieldValue = remember { mutableStateOf(inputWrapper.value) }
+    val resValue = resourceResolver?.let { it(inputWrapper.value) }
+    val fieldValue = remember {
+        mutableStateOf(
+            when (resourceResolver) {
+                null -> inputWrapper.value
+                else -> resValue
+            }
+        )
+    }
     var expanded by remember { mutableStateOf(false) }
     // the box
     ExposedDropdownMenuBox(
@@ -59,9 +68,13 @@ fun ExposedDropdownMenuBoxComponent(
                     .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
                 enabled = enabled,
                 readOnly = readOnly,
-                value = fieldValue.value,
+                value = fieldValue.value ?: "",
                 onValueChange = {
-                    fieldValue.value = it
+/*                    val resVal = resourceResolver?.let { resolver -> resolver(value) }
+                    fieldValue.value = when (resourceResolver) {
+                        null -> value
+                        else -> resVal
+                    }*/
                     onValueChange(it)
                 },
                 label = { labelResId?.let { Text(stringResource(it)) } },
@@ -97,11 +110,20 @@ fun ExposedDropdownMenuBoxComponent(
         ) {
             listItems.forEach { selectedOption ->
                 // menu item
-                DropdownMenuItem(text = { Text(text = selectedOption) },
+                val resOption = resourceResolver?.let { it(selectedOption) }
+                DropdownMenuItem(text = {
+                    when (resourceResolver) {
+                        null -> selectedOption
+                        else -> resOption
+                    }?.let { Text(text = it) }
+                },
                     onClick = {
-                        fieldValue.value = selectedOption
+                        fieldValue.value = when (resourceResolver) {
+                            null -> selectedOption
+                            else -> resOption
+                        }
                         expanded = false
-                        onValueChange(selectedOption)
+                        //onValueChange(selectedOption)
                     })
             }
         }

@@ -211,12 +211,19 @@ class LocalityViewModelImpl @Inject constructor(
                                 LocalityFields.LOCALITY_REGION, region, event.input, true
                             )
 
-                            else -> setStateValue(LocalityFields.LOCALITY_REGION, region, event.input)
+                            else -> setStateValue(
+                                LocalityFields.LOCALITY_REGION,
+                                region,
+                                event.input
+                            )
                         }
 
                     is LocalityInputEvent.RegionDistrict ->
                         setStateValue(
-                            LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict, event.input, true
+                            LocalityFields.LOCALITY_REGION_DISTRICT,
+                            regionDistrict,
+                            event.input,
+                            true
                         )
 
                     is LocalityInputEvent.LocalityCode ->
@@ -304,7 +311,12 @@ class LocalityViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         LocalityInputValidator.Region.errorIdOrNull(region.value.item.headline)?.let {
-            inputErrors.add(InputError(fieldName = LocalityFields.LOCALITY_REGION.name, errorId = it))
+            inputErrors.add(
+                InputError(
+                    fieldName = LocalityFields.LOCALITY_REGION.name,
+                    errorId = it
+                )
+            )
         }
         LocalityInputValidator.LocalityCode.errorIdOrNull(localityCode.value.value)?.let {
             inputErrors.add(InputError(fieldName = LocalityFields.LOCALITY_CODE.name, errorId = it))

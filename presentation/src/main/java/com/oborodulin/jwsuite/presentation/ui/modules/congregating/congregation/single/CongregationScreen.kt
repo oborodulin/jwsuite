@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
@@ -29,6 +28,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsLis
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -63,7 +63,7 @@ fun CongregationScreen(
     }
     congregationViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        HomeComposableTheme {
+        JWSuiteTheme {
             ScaffoldComponent(
                 appState = appState,
                 topBarTitleId = congregationViewModel.dialogTitleResId,

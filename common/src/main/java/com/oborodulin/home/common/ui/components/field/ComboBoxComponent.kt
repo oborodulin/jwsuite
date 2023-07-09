@@ -5,12 +5,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
@@ -39,6 +41,7 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
+import java.util.UUID
 
 private const val TAG = "Common.ui.ComboBoxComponent"
 
@@ -51,7 +54,7 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
     @StringRes labelResId: Int,
     @StringRes listTitleResId: Int,
     leadingIcon: @Composable (() -> Unit)? = null,
-    isShowItemDialog: MutableState<Boolean>,
+    isShowSingleDialog: MutableState<Boolean>,
     maxLines: Int = Int.MAX_VALUE,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction,
@@ -86,7 +89,7 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
         title = stringResource(listTitleResId),
         viewModel = listViewModel,
         loadUiAction = loadListUiAction,
-        onAddButtonClick = { isShowItemDialog.value = true }
+        onAddButtonClick = { isShowSingleDialog.value = true }
     ) { item ->
         itemId = item.itemId
         itemHeadline = TextFieldValue(item.headline, TextRange(item.headline.length))
@@ -98,7 +101,7 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clickable { isShowListDialog.value = true },
-            enabled = false,
+            enabled = true,
             readOnly = false,
             value = itemHeadline,
             onValueChange = {
@@ -110,7 +113,7 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
             trailingIcon = {
                 if (itemHeadline.text.isEmpty()) {
                     Icon(
-                        Icons.Outlined.List,
+                        Icons.Outlined.ArrowDropDown,
                         contentDescription = "",
                         modifier = Modifier.offset(x = 10.dp)
                     )
@@ -151,11 +154,14 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewComboBoxComponent() {
+    val isShowNewRegionDialog = remember { mutableStateOf(false) }
     HomeComposableTheme {
         Surface {
             /* ComboBoxComponent(modifier = Modifier
                  .fillMaxWidth()
                  .height(60.dp),
+                 listViewModel =,
+                 loadListUiAction =,
                  inputWrapper = InputListItemWrapper(
                      item = ListItemModel(
                          itemId = UUID.randomUUID(),
@@ -164,8 +170,11 @@ fun PreviewComboBoxComponent() {
                      errorId = R.string.preview_blank_text_field_err
                  ),
                  labelResId = R.string.preview_blank_text_field_lbl,
+                 listTitleResId = R.string.preview_blank_text_field_lbl,
                  onValueChange = {},
-                 onImeKeyAction = {})*/
+                 onImeKeyAction = {})
+
+             */
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +31,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.model.LocalitiesListItem
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -130,10 +132,14 @@ fun LocalitiesList(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewLocalitiesAccounting() {
-    LocalitiesList(
-        localities = LocalitiesListViewModelImpl.previewList(LocalContext.current),
-        onEdit = {},
-        onDelete = {},
-        onClick = {})
+fun PreviewLocalitiesList() {
+    JWSuiteTheme {
+        Surface {
+            LocalitiesList(
+                localities = LocalitiesListViewModelImpl.previewList(LocalContext.current),
+                onEdit = {},
+                onDelete = {},
+                onClick = {})
+        }
+    }
 }

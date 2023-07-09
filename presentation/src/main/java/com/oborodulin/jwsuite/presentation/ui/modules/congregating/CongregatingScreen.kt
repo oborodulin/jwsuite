@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.TabRowItem
-import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
@@ -42,6 +41,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -80,7 +80,7 @@ fun CongregatingScreen(
             view = { GroupMembersView(appState = appState) },
         )
     )
-    HomeComposableTheme { //(darkTheme = true)
+    JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
             appState = appState,
             nestedScrollConnection = nestedScrollConnection,

@@ -23,6 +23,7 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -51,7 +52,7 @@ fun RegionScreen(
     }
     viewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        HomeComposableTheme { //(darkTheme = true)
+        JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 //scaffoldState = appState.regionScaffoldState,

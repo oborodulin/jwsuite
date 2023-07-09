@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,27 +30,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
-import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.ui.LocalityView"
@@ -112,14 +109,9 @@ fun LocalityView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val isShowNewRegionDialog = remember { mutableStateOf(false) }
-        FullScreenDialog(
-            isShow = isShowNewRegionDialog,
-            viewModel = regionViewModel,
-            dialogView = { RegionView(regionViewModel) }
-        ) { regionViewModel.submitAction(RegionUiAction.Save) }
-
-        ComboBoxComponent(
+        RegionComboBox(
+            listViewModel = regionsListViewModel,
+            singleViewModel = regionViewModel,
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -128,45 +120,24 @@ fun LocalityView(
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = regionsListViewModel,
-            loadListUiAction = RegionsListUiAction.Load,
-            isShowItemDialog = isShowNewRegionDialog,
-            labelResId = R.string.locality_region_hint,
-            listTitleResId = R.string.dlg_title_select_region,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
             inputWrapper = region,
             onValueChange = { localityViewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )
-
-        val isShowNewRegionDistrictDialog = remember { mutableStateOf(false) }
-        FullScreenDialog(
-            isShow = isShowNewRegionDistrictDialog,
-            viewModel = regionDistrictViewModel,
-            dialogView = {
-                RegionDistrictView(
-                    regionDistrictViewModel,
-                    regionsListViewModel,
-                    regionViewModel
-                )
-            }
-        ) { regionDistrictViewModel.submitAction(RegionDistrictUiAction.Save) }
-
-        ComboBoxComponent(
+        RegionDistrictComboBox(
+            regionsListViewModel = regionsListViewModel,
+            regionViewModel = regionViewModel,
+            regionId = region.item.itemId,
+            listViewModel = regionDistrictsListViewModel,
+            singleViewModel = regionDistrictViewModel,
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION_DISTRICT.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
-                        focusedField = LocalityFields.LOCALITY_REGION,
+                        focusedField = LocalityFields.LOCALITY_REGION_DISTRICT,
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = regionDistrictsListViewModel,
-            loadListUiAction = RegionDistrictsListUiAction.Load(region.item.itemId!!),
-            isShowItemDialog = isShowNewRegionDistrictDialog,
-            labelResId = R.string.locality_region_district_hint,
-            listTitleResId = R.string.dlg_title_select_region_district,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_district_36), null) },
             inputWrapper = regionDistrict,
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it))
@@ -211,12 +182,7 @@ fun LocalityView(
                     )
                 },
             labelResId = R.string.short_name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_ab_36),
-                    null
-                )
-            },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_ab_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
@@ -241,17 +207,16 @@ fun LocalityView(
                     )
                 },
             labelResId = R.string.type_hint,
-            leadingIcon = {
-                Icon(painterResource(R.drawable.ic_signpost_36), null)
-            },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_signpost_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = localityType,
-            listItems = (1..28).map { it.toString() },
+            inputWrapper = localityType,  //(1..28).map { it.toString() } stringArrayResource(com.oborodulin.jwsuite.domain.R.array.locality_types).toList()
+            resourceResolver = { resolveLocalityTypeValue(localityType.value) },
+            listItems = LocalityType.values().map { it.name },
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
             },
@@ -268,12 +233,7 @@ fun LocalityView(
                     )
                 },
             labelResId = R.string.name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_abc_36),
-                    null
-                )
-            },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -290,15 +250,27 @@ fun LocalityView(
     }
 }
 
+@Composable
+fun resolveLocalityTypeValue(localityTypeValue: String? = LocalityType.CITY.name): String {
+    val resArray = stringArrayResource(com.oborodulin.jwsuite.domain.R.array.locality_types)
+    return resArray[LocalityType.valueOf(if (localityTypeValue.isNullOrEmpty()) LocalityType.CITY.name else localityTypeValue).ordinal]
+}
+
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewLocalityView() {
-    LocalityView(
-        localityViewModel = LocalityViewModelImpl.previewModel,
-        regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-        regionViewModel = RegionViewModelImpl.previewModel,
-        regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(LocalContext.current),
-        regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
-    )
+    JWSuiteTheme {
+        Surface {
+            LocalityView(
+                localityViewModel = LocalityViewModelImpl.previewModel,
+                regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
+                regionViewModel = RegionViewModelImpl.previewModel,
+                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(
+                    LocalContext.current
+                ),
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
+            )
+        }
+    }
 }

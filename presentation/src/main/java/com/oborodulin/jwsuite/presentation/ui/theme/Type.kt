@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.ui.theme
+package com.oborodulin.jwsuite.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

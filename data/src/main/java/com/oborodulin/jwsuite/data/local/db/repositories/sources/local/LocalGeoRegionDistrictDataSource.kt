@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoRegionDistrictDataSource {
+    fun getAllDistricts(): Flow<List<GeoRegionDistrictView>>
     fun getRegionDistricts(regionId: UUID): Flow<List<GeoRegionDistrictView>>
     fun getRegionDistrict(regionDistrictId: UUID): Flow<GeoRegionDistrictView>
     suspend fun insertRegionDistrict(

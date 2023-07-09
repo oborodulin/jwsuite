@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +35,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupsListItem
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
@@ -135,10 +137,14 @@ fun GroupsList(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupsCongregating() {
-    GroupsList(
-        groups = GroupsListViewModelImpl.previewList(LocalContext.current),
-        groupInput = GroupInput(UUID.randomUUID()),
-        onClick = {},
-        onEdit = {},
-        onDelete = {})
+    JWSuiteTheme {
+        Surface {
+            GroupsList(
+                groups = GroupsListViewModelImpl.previewList(LocalContext.current),
+                groupInput = GroupInput(UUID.randomUUID()),
+                onClick = {},
+                onEdit = {},
+                onDelete = {})
+        }
+    }
 }

@@ -60,7 +60,7 @@
     <string name="locality_subheader">Населённый пункт</string>
     <string name="locality_new_subheader">Новый населённый пункт</string>
     <string name="locality_region_hint">Область</string>
-    <string name="locality_region_district_hint">Район</string>
+    <string name="locality_region_district_hint">Район области</string>
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->

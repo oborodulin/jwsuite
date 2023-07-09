@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface GeoRegionDistrictsRepository {
+    fun getAll(): Flow<List<GeoRegionDistrict>>
     fun getAllByRegion(regionId: UUID): Flow<List<GeoRegionDistrict>>
     fun get(regionDistrictId: UUID): Flow<GeoRegionDistrict>
     fun save(regionDistrict: GeoRegionDistrict): Flow<GeoRegionDistrict>

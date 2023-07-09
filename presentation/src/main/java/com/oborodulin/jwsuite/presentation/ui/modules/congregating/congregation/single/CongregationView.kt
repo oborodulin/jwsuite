@@ -51,6 +51,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.Re
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Congregating.ui.CongregationView"
@@ -137,7 +138,7 @@ fun CongregationView(
                 },
             listViewModel = localitiesListViewModel,
             loadListUiAction = LocalitiesListUiAction.LoadAll,
-            isShowItemDialog = isShowNewLocalityDialog,
+            isShowSingleDialog = isShowNewLocalityDialog,
             labelResId = R.string.locality_hint,
             listTitleResId = R.string.dlg_title_select_locality,
             leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
@@ -253,13 +254,19 @@ fun CongregationView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewCongregationView() {
-    CongregationView(
-        congregationViewModel = CongregationViewModelImpl.previewModel,
-        localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
-        localityViewModel = LocalityViewModelImpl.previewModel,
-        regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-        regionViewModel = RegionViewModelImpl.previewModel,
-        regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(LocalContext.current),
-        regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
-    )
+    JWSuiteTheme {
+        Surface {
+            CongregationView(
+                congregationViewModel = CongregationViewModelImpl.previewModel,
+                localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
+                localityViewModel = LocalityViewModelImpl.previewModel,
+                regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
+                regionViewModel = RegionViewModelImpl.previewModel,
+                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(
+                    LocalContext.current
+                ),
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
+            )
+        }
+    }
 }

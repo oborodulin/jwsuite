@@ -29,19 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
-import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.ui.RegionDistrictView"
@@ -99,14 +96,9 @@ fun RegionDistrictView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val isShowNewRegionDialog = remember { mutableStateOf(false) }
-        FullScreenDialog(
-            isShow = isShowNewRegionDialog,
-            viewModel = regionViewModel,
-            dialogView = { RegionView(regionViewModel) }
-        ) { regionViewModel.submitAction(RegionUiAction.Save) }
-
-        ComboBoxComponent(
+        RegionComboBox(
+            listViewModel = regionsListViewModel,
+            singleViewModel = regionViewModel,
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -115,12 +107,6 @@ fun RegionDistrictView(
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = regionsListViewModel,
-            loadListUiAction = RegionsListUiAction.Load,
-            isShowItemDialog = isShowNewRegionDialog,
-            labelResId = R.string.locality_region_hint,
-            listTitleResId = R.string.dlg_title_select_region,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
             inputWrapper = region,
             onValueChange = {
                 regionDistrictViewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
@@ -148,9 +134,7 @@ fun RegionDistrictView(
             inputWrapper = districtShortName,
             onValueChange = {
                 regionDistrictViewModel.onTextFieldEntered(
-                    RegionDistrictInputEvent.DistrictShortName(
-                        it
-                    )
+                    RegionDistrictInputEvent.DistrictShortName(it)
                 )
             },
             onImeKeyAction = regionDistrictViewModel::moveFocusImeAction
@@ -187,9 +171,13 @@ fun RegionDistrictView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewRegionDistrictView() {
-    RegionDistrictView(
-        regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel,
-        regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-        regionViewModel = RegionViewModelImpl.previewModel
-    )
+    JWSuiteTheme {
+        Surface {
+            RegionDistrictView(
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel,
+                regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
+                regionViewModel = RegionViewModelImpl.previewModel
+            )
+        }
+    }
 }

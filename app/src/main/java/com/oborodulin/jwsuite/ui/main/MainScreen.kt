@@ -3,6 +3,7 @@ package com.oborodulin.home.ui.main
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationScreen
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -117,5 +119,9 @@ private fun HomeNavigationHost(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMainScreen() {
-    MainScreen()
+    JWSuiteTheme {
+        Surface {
+            MainScreen()
+        }
+    }
 }
