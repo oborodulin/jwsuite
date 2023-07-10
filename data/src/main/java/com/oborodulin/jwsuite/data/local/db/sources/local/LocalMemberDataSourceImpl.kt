@@ -4,8 +4,10 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalMemberDataSource
+import com.oborodulin.jwsuite.data.local.db.views.MemberView
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -18,6 +20,8 @@ class LocalMemberDataSourceImpl @Inject constructor(
     private val memberDao: MemberDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalMemberDataSource {
+    override fun getFavoriteCongregationMembers() = memberDao.findByFavoriteCongregation()
+
     override fun getCongregationMembers(congregationId: UUID) =
         memberDao.findByCongregationId(congregationId)
 

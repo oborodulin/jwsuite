@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data.local.db.dao
 import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.CongregationMemberCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data.local.db.views.MemberView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +13,7 @@ import java.util.*
 @Dao
 interface MemberDao {
     // READS:
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME}")
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} ORDER BY groupNum, surname, memberName, patronymic")
     fun findAll(): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
@@ -24,18 +25,30 @@ interface MemberDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE groupsId = :groupId")
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE groupsId = :groupId ORDER BY surname, memberName, patronymic")
     fun findByGroupId(groupId: UUID): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByGroupId(groupId: UUID) = findByGroupId(groupId).distinctUntilChanged()
 
-    @Query("SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId WHERE cm.cmCongregationsId = :congregationId")
+    @Query("SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId WHERE cm.cmCongregationsId = :congregationId ORDER BY groupNum, surname, memberName, patronymic")
     fun findByCongregationId(congregationId: UUID): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByCongregationId(congregationId: UUID) =
         findByCongregationId(congregationId).distinctUntilChanged()
+
+    @Query(
+        """
+SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId 
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fc WHERE fc.congregationId = cm.cmCongregationsId
+ORDER BY groupNum, surname, memberName, patronymic
+    """
+    )
+    fun findByFavoriteCongregation(): Flow<List<MemberView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByFavoriteCongregation() = findByFavoriteCongregation().distinctUntilChanged()
 
     @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE groupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
     fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberView>>

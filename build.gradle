@@ -65,7 +65,7 @@ implementation "androidx.room:room-paging:2.4.2"
 implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                 */
                 runner                 : '1.0.1',
-                spotless               : '6.5.1',
+                spotless               : '6.19.0',
                 testCore               : '1.5.0',
                 testRunner             : '1.5.2',
                 timber                 : '5.0.1',
@@ -242,6 +242,9 @@ spotless {
     kotlin {
         target "**/*.kt"
         ktlint(versions.ktlint).userData(['max_line_length': '100'])
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
     }
 }
 

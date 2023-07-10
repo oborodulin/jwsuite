@@ -13,12 +13,18 @@ class GetLocalitiesUseCase(
 ) : UseCase<GetLocalitiesUseCase.Request, GetLocalitiesUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> = when (request.regionDistrictId) {
-        null -> localitiesRepository.getAllByRegion(request.regionId)
+        null -> when (request.regionId) {
+            null -> localitiesRepository.getAll()
+            else -> localitiesRepository.getAllByRegion(request.regionId)
+        }
+
         else -> localitiesRepository.getAllByRegionDistrict(request.regionDistrictId)
     }.map {
         Response(it)
     }
 
-    data class Request(val regionId: UUID, val regionDistrictId: UUID? = null) : UseCase.Request
+    data class Request(val regionId: UUID? = null, val regionDistrictId: UUID? = null) :
+        UseCase.Request
+
     data class Response(val localities: List<GeoLocality>) : UseCase.Response
 }

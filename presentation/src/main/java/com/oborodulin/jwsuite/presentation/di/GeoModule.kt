@@ -16,7 +16,6 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistric
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.converters.AllLocalitiesListConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalitiesListConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalityConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionConverter
@@ -138,11 +137,6 @@ object GeoModule {
         RegionDistrictConverter(mapper = mapper)
 
     // Localities:
-    @Singleton
-    @Provides
-    fun provideAllLocalitiesListConverter(mapper: LocalitiesListToLocalityListItemMapper): AllLocalitiesListConverter =
-        AllLocalitiesListConverter(mapper = mapper)
-
     @Singleton
     @Provides
     fun provideLocalitiesListConverter(mapper: LocalitiesListToLocalityListItemMapper): LocalitiesListConverter =

@@ -4,11 +4,10 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -75,11 +74,21 @@ fun SwitchComponent(
                     onClick = { onCheckedChange(!isChecked) }
                 )
                 .requiredHeight(ButtonDefaults.MinHeight)
-                .padding(4.dp)) {
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            labelResId?.let {
+                Text(
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .weight(4f),
+                    text = stringResource(it)
+                )
+            }
             Switch(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp),
+                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .weight(1f),
                 enabled = enabled,
                 checked = isChecked,
                 onCheckedChange = {
@@ -95,10 +104,6 @@ fun SwitchComponent(
                 },
                 colors = colors
             )
-            labelResId?.let {
-                Spacer(Modifier.size(6.dp))
-                Text(text = stringResource(it))
-            }
         }
         val errorMessage =
             if (inputWrapper.errorId != null) stringResource(inputWrapper.errorId) else inputWrapper.errorMsg
@@ -116,12 +121,10 @@ fun SwitchComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewCheckbox() {
+fun PreviewSwitchComponent() {
     HomeComposableTheme {
         Surface {
-            SwitchComponent(modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp),
+            SwitchComponent(modifier = Modifier,
                 inputWrapper = InputWrapper(
                     value = "true",
                     errorId = R.string.preview_blank_text_field_err

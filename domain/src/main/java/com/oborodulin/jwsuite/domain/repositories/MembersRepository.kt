@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface MembersRepository {
+    fun getAllByFavoriteCongregation(): Flow<List<Member>>
     fun getAllByCongregation(congregationId: UUID): Flow<List<Member>>
     fun getAllByGroup(groupId: UUID): Flow<List<Member>>
     fun get(memberId: UUID): Flow<Member>

@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +34,7 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupsListItem
@@ -45,6 +48,7 @@ private const val TAG = "Congregating.ui.GroupsListView"
 @Composable
 fun GroupsListView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
@@ -54,7 +58,13 @@ fun GroupsListView(
     Timber.tag(TAG).d("GroupsListView(...) called")
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("GroupsListView: LaunchedEffect() BEFORE collect ui state flow")
-        groupsListViewModel.submitAction(GroupsListUiAction.Load(congregationInput?.congregationId))
+        when (congregationInput) {
+            null -> sharedViewModel.sharedFlow.collectLatest {
+                groupsListViewModel.submitAction(GroupsListUiAction.Load(it.id))
+            }
+
+            else -> groupsListViewModel.submitAction(GroupsListUiAction.Load(congregationInput.congregationId))
+        }
     }
     groupsListViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -117,15 +127,18 @@ fun GroupsList(
                             ) { onDelete(group) }),
                         selected = isSelected,
                         background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    ) {
-                        if (selectedIndex != index) selectedIndex = index
-                        onClick(group)
-                    }
+                        onClick = {
+                            if (selectedIndex != index) selectedIndex = index
+                            onClick(group)
+                        }
+                    )
                 }
             }
         }
     } else {
         Text(
+            modifier = Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center,
             text = stringResource(R.string.groups_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold

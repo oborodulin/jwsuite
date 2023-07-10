@@ -1,18 +1,4 @@
 <resources>
-    <!--Услуги по-умолчанию -->
-    <string name="service_rent">Квартплата</string>
-    <string name="service_electricity">Эл. энергия</string>
-    <string name="service_gas">Газ</string>
-    <string name="service_cold_water">Вода</string>
-    <string name="service_waste">Стоки</string>
-    <string name="service_heating">Отопление</string>
-    <string name="service_hot_water">Горячая вода</string>
-    <string name="service_garbage">Вывоз мусора</string>
-    <string name="service_doorphone">Домофон</string>
-    <string name="service_internet">Интернет</string>
-    <string name="service_phone">Телефон</string>
-    <string name="service_ugso">УГСО</string>
-
     <!--Значения полей данных по-умолчанию -->
     <!--Собрание 1-->
     <string name="def_congregation1_num">1</string>

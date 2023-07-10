@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -72,11 +73,11 @@ fun CongregatingScreen(
      */
     val tabRowItems = listOf(
         TabRowItem(
-            title = stringResource(R.string.congregation_tab_members),
+            title = stringResource(R.string.congregation_tab_members).uppercase(),
             view = { CongregationMembersView(appState = appState) },
         ),
         TabRowItem(
-            title = stringResource(R.string.congregation_tab_groups),
+            title = stringResource(R.string.congregation_tab_groups).uppercase(),
             view = { GroupMembersView(appState = appState) },
         )
     )
@@ -104,6 +105,9 @@ fun CongregatingScreen(
             ) {
                 TabRow(
                     selectedTabIndex = pagerState.currentPage,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .height(50.dp)
                     /*indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
                             //https://github.com/google/accompanist/issues/1267
@@ -114,6 +118,7 @@ fun CongregatingScreen(
                 ) {
                     tabRowItems.forEachIndexed { index, item ->
                         Tab(
+                            modifier = Modifier.height(50.dp),
                             selected = pagerState.currentPage == index,
                             onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
                             icon = {

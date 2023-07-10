@@ -109,9 +109,10 @@ fun MembersList(
                             ) { onDelete(member) }),
                         selected = isSelected,
                         background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    ) {
-                        if (selectedIndex != index) selectedIndex = index
-                    }
+                        onClick = {
+                            if (selectedIndex != index) selectedIndex = index
+                        }
+                    )
                 }
             }
         }

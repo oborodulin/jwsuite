@@ -9,7 +9,9 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.DashboardingUi
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.converters.FavoriteCongregationConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl

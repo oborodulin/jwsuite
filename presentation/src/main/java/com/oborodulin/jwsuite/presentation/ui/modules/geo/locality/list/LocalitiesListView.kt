@@ -113,10 +113,11 @@ fun LocalitiesList(
                             ) { onDelete(locality) }),
                         selected = isSelected,
                         background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    ) {
-                        if (selectedIndex != index) selectedIndex = index
-                        onClick(locality)
-                    }
+                        onClick = {
+                            if (selectedIndex != index) selectedIndex = index
+                            onClick(locality)
+                        }
+                    )
                 }
             }
         }

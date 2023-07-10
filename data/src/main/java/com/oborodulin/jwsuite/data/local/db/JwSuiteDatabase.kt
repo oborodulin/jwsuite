@@ -328,7 +328,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 // CONGREGATION:
                 // Default congregations:
                 // 1
-                val congregation1 = CongregationEntity.secondCongregation(
+                val congregation1 = CongregationEntity.favoriteCongregation(
                     context, donetsk.localityId
                 )
                 db.insert(
@@ -338,7 +338,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Timber.tag(TAG).i("CONGREGATION: Default 1 Congregation imported")
                 jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(congregation1)) }
                 // 2
-                val congregation2 = CongregationEntity.favoriteCongregation(
+                val congregation2 = CongregationEntity.secondCongregation(
                     context, donetsk.localityId
                 )
                 db.insert(

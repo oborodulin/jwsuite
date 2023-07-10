@@ -192,7 +192,10 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.Locality -> {
                         when (CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                CongregationFields.CONGREGATION_LOCALITY, locality, event.input, true
+                                CongregationFields.CONGREGATION_LOCALITY,
+                                locality,
+                                event.input,
+                                true
                             )
 
                             else -> setStateValue(

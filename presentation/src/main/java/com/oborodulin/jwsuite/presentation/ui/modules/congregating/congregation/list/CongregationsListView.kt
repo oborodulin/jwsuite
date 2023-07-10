@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,16 +22,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
-import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
@@ -44,6 +47,7 @@ private const val TAG = "Congregating.ui.CongregationsListView"
 @Composable
 fun CongregationsListView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
@@ -60,6 +64,13 @@ fun CongregationsListView(
             CongregationsList(
                 congregations = it,
                 congregationInput = congregationInput,
+                onFavorite = { listItem ->
+                    listItem.itemId?.let { id ->
+                        congregationsListViewModel.submitAction(
+                            CongregationsListUiAction.MakeFavoriteCongregation(id)
+                        )
+                    }
+                },
                 onEdit = { congregation ->
                     congregationsListViewModel.submitAction(
                         CongregationsListUiAction.EditCongregation(congregation.id)
@@ -71,16 +82,10 @@ fun CongregationsListView(
                     )
                 }
             ) { congregation ->
-                congregationsListViewModel.setPrimaryObjectData(
-                    arrayListOf(
-                        congregation.id.toString(),
-                        congregation.congregationName
-                    )
-                )
+                sharedViewModel.sendData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 with(membersListViewModel) {
-                    setPrimaryObjectData(arrayListOf(congregation.id.toString()))
-                    submitAction(MembersListUiAction.Load(congregation.id))
+                    submitAction(MembersListUiAction.Load(congregationId = congregation.id))
                 }
             }
         }
@@ -102,6 +107,7 @@ fun CongregationsListView(
 fun CongregationsList(
     congregations: List<CongregationsListItem>,
     congregationInput: CongregationInput?,
+    onFavorite: OnListItemEvent,
     onEdit: (CongregationsListItem) -> Unit,
     onDelete: (CongregationsListItem) -> Unit,
     onClick: (CongregationsListItem) -> Unit
@@ -120,7 +126,7 @@ fun CongregationsList(
                 congregations[index].let { congregation ->
                     val isSelected =
                         ((selectedIndex == -1) and ((congregationInput?.congregationId == congregation.id) || congregation.isFavorite)) || (selectedIndex == index)
-                    ListItemComponent(
+                    CongregationListItemComponent(
                         item = congregation,
                         itemActions = listOf(
                             ComponentUiAction.EditListItem { onEdit(congregation) },
@@ -132,15 +138,19 @@ fun CongregationsList(
                             ) { onDelete(congregation) }),
                         selected = isSelected,
                         background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    ) {
-                        if (selectedIndex != index) selectedIndex = index
-                        onClick(congregation)
-                    }
+                        onFavorite = onFavorite,
+                        onClick = {
+                            if (selectedIndex != index) selectedIndex = index
+                            onClick(congregation)
+                        }
+                    )
                 }
             }
         }
     } else {
         Text(
+            modifier = Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center,
             text = stringResource(R.string.congregations_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
@@ -157,9 +167,11 @@ fun PreviewCongregationsList() {
             CongregationsList(
                 congregations = CongregationsListViewModelImpl.previewList(LocalContext.current),
                 congregationInput = CongregationInput(UUID.randomUUID()),
+                onFavorite = {},
                 onEdit = {},
                 onDelete = {},
-                onClick = {})
+                onClick = {}
+            )
         }
     }
 }

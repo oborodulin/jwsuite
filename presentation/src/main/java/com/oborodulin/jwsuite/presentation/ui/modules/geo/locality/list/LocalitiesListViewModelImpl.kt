@@ -7,14 +7,12 @@ import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
-import com.oborodulin.jwsuite.domain.usecases.geolocality.GetAllLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.ui.model.LocalitiesListItem
-import com.oborodulin.jwsuite.presentation.ui.model.converters.AllLocalitiesListConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalitiesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -36,8 +34,7 @@ private const val TAG = "Geo.ui.LocalitiesListViewModelImpl"
 class LocalitiesListViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: LocalityUseCases,
-    private val localitiesConverter: LocalitiesListConverter,
-    private val allLocalitiesConverter: AllLocalitiesListConverter
+    private val converter: LocalitiesListConverter
 ) : LocalitiesListViewModel,
     MviViewModel<List<LocalitiesListItem>, UiState<List<LocalitiesListItem>>, LocalitiesListUiAction, LocalitiesListUiSingleEvent>(
         state = state
@@ -49,8 +46,6 @@ class LocalitiesListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(LocalitiesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalitiesListUiAction.LoadAll -> loadAllLocalities()
-
             is LocalitiesListUiAction.Load -> {
                 loadLocalities(action.regionId, action.regionDistrictId)
             }
@@ -72,25 +67,13 @@ class LocalitiesListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadAllLocalities(): Job {
-        Timber.tag(TAG).d("loadAllLocalities() called")
-        val job = viewModelScope.launch(errorHandler) {
-            useCases.getAllLocalitiesUseCase.execute(GetAllLocalitiesUseCase.Request).map {
-                allLocalitiesConverter.convert(it)
-            }.collect {
-                submitState(it)
-            }
-        }
-        return job
-    }
-
-    private fun loadLocalities(regionId: UUID, regionDistrictId: UUID? = null): Job {
+    private fun loadLocalities(regionId: UUID? = null, regionDistrictId: UUID? = null): Job {
         Timber.tag(TAG).d("loadLocalities() called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.getLocalitiesUseCase.execute(
                 GetLocalitiesUseCase.Request(regionId, regionDistrictId)
             ).map {
-                localitiesConverter.convert(it)
+                converter.convert(it)
             }
                 .collect {
                     submitState(it)

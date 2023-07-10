@@ -15,7 +15,7 @@ class GetMembersUseCase(
 
     override fun process(request: Request): Flow<Response> = when (request.congregationId) {
         null -> when (request.groupId) {
-            null -> flow { emptyList<Member>() }
+            null -> membersRepository.getAllByFavoriteCongregation()
             else -> membersRepository.getAllByGroup(request.groupId)
         }
 

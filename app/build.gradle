@@ -72,7 +72,7 @@ dependencies {
 
     // Logging
     implementation deps.logging.timber
-    implementation deps.logging.logger
+    //implementation deps.logging.logger
 
     // Room
     kapt deps.room.compiler

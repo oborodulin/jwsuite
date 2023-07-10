@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Home-Common</string>
+    <!--string name="app_name">Home-Common</string-->
     <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <string name="success">success</string>
     <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>

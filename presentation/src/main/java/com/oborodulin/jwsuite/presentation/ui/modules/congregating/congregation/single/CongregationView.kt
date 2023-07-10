@@ -137,7 +137,7 @@ fun CongregationView(
                     )
                 },
             listViewModel = localitiesListViewModel,
-            loadListUiAction = LocalitiesListUiAction.LoadAll,
+            loadListUiAction = LocalitiesListUiAction.Load(),
             isShowSingleDialog = isShowNewLocalityDialog,
             labelResId = R.string.locality_hint,
             listTitleResId = R.string.dlg_title_select_locality,

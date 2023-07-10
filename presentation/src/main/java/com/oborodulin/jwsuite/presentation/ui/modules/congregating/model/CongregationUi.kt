@@ -10,3 +10,12 @@ data class CongregationUi(
     val isFavorite: Boolean = false,
     val locality: LocalityUi = LocalityUi()
 ) : ModelUi()
+
+fun CongregationUi.toCongregationsListItem() = CongregationsListItem(
+    id = this.id!!,
+    congregationName = this.congregationName,
+    congregationNum = this.congregationNum,
+    territoryMark = this.territoryMark,
+    isFavorite = this.isFavorite,
+    locality = this.locality
+)

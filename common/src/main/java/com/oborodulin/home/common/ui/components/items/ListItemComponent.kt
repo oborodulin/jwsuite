@@ -16,11 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +42,7 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.dialog.AlertDialogComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
@@ -57,7 +58,7 @@ private val EMPTY: OnListItemEvent = {}
 
 @Composable
 fun ListItemComponent(
-    @DrawableRes icon: Int? = null,
+    @DrawableRes iconResId: Int? = null,
     item: ListItemModel,
     selected: Boolean = false,
     itemActions: List<ComponentUiAction> = emptyList(),
@@ -68,7 +69,7 @@ fun ListItemComponent(
     Timber.tag(TAG)
         .d(
             "ListItemComponent(...) called: {\"listItem\": {\"icon\": %s, \"itemId\": \"%s\", \"headline\": \"%s\", \"supportingText\": \"%s\", \"value\": \"%s\"}}",
-            icon,
+            iconResId,
             item.itemId,
             item.headline,
             item.supportingText,
@@ -86,23 +87,26 @@ fun ListItemComponent(
         //.clickable {}
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
+        val widthColIcon = 0.8f
+        val widthColContent = 2.9f + (if (iconResId == null) widthColIcon / 2.0f else 0f)
+        val widthColActions = 0.3f + (if (iconResId == null) widthColIcon / 2.0f else 0f)
         Row(
             Modifier
                 .fillMaxSize()
                 .padding(all = 4.dp)
         ) {
-            Column(
-                Modifier
-                    .weight(0.8f)
-                    .width(80.dp)
-            ) {
-                icon?.let {
+            iconResId?.let {
+                Column(
+                    Modifier
+                        .weight(widthColIcon)
+                    // .width(80.dp)
+                ) {
                     Image(
                         modifier = Modifier
                             .size(80.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .padding(4.dp),
-                        painter = painterResource(icon),
+                            .padding(2.dp),
+                        painter = painterResource(iconResId),
                         contentScale = ContentScale.Crop,
                         contentDescription = ""
                     )
@@ -112,8 +116,8 @@ fun ListItemComponent(
                 verticalArrangement = Top,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(2.9f)
-                //.padding(horizontal = 8.dp)
+                    .weight(widthColContent)
+                    .padding(4.dp)
             ) {
                 if (content != null) {
                     content()
@@ -122,7 +126,7 @@ fun ListItemComponent(
                         Column(modifier = Modifier.weight(2f)) {
                             Text(
                                 text = item.headline,
-                                style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                                 maxLines = 2
                             )
                             item.supportingText?.let {
@@ -160,9 +164,9 @@ fun ListItemComponent(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(0.3f),
+                    .weight(widthColActions),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.End
             ) {
                 val isShowAlert = remember { mutableStateOf(false) }
                 val spaceVal = 18
@@ -209,17 +213,38 @@ fun ListItemComponent(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewListItemComponent() {
-    ListItemComponent(
-        icon = R.drawable.outline_photo_24,
-        item = ListItemModel.defaultListItemModel(LocalContext.current),
-        itemActions = listOf(
-            ComponentUiAction.EditListItem { println() },
-            ComponentUiAction.DeleteListItem { println() }),
-        onClick = { println() }
-    ) {
-        Text(
-            text = stringResource(R.string.preview_list_item_text),
-            style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-        )
+    HomeComposableTheme {
+        Surface {
+            Column {
+                ListItemComponent(
+                    iconResId = R.drawable.outline_photo_24,
+                    item = ListItemModel.defaultListItemModel(LocalContext.current),
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { println() },
+                        ComponentUiAction.DeleteListItem { println() }),
+                    onClick = { println() }
+                ) {
+                    Text(
+                        text = stringResource(R.string.preview_list_item_text),
+                        style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+                ListItemComponent(
+                    iconResId = R.drawable.outline_photo_24,
+                    item = ListItemModel.defaultListItemModel(LocalContext.current),
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { println() },
+                        ComponentUiAction.DeleteListItem { println() }),
+                    onClick = { println() }
+                )
+                ListItemComponent(
+                    item = ListItemModel.defaultListItemModel(LocalContext.current),
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { println() },
+                        ComponentUiAction.DeleteListItem { println() }),
+                    onClick = { println() }
+                )
+            }
+        }
     }
 }

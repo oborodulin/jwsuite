@@ -10,8 +10,8 @@ import com.oborodulin.home.common.util.ResourceUtils
 import com.oborodulin.home.common.util.setLocale
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.util.dbVersion
-import com.orhanobut.logger.FormatStrategy
-import com.orhanobut.logger.PrettyFormatStrategy
+//import com.orhanobut.logger.FormatStrategy
+//import com.orhanobut.logger.PrettyFormatStrategy
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import java.util.Locale
@@ -31,12 +31,12 @@ class JwSuiteApplication : Application(), Configuration.Provider {
         super.onCreate()
         setLocale(locale = Locale(Constants.LANGUAGE_RU))
 
-        val logFormatStrategy: FormatStrategy =
+        /*val logFormatStrategy: FormatStrategy =
             PrettyFormatStrategy.newBuilder().showThreadInfo(true).methodCount(1).methodOffset(5)
                 .tag(TAG)
                 .build()
-        //Logger.addLogAdapter(AndroidLogAdapter(logFormatStrategy))
-
+        Logger.addLogAdapter(AndroidLogAdapter(logFormatStrategy))
+        */
         if (BuildConfig.DEBUG) {
             Timber.plant(object : Timber.DebugTree() {
                 /*

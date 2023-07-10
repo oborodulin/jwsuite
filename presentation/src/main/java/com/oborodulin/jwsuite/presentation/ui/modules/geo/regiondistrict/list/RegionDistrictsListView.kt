@@ -109,10 +109,11 @@ fun RegionDistrictsList(
                             ) { onDelete(regionDistrict) }),
                         selected = isSelected,
                         background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    ) {
-                        if (selectedIndex != index) selectedIndex = index
-                        onClick(regionDistrict)
-                    }
+                        onClick = {
+                            if (selectedIndex != index) selectedIndex = index
+                            onClick(regionDistrict)
+                        }
+                    )
                 }
             }
         }

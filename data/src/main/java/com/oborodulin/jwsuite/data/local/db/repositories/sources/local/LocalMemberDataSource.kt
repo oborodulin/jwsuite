@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalMemberDataSource {
+    fun getFavoriteCongregationMembers(): Flow<List<MemberView>>
     fun getCongregationMembers(congregationId: UUID): Flow<List<MemberView>>
     fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
     fun getMember(memberId: UUID): Flow<MemberView>

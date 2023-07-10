@@ -41,7 +41,7 @@ dependencies {
 
     // Logging
     implementation deps.logging.timber
-    implementation deps.logging.logger
+    // implementation deps.logging.logger
 
     // Hilt
     implementation deps.dagger.hilt

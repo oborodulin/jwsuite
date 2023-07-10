@@ -28,11 +28,12 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.util.UUID
 
 /**
  * Created by o.borodulin 10.June.2023
@@ -41,6 +42,7 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 
 @Composable
 fun DashboardingScreen(
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
     appState: AppState,
     nestedScrollConnection: NestedScrollConnection,
@@ -77,16 +79,9 @@ fun DashboardingScreen(
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Column {
                             CommonScreen(state = state) { dashboardingUi ->
-                                var congregationId = UUID.randomUUID()
-                                dashboardingUi.favoriteCongregation?.let { congregation ->
-                                    appState.actionBarSubtitle.value = congregation.congregationName
-                                    viewModel.setPrimaryObjectData(
-                                        arrayListOf(
-                                            congregation.id.toString(),
-                                            congregation.congregationName
-                                        )
-                                    )
-                                    congregation.id?.let { id -> congregationId = id }
+                                dashboardingUi.favoriteCongregation?.let { favorite ->
+                                    sharedViewModel.sendData(favorite.toCongregationsListItem())
+                                    appState.actionBarSubtitle.value = favorite.congregationName
                                 }
                                 CongregationSection(
                                     navController = appState.commonNavController,
