@@ -19,7 +19,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
@@ -41,24 +40,16 @@ fun LocalityScreen(
     Timber.tag(TAG).d("LocalityScreen(...) called: localityInput = %s", localityInput)
     LaunchedEffect(localityInput?.congregationId) {
         Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
-        when (localityInput) {
-            null -> {
-                regionDistrictViewModel.dialogTitleResId = R.string.locality_new_subheader
-                regionDistrictViewModel.submitAction(RegionDistrictUiAction.Create)
-            }
-
-            else -> {
-                regionDistrictViewModel.dialogTitleResId = R.string.locality_subheader
-                regionDistrictViewModel.submitAction(RegionDistrictUiAction.Load(localityInput.congregationId))
-            }
-        }
+        regionDistrictViewModel.submitAction(RegionDistrictUiAction.Load(localityInput?.congregationId))
     }
     regionDistrictViewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        regionDistrictViewModel.dialogTitleResId.collectAsState().value?.let {
+            appState.actionBarSubtitle.value = stringResource(it)
+        }
         JWSuiteTheme {
             ScaffoldComponent(
                 appState = appState,
-                topBarTitleId = regionDistrictViewModel.dialogTitleResId,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
                         Icon(Icons.Filled.ArrowBack, null)

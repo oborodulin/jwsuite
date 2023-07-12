@@ -34,9 +34,7 @@ class DashboardingViewModelImpl @Inject constructor(
     private val dashboardingUseCases: DashboardingUseCases,
     private val congregationConverter: FavoriteCongregationConverter
 ) : DashboardingViewModel,
-    MviViewModel<DashboardingUi, UiState<DashboardingUi>, DashboardingUiAction, DashboardingUiSingleEvent>(
-        state = state
-    ) {
+    MviViewModel<DashboardingUi, UiState<DashboardingUi>, DashboardingUiAction, DashboardingUiSingleEvent>() {
     override fun initState(): UiState<DashboardingUi> = UiState.Loading
 
     override suspend fun handleAction(action: DashboardingUiAction): Job {

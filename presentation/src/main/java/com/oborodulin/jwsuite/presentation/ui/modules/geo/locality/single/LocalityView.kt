@@ -110,8 +110,6 @@ fun LocalityView(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         RegionComboBox(
-            listViewModel = regionsListViewModel,
-            singleViewModel = regionViewModel,
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -120,16 +118,13 @@ fun LocalityView(
                         isFocused = focusState.isFocused
                     )
                 },
+            listViewModel = regionsListViewModel,
+            singleViewModel = regionViewModel,
             inputWrapper = region,
             onValueChange = { localityViewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )
         RegionDistrictComboBox(
-            regionsListViewModel = regionsListViewModel,
-            regionViewModel = regionViewModel,
-            regionId = region.item.itemId,
-            listViewModel = regionDistrictsListViewModel,
-            singleViewModel = regionDistrictViewModel,
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION_DISTRICT.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -138,6 +133,11 @@ fun LocalityView(
                         isFocused = focusState.isFocused
                     )
                 },
+            regionId = region.item.itemId,
+            listViewModel = regionDistrictsListViewModel,
+            singleViewModel = regionDistrictViewModel,
+            regionsListViewModel = regionsListViewModel,
+            regionViewModel = regionViewModel,
             inputWrapper = regionDistrict,
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it))
@@ -263,13 +263,13 @@ fun PreviewLocalityView() {
     JWSuiteTheme {
         Surface {
             LocalityView(
-                localityViewModel = LocalityViewModelImpl.previewModel,
+                localityViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-                regionViewModel = RegionViewModelImpl.previewModel,
+                regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(
                     LocalContext.current
                 ),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current)
             )
         }
     }

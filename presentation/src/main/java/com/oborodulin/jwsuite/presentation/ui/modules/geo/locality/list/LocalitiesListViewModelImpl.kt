@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list
 
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
@@ -20,7 +19,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -32,13 +30,10 @@ private const val TAG = "Geo.ui.LocalitiesListViewModelImpl"
 
 @HiltViewModel
 class LocalitiesListViewModelImpl @Inject constructor(
-    private val state: SavedStateHandle,
     private val useCases: LocalityUseCases,
     private val converter: LocalitiesListConverter
 ) : LocalitiesListViewModel,
-    MviViewModel<List<LocalitiesListItem>, UiState<List<LocalitiesListItem>>, LocalitiesListUiAction, LocalitiesListUiSingleEvent>(
-        state = state
-    ) {
+    MviViewModel<List<LocalitiesListItem>, UiState<List<LocalitiesListItem>>, LocalitiesListUiAction, LocalitiesListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
@@ -113,8 +108,6 @@ class LocalitiesListViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : LocalitiesListViewModel {
-                override var primaryObjectData: StateFlow<ArrayList<String>> =
-                    MutableStateFlow(arrayListOf())
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow =
                     Channel<LocalitiesListUiSingleEvent>().receiveAsFlow()
@@ -123,7 +116,6 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: LocalitiesListUiAction): Job? = null
-                override fun setPrimaryObjectData(value: ArrayList<String>) {}
             }
 
         fun previewList(ctx: Context) = listOf(

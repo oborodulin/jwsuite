@@ -18,9 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -38,25 +36,16 @@ fun RegionScreen(
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
         Timber.tag(TAG).d("RegionScreen: LaunchedEffect() BEFORE collect ui state flow")
-        when (regionInput) {
-            null -> {
-                viewModel.dialogTitleResId = R.string.region_new_subheader
-                viewModel.submitAction(RegionUiAction.Create)
-            }
-
-            else -> {
-                viewModel.dialogTitleResId = R.string.region_subheader
-                viewModel.submitAction(RegionUiAction.Load(regionInput.regionId))
-            }
-        }
+        viewModel.submitAction(RegionUiAction.Load(regionInput?.regionId))
     }
     viewModel.uiStateFlow.collectAsState().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        viewModel.dialogTitleResId.collectAsState().value?.let {
+            appState.actionBarSubtitle.value = stringResource(it)
+        }
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                //scaffoldState = appState.regionScaffoldState,
-                topBarTitleId = viewModel.dialogTitleResId,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
                         Icon(Icons.Filled.ArrowBack, null)

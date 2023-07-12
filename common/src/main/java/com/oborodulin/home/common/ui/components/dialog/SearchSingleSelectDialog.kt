@@ -45,6 +45,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
+import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.toast
 import timber.log.Timber
@@ -53,10 +54,10 @@ import java.util.Locale
 private const val TAG = "Common.ui.SearchSingleSelectDialog"
 
 @Composable
-fun <T : List<*>, A : UiAction> SearchSingleSelectDialog(
+fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
     isShow: MutableState<Boolean>,
     title: String,
-    viewModel: MviViewModeled<T, A>,
+    viewModel: MviViewModeled<T, A, E>,
     loadUiAction: A,
     onDismissRequest: (() -> Unit)? = null,
     onAddButtonClick: () -> Unit,

@@ -27,8 +27,8 @@ private const val FOCUSED_FIELD_KEY = "focusedTextField"
 
 abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent, F : Focusable, W : InputWrapped>(
     private val state: SavedStateHandle,
-    private val initFocusedTextField: Focusable? = null,
-) : MviViewModel<T, S, A, E>(state = state), SingleViewModeled<T, A> {
+    initFocusedTextField: Focusable? = null
+) : MviViewModel<T, S, A, E>(), SingleViewModeled<T, A, E> {
 
     private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
@@ -38,8 +38,6 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             field = value
             state[FOCUSED_FIELD_KEY] = value.key
         }
-
-    override var dialogTitleResId: Int? = null
 
     private val _events = Channel<ScreenEvent>()
     val events = _events.receiveAsFlow()

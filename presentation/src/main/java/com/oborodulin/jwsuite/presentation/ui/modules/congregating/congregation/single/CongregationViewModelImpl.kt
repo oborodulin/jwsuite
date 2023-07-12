@@ -7,7 +7,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SingleViewModel
+import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
@@ -37,7 +37,7 @@ class CongregationViewModelImpl @Inject constructor(
     private val converter: CongregationConverter,
     private val mapper: CongregationUiToCongregationMapper
 ) : CongregationViewModel,
-    SingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
+    DialogSingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
         state,
         CongregationFields.CONGREGATION_NUM
     ) {
@@ -97,12 +97,16 @@ class CongregationViewModelImpl @Inject constructor(
     override suspend fun handleAction(action: CongregationUiAction): Job {
         Timber.tag(TAG).d("handleAction(CongregationUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is CongregationUiAction.Create -> {
-                submitState(UiState.Success(CongregationUi()))
-            }
+            is CongregationUiAction.Load -> when (action.congregationId) {
+                null -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.congregation_new_subheader)
+                    submitState(UiState.Success(CongregationUi()))
+                }
 
-            is CongregationUiAction.Load -> {
-                loadCongregation(action.congregationId)
+                else -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.congregation_subheader)
+                    loadCongregation(action.congregationId)
+                }
             }
 
             is CongregationUiAction.Save -> {
@@ -327,8 +331,14 @@ class CongregationViewModelImpl @Inject constructor(
     }
 
     companion object {
-        val previewModel =
+        fun previewModel(ctx: Context) =
             object : CongregationViewModel {
+                override val dialogTitleResId =
+                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val showDialog = MutableStateFlow(false)
+
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
@@ -341,6 +351,7 @@ class CongregationViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                override fun submitAction(action: CongregationUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: CongregationFields, isFocused: Boolean
@@ -349,9 +360,13 @@ class CongregationViewModelImpl @Inject constructor(
 
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun onOpenDialogClicked() {}
+                override fun onDialogConfirm(onConfirm: () -> Unit) {}
+                override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewCongregationUi(ctx: Context): CongregationUi {
+        fun previewUiModel(ctx: Context): CongregationUi {
             val congregationUi = CongregationUi(
                 congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),

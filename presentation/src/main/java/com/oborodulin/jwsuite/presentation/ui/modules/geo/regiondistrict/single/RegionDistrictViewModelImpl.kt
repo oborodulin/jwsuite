@@ -7,7 +7,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SingleViewModel
+import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
@@ -37,7 +37,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
     private val converter: RegionDistrictConverter,
     private val mapper: RegionDistrictUiToRegionDistrictMapper
 ) : RegionDistrictViewModel,
-    SingleViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
+    DialogSingleViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
         state,
         RegionDistrictFields.DISTRICT_SHORT_NAME
     ) {
@@ -67,8 +67,18 @@ class RegionDistrictViewModelImpl @Inject constructor(
     override suspend fun handleAction(action: RegionDistrictUiAction): Job {
         Timber.tag(TAG).d("handleAction(RegionDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionDistrictUiAction.Create -> submitState(UiState.Success(RegionDistrictUi()))
-            is RegionDistrictUiAction.Load -> loadRegionDistrict(action.regionDistrictId)
+            is RegionDistrictUiAction.Load -> when (action.regionDistrictId) {
+                null -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_new_subheader)
+                    submitState(UiState.Success(RegionDistrictUi()))
+                }
+
+                else -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_subheader)
+                    loadRegionDistrict(action.regionDistrictId)
+                }
+            }
+
             is RegionDistrictUiAction.Save -> saveRegionDistrict()
         }
         return job
@@ -252,10 +262,13 @@ class RegionDistrictViewModelImpl @Inject constructor(
     }
 
     companion object {
-        val previewModel =
+        fun previewModel(ctx: Context) =
             object : RegionDistrictViewModel {
-                override var dialogTitleResId: Int? = null
-                override val uiStateFlow = MutableStateFlow(UiState.Success(RegionDistrictUi()))
+                override val dialogTitleResId =
+                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val showDialog = MutableStateFlow(true)
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
@@ -275,6 +288,10 @@ class RegionDistrictViewModelImpl @Inject constructor(
 
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun onOpenDialogClicked() {}
+                override fun onDialogConfirm(onConfirm: () -> Unit) {}
+                override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
         fun previewUiModel(ctx: Context): RegionDistrictUi {

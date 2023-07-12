@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
-import com.oborodulin.home.common.ui.state.SingleViewModel
+import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
@@ -34,7 +34,7 @@ class RegionViewModelImpl @Inject constructor(
     private val converter: RegionConverter,
     private val mapper: RegionUiToRegionMapper
 ) : RegionViewModel,
-    SingleViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
+    DialogSingleViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
         state,
         RegionFields.REGION_CODE
     ) {
@@ -74,12 +74,16 @@ class RegionViewModelImpl @Inject constructor(
     override suspend fun handleAction(action: RegionUiAction): Job {
         Timber.tag(TAG).d("handleAction(RegionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionUiAction.Create -> {
-                submitState(UiState.Success(RegionUi()))
-            }
+            is RegionUiAction.Load -> when (action.regionId) {
+                null -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.region_new_subheader)
+                    submitState(UiState.Success(RegionUi()))
+                }
 
-            is RegionUiAction.Load -> {
-                loadRegion(action.regionId)
+                else -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.region_subheader)
+                    loadRegion(action.regionId)
+                }
             }
 
             is RegionUiAction.Save -> {
@@ -206,10 +210,13 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     companion object {
-        val previewModel =
+        fun previewModel(ctx: Context) =
             object : RegionViewModel {
-                override var dialogTitleResId: Int? = null
-                override val uiStateFlow = MutableStateFlow(UiState.Success(RegionUi()))
+                override val dialogTitleResId =
+                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val showDialog = MutableStateFlow(true)
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
@@ -228,6 +235,10 @@ class RegionViewModelImpl @Inject constructor(
 
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun onOpenDialogClicked() {}
+                override fun onDialogConfirm(onConfirm: () -> Unit) {}
+                override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
         fun previewUiModel(ctx: Context): RegionUi {

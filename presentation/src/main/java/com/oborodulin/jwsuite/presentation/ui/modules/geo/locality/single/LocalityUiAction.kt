@@ -4,7 +4,6 @@ import com.oborodulin.home.common.ui.state.UiAction
 import java.util.UUID
 
 sealed class LocalityUiAction : UiAction {
-    object Create : LocalityUiAction()
-    data class Load(val localityId: UUID) : LocalityUiAction()
+    data class Load(val localityId: UUID? = null) : LocalityUiAction()
     object Save : LocalityUiAction()
 }

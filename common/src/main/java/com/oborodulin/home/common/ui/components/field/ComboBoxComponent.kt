@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -20,7 +19,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,30 +29,29 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
+import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
-import java.util.UUID
 
 private const val TAG = "Common.ui.ComboBoxComponent"
 
 @Composable
-fun <T : List<*>, A : UiAction> ComboBoxComponent(
+fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     modifier: Modifier,
-    listViewModel: MviViewModeled<T, A>,
+    listViewModel: MviViewModeled<T, A, E>,
     loadListUiAction: A,
     inputWrapper: InputListItemWrapper,
     @StringRes labelResId: Int,
     @StringRes listTitleResId: Int,
     leadingIcon: @Composable (() -> Unit)? = null,
-    isShowSingleDialog: MutableState<Boolean>,
+    onShowSingleDialog: () -> Unit,
     maxLines: Int = Int.MAX_VALUE,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction,
@@ -89,7 +86,7 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
         title = stringResource(listTitleResId),
         viewModel = listViewModel,
         loadUiAction = loadListUiAction,
-        onAddButtonClick = { isShowSingleDialog.value = true }
+        onAddButtonClick = { onShowSingleDialog() }
     ) { item ->
         itemId = item.itemId
         itemHeadline = TextFieldValue(item.headline, TextRange(item.headline.length))
@@ -101,7 +98,7 @@ fun <T : List<*>, A : UiAction> ComboBoxComponent(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .clickable { isShowListDialog.value = true },
-            enabled = true,
+            enabled = false,
             readOnly = false,
             value = itemHeadline,
             onValueChange = {

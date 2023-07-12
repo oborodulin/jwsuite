@@ -7,7 +7,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SingleViewModel
+import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
@@ -38,7 +38,7 @@ class LocalityViewModelImpl @Inject constructor(
     private val converter: LocalityConverter,
     private val mapper: LocalityUiToLocalityMapper
 ) : LocalityViewModel,
-    SingleViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
+    DialogSingleViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
         state,
         LocalityFields.LOCALITY_CODE
     ) {
@@ -104,12 +104,16 @@ class LocalityViewModelImpl @Inject constructor(
     override suspend fun handleAction(action: LocalityUiAction): Job {
         Timber.tag(TAG).d("handleAction(LocalityUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalityUiAction.Create -> {
-                submitState(UiState.Success(LocalityUi()))
-            }
+            is LocalityUiAction.Load -> when (action.localityId) {
+                null -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_new_subheader)
+                    submitState(UiState.Success(LocalityUi()))
+                }
 
-            is LocalityUiAction.Load -> {
-                loadLocality(action.localityId)
+                else -> {
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_subheader)
+                    loadLocality(action.localityId)
+                }
             }
 
             is LocalityUiAction.Save -> {
@@ -347,10 +351,13 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     companion object {
-        val previewModel =
+        fun previewModel(ctx: Context) =
             object : LocalityViewModel {
-                override var dialogTitleResId: Int? = null
-                override val uiStateFlow = MutableStateFlow(UiState.Success(LocalityUi()))
+                override val dialogTitleResId =
+                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val showDialog = MutableStateFlow(true)
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
@@ -373,6 +380,10 @@ class LocalityViewModelImpl @Inject constructor(
 
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun onOpenDialogClicked() {}
+                override fun onDialogConfirm(onConfirm: () -> Unit) {}
+                override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
         fun previewUiModel(ctx: Context): LocalityUi {

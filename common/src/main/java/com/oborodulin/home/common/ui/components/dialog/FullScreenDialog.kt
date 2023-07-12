@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Done
@@ -17,8 +18,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,26 +31,27 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.ui.state.SingleViewModeled
+import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
+import com.oborodulin.home.common.ui.state.UiSingleEvent
 import timber.log.Timber
 
 private const val TAG = "Common.ui.FullScreenDialog"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : Any, A : UiAction> FullScreenDialog(
-    isShow: MutableState<Boolean>,
-    viewModel: SingleViewModeled<T, A>,
+fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
+    isShow: Boolean,
+    viewModel: DialogViewModeled<T, A, E>,
     dialogView: @Composable (T) -> Unit,
-    onDismissRequest: (() -> Unit)? = null,
+    onDismissRequest: () -> Unit = {},
     dismissOnBackPress: Boolean = false,
     dismissOnClickOutside: Boolean = false,
-    onSaveButtonClick: () -> Unit
+    onConfirmButtonClick: () -> Unit
 ) {
-    if (isShow.value) {
+    if (isShow) {
         Dialog(
-            onDismissRequest = onDismissRequest ?: { isShow.value = false },
+            onDismissRequest = { viewModel.onDialogDismiss(onDismissRequest) },
             properties = DialogProperties(
                 dismissOnBackPress = dismissOnBackPress,
                 dismissOnClickOutside = dismissOnClickOutside,
@@ -57,30 +59,33 @@ fun <T : Any, A : UiAction> FullScreenDialog(
             )
         ) {
             Surface(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     viewModel.uiStateFlow.collectAsState().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) {
+                            val titleResId by viewModel.dialogTitleResId.collectAsState()
                             TopAppBar(
-                                title = { Text(stringResource(viewModel.dialogTitleResId!!)) },
+                                title = { titleResId?.let { resId -> Text(stringResource(resId)) } },
                                 navigationIcon = {
-                                    IconButton(onClick = onDismissRequest ?: {
-                                        isShow.value = false
+                                    IconButton(onClick = {
+                                        viewModel.onDialogDismiss(onDismissRequest)
                                     }) {
                                         Icon(Icons.Outlined.Close, null)
                                     }
                                 }, actions = {
                                     IconButton(onClick = {
-                                        isShow.value = false
-                                        viewModel.onContinueClick(onSaveButtonClick)
+                                        // check for errors
+                                        viewModel.onContinueClick {
+                                            // if success, hide dialog and execute onConfirmButtonClick: viewModel.Save()
+                                            viewModel.onDialogConfirm(onConfirmButtonClick)
+                                        }
                                     }) {
                                         Icon(Icons.Outlined.Done, null)
                                     }

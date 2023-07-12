@@ -37,16 +37,16 @@ fun ScaffoldComponent(
     val context = LocalContext.current
     var actionBarTitle by remember { mutableStateOf(appState.appName) }
 
-/*    LaunchedEffect(appState.navBarNavController) {
-        appState.navBarNavController.currentBackStackEntryFlow.collect { backStackEntry ->
-            // You can map the title based on the route using:
-            backStackEntry.destination.route?.let {
-                actionBarTitle = appState.appName + " :: " + NavRoutes.titleByRoute(context, it)
+    /*    LaunchedEffect(appState.navBarNavController) {
+            appState.navBarNavController.currentBackStackEntryFlow.collect { backStackEntry ->
+                // You can map the title based on the route using:
+                backStackEntry.destination.route?.let {
+                    actionBarTitle = appState.appName + " :: " + NavRoutes.titleByRoute(context, it)
+                }
             }
         }
-    }
 
- */
+     */
     val modifier = Modifier.fillMaxSize()
     Scaffold(
         modifier = nestedScrollConnection?.let { modifier.nestedScroll(it) } ?: modifier,
@@ -58,9 +58,11 @@ fun ScaffoldComponent(
                             Column(
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text(topBarTitleId?.let {
-                                    appState.appName + " - " + stringResource(topBarTitleId)
-                                } ?: appState.appName
+                                Text(
+                                    appState.appName + when (topBarTitleId) {
+                                        null -> ""
+                                        else -> " - " + stringResource(topBarTitleId)
+                                    }
                                 )
                                 if (appState.actionBarSubtitle.value.isNotEmpty()) {
                                     Text(
@@ -75,11 +77,13 @@ fun ScaffoldComponent(
                                 null -> IconButton(onClick = { context.toast("Menu button clicked...") }) {
                                     Icon(Icons.Filled.Menu, null)
                                 }
+
                                 else -> topBarNavigationIcon()
                             }
                         },
                         actions = topBarActions
                     )
+
                 else -> topBar()
             }
         },

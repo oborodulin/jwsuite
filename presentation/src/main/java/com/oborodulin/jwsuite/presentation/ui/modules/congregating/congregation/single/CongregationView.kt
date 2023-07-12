@@ -29,18 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
-import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityView
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
@@ -112,22 +108,7 @@ fun CongregationView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val isShowNewLocalityDialog = remember { mutableStateOf(false) }
-        FullScreenDialog(
-            isShow = isShowNewLocalityDialog,
-            viewModel = localityViewModel,
-            dialogView = {
-                LocalityView(
-                    localityViewModel,
-                    regionsListViewModel,
-                    regionViewModel,
-                    regionDistrictsListViewModel,
-                    regionDistrictViewModel
-                )
-            }
-        ) { localityViewModel.submitAction(LocalityUiAction.Save) }
-
-        ComboBoxComponent(
+        LocalityComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.CONGREGATION_LOCALITY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -137,11 +118,11 @@ fun CongregationView(
                     )
                 },
             listViewModel = localitiesListViewModel,
-            loadListUiAction = LocalitiesListUiAction.Load(),
-            isShowSingleDialog = isShowNewLocalityDialog,
-            labelResId = R.string.locality_hint,
-            listTitleResId = R.string.dlg_title_select_locality,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
+            singleViewModel = localityViewModel,
+            regionsListViewModel = regionsListViewModel,
+            regionViewModel = regionViewModel,
+            regionDistrictsListViewModel = regionDistrictsListViewModel,
+            regionDistrictViewModel = regionDistrictViewModel,
             inputWrapper = locality,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(CongregationInputEvent.Locality(it))
@@ -257,15 +238,15 @@ fun PreviewCongregationView() {
     JWSuiteTheme {
         Surface {
             CongregationView(
-                congregationViewModel = CongregationViewModelImpl.previewModel,
+                congregationViewModel = CongregationViewModelImpl.previewModel(LocalContext.current),
                 localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
-                localityViewModel = LocalityViewModelImpl.previewModel,
+                localityViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-                regionViewModel = RegionViewModelImpl.previewModel,
+                regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(
                     LocalContext.current
                 ),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current)
             )
         }
     }

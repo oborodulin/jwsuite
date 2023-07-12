@@ -1,6 +1,5 @@
 package com.oborodulin.home.common.ui.state
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -11,17 +10,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Common.MviViewModel"
 
-abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent>(
-    private val state: SavedStateHandle
-) :
-    ViewModel(), MviViewModeled<T, A> {
+abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent> :
+    ViewModel(), MviViewModeled<T, A, E> {
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
     override val uiStateFlow: StateFlow<S> = _uiStateFlow
 
@@ -30,18 +26,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     val actionsJobFlow: SharedFlow<Job?> = _actionsJobFlow
 
     private val _singleEventFlow = Channel<E>()
-    val singleEventFlow = _singleEventFlow.receiveAsFlow()
-
-    val primaryObjectData: StateFlow<ArrayList<String>> by lazy {
-        state.getStateFlow(
-            STATE_PRIMARY_OBJECT_KEY,
-            arrayListOf("", "")
-        )
-    }
-
-    // Initial value is false so the dialog is hidden
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
+    override val singleEventFlow = _singleEventFlow.receiveAsFlow()
 
     val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.tag(TAG).e(exception)
@@ -115,30 +100,5 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         }
         Timber.tag(TAG).d("submitSingleEvent(E) ended")
         return job
-    }
-
-    fun setPrimaryObjectData(value: ArrayList<String>) {
-        Timber.tag(TAG).d("setPrimaryObjectData: value = %s", value)
-        state[STATE_PRIMARY_OBJECT_KEY] = value
-    }
-
-    fun onOpenDialogClicked() {
-        _showDialog.value = true
-    }
-
-    fun onDialogConfirm(onConfirm: () -> Unit) {
-        _showDialog.value = false
-        onConfirm()
-    }
-
-    fun onDialogDismiss(onDismiss: () -> Unit = {}) {
-        _showDialog.value = false
-        onDismiss()
-    }
-
-    companion object {
-        const val STATE_PRIMARY_OBJECT_KEY = "primaryObjectKey"
-        const val IDX_OBJECT_ID = 0
-        const val IDX_OBJECT_NAME = 1
     }
 }

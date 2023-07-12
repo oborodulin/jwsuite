@@ -4,7 +4,6 @@ import com.oborodulin.home.common.ui.state.UiAction
 import java.util.UUID
 
 sealed class CongregationUiAction : UiAction {
-    object Create : CongregationUiAction()
-    data class Load(val congregationId: UUID) : CongregationUiAction()
+    data class Load(val congregationId: UUID? = null) : CongregationUiAction()
     object Save : CongregationUiAction()
 }

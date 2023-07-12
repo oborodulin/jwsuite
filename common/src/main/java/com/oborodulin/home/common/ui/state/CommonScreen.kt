@@ -1,6 +1,10 @@
 package com.oborodulin.home.common.ui.state
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -26,9 +30,11 @@ fun <T : Any> CommonScreen(
         is UiState.Loading -> {
             Loading(modifier)
         }
+
         is UiState.Error -> {
             Error(modifier, state.errorMessage)
         }
+
         is UiState.Success -> {
             Timber.tag(TAG).d("CommonScreen: onSuccess(...) called: %s", state.data)
             onSuccess(state.data)

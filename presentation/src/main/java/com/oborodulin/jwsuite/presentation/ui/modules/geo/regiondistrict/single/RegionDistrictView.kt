@@ -97,8 +97,6 @@ fun RegionDistrictView(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         RegionComboBox(
-            listViewModel = regionsListViewModel,
-            singleViewModel = regionViewModel,
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -107,6 +105,8 @@ fun RegionDistrictView(
                         isFocused = focusState.isFocused
                     )
                 },
+            listViewModel = regionsListViewModel,
+            singleViewModel = regionViewModel,
             inputWrapper = region,
             onValueChange = {
                 regionDistrictViewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
@@ -174,9 +174,9 @@ fun PreviewRegionDistrictView() {
     JWSuiteTheme {
         Surface {
             RegionDistrictView(
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel,
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-                regionViewModel = RegionViewModelImpl.previewModel
+                regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current)
             )
         }
     }

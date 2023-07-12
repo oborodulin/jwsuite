@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single
+package com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single
 
 import android.content.res.Configuration
 import androidx.compose.material3.Icon
@@ -16,53 +16,59 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
-import java.util.UUID
 
-private const val TAG = "Geo.ui.RegionDistrictComboBox"
+private const val TAG = "Geo.ui.LocalityComboBox"
 
 @Composable
-fun RegionDistrictComboBox(
+fun LocalityComboBox(
     modifier: Modifier = Modifier,
-    regionId: UUID?,
-    listViewModel: RegionDistrictsListViewModel,
-    singleViewModel: RegionDistrictViewModel,
+    listViewModel: LocalitiesListViewModel,
+    singleViewModel: LocalityViewModel,
     regionsListViewModel: RegionsListViewModel,
     regionViewModel: RegionViewModel,
+    regionDistrictsListViewModel: RegionDistrictsListViewModel,
+    regionDistrictViewModel: RegionDistrictViewModel,
     inputWrapper: InputListItemWrapper,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("RegionComboBox(...) called")
-    val isShowNewRegionDistrictDialog by singleViewModel.showDialog.collectAsState()
+    val isShowNewLocalityDialog by singleViewModel.showDialog.collectAsState()
     FullScreenDialog(
-        isShow = isShowNewRegionDistrictDialog,
+        isShow = isShowNewLocalityDialog,
         viewModel = singleViewModel,
         dialogView = {
-            RegionDistrictView(
+            LocalityView(
                 singleViewModel,
                 regionsListViewModel,
-                regionViewModel
+                regionViewModel,
+                regionDistrictsListViewModel,
+                regionDistrictViewModel
             )
         }
-    ) { singleViewModel.submitAction(RegionDistrictUiAction.Save) }
+    ) { singleViewModel.submitAction(LocalityUiAction.Save) }
 
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = RegionDistrictsListUiAction.Load(regionId),
+        loadListUiAction = LocalitiesListUiAction.Load(),
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.locality_region_district_hint,
-        listTitleResId = R.string.dlg_title_select_region_district,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_district_36), null) },
+        labelResId = R.string.locality_hint,
+        listTitleResId = R.string.dlg_title_select_locality,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -72,15 +78,18 @@ fun RegionDistrictComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRegionDistrictComboBox() {
+fun PreviewLocalityComboBox() {
     JWSuiteTheme {
         Surface {
-            RegionDistrictComboBox(
-                regionId = UUID.randomUUID(),
-                listViewModel = RegionDistrictsListViewModelImpl.previewModel(LocalContext.current),
-                singleViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current),
+            LocalityComboBox(
+                listViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
+                singleViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
+                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(
+                    LocalContext.current
+                ),
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

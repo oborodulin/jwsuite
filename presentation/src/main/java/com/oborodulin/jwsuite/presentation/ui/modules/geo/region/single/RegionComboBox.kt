@@ -4,8 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -26,15 +26,15 @@ private const val TAG = "Geo.ui.RegionComboBox"
 
 @Composable
 fun RegionComboBox(
+    modifier: Modifier = Modifier,
     listViewModel: RegionsListViewModel,
     singleViewModel: RegionViewModel,
-    modifier: Modifier = Modifier,
     inputWrapper: InputListItemWrapper,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("RegionComboBox(...) called")
-    val isShowNewRegionDialog = remember { mutableStateOf(false) }
+    val isShowNewRegionDialog by singleViewModel.showDialog.collectAsState()
     FullScreenDialog(
         isShow = isShowNewRegionDialog,
         viewModel = singleViewModel,
@@ -45,7 +45,7 @@ fun RegionComboBox(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = RegionsListUiAction.Load,
-        isShowSingleDialog = isShowNewRegionDialog,
+        onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.locality_region_hint,
         listTitleResId = R.string.dlg_title_select_region,
         leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
@@ -63,7 +63,7 @@ fun PreviewRegionComboBox() {
         Surface {
             RegionComboBox(
                 listViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-                singleViewModel = RegionViewModelImpl.previewModel,
+                singleViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

@@ -153,7 +153,7 @@ fun RegionView(viewModel: RegionViewModel) {
 fun PreviewRegionView() {
     JWSuiteTheme {
         Surface {
-            RegionView(viewModel = RegionViewModelImpl.previewModel)
+            RegionView(viewModel = RegionViewModelImpl.previewModel(LocalContext.current))
         }
     }
 }
