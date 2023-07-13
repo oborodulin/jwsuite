@@ -16,17 +16,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnListItemEvent
+import timber.log.Timber
 
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Common.UI"
+private const val TAG = "Common.ui.SingleSelectListItemComponent"
 
 @Composable
 fun SingleSelectListItemComponent(item: ListItemModel, onClick: OnListItemEvent) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { onClick(item) })
+            .clickable(onClick = {
+                Timber
+                    .tag(TAG)
+                    .d("onClick() item = %s", item)
+                onClick(item)
+            }
+            )
             //.background(colorResource(id = R.color.colorPrimaryDark))
             .height(57.dp)
             .fillMaxWidth()

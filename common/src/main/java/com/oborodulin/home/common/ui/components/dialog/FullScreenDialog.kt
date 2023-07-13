@@ -18,8 +18,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -43,15 +43,26 @@ private const val TAG = "Common.ui.FullScreenDialog"
 fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
     isShow: Boolean,
     viewModel: DialogViewModeled<T, A, E>,
+    loadUiAction: A,
     dialogView: @Composable (T) -> Unit,
     onDismissRequest: () -> Unit = {},
+    onShowListDialog: () -> Unit = {},
     dismissOnBackPress: Boolean = false,
     dismissOnClickOutside: Boolean = false,
     onConfirmButtonClick: () -> Unit
 ) {
+    Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
     if (isShow) {
+        LaunchedEffect(Unit) {
+            Timber.tag(TAG)
+                .d("SearchSingleSelectDialog: LaunchedEffect() BEFORE collect ui state flow")
+            viewModel.submitAction(loadUiAction)
+        }
         Dialog(
-            onDismissRequest = { viewModel.onDialogDismiss(onDismissRequest) },
+            onDismissRequest = {
+                viewModel.onDialogDismiss(onDismissRequest)
+                onShowListDialog()
+            },
             properties = DialogProperties(
                 dismissOnBackPress = dismissOnBackPress,
                 dismissOnClickOutside = dismissOnClickOutside,
@@ -70,12 +81,16 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                     viewModel.uiStateFlow.collectAsState().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) {
-                            val titleResId by viewModel.dialogTitleResId.collectAsState()
                             TopAppBar(
-                                title = { titleResId?.let { resId -> Text(stringResource(resId)) } },
+                                title = {
+                                    viewModel.dialogTitleResId.collectAsState().value?.let { resId ->
+                                        Text(stringResource(resId))
+                                    }
+                                },
                                 navigationIcon = {
                                     IconButton(onClick = {
                                         viewModel.onDialogDismiss(onDismissRequest)
+                                        onShowListDialog()
                                     }) {
                                         Icon(Icons.Outlined.Close, null)
                                     }
@@ -86,6 +101,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                             // if success, hide dialog and execute onConfirmButtonClick: viewModel.Save()
                                             viewModel.onDialogConfirm(onConfirmButtonClick)
                                         }
+                                        onShowListDialog()
                                     }) {
                                         Icon(Icons.Outlined.Done, null)
                                     }

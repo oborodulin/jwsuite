@@ -17,7 +17,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,67 +47,70 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     listViewModel: MviViewModeled<T, A, E>,
     loadListUiAction: A,
     inputWrapper: InputListItemWrapper,
+    searchedItem: String = "",
     @StringRes labelResId: Int,
     @StringRes listTitleResId: Int,
     leadingIcon: @Composable (() -> Unit)? = null,
+    isShowListDialog: Boolean,
+    onShowListDialog: () -> Unit,
+    onDismissListDialog: () -> Unit,
     onShowSingleDialog: () -> Unit,
     maxLines: Int = Int.MAX_VALUE,
     onValueChange: OnListItemEvent,
-    onImeKeyAction: OnImeKeyAction,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("ComboBoxComponent(...) called")
     var itemId by remember { mutableStateOf(inputWrapper.item.itemId) }
-    var itemHeadline by remember {
+    var fieldValue by remember {
         mutableStateOf(
-            TextFieldValue(
-                inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length)
-            )
+            TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
         )
     }
 
     Timber.tag(TAG).d(
-        "ComboBoxComponent(...): itemId = %s; itemHeadline.text = %s; inputWrapper.item.headline = %s",
+        "itemId = %s; fieldValue.text = %s; inputWrapper.item.headline = %s",
         itemId,
-        itemHeadline.text,
+        fieldValue.text,
         inputWrapper.item.headline
     )
-    if (itemHeadline.text != inputWrapper.item.headline) itemHeadline =
+    if (fieldValue.text != inputWrapper.item.headline) fieldValue =
         TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
     Timber.tag(TAG).d(
         "ComboBoxComponent(...): fieldValue = %s; inputWrapper = %s",
-        itemHeadline,
+        fieldValue,
         inputWrapper
     )
-    val isShowListDialog = remember { mutableStateOf(false) }
     SearchSingleSelectDialog(
         isShow = isShowListDialog,
         title = stringResource(listTitleResId),
+        searchedItem = searchedItem,
         viewModel = listViewModel,
         loadUiAction = loadListUiAction,
-        onAddButtonClick = { onShowSingleDialog() }
+        onDismissRequest = onDismissListDialog,
+        onAddButtonClick = onShowSingleDialog
     ) { item ->
         itemId = item.itemId
-        itemHeadline = TextFieldValue(item.headline, TextRange(item.headline.length))
+        fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length))
+        onValueChange(ListItemModel(item.itemId, item.headline))
     }
-
     Column {
+        // https://stackoverflow.com/questions/67902919/jetpack-compose-textfield-clickable-does-not-work
         OutlinedTextField(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
-                .clickable { isShowListDialog.value = true },
+                .clickable { onShowListDialog() },
             enabled = false,
-            readOnly = false,
-            value = itemHeadline,
+            readOnly = true,
+            value = fieldValue,
             onValueChange = {
-                itemHeadline = it
+                fieldValue = it
                 onValueChange(ListItemModel(itemId, it.text))
             },
             label = { Text(stringResource(labelResId)) },
             leadingIcon = leadingIcon,
             trailingIcon = {
-                if (itemHeadline.text.isEmpty()) {
+                if (fieldValue.text.isEmpty()) {
                     Icon(
                         Icons.Outlined.ArrowDropDown,
                         contentDescription = "",
@@ -132,7 +134,15 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
             keyboardActions = remember {
                 KeyboardActions(onAny = { onImeKeyAction() })
             },
-            colors = colors
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledBorderColor = MaterialTheme.colorScheme.outline,
+                disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                //For Icons
+                disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         )
         val errorMessage =
             if (inputWrapper.errorId != null) stringResource(inputWrapper.errorId) else inputWrapper.errorMsg

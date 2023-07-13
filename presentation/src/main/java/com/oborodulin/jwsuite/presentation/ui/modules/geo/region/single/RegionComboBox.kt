@@ -6,6 +6,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,17 +37,24 @@ fun RegionComboBox(
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("RegionComboBox(...) called")
+    var isShowListDialog by remember { mutableStateOf(false) }
     val isShowNewRegionDialog by singleViewModel.showDialog.collectAsState()
     FullScreenDialog(
         isShow = isShowNewRegionDialog,
         viewModel = singleViewModel,
-        dialogView = { RegionView(singleViewModel) }
+        loadUiAction = RegionUiAction.Load(),
+        dialogView = { RegionView(singleViewModel) },
+        onShowListDialog = { isShowListDialog = true }
     ) { singleViewModel.submitAction(RegionUiAction.Save) }
 
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = RegionsListUiAction.Load,
+        searchedItem = "",
+        isShowListDialog = isShowListDialog,
+        onShowListDialog = { isShowListDialog = true },
+        onDismissListDialog = { isShowListDialog = false },
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.locality_region_hint,
         listTitleResId = R.string.dlg_title_select_region,

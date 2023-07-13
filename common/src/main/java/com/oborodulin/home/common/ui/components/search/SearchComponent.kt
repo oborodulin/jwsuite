@@ -16,7 +16,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -35,13 +34,13 @@ fun SearchComponent(state: MutableState<TextFieldValue>) {
         },
         modifier = Modifier
             .fillMaxWidth(),
-        textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+        textStyle = TextStyle(fontSize = 18.sp),
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(15.dp)
+                    .padding(8.dp)
                     .size(24.dp)
             )
         },
@@ -57,7 +56,7 @@ fun SearchComponent(state: MutableState<TextFieldValue>) {
                         Icons.Default.Close,
                         contentDescription = "",
                         modifier = Modifier
-                            .padding(15.dp)
+                            .padding(8.dp)
                             .size(24.dp)
                     )
                 }

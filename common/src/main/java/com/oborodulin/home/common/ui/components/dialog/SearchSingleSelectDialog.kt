@@ -24,7 +24,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,21 +54,22 @@ private const val TAG = "Common.ui.SearchSingleSelectDialog"
 
 @Composable
 fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
-    isShow: MutableState<Boolean>,
+    isShow: Boolean,
     title: String,
+    searchedItem: String = "",
     viewModel: MviViewModeled<T, A, E>,
     loadUiAction: A,
-    onDismissRequest: (() -> Unit)? = null,
+    onDismissRequest: () -> Unit,
     onAddButtonClick: () -> Unit,
     onListItemClick: OnListItemEvent
 ) {
-    if (isShow.value) {
+    if (isShow) {
         LaunchedEffect(Unit) {
             Timber.tag(TAG)
                 .d("SearchSingleSelectDialog: LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(loadUiAction)
         }
-        Dialog(onDismissRequest = onDismissRequest ?: { isShow.value = false }) {
+        Dialog(onDismissRequest = onDismissRequest) {
             Surface(
                 modifier = Modifier
                     .width(300.dp)
@@ -85,7 +85,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                             items as List<ListItemModel>
                             if (items.isNotEmpty()) {
                                 val searchState =
-                                    remember { mutableStateOf(TextFieldValue("")) }
+                                    remember { mutableStateOf(TextFieldValue(searchedItem)) }
                                 SearchComponent(searchState)
                                 var filteredItems: List<ListItemModel>
                                 LazyColumn(
@@ -111,7 +111,9 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                                     }
                                     items(filteredItems.size) { index ->
                                         SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
-                                            onDismissRequest ?: { isShow.value = false }
+                                            Timber.tag(TAG)
+                                                .d("onClick() selectedItem = %s", selectedItem)
+                                            onDismissRequest()
                                             onListItemClick(selectedItem)
                                         }
                                     }
@@ -125,7 +127,10 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        IconButton(onClick = onAddButtonClick) {
+                        IconButton(onClick = {
+                            onDismissRequest()
+                            onAddButtonClick()
+                        }) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     modifier = Modifier.size(36.dp),

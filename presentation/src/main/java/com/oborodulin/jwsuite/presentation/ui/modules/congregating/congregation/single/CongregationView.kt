@@ -150,9 +150,7 @@ fun CongregationView(
             },
             inputWrapper = congregationNum,
             onValueChange = {
-                congregationViewModel.onTextFieldEntered(
-                    CongregationInputEvent.CongregationNum(it)
-                )
+                congregationViewModel.onTextFieldEntered(CongregationInputEvent.CongregationNum(it))
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
         )

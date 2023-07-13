@@ -23,6 +23,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +32,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.TabRowItem
+import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
@@ -164,6 +168,7 @@ fun CongregatingScreen(
 @Composable
 fun CongregationMembersView(appState: AppState) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
+    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -204,14 +209,19 @@ fun CongregationMembersView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(navController = appState.commonNavController)
+            MembersListView(
+                navController = appState.commonNavController,
+                searchState = searchMemberState
+            )
         }
+        SearchComponent(searchMemberState)
     }
 }
 
 @Composable
 fun GroupMembersView(appState: AppState) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
+    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -252,8 +262,12 @@ fun GroupMembersView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(navController = appState.commonNavController)
+            MembersListView(
+                navController = appState.commonNavController,
+                searchState = searchMemberState
+            )
         }
+        SearchComponent(searchMemberState)
     }
 }
 

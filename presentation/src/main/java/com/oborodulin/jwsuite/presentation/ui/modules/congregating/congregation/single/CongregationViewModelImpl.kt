@@ -42,55 +42,29 @@ class CongregationViewModelImpl @Inject constructor(
         CongregationFields.CONGREGATION_NUM
     ) {
     private val congregationId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.CONGREGATION_ID.name,
-            InputWrapper()
-        )
+        state.getStateFlow(CongregationFields.CONGREGATION_ID.name, InputWrapper())
     }
     override val locality: StateFlow<InputListItemWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.CONGREGATION_LOCALITY.name,
-            InputListItemWrapper()
-        )
+        state.getStateFlow(CongregationFields.CONGREGATION_LOCALITY.name, InputListItemWrapper())
     }
     override val congregationNum: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.CONGREGATION_NUM.name,
-            InputWrapper()
-        )
+        state.getStateFlow(CongregationFields.CONGREGATION_NUM.name, InputWrapper())
     }
     override val congregationName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.CONGREGATION_NAME.name,
-            InputWrapper()
-        )
+        state.getStateFlow(CongregationFields.CONGREGATION_NAME.name, InputWrapper())
     }
     override val territoryMark: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.TERRITORY_MARK.name,
-            InputWrapper()
-        )
+        state.getStateFlow(CongregationFields.TERRITORY_MARK.name, InputWrapper())
     }
     override val isFavorite: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            CongregationFields.IS_FAVORITE.name,
-            InputWrapper()
-        )
+        state.getStateFlow(CongregationFields.IS_FAVORITE.name, InputWrapper())
     }
 
     override val areInputsValid =
-        combine(
-            locality,
-            congregationNum,
-            congregationName,
-            territoryMark
-        ) { localityId, congregationNum, congregationName, territoryMark ->
-            localityId.errorId == null && congregationNum.errorId == null && congregationName.errorId == null && territoryMark.errorId == null
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+        combine(locality, congregationNum, congregationName, territoryMark)
+        { locality, congregationNum, congregationName, territoryMark ->
+            locality.errorId == null && congregationNum.errorId == null && congregationName.errorId == null && territoryMark.errorId == null
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState(): UiState<CongregationUi> = UiState.Loading
 
@@ -132,14 +106,14 @@ class CongregationViewModelImpl @Inject constructor(
     }
 
     private fun saveCongregation(): Job {
-        val locality = LocalityUi()
-        locality.id = this.locality.value.item.itemId
+        val localityUi = LocalityUi()
+        localityUi.id = locality.value.item.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,
             congregationName = congregationName.value.value,
             territoryMark = territoryMark.value.value,
             isFavorite = isFavorite.value.value.toBoolean(),
-            locality = locality
+            locality = localityUi
         )
         congregationUi.id = if (congregationId.value.value.isNotEmpty()) {
             UUID.fromString(congregationId.value.value)
@@ -167,23 +141,17 @@ class CongregationViewModelImpl @Inject constructor(
             initStateValue(CongregationFields.CONGREGATION_ID, congregationId, it.toString())
         }
         initStateValue(
-            CongregationFields.CONGREGATION_LOCALITY,
-            locality,
+            CongregationFields.CONGREGATION_LOCALITY, locality,
             ListItemModel(congregationUi.locality.id, congregationUi.locality.localityName)
         )
         initStateValue(
-            CongregationFields.CONGREGATION_NUM,
-            congregationNum,
-            congregationUi.congregationNum
+            CongregationFields.CONGREGATION_NUM, congregationNum, congregationUi.congregationNum
         )
         initStateValue(
-            CongregationFields.CONGREGATION_NAME,
-            congregationName,
-            congregationUi.congregationName
+            CongregationFields.CONGREGATION_NAME, congregationName, congregationUi.congregationName
         )
         initStateValue(
-            CongregationFields.TERRITORY_MARK,
-            territoryMark, congregationUi.territoryMark
+            CongregationFields.TERRITORY_MARK, territoryMark, congregationUi.territoryMark
         )
         return null
     }
@@ -196,9 +164,7 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.Locality -> {
                         when (CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                CongregationFields.CONGREGATION_LOCALITY,
-                                locality,
-                                event.input,
+                                CongregationFields.CONGREGATION_LOCALITY, locality, event.input,
                                 true
                             )
 
@@ -211,8 +177,8 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.CongregationNum ->
                         when (CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                CongregationFields.CONGREGATION_NUM,
-                                congregationNum, event.input, true
+                                CongregationFields.CONGREGATION_NUM, congregationNum, event.input,
+                                true
                             )
 
                             else -> setStateValue(
@@ -235,8 +201,7 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.TerritoryMark ->
                         when (CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                CongregationFields.TERRITORY_MARK,
-                                territoryMark, event.input, true
+                                CongregationFields.TERRITORY_MARK, territoryMark, event.input, true
                             )
 
                             else -> setStateValue(
@@ -251,7 +216,7 @@ class CongregationViewModelImpl @Inject constructor(
                     is CongregationInputEvent.Locality ->
                         setStateValue(
                             CongregationFields.CONGREGATION_LOCALITY, locality,
-                            CongregationInputValidator.Locality.errorIdOrNull(event.input.itemId.toString())
+                            CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)
                         )
 
                     is CongregationInputEvent.CongregationNum ->
@@ -268,8 +233,7 @@ class CongregationViewModelImpl @Inject constructor(
 
                     is CongregationInputEvent.TerritoryMark ->
                         setStateValue(
-                            CongregationFields.TERRITORY_MARK,
-                            territoryMark,
+                            CongregationFields.TERRITORY_MARK, territoryMark,
                             CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)
                         )
                 }
@@ -279,38 +243,27 @@ class CongregationViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        CongregationInputValidator.Locality.errorIdOrNull(locality.value.item.itemId.toString())
-            ?.let {
-                inputErrors.add(
-                    InputError(
-                        fieldName = CongregationFields.CONGREGATION_LOCALITY.name,
-                        errorId = it
-                    )
-                )
-            }
-        CongregationInputValidator.CongregationNum.errorIdOrNull(congregationNum.value.value)?.let {
+        CongregationInputValidator.Locality.errorIdOrNull(locality.value.item.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = CongregationFields.CONGREGATION_NUM.name,
-                    errorId = it
+                    fieldName = CongregationFields.CONGREGATION_LOCALITY.name, errorId = it
                 )
+            )
+        }
+        CongregationInputValidator.CongregationNum.errorIdOrNull(congregationNum.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = CongregationFields.CONGREGATION_NUM.name, errorId = it)
             )
         }
         CongregationInputValidator.CongregationName.errorIdOrNull(congregationName.value.value)
             ?.let {
                 inputErrors.add(
-                    InputError(
-                        fieldName = CongregationFields.CONGREGATION_NAME.name,
-                        errorId = it
-                    )
+                    InputError(fieldName = CongregationFields.CONGREGATION_NAME.name, errorId = it)
                 )
             }
         CongregationInputValidator.TerritoryMark.errorIdOrNull(territoryMark.value.value)?.let {
             inputErrors.add(
-                InputError(
-                    fieldName = CongregationFields.TERRITORY_MARK.name,
-                    errorId = it
-                )
+                InputError(fieldName = CongregationFields.TERRITORY_MARK.name, errorId = it)
             )
         }
         return if (inputErrors.isEmpty()) null else inputErrors

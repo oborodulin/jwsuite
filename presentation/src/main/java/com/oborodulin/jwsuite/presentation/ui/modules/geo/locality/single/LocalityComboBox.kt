@@ -6,6 +6,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,10 +49,12 @@ fun LocalityComboBox(
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("RegionComboBox(...) called")
+    var isShowListDialog by remember { mutableStateOf(false) }
     val isShowNewLocalityDialog by singleViewModel.showDialog.collectAsState()
     FullScreenDialog(
         isShow = isShowNewLocalityDialog,
         viewModel = singleViewModel,
+        loadUiAction = LocalityUiAction.Load(),
         dialogView = {
             LocalityView(
                 singleViewModel,
@@ -58,13 +63,18 @@ fun LocalityComboBox(
                 regionDistrictsListViewModel,
                 regionDistrictViewModel
             )
-        }
+        },
+        onShowListDialog = { isShowListDialog = true }
     ) { singleViewModel.submitAction(LocalityUiAction.Save) }
 
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = LocalitiesListUiAction.Load(),
+        searchedItem = "",
+        isShowListDialog = isShowListDialog,
+        onShowListDialog = { isShowListDialog = true },
+        onDismissListDialog = { isShowListDialog = false },
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.locality_hint,
         listTitleResId = R.string.dlg_title_select_locality,

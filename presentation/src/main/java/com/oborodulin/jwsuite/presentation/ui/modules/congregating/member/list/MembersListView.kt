@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +37,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.Members
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.util.Locale
 
 private const val TAG = "Congregating.ui.MembersListView"
 
@@ -42,6 +45,7 @@ private const val TAG = "Congregating.ui.MembersListView"
 fun MembersListView(
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
+    searchState: MutableState<TextFieldValue>,
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null
 ) {
@@ -61,6 +65,7 @@ fun MembersListView(
         CommonScreen(state = state) {
             MembersList(
                 members = it,
+                searchState = searchState,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
                 onDelete = { member ->
                     viewModel.submitAction(MembersListUiAction.DeleteMember(member.id))
@@ -84,12 +89,14 @@ fun MembersListView(
 @Composable
 fun MembersList(
     members: List<MembersListItem>,
+    searchState: MutableState<TextFieldValue>,
     onEdit: (MembersListItem) -> Unit,
     onDelete: (MembersListItem) -> Unit
 ) {
     Timber.tag(TAG).d("MembersList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (members.isNotEmpty()) {
+        var filteredItems: List<MembersListItem>
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
@@ -97,8 +104,22 @@ fun MembersList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(members.size) { index ->
-                members[index].let { member ->
+            val searchedText = searchState.value.text
+            filteredItems = if (searchedText.isEmpty()) {
+                members
+            } else {
+                val resultList = mutableListOf<MembersListItem>()
+                for (item in members) {
+                    if (item.headline.lowercase(Locale.getDefault())
+                            .contains(searchedText.lowercase(Locale.getDefault()))
+                    ) {
+                        resultList.add(item)
+                    }
+                }
+                resultList
+            }
+            items(filteredItems.size) { index ->
+                filteredItems[index].let { member ->
                     val isSelected = (selectedIndex == index)
                     ListItemComponent(
                         item = member,
@@ -129,10 +150,12 @@ fun MembersList(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMembersList() {
+    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
     JWSuiteTheme {
         Surface {
             MembersList(
                 members = MembersListViewModelImpl.previewList(LocalContext.current),
+                searchState = searchMemberState,
                 onEdit = {},
                 onDelete = {}
             )
