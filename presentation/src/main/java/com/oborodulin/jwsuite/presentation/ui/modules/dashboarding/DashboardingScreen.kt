@@ -80,7 +80,7 @@ fun DashboardingScreen(
                         Column {
                             CommonScreen(state = state) { dashboardingUi ->
                                 dashboardingUi.favoriteCongregation?.let { favorite ->
-                                    sharedViewModel.sendData(favorite.toCongregationsListItem())
+                                    sharedViewModel.submitData(favorite.toCongregationsListItem())
                                     appState.actionBarSubtitle.value = favorite.congregationName
                                 }
                                 CongregationSection(

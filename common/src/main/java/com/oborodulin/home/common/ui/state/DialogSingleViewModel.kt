@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 import com.oborodulin.home.common.ui.components.field.util.InputWrapped
+import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,8 +19,12 @@ abstract class DialogSingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : 
 ) :
     DialogViewModeled<T, A, E>,
     SingleViewModel<T, S, A, E, F, W>(state, initFocusedTextField) {
+    // https://medium.com/androiddevelopers/locale-changes-and-the-androidviewmodel-antipattern-84eb677660d9
     private val _dialogTitleResId: MutableStateFlow<Int?> = MutableStateFlow(null)
     override val dialogTitleResId = _dialogTitleResId.asStateFlow()
+
+    private val _savedListItem: MutableStateFlow<ListItemModel> = MutableStateFlow(ListItemModel())
+    override val savedListItem = _savedListItem.asStateFlow()
 
     // Initial value is false so the dialog is hidden
     private val _showDialog = MutableStateFlow(false)
@@ -28,6 +33,11 @@ abstract class DialogSingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : 
     override fun setDialogTitleResId(@StringRes dialogTitleResId: Int) {
         Timber.tag(TAG).d("setDialogTitleResId() called: dialogTitleResId = %s", dialogTitleResId)
         _dialogTitleResId.value = dialogTitleResId
+    }
+
+    override fun setSavedListItem(savedListItem: ListItemModel) {
+        Timber.tag(TAG).d("savedListItem() called: savedListItem = %s", savedListItem)
+        _savedListItem.value = savedListItem
     }
 
     override fun onOpenDialogClicked() {

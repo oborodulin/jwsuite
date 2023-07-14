@@ -11,3 +11,11 @@ data class LocalityUi(
     val localityShortName: String = "",
     val localityName: String = ""
 ) : ModelUi()
+
+fun LocalityUi.toLocalitiesListItem() = LocalitiesListItem(
+    id = this.id!!,
+    localityCode = this.localityCode,
+    localityType = this.localityType,
+    localityShortName = this.localityShortName,
+    localityName = this.localityName
+)

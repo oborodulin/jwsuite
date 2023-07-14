@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
@@ -55,11 +56,26 @@ fun GroupsListView(
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null
 ) {
-    Timber.tag(TAG).d("GroupsListView(...) called")
-    LaunchedEffect(Unit) {
+    Timber.tag(TAG).d(
+        "GroupsListView(...) called: congregationInput = %s, groupInput = %s",
+        congregationInput,
+        groupInput
+    )
+    //val lifecycleOwner = LocalLifecycleOwner.current
+    //var currentCongregation = remember(sharedViewModel.sharedFlow, lifecycleOwner) {
+    //    sharedViewModel.sharedFlow.flowWithLifecycle(
+    //        lifecycleOwner.lifecycle,
+    //        Lifecycle.State.STARTED
+    //    )
+    //}
+    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+
+    LaunchedEffect(congregationInput?.congregationId, currentCongregation?.id) {
         Timber.tag(TAG).d("GroupsListView: LaunchedEffect() BEFORE collect ui state flow")
         when (congregationInput) {
-            null -> sharedViewModel.sharedFlow.collectLatest {
+            null -> currentCongregation?.let {
+                Timber.tag(TAG).d("GroupsListView: load by favorite congregation id = %s", it.id)
                 groupsListViewModel.submitAction(GroupsListUiAction.Load(it.id))
             }
 

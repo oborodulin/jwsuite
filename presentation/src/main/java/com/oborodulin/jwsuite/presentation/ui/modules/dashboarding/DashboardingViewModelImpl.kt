@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.dashboarding
 
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
@@ -9,9 +8,7 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.DashboardingUi
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.model.converters.FavoriteCongregationConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
@@ -30,7 +27,6 @@ private const val TAG = "Dashboarding.ui.DashboardingViewModelImpl"
 
 @HiltViewModel
 class DashboardingViewModelImpl @Inject constructor(
-    private val state: SavedStateHandle,
     private val dashboardingUseCases: DashboardingUseCases,
     private val congregationConverter: FavoriteCongregationConverter
 ) : DashboardingViewModel,

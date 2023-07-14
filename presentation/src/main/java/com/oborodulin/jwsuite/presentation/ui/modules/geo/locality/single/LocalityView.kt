@@ -215,13 +215,12 @@ fun LocalityView(
                 )
             },
             inputWrapper = localityType,  //(1..28).map { it.toString() } stringArrayResource(com.oborodulin.jwsuite.domain.R.array.locality_types).toList()
-            resourceResolver = { resolveLocalityTypeValue(localityType.value) },
-            listItems = LocalityType.values().map { it.name },
+            resourceResolver = { resolveLocalityTypeValue(localityType.value) }, // resolve Enums to Resource
+            listItems = LocalityType.values().map { it.name }, // Enums
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
             },
             onImeKeyAction = localityViewModel::moveFocusImeAction,
-            //colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
         TextFieldComponent(
             modifier = Modifier

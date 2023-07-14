@@ -68,7 +68,8 @@ fun LocalityScreen(
                         regionDistrictsListViewModel, regionDistrictViewModel
                     )
                     Spacer(Modifier.height(8.dp))
-                    Button(onClick = {
+                    Button(
+                        onClick = {
                         localityViewModel.onContinueClick {
                             Timber.tag(TAG).d("LocalityScreen(...): Start viewModelScope.launch")
                             localityViewModel.viewModelScope().launch {

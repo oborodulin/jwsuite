@@ -288,6 +288,7 @@ class CongregationViewModelImpl @Inject constructor(
             object : CongregationViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(false)
 
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
@@ -314,6 +315,7 @@ class CongregationViewModelImpl @Inject constructor(
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}
                 override fun onDialogConfirm(onConfirm: () -> Unit) {}
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}

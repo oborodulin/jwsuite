@@ -56,6 +56,7 @@ import java.util.Locale
 private const val TAG = "Common.UI"
 private val EMPTY: OnListItemEvent = {}
 
+// https://m3.material.io/components/lists/specs
 @Composable
 fun ListItemComponent(
     @DrawableRes iconResId: Int? = null,
@@ -87,27 +88,29 @@ fun ListItemComponent(
         //.clickable {}
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        val widthColIcon = 0.8f
+        val widthColIcon = 0.6f
         val widthColContent = 2.9f + (if (iconResId == null) widthColIcon / 2.0f else 0f)
         val widthColActions = 0.3f + (if (iconResId == null) widthColIcon / 2.0f else 0f)
         Row(
             Modifier
                 .fillMaxSize()
-                .padding(all = 4.dp)
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             iconResId?.let {
                 Column(
                     Modifier
-                        .weight(widthColIcon)
-                    // .width(80.dp)
+                        .weight(widthColIcon),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         modifier = Modifier
-                            .size(80.dp)
+                            .size(64.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .padding(2.dp),
-                        painter = painterResource(iconResId),
-                        contentScale = ContentScale.Crop,
+                            .padding(start = 16.dp, end = 8.dp),
+                        painter = painterResource(it),
+                        contentScale = ContentScale.Fit,
                         contentDescription = ""
                     )
                 }
@@ -117,7 +120,7 @@ fun ListItemComponent(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(widthColContent)
-                    .padding(4.dp)
+                    .padding(horizontal = 4.dp)
             ) {
                 if (content != null) {
                     content()
@@ -131,7 +134,7 @@ fun ListItemComponent(
                             )
                             item.supportingText?.let {
                                 Text(
-                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    modifier = Modifier.padding(top = 4.dp),
                                     text = it,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis

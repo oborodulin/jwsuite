@@ -34,10 +34,13 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
 private const val TAG = "Common.ui.FullScreenDialog"
 
+// https://stackoverflow.com/questions/65243956/jetpack-compose-fullscreen-dialog
+// https://stackoverflow.com/questions/70622649/full-screen-dialog-in-android-compose-does-not-take-full-screen-height
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
@@ -47,6 +50,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
     dialogView: @Composable (T) -> Unit,
     onDismissRequest: () -> Unit = {},
     onShowListDialog: () -> Unit = {},
+    onValueChange: OnListItemEvent,
     dismissOnBackPress: Boolean = false,
     dismissOnClickOutside: Boolean = false,
     onConfirmButtonClick: () -> Unit
@@ -98,10 +102,12 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                     IconButton(onClick = {
                                         // check for errors
                                         viewModel.onContinueClick {
-                                            // if success, hide dialog and execute onConfirmButtonClick: viewModel.Save()
+                                            // if success, hide single dialog, execute onConfirmButtonClick: viewModel.Save()
                                             viewModel.onDialogConfirm(onConfirmButtonClick)
+                                            onValueChange(viewModel.savedListItem.value)
+                                            // show list dialog
+                                            onShowListDialog()
                                         }
-                                        onShowListDialog()
                                     }) {
                                         Icon(Icons.Outlined.Done, null)
                                     }

@@ -38,13 +38,16 @@ fun RegionComboBox(
 ) {
     Timber.tag(TAG).d("RegionComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
-    val isShowNewRegionDialog by singleViewModel.showDialog.collectAsState()
+    val onShowListDialog = { isShowListDialog = true }
+    val onDismissListDialog = { isShowListDialog = false }
+    val isShowNewSingleDialog by singleViewModel.showDialog.collectAsState()
     FullScreenDialog(
-        isShow = isShowNewRegionDialog,
+        isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
         loadUiAction = RegionUiAction.Load(),
         dialogView = { RegionView(singleViewModel) },
-        onShowListDialog = { isShowListDialog = true }
+        onValueChange = onValueChange,
+        //onShowListDialog = onShowListDialog
     ) { singleViewModel.submitAction(RegionUiAction.Save) }
 
     ComboBoxComponent(
@@ -53,8 +56,8 @@ fun RegionComboBox(
         loadListUiAction = RegionsListUiAction.Load,
         searchedItem = "",
         isShowListDialog = isShowListDialog,
-        onShowListDialog = { isShowListDialog = true },
-        onDismissListDialog = { isShowListDialog = false },
+        onShowListDialog = onShowListDialog,
+        onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.locality_region_hint,
         listTitleResId = R.string.dlg_title_select_region,

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
@@ -214,6 +215,7 @@ class RegionViewModelImpl @Inject constructor(
             object : RegionViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
@@ -236,6 +238,7 @@ class RegionViewModelImpl @Inject constructor(
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}
                 override fun onDialogConfirm(onConfirm: () -> Unit) {}
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}

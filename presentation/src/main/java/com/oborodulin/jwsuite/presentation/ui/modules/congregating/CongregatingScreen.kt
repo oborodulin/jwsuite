@@ -32,12 +32,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.TabRowItem
 import com.oborodulin.home.common.ui.components.search.SearchComponent
+import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
@@ -133,6 +135,9 @@ fun CongregatingScreen(
                             text = {
                                 Text(
                                     text = item.title,
+                                    style = if (pagerState.currentPage == index) Typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ) else Typography.bodyLarge,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
                                 )

@@ -95,6 +95,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     }
     Column {
         // https://stackoverflow.com/questions/67902919/jetpack-compose-textfield-clickable-does-not-work
+        // https://github.com/JetBrains/compose-multiplatform/issues/220
         OutlinedTextField(
             modifier = modifier
                 .fillMaxWidth()

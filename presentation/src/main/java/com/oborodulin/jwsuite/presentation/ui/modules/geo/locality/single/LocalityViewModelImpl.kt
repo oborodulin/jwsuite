@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -19,7 +20,9 @@ import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalityConverter
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityUiToLocalityMapper
+import com.oborodulin.jwsuite.presentation.ui.model.toLocalitiesListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -36,7 +39,8 @@ class LocalityViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: LocalityUseCases,
     private val converter: LocalityConverter,
-    private val mapper: LocalityUiToLocalityMapper
+    private val localityUiMapper: LocalityUiToLocalityMapper,
+    private val localityMapper: LocalityToLocalityUiMapper
 ) : LocalityViewModel,
     DialogSingleViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
         state,
@@ -157,8 +161,12 @@ class LocalityViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("saveLocality() called: UI model %s", localityUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityUseCase.execute(
-                SaveLocalityUseCase.Request(mapper.map(localityUi))
-            ).collect {}
+                SaveLocalityUseCase.Request(localityUiMapper.map(localityUi))
+            ).collect {
+                if (it is Result.Success) setSavedListItem(
+                    localityMapper.map(it.data.locality).toLocalitiesListItem()
+                )
+            }
         }
         return job
     }
@@ -355,6 +363,7 @@ class LocalityViewModelImpl @Inject constructor(
             object : LocalityViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
@@ -381,6 +390,7 @@ class LocalityViewModelImpl @Inject constructor(
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}
                 override fun onDialogConfirm(onConfirm: () -> Unit) {}
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}

@@ -29,7 +29,7 @@ fun ExposedDropdownMenuBoxComponent(
     readOnly: Boolean = true,
     inputWrapper: InputWrapper,
     resourceResolver: @Composable ((String) -> String)? = null,
-    listItems: List<String> = listOf(),
+    listItems: List<String> = listOf(), // Enum.names
     @StringRes labelResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     maxLines: Int = Int.MAX_VALUE,
@@ -43,15 +43,8 @@ fun ExposedDropdownMenuBoxComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    val resValue = resourceResolver?.let { it(inputWrapper.value) }
-    val fieldValue = remember {
-        mutableStateOf(
-            when (resourceResolver) {
-                null -> inputWrapper.value
-                else -> resValue
-            }
-        )
-    }
+    val value = resourceResolver?.let { it(inputWrapper.value) } ?: inputWrapper.value // resource
+    val fieldValue = remember { mutableStateOf(value) } // resource
     var expanded by remember { mutableStateOf(false) }
     // the box
     ExposedDropdownMenuBox(
@@ -68,14 +61,10 @@ fun ExposedDropdownMenuBoxComponent(
                     .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
                 enabled = enabled,
                 readOnly = readOnly,
-                value = fieldValue.value ?: "",
+                value = fieldValue.value, // resource
                 onValueChange = {
-/*                    val resVal = resourceResolver?.let { resolver -> resolver(value) }
-                    fieldValue.value = when (resourceResolver) {
-                        null -> value
-                        else -> resVal
-                    }*/
-                    onValueChange(it)
+                    fieldValue.value = it // resource
+                    //onValueChange(it)
                 },
                 label = { labelResId?.let { Text(stringResource(it)) } },
                 leadingIcon = leadingIcon,
@@ -108,22 +97,15 @@ fun ExposedDropdownMenuBoxComponent(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            listItems.forEach { selectedOption ->
-                // menu item
-                val resOption = resourceResolver?.let { it(selectedOption) }
-                DropdownMenuItem(text = {
-                    when (resourceResolver) {
-                        null -> selectedOption
-                        else -> resOption
-                    }?.let { Text(text = it) }
-                },
+            // listItems: Enum.names
+            listItems.forEach { selectedOption -> // Enum.name
+                // menu item: Enums to resources
+                val option = resourceResolver?.let { it(selectedOption) } ?: selectedOption
+                DropdownMenuItem(text = { Text(text = option) },
                     onClick = {
-                        fieldValue.value = when (resourceResolver) {
-                            null -> selectedOption
-                            else -> resOption
-                        }
+                        fieldValue.value = option
                         expanded = false
-                        //onValueChange(selectedOption)
+                        onValueChange(selectedOption) // Enum.name
                     })
             }
         }

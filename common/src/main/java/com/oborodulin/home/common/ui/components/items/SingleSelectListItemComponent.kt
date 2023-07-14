@@ -23,6 +23,7 @@ import timber.log.Timber
  */
 private const val TAG = "Common.ui.SingleSelectListItemComponent"
 
+// https://m3.material.io/components/lists/specs
 @Composable
 fun SingleSelectListItemComponent(item: ListItemModel, onClick: OnListItemEvent) {
     Row(
@@ -35,7 +36,7 @@ fun SingleSelectListItemComponent(item: ListItemModel, onClick: OnListItemEvent)
             }
             )
             //.background(colorResource(id = R.color.colorPrimaryDark))
-            .height(57.dp)
+            .height(56.dp)
             .fillMaxWidth()
             .padding(PaddingValues(8.dp, 16.dp))
     ) {

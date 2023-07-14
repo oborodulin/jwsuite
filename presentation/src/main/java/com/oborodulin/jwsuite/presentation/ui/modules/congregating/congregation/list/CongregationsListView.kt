@@ -82,7 +82,7 @@ fun CongregationsListView(
                     )
                 }
             ) { congregation ->
-                sharedViewModel.sendData(congregation)
+                sharedViewModel.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 with(membersListViewModel) {
                     submitAction(MembersListUiAction.Load(congregationId = congregation.id))
