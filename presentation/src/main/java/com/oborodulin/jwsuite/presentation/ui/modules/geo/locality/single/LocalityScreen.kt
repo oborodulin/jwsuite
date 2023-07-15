@@ -10,7 +10,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -46,9 +46,9 @@ fun LocalityScreen(
         Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
         localityViewModel.submitAction(LocalityUiAction.Load(localityInput?.localityId))
     }
-    localityViewModel.uiStateFlow.collectAsState().value.let { state ->
+    localityViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        localityViewModel.dialogTitleResId.collectAsState().value?.let {
+        localityViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)

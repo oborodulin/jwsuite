@@ -5,9 +5,10 @@ import android.content.res.XmlResourceParser
 import org.xmlpull.v1.XmlPullParser
 import timber.log.Timber
 
-private const val TAG = "ResourceUtils"
+private const val TAG = "ResourcesHelper"
 
-class ResourceUtils {
+// https://www.rockandnull.com/android-viewmodel-resources/
+class ResourcesHelper(val appContext: Context) {
     companion object {
         /**
          * https://techhelpnotes.com/android-creating-hashmap-map-from-xml-resources/
@@ -39,12 +40,14 @@ class ResourceUtils {
                                 }
                             }
                         }
+
                         XmlPullParser.END_TAG ->
                             if (parser.name.equals("entry")) {
                                 map?.put(key!!, value!!)
                                 key = null
                                 value = null
                             }
+
                         XmlPullParser.TEXT -> key?.let { value = parser.text }
                     }
                     eventType = parser.next()

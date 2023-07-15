@@ -39,7 +39,7 @@ class CongregationViewModelImpl @Inject constructor(
 ) : CongregationViewModel,
     DialogSingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
         state,
-        CongregationFields.CONGREGATION_NUM
+        CongregationFields.CONGREGATION_LOCALITY
     ) {
     private val congregationId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(CongregationFields.CONGREGATION_ID.name, InputWrapper())

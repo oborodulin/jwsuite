@@ -24,7 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,7 +79,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                 Column(modifier = Modifier.padding(10.dp)) {
                     Text(text = title)
                     Spacer(modifier = Modifier.height(10.dp))
-                    viewModel.uiStateFlow.collectAsState().value.let { state ->
+                    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) { items ->
                             items as List<ListItemModel>

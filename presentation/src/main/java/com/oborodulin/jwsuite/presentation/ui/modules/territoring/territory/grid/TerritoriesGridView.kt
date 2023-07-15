@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
@@ -42,13 +42,13 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.ui.CongregationsListView"
+private const val TAG = "Congregating.ui.TerritoriesGridView"
 
 @Composable
-fun CongregationsListView(
+fun TerritoriesGridView(
     appState: AppState,
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
-    congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
+    congregationsListViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
     congregationInput: CongregationInput? = null
@@ -56,7 +56,7 @@ fun CongregationsListView(
     Timber.tag(TAG).d("CongregationsListView(...) called")
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() BEFORE collect ui state flow")
-        congregationsListViewModel.submitAction(CongregationsListUiAction.Load)
+        congregationsListViewModel.submitAction(TerritoriesGridUiAction.Load)
     }
     congregationsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -67,18 +67,18 @@ fun CongregationsListView(
                 onFavorite = { listItem ->
                     listItem.itemId?.let { id ->
                         congregationsListViewModel.submitAction(
-                            CongregationsListUiAction.MakeFavoriteCongregation(id)
+                            TerritoriesGridUiAction.MakeFavoriteCongregation(id)
                         )
                     }
                 },
                 onEdit = { congregation ->
                     congregationsListViewModel.submitAction(
-                        CongregationsListUiAction.EditCongregation(congregation.id)
+                        TerritoriesGridUiAction.EditCongregation(congregation.id)
                     )
                 },
                 onDelete = { congregation ->
                     congregationsListViewModel.submitAction(
-                        CongregationsListUiAction.DeleteCongregation(congregation.id)
+                        TerritoriesGridUiAction.DeleteCongregation(congregation.id)
                     )
                 }
             ) { congregation ->
@@ -95,7 +95,7 @@ fun CongregationsListView(
         congregationsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is CongregationsListUiSingleEvent.OpenCongregationScreen -> {
+                is TerritoriesGridUiSingleEvent.OpenCongregationScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -165,7 +165,7 @@ fun PreviewCongregationsList() {
     JWSuiteTheme {
         Surface {
             CongregationsList(
-                congregations = CongregationsListViewModelImpl.previewList(LocalContext.current),
+                congregations = TerritoriesGridViewModelImpl.previewList(LocalContext.current),
                 congregationInput = CongregationInput(UUID.randomUUID()),
                 onFavorite = {},
                 onEdit = {},

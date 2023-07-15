@@ -4,7 +4,6 @@ import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.model.Member
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -20,6 +19,10 @@ class MembersRepositoryImpl @Inject constructor(
 
     override fun getAllByCongregation(congregationId: UUID) =
         localMemberDataSource.getCongregationMembers(congregationId)
+            .map(mappers.memberViewListToMembersListMapper::map)
+
+    override fun getAllByFavoriteCongregationGroup() =
+        localMemberDataSource.getFavoriteCongregationGroupMembers()
             .map(mappers.memberViewListToMembersListMapper::map)
 
     override fun getAllByGroup(groupId: UUID) = localMemberDataSource.getGroupMembers(groupId)

@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single
 
 import android.content.Context
+import androidx.annotation.ArrayRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -11,6 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
@@ -37,6 +39,7 @@ private const val TAG = "Geo.ui.LocalityViewModelImpl"
 @HiltViewModel
 class LocalityViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
+    private val resHelper: ResourcesHelper,
     private val useCases: LocalityUseCases,
     private val converter: LocalityConverter,
     private val localityUiMapper: LocalityUiToLocalityMapper,
@@ -46,6 +49,10 @@ class LocalityViewModelImpl @Inject constructor(
         state,
         LocalityFields.LOCALITY_CODE
     ) {
+    private val _localityTypes: MutableStateFlow<MutableMap<LocalityType, String>> =
+        MutableStateFlow(mutableMapOf())
+    override val localityTypes = _localityTypes.asStateFlow()
+
     private val localityId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
             LocalityFields.LOCALITY_ID.name,
@@ -97,11 +104,16 @@ class LocalityViewModelImpl @Inject constructor(
             localityName
         ) { region, localityCode, localityShortName, localityName ->
             region.errorId == null && localityCode.errorId == null && localityShortName.errorId == null && localityName.errorId == null
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    init {
+        initLocalityTypes(com.oborodulin.jwsuite.domain.R.array.locality_types)
+    }
+
+    private fun initLocalityTypes(@ArrayRes arrayId: Int) {
+        val resArray = resHelper.appContext.resources.getStringArray(arrayId)
+        for (type in LocalityType.values()) _localityTypes.value[type] = resArray[type.ordinal]
+    }
 
     override fun initState(): UiState<LocalityUi> = UiState.Loading
 
@@ -365,6 +377,8 @@ class LocalityViewModelImpl @Inject constructor(
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
+                override val localityTypes = MutableStateFlow(mutableMapOf<LocalityType, String>())
+
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()

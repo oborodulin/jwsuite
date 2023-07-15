@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,7 +33,6 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
@@ -80,6 +78,8 @@ fun LocalityView(
     val localityShortName by localityViewModel.localityShortName.collectAsStateWithLifecycle()
     val localityType by localityViewModel.localityType.collectAsStateWithLifecycle()
     val localityName by localityViewModel.localityName.collectAsStateWithLifecycle()
+
+    val localityTypes by localityViewModel.localityTypes.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all locality fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -214,9 +214,9 @@ fun LocalityView(
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = localityType,  //(1..28).map { it.toString() } stringArrayResource(com.oborodulin.jwsuite.domain.R.array.locality_types).toList()
-            resourceResolver = { resolveLocalityTypeValue(localityType.value) }, // resolve Enums to Resource
-            listItems = LocalityType.values().map { it.name }, // Enums
+            inputWrapper = localityType,
+            resourceItems = localityTypes.values.toList(), // resolve Enums to Resource
+            listItems = localityTypes.keys.map { it.name }, // Enums
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
             },
@@ -247,12 +247,6 @@ fun LocalityView(
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )
     }
-}
-
-@Composable
-fun resolveLocalityTypeValue(localityTypeValue: String? = LocalityType.CITY.name): String {
-    val resArray = stringArrayResource(com.oborodulin.jwsuite.domain.R.array.locality_types)
-    return resArray[LocalityType.valueOf(if (localityTypeValue.isNullOrEmpty()) LocalityType.CITY.name else localityTypeValue).ordinal]
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

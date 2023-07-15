@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
@@ -33,39 +33,52 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.Locale
+import java.util.UUID
 
 private const val TAG = "Congregating.ui.MembersListView"
 
 @Composable
 fun MembersListView(
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
     searchState: MutableState<TextFieldValue>,
     congregationInput: CongregationInput? = null,
-    groupInput: GroupInput? = null
+    groupInput: GroupInput? = null,
+    memberInput: MemberInput? = null
 ) {
     Timber.tag(TAG).d(
         "MembersListView(...) called: congregationInput = %s, groupInput = %s",
         congregationInput,
         groupInput
     )
-    LaunchedEffect(congregationInput?.congregationId, groupInput?.groupId) {
+    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+    val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
+
+    LaunchedEffect(congregationId, groupInput?.groupId) {
         Timber.tag(TAG).d("MembersListView: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(
-            MembersListUiAction.Load(congregationInput?.congregationId, groupInput?.groupId)
-        )
+        when (groupInput?.groupId) {
+            null -> viewModel.submitAction(MembersListUiAction.LoadByCongregation(congregationId))
+            else -> viewModel.submitAction(MembersListUiAction.LoadByGroup(groupInput.groupId))
+        }
     }
-    viewModel.uiStateFlow.collectAsState().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             MembersList(
+                congregationId = congregationId,
+                groupId = groupInput?.groupId,
                 members = it,
                 searchState = searchState,
+                memberInput = memberInput,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
                 onDelete = { member ->
                     viewModel.submitAction(MembersListUiAction.DeleteMember(member.id))
@@ -88,8 +101,11 @@ fun MembersListView(
 
 @Composable
 fun MembersList(
+    congregationId: UUID?,
+    groupId: UUID?,
     members: List<MembersListItem>,
     searchState: MutableState<TextFieldValue>,
+    memberInput: MemberInput? = null,
     onEdit: (MembersListItem) -> Unit,
     onDelete: (MembersListItem) -> Unit
 ) {
@@ -138,11 +154,13 @@ fun MembersList(
             }
         }
     } else {
-        Text(
-            text = stringResource(R.string.members_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        if (congregationId != null || groupId != null) {
+            Text(
+                text = stringResource(R.string.members_list_empty_text),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -154,6 +172,8 @@ fun PreviewMembersList() {
     JWSuiteTheme {
         Surface {
             MembersList(
+                congregationId = UUID.randomUUID(),
+                groupId = UUID.randomUUID(),
                 members = MembersListViewModelImpl.previewList(LocalContext.current),
                 searchState = searchMemberState,
                 onEdit = {},

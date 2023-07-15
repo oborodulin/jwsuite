@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.congregating
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -56,11 +56,11 @@ import java.util.*
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Congregating.ui.CongregatingScreen"
+private const val TAG = "Congregating.ui.TerritoringScreen"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CongregatingScreen(
+fun TerritoringScreen(
     //viewModel: CongregatingViewModelImpl = hiltViewModel(),
     appState: AppState,
     nestedScrollConnection: NestedScrollConnection,
@@ -79,11 +79,15 @@ fun CongregatingScreen(
      */
     val tabRowItems = listOf(
         TabRowItem(
-            title = stringResource(R.string.congregation_tab_members).uppercase(),
+            title = stringResource(R.string.territory_tab_hand_out).uppercase(),
             view = { CongregationMembersView(appState = appState) },
         ),
         TabRowItem(
-            title = stringResource(R.string.congregation_tab_groups).uppercase(),
+            title = stringResource(R.string.territory_tab_at_work).uppercase(),
+            view = { GroupMembersView(appState = appState) },
+        ),
+        TabRowItem(
+            title = stringResource(R.string.territory_tab_idle).uppercase(),
             view = { GroupMembersView(appState = appState) },
         )
     )
@@ -276,7 +280,7 @@ fun GroupMembersView(appState: AppState) {
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewCongregatingScreen() {
+fun PreviewTerritoringScreen() {
     /*CongregatingScreen(
         appState = rememberAppState(),
         congregationInput = CongregationInput(UUID.randomUUID()),

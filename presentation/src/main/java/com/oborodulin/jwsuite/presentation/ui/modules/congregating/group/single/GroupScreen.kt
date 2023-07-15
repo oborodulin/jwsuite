@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single
+package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -10,7 +10,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,18 +24,18 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.RegionScreen"
+private const val TAG = "Geo.ui.GroupScreen"
 
 @Composable
-fun RegionScreen(
+fun GroupScreen(
     appState: AppState,
-    viewModel: RegionViewModelImpl = hiltViewModel(),
+    viewModel: GroupViewModelImpl = hiltViewModel(),
     regionInput: RegionInput? = null
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
         Timber.tag(TAG).d("RegionScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(RegionUiAction.Load(regionInput?.regionId))
+        viewModel.submitAction(GroupUiAction.Load(regionInput?.regionId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -54,7 +53,7 @@ fun RegionScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                    RegionView(viewModel)
+                    GroupView(viewModel)
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = {
                         viewModel.onContinueClick {
@@ -69,7 +68,7 @@ fun RegionScreen(
                                     appState.backToBottomBarScreen()
                                 }
                             }
-                            viewModel.submitAction(RegionUiAction.Save)
+                            viewModel.submitAction(GroupUiAction.Save)
                             Timber.tag(TAG).d("RegionScreen(...): onSubmit() executed")
                         }
                     }, enabled = areInputsValid) {

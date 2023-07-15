@@ -79,6 +79,9 @@ dependencies {
     implementation deps.compose.material3Bom
     implementation deps.compose.uiToolingBom
     implementation deps.compose.uiPreviewBom
+    // Compose lifecycle
+    implementation deps.lifecycle.runtimeCompose
+
     // Coil
     implementation deps.coil.compose
     // Lottie

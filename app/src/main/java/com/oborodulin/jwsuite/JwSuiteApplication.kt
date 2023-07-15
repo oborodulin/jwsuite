@@ -6,7 +6,7 @@ import androidx.work.Configuration
 import com.oborodulin.home.common.BuildConfig
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.ReleaseTree
-import com.oborodulin.home.common.util.ResourceUtils
+import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.setLocale
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.util.dbVersion
@@ -59,7 +59,7 @@ class JwSuiteApplication : Application(), Configuration.Provider {
             Timber.plant(ReleaseTree())
         }
         val languages =
-            ResourceUtils.getHashMapResource(this, com.oborodulin.home.common.R.xml.languages)
+            ResourcesHelper.getHashMapResource(this, com.oborodulin.home.common.R.xml.languages)
         Timber.tag(TAG)
             .i(
                 "Version %s is starting [%s]. Database v.%s",

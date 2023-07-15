@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +47,7 @@ fun RegionDistrictsListView(
         Timber.tag(TAG).d("RegionDistrictsListView: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(RegionDistrictsListUiAction.Load(regionInput.regionId))
     }
-    viewModel.uiStateFlow.collectAsState().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             RegionDistrictsList(

@@ -45,14 +45,13 @@ private const val TAG = "Common.ui.SwitchComponent"
 @Composable
 fun SwitchComponent(
     modifier: Modifier,
-    enabled: Boolean = true,
-    inputWrapper: InputWrapper,
+    inputWrapper: InputWrapper, // string
     @StringRes labelResId: Int? = null,
     onCheckedChange: OnCheckedChange,
     colors: SwitchColors = SwitchDefaults.colors()
 ) {
     Timber.tag(TAG).d("SwitchComponent(...) called")
-    var isChecked by remember { mutableStateOf(inputWrapper.value.toBoolean()) }
+    var isChecked by remember { mutableStateOf(inputWrapper.value.toBoolean()) } // boolean
     Timber.tag(TAG).d(
         "SwitchComponent(...): isChecked = %s; inputWrapper.value = %s",
         isChecked,
@@ -89,8 +88,7 @@ fun SwitchComponent(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp, horizontal = 8.dp)
                     .weight(1f),
-                enabled = enabled,
-                checked = isChecked,
+                checked = isChecked, // boolean
                 onCheckedChange = {
                     isChecked = it
                     onCheckedChange(it)

@@ -13,7 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -54,9 +54,9 @@ fun CongregationScreen(
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
         congregationViewModel.submitAction(CongregationUiAction.Load(congregationInput?.congregationId))
     }
-    congregationViewModel.uiStateFlow.collectAsState().value.let { state ->
+    congregationViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        congregationViewModel.dialogTitleResId.collectAsState().value?.let {
+        congregationViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme {

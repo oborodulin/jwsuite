@@ -1,10 +1,9 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single
+package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single
 
 import android.content.res.Configuration
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -25,13 +25,13 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsLis
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.RegionComboBox"
+private const val TAG = "Geo.ui.GroupComboBox"
 
 @Composable
-fun RegionComboBox(
+fun GroupComboBox(
     modifier: Modifier = Modifier,
     listViewModel: RegionsListViewModel,
-    singleViewModel: RegionViewModel,
+    singleViewModel: GroupViewModel,
     inputWrapper: InputListItemWrapper,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
@@ -44,11 +44,11 @@ fun RegionComboBox(
     FullScreenDialog(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
-        loadUiAction = RegionUiAction.Load(),
-        dialogView = { RegionView(singleViewModel) },
+        loadUiAction = GroupUiAction.Load(),
+        dialogView = { GroupView(singleViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
-    ) { singleViewModel.submitAction(RegionUiAction.Save) }
+    ) { singleViewModel.submitAction(GroupUiAction.Save) }
 
     ComboBoxComponent(
         modifier = modifier,
@@ -71,12 +71,12 @@ fun RegionComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRegionComboBox() {
+fun PreviewGroupComboBox() {
     JWSuiteTheme {
         Surface {
-            RegionComboBox(
+            GroupComboBox(
                 listViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-                singleViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
+                singleViewModel = GroupViewModelImpl.previewModel(LocalContext.current),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

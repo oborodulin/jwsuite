@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +52,7 @@ fun LocalityComboBox(
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
-    val isShowNewSingleDialog by singleViewModel.showDialog.collectAsState()
+    val isShowNewSingleDialog by singleViewModel.showDialog.collectAsStateWithLifecycle()
     FullScreenDialog(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,

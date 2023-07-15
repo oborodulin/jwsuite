@@ -6,6 +6,7 @@ import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -23,6 +24,8 @@ interface LocalityViewModel : DialogViewModeled<LocalityUi, LocalityUiAction, Ui
     val localityShortName: StateFlow<InputWrapper>
     val localityType: StateFlow<InputWrapper>
     val localityName: StateFlow<InputWrapper>
+
+    val localityTypes: StateFlow<MutableMap<LocalityType, String>>
 
     val areInputsValid: StateFlow<Boolean>
 

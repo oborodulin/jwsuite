@@ -19,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -82,12 +82,12 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    viewModel.uiStateFlow.collectAsState().value.let { state ->
+                    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) {
                             TopAppBar(
                                 title = {
-                                    viewModel.dialogTitleResId.collectAsState().value?.let { resId ->
+                                    viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { resId ->
                                         Text(stringResource(resId))
                                     }
                                 },

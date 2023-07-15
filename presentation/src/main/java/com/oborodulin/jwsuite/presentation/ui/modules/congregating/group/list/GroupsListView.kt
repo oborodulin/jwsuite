@@ -12,7 +12,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +30,6 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
@@ -48,7 +46,6 @@ private const val TAG = "Congregating.ui.GroupsListView"
 
 @Composable
 fun GroupsListView(
-    appState: AppState,
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
@@ -69,28 +66,27 @@ fun GroupsListView(
     //    )
     //}
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
-    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+    val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
+    Timber.tag(TAG)
+        .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
 
-    LaunchedEffect(congregationInput?.congregationId, currentCongregation?.id) {
+    LaunchedEffect(congregationId) {
         Timber.tag(TAG).d("GroupsListView: LaunchedEffect() BEFORE collect ui state flow")
-        when (congregationInput) {
-            null -> currentCongregation?.let {
-                Timber.tag(TAG).d("GroupsListView: load by favorite congregation id = %s", it.id)
-                groupsListViewModel.submitAction(GroupsListUiAction.Load(it.id))
-            }
-
-            else -> groupsListViewModel.submitAction(GroupsListUiAction.Load(congregationInput.congregationId))
+        when (congregationId) {
+            null -> groupsListViewModel.submitAction(GroupsListUiAction.Load())
+            else -> groupsListViewModel.submitAction(GroupsListUiAction.Load(congregationId))
         }
     }
-    groupsListViewModel.uiStateFlow.collectAsState().value.let { state ->
+    groupsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             GroupsList(
+                congregationId = congregationInput?.congregationId ?: currentCongregation?.id,
                 groups = it,
                 groupInput = groupInput,
                 onClick = { group ->
                     with(membersListViewModel) {
-                        submitAction(MembersListUiAction.Load(groupId = group.id))
+                        submitAction(MembersListUiAction.LoadByGroup(groupId = group.id))
                     }
                 },
                 onEdit = { group ->
@@ -114,6 +110,7 @@ fun GroupsListView(
 
 @Composable
 fun GroupsList(
+    congregationId: UUID?,
     groups: List<GroupsListItem>,
     groupInput: GroupInput?,
     onClick: (GroupsListItem) -> Unit,
@@ -152,13 +149,15 @@ fun GroupsList(
             }
         }
     } else {
-        Text(
-            modifier = Modifier.fillMaxSize(),
-            textAlign = TextAlign.Center,
-            text = stringResource(R.string.groups_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        congregationId?.let {
+            Text(
+                modifier = Modifier.fillMaxSize(),
+                textAlign = TextAlign.Center,
+                text = stringResource(R.string.groups_list_empty_text),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -169,11 +168,13 @@ fun PreviewGroupsCongregating() {
     JWSuiteTheme {
         Surface {
             GroupsList(
+                congregationId = UUID.randomUUID(),
                 groups = GroupsListViewModelImpl.previewList(LocalContext.current),
                 groupInput = GroupInput(UUID.randomUUID()),
                 onClick = {},
                 onEdit = {},
-                onDelete = {})
+                onDelete = {}
+            )
         }
     }
 }

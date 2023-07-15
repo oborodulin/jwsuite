@@ -20,15 +20,18 @@ import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
+import timber.log.Timber
 
+private const val TAG = "Common.ui.ExposedDropdownMenuBoxComponent"
+
+// https://alexzh.com/jetpack-compose-dropdownmenu/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExposedDropdownMenuBoxComponent(
     modifier: Modifier,
     enabled: Boolean = true,
-    readOnly: Boolean = true,
-    inputWrapper: InputWrapper,
-    resourceResolver: @Composable ((String) -> String)? = null,
+    inputWrapper: InputWrapper,         // enum.name
+    resourceItems: List<String> = listOf(), // resources
     listItems: List<String> = listOf(), // Enum.names
     @StringRes labelResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -43,8 +46,10 @@ fun ExposedDropdownMenuBoxComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    val value = resourceResolver?.let { it(inputWrapper.value) } ?: inputWrapper.value // resource
-    val fieldValue = remember { mutableStateOf(value) } // resource
+    Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
+    val resValue =
+        if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
+    val fieldValue = remember { mutableStateOf(resValue) } // resource
     var expanded by remember { mutableStateOf(false) }
     // the box
     ExposedDropdownMenuBox(
@@ -58,9 +63,10 @@ fun ExposedDropdownMenuBoxComponent(
             OutlinedTextField(
                 modifier = modifier
                     .fillMaxWidth()
+                    .menuAnchor()
                     .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
                 enabled = enabled,
-                readOnly = readOnly,
+                readOnly = true,
                 value = fieldValue.value, // resource
                 onValueChange = {
                     fieldValue.value = it // resource
@@ -68,11 +74,7 @@ fun ExposedDropdownMenuBoxComponent(
                 },
                 label = { labelResId?.let { Text(stringResource(it)) } },
                 leadingIcon = leadingIcon,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expanded
-                    )
-                },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 maxLines = maxLines,
                 isError = inputWrapper.errorId != null,
                 visualTransformation = visualTransformation,
@@ -100,10 +102,12 @@ fun ExposedDropdownMenuBoxComponent(
             // listItems: Enum.names
             listItems.forEach { selectedOption -> // Enum.name
                 // menu item: Enums to resources
-                val option = resourceResolver?.let { it(selectedOption) } ?: selectedOption
-                DropdownMenuItem(text = { Text(text = option) },
+                val resOption =
+                    if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(selectedOption)] else selectedOption // resource
+                Timber.tag(TAG).d("selectedOption = %s; resOption = %s", selectedOption, resOption)
+                DropdownMenuItem(text = { Text(text = resOption) },
                     onClick = {
-                        fieldValue.value = option
+                        fieldValue.value = resOption
                         expanded = false
                         onValueChange(selectedOption) // Enum.name
                     })
@@ -127,7 +131,8 @@ fun PreviewExposedDropdownMenuBoxComponent() {
                 ),
                 labelResId = R.string.preview_blank_text_field_lbl,
                 onValueChange = {},
-                onImeKeyAction = {})
+                onImeKeyAction = {}
+            )
         }
     }
 }

@@ -38,6 +38,10 @@
     <!--Собрание -->
     <string name="congregation_tab_members">Возвещатели</string>
     <string name="congregation_tab_groups">Группы</string>
+    <!--Участки -->
+    <string name="territory_tab_hand_out">К выдаче</string>
+    <string name="territory_tab_at_work">В работе</string>
+    <string name="territory_tab_idle">В отстое</string>
 
     <!--ФОРМА: -->
     <!--общие -->
