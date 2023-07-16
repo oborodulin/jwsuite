@@ -19,9 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,12 +29,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.OnListItemEvent
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Common.ui.FullScreenDialog"
@@ -47,16 +49,18 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
     isShow: Boolean,
     viewModel: DialogViewModeled<T, A, E>,
     loadUiAction: A,
+    confirmUiAction: A,
     dialogView: @Composable (T) -> Unit,
     onDismissRequest: () -> Unit = {},
     onShowListDialog: () -> Unit = {},
     onValueChange: OnListItemEvent,
     dismissOnBackPress: Boolean = false,
     dismissOnClickOutside: Boolean = false,
-    onConfirmButtonClick: () -> Unit
+    onConfirmButtonClick: () -> Unit = {}
 ) {
     Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
     if (isShow) {
+        val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             Timber.tag(TAG)
                 .d("SearchSingleSelectDialog: LaunchedEffect() BEFORE collect ui state flow")
@@ -102,11 +106,16 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                     IconButton(onClick = {
                                         // check for errors
                                         viewModel.onContinueClick {
-                                            // if success, hide single dialog, execute onConfirmButtonClick: viewModel.Save()
-                                            viewModel.onDialogConfirm(onConfirmButtonClick)
-                                            onValueChange(viewModel.savedListItem.value)
-                                            // show list dialog
-                                            onShowListDialog()
+                                            // if success,
+                                            coroutineScope.launch {
+                                                // execute viewModel.Save()
+                                                viewModel.submitAction(confirmUiAction)?.join()
+                                                // hide single dialog and onConfirmButtonClick
+                                                viewModel.onDialogConfirm(onConfirmButtonClick)
+                                                onValueChange(viewModel.savedListItem.value)
+                                                // show list dialog (option)
+                                                onShowListDialog()
+                                            }
                                         }
                                     }) {
                                         Icon(Icons.Outlined.Done, null)

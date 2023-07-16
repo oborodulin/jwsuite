@@ -57,12 +57,12 @@ fun SwitchComponent(
         isChecked,
         inputWrapper.value
     )
-    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
+/*    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
     Timber.tag(TAG).d(
         "SwitchComponent(...): isChecked = %s; inputWrapper = %s",
         isChecked,
         inputWrapper
-    )
+    )*/
     Column {
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier

@@ -57,6 +57,7 @@ fun LocalityComboBox(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
         loadUiAction = LocalityUiAction.Load(),
+        confirmUiAction = LocalityUiAction.Save,
         dialogView = {
             LocalityView(
                 singleViewModel,
@@ -67,8 +68,7 @@ fun LocalityComboBox(
             )
         },
         onValueChange = onValueChange,
-    ) { singleViewModel.submitAction(LocalityUiAction.Save) }
-
+    )
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,

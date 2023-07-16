@@ -153,6 +153,9 @@ class CongregationViewModelImpl @Inject constructor(
         initStateValue(
             CongregationFields.TERRITORY_MARK, territoryMark, congregationUi.territoryMark
         )
+        initStateValue(
+            CongregationFields.IS_FAVORITE, isFavorite, congregationUi.isFavorite.toString()
+        )
         return null
     }
 
@@ -208,6 +211,11 @@ class CongregationViewModelImpl @Inject constructor(
                                 CongregationFields.TERRITORY_MARK, territoryMark, event.input
                             )
                         }
+
+                    is CongregationInputEvent.IsFavorite ->
+                        setStateValue(
+                            CongregationFields.IS_FAVORITE, isFavorite, event.input.toString(), true
+                        )
                 }
             }
             .debounce(350)
@@ -236,6 +244,9 @@ class CongregationViewModelImpl @Inject constructor(
                             CongregationFields.TERRITORY_MARK, territoryMark,
                             CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)
                         )
+
+                    is CongregationInputEvent.IsFavorite ->
+                        setStateValue(CongregationFields.IS_FAVORITE, isFavorite, null)
                 }
             }
     }

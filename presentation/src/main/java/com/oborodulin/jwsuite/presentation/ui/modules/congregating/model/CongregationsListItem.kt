@@ -11,4 +11,8 @@ data class CongregationsListItem(
     val territoryMark: String,
     val isFavorite: Boolean = false,
     val locality: LocalityUi
-) : ListItemModel(itemId = id, headline = congregationName, supportingText = congregationNum)
+) : ListItemModel(
+    itemId = id,
+    headline = congregationName,
+    supportingText = "№$congregationNum ${locality.localityName} [$territoryMark]"
+)

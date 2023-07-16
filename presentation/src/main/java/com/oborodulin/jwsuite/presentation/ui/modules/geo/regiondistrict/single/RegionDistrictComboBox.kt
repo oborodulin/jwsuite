@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -53,6 +53,7 @@ fun RegionDistrictComboBox(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
         loadUiAction = RegionDistrictUiAction.Load(),
+        confirmUiAction = RegionDistrictUiAction.Save,
         dialogView = {
             RegionDistrictView(
                 singleViewModel,
@@ -62,7 +63,7 @@ fun RegionDistrictComboBox(
         },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
-    ) { singleViewModel.submitAction(RegionDistrictUiAction.Save) }
+    )
 
     ComboBoxComponent(
         modifier = modifier,

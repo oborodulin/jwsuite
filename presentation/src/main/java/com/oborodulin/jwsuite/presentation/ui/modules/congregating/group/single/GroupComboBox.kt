@@ -45,11 +45,11 @@ fun GroupComboBox(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
         loadUiAction = GroupUiAction.Load(),
+        confirmUiAction = GroupUiAction.Save,
         dialogView = { GroupView(singleViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
-    ) { singleViewModel.submitAction(GroupUiAction.Save) }
-
+    )
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
