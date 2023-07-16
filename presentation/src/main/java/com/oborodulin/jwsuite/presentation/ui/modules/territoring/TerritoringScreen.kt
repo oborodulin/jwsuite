@@ -79,15 +79,15 @@ fun TerritoringScreen(
      */
     val tabRowItems = listOf(
         TabRowItem(
-            title = stringResource(R.string.territory_tab_hand_out).uppercase(),
+            title = stringResource(R.string.territory_tab_hand_out),
             view = { CongregationMembersView(appState = appState) },
         ),
         TabRowItem(
-            title = stringResource(R.string.territory_tab_at_work).uppercase(),
+            title = stringResource(R.string.territory_tab_at_work),
             view = { GroupMembersView(appState = appState) },
         ),
         TabRowItem(
-            title = stringResource(R.string.territory_tab_idle).uppercase(),
+            title = stringResource(R.string.territory_tab_idle),
             view = { GroupMembersView(appState = appState) },
         )
     )

@@ -34,14 +34,14 @@
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
 
-    <!--ЭКРАН: -->
+    <!--ЭКРАНЫ МОДУЛЕЙ: -->
     <!--Собрание -->
-    <string name="congregation_tab_members">Возвещатели</string>
-    <string name="congregation_tab_groups">Группы</string>
+    <string name="congregation_tab_members">ВОЗВЕЩАТЕЛИ</string>
+    <string name="congregation_tab_groups">ГРУППЫ</string>
     <!--Участки -->
-    <string name="territory_tab_hand_out">К выдаче</string>
-    <string name="territory_tab_at_work">В работе</string>
-    <string name="territory_tab_idle">В отстое</string>
+    <string name="territory_tab_hand_out">К ВЫДАЧЕ</string>
+    <string name="territory_tab_at_work">В РАБОТЕ</string>
+    <string name="territory_tab_idle">В ОТСТОЕ</string>
 
     <!--ФОРМА: -->
     <!--общие -->

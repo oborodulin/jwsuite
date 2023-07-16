@@ -13,8 +13,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,7 @@ fun CongregationScreen(
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(congregationInput?.congregationId) {
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
         congregationViewModel.submitAction(CongregationUiAction.Load(congregationInput?.congregationId))
@@ -73,7 +75,8 @@ fun CongregationScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddingValues)
+                            .padding(paddingValues),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         CongregationView(
                             congregationViewModel,
@@ -86,21 +89,16 @@ fun CongregationScreen(
                         )
                         Spacer(Modifier.height(8.dp))
                         Button(onClick = {
+                            Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
+                            // checks all errors
                             congregationViewModel.onContinueClick {
-                                Timber.tag(TAG)
-                                    .d("CongregationScreen(...): Start viewModelScope.launch")
-                                congregationViewModel.viewModelScope().launch {
-                                    congregationViewModel.actionsJobFlow.collect { job ->
-                                        Timber.tag(TAG).d(
-                                            "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                            job?.toString()
-                                        )
-                                        job?.join()
-                                        appState.backToBottomBarScreen()
-                                    }
+                                // if success, then save and backToBottomBarScreen
+                                // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                                coroutineScope.launch {
+                                    congregationViewModel.submitAction(CongregationUiAction.Save)
+                                        .join()
+                                    appState.backToBottomBarScreen()
                                 }
-                                congregationViewModel.submitAction(CongregationUiAction.Save)
-                                Timber.tag(TAG).d("CongregationScreen(...): onSubmit() executed")
                             }
                         }, enabled = areInputsValid) {
                             Text(text = stringResource(R.string.btn_save_lbl))

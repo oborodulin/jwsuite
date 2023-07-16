@@ -178,9 +178,11 @@ fun CongregationView(
                 congregationViewModel.onTextFieldEntered(
                     CongregationInputEvent.CongregationName(value)
                 )
-                CongregationInputEvent.TerritoryMark(
-                    value.replace("-[.,]", " ").split(" ")
-                        .joinToString("") { it.trim()[0].uppercase() })
+                val lastWord = value.replace("-[.,]", " ").split(" ").last()
+                //.joinToString("") { it.trim()[0].uppercase() }
+                congregationViewModel.onTextFieldEntered(
+                    CongregationInputEvent.TerritoryMark(if (lastWord.isNotEmpty()) lastWord[0].uppercase() else "")
+                )
             },
             onImeKeyAction = congregationViewModel::moveFocusImeAction
         )

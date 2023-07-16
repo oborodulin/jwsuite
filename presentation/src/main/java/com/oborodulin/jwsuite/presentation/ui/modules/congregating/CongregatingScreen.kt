@@ -79,11 +79,11 @@ fun CongregatingScreen(
      */
     val tabRowItems = listOf(
         TabRowItem(
-            title = stringResource(R.string.congregation_tab_members).uppercase(),
+            title = stringResource(R.string.congregation_tab_members),
             view = { CongregationMembersView(appState = appState) },
         ),
         TabRowItem(
-            title = stringResource(R.string.congregation_tab_groups).uppercase(),
+            title = stringResource(R.string.congregation_tab_groups),
             view = { GroupMembersView(appState = appState) },
         )
     )
