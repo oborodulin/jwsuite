@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.ui.CongregationsListView"
+private const val TAG = "Congregating.CongregationsListView"
 
 @Composable
 fun CongregationsListView(
@@ -126,7 +126,7 @@ fun CongregationsList(
                 congregations[index].let { congregation ->
                     val isSelected =
                         ((selectedIndex == -1) and ((congregationInput?.congregationId == congregation.id) || congregation.isFavorite)) || (selectedIndex == index)
-                    CongregationListItemComponent(
+                    CongregationsListItemComponent(
                         item = congregation,
                         itemActions = listOf(
                             ComponentUiAction.EditListItem { onEdit(congregation) },

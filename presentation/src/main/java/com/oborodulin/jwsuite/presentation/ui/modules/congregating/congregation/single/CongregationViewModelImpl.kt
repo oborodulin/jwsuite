@@ -27,7 +27,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Congregating.ui.CongregationViewModelImpl"
+private const val TAG = "Congregating.CongregationViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel

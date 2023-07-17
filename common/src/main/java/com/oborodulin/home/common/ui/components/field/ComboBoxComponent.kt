@@ -48,6 +48,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     loadListUiAction: A,
     inputWrapper: InputListItemWrapper,
     searchedItem: String = "",
+    enabled: Boolean = true,
     @StringRes labelResId: Int,
     @StringRes listTitleResId: Int,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -100,7 +101,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
-                .clickable { onShowListDialog() },
+                .clickable { if (enabled) onShowListDialog() },
             enabled = false,
             readOnly = true,
             value = fieldValue,
@@ -111,23 +112,25 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
             label = { Text(stringResource(labelResId)) },
             leadingIcon = leadingIcon,
             trailingIcon = {
-                if (fieldValue.text.isEmpty()) {
-                    Icon(
-                        Icons.Outlined.ArrowDropDown,
-                        contentDescription = "",
-                        modifier = Modifier.offset(x = 10.dp)
-                    )
-                } else {
-                    Icon(
-                        Icons.Outlined.Clear,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .offset(x = 10.dp)
-                            .clickable {
-                                //just send an update that the field is now empty
-                                onValueChange(ListItemModel())
-                            }
-                    )
+                if (enabled) {
+                    if (fieldValue.text.isEmpty()) {
+                        Icon(
+                            Icons.Outlined.ArrowDropDown,
+                            contentDescription = "",
+                            modifier = Modifier.offset(x = 10.dp)
+                        )
+                    } else {
+                        Icon(
+                            Icons.Outlined.Clear,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .offset(x = 10.dp)
+                                .clickable {
+                                    //just send an update that the field is now empty
+                                    onValueChange(ListItemModel())
+                                }
+                        )
+                    }
                 }
             },
             maxLines = maxLines,
@@ -135,7 +138,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
             keyboardActions = remember {
                 KeyboardActions(onAny = { onImeKeyAction() })
             },
-            colors = OutlinedTextFieldDefaults.colors(
+            colors = if (enabled) OutlinedTextFieldDefaults.colors(
                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
                 disabledBorderColor = MaterialTheme.colorScheme.outline,
                 disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -143,7 +146,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
                 //For Icons
                 disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            ) else OutlinedTextFieldDefaults.colors()
         )
         val errorMessage =
             if (inputWrapper.errorId != null) stringResource(inputWrapper.errorId) else inputWrapper.errorMsg

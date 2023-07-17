@@ -5,7 +5,7 @@ import java.util.UUID
 
 sealed class TerritoriesGridUiAction : UiAction {
     object Load : TerritoriesGridUiAction()
-    data class EditCongregation(val congregationId: UUID) : TerritoriesGridUiAction()
-    data class DeleteCongregation(val congregationId: UUID) : TerritoriesGridUiAction()
+    data class EditTerritory(val territoryId: UUID) : TerritoriesGridUiAction()
+    data class DeleteTerritory(val territoryId: UUID) : TerritoriesGridUiAction()
     data class MakeFavoriteCongregation(val congregationId: UUID) : TerritoriesGridUiAction()
 }

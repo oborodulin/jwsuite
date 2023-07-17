@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,30 +32,62 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.GroupView"
+private const val TAG = "Congregating.GroupView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun GroupView(viewModel: GroupViewModel) {
-    Timber.tag(TAG).d("RegionView(...) called")
+fun GroupView(
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
+    groupViewModel: GroupViewModel,
+    congregationsListViewModel: CongregationsListViewModel,
+    congregationViewModel: CongregationViewModel,
+    localitiesListViewModel: LocalitiesListViewModel,
+    localityViewModel: LocalityViewModel,
+    regionsListViewModel: RegionsListViewModel,
+    regionViewModel: RegionViewModel,
+    regionDistrictsListViewModel: RegionDistrictsListViewModel,
+    regionDistrictViewModel: RegionDistrictViewModel
+) {
+    Timber.tag(TAG).d("GroupView(...) called")
+    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
+    val events = remember(groupViewModel.events, lifecycleOwner) {
+        groupViewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
-    val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
-    val regionName by viewModel.regionName.collectAsStateWithLifecycle()
+    val congregation by groupViewModel.congregation.collectAsStateWithLifecycle()
+    val groupNum by groupViewModel.groupNum.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -65,7 +96,7 @@ fun GroupView(viewModel: GroupViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("GroupView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -86,12 +117,34 @@ fun GroupView(viewModel: GroupViewModel) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        currentCongregation?.let { groupViewModel.onTextFieldEntered(GroupInputEvent.Congregation(it)) }
+        CongregationComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[GroupFields.GROUP_CONGREGATION.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    groupViewModel.onTextFieldFocusChanged(
+                        focusedField = GroupFields.GROUP_CONGREGATION,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            enabled = false,
+            listViewModel = congregationsListViewModel,
+            singleViewModel = congregationViewModel,
+            localitiesListViewModel = localitiesListViewModel,
+            localityViewModel = localityViewModel,
+            regionsListViewModel = regionsListViewModel,
+            regionViewModel = regionViewModel,
+            regionDistrictsListViewModel = regionDistrictsListViewModel,
+            regionDistrictViewModel = regionDistrictViewModel,
+            inputWrapper = congregation,
+            onImeKeyAction = groupViewModel::moveFocusImeAction
+        )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[GroupFields.REGION_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[GroupFields.GROUP_NUM.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = GroupFields.REGION_CODE,
+                    groupViewModel.onTextFieldFocusChanged(
+                        focusedField = GroupFields.GROUP_NUM,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -108,41 +161,9 @@ fun GroupView(viewModel: GroupViewModel) {
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = regionCode,
-            onValueChange = {
-                viewModel.onTextFieldEntered(GroupInputEvent.GroupCode(it))
-            },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[GroupFields.REGION_NAME.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = GroupFields.REGION_NAME,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_abc_36),
-                    null
-                )
-            },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                )
-            },
-            //  visualTransformation = ::creditCardFilter,
-            inputWrapper = regionName,
-            onValueChange = {
-                viewModel.onTextFieldEntered(GroupInputEvent.GroupName(it))
-            },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            inputWrapper = groupNum,
+            onValueChange = { groupViewModel.onTextFieldEntered(GroupInputEvent.GroupNum(it)) },
+            onImeKeyAction = groupViewModel::moveFocusImeAction
         )
     }
 }
@@ -151,9 +172,21 @@ fun GroupView(viewModel: GroupViewModel) {
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
+    val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            GroupView(viewModel = GroupViewModelImpl.previewModel(LocalContext.current))
+            GroupView(
+                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
+                groupViewModel = GroupViewModelImpl.previewModel(ctx),
+                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
+                congregationViewModel = CongregationViewModelImpl.previewModel(ctx),
+                localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(ctx),
+                localityViewModel = LocalityViewModelImpl.previewModel(ctx),
+                regionsListViewModel = RegionsListViewModelImpl.previewModel(ctx),
+                regionViewModel = RegionViewModelImpl.previewModel(ctx),
+                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(ctx),
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx)
+            )
         }
     }
 }

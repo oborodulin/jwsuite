@@ -30,7 +30,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Geo.ui.RegionDistrictComboBox"
+private const val TAG = "Geo.RegionDistrictComboBox"
 
 @Composable
 fun RegionDistrictComboBox(

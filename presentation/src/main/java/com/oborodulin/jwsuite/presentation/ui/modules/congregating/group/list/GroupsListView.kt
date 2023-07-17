@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.ui.GroupsListView"
+private const val TAG = "Congregating.GroupsListView"
 
 @Composable
 fun GroupsListView(

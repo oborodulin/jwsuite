@@ -19,27 +19,45 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.GroupScreen"
+private const val TAG = "Congregating.GroupScreen"
 
 @Composable
 fun GroupScreen(
     appState: AppState,
-    viewModel: GroupViewModelImpl = hiltViewModel(),
-    regionInput: RegionInput? = null
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    groupViewModel: GroupViewModelImpl = hiltViewModel(),
+    congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
+    congregationViewModel: CongregationViewModelImpl = hiltViewModel(),
+    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
+    localityViewModel: LocalityViewModelImpl = hiltViewModel(),
+    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
+    regionViewModel: RegionViewModelImpl = hiltViewModel(),
+    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
+    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
+    groupInput: GroupInput? = null
 ) {
-    Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
-    LaunchedEffect(regionInput?.regionId) {
-        Timber.tag(TAG).d("RegionScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(GroupUiAction.Load(regionInput?.regionId))
+    Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
+    LaunchedEffect(groupInput?.groupId) {
+        Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
+        groupViewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
     }
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    groupViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        groupViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)
@@ -52,24 +70,35 @@ fun GroupScreen(
                 }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                    GroupView(viewModel)
+                    val areInputsValid by groupViewModel.areInputsValid.collectAsStateWithLifecycle()
+                    GroupView(
+                        sharedViewModel,
+                        groupViewModel,
+                        congregationsListViewModel,
+                        congregationViewModel,
+                        localitiesListViewModel,
+                        localityViewModel,
+                        regionsListViewModel,
+                        regionViewModel,
+                        regionDistrictsListViewModel,
+                        regionDistrictViewModel
+                    )
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = {
-                        viewModel.onContinueClick {
-                            Timber.tag(TAG).d("RegionScreen(...): Start viewModelScope.launch")
-                            viewModel.viewModelScope().launch {
-                                viewModel.actionsJobFlow.collect {
+                        groupViewModel.onContinueClick {
+                            Timber.tag(TAG).d("GroupScreen(...): Start viewModelScope.launch")
+                            groupViewModel.viewModelScope().launch {
+                                groupViewModel.actionsJobFlow.collect {
                                     Timber.tag(TAG).d(
-                                        "RegionScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                        "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
                                         it?.toString()
                                     )
                                     it?.join()
                                     appState.backToBottomBarScreen()
                                 }
                             }
-                            viewModel.submitAction(GroupUiAction.Save)
-                            Timber.tag(TAG).d("RegionScreen(...): onSubmit() executed")
+                            groupViewModel.submitAction(GroupUiAction.Save)
+                            Timber.tag(TAG).d("GroupScreen(...): onSubmit() executed")
                         }
                     }, enabled = areInputsValid) {
                         Text(text = stringResource(com.oborodulin.home.common.R.string.btn_save_lbl))

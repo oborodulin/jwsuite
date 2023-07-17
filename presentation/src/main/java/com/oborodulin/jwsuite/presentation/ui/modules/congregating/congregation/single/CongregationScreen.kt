@@ -36,7 +36,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Congregating.ui.CongregationScreen"
+private const val TAG = "Congregating.CongregationScreen"
 
 @Composable
 fun CongregationScreen(

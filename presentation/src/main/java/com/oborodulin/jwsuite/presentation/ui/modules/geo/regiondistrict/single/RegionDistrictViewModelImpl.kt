@@ -27,7 +27,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.RegionDistrictViewModelImpl"
+private const val TAG = "Geo.RegionDistrictViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -39,7 +39,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 ) : RegionDistrictViewModel,
     DialogSingleViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
         state,
-        RegionDistrictFields.DISTRICT_SHORT_NAME
+        RegionDistrictFields.REGION_DISTRICT_REGION
     ) {
     private val regionDistrictId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(

@@ -50,7 +50,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.ui.CongregationView"
+private const val TAG = "Congregating.CongregationView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

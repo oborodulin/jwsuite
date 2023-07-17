@@ -33,7 +33,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.LocalityComboBox"
+private const val TAG = "Geo.LocalityComboBox"
 
 @Composable
 fun LocalityComboBox(

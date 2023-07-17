@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.ui.TerritoriesGridView"
+private const val TAG = "Congregating.TerritoriesGridView"
 
 @Composable
 fun TerritoriesGridView(
@@ -73,12 +73,12 @@ fun TerritoriesGridView(
                 },
                 onEdit = { congregation ->
                     congregationsListViewModel.submitAction(
-                        TerritoriesGridUiAction.EditCongregation(congregation.id)
+                        TerritoriesGridUiAction.EditTerritory(congregation.id)
                     )
                 },
                 onDelete = { congregation ->
                     congregationsListViewModel.submitAction(
-                        TerritoriesGridUiAction.DeleteCongregation(congregation.id)
+                        TerritoriesGridUiAction.DeleteTerritory(congregation.id)
                     )
                 }
             ) { congregation ->

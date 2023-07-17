@@ -27,7 +27,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.ui.CongregationsListViewModelImpl"
+private const val TAG = "Congregating.CongregationsListViewModelImpl"
 
 @HiltViewModel
 class TerritoriesGridViewModelImpl @Inject constructor(
@@ -46,18 +46,18 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 loadCongregations()
             }
 
-            is TerritoriesGridUiAction.EditCongregation -> {
+            is TerritoriesGridUiAction.EditTerritory -> {
                 submitSingleEvent(
                     TerritoriesGridUiSingleEvent.OpenCongregationScreen(
                         NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.congregationId)
+                            CongregationInput(action.territoryId)
                         )
                     )
                 )
             }
 
-            is TerritoriesGridUiAction.DeleteCongregation -> {
-                deleteCongregation(action.congregationId)
+            is TerritoriesGridUiAction.DeleteTerritory -> {
+                deleteCongregation(action.territoryId)
             }
 
             is TerritoriesGridUiAction.MakeFavoriteCongregation -> {

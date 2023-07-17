@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -11,12 +12,16 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
-import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
-import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
-import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.RegionUi
-import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionConverter
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.region.RegionUiToRegionMapper
+import com.oborodulin.jwsuite.domain.usecases.group.GetGroupUseCase
+import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases
+import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.GroupConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.GroupToGroupUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.GroupUiToGroupMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toGroupsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -25,79 +30,64 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.RegionViewModelImpl"
+private const val TAG = "Congregating.GroupViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class GroupViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val useCases: RegionUseCases,
-    private val converter: RegionConverter,
-    private val mapper: RegionUiToRegionMapper
+    private val useCases: GroupUseCases,
+    private val converter: GroupConverter,
+    private val groupUiMapper: GroupUiToGroupMapper,
+    private val groupMapper: GroupToGroupUiMapper
 ) : GroupViewModel,
-    DialogSingleViewModel<RegionUi, UiState<RegionUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
+    DialogSingleViewModel<GroupUi, UiState<GroupUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
         state,
-        GroupFields.REGION_CODE
+        GroupFields.GROUP_NUM
     ) {
-    private val regionId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            GroupFields.REGION_ID.name,
-            InputWrapper()
-        )
+    private val groupId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(GroupFields.GROUP_ID.name, InputWrapper())
     }
-    override val regionCode: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            GroupFields.REGION_CODE.name,
-            InputWrapper()
-        )
+
+    override val congregation: StateFlow<InputListItemWrapper> by lazy {
+        state.getStateFlow(GroupFields.GROUP_CONGREGATION.name, InputListItemWrapper())
     }
-    override val regionName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            GroupFields.REGION_NAME.name,
-            InputWrapper()
-        )
+
+    override val groupNum: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(GroupFields.GROUP_NUM.name, InputWrapper())
     }
 
     override val areInputsValid =
-        combine(
-            regionCode,
-            regionName
-        ) { regionCode, regionName ->
-            regionCode.errorId == null && regionName.errorId == null
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+        combine(congregation, groupNum)
+        { congregation, groupNum -> congregation.errorId == null && groupNum.errorId == null }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<RegionUi> = UiState.Loading
+    override fun initState(): UiState<GroupUi> = UiState.Loading
 
     override suspend fun handleAction(action: GroupUiAction): Job {
-        Timber.tag(TAG).d("handleAction(RegionUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(GroupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is GroupUiAction.Load -> when (action.regionId) {
+            is GroupUiAction.Load -> when (action.groupId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.region_new_subheader)
-                    submitState(UiState.Success(RegionUi()))
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.group_subheader)
+                    submitState(UiState.Success(GroupUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.region_subheader)
-                    loadRegion(action.regionId)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.group_new_subheader)
+                    loadGroup(action.groupId)
                 }
             }
 
-            is GroupUiAction.Save -> {
-                saveRegion()
-            }
+            is GroupUiAction.Save -> saveGroup()
         }
         return job
     }
 
-    private fun loadRegion(regionId: UUID): Job {
-        Timber.tag(TAG).d("loadRegion(UUID) called: %s", regionId.toString())
+    private fun loadGroup(groupId: UUID): Job {
+        Timber.tag(TAG).d("loadGroup(UUID) called: %s", groupId.toString())
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getRegionUseCase.execute(GetRegionUseCase.Request(regionId))
+            useCases.getGroupUseCase.execute(GetGroupUseCase.Request(groupId))
                 .map {
                     converter.convert(it)
                 }
@@ -108,18 +98,25 @@ class GroupViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveRegion(): Job {
-        val regionUi = RegionUi(
-            regionCode = regionCode.value.value,
-            regionName = regionName.value.value
+    private fun saveGroup(): Job {
+        val congregationUi = CongregationUi()
+        congregationUi.id = congregation.value.item.itemId
+        val groupUi = GroupUi(
+            congregation = congregationUi,
+            groupNum = groupNum.value.value.toInt(),
         )
-        regionUi.id = if (regionId.value.value.isNotEmpty()) {
-            UUID.fromString(regionId.value.value)
+        groupUi.id = if (groupId.value.value.isNotEmpty()) {
+            UUID.fromString(groupId.value.value)
         } else null
-        Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
+        Timber.tag(TAG).d("saveGroup() called: UI model %s", groupUi)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(mapper.map(regionUi)))
-                .collect {}
+            useCases.saveGroupUseCase.execute(SaveGroupUseCase.Request(groupUiMapper.map(groupUi)))
+                .collect {
+                    Timber.tag(TAG).d("saveGroup() collect: %s", it)
+                    if (it is Result.Success) setSavedListItem(
+                        groupMapper.map(it.data.group).toGroupsListItem()
+                    )
+                }
         }
         return job
     }
@@ -128,14 +125,17 @@ class GroupViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val regionUi = uiModel as RegionUi
+        val groupUi = uiModel as GroupUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", regionUi)
-        regionUi.id?.let {
-            initStateValue(GroupFields.REGION_ID, regionId, it.toString())
+            .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", groupUi)
+        groupUi.id?.let {
+            initStateValue(GroupFields.GROUP_ID, groupId, it.toString())
         }
-        initStateValue(GroupFields.REGION_CODE, regionCode, regionUi.regionCode)
-        initStateValue(GroupFields.REGION_NAME, regionName, regionUi.regionName)
+        initStateValue(
+            GroupFields.GROUP_CONGREGATION, congregation,
+            ListItemModel(groupUi.congregation.id, groupUi.congregation.congregationName)
+        )
+        initStateValue(GroupFields.GROUP_NUM, groupNum, groupUi.groupNum.toString())
         return null
     }
 
@@ -144,25 +144,14 @@ class GroupViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is GroupInputEvent.GroupCode ->
-                        when (GroupInputValidator.GroupCode.errorIdOrNull(event.input)) {
+                    is GroupInputEvent.GroupNum ->
+                        when (GroupInputValidator.GroupNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                GroupFields.REGION_CODE, regionCode, event.input, true
+                                GroupFields.GROUP_NUM, groupNum, event.input, true
                             )
 
                             else -> setStateValue(
-                                GroupFields.REGION_CODE, regionCode, event.input
-                            )
-                        }
-
-                    is GroupInputEvent.GroupName ->
-                        when (GroupInputValidator.GroupName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                GroupFields.REGION_NAME, regionName, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                GroupFields.REGION_NAME, regionName, event.input
+                                GroupFields.GROUP_NUM, groupNum, event.input
                             )
                         }
                 }
@@ -170,18 +159,11 @@ class GroupViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is GroupInputEvent.GroupCode ->
+                    is GroupInputEvent.GroupNum ->
                         setStateValue(
-                            GroupFields.REGION_CODE, regionCode,
-                            GroupInputValidator.GroupCode.errorIdOrNull(event.input)
+                            GroupFields.GROUP_NUM, groupNum,
+                            GroupInputValidator.GroupNum.errorIdOrNull(event.input)
                         )
-
-                    is GroupInputEvent.GroupName ->
-                        setStateValue(
-                            GroupFields.REGION_NAME, regionName,
-                            GroupInputValidator.GroupName.errorIdOrNull(event.input)
-                        )
-
                 }
             }
     }
@@ -189,11 +171,8 @@ class GroupViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        GroupInputValidator.GroupCode.errorIdOrNull(regionCode.value.value)?.let {
-            inputErrors.add(InputError(fieldName = GroupFields.REGION_CODE.name, errorId = it))
-        }
-        GroupInputValidator.GroupName.errorIdOrNull(regionName.value.value)?.let {
-            inputErrors.add(InputError(fieldName = GroupFields.REGION_NAME.name, errorId = it))
+        GroupInputValidator.GroupNum.errorIdOrNull(groupNum.value.value)?.let {
+            inputErrors.add(InputError(fieldName = GroupFields.GROUP_NUM.name, errorId = it))
         }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
@@ -203,8 +182,7 @@ class GroupViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                GroupFields.REGION_CODE.name -> regionCode.value.copy(errorId = error.errorId)
-                GroupFields.REGION_NAME.name -> regionName.value.copy(errorId = error.errorId)
+                GroupFields.GROUP_NUM.name -> groupNum.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -222,8 +200,8 @@ class GroupViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val regionCode = MutableStateFlow(InputWrapper())
-                override val regionName = MutableStateFlow(InputWrapper())
+                override val congregation = MutableStateFlow(InputListItemWrapper())
+                override val groupNum = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
@@ -244,13 +222,13 @@ class GroupViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): RegionUi {
-            val regionUi = RegionUi(
-                regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
-                regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
+        fun previewUiModel(ctx: Context): GroupUi {
+            val groupUi = GroupUi(
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                groupNum = ctx.resources.getInteger(R.integer.def_group1)
             )
-            regionUi.id = UUID.randomUUID()
-            return regionUi
+            groupUi.id = UUID.randomUUID()
+            return groupUi
         }
     }
 }

@@ -36,7 +36,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.RegionView"
+private const val TAG = "Geo.RegionView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

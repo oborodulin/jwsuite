@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.DashboardingScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.TerritoringScreen
 import timber.log.Timber
 
 private const val TAG = "App.navigation.NavBarNavigationHost"
@@ -47,13 +48,17 @@ fun NavBarNavigationHost(
         composable(
             route = NavRoutes.Territoring.route, arguments = NavRoutes.Territoring.arguments
         ) {
-            // territoring: []Meters; Meter values, Meter verifications
+            // territoring: Territories Grid [hand_out, at_work, idle], Territory Details
             Timber.tag(TAG)
                 .d("Navigation Graph: to TerritoringScreen [route = '%s']", it.destination.route)
-            //TerritoringScreen(navController)
+            TerritoringScreen(
+                appState = appState,
+                nestedScrollConnection = nestedScrollConnection,
+                bottomBar = bottomBar
+            )
         }
         composable(route = NavRoutes.Ministring.route, arguments = NavRoutes.Ministring.arguments) {
-            // Receipts
+            // ministring:
             Timber.tag(TAG)
                 .d("Navigation Graph: to MinistringScreen [route = '%s']", it.destination.route)
             //MinistringScreen(navController)

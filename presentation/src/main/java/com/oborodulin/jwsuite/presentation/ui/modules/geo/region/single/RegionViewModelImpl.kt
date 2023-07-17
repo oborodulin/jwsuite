@@ -25,7 +25,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.RegionViewModelImpl"
+private const val TAG = "Geo.RegionViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel

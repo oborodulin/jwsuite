@@ -56,7 +56,7 @@ import java.util.*
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Congregating.ui.TerritoringScreen"
+private const val TAG = "Territoring.TerritoringScreen"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -80,15 +80,15 @@ fun TerritoringScreen(
     val tabRowItems = listOf(
         TabRowItem(
             title = stringResource(R.string.territory_tab_hand_out),
-            view = { CongregationMembersView(appState = appState) },
+            view = { HandOutTerritoriesView(appState = appState) },
         ),
         TabRowItem(
             title = stringResource(R.string.territory_tab_at_work),
-            view = { GroupMembersView(appState = appState) },
+            view = { AtWorkTerritoriesView(appState = appState) },
         ),
         TabRowItem(
             title = stringResource(R.string.territory_tab_idle),
-            view = { GroupMembersView(appState = appState) },
+            view = { AtWorkTerritoriesView(appState = appState) },
         )
     )
     JWSuiteTheme { //(darkTheme = true)
@@ -97,7 +97,7 @@ fun TerritoringScreen(
             nestedScrollConnection = nestedScrollConnection,
             topBarTitleId = R.string.nav_item_congregating,
             topBarActions = {
-                IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
+                IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                     Icon(Icons.Outlined.Add, null)
                 }
                 IconButton(onClick = { context.toast("Settings button clicked...") }) {
@@ -175,8 +175,8 @@ fun TerritoringScreen(
 }
 
 @Composable
-fun CongregationMembersView(appState: AppState) {
-    Timber.tag(TAG).d("CongregationMembersView(...) called")
+fun HandOutTerritoriesView(appState: AppState) {
+    Timber.tag(TAG).d("HandOutTerritoriesView(...) called")
     val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier
@@ -228,8 +228,8 @@ fun CongregationMembersView(appState: AppState) {
 }
 
 @Composable
-fun GroupMembersView(appState: AppState) {
-    Timber.tag(TAG).d("GroupMembersView(...) called")
+fun AtWorkTerritoriesView(appState: AppState) {
+    Timber.tag(TAG).d("AtWorkTerritoriesView(...) called")
     val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier

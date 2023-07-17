@@ -24,7 +24,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.RegionDistrictsListViewModelImpl"
+private const val TAG = "Geo.RegionDistrictsListViewModelImpl"
 
 @HiltViewModel
 class RegionDistrictsListViewModelImpl @Inject constructor(

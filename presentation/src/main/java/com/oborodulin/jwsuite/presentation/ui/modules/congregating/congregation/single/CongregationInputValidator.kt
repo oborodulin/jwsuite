@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import com.oborodulin.jwsuite.presentation.R
 
-private const val TAG = "Congregating.ui.CongregationInputValidator"
+private const val TAG = "Congregating.CongregationInputValidator"
 
 sealed class CongregationInputValidator : Validatable {
     object Locality : CongregationInputValidator() {
@@ -17,7 +17,7 @@ sealed class CongregationInputValidator : Validatable {
     object CongregationNum : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.congregation_num_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
                 //etc..
                 else -> null
             }

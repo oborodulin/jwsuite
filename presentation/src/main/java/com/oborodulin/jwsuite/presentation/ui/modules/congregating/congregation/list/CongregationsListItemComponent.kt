@@ -32,11 +32,11 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 /**
  * Created by tfakioglu on 12.December.2021
  */
-private const val TAG = "Congregating.ui.CongregationListItemComponent"
+private const val TAG = "Congregating.CongregationsListItemComponent"
 private val EMPTY: OnListItemEvent = {}
 
 @Composable
-fun CongregationListItemComponent(
+fun CongregationsListItemComponent(
     @DrawableRes iconResId: Int? = null,
     item: CongregationsListItem,
     selected: Boolean = false,
@@ -104,7 +104,7 @@ fun CongregationListItemComponent(
 fun PreviewCongregationListItemComponent() {
     JWSuiteTheme {
         Surface {
-            CongregationListItemComponent(
+            CongregationsListItemComponent(
                 //iconResId = R.drawable.outline_photo_24,
                 item = CongregationsListViewModelImpl.previewList(LocalContext.current).first(),
                 itemActions = listOf(

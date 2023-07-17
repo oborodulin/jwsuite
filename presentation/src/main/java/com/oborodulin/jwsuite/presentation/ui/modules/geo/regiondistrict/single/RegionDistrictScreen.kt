@@ -27,7 +27,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.LocalityScreen"
+private const val TAG = "Geo.LocalityScreen"
 
 @Composable
 fun LocalityScreen(

@@ -27,7 +27,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.ui.CongregationsListViewModelImpl"
+private const val TAG = "Congregating.CongregationsListViewModelImpl"
 
 @HiltViewModel
 class CongregationsListViewModelImpl @Inject constructor(
@@ -113,7 +113,6 @@ class CongregationsListViewModelImpl @Inject constructor(
                     Channel<CongregationsListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: CongregationsListUiAction): Job? = null
             }

@@ -42,7 +42,7 @@ import timber.log.Timber
 import java.util.Locale
 import java.util.UUID
 
-private const val TAG = "Congregating.ui.MembersListView"
+private const val TAG = "Congregating.MembersListView"
 
 @Composable
 fun MembersListView(

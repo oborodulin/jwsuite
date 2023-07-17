@@ -41,7 +41,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionVi
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.RegionDistrictView"
+private const val TAG = "Geo.RegionDistrictView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

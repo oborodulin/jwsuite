@@ -25,7 +25,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.ui.GroupsListViewModelImpl"
+private const val TAG = "Congregating.GroupsListViewModelImpl"
 
 @HiltViewModel
 class GroupsListViewModelImpl @Inject constructor(

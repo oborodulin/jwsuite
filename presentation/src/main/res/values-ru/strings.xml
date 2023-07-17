@@ -57,6 +57,10 @@
     <string name="territory_mark_hint">Код территории</string>
     <string name="territory_mark_helper">Любая буква участка</string>
     <string name="is_favorite_hint">Избранное</string>
+    <!--Группа -->
+    <string name="group_subheader">Группа</string>
+    <string name="group_new_subheader">Новая группа</string>
+    <string name="member_group_num_hint">№ группы</string>
     <!--Область -->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
@@ -68,6 +72,7 @@
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
+    <string name="dlg_title_select_group">Выберите группу</string>
     <string name="dlg_title_select_region">Выберите область</string>
     <string name="dlg_title_select_region_district">Выберите район области</string>
     <string name="dlg_title_select_locality">Выберите населённый пункт</string>
@@ -81,10 +86,10 @@
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <!--общие-->
+    <string name="num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="region_empty_error">Укажите, пожалуйста, область!</string>
     <string name="locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
     <!--формы собрания-->
-    <string name="congregation_num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="congregation_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <string name="territory_mark_empty_error">Укажите, пожалуйста, код территории!</string>
     <!--формы населённого пункта-->

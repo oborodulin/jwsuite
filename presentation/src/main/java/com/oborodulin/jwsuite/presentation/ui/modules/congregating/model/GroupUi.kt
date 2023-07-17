@@ -6,3 +6,8 @@ data class GroupUi(
     val congregation: CongregationUi = CongregationUi(),
     val groupNum: Int = 1
 ) : ModelUi()
+
+fun GroupUi.toGroupsListItem() = GroupsListItem(
+    id = this.id!!,
+    groupNum = this.groupNum
+)

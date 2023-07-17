@@ -56,7 +56,7 @@ import java.util.*
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Congregating.ui.CongregatingScreen"
+private const val TAG = "Congregating.CongregatingScreen"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

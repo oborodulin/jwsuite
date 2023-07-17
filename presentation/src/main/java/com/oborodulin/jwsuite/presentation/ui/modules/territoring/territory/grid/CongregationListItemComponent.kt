@@ -32,7 +32,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 /**
  * Created by tfakioglu on 12.December.2021
  */
-private const val TAG = "Congregating.ui.CongregationListItemComponent"
+private const val TAG = "Congregating.CongregationListItemComponent"
 private val EMPTY: OnListItemEvent = {}
 
 @Composable

@@ -77,7 +77,7 @@ sealed class NavRoutes constructor(
 
     object Congregating : NavRoutes(
         ROUTE_CONGREGATING,
-        R.drawable.ic_cottage_24,
+        R.drawable.ic_congregation_24,
         R.string.nav_item_congregating
     )
 
@@ -194,7 +194,7 @@ sealed class NavRoutes constructor(
     // Congregation:
     object Congregation : NavRoutes(
         String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
-        R.drawable.ic_cottage_24,
+        R.drawable.ic_congregation_24,
         R.string.nav_item_congregation,
         arguments = listOf(navArgument(ARG_CONGREGATION_ID) {
             type = NavType.StringType

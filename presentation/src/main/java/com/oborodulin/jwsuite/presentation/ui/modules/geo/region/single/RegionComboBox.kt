@@ -25,7 +25,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsLis
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.RegionComboBox"
+private const val TAG = "Geo.RegionComboBox"
 
 @Composable
 fun RegionComboBox(

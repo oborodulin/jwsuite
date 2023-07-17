@@ -33,7 +33,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.ui.LocalityViewModelImpl"
+private const val TAG = "Geo.LocalityViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -130,7 +130,7 @@ class LocalityViewModelImpl @Inject constructor(
         val regionUi = RegionUi()
         regionUi.id = region.value.item.itemId
         val regionDistrictUi = RegionDistrictUi()
-        regionUi.id = regionDistrict.value.item.itemId
+        regionDistrictUi.id = regionDistrict.value.item.itemId
 
         val localityUi = LocalityUi(
             region = regionUi,
@@ -143,7 +143,12 @@ class LocalityViewModelImpl @Inject constructor(
         localityUi.id = if (localityId.value.value.isNotEmpty()) {
             UUID.fromString(localityId.value.value)
         } else null
-        Timber.tag(TAG).d("saveLocality() called: UI model %s", localityUi)
+        Timber.tag(TAG).d(
+            "saveLocality() called: UI model %s; regionUi.id = %s; regionDistrictUi.id = %s",
+            localityUi,
+            regionUi.id,
+            regionDistrictUi.id
+        )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityUseCase.execute(
                 SaveLocalityUseCase.Request(localityUiMapper.map(localityUi))

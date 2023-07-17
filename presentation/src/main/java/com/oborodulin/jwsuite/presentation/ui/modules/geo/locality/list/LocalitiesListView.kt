@@ -35,7 +35,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Geo.ui.LocalitiesListView"
+private const val TAG = "Geo.LocalitiesListView"
 
 @Composable
 fun LocalitiesListView(
