@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -53,7 +53,7 @@ fun RegionScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                    RegionView(viewModel)
+                    TerritoryCategoryView(viewModel)
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = {
                         viewModel.onContinueClick {

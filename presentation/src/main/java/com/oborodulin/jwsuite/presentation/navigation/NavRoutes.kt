@@ -20,12 +20,14 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REG
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_CATEGORY
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import timber.log.Timber
 import java.util.UUID
@@ -52,6 +54,7 @@ private const val ARG_GROUP_ID = "groupId"
 private const val ARG_MEMBER_ID = "memberId"
 
 // Territory:
+private const val ARG_TERRITORY_CATEGORY_ID = "territoryCategoryId"
 private const val ARG_TERRITORY_ID = "territoryId"
 
 /**
@@ -278,6 +281,43 @@ sealed class NavRoutes constructor(
             )
             Timber.tag(TAG).d("Member - fromEntry(...): '%s'", memberInput)
             return memberInput
+        }
+    }
+
+    object TerritoryCategory : NavRoutes(
+        String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
+        R.drawable.ic_map_marker_24,
+        R.string.nav_item_territory,
+        arguments = listOf(navArgument(ARG_TERRITORY_CATEGORY_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForTerritoryCategory(territoryCategoryInput: TerritoryCategoryInput? = null): String {
+            val route = when (territoryCategoryInput) {
+                null -> baseRoute()
+                else -> String.format(
+                    ROUTE_TERRITORY_CATEGORY,
+                    territoryCategoryInput.territoryCategoryId
+                )
+            }
+            //val route = String.format(ROUTE_RATE, payerId)
+            Timber.tag(TAG).d("TerritoryCategory - routeForTerritoryCategory(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryCategoryInput {
+            val territoryInput =
+                TerritoryCategoryInput(
+                    UUID.fromString(
+                        entry.arguments?.getString(
+                            ARG_TERRITORY_CATEGORY_ID
+                        ) ?: ""
+                    )
+                )
+            Timber.tag(TAG).d("TerritoryCategory - fromEntry(...): '%s'", territoryInput)
+            return territoryInput
         }
     }
 

@@ -19,5 +19,6 @@ object MainDestinations {
     const val ROUTE_MEMBER = "member/%s"
 
     //Territories:
+    const val ROUTE_TERRITORY_CATEGORY = "territoryCategory/%s"
     const val ROUTE_TERRITORY = "territory/%s"
 }

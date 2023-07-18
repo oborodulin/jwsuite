@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.*
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalAppSettingDataSource
@@ -22,6 +23,7 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGrou
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHouseDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalMemberDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
+import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
@@ -31,6 +33,7 @@ import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
+import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -90,6 +93,14 @@ object RepositoriesModule {
     ): MembersRepository = MembersRepositoryImpl(localMemberDataSource, mappers)
 
     // Territories:
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoriesRepository(
+        localTerritoryCategoryDataSource: LocalTerritoryCategoryDataSource,
+        mappers: TerritoryCategoryMappers
+    ): TerritoryCategoriesRepository =
+        TerritoryCategoriesRepositoryImpl(localTerritoryCategoryDataSource, mappers)
+
     @Singleton
     @Provides
     fun provideTerritoriesRepository(

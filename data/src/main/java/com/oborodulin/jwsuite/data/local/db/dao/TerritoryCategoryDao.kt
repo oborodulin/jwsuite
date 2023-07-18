@@ -10,7 +10,7 @@ import java.util.*
 @Dao
 interface TerritoryCategoryDao {
     // READS:
-    @Query("SELECT * FROM ${TerritoryCategoryEntity.TABLE_NAME}")
+    @Query("SELECT * FROM ${TerritoryCategoryEntity.TABLE_NAME} ORDER BY territoryCategoryName")
     fun findAll(): Flow<List<TerritoryCategoryEntity>>
 
     @ExperimentalCoroutinesApi
@@ -24,30 +24,30 @@ interface TerritoryCategoryDao {
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(floor: TerritoryCategoryEntity)
+    suspend fun insert(territoryCategory: TerritoryCategoryEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(vararg floors: TerritoryCategoryEntity)
+    suspend fun insert(vararg territoryCategories: TerritoryCategoryEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(floors: List<TerritoryCategoryEntity>)
+    suspend fun insert(territoryCategories: List<TerritoryCategoryEntity>)
 
     // UPDATES:
     @Update
-    suspend fun update(floor: TerritoryCategoryEntity)
+    suspend fun update(territoryCategory: TerritoryCategoryEntity)
 
     @Update
-    suspend fun update(vararg floors: TerritoryCategoryEntity)
+    suspend fun update(vararg territoryCategories: TerritoryCategoryEntity)
 
     // DELETES:
     @Delete
-    suspend fun delete(floor: TerritoryCategoryEntity)
+    suspend fun delete(territoryCategory: TerritoryCategoryEntity)
 
     @Delete
-    suspend fun delete(vararg floors: TerritoryCategoryEntity)
+    suspend fun delete(vararg territoryCategories: TerritoryCategoryEntity)
 
     @Delete
-    suspend fun delete(floors: List<TerritoryCategoryEntity>)
+    suspend fun delete(territoryCategories: List<TerritoryCategoryEntity>)
 
     @Query("DELETE FROM ${TerritoryCategoryEntity.TABLE_NAME} WHERE territoryCategoryId = :territoryCategoryId")
     suspend fun deleteById(territoryCategoryId: UUID)

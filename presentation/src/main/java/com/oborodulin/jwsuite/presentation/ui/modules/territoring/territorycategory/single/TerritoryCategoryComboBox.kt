@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single
 
 import android.content.res.Configuration
 import androidx.compose.material3.Icon
@@ -19,24 +19,24 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.TerritoryCategoriesListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.TerritoryCategoriesListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.TerritoryCategoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Territoring.RegionComboBox"
+private const val TAG = "Territoring.TerritoryCategoryComboBox"
 
 @Composable
-fun RegionComboBox(
+fun TerritoryCategoryComboBox(
     modifier: Modifier = Modifier,
-    listViewModel: RegionsListViewModel,
+    listViewModel: TerritoryCategoriesListViewModel,
     singleViewModel: TerritoryCategoryViewModel,
     inputWrapper: InputListItemWrapper,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("RegionComboBox(...) called")
+    Timber.tag(TAG).d("TerritoryCategoryComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -46,14 +46,14 @@ fun RegionComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryCategoryUiAction.Load(),
         confirmUiAction = TerritoryCategoryUiAction.Save,
-        dialogView = { RegionView(singleViewModel) },
+        dialogView = { TerritoryCategoryView(singleViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = RegionsListUiAction.Load,
+        loadListUiAction = TerritoryCategoriesListUiAction.Load,
         searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
@@ -71,11 +71,11 @@ fun RegionComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRegionComboBox() {
+fun PreviewTerritoryCategoryComboBox() {
     JWSuiteTheme {
         Surface {
-            RegionComboBox(
-                listViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
+            TerritoryCategoryComboBox(
+                listViewModel = TerritoryCategoriesListViewModelImpl.previewModel(LocalContext.current),
                 singleViewModel = TerritoryCategoryViewModelImpl.previewModel(LocalContext.current),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},

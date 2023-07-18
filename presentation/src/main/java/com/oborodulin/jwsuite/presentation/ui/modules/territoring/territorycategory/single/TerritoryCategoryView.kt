@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -36,12 +36,12 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Territoring.RegionView"
+private const val TAG = "Territoring.TerritoryCategoryView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegionView(viewModel: TerritoryCategoryViewModel) {
-    Timber.tag(TAG).d("RegionView(...) called")
+fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
+    Timber.tag(TAG).d("TerritoryCategoryView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -55,8 +55,9 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
-    val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
-    val regionName by viewModel.regionName.collectAsStateWithLifecycle()
+    val territoryCategoryCode by viewModel.territoryCategoryCode.collectAsStateWithLifecycle()
+    val territoryCategoryMark by viewModel.territoryCategoryMark.collectAsStateWithLifecycle()
+    val territoryCategoryName by viewModel.territoryCategoryName.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -65,7 +66,7 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("TerritoryCategoryView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -88,10 +89,10 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
     ) {
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryCategoryFields.REGION_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_CODE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryCategoryFields.REGION_CODE,
+                        focusedField = TerritoryCategoryFields.TERRITORY_CATEGORY_CODE,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -108,7 +109,7 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = regionCode,
+            inputWrapper = territoryCategoryCode,
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryCode(it))
             },
@@ -116,10 +117,39 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryCategoryFields.REGION_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_MARK.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryCategoryFields.REGION_NAME,
+                        focusedField = TerritoryCategoryFields.TERRITORY_CATEGORY_MARK,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.name_hint,
+            leadingIcon = {
+                Icon(
+                    painterResource(R.drawable.ic_abc_36),
+                    null
+                )
+            },
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Characters,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = territoryCategoryMark,
+            onValueChange = {
+                viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryMark(it))
+            },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_NAME.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryCategoryFields.TERRITORY_CATEGORY_NAME,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -138,7 +168,7 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
                 )
             },
             //  visualTransformation = ::creditCardFilter,
-            inputWrapper = regionName,
+            inputWrapper = territoryCategoryName,
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryName(it))
             },
@@ -150,10 +180,14 @@ fun RegionView(viewModel: TerritoryCategoryViewModel) {
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRegionView() {
+fun PreviewTerritoryCategoryView() {
     JWSuiteTheme {
         Surface {
-            RegionView(viewModel = TerritoryCategoryViewModelImpl.previewModel(LocalContext.current))
+            TerritoryCategoryView(
+                viewModel = TerritoryCategoryViewModelImpl.previewModel(
+                    LocalContext.current
+                )
+            )
         }
     }
 }

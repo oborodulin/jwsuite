@@ -15,6 +15,7 @@ import com.oborodulin.jwsuite.data.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data.local.db.dao.HouseDao
 import com.oborodulin.jwsuite.data.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data.local.db.dao.RoomDao
+import com.oborodulin.jwsuite.data.local.db.dao.TerritoryCategoryDao
 import com.oborodulin.jwsuite.data.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data.local.db.mappers.*
 import com.oborodulin.jwsuite.data.local.db.repositories.*
@@ -32,6 +33,7 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGrou
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHouseDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalMemberDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
+import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.data.local.db.sources.local.LocalAppSettingDataSourceImpl
 import com.oborodulin.jwsuite.data.local.db.sources.local.LocalCongregationDataSourceImpl
@@ -47,6 +49,7 @@ import com.oborodulin.jwsuite.data.local.db.sources.local.LocalGroupDataSourceIm
 import com.oborodulin.jwsuite.data.local.db.sources.local.LocalHouseDataSourceImpl
 import com.oborodulin.jwsuite.data.local.db.sources.local.LocalMemberDataSourceImpl
 import com.oborodulin.jwsuite.data.local.db.sources.local.LocalRoomDataSourceImpl
+import com.oborodulin.jwsuite.data.local.db.sources.local.LocalTerritoryCategoryDataSourceImpl
 import com.oborodulin.jwsuite.data.local.db.sources.local.LocalTerritoryDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
@@ -125,6 +128,13 @@ object LocalDataSourcesModule {
     ): LocalMemberDataSource = LocalMemberDataSourceImpl(memberDao, dispatcher)
 
     // Territories:
+    @Singleton
+    @Provides
+    fun provideLocalTerritoryCategoryDataSource(
+        territoryCategoryDao: TerritoryCategoryDao, @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalTerritoryCategoryDataSource =
+        LocalTerritoryCategoryDataSourceImpl(territoryCategoryDao, dispatcher)
+
     @Singleton
     @Provides
     fun provideLocalHouseDataSource(
