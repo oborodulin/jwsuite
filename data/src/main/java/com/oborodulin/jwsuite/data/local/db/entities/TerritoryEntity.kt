@@ -49,7 +49,7 @@ data class TerritoryEntity(
     val isBusinessTerritory: Boolean = false,
     val isGroupMinistry: Boolean = false,
     val isInPerimeter: Boolean = false,
-    val isProcessed: Boolean = false,
+    val isProcessed: Boolean = false, // for isGroupMinistry
     val territoryDesc: String? = null,
     @ColumnInfo(index = true) val tMicrodistrictsId: UUID? = null,
     @ColumnInfo(index = true) val tLocalityDistrictsId: UUID? = null,
@@ -106,16 +106,16 @@ data class TerritoryEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Territory Entity №").append(territoryNum)
-            .append(" [congregationsId = ").append(tCongregationsId)
+            .append(" [tCongregationsId = ").append(tCongregationsId)
             .append("; isActive = ").append(isActive)
             .append("; isBusiness = ").append(isBusinessTerritory)
             .append("; isGroupMinistry = ").append(isGroupMinistry)
             .append("; isInPerimeter = ").append(isInPerimeter)
             .append("; isProcessed = ").append(isProcessed)
-        tLocalityDistrictsId?.let { str.append("; localityDistrictsId = ").append(it) }
-        tMicrodistrictsId?.let { str.append("; microdistrictsId = ").append(it) }
-        str.append("; localitiesId = ").append(tLocalitiesId)
-            .append("; territoryCategoriesId = ").append(tTerritoryCategoriesId)
+        tLocalityDistrictsId?.let { str.append("; tLocalityDistrictsId = ").append(it) }
+        tMicrodistrictsId?.let { str.append("; tMicrodistrictsId = ").append(it) }
+        str.append("; tLocalitiesId = ").append(tLocalitiesId)
+            .append("; tTerritoryCategoriesId = ").append(tTerritoryCategoriesId)
             .append("] territoryId = ").append(territoryId)
         return str.toString()
     }

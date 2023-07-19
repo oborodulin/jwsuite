@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.TerritoriesGridView"
+private const val TAG = "Territoring.TerritoriesGridView"
 
 @Composable
 fun TerritoriesGridView(
@@ -95,7 +95,7 @@ fun TerritoriesGridView(
         congregationsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is TerritoriesGridUiSingleEvent.OpenCongregationScreen -> {
+                is TerritoriesGridUiSingleEvent.OpenTerritoryScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -126,7 +126,7 @@ fun CongregationsList(
                 congregations[index].let { congregation ->
                     val isSelected =
                         ((selectedIndex == -1) and ((congregationInput?.congregationId == congregation.id) || congregation.isFavorite)) || (selectedIndex == index)
-                    CongregationListItemComponent(
+                    TerritoriesListItemComponent(
                         item = congregation,
                         itemActions = listOf(
                             ComponentUiAction.EditListItem { onEdit(congregation) },

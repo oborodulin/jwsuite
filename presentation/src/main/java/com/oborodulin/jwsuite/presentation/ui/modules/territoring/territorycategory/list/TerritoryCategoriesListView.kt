@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,46 +22,56 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
-import com.oborodulin.jwsuite.presentation.ui.model.RegionsListItem
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Territoring.RegionsListView"
+private const val TAG = "Territoring.TerritoryCategoriesListView"
 
 @Composable
-fun RegionsListView(
+fun TerritoryCategoriesListView(
     viewModel: TerritoryCategoriesListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    regionInput: RegionInput? = null
+    territoryCategoryInput: TerritoryCategoryInput? = null
 ) {
-    Timber.tag(TAG).d("RegionsListView(...) called: regionInput = %s", regionInput)
+    Timber.tag(TAG).d(
+        "TerritoryCategoriesListView(...) called: territoryCategoryInput = %s",
+        territoryCategoryInput
+    )
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionsListView: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG)
+            .d("TerritoryCategoriesListView: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoryCategoriesListUiAction.Load)
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            RegionsList(
-                regions = it,
-                onEdit = { region ->
-                    viewModel.submitAction(TerritoryCategoriesListUiAction.EditTerritoryCategory(region.id))
+            TerritoryCategoriesList(
+                territoryCategories = it,
+                onEdit = { territoryCategory ->
+                    viewModel.submitAction(
+                        TerritoryCategoriesListUiAction.EditTerritoryCategory(territoryCategory.id)
+                    )
                 },
-                onDelete = { region ->
-                    viewModel.submitAction(TerritoryCategoriesListUiAction.DeleteTerritoryCategory(region.id))
+                onDelete = { territoryCategory ->
+                    viewModel.submitAction(
+                        TerritoryCategoriesListUiAction.DeleteTerritoryCategory(territoryCategory.id)
+                    )
                 }
             ) {}
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionsListView: LaunchedEffect() AFTER collect ui state flow")
+        Timber.tag(TAG)
+            .d("TerritoryCategoriesListView: LaunchedEffect() AFTER collect ui state flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
@@ -75,39 +84,39 @@ fun RegionsListView(
 }
 
 @Composable
-fun RegionsList(
-    regions: List<RegionsListItem>,
-    onEdit: (RegionsListItem) -> Unit,
-    onDelete: (RegionsListItem) -> Unit,
-    onClick: (RegionsListItem) -> Unit
+fun TerritoryCategoriesList(
+    territoryCategories: List<TerritoryCategoriesListItem>,
+    onEdit: (TerritoryCategoriesListItem) -> Unit,
+    onDelete: (TerritoryCategoriesListItem) -> Unit,
+    onClick: (TerritoryCategoriesListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("RegionsList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) } // by
-    if (regions.isNotEmpty()) {
+    Timber.tag(TAG).d("TerritoryCategoriesList(...) called")
+    var selectedIndex by remember { mutableStateOf(-1) }
+    if (territoryCategories.isNotEmpty()) {
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(regions.size) { index ->
-                regions[index].let { region ->
+            items(territoryCategories.size) { index ->
+                territoryCategories[index].let { territoryCategory ->
                     val isSelected = (selectedIndex == index)
                     ListItemComponent(
-                        item = region,
+                        item = territoryCategory,
                         itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(region) },
+                            ComponentUiAction.EditListItem { onEdit(territoryCategory) },
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
-                                    R.string.dlg_confirm_del_region,
-                                    region.regionName
+                                    R.string.dlg_confirm_del_territory_category,
+                                    territoryCategory.territoryCategoryName
                                 )
-                            ) { onDelete(region) }),
+                            ) { onDelete(territoryCategory) }),
                         selected = isSelected,
                         background = if (isSelected) Color.LightGray else Color.Transparent,
                         onClick = {
                             if (selectedIndex != index) selectedIndex = index
-                            onClick(region)
+                            onClick(territoryCategory)
                         }
                     )
                 }
@@ -115,7 +124,7 @@ fun RegionsList(
         }
     } else {
         Text(
-            text = stringResource(R.string.regions_list_empty_text),
+            text = stringResource(R.string.territory_categories_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -125,14 +134,15 @@ fun RegionsList(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRegionsList() {
+fun PreviewTerritoryCategoriesList() {
     JWSuiteTheme {
         Surface {
-            RegionsList(
-                regions = TerritoryCategoriesListViewModelImpl.previewList(LocalContext.current),
+            TerritoryCategoriesList(
+                territoryCategories = TerritoryCategoriesListViewModelImpl.previewList(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
-                onClick = {})
+                onClick = {}
+            )
         }
     }
 }

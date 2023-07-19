@@ -33,6 +33,7 @@
     <string name="regions_list_empty_text">Областей пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавте, пожалуйста, хотя бы одну</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ: -->
     <!--Собрание -->
@@ -72,6 +73,10 @@
     <!--Категория участка -->
     <string name="territory_category_subheader">Категория участка</string>
     <string name="territory_category_new_subheader">Новая категория участка</string>
+    <!--Участок -->
+    <string name="territory_subheader">Участок</string>
+    <string name="territory_new_subheader">Новый участок</string>
+    <string name="territory_category_hint">Категория участка</string>
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
@@ -79,6 +84,7 @@
     <string name="dlg_title_select_region">Выберите область</string>
     <string name="dlg_title_select_region_district">Выберите район области</string>
     <string name="dlg_title_select_locality">Выберите населённый пункт</string>
+    <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
     <!--подтверждения-->
     <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
     <string name="dlg_confirm_del_group">Удалить группу %1$s?</string>
@@ -86,6 +92,7 @@
     <string name="dlg_confirm_del_region">Удалить область %1$s?</string>
     <string name="dlg_confirm_del_region_district">Удалить район %1$s?</string>
     <string name="dlg_confirm_del_locality">Удалить населённый пункт %1$s?</string>
+    <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <!--общие-->

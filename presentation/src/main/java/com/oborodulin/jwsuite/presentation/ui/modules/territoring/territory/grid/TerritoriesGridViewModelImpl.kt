@@ -5,15 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
-import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
-import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
-import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
-import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationsListConverter
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -27,52 +28,46 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.CongregationsListViewModelImpl"
+private const val TAG = "Territoring.TerritoriesListViewModelImpl"
 
 @HiltViewModel
 class TerritoriesGridViewModelImpl @Inject constructor(
-    private val congregationUseCases: CongregationUseCases,
-    private val congregationsListConverter: CongregationsListConverter
+    private val useCases: TerritoryUseCases,
+    private val listConverter: TerritoriesListConverter
 ) : TerritoriesGridViewModel,
-    MviViewModel<List<CongregationsListItem>, UiState<List<CongregationsListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent>() {
+    MviViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoriesGridUiAction): Job {
         Timber.tag(TAG)
-            .d("handleAction(CongregationsListUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoriesGridUiAction.Load -> {
-                loadCongregations()
+                loadTerritories(action.congregationId)
             }
 
             is TerritoriesGridUiAction.EditTerritory -> {
                 submitSingleEvent(
-                    TerritoriesGridUiSingleEvent.OpenCongregationScreen(
-                        NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.territoryId)
-                        )
+                    TerritoriesGridUiSingleEvent.OpenTerritoryScreen(
+                        NavRoutes.Territory.routeForTerritory(TerritoryInput(action.territoryId))
                     )
                 )
             }
 
             is TerritoriesGridUiAction.DeleteTerritory -> {
-                deleteCongregation(action.territoryId)
-            }
-
-            is TerritoriesGridUiAction.MakeFavoriteCongregation -> {
-                makeFavoriteCongregation(action.congregationId)
+                deleteTerritory(action.territoryId)
             }
         }
         return job
     }
 
-    private fun loadCongregations(): Job {
-        Timber.tag(TAG).d("loadCongregations() called")
+    private fun loadTerritories(congregationId: UUID?): Job {
+        Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
-            congregationUseCases.getCongregationsUseCase.execute(GetCongregationsUseCase.Request)
+            useCases.getTerritoriesUseCase.execute(GetTerritoriesUseCase.Request(congregationId))
                 .map {
-                    congregationsListConverter.convert(it)
+                    listConverter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -81,24 +76,12 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deleteCongregation(congregationId: UUID): Job {
+    private fun deleteTerritory(territoryId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteCongregation() called: congregationId = %s", congregationId.toString())
+            .d("deleteTerritory() called: territoryId = %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
-            congregationUseCases.deleteCongregationUseCase.execute(
-                DeleteCongregationUseCase.Request(congregationId)
-            ).collect {}
-        }
-        return job
-    }
-
-    private fun makeFavoriteCongregation(congregationId: UUID): Job {
-        Timber.tag(TAG)
-            .d("makeFavoriteCongregation() called: congregationId = %s", congregationId.toString())
-        val job = viewModelScope.launch(errorHandler) {
-            congregationUseCases.makeFavoriteCongregationUseCase.execute(
-                MakeFavoriteCongregationUseCase.Request(congregationId)
-            ).collect {}
+            useCases.deleteTerritoryUseCase.execute(DeleteTerritoryUseCase.Request(territoryId))
+                .collect {}
         }
         return job
     }
@@ -113,26 +96,46 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
             }
 
         fun previewList(ctx: Context) = listOf(
-            CongregationsListItem(
+            TerritoriesListItem(
                 id = UUID.randomUUID(),
-                congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
-                congregationName = ctx.resources.getString(R.string.def_congregation1_name),
-                territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality = LocalityUi(),
-                isFavorite = true
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
+                localityDistrictId = UUID.randomUUID(),
+                districtShortName = ctx.resources.getString(R.string.def_don_short_name),
+                microdistrictId = UUID.randomUUID(),
+                microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
+                territoryNum = 1,
+                isPrivateSector = false,
+                isBusiness = false,
+                isGroupMinistry = false,
+                isInPerimeter = false,
+                isProcessed = false,
+                isActive = true,
+                territoryDesc = "возле маг. \"Базилик\""
             ),
-            CongregationsListItem(
+            TerritoriesListItem(
                 id = UUID.randomUUID(),
-                congregationNum = ctx.resources.getString(R.string.def_congregation2_num),
-                congregationName = ctx.resources.getString(R.string.def_congregation2_name),
-                territoryMark = ctx.resources.getString(R.string.def_congregation2_card_mark),
-                locality = LocalityUi()
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
+                localityDistrictId = UUID.randomUUID(),
+                districtShortName = ctx.resources.getString(R.string.def_budyonovsky_short_name),
+                microdistrictId = UUID.randomUUID(),
+                microdistrictShortName = ctx.resources.getString(R.string.def_cvetochny_short_name),
+                territoryNum = 2,
+                isPrivateSector = false,
+                isBusiness = false,
+                isGroupMinistry = false,
+                isInPerimeter = false,
+                isProcessed = false,
+                isActive = true,
+                territoryDesc = "напротив Храма"
             )
         )
     }

@@ -3,6 +3,6 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.gri
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 
 sealed class TerritoriesGridUiSingleEvent : UiSingleEvent {
-    data class OpenCongregationScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
+    data class OpenTerritoryScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
 }
 

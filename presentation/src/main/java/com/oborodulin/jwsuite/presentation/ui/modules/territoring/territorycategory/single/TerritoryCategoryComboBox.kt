@@ -19,9 +19,9 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.TerritoryCategoriesListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.TerritoryCategoriesListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.TerritoryCategoriesListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -59,9 +59,9 @@ fun TerritoryCategoryComboBox(
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.locality_region_hint,
-        listTitleResId = R.string.dlg_title_select_region,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
+        labelResId = R.string.territory_category_hint,
+        listTitleResId = R.string.dlg_title_select_territory_category,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_location_pin_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

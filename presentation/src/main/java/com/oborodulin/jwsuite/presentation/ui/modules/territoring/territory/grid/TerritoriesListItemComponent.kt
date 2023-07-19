@@ -27,18 +27,19 @@ import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 
 /**
  * Created by tfakioglu on 12.December.2021
  */
-private const val TAG = "Congregating.CongregationListItemComponent"
+private const val TAG = "Territoring.TerritoriesListItemComponent"
 private val EMPTY: OnListItemEvent = {}
 
 @Composable
-fun CongregationListItemComponent(
+fun TerritoriesListItemComponent(
     @DrawableRes iconResId: Int? = null,
-    item: CongregationsListItem,
+    item: TerritoriesListItem,
     selected: Boolean = false,
     itemActions: List<ComponentUiAction> = emptyList(),
     background: Color = Color.Transparent,
@@ -62,7 +63,7 @@ fun CongregationListItemComponent(
                     .weight(2f)
             ) {
                 Row {
-                    if (onFavorite !== EMPTY) {
+                    /*if (onFavorite !== EMPTY) {
                         Image(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
@@ -78,7 +79,7 @@ fun CongregationListItemComponent(
                             },
                             contentDescription = ""
                         )
-                    }
+                    }*/
                     Text(
                         text = item.headline,
                         style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
@@ -104,7 +105,7 @@ fun CongregationListItemComponent(
 fun PreviewCongregationListItemComponent() {
     JWSuiteTheme {
         Surface {
-            CongregationListItemComponent(
+            TerritoriesListItemComponent(
                 //iconResId = R.drawable.outline_photo_24,
                 item = TerritoriesGridViewModelImpl.previewList(LocalContext.current).first(),
                 itemActions = listOf(

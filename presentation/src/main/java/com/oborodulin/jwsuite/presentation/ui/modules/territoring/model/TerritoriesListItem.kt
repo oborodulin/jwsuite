@@ -24,6 +24,11 @@ data class TerritoriesListItem(
     val territoryDesc: String? = null
 ) : ListItemModel(
     itemId = id,
-    headline = "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}$territoryNum",
+    headline = "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}$territoryNum"
+        .plus(
+            " [$districtShortName : $microdistrictShortName]"
+                .replace(" [ : ]", "")
+                .replace(": ]", "]")
+        ),
     supportingText = territoryDesc
 )
