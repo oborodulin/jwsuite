@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data.local.db.views
 
 import androidx.room.DatabaseView
+import com.oborodulin.jwsuite.data.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
@@ -13,6 +14,9 @@ import java.util.UUID
 @DatabaseView(
     viewName = TerritoryDistrictView.VIEW_NAME,
     value = """
+SELECT 'ALL' AS territoryDistrictType, c.congregationId, NULL AS districtId, 'Все' AS districtName, NULL AS isPrivateSector
+    FROM ${CongregationEntity.TABLE_NAME} c
+UNION ALL
 SELECT td.territoryDistrictType, td.congregationId, td.districtId, td.districtName, tpsv.isPrivateSector 
 FROM (SELECT (CASE
                 WHEN md.microdistrictId IS NOT NULL THEN $TDT_MICRO_DISTRICT_VAL
@@ -28,15 +32,15 @@ FROM (SELECT (CASE
         LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ld ON ld.localityDistrictId = t.tLocalityDistrictsId
         LEFT JOIN ${MicrodistrictView.VIEW_NAME} md ON md.microdistrictId = t.tMicrodistrictsId) td
             JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = td.territoryId
-GROUP BY td.territoryDistrictType, td.congregationId, td.districtId, td.districtName, tpsv.isPrivateSector
+GROUP BY territoryDistrictType, congregationId, districtId, districtName, isPrivateSector
 """
 )
 class TerritoryDistrictView(
     val territoryDistrictType: TerritoryDistrictType,
     val congregationId: UUID,
-    val districtId: UUID,
+    val districtId: UUID?,
     val districtName: String,
-    val isPrivateSector: Boolean
+    val isPrivateSector: Boolean?
 ) {
     companion object {
         const val VIEW_NAME = "territory_districts_view"

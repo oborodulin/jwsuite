@@ -24,10 +24,11 @@ class TerritoriesRepositoryImpl @Inject constructor(
     private val localRoomDataSource: LocalRoomDataSource,
     private val mappers: TerritoryMappers
 ) : TerritoriesRepository {
-    override fun getCongregationTerritories(congregationId: UUID?) = when (congregationId) {
-        null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
-        else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
-    }.map(mappers.territoryViewListToTerritoriesListMapper::map)
+    override fun getCongregationTerritories(congregationId: UUID?) =
+        when (congregationId) {
+            null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
+            else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
+        }.map(mappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID) =
         localTerritoryDataSource.getCongregationTerritoryDistricts(isPrivateSector, congregationId)
@@ -48,6 +49,10 @@ class TerritoriesRepositoryImpl @Inject constructor(
         TerritoryDistrictType.MICRO_DISTRICT -> localTerritoryDataSource.getMicrodistrictTerritories(
             districtId, isPrivateSector, congregationId
         )
+        TerritoryDistrictType.ALL -> when (congregationId) {
+            null -> localTerritoryDataSource.getFavoriteCongregationTerritories(isPrivateSector)
+            else -> localTerritoryDataSource.getCongregationTerritories(congregationId, isPrivateSector)
+        }
     }.map(mappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getTerritoryStreets(territoryId: UUID) =

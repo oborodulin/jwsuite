@@ -34,6 +34,7 @@
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавте, пожалуйста, хотя бы одну</string>
+    <string name="territories_list_empty_text">Участков пока нет. Добавте, пожалуйста, хотя бы один</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ: -->
     <!--Собрание -->
@@ -93,6 +94,7 @@
     <string name="dlg_confirm_del_region_district">Удалить район %1$s?</string>
     <string name="dlg_confirm_del_locality">Удалить населённый пункт %1$s?</string>
     <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
+    <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <!--общие-->

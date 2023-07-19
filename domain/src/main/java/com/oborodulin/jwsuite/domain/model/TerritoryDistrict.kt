@@ -7,7 +7,7 @@ import java.util.UUID
 data class TerritoryDistrict(
     val territoryDistrictType: TerritoryDistrictType,
     val congregationId: UUID,
-    val isPrivateSector: Boolean,
-    val districtId: UUID,
+    val isPrivateSector: Boolean?,
+    val districtId: UUID?,
     val districtName: String
 ) : DomainModel()

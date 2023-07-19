@@ -33,15 +33,15 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId 
-    WHERE ct.ctCongregationsId = :congregationId AND t.${PX_LOCALITY}localityLocCode = :locale 
+    WHERE ct.ctCongregationsId = :congregationId AND t.isP AND t.${PX_LOCALITY}localityLocCode = :locale 
         """
     )
-    fun findByCongregationId(congregationId: UUID, locale: String? = Locale.getDefault().language):
+    fun findByCongregationId(congregationId: UUID, isPrivateSector: Boolean? = null, locale: String? = Locale.getDefault().language):
             Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByCongregationId(congregationId: UUID) =
-        findByCongregationId(congregationId).distinctUntilChanged()
+    fun findDistinctByCongregationId(congregationId: UUID, isPrivateSector: Boolean?) =
+        findByCongregationId(congregationId, isPrivateSector).distinctUntilChanged()
 
     @Query(
         """
@@ -50,7 +50,7 @@ interface TerritoryDao {
         JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.ctCongregationsId    
         """
     )
-    fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
+    fun findByFavoriteCongregation(isPrivateSector: Boolean? = null, locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
     @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
     fun findByTerritoryNum(

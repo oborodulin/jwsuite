@@ -13,8 +13,11 @@ import java.util.UUID
 
 interface LocalTerritoryDataSource {
     // Territories:
-    fun getCongregationTerritories(congregationId: UUID): Flow<List<TerritoryView>>
-    fun getFavoriteCongregationTerritories(): Flow<List<TerritoryView>>
+    fun getCongregationTerritories(
+        congregationId: UUID, isPrivateSector: Boolean? = null
+    ): Flow<List<TerritoryView>>
+
+    fun getFavoriteCongregationTerritories(isPrivateSector: Boolean? = null): Flow<List<TerritoryView>>
     fun getCongregationTerritoryDistricts(
         isPrivateSector: Boolean, congregationId: UUID
     ): Flow<List<TerritoryDistrictView>>

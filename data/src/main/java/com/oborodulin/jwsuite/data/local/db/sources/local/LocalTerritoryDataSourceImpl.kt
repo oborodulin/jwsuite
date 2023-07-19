@@ -24,10 +24,10 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalTerritoryDataSource {
     // Territories:
-    override fun getCongregationTerritories(congregationId: UUID) =
-        territoryDao.findByCongregationId(congregationId)
+    override fun getCongregationTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
+        territoryDao.findByCongregationId(congregationId, isPrivateSector)
 
-    override fun getFavoriteCongregationTerritories() = territoryDao.findByFavoriteCongregation()
+    override fun getFavoriteCongregationTerritories(isPrivateSector: Boolean?) = territoryDao.findByFavoriteCongregation(isPrivateSector)
 
     override fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID) =
         territoryDao.findTerritoryDistrictsByPrivateSectorMarkAndCongregationId(
