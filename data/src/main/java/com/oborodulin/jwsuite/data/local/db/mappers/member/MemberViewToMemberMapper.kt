@@ -1,11 +1,13 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.member
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupViewToGroupMapper
 import com.oborodulin.jwsuite.data.local.db.views.MemberView
 import com.oborodulin.jwsuite.domain.model.Member
 
 class MemberViewToMemberMapper(private val groupMapper: GroupViewToGroupMapper) :
+    NullableMapper<MemberView, Member>,
     Mapper<MemberView, Member> {
     override fun map(input: MemberView): Member {
         val member = Member(
@@ -24,4 +26,6 @@ class MemberViewToMemberMapper(private val groupMapper: GroupViewToGroupMapper) 
         member.id = input.member.memberId
         return member
     }
+
+    override fun nullableMap(input: MemberView?) = input?.let { map(it) }
 }

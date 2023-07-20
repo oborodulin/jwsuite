@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.data.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_MICRO_DISTRICT_VAL
@@ -14,7 +15,7 @@ import java.util.UUID
 @DatabaseView(
     viewName = TerritoryDistrictView.VIEW_NAME,
     value = """
-SELECT 'ALL' AS territoryDistrictType, c.congregationId, NULL AS districtId, 'Все' AS districtName, NULL AS isPrivateSector
+SELECT $TDT_ALL_VAL AS territoryDistrictType, c.congregationId, NULL AS districtId, 'Все' AS districtName, NULL AS isPrivateSector
     FROM ${CongregationEntity.TABLE_NAME} c
 UNION ALL
 SELECT td.territoryDistrictType, td.congregationId, td.districtId, td.districtName, tpsv.isPrivateSector 

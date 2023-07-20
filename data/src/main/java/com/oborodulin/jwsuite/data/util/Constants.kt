@@ -6,7 +6,7 @@ package com.oborodulin.jwsuite.data.util
 object Constants {
     const val DATABASE_NAME = "home-database.sqlite"
 
-    // GEO:
+    // GEO Prefix:
     // Regions:
     const val PX_REGION = "r_"
     const val PX_DISTRICT_REGION = "dr_"
@@ -40,35 +40,21 @@ object Constants {
     const val FMT_PAYMENT_PERIOD_EXPR = "'%02d.%d: '"
     const val FMT_HEATING_METER_EXPR = "'%.5f %s x '"
 
+    // AppSettings:
+    const val PRM_LANG_VAL = "'LANG'"
+    const val PRM_CURRENCY_CODE_VAL = "'CURRENCY_CODE'"
+    const val PRM_DAY_MU_VAL = "'DAY_MU'"
+    const val PRM_MONTH_MU_VAL = "'MONTH_MU'"
+    const val PRM_PERSON_NUM_MU_VAL = "'PERSON_NUM_MU'"
+    const val PRM_TERRITORY_PROCESSING_PERIOD_VAL = "'TERRITORY_PROCESSING_PERIOD'"
+    const val PRM_TERRITORY_AT_HAND_PERIOD_VAL = "'TERRITORY_AT_HAND_PERIOD'"
+    const val PRM_TERRITORY_ROOMS_LIMIT_VAL = "'TERRITORY_ROOMS_LIMIT'"
+    const val PRM_TERRITORY_MAX_ROOMS_VAL = "'TERRITORY_MAX_ROOMS'"
+    const val PRM_TERRITORY_IDLE_PERIOD_VAL = "'TERRITORY_IDLE_PERIOD'"
+
     // TerritoryDistrictType:
+    const val TDT_ALL_VAL = "'ALL'"
     const val TDT_LOCALITY_VAL = "'LOCALITY'"
     const val TDT_LOCALITY_DISTRICT_VAL = "'LOCALITY_DISTRICT'"
     const val TDT_MICRO_DISTRICT_VAL = "'MICRO_DISTRICT'"
-
-    /*
-        const val SQL_PREV_METERS_VALUES_SUBQUERY = """
-    SELECT v.metersId, MAX(datetime(v.valueDate)) maxValueDate
-        FROM meter_values v JOIN meters m ON m.meterId = v.metersId
-            JOIN payers_services AS ps ON ps.payerServiceId = m.payersServicesId
-            JOIN payers AS p ON p.payerId = ps.payersId
-        WHERE datetime(v.valueDate) <= CASE WHEN datetime('now') > datetime('now', 'start of month', '+' || (ifnull(p.paymentDay, ${DEF_PAYMENT_DAY}) - 1) || ' days')
-                THEN datetime('now', 'start of month', '+' || (ifnull(p.paymentDay, ${DEF_PAYMENT_DAY}) - 1) || ' days')
-                ELSE datetime('now', '-1 months', 'start of month', '+' || (ifnull(p.paymentDay, ${DEF_PAYMENT_DAY}) - 1) || ' days') END
-    GROUP BY v.metersId
-    """
-    //.trimIndent()
-    //.replace("\n\\s+".toRegex(), "")
-
-        const val TMDB_BASE_URL = "https://api.themoviedb.org/3/"
-
-        private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
-        private const val IMAGE_SIZE_W185 = "w185"
-        private const val IMAGE_SIZE_W780 = "w780"
-
-        const val CAST_AVATAR_URL = IMAGE_BASE_URL + IMAGE_SIZE_W185
-        const val CAST_IMDB_URL = "https://www.imdb.com/name/"
-        const val POSTER_URL = IMAGE_BASE_URL + IMAGE_SIZE_W185
-        const val BACKDROP_URL = IMAGE_BASE_URL + IMAGE_SIZE_W780
-
-     */
 }

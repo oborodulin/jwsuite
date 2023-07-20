@@ -24,10 +24,10 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalTerritoryDataSource {
     // Territories:
-    override fun getCongregationTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
-        territoryDao.findByCongregationId(congregationId, isPrivateSector)
+    override fun getCongregationTerritories(congregationId: UUID) =
+        territoryDao.findByCongregationId(congregationId)
 
-    override fun getFavoriteCongregationTerritories(isPrivateSector: Boolean?) = territoryDao.findByFavoriteCongregation(isPrivateSector)
+    override fun getFavoriteCongregationTerritories() = territoryDao.findByFavoriteCongregation()
 
     override fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID) =
         territoryDao.findTerritoryDistrictsByPrivateSectorMarkAndCongregationId(
@@ -51,6 +51,15 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     ) = territoryDao.findByMicrodistrictIdAndPrivateSectorMarkAndCongregationId(
         microdistrictId, isPrivateSector, congregationId
     )
+
+    override fun getHandOutTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
+        territoryDao.findHandOutTerritories(congregationId, isPrivateSector)
+
+    override fun getAtWorkTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
+        territoryDao.findAtWorkTerritories(congregationId, isPrivateSector)
+
+    override fun getIdleTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
+        territoryDao.findIdleTerritories(congregationId, isPrivateSector)
 
     //override fun getTerritoryInfo(territoryId: UUID) = territoryDao.findInfoByTerritoryId(territoryId)
 

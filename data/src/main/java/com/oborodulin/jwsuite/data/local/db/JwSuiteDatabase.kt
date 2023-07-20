@@ -41,8 +41,9 @@ private const val TAG = "JwSuiteDatabase"
         GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
-        TerritoryPrivateSectorView::class,
+        TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryDistrictView::class,
+        TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class
         //TerritoryInfoView::class
     ],
@@ -445,24 +446,30 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
+            // Year Mu
+            val yearMu = AppSettingEntity.yearMuParam(context)
+            db.insert(
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(monthMu)
+            )
             // Person Num MU
             val personNumMu = AppSettingEntity.personNumMuParam(context)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(personNumMu)
             )
-            // Territory Total Processing Period
-            val territoryTotalProcessingPeriod =
-                AppSettingEntity.territoryTotalProcessingPeriodParam(context)
-            db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(territoryTotalProcessingPeriod)
-            )
             // Territory Processing Period
-            val territoryProcessingPeriod = AppSettingEntity.territoryProcessingPeriodParam(context)
+            val territoryProcessingPeriod =
+                AppSettingEntity.territoryProcessingPeriodParam(context)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryProcessingPeriod)
+            )
+            // Territory At Hand Period
+            val territoryAtHandPeriod = AppSettingEntity.territoryAtHandPeriodParam(context)
+            db.insert(
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(territoryAtHandPeriod)
             )
             // Territory Rooms Limit
             val territoryRoomsLimit = AppSettingEntity.territoryRoomsLimitParam(context)
@@ -476,27 +483,28 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryMaxRoomsParam)
             )
-            // Territory Settling Period
-            val territorySettlingPeriod = AppSettingEntity.territorySettlingPeriodParam(context)
+            // Territory Idle Period
+            val territoryIdlePeriod = AppSettingEntity.territoryIdlePeriodParam(context)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(territorySettlingPeriod)
+                Mapper.toContentValues(territoryIdlePeriod)
             )
             Timber.tag(TAG).i("Default app parameters imported")
             jsonLogger?.let {
                 Timber.tag(TAG)
                     .i(
-                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"personNumMu\": {%s}, \"territoryTotalProcessingPeriod\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territorySettlingPeriod\": {%s}}",
+                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
                         it.toJson(lang),
                         it.toJson(currencyCode),
                         it.toJson(dayMu),
                         it.toJson(monthMu),
+                        it.toJson(yearMu),
                         it.toJson(personNumMu),
-                        it.toJson(territoryTotalProcessingPeriod),
                         it.toJson(territoryProcessingPeriod),
+                        it.toJson(territoryAtHandPeriod),
                         it.toJson(territoryRoomsLimit),
                         it.toJson(territoryMaxRoomsParam),
-                        it.toJson(territorySettlingPeriod)
+                        it.toJson(territoryIdlePeriod)
                     )
             }
         }

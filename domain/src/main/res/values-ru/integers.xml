@@ -1,13 +1,13 @@
 <resources>
     <!--Параметры приложения -->
     <!--год -->
-    <integer name="territory_total_processing_period">1</integer>
+    <integer name="territory_processing_period">1</integer>
     <!--мес -->
-    <integer name="territory_processing_period">4</integer>
-    <!--шт -->
+    <integer name="territory_at_hand_period">4</integer>
+    <!--кв -->
     <integer name="territory_rooms_limit">75</integer>
-    <!--шт -->
+    <!--кв -->
     <integer name="territory_max_rooms">144</integer>
     <!--мес -->
-    <integer name="territory_settling_period">3</integer>
+    <integer name="territory_idle_period">3</integer>
 </resources>

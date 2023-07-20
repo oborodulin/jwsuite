@@ -12,7 +12,6 @@ data class Territory(
     val microdistrictId: UUID? = null,
     val microdistrictShortName: String?,
     val territoryNum: Int,
-    val isPrivateSector: Boolean = false,
     val isBusiness: Boolean = false,
     val isGroupMinistry: Boolean = false,
     val isInPerimeter: Boolean = false,
@@ -23,14 +22,18 @@ data class Territory(
     val houses: MutableList<House> = mutableListOf(),
     val entrances: MutableList<Entrance> = mutableListOf(),
     val floors: MutableList<Floor> = mutableListOf(),
-    val rooms: MutableList<Room> = mutableListOf()
+    val rooms: MutableList<Room> = mutableListOf(),
+    val member: Member? = null,
+    val congregationId: UUID? = null,
+    val isPrivateSector: Boolean? = null,
+    val expiredDays: Int? = null
 ) : DomainModel() {
     val cardNum =
-        "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}".plus(
-            (if (microdistrictShortName != null) ".$microdistrictShortName"
-            else if (districtShortName != null) ".$districtShortName"
-            else if (locality.id != congregation.locality.id) ".${locality.localityShortName}" else "").plus(
-                "-${territoryNum}"
-            )
-        )
+        "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}".plus("-${territoryNum}")
+    val cardLocation =
+        "[".plus(if (locality.id != congregation.locality.id) "${locality.localityShortName}:" else "")
+            .plus(if (!districtShortName.isNullOrEmpty()) "$districtShortName:" else "")
+            .plus(if (!microdistrictShortName.isNullOrEmpty()) "$microdistrictShortName]" else "]")
+            .replace("[]", "")
+            .replace(":]", "]")
 }

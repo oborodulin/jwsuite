@@ -50,8 +50,8 @@ class TerritoriesRepositoryImpl @Inject constructor(
             districtId, isPrivateSector, congregationId
         )
         TerritoryDistrictType.ALL -> when (congregationId) {
-            null -> localTerritoryDataSource.getFavoriteCongregationTerritories(isPrivateSector)
-            else -> localTerritoryDataSource.getCongregationTerritories(congregationId, isPrivateSector)
+            null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
+            else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
         }
     }.map(mappers.territoryViewListToTerritoriesListMapper::map)
 

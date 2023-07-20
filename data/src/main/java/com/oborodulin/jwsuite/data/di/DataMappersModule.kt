@@ -77,6 +77,9 @@ import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityToRoomMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomToRoomEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomsListToRoomEntityListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesAtWorkViewToTerritoryMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesHandOutViewToTerritoryMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesIdleViewToTerritoryMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesListToTerritoryEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoriesListToTerritoryCategoryEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryEntityListToTerritoryCategoriesListMapper
@@ -714,12 +717,11 @@ object DataMappersModule {
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
         localityMapper: GeoLocalityViewToGeoLocalityMapper
-    ): TerritoryViewToTerritoryMapper =
-        TerritoryViewToTerritoryMapper(
-            congregationMapper = congregationMapper,
-            territoryCategoryMapper = territoryCategoryMapper,
-            localityMapper = localityMapper
-        )
+    ): TerritoryViewToTerritoryMapper = TerritoryViewToTerritoryMapper(
+        congregationMapper = congregationMapper,
+        territoryCategoryMapper = territoryCategoryMapper,
+        localityMapper = localityMapper
+    )
 
     @Singleton
     @Provides
@@ -738,6 +740,46 @@ object DataMappersModule {
 
     @Singleton
     @Provides
+    fun provideTerritoriesAtWorkViewToTerritoryMapper(
+        congregationMapper: CongregationViewToCongregationMapper,
+        territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        memberMapper: MemberViewToMemberMapper
+    ): TerritoriesAtWorkViewToTerritoryMapper = TerritoriesAtWorkViewToTerritoryMapper(
+        congregationMapper = congregationMapper,
+        territoryCategoryMapper = territoryCategoryMapper,
+        localityMapper = localityMapper,
+        memberMapper = memberMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideTerritoriesHandOutViewToTerritoryMapper(
+        congregationMapper: CongregationViewToCongregationMapper,
+        territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        memberMapper: MemberViewToMemberMapper
+    ): TerritoriesHandOutViewToTerritoryMapper = TerritoriesHandOutViewToTerritoryMapper(
+        congregationMapper = congregationMapper,
+        territoryCategoryMapper = territoryCategoryMapper,
+        localityMapper = localityMapper,
+        memberMapper = memberMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideTerritoriesIdleViewToTerritoryMapper(
+        congregationMapper: CongregationViewToCongregationMapper,
+        territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper
+    ): TerritoriesIdleViewToTerritoryMapper = TerritoriesIdleViewToTerritoryMapper(
+        congregationMapper = congregationMapper,
+        territoryCategoryMapper = territoryCategoryMapper,
+        localityMapper = localityMapper
+    )
+
+    @Singleton
+    @Provides
     fun provideTerritoryMappers(
         territoryViewListToTerritoriesListMapper: TerritoryViewListToTerritoriesListMapper,
         territoryViewToTerritoryMapper: TerritoryViewToTerritoryMapper,
@@ -750,7 +792,10 @@ object DataMappersModule {
         houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
         entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
         floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
-        roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper
+        roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
+        territoriesAtWorkViewToTerritoryMapper: TerritoriesAtWorkViewToTerritoryMapper,
+        territoriesHandOutViewToTerritoryMapper: TerritoriesHandOutViewToTerritoryMapper,
+        territoriesIdleViewToTerritoryMapper: TerritoriesIdleViewToTerritoryMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,
         territoryViewToTerritoryMapper,
@@ -763,7 +808,10 @@ object DataMappersModule {
         houseViewListToHousesListMapper,
         entranceEntityListToEntrancesListMapper,
         floorEntityListToFloorsListMapper,
-        roomEntityListToRoomsListMapper
+        roomEntityListToRoomsListMapper,
+        territoriesAtWorkViewToTerritoryMapper,
+        territoriesHandOutViewToTerritoryMapper,
+        territoriesIdleViewToTerritoryMapper
     )
 
 }

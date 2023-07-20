@@ -45,20 +45,25 @@ data class AppSettingEntity(
             paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.month_unit)
         )
 
+        fun yearMuParam(ctx: Context) = defaultParam(
+            paramName = AppSettingParam.YEAR_MU,
+            paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.year_unit)
+        )
+
         fun personNumMuParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.PERSON_NUM_MU,
             paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.person_unit)
         )
 
-        fun territoryTotalProcessingPeriodParam(ctx: Context) = defaultParam(
-            paramName = AppSettingParam.TERRITORY_TOTAL_PROCESSING_PERIOD,
-            paramValue = ctx.resources.getInteger(com.oborodulin.jwsuite.domain.R.integer.territory_total_processing_period)
-                .toString()
-        )
-
         fun territoryProcessingPeriodParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.TERRITORY_PROCESSING_PERIOD,
             paramValue = ctx.resources.getInteger(com.oborodulin.jwsuite.domain.R.integer.territory_processing_period)
+                .toString()
+        )
+
+        fun territoryAtHandPeriodParam(ctx: Context) = defaultParam(
+            paramName = AppSettingParam.TERRITORY_AT_HAND_PERIOD,
+            paramValue = ctx.resources.getInteger(com.oborodulin.jwsuite.domain.R.integer.territory_at_hand_period)
                 .toString()
         )
 
@@ -74,9 +79,9 @@ data class AppSettingEntity(
                 .toString()
         )
 
-        fun territorySettlingPeriodParam(ctx: Context) = defaultParam(
-            paramName = AppSettingParam.TERRITORY_SETTLING_PERIOD,
-            paramValue = ctx.resources.getInteger(com.oborodulin.jwsuite.domain.R.integer.territory_settling_period)
+        fun territoryIdlePeriodParam(ctx: Context) = defaultParam(
+            paramName = AppSettingParam.TERRITORY_IDLE_PERIOD,
+            paramValue = ctx.resources.getInteger(com.oborodulin.jwsuite.domain.R.integer.territory_idle_period)
                 .toString()
         )
     }

@@ -17,5 +17,9 @@ data class Member(
     val dateOfBaptism: OffsetDateTime? = null,
     val inactiveDate: OffsetDateTime? = null,
 ) : DomainModel() {
-    val fullName = "$surname $memberName $patronymic ".trim().plus("[${pseudonym}]")
+    val fullName = "$surname $memberName $patronymic ".trim().plus(" [${pseudonym}]".trim())
+    val shortName = "$surname ".trim()
+        .plus(if (!memberName.isNullOrEmpty()) "${memberName[0]}." else "")
+        .plus(if (!patronymic.isNullOrEmpty()) "${patronymic[0]}." else "")
+        .plus(" [${pseudonym}]".trim())
 }

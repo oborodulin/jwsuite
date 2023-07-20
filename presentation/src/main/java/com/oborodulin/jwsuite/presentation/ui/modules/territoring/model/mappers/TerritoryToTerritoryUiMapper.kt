@@ -21,13 +21,12 @@ class TerritoryToTerritoryUiMapper(
             microdistrictId = input.microdistrictId,
             microdistrictShortName = input.microdistrictShortName,
             territoryNum = input.territoryNum,
-            isPrivateSector = input.isPrivateSector,
             isBusiness = input.isBusiness,
             isGroupMinistry = input.isGroupMinistry,
             isInPerimeter = input.isInPerimeter,
             isProcessed = input.isProcessed,
             isActive = input.isActive,
-            territoryDesc = input.territoryDesc
+            territoryDesc = input.territoryDesc,
         )
         territoryUi.id = input.id
         return territoryUi

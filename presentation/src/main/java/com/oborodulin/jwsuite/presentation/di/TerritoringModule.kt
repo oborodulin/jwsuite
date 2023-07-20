@@ -14,6 +14,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityToL
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
@@ -87,11 +88,13 @@ object TerritoringModule {
     fun provideTerritoryToTerritoriesListItemMapper(
         congregationMapper: CongregationToCongregationUiMapper,
         territoryCategoryMapper: TerritoryCategoryToTerritoryCategoryUiMapper,
-        localityMapper: LocalityToLocalityUiMapper
+        localityMapper: LocalityToLocalityUiMapper,
+        memberMapper: MemberToMemberUiMapper
     ): TerritoryToTerritoriesListItemMapper = TerritoryToTerritoriesListItemMapper(
         congregationMapper = congregationMapper,
         territoryCategoryMapper = territoryCategoryMapper,
-        localityMapper = localityMapper
+        localityMapper = localityMapper,
+        memberMapper = memberMapper
     )
 
     @Singleton

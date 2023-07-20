@@ -12,13 +12,19 @@
     <string name="btn_cancel_lbl">Отменить</string>
     <string name="btn_ok_lbl">ОК</string>
     <string name="btn_add_lbl">Добавить</string>
+    <string name="btn_next_lbl">Далее</string>
+    <string name="btn_close_lbl">Закрыть</string>
     <!--диалог -->
     <string name="dlg_confirm_title">Подтверждение</string>
 
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
+    <string name="year_unit">г.</string>
     <string name="person_unit">чел.</string>
+    <string name="house_unit">д.</string>
+    <string name="room_unit">кв.</string>
+    <string name="quantity_unit">шт</string>
     <string name="m2_unit">м2</string>
     <string name="m3_unit">м3</string>
     <string name="kWh_unit">КВт*ч</string>

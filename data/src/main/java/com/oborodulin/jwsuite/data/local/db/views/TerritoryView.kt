@@ -6,7 +6,6 @@ import com.oborodulin.jwsuite.data.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryCategoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
-import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.PX_CONGREGATION_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY
 
@@ -23,18 +22,12 @@ ORDER BY cv.territoryMark, t.territoryNum
 """
 )
 class TerritoryView(
-    @Embedded
-    val territory: TerritoryEntity,
-    @Embedded
-    val congregation: CongregationView,
-    @Embedded
-    val territoryCategory: TerritoryCategoryEntity,
-    @Embedded
-    val locality: GeoLocalityView,
-    @Embedded
-    val localityDistrict: GeoLocalityDistrictEntity?,
-    @Embedded
-    val microdistrict: GeoMicrodistrictEntity?
+    @Embedded val territory: TerritoryEntity,
+    @Embedded val congregation: CongregationView,
+    @Embedded val territoryCategory: TerritoryCategoryEntity,
+    @Embedded val locality: GeoLocalityView,
+    @Embedded val localityDistrict: GeoLocalityDistrictEntity?,
+    @Embedded val microdistrict: GeoMicrodistrictEntity?
 ) {
     companion object {
         const val VIEW_NAME = "territories_view"

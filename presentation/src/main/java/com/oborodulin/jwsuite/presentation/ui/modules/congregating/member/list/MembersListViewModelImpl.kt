@@ -116,8 +116,8 @@ class MembersListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
-                surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
+                memberFullName = ctx.resources.getString(R.string.def_ivanov_member_name),
+                memberShortName = ctx.resources.getString(R.string.def_ivanov_member_surname),
                 patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
                 pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
                 dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
@@ -126,8 +126,8 @@ class MembersListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
-                memberName = ctx.resources.getString(R.string.def_tarasova_member_name),
-                surname = ctx.resources.getString(R.string.def_tarasova_member_surname),
+                memberFullName = ctx.resources.getString(R.string.def_tarasova_member_name),
+                memberShortName = ctx.resources.getString(R.string.def_tarasova_member_surname),
                 patronymic = ctx.resources.getString(R.string.def_tarasova_member_patronymic),
                 pseudonym = ctx.resources.getString(R.string.def_tarasova_member_pseudonym),
                 dateOfBirth = Utils.toOffsetDateTime("1979-08-01T14:29:10.212+03:00")
