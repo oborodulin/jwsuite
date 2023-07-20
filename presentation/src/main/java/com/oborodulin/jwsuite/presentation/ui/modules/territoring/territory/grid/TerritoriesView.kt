@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
+import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
@@ -61,7 +62,8 @@ fun TerritoriesView(
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
     territoryInput: TerritoryInput? = null,
-    districtName: String? = null,
+    territoryDistrictType: TerritoryDistrictType,
+    districtId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("TerritoriesView(...) called")
@@ -69,13 +71,20 @@ fun TerritoriesView(
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
-    LaunchedEffect(congregationId) {
+    LaunchedEffect(
+        congregationId,
+        territoryProcessType,
+        territoryDistrictType,
+        districtId,
+        isPrivateSector
+    ) {
         Timber.tag(TAG).d("TerritoriesView: LaunchedEffect() BEFORE collect ui state flow")
         territoriesGridViewModel.submitAction(
             TerritoriesGridUiAction.Load(
                 congregationId = congregationId,
                 territoryProcessType = territoryProcessType,
-                districtName = districtName,
+                territoryDistrictType = territoryDistrictType,
+                districtId = districtId,
                 isPrivateSector = isPrivateSector
             )
         )

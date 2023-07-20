@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
+import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
@@ -44,7 +45,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoriesGridUiAction.Load -> {
-                loadTerritories(action.congregationId)
+                loadTerritories(
+                    action.congregationId,
+                    action.territoryProcessType, action.territoryDistrictType,
+                    action.districtId, action.isPrivateSector
+                )
             }
 
             is TerritoriesGridUiAction.EditTerritory -> {
@@ -62,10 +67,19 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadTerritories(congregationId: UUID?): Job {
+    private fun loadTerritories(
+        congregationId: UUID?,
+        territoryProcessType: TerritoryProcessType, territoryDistrictType: TerritoryDistrictType,
+        districtId: UUID? = null, isPrivateSector: Boolean = false
+    ): Job {
         Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getTerritoriesUseCase.execute(GetTerritoriesUseCase.Request(congregationId))
+            useCases.getTerritoriesUseCase.execute(
+                GetTerritoriesUseCase.Request(
+                    congregationId, territoryProcessType, territoryDistrictType,
+                    districtId, isPrivateSector
+                )
+            )
                 .map {
                     listConverter.convert(it)
                 }
@@ -106,10 +120,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 congregation = CongregationViewModelImpl.previewUiModel(ctx),
                 territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
-                localityDistrictId = UUID.randomUUID(),
-                districtShortName = ctx.resources.getString(R.string.def_don_short_name),
-                microdistrictId = UUID.randomUUID(),
-                microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
+                cardNum = CongregationViewModelImpl.previewUiModel(ctx).territoryMark,
+                cardLocation = LocalityViewModelImpl.previewUiModel(ctx).localityShortName,
                 territoryNum = 1,
                 isPrivateSector = false,
                 isBusiness = false,
@@ -124,10 +136,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 congregation = CongregationViewModelImpl.previewUiModel(ctx),
                 territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
-                localityDistrictId = UUID.randomUUID(),
-                districtShortName = ctx.resources.getString(R.string.def_budyonovsky_short_name),
-                microdistrictId = UUID.randomUUID(),
-                microdistrictShortName = ctx.resources.getString(R.string.def_cvetochny_short_name),
+                cardNum = CongregationViewModelImpl.previewUiModel(ctx).territoryMark,
+                cardLocation = LocalityViewModelImpl.previewUiModel(ctx).localityShortName,
                 territoryNum = 2,
                 isPrivateSector = false,
                 isBusiness = false,

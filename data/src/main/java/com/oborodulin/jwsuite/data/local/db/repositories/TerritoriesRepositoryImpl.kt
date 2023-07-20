@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerr
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -34,26 +35,30 @@ class TerritoriesRepositoryImpl @Inject constructor(
         localTerritoryDataSource.getCongregationTerritoryDistricts(isPrivateSector, congregationId)
             .map(mappers.territoryDistrictViewListToTerritoryDistrictListMapper::map)
 
-    override fun getDistrictTerritories(
-        territoryDistrictType: TerritoryDistrictType, districtId: UUID, isPrivateSector: Boolean,
+    override fun getTerritories(
+        territoryProcessType: TerritoryProcessType,
+        territoryDistrictType: TerritoryDistrictType,
+        districtId: UUID,
+        isPrivateSector: Boolean,
         congregationId: UUID?
-    ) = when (territoryDistrictType) {
-        TerritoryDistrictType.LOCALITY -> localTerritoryDataSource.getLocalityTerritories(
-            districtId, isPrivateSector, congregationId
-        )
+    ) = when (territoryProcessType) {
+        TerritoryProcessType.HAND_OUT -> localTerritoryDataSource.getHandOutTerritories(
+            congregationId, isPrivateSector, territoryDistrictType, districtId
+        ).map(mappers.territoriesHandOutViewListToTerritoriesListMapper::map)
 
-        TerritoryDistrictType.LOCALITY_DISTRICT -> localTerritoryDataSource.getLocalityDistrictTerritories(
-            districtId, isPrivateSector, congregationId
-        )
+        TerritoryProcessType.AT_WORK -> localTerritoryDataSource.getAtWorkTerritories(
+            congregationId, isPrivateSector, territoryDistrictType, districtId
+        ).map(mappers.territoriesAtWorkViewListToTerritoriesListMapper::map)
 
-        TerritoryDistrictType.MICRO_DISTRICT -> localTerritoryDataSource.getMicrodistrictTerritories(
-            districtId, isPrivateSector, congregationId
-        )
-        TerritoryDistrictType.ALL -> when (congregationId) {
+        TerritoryProcessType.IDLE -> localTerritoryDataSource.getIdleTerritories(
+            congregationId, isPrivateSector, territoryDistrictType, districtId
+        ).map(mappers.territoriesIdleViewListToTerritoriesListMapper::map)
+
+        TerritoryProcessType.ALL -> when (congregationId) {
             null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
             else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
-        }
-    }.map(mappers.territoryViewListToTerritoriesListMapper::map)
+        }.map(mappers.territoryViewListToTerritoriesListMapper::map)
+    }
 
     override fun getTerritoryStreets(territoryId: UUID) =
         localGeoStreetDataSource.getTerritoryStreets(territoryId)

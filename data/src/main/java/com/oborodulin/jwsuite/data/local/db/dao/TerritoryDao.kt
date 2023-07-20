@@ -8,12 +8,13 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryDistrictView
-import com.oborodulin.jwsuite.data.local.db.views.TerritoryPrivateSectorView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
-import com.oborodulin.jwsuite.data.util.Constants
-import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
-import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY
+import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
+import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
+import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_VAL
+import com.oborodulin.jwsuite.data.util.Constants.TDT_MICRO_DISTRICT_VAL
+import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -71,40 +72,6 @@ interface TerritoryDao {
     //-----------------------------
     @Query(
         """
-    SELECT * FROM ${TerritoriesHandOutView.VIEW_NAME} 
-    WHERE ctCongregationsId = :congregationId AND isPrivateSector = ifnull(:isPrivateSector, isPrivateSector) AND ${PX_LOCALITY}localityLocCode = :locale
-    """
-    )
-    fun findHandOutTerritories(
-        congregationId: UUID, isPrivateSector: Boolean? = null,
-        locale: String? = Locale.getDefault().language
-    ): Flow<List<TerritoriesHandOutView>>
-
-    @Query(
-        """
-    SELECT * FROM ${TerritoriesAtWorkView.VIEW_NAME} 
-    WHERE ctCongregationsId = :congregationId AND isPrivateSector = ifnull(:isPrivateSector, isPrivateSector) AND ${PX_LOCALITY}localityLocCode = :locale
-    """
-    )
-    fun findAtWorkTerritories(
-        congregationId: UUID, isPrivateSector: Boolean? = null,
-        locale: String? = Locale.getDefault().language
-    ): Flow<List<TerritoriesAtWorkView>>
-
-    @Query(
-        """
-    SELECT * FROM ${TerritoriesIdleView.VIEW_NAME} 
-    WHERE ctCongregationsId = :congregationId AND isPrivateSector = ifnull(:isPrivateSector, isPrivateSector) AND ${PX_LOCALITY}localityLocCode = :locale
-    """
-    )
-    fun findIdleTerritories(
-        congregationId: UUID, isPrivateSector: Boolean? = null,
-        locale: String? = Locale.getDefault().language
-    ): Flow<List<TerritoriesIdleView>>
-
-    //-----------------------------
-    @Query(
-        """
     SELECT td.* 
     FROM ${TerritoryDistrictView.VIEW_NAME} td LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = td.congregationId
     WHERE td.isPrivateSector = :isPrivateSector AND td.congregationId = ifnull(:congregationId, fcv.congregationId) 
@@ -114,41 +81,57 @@ interface TerritoryDao {
         isPrivateSector: Boolean, congregationId: UUID? = null
     ): Flow<List<TerritoryDistrictView>>
 
+    //-----------------------------
     @Query(
         """
-    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.tLocalitiesId = :localityId 
-        AND tpsv.isPrivateSector = :isPrivateSector AND t.isActive = $DB_TRUE AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL 
+    SELECT t.* FROM ${TerritoriesHandOutView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
+    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.isPrivateSector = ifnull(:isPrivateSector, t.isPrivateSector) 
+        AND t.${PX_LOCALITY}localityLocCode = :locale
+        AND ((:territoryDistrictType = $TDT_ALL_VAL) OR
+            (:territoryDistrictType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :districtId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
+            (:territoryDistrictType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :districtId AND t.tMicrodistrictsId IS NULL) OR
+            (:territoryDistrictType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :districtId))
     """
     )
-    fun findByLocalityIdAndPrivateSectorMarkAndCongregationId(
-        localityId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
-    ): Flow<List<TerritoryView>>
+    fun findHandOutTerritories(
+        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID? = null,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoriesHandOutView>>
 
     @Query(
         """
-    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
-        AND t.isActive = $DB_TRUE AND t.tLocalityDistrictsId = :localityDistrictId AND t.tMicrodistrictsId IS NULL 
+    SELECT t.* FROM ${TerritoriesAtWorkView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
+    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.isPrivateSector = ifnull(:isPrivateSector, t.isPrivateSector) 
+        AND t.${PX_LOCALITY}localityLocCode = :locale
+        AND ((:territoryDistrictType = $TDT_ALL_VAL) OR
+            (:territoryDistrictType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :districtId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
+            (:territoryDistrictType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :districtId AND t.tMicrodistrictsId IS NULL) OR
+            (:territoryDistrictType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :districtId))
     """
     )
-    fun findByLocalityDistrictIdAndPrivateSectorMarkAndCongregationId(
-        localityDistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
-    ): Flow<List<TerritoryView>>
+    fun findAtWorkTerritories(
+        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID? = null,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoriesAtWorkView>>
 
     @Query(
         """
-    SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = t.territoryId
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.tCongregationsId = ifnull(:congregationId, fcv.congregationId) AND tpsv.isPrivateSector = :isPrivateSector  
-        AND t.isActive = $DB_TRUE AND t.tMicrodistrictsId = :microdistrictId 
+    SELECT t.* FROM ${TerritoriesIdleView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
+    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.isPrivateSector = ifnull(:isPrivateSector, t.isPrivateSector) 
+        AND t.${PX_LOCALITY}localityLocCode = :locale
+        AND ((:territoryDistrictType = $TDT_ALL_VAL) OR
+            (:territoryDistrictType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :districtId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
+            (:territoryDistrictType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :districtId AND t.tMicrodistrictsId IS NULL) OR
+            (:territoryDistrictType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :districtId))
     """
     )
-    fun findByMicrodistrictIdAndPrivateSectorMarkAndCongregationId(
-        microdistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
-    ): Flow<List<TerritoryView>>
+    fun findIdleTerritories(
+        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID? = null,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoriesIdleView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

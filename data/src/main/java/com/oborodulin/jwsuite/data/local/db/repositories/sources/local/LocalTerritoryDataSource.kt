@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryDistrictView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
+import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -22,26 +23,20 @@ interface LocalTerritoryDataSource {
         isPrivateSector: Boolean, congregationId: UUID
     ): Flow<List<TerritoryDistrictView>>
 
-    fun getLocalityTerritories(
-        localityId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
-    ): Flow<List<TerritoryView>>
+    fun getHandOutTerritories(
+        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID? = null
+    ): Flow<List<TerritoriesHandOutView>>
 
-    fun getLocalityDistrictTerritories(
-        localityDistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
-    ): Flow<List<TerritoryView>>
+    fun getAtWorkTerritories(
+        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID? = null
+    ): Flow<List<TerritoriesAtWorkView>>
 
-    fun getMicrodistrictTerritories(
-        microdistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
-    ): Flow<List<TerritoryView>>
-
-    fun getHandOutTerritories(congregationId: UUID, isPrivateSector: Boolean? = null):
-            Flow<List<TerritoriesHandOutView>>
-
-    fun getAtWorkTerritories(congregationId: UUID, isPrivateSector: Boolean? = null):
-            Flow<List<TerritoriesAtWorkView>>
-
-    fun getIdleTerritories(congregationId: UUID, isPrivateSector: Boolean? = null):
-            Flow<List<TerritoriesIdleView>>
+    fun getIdleTerritories(
+        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID? = null
+    ): Flow<List<TerritoriesIdleView>>
 
     //    fun getTerritoryInfo(territoryId: UUID): Flow<List<TerritoryView>>
     fun getTerritory(territoryId: UUID): Flow<TerritoryView>

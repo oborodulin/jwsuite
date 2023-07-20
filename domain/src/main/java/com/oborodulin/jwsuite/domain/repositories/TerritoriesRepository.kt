@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.model.TerritoryDistrict
 import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -16,9 +17,9 @@ interface TerritoriesRepository {
     fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID):
             Flow<List<TerritoryDistrict>>
 
-    fun getDistrictTerritories(
-        territoryDistrictType: TerritoryDistrictType, districtId: UUID, isPrivateSector: Boolean,
-        congregationId: UUID? = null
+    fun getTerritories(
+        territoryProcessType: TerritoryProcessType, territoryDistrictType: TerritoryDistrictType,
+        districtId: UUID, isPrivateSector: Boolean, congregationId: UUID? = null
     ): Flow<List<Territory>>
 
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreet>>

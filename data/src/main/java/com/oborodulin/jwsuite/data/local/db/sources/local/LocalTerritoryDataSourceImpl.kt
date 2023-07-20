@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -34,32 +35,26 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
             isPrivateSector, congregationId
         )
 
-    override fun getLocalityTerritories(
-        localityId: UUID, isPrivateSector: Boolean, congregationId: UUID?
-    ) = territoryDao.findByLocalityIdAndPrivateSectorMarkAndCongregationId(
-        localityId, isPrivateSector, congregationId
+    override fun getHandOutTerritories(
+        congregationId: UUID?, isPrivateSector: Boolean?,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID?
+    ) = territoryDao.findHandOutTerritories(
+        congregationId, isPrivateSector, territoryDistrictType, districtId
     )
 
-    override fun getLocalityDistrictTerritories(
-        localityDistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID?
-    ) = territoryDao.findByLocalityDistrictIdAndPrivateSectorMarkAndCongregationId(
-        localityDistrictId, isPrivateSector, congregationId
+    override fun getAtWorkTerritories(
+        congregationId: UUID?, isPrivateSector: Boolean?,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID?
+    ) = territoryDao.findAtWorkTerritories(
+        congregationId, isPrivateSector, territoryDistrictType, districtId
     )
 
-    override fun getMicrodistrictTerritories(
-        microdistrictId: UUID, isPrivateSector: Boolean, congregationId: UUID?
-    ) = territoryDao.findByMicrodistrictIdAndPrivateSectorMarkAndCongregationId(
-        microdistrictId, isPrivateSector, congregationId
+    override fun getIdleTerritories(
+        congregationId: UUID?, isPrivateSector: Boolean?,
+        territoryDistrictType: TerritoryDistrictType, districtId: UUID?
+    ) = territoryDao.findIdleTerritories(
+        congregationId, isPrivateSector, territoryDistrictType, districtId
     )
-
-    override fun getHandOutTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
-        territoryDao.findHandOutTerritories(congregationId, isPrivateSector)
-
-    override fun getAtWorkTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
-        territoryDao.findAtWorkTerritories(congregationId, isPrivateSector)
-
-    override fun getIdleTerritories(congregationId: UUID, isPrivateSector: Boolean?) =
-        territoryDao.findIdleTerritories(congregationId, isPrivateSector)
 
     //override fun getTerritoryInfo(territoryId: UUID) = territoryDao.findInfoByTerritoryId(territoryId)
 

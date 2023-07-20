@@ -77,8 +77,11 @@ import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityToRoomMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomToRoomEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomsListToRoomEntityListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesAtWorkViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesAtWorkViewToTerritoryMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesHandOutViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesHandOutViewToTerritoryMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesIdleViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesIdleViewToTerritoryMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesListToTerritoryEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoriesListToTerritoryCategoryEntityListMapper
@@ -754,6 +757,11 @@ object DataMappersModule {
 
     @Singleton
     @Provides
+    fun provideTerritoriesAtWorkViewListToTerritoriesListMapper(mapper: TerritoriesAtWorkViewToTerritoryMapper): TerritoriesAtWorkViewListToTerritoriesListMapper =
+        TerritoriesAtWorkViewListToTerritoriesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideTerritoriesHandOutViewToTerritoryMapper(
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
@@ -768,6 +776,11 @@ object DataMappersModule {
 
     @Singleton
     @Provides
+    fun provideTerritoriesHandOutViewListToTerritoriesListMapper(mapper: TerritoriesHandOutViewToTerritoryMapper): TerritoriesHandOutViewListToTerritoriesListMapper =
+        TerritoriesHandOutViewListToTerritoriesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideTerritoriesIdleViewToTerritoryMapper(
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
@@ -777,6 +790,11 @@ object DataMappersModule {
         territoryCategoryMapper = territoryCategoryMapper,
         localityMapper = localityMapper
     )
+
+    @Singleton
+    @Provides
+    fun provideTerritoriesIdleViewListToTerritoriesListMapper(mapper: TerritoriesIdleViewToTerritoryMapper): TerritoriesIdleViewListToTerritoriesListMapper =
+        TerritoriesIdleViewListToTerritoriesListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -793,9 +811,9 @@ object DataMappersModule {
         entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
         floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
         roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
-        territoriesAtWorkViewToTerritoryMapper: TerritoriesAtWorkViewToTerritoryMapper,
-        territoriesHandOutViewToTerritoryMapper: TerritoriesHandOutViewToTerritoryMapper,
-        territoriesIdleViewToTerritoryMapper: TerritoriesIdleViewToTerritoryMapper
+        territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
+        territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
+        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,
         territoryViewToTerritoryMapper,
@@ -809,9 +827,9 @@ object DataMappersModule {
         entranceEntityListToEntrancesListMapper,
         floorEntityListToFloorsListMapper,
         roomEntityListToRoomsListMapper,
-        territoriesAtWorkViewToTerritoryMapper,
-        territoriesHandOutViewToTerritoryMapper,
-        territoriesIdleViewToTerritoryMapper
+        territoriesAtWorkViewListToTerritoriesListMapper,
+        territoriesHandOutViewListToTerritoriesListMapper,
+        territoriesIdleViewListToTerritoriesListMapper
     )
 
 }
