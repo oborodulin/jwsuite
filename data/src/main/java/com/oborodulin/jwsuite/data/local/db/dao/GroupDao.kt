@@ -4,6 +4,7 @@ import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data.local.db.views.GroupView
+import com.oborodulin.jwsuite.data.util.Constants.PX_GROUP_CONGREGATION
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -12,7 +13,7 @@ import java.util.*
 @Dao
 interface GroupDao {
     // READS:
-    @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY congregationName, groupNum")
+    @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY ${PX_GROUP_CONGREGATION}congregationName, groupNum")
     fun findAll(): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi

@@ -26,6 +26,7 @@ data class Territory(
     val member: Member? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
+    val handOutDays: Int? = null,
     val expiredDays: Int? = null
 ) : DomainModel() {
     val cardNum =

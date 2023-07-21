@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -120,8 +121,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 congregation = CongregationViewModelImpl.previewUiModel(ctx),
                 territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
-                cardNum = CongregationViewModelImpl.previewUiModel(ctx).territoryMark,
-                cardLocation = LocalityViewModelImpl.previewUiModel(ctx).localityShortName,
+                cardNum = ctx.resources.getString(R.string.def_territory1_card_num),
+                cardLocation = ctx.resources.getString(R.string.def_territory1_card_location),
                 territoryNum = 1,
                 isPrivateSector = false,
                 isBusiness = false,
@@ -129,15 +130,15 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 isInPerimeter = false,
                 isProcessed = false,
                 isActive = true,
-                territoryDesc = "возле маг. \"Базилик\""
+                territoryDesc = ctx.resources.getString(R.string.def_territory1_desc)
             ),
             TerritoriesListItem(
                 id = UUID.randomUUID(),
                 congregation = CongregationViewModelImpl.previewUiModel(ctx),
                 territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
-                cardNum = CongregationViewModelImpl.previewUiModel(ctx).territoryMark,
-                cardLocation = LocalityViewModelImpl.previewUiModel(ctx).localityShortName,
+                cardNum = ctx.resources.getString(R.string.def_territory2_card_num),
+                cardLocation = ctx.resources.getString(R.string.def_territory2_card_location),
                 territoryNum = 2,
                 isPrivateSector = false,
                 isBusiness = false,
@@ -145,7 +146,23 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 isInPerimeter = false,
                 isProcessed = false,
                 isActive = true,
-                territoryDesc = "напротив Храма"
+                territoryDesc = ctx.resources.getString(R.string.def_territory2_desc)
+            ),
+            TerritoriesListItem(
+                id = UUID.randomUUID(),
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
+                cardNum = ctx.resources.getString(R.string.def_territory3_card_num),
+                cardLocation = ctx.resources.getString(R.string.def_territory3_card_location),
+                territoryNum = 3,
+                isPrivateSector = false,
+                isBusiness = false,
+                isGroupMinistry = false,
+                isInPerimeter = false,
+                isProcessed = false,
+                isActive = true,
+                territoryDesc = ctx.resources.getString(R.string.def_territory3_desc)
             )
         )
     }

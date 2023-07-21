@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectableGroup
@@ -95,7 +94,15 @@ fun TerritoriesView(
             when (territoryProcessType) {
                 TerritoryProcessType.HAND_OUT ->
                     TerritoriesClickableGrid(
-                        territories = it
+                        territories = it,
+                        territoryInput = territoryInput,
+                        onFavorite = { listItem ->
+                            /*listItem.itemId?.let { id ->
+                                territoriesGridViewModel.submitAction(
+                                    TerritoriesGridUiAction.MakeFavoriteCongregation(id)
+                                )
+                            }*/
+                        }
                     ) { territory ->
                         with(membersListViewModel) {
                             submitAction(MembersListUiAction.LoadByCongregation(territory.id))
@@ -103,7 +110,7 @@ fun TerritoriesView(
                     }
 
                 TerritoryProcessType.AT_WORK ->
-                    TerritoriesList(
+                    TerritoriesClickableGrid(
                         territories = it,
                         territoryInput = territoryInput,
                         onFavorite = { listItem ->
@@ -165,6 +172,8 @@ fun TerritoriesView(
 @Composable
 fun TerritoriesClickableGrid(
     territories: List<TerritoriesListItem>,
+    territoryInput: TerritoryInput?,
+    onFavorite: OnListItemEvent,
     onClick: (TerritoriesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoriesClickableGrid(...) called")
@@ -189,56 +198,12 @@ fun TerritoriesClickableGrid(
                         elevation = CardDefaults.cardElevation(8.dp)
                     ) {
                         Text(
-                            text = territory.headline,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
+                            text = territory.cardNum,
+                            style = MaterialTheme.typography.titleMedium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
-                }
-            }
-        }
-    } else {
-        Text(
-            modifier = Modifier.fillMaxSize(),
-            textAlign = TextAlign.Center,
-            text = stringResource(R.string.territories_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun TerritoriesList(
-    territories: List<TerritoriesListItem>,
-    territoryInput: TerritoryInput?,
-    onFavorite: OnListItemEvent,
-    onClick: (TerritoriesListItem) -> Unit
-) {
-    Timber.tag(TAG).d("TerritoriesList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) } // by
-    if (territories.isNotEmpty()) {
-        LazyColumn(
-            modifier = Modifier
-                .selectableGroup() // Optional, for accessibility purpose
-                .padding(8.dp)
-                .focusable(enabled = true)
-        ) {
-            items(territories.size) { index ->
-                territories[index].let { territory ->
-                    val isSelected = (selectedIndex == index)
-                    TerritoriesListItemComponent(
-                        item = territory,
-                        selected = isSelected,
-                        background = (if (isSelected) Color.LightGray else Color.Transparent),
-                        onFavorite = onFavorite,
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                            onClick(territory)
-                        }
-                    )
                 }
             }
         }
@@ -318,20 +283,6 @@ fun PreviewTerritoriesClickableGrid() {
     JWSuiteTheme {
         Surface {
             TerritoriesClickableGrid(
-                territories = TerritoriesGridViewModelImpl.previewList(LocalContext.current),
-                onClick = {}
-            )
-        }
-    }
-}
-
-@Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun PreviewTerritoriesList() {
-    JWSuiteTheme {
-        Surface {
-            TerritoriesList(
                 territories = TerritoriesGridViewModelImpl.previewList(LocalContext.current),
                 territoryInput = TerritoryInput(UUID.randomUUID()),
                 onFavorite = {},

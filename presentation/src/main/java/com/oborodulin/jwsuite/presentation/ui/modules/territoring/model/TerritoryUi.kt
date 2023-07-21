@@ -28,10 +28,14 @@ fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
     congregation = this.congregation,
     territoryCategory = this.territoryCategory,
     locality = this.locality,
-    localityDistrictId = this.localityDistrictId,
-    districtShortName = this.districtShortName,
-    microdistrictId = this.microdistrictId,
-    microdistrictShortName = this.microdistrictShortName,
+    cardNum = "${this.congregation.territoryMark}${this.territoryCategory.territoryCategoryMark}".plus(
+        "-${this.territoryNum}"
+    ),
+    cardLocation = "[".plus(if (this.locality.id != this.congregation.locality.id) "${this.locality.localityShortName}:" else "")
+        .plus(if (!this.districtShortName.isNullOrEmpty()) "${this.districtShortName}:" else "")
+        .plus(if (!this.microdistrictShortName.isNullOrEmpty()) "${this.microdistrictShortName}]" else "]")
+        .replace("[]", "")
+        .replace(":]", "]"),
     territoryNum = this.territoryNum,
     isPrivateSector = this.isPrivateSector,
     isBusiness = this.isBusiness,

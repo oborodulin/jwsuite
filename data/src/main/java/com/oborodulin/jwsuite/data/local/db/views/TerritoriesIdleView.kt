@@ -13,7 +13,7 @@ SELECT t.*, ct.ctCongregationsId, tps.isPrivateSector
 FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
         ON ct.ctTerritoriesId = t.territoryId AND t.isActive = $DB_TRUE AND t.isProcessed = $DB_TRUE
     JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tps ON tps.territoryId = t.territoryId
-    JOIN ${TerritoryMemberLastReceivingDateView.VIEW_NAME} rld ON rld.territoryId = t.territoryId AND rld.fullIdleMonths < rld.territoryIdlePeriod
+    JOIN ${TerritoryMemberLastReceivingDateView.VIEW_NAME} rld ON rld.tmcTerritoriesId = t.territoryId AND rld.fullIdleMonths < rld.territoryIdlePeriod
 ORDER BY (rld.territoryIdlePeriod - rld.fullIdleMonths)
 """
 )

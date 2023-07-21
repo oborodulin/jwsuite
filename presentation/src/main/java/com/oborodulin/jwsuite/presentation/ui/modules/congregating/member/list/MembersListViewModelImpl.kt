@@ -116,20 +116,48 @@ class MembersListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                memberFullName = ctx.resources.getString(R.string.def_ivanov_member_name),
-                memberShortName = ctx.resources.getString(R.string.def_ivanov_member_surname),
-                patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
-                pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
+                memberFullName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
+                    ctx.resources.getString(
+                        R.string.def_ivanov_member_name
+                    )
+                } ${ctx.resources.getString(R.string.def_ivanov_member_patronymic)} [${
+                    ctx.resources.getString(
+                        R.string.def_ivanov_member_pseudonym
+                    )
+                }]",
+                memberShortName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
+                    ctx.resources.getString(
+                        R.string.def_ivanov_member_name
+                    )[0]
+                }.${ctx.resources.getString(R.string.def_ivanov_member_patronymic)[0]}. [${
+                    ctx.resources.getString(
+                        R.string.def_ivanov_member_pseudonym
+                    )
+                }]",
                 dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
             ),
             MembersListItem(
                 id = UUID.randomUUID(),
                 group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
-                memberFullName = ctx.resources.getString(R.string.def_tarasova_member_name),
-                memberShortName = ctx.resources.getString(R.string.def_tarasova_member_surname),
-                patronymic = ctx.resources.getString(R.string.def_tarasova_member_patronymic),
-                pseudonym = ctx.resources.getString(R.string.def_tarasova_member_pseudonym),
+                memberFullName = "${ctx.resources.getString(R.string.def_tarasova_member_surname)} ${
+                    ctx.resources.getString(
+                        R.string.def_tarasova_member_name
+                    )
+                } ${ctx.resources.getString(R.string.def_tarasova_member_patronymic)} [${
+                    ctx.resources.getString(
+                        R.string.def_tarasova_member_pseudonym
+                    )
+                }]",
+                memberShortName = "${ctx.resources.getString(R.string.def_tarasova_member_surname)} ${
+                    ctx.resources.getString(
+                        R.string.def_tarasova_member_name
+                    )[0]
+                }.${ctx.resources.getString(R.string.def_tarasova_member_patronymic)[0]}. [${
+                    ctx.resources.getString(
+                        R.string.def_tarasova_member_pseudonym
+                    )
+                }]",
                 dateOfBirth = Utils.toOffsetDateTime("1979-08-01T14:29:10.212+03:00")
             )
         )

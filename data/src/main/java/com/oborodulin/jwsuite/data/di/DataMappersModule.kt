@@ -796,6 +796,17 @@ object DataMappersModule {
     fun provideTerritoriesIdleViewListToTerritoriesListMapper(mapper: TerritoriesIdleViewToTerritoryMapper): TerritoriesIdleViewListToTerritoriesListMapper =
         TerritoriesIdleViewListToTerritoriesListMapper(mapper = mapper)
 
+    // TerritoryDistrictView:
+    @Singleton
+    @Provides
+    fun provideTerritoryDistrictViewToTerritoryDistrictMapper(): TerritoryDistrictViewToTerritoryDistrictMapper =
+        TerritoryDistrictViewToTerritoryDistrictMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryDistrictViewListToTerritoryDistrictListMapper(mapper: TerritoryDistrictViewToTerritoryDistrictMapper): TerritoryDistrictViewListToTerritoryDistrictListMapper =
+        TerritoryDistrictViewListToTerritoryDistrictListMapper(mapper = mapper)
+
     @Singleton
     @Provides
     fun provideTerritoryMappers(

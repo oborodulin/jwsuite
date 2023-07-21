@@ -25,7 +25,6 @@ SELECT c.*,
 FROM ${CongregationEntity.TABLE_NAME} c JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = c.cLocalitiesId 
     JOIN ${GeoRegionView.VIEW_NAME} rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode
     LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rv.regionLocCode = lv.localityLocCode
-ORDER BY c.congregationName
 """
 )
 class CongregationView(
