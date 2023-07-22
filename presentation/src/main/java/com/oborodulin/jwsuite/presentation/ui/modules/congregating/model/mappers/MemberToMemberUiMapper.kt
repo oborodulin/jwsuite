@@ -16,6 +16,8 @@ class MemberToMemberUiMapper(private val groupMapper: GroupToGroupUiMapper) :
             surname = input.surname,
             patronymic = input.patronymic,
             pseudonym = input.pseudonym,
+            memberFullName = input.fullName,
+            memberShortName = input.shortName,
             phoneNumber = input.phoneNumber,
             memberType = input.memberType,
             dateOfBirth = input.dateOfBirth,

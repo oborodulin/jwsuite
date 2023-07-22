@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class InputWrapper(
     val value: String = "",
-    @StringRes val errorId: Int? = null,
+    @StringRes override val errorId: Int? = null,
     val errorMsg: String? = null,
     val isEmpty: Boolean = true,
     val isSaved: Boolean = true

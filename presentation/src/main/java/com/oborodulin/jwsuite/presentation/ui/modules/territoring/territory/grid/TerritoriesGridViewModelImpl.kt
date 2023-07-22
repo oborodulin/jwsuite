@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
@@ -13,6 +14,8 @@ import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
@@ -130,7 +133,31 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 isInPerimeter = false,
                 isProcessed = false,
                 isActive = true,
-                territoryDesc = ctx.resources.getString(R.string.def_territory1_desc)
+                territoryDesc = ctx.resources.getString(R.string.def_territory1_desc),
+                member = MemberUi(
+                    group = GroupUi(),
+                    memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
+                    memberFullName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
+                        ctx.resources.getString(
+                            R.string.def_ivanov_member_name
+                        )
+                    } ${ctx.resources.getString(R.string.def_ivanov_member_patronymic)} [${
+                        ctx.resources.getString(
+                            R.string.def_ivanov_member_pseudonym
+                        )
+                    }]",
+                    memberShortName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
+                        ctx.resources.getString(
+                            R.string.def_ivanov_member_name
+                        )[0]
+                    }.${ctx.resources.getString(R.string.def_ivanov_member_patronymic)[0]}. [${
+                        ctx.resources.getString(
+                            R.string.def_ivanov_member_pseudonym
+                        )
+                    }]",
+                    pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
+                    dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
+                )
             ),
             TerritoriesListItem(
                 id = UUID.randomUUID(),
@@ -142,8 +169,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 territoryNum = 2,
                 isPrivateSector = false,
                 isBusiness = false,
-                isGroupMinistry = false,
-                isInPerimeter = false,
+                isGroupMinistry = true,
+                isInPerimeter = true,
                 isProcessed = false,
                 isActive = true,
                 territoryDesc = ctx.resources.getString(R.string.def_territory2_desc)
@@ -157,12 +184,28 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 cardLocation = ctx.resources.getString(R.string.def_territory3_card_location),
                 territoryNum = 3,
                 isPrivateSector = false,
-                isBusiness = false,
+                isBusiness = true,
                 isGroupMinistry = false,
                 isInPerimeter = false,
                 isProcessed = false,
                 isActive = true,
                 territoryDesc = ctx.resources.getString(R.string.def_territory3_desc)
+            ),
+            TerritoriesListItem(
+                id = UUID.randomUUID(),
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
+                cardNum = ctx.resources.getString(R.string.def_territory4_card_num),
+                cardLocation = ctx.resources.getString(R.string.def_territory4_card_location),
+                territoryNum = 4,
+                isPrivateSector = true,
+                isBusiness = true,
+                isGroupMinistry = false,
+                isInPerimeter = false,
+                isProcessed = false,
+                isActive = true,
+                territoryDesc = ctx.resources.getString(R.string.def_territory4_desc)
             )
         )
     }

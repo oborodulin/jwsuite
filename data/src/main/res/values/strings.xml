@@ -128,6 +128,9 @@
     <string name="def_territory3_card_num">ХД-3</string>
     <string name="def_territory3_card_location"> </string>
     <string name="def_territory3_desc"> </string>
+    <string name="def_territory4_card_num">ХД-4д</string>
+    <string name="def_territory4_card_location">[БДН]</string>
+    <string name="def_territory4_desc">ДКАД</string>
 
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>

@@ -44,6 +44,7 @@
     <string name="territory_tab_hand_out">К ВЫДАЧЕ</string>
     <string name="territory_tab_at_work">В РАБОТЕ</string>
     <string name="territory_tab_idle">В ОТСТОЕ</string>
+    <string name="territory_tab_all">ВСЕ</string>
 
     <!--ФОРМА: -->
     <!--общие -->
@@ -52,6 +53,7 @@
     <string name="short_name_hint">Короткое наименование</string>
     <string name="type_hint">Тип</string>
     <string name="locality_hint">Населённый пункт</string>
+    <string name="congregation_hint">Собрание</string>
     <!--Собрание -->
     <string name="congregation_subheader">Собрание</string>
     <string name="congregation_new_subheader">Новое собрание</string>
@@ -63,6 +65,19 @@
     <string name="group_subheader">Группа</string>
     <string name="group_new_subheader">Новая группа</string>
     <string name="member_group_num_hint">№ группы</string>
+    <!--Возвещатель -->
+    <string name="member_subheader">Группа</string>
+    <string name="member_new_subheader">Новая группа</string>
+    <string name="member_num_hint">№</string>
+    <string name="member_name_hint">Имя</string>
+    <string name="member_surname_hint">Фамилия</string>
+    <string name="member_patronymic_hint">Отчество</string>
+    <string name="member_pseudonym_hint">Псевдоним</string>
+    <string name="member_phone_number_hint">Тел.</string>
+    <string name="member_type_hint">Тип</string>
+    <string name="member_date_of_birth_hint">Дата рождения</string>
+    <string name="member_date_of_baptism_hint">Дата крещения</string>
+    <string name="member_inactive_date_hint">Дата неактивности</string>
     <!--Область -->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
@@ -81,6 +96,7 @@
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
+    <string name="dlg_title_select_congregation">Выберите собрание</string>
     <string name="dlg_title_select_group">Выберите группу</string>
     <string name="dlg_title_select_region">Выберите область</string>
     <string name="dlg_title_select_region_district">Выберите район области</string>
@@ -110,5 +126,12 @@
     <string name="locality_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <!--формы категории участка-->
     <string name="territory_category_mark_empty_error">Укажите, пожалуйста, код участка!</string>
+
+    <!--ОПИСАНИЕ КОНТЕНТА -->
+    <!--Участки-->
+    <string name="ter_in_perimeter_cnt_desc">в периметре</string>
+    <string name="ter_private_sector_cnt_desc">ч/с</string>
+    <string name="ter_business_cnt_desc">деловая территория</string>
+    <string name="ter_group_ministry_cnt_desc">групповое служение</string>
 
 </resources>

@@ -89,6 +89,10 @@ fun TerritoringScreen(
         TabRowItem(
             title = stringResource(R.string.territory_tab_idle),
             view = { AtWorkTerritoriesView(appState = appState) },
+        ),
+        TabRowItem(
+            title = stringResource(R.string.territory_tab_all),
+            view = { AtWorkTerritoriesView(appState = appState) },
         )
     )
     JWSuiteTheme { //(darkTheme = true)
