@@ -39,6 +39,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
@@ -50,20 +52,23 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionVi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictInputEvent
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.GroupView"
+private const val TAG = "Congregating.MemberView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun GroupView(
+fun MemberView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
     memberViewModel: MemberViewModel,
     congregationsListViewModel: CongregationsListViewModel,
     congregationViewModel: CongregationViewModel,
+    groupsListViewModel: GroupsListViewModel,
+    groupViewModel: GroupViewModel,
     localitiesListViewModel: LocalitiesListViewModel,
     localityViewModel: LocalityViewModel,
     regionsListViewModel: RegionsListViewModel,
@@ -71,7 +76,7 @@ fun GroupView(
     regionDistrictsListViewModel: RegionDistrictsListViewModel,
     regionDistrictViewModel: RegionDistrictViewModel
 ) {
-    Timber.tag(TAG).d("GroupView(...) called")
+    Timber.tag(TAG).d("MemberView(...) called")
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -87,7 +92,16 @@ fun GroupView(
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
     val congregation by memberViewModel.congregation.collectAsStateWithLifecycle()
-    val groupNum by memberViewModel.memberNum.collectAsStateWithLifecycle()
+    val group by memberViewModel.group.collectAsStateWithLifecycle()
+    val memberNum by memberViewModel.memberNum.collectAsStateWithLifecycle()
+    val memberName by memberViewModel.memberName.collectAsStateWithLifecycle()
+    val surname by memberViewModel.surname.collectAsStateWithLifecycle()
+    val patronymic by memberViewModel.patronymic.collectAsStateWithLifecycle()
+    val phoneNumber by memberViewModel.phoneNumber.collectAsStateWithLifecycle()
+    val memberType by memberViewModel.memberType.collectAsStateWithLifecycle()
+    val dateOfBirth by memberViewModel.dateOfBirth.collectAsStateWithLifecycle()
+    val dateOfBaptism by memberViewModel.dateOfBaptism.collectAsStateWithLifecycle()
+    val inactiveDate by memberViewModel.inactiveDate.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -96,7 +110,7 @@ fun GroupView(
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("GroupView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("MemberView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -117,7 +131,13 @@ fun GroupView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        currentCongregation?.let { memberViewModel.onTextFieldEntered(MemberInputEvent.Group(it)) }
+        currentCongregation?.let {
+            memberViewModel.onTextFieldEntered(
+                MemberInputEvent.Congregation(
+                    it
+                )
+            )
+        }
         CongregationComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberFields.MEMBER_CONGREGATION.name]!!.focusRequester)
@@ -139,6 +159,23 @@ fun GroupView(
             inputWrapper = congregation,
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
+        GroupComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_GROUP.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_GROUP,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            listViewModel = groupsListViewModel,
+            singleViewModel = groupViewModel,
+            inputWrapper = group,
+            onValueChange = {
+                memberViewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
+            },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberFields.MEMBER_NUM.name]!!.focusRequester)
@@ -148,7 +185,7 @@ fun GroupView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.code_hint,
+            labelResId = R.string.member_num_hint,
             leadingIcon = {
                 Icon(
                     painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
@@ -161,7 +198,7 @@ fun GroupView(
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = groupNum,
+            inputWrapper = memberNum,
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.MemberNum(it)) },
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
@@ -175,7 +212,7 @@ fun PreviewGroupView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            GroupView(
+            MemberView(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 memberViewModel = MemberViewModelImpl.previewModel(ctx),
                 congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),

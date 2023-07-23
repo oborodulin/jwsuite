@@ -4,11 +4,10 @@ import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.model.ListItemModel
 
 sealed class MemberInputEvent(val value: String) : Inputable {
+    data class Congregation(val input: ListItemModel) : MemberInputEvent(input.headline)
     data class Group(val input: ListItemModel) : MemberInputEvent(input.headline)
     data class MemberNum(val input: String) : MemberInputEvent(input)
     data class Pseudonym(val input: String) : MemberInputEvent(input)
-    data class MemberFullName(val input: String) : MemberInputEvent(input)
-    data class MemberShortName(val input: String) : MemberInputEvent(input)
     data class PhoneNumber(val input: String) : MemberInputEvent(input)
     data class MemberType(val input: String) : MemberInputEvent(input)
     data class DateOfBirth(val input: String) : MemberInputEvent(input)

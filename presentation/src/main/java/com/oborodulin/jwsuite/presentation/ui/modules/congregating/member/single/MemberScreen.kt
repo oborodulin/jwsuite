@@ -71,7 +71,7 @@ fun GroupScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by groupViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    GroupView(
+                    MemberView(
                         sharedViewModel,
                         groupViewModel,
                         congregationsListViewModel,

@@ -12,12 +12,13 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Constants
+import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
 import com.oborodulin.jwsuite.domain.util.MemberType
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
@@ -240,6 +241,22 @@ class MemberViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is MemberInputEvent.Congregation ->
+                        setStateValue(
+                            MemberFields.MEMBER_CONGREGATION, congregation, event.input, true
+                        )
+
+                    is MemberInputEvent.Group ->
+                        when (MemberInputValidator.Group.errorIdOrNull(event.input.headline)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_GROUP, group, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_GROUP, group, event.input
+                            )
+                        }
+
                     is MemberInputEvent.MemberNum ->
                         when (MemberInputValidator.MemberNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(
@@ -250,25 +267,171 @@ class MemberViewModelImpl @Inject constructor(
                                 MemberFields.MEMBER_NUM, memberNum, event.input
                             )
                         }
+
+                    is MemberInputEvent.Pseudonym ->
+                        when (MemberInputValidator.Pseudonym.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.PhoneNumber ->
+                        when (MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.MemberType ->
+                        when (MemberInputValidator.MemberType.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_TYPE, memberType, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_TYPE, memberType, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.DateOfBirth ->
+                        when (MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.DateOfBaptism ->
+                        when (MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_DATE_OF_BAPTISM,
+                                dateOfBaptism,
+                                event.input,
+                                true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.InactiveDate ->
+                        when (MemberInputValidator.InactiveDate.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input
+                            )
+                        }
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
+                    is MemberInputEvent.Group ->
+                        setStateValue(
+                            MemberFields.MEMBER_GROUP, memberNum,
+                            MemberInputValidator.Group.errorIdOrNull(event.input.headline)
+                        )
+
                     is MemberInputEvent.MemberNum ->
                         setStateValue(
                             MemberFields.MEMBER_NUM, memberNum,
                             MemberInputValidator.MemberNum.errorIdOrNull(event.input)
                         )
+
+                    is MemberInputEvent.Pseudonym ->
+                        setStateValue(
+                            MemberFields.MEMBER_PSEUDONYM, pseudonym,
+                            MemberInputValidator.Pseudonym.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.PhoneNumber ->
+                        setStateValue(
+                            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber,
+                            MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.MemberType ->
+                        setStateValue(
+                            MemberFields.MEMBER_TYPE, memberType,
+                            MemberInputValidator.MemberType.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.DateOfBirth ->
+                        setStateValue(
+                            MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
+                            MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.DateOfBaptism ->
+                        setStateValue(
+                            MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
+                            MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.InactiveDate ->
+                        setStateValue(
+                            MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
+                            MemberInputValidator.InactiveDate.errorIdOrNull(event.input)
+                        )
                 }
             }
+    }
+
+    override fun performValidation() {
+
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
+        MemberInputValidator.Group.errorIdOrNull(group.value.item.headline)?.let {
+            inputErrors.add(InputError(fieldName = MemberFields.MEMBER_GROUP.name, errorId = it))
+        }
         MemberInputValidator.MemberNum.errorIdOrNull(memberNum.value.value)?.let {
             inputErrors.add(InputError(fieldName = MemberFields.MEMBER_NUM.name, errorId = it))
+        }
+        MemberInputValidator.Pseudonym.errorIdOrNull(pseudonym.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = MemberFields.MEMBER_PSEUDONYM.name, errorId = it)
+            )
+        }
+        MemberInputValidator.PhoneNumber.errorIdOrNull(phoneNumber.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = MemberFields.MEMBER_PHONE_NUMBER.name, errorId = it)
+            )
+        }
+        MemberInputValidator.MemberType.errorIdOrNull(memberType.value.value)?.let {
+            inputErrors.add(InputError(fieldName = MemberFields.MEMBER_TYPE.name, errorId = it))
+        }
+        MemberInputValidator.DateOfBirth.errorIdOrNull(dateOfBirth.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = MemberFields.MEMBER_DATE_OF_BIRTH.name, errorId = it)
+            )
+        }
+        MemberInputValidator.DateOfBaptism.errorIdOrNull(dateOfBaptism.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = MemberFields.MEMBER_DATE_OF_BAPTISM.name, errorId = it)
+            )
+        }
+        MemberInputValidator.InactiveDate.errorIdOrNull(inactiveDate.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = MemberFields.MEMBER_INACTIVE_DATE.name, errorId = it)
+            )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
@@ -278,6 +441,7 @@ class MemberViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
+                MemberFields.MEMBER_GROUP.name -> group.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_NUM.name -> memberNum.value.copy(errorId = error.errorId)
                 else -> null
             }
@@ -297,7 +461,17 @@ class MemberViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val congregation = MutableStateFlow(InputListItemWrapper())
+                override val group = MutableStateFlow(InputListItemWrapper())
                 override val memberNum = MutableStateFlow(InputWrapper())
+                override val memberName = MutableStateFlow(InputWrapper())
+                override val surname = MutableStateFlow(InputWrapper())
+                override val patronymic = MutableStateFlow(InputWrapper())
+                override val pseudonym = MutableStateFlow(InputWrapper())
+                override val phoneNumber = MutableStateFlow(InputWrapper())
+                override val memberType = MutableStateFlow(InputWrapper())
+                override val dateOfBirth = MutableStateFlow(InputWrapper())
+                override val dateOfBaptism = MutableStateFlow(InputWrapper())
+                override val inactiveDate = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
@@ -319,12 +493,20 @@ class MemberViewModelImpl @Inject constructor(
             }
 
         fun previewUiModel(ctx: Context): MemberUi {
-            val groupUi = MemberUi(
-                congregation = CongregationViewModelImpl.previewUiModel(ctx),
-                groupNum = ctx.resources.getInteger(R.integer.def_group1)
+            val memberUi = MemberUi(
+                group = GroupViewModelImpl.previewUiModel(ctx),
+                memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
+                memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
+                surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
+                patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
+                pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
+                phoneNumber = "+79493851487",
+                memberType = MemberType.PREACHER,
+                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00"),
+                dateOfBaptism = Utils.toOffsetDateTime("1994-01-09T14:29:10.212+03:00")
             )
-            groupUi.id = UUID.randomUUID()
-            return groupUi
+            memberUi.id = UUID.randomUUID()
+            return memberUi
         }
     }
 }

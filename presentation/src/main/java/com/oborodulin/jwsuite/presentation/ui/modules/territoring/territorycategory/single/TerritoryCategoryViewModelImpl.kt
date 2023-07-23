@@ -230,6 +230,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
             }
     }
 
+    override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()

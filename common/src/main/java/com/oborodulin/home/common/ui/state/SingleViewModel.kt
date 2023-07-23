@@ -203,6 +203,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     override fun onContinueClick(onSuccess: () -> Unit) {
         Timber.tag(TAG).d("onContinueClick(onSuccess) called")
         viewModelScope.launch(Dispatchers.Default) {
+            performValidation()
             when (val inputErrors = getInputErrorsOrNull()) {
                 null -> {
                     clearFocusAndHideKeyboard()
@@ -216,12 +217,10 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
+    abstract fun performValidation()
     abstract fun getInputErrorsOrNull(): List<InputError>?
-
     abstract fun displayInputErrors(inputErrors: List<InputError>)
-
     abstract fun stateInputFields(): List<String>
-
     open fun clearInputFieldsStates() {
         stateInputFields().forEach {
             Timber.tag(TAG).d("clearInputFieldsStates(): remove state '%s'", it)

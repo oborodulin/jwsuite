@@ -75,7 +75,7 @@ fun GroupComboBox(
         loadUiAction = MemberUiAction.Load(),
         confirmUiAction = MemberUiAction.Save,
         dialogView = {
-            GroupView(
+            MemberView(
                 sharedViewModel,
                 singleViewModel,
                 congregationsListViewModel,
