@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface LocalityViewModel : DialogViewModeled<LocalityUi, LocalityUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
+    val localityTypes: StateFlow<MutableMap<LocalityType, String>>
 
     val region: StateFlow<InputListItemWrapper>
     val regionDistrict: StateFlow<InputListItemWrapper>
@@ -24,8 +25,6 @@ interface LocalityViewModel : DialogViewModeled<LocalityUi, LocalityUiAction, Ui
     val localityShortName: StateFlow<InputWrapper>
     val localityType: StateFlow<InputWrapper>
     val localityName: StateFlow<InputWrapper>
-
-    val localityTypes: StateFlow<MutableMap<LocalityType, String>>
 
     val areInputsValid: StateFlow<Boolean>
 

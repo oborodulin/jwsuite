@@ -8,8 +8,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -74,7 +83,7 @@ fun TextFieldComponent(
                 fieldValue = it
                 onValueChange(it.text)
             },
-            label = { labelResId?.let { Text(stringResource(it)) } },
+            label = labelResId?.let { { Text(stringResource(it)) } },
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             maxLines = maxLines,
@@ -86,9 +95,9 @@ fun TextFieldComponent(
             },
             colors = colors
         )
-        val errorMessage =
-            if (inputWrapper.errorId != null) stringResource(inputWrapper.errorId) else inputWrapper.errorMsg
-        if (errorMessage != null) {
+        val errorMessage = inputWrapper.errorId?.let { stringResource(inputWrapper.errorId) }
+            ?: inputWrapper.errorMsg
+        errorMessage?.let {
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,

@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="member_types">
+        <!--PREACHER -->
+        <item>возвещатель</item>
+    </string-array>
+</resources>

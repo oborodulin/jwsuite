@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single
 
 import android.content.Context
+import androidx.annotation.ArrayRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -12,6 +13,7 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Constants
+import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
@@ -42,6 +44,7 @@ private const val TAG = "Congregating.MemberViewModelImpl"
 @HiltViewModel
 class MemberViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
+    private val resHelper: ResourcesHelper,
     private val useCases: MemberUseCases,
     private val converter: MemberConverter,
     private val memberUiMapper: MemberUiToMemberMapper,
@@ -51,6 +54,10 @@ class MemberViewModelImpl @Inject constructor(
         state,
         MemberFields.MEMBER_NUM
     ) {
+    private val _memberTypes: MutableStateFlow<MutableMap<MemberType, String>> =
+        MutableStateFlow(mutableMapOf())
+    override val memberTypes = _memberTypes.asStateFlow()
+
     private val memberId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_ID.name, InputWrapper())
     }
@@ -113,6 +120,15 @@ class MemberViewModelImpl @Inject constructor(
             for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
             errorIdResult
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    init {
+        initMemberTypes(com.oborodulin.jwsuite.domain.R.array.member_types)
+    }
+
+    private fun initMemberTypes(@ArrayRes arrayId: Int) {
+        val resArray = resHelper.appContext.resources.getStringArray(arrayId)
+        for (type in MemberType.values()) _memberTypes.value[type] = resArray[type.ordinal]
+    }
 
     override fun initState(): UiState<MemberUi> = UiState.Loading
 
@@ -212,26 +228,28 @@ class MemberViewModelImpl @Inject constructor(
             ListItemModel(memberUi.group.id, memberUi.group.groupNum.toString())
         )
         initStateValue(MemberFields.MEMBER_NUM, memberNum, memberUi.memberNum)
-        initStateValue(MemberFields.MEMBER_NAME, memberName, memberUi.memberName ?: "")
-        initStateValue(MemberFields.MEMBER_SURNAME, surname, memberUi.surname ?: "")
-        initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, memberUi.patronymic ?: "")
+        initStateValue(MemberFields.MEMBER_NAME, memberName, memberUi.memberName.orEmpty())
+        initStateValue(MemberFields.MEMBER_SURNAME, surname, memberUi.surname.orEmpty())
+        initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, memberUi.patronymic.orEmpty())
         initStateValue(MemberFields.MEMBER_PSEUDONYM, pseudonym, memberUi.pseudonym)
-        initStateValue(MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, memberUi.phoneNumber ?: "")
+        initStateValue(
+            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, memberUi.phoneNumber.orEmpty()
+        )
         initStateValue(MemberFields.MEMBER_TYPE, memberType, memberUi.memberType.name)
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
             memberUi.dateOfBirth?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                ?: ""
+                .orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
             memberUi.dateOfBaptism?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                ?: ""
+                .orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
             memberUi.inactiveDate?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                ?: ""
+                .orEmpty()
         )
         return null
     }
@@ -315,9 +333,7 @@ class MemberViewModelImpl @Inject constructor(
                     is MemberInputEvent.DateOfBaptism ->
                         when (MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BAPTISM,
-                                dateOfBaptism,
-                                event.input,
+                                MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
                                 true
                             )
 
@@ -343,7 +359,7 @@ class MemberViewModelImpl @Inject constructor(
                 when (event) {
                     is MemberInputEvent.Group ->
                         setStateValue(
-                            MemberFields.MEMBER_GROUP, memberNum,
+                            MemberFields.MEMBER_GROUP, group,
                             MemberInputValidator.Group.errorIdOrNull(event.input.headline)
                         )
 
@@ -443,6 +459,12 @@ class MemberViewModelImpl @Inject constructor(
             state[error.fieldName] = when (error.fieldName) {
                 MemberFields.MEMBER_GROUP.name -> group.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_NUM.name -> memberNum.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_PSEUDONYM.name -> pseudonym.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_PHONE_NUMBER.name -> phoneNumber.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_TYPE.name -> memberType.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_DATE_OF_BIRTH.name -> dateOfBirth.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_DATE_OF_BAPTISM.name -> dateOfBaptism.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_INACTIVE_DATE.name -> inactiveDate.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -459,6 +481,8 @@ class MemberViewModelImpl @Inject constructor(
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 
                 override val congregation = MutableStateFlow(InputListItemWrapper())
                 override val group = MutableStateFlow(InputListItemWrapper())
@@ -503,7 +527,7 @@ class MemberViewModelImpl @Inject constructor(
                 phoneNumber = "+79493851487",
                 memberType = MemberType.PREACHER,
                 dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00"),
-                dateOfBaptism = Utils.toOffsetDateTime("1994-01-09T14:29:10.212+03:00")
+                dateOfBaptism = Utils.toOffsetDateTime("1994-06-14T14:29:10.212+03:00")
             )
             memberUi.id = UUID.randomUUID()
             return memberUi

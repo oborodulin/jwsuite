@@ -34,24 +34,8 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -61,15 +45,7 @@ private const val TAG = "Congregating.GroupView"
 @Composable
 fun GroupView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
-    groupViewModel: GroupViewModel,
-    congregationsListViewModel: CongregationsListViewModel,
-    congregationViewModel: CongregationViewModel,
-    localitiesListViewModel: LocalitiesListViewModel,
-    localityViewModel: LocalityViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
-    regionDistrictsListViewModel: RegionDistrictsListViewModel,
-    regionDistrictViewModel: RegionDistrictViewModel
+    groupViewModel: GroupViewModel
 ) {
     Timber.tag(TAG).d("GroupView(...) called")
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
@@ -128,14 +104,6 @@ fun GroupView(
                     )
                 },
             enabled = false,
-            listViewModel = congregationsListViewModel,
-            singleViewModel = congregationViewModel,
-            localitiesListViewModel = localitiesListViewModel,
-            localityViewModel = localityViewModel,
-            regionsListViewModel = regionsListViewModel,
-            regionViewModel = regionViewModel,
-            regionDistrictsListViewModel = regionDistrictsListViewModel,
-            regionDistrictViewModel = regionDistrictViewModel,
             inputWrapper = congregation,
             onImeKeyAction = groupViewModel::moveFocusImeAction
         )
@@ -177,15 +145,7 @@ fun PreviewGroupView() {
         Surface {
             GroupView(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                groupViewModel = GroupViewModelImpl.previewModel(ctx),
-                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
-                congregationViewModel = CongregationViewModelImpl.previewModel(ctx),
-                localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(ctx),
-                localityViewModel = LocalityViewModelImpl.previewModel(ctx),
-                regionsListViewModel = RegionsListViewModelImpl.previewModel(ctx),
-                regionViewModel = RegionViewModelImpl.previewModel(ctx),
-                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(ctx),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx)
+                groupViewModel = GroupViewModelImpl.previewModel(ctx)
             )
         }
     }

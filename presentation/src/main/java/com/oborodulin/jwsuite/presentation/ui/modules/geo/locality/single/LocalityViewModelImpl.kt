@@ -179,7 +179,7 @@ class LocalityViewModelImpl @Inject constructor(
         initStateValue(
             LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict,
             ListItemModel(
-                localityUi.regionDistrict?.id, localityUi.regionDistrict?.districtName ?: ""
+                localityUi.regionDistrict?.id, localityUi.regionDistrict?.districtName.orEmpty()
             )
         )
         initStateValue(LocalityFields.LOCALITY_CODE, localityCode, localityUi.localityCode)

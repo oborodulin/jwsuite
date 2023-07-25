@@ -22,39 +22,24 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.ui.components.field.DatePickerComponent
+import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictInputEvent
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -64,17 +49,7 @@ private const val TAG = "Congregating.MemberView"
 @Composable
 fun MemberView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
-    memberViewModel: MemberViewModel,
-    congregationsListViewModel: CongregationsListViewModel,
-    congregationViewModel: CongregationViewModel,
-    groupsListViewModel: GroupsListViewModel,
-    groupViewModel: GroupViewModel,
-    localitiesListViewModel: LocalitiesListViewModel,
-    localityViewModel: LocalityViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
-    regionDistrictsListViewModel: RegionDistrictsListViewModel,
-    regionDistrictViewModel: RegionDistrictViewModel
+    memberViewModel: MemberViewModel
 ) {
     Timber.tag(TAG).d("MemberView(...) called")
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
@@ -97,11 +72,14 @@ fun MemberView(
     val memberName by memberViewModel.memberName.collectAsStateWithLifecycle()
     val surname by memberViewModel.surname.collectAsStateWithLifecycle()
     val patronymic by memberViewModel.patronymic.collectAsStateWithLifecycle()
+    val pseudonym by memberViewModel.pseudonym.collectAsStateWithLifecycle()
     val phoneNumber by memberViewModel.phoneNumber.collectAsStateWithLifecycle()
     val memberType by memberViewModel.memberType.collectAsStateWithLifecycle()
     val dateOfBirth by memberViewModel.dateOfBirth.collectAsStateWithLifecycle()
     val dateOfBaptism by memberViewModel.dateOfBaptism.collectAsStateWithLifecycle()
     val inactiveDate by memberViewModel.inactiveDate.collectAsStateWithLifecycle()
+
+    val memberTypes by memberViewModel.memberTypes.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -132,11 +110,7 @@ fun MemberView(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         currentCongregation?.let {
-            memberViewModel.onTextFieldEntered(
-                MemberInputEvent.Congregation(
-                    it
-                )
-            )
+            memberViewModel.onTextFieldEntered(MemberInputEvent.Congregation(it))
         }
         CongregationComboBox(
             modifier = Modifier
@@ -148,14 +122,6 @@ fun MemberView(
                     )
                 },
             enabled = false,
-            listViewModel = congregationsListViewModel,
-            singleViewModel = congregationViewModel,
-            localitiesListViewModel = localitiesListViewModel,
-            localityViewModel = localityViewModel,
-            regionsListViewModel = regionsListViewModel,
-            regionViewModel = regionViewModel,
-            regionDistrictsListViewModel = regionDistrictsListViewModel,
-            regionDistrictViewModel = regionDistrictViewModel,
             inputWrapper = congregation,
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
@@ -168,11 +134,9 @@ fun MemberView(
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = groupsListViewModel,
-            singleViewModel = groupViewModel,
             inputWrapper = group,
             onValueChange = {
-                memberViewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
+                memberViewModel.onTextFieldEntered(MemberInputEvent.Group(it))
             },
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
@@ -202,6 +166,195 @@ fun MemberView(
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.MemberNum(it)) },
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_SURNAME.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_SURNAME,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_surname_hint,
+            leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = surname,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.Surname(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_NAME.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_NAME,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_name_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = memberName,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.MemberName(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PATRONYMIC.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_PATRONYMIC,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_patronymic_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = patronymic,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.Patronymic(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PSEUDONYM.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_PSEUDONYM,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_pseudonym_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = pseudonym,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_PHONE_NUMBER,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_phone_number_hint,
+            leadingIcon = { Icon(painterResource(R.drawable.ic_phone_36), null) },
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = phoneNumber,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.PhoneNumber(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        ExposedDropdownMenuBoxComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_PHONE_NUMBER,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_type_hint,
+            leadingIcon = { Icon(painterResource(R.drawable.outline_badge_black_36), null) },
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = memberType,
+            resourceItems = memberTypes.values.toList(), // resolve Enums to Resource
+            listItems = memberTypes.keys.map { it.name }, // Enums
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.MemberType(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        DatePickerComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_DATE_OF_BIRTH.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_DATE_OF_BIRTH,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_date_of_birth_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = dateOfBirth,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.DateOfBirth(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        DatePickerComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_DATE_OF_BAPTISM.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_DATE_OF_BAPTISM,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_date_of_baptism_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = dateOfBaptism,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.DateOfBaptism(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
+        DatePickerComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_INACTIVE_DATE.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_INACTIVE_DATE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_inactive_date_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                )
+            },
+            inputWrapper = inactiveDate,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.InactiveDate(it)) },
+            onImeKeyAction = memberViewModel::moveFocusImeAction
+        )
     }
 }
 
@@ -215,14 +368,14 @@ fun PreviewGroupView() {
             MemberView(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 memberViewModel = MemberViewModelImpl.previewModel(ctx),
-                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
+                /*congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
                 congregationViewModel = CongregationViewModelImpl.previewModel(ctx),
                 localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(ctx),
                 localityViewModel = LocalityViewModelImpl.previewModel(ctx),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(ctx),
                 regionViewModel = RegionViewModelImpl.previewModel(ctx),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(ctx),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx)
+                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx)*/
             )
         }
     }

@@ -148,8 +148,8 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
                 disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
             ) else OutlinedTextFieldDefaults.colors()
         )
-        val errorMessage =
-            if (inputWrapper.errorId != null) stringResource(inputWrapper.errorId) else inputWrapper.errorMsg
+        val errorMessage = inputWrapper.errorId?.let { stringResource(inputWrapper.errorId) }
+            ?: inputWrapper.errorMsg
         errorMessage?.let {
             Text(
                 text = it,

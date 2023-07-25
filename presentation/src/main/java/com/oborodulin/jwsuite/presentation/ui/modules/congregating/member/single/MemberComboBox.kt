@@ -21,50 +21,26 @@ import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.GroupComboBox"
+private const val TAG = "Congregating.MemberComboBox"
 
 @Composable
-fun GroupComboBox(
+fun MemberComboBox(
     modifier: Modifier = Modifier,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
-    listViewModel: GroupsListViewModel,
+    listViewModel: MembersListViewModel,
     singleViewModel: MemberViewModel,
-    congregationsListViewModel: CongregationsListViewModel,
-    congregationViewModel: CongregationViewModel,
-    localitiesListViewModel: LocalitiesListViewModel,
-    localityViewModel: LocalityViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
-    regionDistrictsListViewModel: RegionDistrictsListViewModel,
-    regionDistrictViewModel: RegionDistrictViewModel,
     inputWrapper: InputListItemWrapper,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("GroupComboBox(...) called")
+    Timber.tag(TAG).d("MemberComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -74,20 +50,7 @@ fun GroupComboBox(
         viewModel = singleViewModel,
         loadUiAction = MemberUiAction.Load(),
         confirmUiAction = MemberUiAction.Save,
-        dialogView = {
-            MemberView(
-                sharedViewModel,
-                singleViewModel,
-                congregationsListViewModel,
-                congregationViewModel,
-                localitiesListViewModel,
-                localityViewModel,
-                regionsListViewModel,
-                regionViewModel,
-                regionDistrictsListViewModel,
-                regionDistrictViewModel
-            )
-        },
+        dialogView = { MemberView(sharedViewModel, singleViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
@@ -95,20 +58,15 @@ fun GroupComboBox(
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = GroupsListUiAction.Load(currentCongregation?.id),
+        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.id),
         searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.member_group_num_hint,
+        labelResId = R.string.member_hint,
         listTitleResId = R.string.dlg_title_select_group,
-        leadingIcon = {
-            Icon(
-                painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                null
-            )
-        },
+        leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -122,18 +80,10 @@ fun PreviewGroupComboBox() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            GroupComboBox(
+            MemberComboBox(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                listViewModel = GroupsListViewModelImpl.previewModel(ctx),
+                listViewModel = MembersListViewModelImpl.previewModel(ctx),
                 singleViewModel = MemberViewModelImpl.previewModel(ctx),
-                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
-                congregationViewModel = CongregationViewModelImpl.previewModel(ctx),
-                localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(ctx),
-                localityViewModel = LocalityViewModelImpl.previewModel(ctx),
-                regionsListViewModel = RegionsListViewModelImpl.previewModel(ctx),
-                regionViewModel = RegionViewModelImpl.previewModel(ctx),
-                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(ctx),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

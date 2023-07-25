@@ -6,6 +6,7 @@ import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.StateFlow
 interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
+
+    val memberTypes: StateFlow<MutableMap<MemberType, String>>
 
     val congregation: StateFlow<InputListItemWrapper>
     val group: StateFlow<InputListItemWrapper>

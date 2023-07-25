@@ -17,7 +17,7 @@ sealed class MemberInputValidator : Validatable {
     object MemberNum : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
                 //etc..
                 else -> null
             }
@@ -35,7 +35,7 @@ sealed class MemberInputValidator : Validatable {
     object PhoneNumber : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+                !inputs[0].isNullOrEmpty() -> R.string.num_empty_error
                 //etc..
                 else -> null
             }

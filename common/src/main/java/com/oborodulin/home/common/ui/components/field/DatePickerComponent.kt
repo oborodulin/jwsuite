@@ -1,13 +1,28 @@
 package com.oborodulin.home.common.ui.components.field
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,10 +31,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.Constants
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
 import com.oborodulin.home.common.util.toast
 import java.time.Instant
@@ -31,12 +51,26 @@ private const val TAG = "Common.ui.DatePickerComponent"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerComponent(
-    isShow: Boolean,
-    title: String,
-    onDismissRequest: () -> Unit,
-    onValueChange: OnValueChange
+    modifier: Modifier,
+    inputWrapper: InputWrapper,
+    @StringRes labelResId: Int? = null,
+    @StringRes datePickerTitleResId: Int? = null,
+    keyboardOptions: KeyboardOptions = remember {
+        KeyboardOptions.Default
+    },
+    onValueChange: OnValueChange,
+    onImeKeyAction: OnImeKeyAction,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    if (isShow) {
+    var isShowDialog by remember { mutableStateOf(false) }
+    val onShowDialog = { isShowDialog = true }
+    val onDismissRequest = { isShowDialog = false }
+
+    var fieldValue by remember {
+        mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
+    }
+
+    if (isShowDialog) {
         val datePickerTitlePadding = PaddingValues(
             start = 24.dp,
             end = 12.dp,
@@ -49,27 +83,65 @@ fun DatePickerComponent(
             shape = RoundedCornerShape(6.dp),
             onDismissRequest = onDismissRequest,
             confirmButton = {
+                onDismissRequest()
                 // Seems broken at the moment with DateRangePicker
                 // Works fine with DatePicker
                 val selectedDate = datePickerState.selectedDateMillis?.let {
                     Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC)
                 }
                 selectedDate?.let {
-                    onValueChange(it.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)))
+                    val dateValue =
+                        it.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+                    fieldValue = TextFieldValue(dateValue, TextRange(dateValue.length))
+                    onValueChange(dateValue)
                 }
             },
         ) {
             DatePicker(
                 state = datePickerState,
-                dateValidator = { timestamp ->
-                    timestamp > Instant.now().toEpochMilli()
-                },
-                title = {
-                    Text(
-                        modifier = Modifier.padding(datePickerTitlePadding),
-                        text = title
-                    )
+                dateValidator = { timestamp -> timestamp > Instant.now().toEpochMilli() },
+                title = datePickerTitleResId?.let {
+                    {
+                        Text(
+                            modifier = Modifier.padding(datePickerTitlePadding),
+                            text = stringResource(it)
+                        )
+                    }
                 }
+            )
+        }
+    }
+    Column {
+        OutlinedTextField(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
+            enabled = false,
+            readOnly = true,
+            value = fieldValue,
+            onValueChange = { fieldValue = it },
+            label = labelResId?.let { { Text(stringResource(it)) } },
+            leadingIcon = { Icon(imageVector = Icons.Outlined.DateRange, null) },
+            trailingIcon = {
+                Icon(imageVector = Icons.Outlined.ArrowDropDown, null, modifier = Modifier
+                    .offset(x = 10.dp)
+                    .clickable { onShowDialog() })
+            },
+            isError = inputWrapper.errorId != null,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = remember {
+                KeyboardActions(onAny = { onImeKeyAction() })
+            },
+            colors = colors
+        )
+        val errorMessage = inputWrapper.errorId?.let { stringResource(inputWrapper.errorId) }
+            ?: inputWrapper.errorMsg
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(start = 16.dp)
             )
         }
     }

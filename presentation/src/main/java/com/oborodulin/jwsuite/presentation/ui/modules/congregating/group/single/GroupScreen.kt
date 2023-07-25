@@ -21,14 +21,6 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -40,14 +32,6 @@ fun GroupScreen(
     appState: AppState,
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     groupViewModel: GroupViewModelImpl = hiltViewModel(),
-    congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
-    congregationViewModel: CongregationViewModelImpl = hiltViewModel(),
-    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
-    localityViewModel: LocalityViewModelImpl = hiltViewModel(),
-    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
-    regionViewModel: RegionViewModelImpl = hiltViewModel(),
-    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
-    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
     groupInput: GroupInput? = null
 ) {
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
@@ -71,38 +55,28 @@ fun GroupScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by groupViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    GroupView(
-                        sharedViewModel,
-                        groupViewModel,
-                        congregationsListViewModel,
-                        congregationViewModel,
-                        localitiesListViewModel,
-                        localityViewModel,
-                        regionsListViewModel,
-                        regionViewModel,
-                        regionDistrictsListViewModel,
-                        regionDistrictViewModel
-                    )
+                    GroupView(sharedViewModel, groupViewModel)
                     Spacer(Modifier.height(8.dp))
-                    Button(onClick = {
-                        groupViewModel.onContinueClick {
-                            Timber.tag(TAG).d("GroupScreen(...): Start viewModelScope.launch")
-                            groupViewModel.viewModelScope().launch {
-                                groupViewModel.actionsJobFlow.collect {
-                                    Timber.tag(TAG).d(
-                                        "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                        it?.toString()
-                                    )
-                                    it?.join()
-                                    appState.backToBottomBarScreen()
+                    Button(
+                        onClick = {
+                            groupViewModel.onContinueClick {
+                                Timber.tag(TAG).d("GroupScreen(...): Start viewModelScope.launch")
+                                groupViewModel.viewModelScope().launch {
+                                    groupViewModel.actionsJobFlow.collect {
+                                        Timber.tag(TAG).d(
+                                            "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                            it?.toString()
+                                        )
+                                        it?.join()
+                                        appState.backToBottomBarScreen()
+                                    }
                                 }
+                                groupViewModel.submitAction(GroupUiAction.Save)
+                                Timber.tag(TAG).d("GroupScreen(...): onSubmit() executed")
                             }
-                            groupViewModel.submitAction(GroupUiAction.Save)
-                            Timber.tag(TAG).d("GroupScreen(...): onSubmit() executed")
-                        }
-                    }, enabled = areInputsValid) {
-                        Text(text = stringResource(com.oborodulin.home.common.R.string.btn_save_lbl))
-                    }
+                        },
+                        enabled = areInputsValid
+                    ) { Text(text = stringResource(com.oborodulin.home.common.R.string.btn_save_lbl)) }
                 }
             }
         }

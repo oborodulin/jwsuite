@@ -122,7 +122,7 @@ sealed class NavRoutes constructor(
             val regionInput =
                 RegionInput(
                     UUID.fromString(
-                        entry.arguments?.getString(ARG_REGION_ID) ?: ""
+                        entry.arguments?.getString(ARG_REGION_ID).orEmpty()
                     )
                 )
             Timber.tag(TAG).d("Region - fromEntry(...): '%s'", regionInput)
@@ -154,7 +154,7 @@ sealed class NavRoutes constructor(
             val regionDistrictInput =
                 RegionDistrictInput(
                     UUID.fromString(
-                        entry.arguments?.getString(ARG_REGION_DISTRICT_ID) ?: ""
+                        entry.arguments?.getString(ARG_REGION_DISTRICT_ID).orEmpty()
                     )
                 )
             Timber.tag(TAG).d("RegionDistrict - fromEntry(...): '%s'", regionDistrictInput)
@@ -186,7 +186,7 @@ sealed class NavRoutes constructor(
             val localityInput =
                 LocalityInput(
                     UUID.fromString(
-                        entry.arguments?.getString(ARG_LOCALITY_ID) ?: ""
+                        entry.arguments?.getString(ARG_LOCALITY_ID).orEmpty()
                     )
                 )
             Timber.tag(TAG).d("Locality - fromEntry(...): '%s'", localityInput)
@@ -219,7 +219,7 @@ sealed class NavRoutes constructor(
             val congregationInput =
                 CongregationInput(
                     UUID.fromString(
-                        entry.arguments?.getString(ARG_CONGREGATION_ID) ?: ""
+                        entry.arguments?.getString(ARG_CONGREGATION_ID).orEmpty()
                     )
                 )
             Timber.tag(TAG).d("Congregation - fromEntry(...): '%s'", congregationInput)
@@ -249,7 +249,7 @@ sealed class NavRoutes constructor(
 
         fun fromEntry(entry: NavBackStackEntry): GroupInput {
             val groupInput =
-                GroupInput(UUID.fromString(entry.arguments?.getString(ARG_GROUP_ID) ?: ""))
+                GroupInput(UUID.fromString(entry.arguments?.getString(ARG_GROUP_ID).orEmpty()))
             Timber.tag(TAG).d("Group - fromEntry(...): '%s'", groupInput)
             return groupInput
         }
@@ -277,7 +277,7 @@ sealed class NavRoutes constructor(
 
         fun fromEntry(entry: NavBackStackEntry): MemberInput {
             val memberInput = MemberInput(
-                UUID.fromString(entry.arguments?.getString(ARG_MEMBER_ID) ?: "")
+                UUID.fromString(entry.arguments?.getString(ARG_MEMBER_ID).orEmpty())
             )
             Timber.tag(TAG).d("Member - fromEntry(...): '%s'", memberInput)
             return memberInput
@@ -313,7 +313,7 @@ sealed class NavRoutes constructor(
                     UUID.fromString(
                         entry.arguments?.getString(
                             ARG_TERRITORY_CATEGORY_ID
-                        ) ?: ""
+                        ).orEmpty()
                     )
                 )
             Timber.tag(TAG).d("TerritoryCategory - fromEntry(...): '%s'", territoryInput)
@@ -343,7 +343,7 @@ sealed class NavRoutes constructor(
 
         fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
             val territoryInput =
-                TerritoryInput(UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID) ?: ""))
+                TerritoryInput(UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()))
             Timber.tag(TAG).d("Territory - fromEntry(...): '%s'", territoryInput)
             return territoryInput
         }
