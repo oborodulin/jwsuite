@@ -2,20 +2,23 @@ package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
@@ -31,27 +34,43 @@ private const val TAG = "Common.ui.BarExposedDropdownMenuBoxComponent"
 fun BarExposedDropdownMenuBoxComponent(
     modifier: Modifier,
     enabled: Boolean = true,
-    inputWrapper: InputWrapper,         // enum.name
+    inputWrapper: InputWrapper,             // enum.name
     resourceItems: List<String> = listOf(), // resources
-    listItems: List<String> = listOf(), // Enum.names
-    @StringRes labelResId: Int? = null,
+    listItems: List<String> = listOf(),     // Enum.names
+    @StringRes placeholderResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
-    maxLines: Int = Int.MAX_VALUE,
-    keyboardOptions: KeyboardOptions = remember {
-        KeyboardOptions.Default
-    },
-    visualTransformation: VisualTransformation = remember {
-        VisualTransformation.None
-    },
+    keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
+    visualTransformation: VisualTransformation = remember { VisualTransformation.None },
     onValueChange: OnValueChange,
-    onImeKeyAction: OnImeKeyAction,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
     val resValue =
         if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
-    val fieldValue = remember { mutableStateOf(resValue) } // resource
-    var expanded by remember { mutableStateOf(false) }
+    var fieldValue by rememberSaveable { mutableStateOf(resValue) } // resource
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val textStyle = LocalTextStyle.current
+    // make sure there is no background color in the decoration box
+    val colors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.Unspecified,
+        unfocusedContainerColor = Color.Unspecified,
+        disabledContainerColor = Color.Unspecified,
+    )
+
+    // If color is not provided via the text style, use content color as a default
+    val textColor = textStyle.color.takeOrElse {
+        MaterialTheme.colorScheme.onSurface
+    }
+    val mergedTextStyle = textStyle.merge(TextStyle(color = textColor, lineHeight = 50.sp))
+
+    // request focus when this composable is first initialized
+    val focusRequester = FocusRequester()
+    SideEffect {
+        focusRequester.requestFocus()
+    }
+
     // the box
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -60,39 +79,15 @@ fun BarExposedDropdownMenuBoxComponent(
         }
     ) {
         // text field
-        BarTextFieldComponent( modifier = modifier
-            .fillMaxWidth()
-            .menuAnchor())
-        Column {
-            OutlinedTextField(
-                enabled = enabled,
-                readOnly = true,
-                value = fieldValue.value, // resource
-                onValueChange = {
-                    fieldValue.value = it // resource
-                    //onValueChange(it)
-                },
-                label = { labelResId?.let { Text(stringResource(it)) } },
-                leadingIcon = leadingIcon,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                maxLines = maxLines,
-                isError = inputWrapper.errorId != null,
-                visualTransformation = visualTransformation,
-                keyboardOptions = keyboardOptions,
-                keyboardActions = remember {
-                    KeyboardActions(onAny = { onImeKeyAction() })
-                },
-                colors = colors
-            )
-            inputWrapper.errorMessage(LocalContext.current)?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
-        }
+        BarTextFieldComponent(
+            modifier = modifier.menuAnchor(),
+            readOnly = true,
+            inputWrapper = inputWrapper,
+            placeholderResId = placeholderResId,
+            leadingIcon = leadingIcon,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            //onValueChange = onValueChange
+        )
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -105,7 +100,7 @@ fun BarExposedDropdownMenuBoxComponent(
                 Timber.tag(TAG).d("selectedOption = %s; resOption = %s", selectedOption, resOption)
                 DropdownMenuItem(text = { Text(text = resOption) },
                     onClick = {
-                        fieldValue.value = resOption
+                        fieldValue = resOption
                         expanded = false
                         onValueChange(selectedOption) // Enum.name
                     })
@@ -127,7 +122,7 @@ fun PreviewBarExposedDropdownMenuBoxComponent() {
                     value = stringResource(R.string.preview_blank_text_field_val),
                     errorId = R.string.preview_blank_text_field_err
                 ),
-                labelResId = R.string.preview_blank_text_field_lbl,
+                placeholderResId = R.string.preview_blank_text_field_lbl,
                 onValueChange = {},
                 onImeKeyAction = {}
             )

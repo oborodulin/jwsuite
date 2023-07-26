@@ -46,7 +46,7 @@ fun BarTextFieldComponent(
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    onValueChange: OnValueChange
+    onValueChange: OnValueChange = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val textStyle = LocalTextStyle.current
@@ -70,11 +70,10 @@ fun BarTextFieldComponent(
     }
 
     // set the correct cursor position when this composable is first initialized
-    var textFieldValue by rememberSaveable {
+    var fieldValue by rememberSaveable {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
-    textFieldValue =
-        textFieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
+    fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
 
     CompositionLocalProvider(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
@@ -90,9 +89,9 @@ fun BarTextFieldComponent(
                     colors = colors
                 )
                 .focusRequester(focusRequester),
-            value = textFieldValue,
+            value = fieldValue,
             onValueChange = {
-                textFieldValue = it
+                fieldValue = it
                 // remove newlines to avoid strange layout issues, and also because singleLine=true
                 onValueChange(it.text.replace("\n", ""))
             },
@@ -107,7 +106,7 @@ fun BarTextFieldComponent(
             decorationBox = { innerTextField ->
                 // places text field with placeholder and appropriate bottom padding
                 TextFieldDefaults.DecorationBox(
-                    value = textFieldValue.text,
+                    value = fieldValue.text,
                     innerTextField = innerTextField,
                     enabled = enabled,
                     singleLine = true,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -50,8 +51,8 @@ fun ExposedDropdownMenuBoxComponent(
     Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
     val resValue =
         if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
-    val fieldValue = remember { mutableStateOf(resValue) } // resource
-    var expanded by remember { mutableStateOf(false) }
+    val fieldValue = rememberSaveable { mutableStateOf(resValue) } // resource
+    var expanded by rememberSaveable { mutableStateOf(false) }
     // the box
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -65,7 +66,7 @@ fun ExposedDropdownMenuBoxComponent(
                 modifier = modifier
                     .fillMaxWidth()
                     .menuAnchor()
-                    .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
+                    .padding(vertical = 4.dp, horizontal = 8.dp),
                 enabled = enabled,
                 readOnly = true,
                 value = fieldValue.value, // resource
