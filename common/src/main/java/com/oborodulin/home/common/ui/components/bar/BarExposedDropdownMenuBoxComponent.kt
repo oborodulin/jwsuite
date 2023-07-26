@@ -2,27 +2,25 @@ package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
+import com.oborodulin.home.common.util.OnTextFieldValueChange
 import com.oborodulin.home.common.util.OnValueChange
 import timber.log.Timber
 
@@ -45,31 +43,17 @@ fun BarExposedDropdownMenuBoxComponent(
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
-    val resValue =
+    val value =
         if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
-    var fieldValue by rememberSaveable { mutableStateOf(resValue) } // resource
+    // set the correct cursor position when this composable is first initialized
+    var fieldValue by rememberSaveable {
+        mutableStateOf(TextFieldValue(value, TextRange(value.length))) // resource
+    }
+    val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
+    // make sure to keep the value updated
+    onFieldValueChange(fieldValue.copy(text = value))
+
     var expanded by rememberSaveable { mutableStateOf(false) }
-
-    val interactionSource = remember { MutableInteractionSource() }
-    val textStyle = LocalTextStyle.current
-    // make sure there is no background color in the decoration box
-    val colors = TextFieldDefaults.colors(
-        focusedContainerColor = Color.Unspecified,
-        unfocusedContainerColor = Color.Unspecified,
-        disabledContainerColor = Color.Unspecified,
-    )
-
-    // If color is not provided via the text style, use content color as a default
-    val textColor = textStyle.color.takeOrElse {
-        MaterialTheme.colorScheme.onSurface
-    }
-    val mergedTextStyle = textStyle.merge(TextStyle(color = textColor, lineHeight = 50.sp))
-
-    // request focus when this composable is first initialized
-    val focusRequester = FocusRequester()
-    SideEffect {
-        focusRequester.requestFocus()
-    }
 
     // the box
     ExposedDropdownMenuBox(
@@ -81,12 +65,19 @@ fun BarExposedDropdownMenuBoxComponent(
         // text field
         BarTextFieldComponent(
             modifier = modifier.menuAnchor(),
+            enabled = enabled,
             readOnly = true,
-            inputWrapper = inputWrapper,
+            fieldValue = fieldValue,
+            isError = inputWrapper.errorId != null,
             placeholderResId = placeholderResId,
             leadingIcon = leadingIcon,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            //onValueChange = onValueChange
+            visualTransformation = visualTransformation,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = remember {
+                KeyboardActions(onAny = { onImeKeyAction() })
+            },
+            onValueChange = onFieldValueChange
         )
         ExposedDropdownMenu(
             expanded = expanded,
@@ -95,12 +86,12 @@ fun BarExposedDropdownMenuBoxComponent(
             // listItems: Enum.names
             listItems.forEach { selectedOption -> // Enum.name
                 // menu item: Enums to resources
-                val resOption =
+                val option =
                     if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(selectedOption)] else selectedOption // resource
-                Timber.tag(TAG).d("selectedOption = %s; resOption = %s", selectedOption, resOption)
-                DropdownMenuItem(text = { Text(text = resOption) },
+                Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
+                DropdownMenuItem(text = { Text(text = option) },
                     onClick = {
-                        fieldValue = resOption
+                        onFieldValueChange(TextFieldValue(option, TextRange(option.length)))
                         expanded = false
                         onValueChange(selectedOption) // Enum.name
                     })

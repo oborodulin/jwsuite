@@ -32,9 +32,9 @@ private const val TAG = "Common.ui.ExposedDropdownMenuBoxComponent"
 fun ExposedDropdownMenuBoxComponent(
     modifier: Modifier,
     enabled: Boolean = true,
-    inputWrapper: InputWrapper,         // enum.name
+    inputWrapper: InputWrapper,             // enum.name
     resourceItems: List<String> = listOf(), // resources
-    listItems: List<String> = listOf(), // Enum.names
+    listItems: List<String> = listOf(),     // Enum.names
     @StringRes labelResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     maxLines: Int = Int.MAX_VALUE,
@@ -49,9 +49,9 @@ fun ExposedDropdownMenuBoxComponent(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
-    val resValue =
+    val value =
         if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
-    val fieldValue = rememberSaveable { mutableStateOf(resValue) } // resource
+    val fieldValue = rememberSaveable { mutableStateOf(value) } // resource
     var expanded by rememberSaveable { mutableStateOf(false) }
     // the box
     ExposedDropdownMenuBox(
@@ -102,12 +102,12 @@ fun ExposedDropdownMenuBoxComponent(
             // listItems: Enum.names
             listItems.forEach { selectedOption -> // Enum.name
                 // menu item: Enums to resources
-                val resOption =
+                val option =
                     if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(selectedOption)] else selectedOption // resource
-                Timber.tag(TAG).d("selectedOption = %s; resOption = %s", selectedOption, resOption)
-                DropdownMenuItem(text = { Text(text = resOption) },
+                Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
+                DropdownMenuItem(text = { Text(text = option) },
                     onClick = {
-                        fieldValue.value = resOption
+                        fieldValue.value = option
                         expanded = false
                         onValueChange(selectedOption) // Enum.name
                     })

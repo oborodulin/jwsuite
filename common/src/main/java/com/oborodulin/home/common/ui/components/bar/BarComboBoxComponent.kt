@@ -39,6 +39,7 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
+import com.oborodulin.home.common.util.OnTextFieldValueChange
 import timber.log.Timber
 
 private const val TAG = "Common.ui.BarComboBoxComponent"
@@ -51,7 +52,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
     inputWrapper: InputListItemWrapper,
     searchedItem: String = "",
     enabled: Boolean = true,
-    @StringRes labelResId: Int,
+    @StringRes placeholderResId: Int,
     @StringRes listTitleResId: Int,
     leadingIcon: @Composable (() -> Unit)? = null,
     isShowListDialog: Boolean,
@@ -69,8 +70,10 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
             TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
         )
     }
-    fieldValue =
-        fieldValue.copy(text = inputWrapper.item.headline) // make sure to keep the value updated
+    val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
+    // make sure to keep the value updated
+    onFieldValueChange(fieldValue.copy(text = inputWrapper.item.headline))
+
     Timber.tag(TAG).d(
         "itemId = %s; fieldValue.text = %s; inputWrapper.item.headline = %s",
         itemId,
@@ -94,48 +97,57 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
         onAddButtonClick = onShowSingleDialog
     ) { item ->
         itemId = item.itemId
-        fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length))
+        onFieldValueChange(TextFieldValue(item.headline, TextRange(item.headline.length)))
         onValueChange(ListItemModel(item.itemId, item.headline))
     }
+    // text field
+    BarTextFieldComponent(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .clickable { if (enabled) onShowListDialog() },
+        enabled = false,
+        readOnly = true,
+        fieldValue = fieldValue,
+        placeholderResId = placeholderResId,
+        leadingIcon = leadingIcon,
+        trailingIcon = {
+            if (enabled) {
+                if (fieldValue.text.isEmpty()) {
+                    Icon(
+                        Icons.Outlined.ArrowDropDown,
+                        contentDescription = "",
+                        modifier = Modifier.offset(x = 10.dp)
+                    )
+                } else {
+                    Icon(
+                        Icons.Outlined.Clear,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .offset(x = 10.dp)
+                            .clickable {
+                                //just send an update that the field is now empty
+                                onValueChange(ListItemModel())
+                            }
+                    )
+                }
+            }
+        },
+        onValueChange = onFieldValueChange
+    )
+
     Column {
         // https://stackoverflow.com/questions/67902919/jetpack-compose-textfield-clickable-does-not-work
         // https://github.com/JetBrains/compose-multiplatform/issues/220
         OutlinedTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 8.dp)
-                .clickable { if (enabled) onShowListDialog() },
-            enabled = false,
-            readOnly = true,
             value = fieldValue,
             onValueChange = {
                 fieldValue = it
                 onValueChange(ListItemModel(itemId, it.text))
             },
-            label = { Text(stringResource(labelResId)) },
+            label = { Text(stringResource(placeholderResId)) },
             leadingIcon = leadingIcon,
-            trailingIcon = {
-                if (enabled) {
-                    if (fieldValue.text.isEmpty()) {
-                        Icon(
-                            Icons.Outlined.ArrowDropDown,
-                            contentDescription = "",
-                            modifier = Modifier.offset(x = 10.dp)
-                        )
-                    } else {
-                        Icon(
-                            Icons.Outlined.Clear,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .offset(x = 10.dp)
-                                .clickable {
-                                    //just send an update that the field is now empty
-                                    onValueChange(ListItemModel())
-                                }
-                        )
-                    }
-                }
-            },
+            trailingIcon =
             maxLines = maxLines,
             isError = inputWrapper.errorId != null,
             keyboardActions = remember {

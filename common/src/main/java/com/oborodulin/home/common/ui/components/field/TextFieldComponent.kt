@@ -53,7 +53,7 @@ fun TextFieldComponent(
     visualTransformation: VisualTransformation = remember {
         VisualTransformation.None
     },
-    onValueChange: OnValueChange,
+    onValueChange: OnValueChange = {},
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {

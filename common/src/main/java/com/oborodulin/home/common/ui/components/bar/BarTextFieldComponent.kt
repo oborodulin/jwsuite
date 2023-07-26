@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -21,15 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oborodulin.home.common.ui.components.field.util.InputWrapper
-import com.oborodulin.home.common.util.OnValueChange
+import com.oborodulin.home.common.util.OnTextFieldValueChange
 
 private const val TAG = "Common.ui.BarTextFieldComponent"
 
@@ -40,18 +37,21 @@ fun BarTextFieldComponent(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    inputWrapper: InputWrapper,
+    fieldValue: TextFieldValue,
+    isError: Boolean = false,
     @StringRes placeholderResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    onValueChange: OnValueChange = {}
+    onValueChange: OnTextFieldValueChange = {},
+    colors: TextFieldColors = TextFieldDefaults.colors()
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val textStyle = LocalTextStyle.current
     // make sure there is no background color in the decoration box
-    val colors = TextFieldDefaults.colors(
+    val colors =  TextFieldDefaults.colors(
         focusedContainerColor = Color.Unspecified,
         unfocusedContainerColor = Color.Unspecified,
         disabledContainerColor = Color.Unspecified,
@@ -69,12 +69,6 @@ fun BarTextFieldComponent(
         focusRequester.requestFocus()
     }
 
-    // set the correct cursor position when this composable is first initialized
-    var fieldValue by rememberSaveable {
-        mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
-    }
-    fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
-
     CompositionLocalProvider(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
     ) {
@@ -84,16 +78,15 @@ fun BarTextFieldComponent(
                 .heightIn(32.dp)
                 .indicatorLine(
                     enabled = true,
-                    isError = false,
+                    isError = isError,
                     interactionSource = interactionSource,
                     colors = colors
                 )
                 .focusRequester(focusRequester),
             value = fieldValue,
             onValueChange = {
-                fieldValue = it
                 // remove newlines to avoid strange layout issues, and also because singleLine=true
-                onValueChange(it.text.replace("\n", ""))
+                onValueChange(it.copy(text = it.text.replace("\n", "")))
             },
             enabled = enabled,
             readOnly = readOnly,
@@ -110,9 +103,9 @@ fun BarTextFieldComponent(
                     innerTextField = innerTextField,
                     enabled = enabled,
                     singleLine = true,
-                    visualTransformation = VisualTransformation.None,
+                    visualTransformation = visualTransformation,
                     interactionSource = interactionSource,
-                    isError = false,
+                    isError = isError,
                     placeholder = placeholderResId?.let { { Text(text = stringResource(id = it)) } },
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
