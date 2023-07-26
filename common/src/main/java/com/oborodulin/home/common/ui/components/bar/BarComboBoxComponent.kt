@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components.field
+package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
@@ -41,10 +41,10 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
-private const val TAG = "Common.ui.ComboBoxComponent"
+private const val TAG = "Common.ui.BarComboBoxComponent"
 
 @Composable
-fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
+fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
     modifier: Modifier,
     listViewModel: MviViewModeled<T, A, E>,
     loadListUiAction: A,
@@ -62,7 +62,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("ComboBoxComponent(...) called")
+    Timber.tag(TAG).d("BarComboBoxComponent(...) called")
     var itemId by rememberSaveable { mutableStateOf(inputWrapper.item.itemId) }
     var fieldValue by rememberSaveable {
         mutableStateOf(
@@ -80,7 +80,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     /*    if (fieldValue.text != inputWrapper.item.headline) fieldValue =
             TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
         Timber.tag(TAG).d(
-            "ComboBoxComponent(...): fieldValue = %s; inputWrapper = %s",
+            "BarComboBoxComponent(...): fieldValue = %s; inputWrapper = %s",
             fieldValue,
             inputWrapper
         )*/
@@ -165,11 +165,11 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewComboBoxComponent() {
+fun PreviewBarComboBoxComponent() {
     val isShowNewRegionDialog = remember { mutableStateOf(false) }
     HomeComposableTheme {
         Surface {
-            /* ComboBoxComponent(modifier = Modifier
+            /* BarComboBoxComponent(modifier = Modifier
                  .fillMaxWidth()
                  .height(60.dp),
                  listViewModel =,

@@ -24,19 +24,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.items.SingleSelectListItemComponent
 import com.oborodulin.home.common.ui.components.search.SearchComponent
@@ -46,7 +45,6 @@ import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.home.common.util.toast
 import timber.log.Timber
 import java.util.Locale
 
@@ -84,9 +82,10 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                         CommonScreen(state = state) { items ->
                             items as List<ListItemModel>
                             if (items.isNotEmpty()) {
-                                val searchState =
-                                    remember { mutableStateOf(TextFieldValue(searchedItem)) }
-                                SearchComponent(searchState)
+                                var searchState by rememberSaveable {
+                                    mutableStateOf(TextFieldValue(searchedItem))
+                                }
+                                SearchComponent(searchState) { searchState = it }
                                 var filteredItems: List<ListItemModel>
                                 LazyColumn(
                                     state = rememberLazyListState(),
@@ -95,7 +94,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                                         .padding(8.dp)
                                         .focusable(enabled = true)
                                 ) {
-                                    val searchedText = searchState.value.text
+                                    val searchedText = searchState.text
                                     filteredItems = if (searchedText.isEmpty()) {
                                         items
                                     } else {
@@ -152,20 +151,20 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewSearchSingleSelectDialog() {
-    val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
-    val isShowDialog = remember { mutableStateOf(true) }
-    var isShowFullScreenDialog by remember { mutableStateOf(false) }
+    /*    val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
+        val isShowDialog = remember { mutableStateOf(true) }
+        var isShowFullScreenDialog by remember { mutableStateOf(false) }
 
-    if (isShowFullScreenDialog) {
-        LocalContext.current.toast("another Full-screen Dialog")
-    }
-    /*
-    SearchSingleSelectDialog(
-        isShow = isShowDialog,
-        title = stringResource(R.string.preview_blank_title),
-        viewModel =
-        onAddButtonClick = { isShowFullScreenDialog = true }
-    ) { item -> println(item.headline) }
+        if (isShowFullScreenDialog) {
+            LocalContext.current.toast("another Full-screen Dialog")
+        }
 
-     */
+        SearchSingleSelectDialog(
+            isShow = isShowDialog,
+            title = stringResource(R.string.preview_blank_title),
+            viewModel =
+            onAddButtonClick = { isShowFullScreenDialog = true }
+        ) { item -> println(item.headline) }
+
+         */
 }

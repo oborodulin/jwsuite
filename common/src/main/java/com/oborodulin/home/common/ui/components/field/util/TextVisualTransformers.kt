@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components
+package com.oborodulin.home.common.ui.components.field.util
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping

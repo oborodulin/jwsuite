@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class InputListItemWrapper(
     val item: ListItemModel = ListItemModel(),
     @StringRes override val errorId: Int? = null,
-    val errorMsg: String? = null,
+    override val errorMsg: String? = null,
     val isEmpty: Boolean = true,
     val isSaved: Boolean = true
 ) : InputWrapped, Parcelable

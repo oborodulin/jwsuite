@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class InputsWrapper(
     @StringRes override val errorId: Int? = null,
+    override val errorMsg: String? = null,
     val inputs: MutableMap<String, InputWrapper> = mutableMapOf()
 ) : InputWrapped, Parcelable

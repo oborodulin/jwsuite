@@ -134,9 +134,7 @@ fun DatePickerComponent(
             },
             colors = colors
         )
-        val errorMessage = inputWrapper.errorId?.let { stringResource(inputWrapper.errorId) }
-            ?: inputWrapper.errorMsg
-        errorMessage?.let {
+        inputWrapper.errorMessage(LocalContext.current)?.let {
             Text(
                 text = it,
                 color = MaterialTheme.colorScheme.error,

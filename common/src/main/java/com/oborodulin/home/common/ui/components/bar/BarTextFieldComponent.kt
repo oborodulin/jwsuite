@@ -1,6 +1,7 @@
-package com.oborodulin.home.common.ui.components.field
+package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,12 +13,14 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -25,24 +28,34 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.util.OnValueChange
 
-private const val TAG = "Common.ui.AppBarTextFieldComponent"
+private const val TAG = "Common.ui.BarTextFieldComponent"
 
 // https://stackoverflow.com/questions/73664765/showing-a-text-field-in-the-app-bar-in-jetpack-compose-with-material3
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBarTextFieldComponent(
-    value: String,
-    onValueChange: (String) -> Unit,
-    hint: String,
+fun BarTextFieldComponent(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    inputWrapper: InputWrapper,
+    @StringRes placeholderResId: Int? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    onValueChange: OnValueChange
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val textStyle = LocalTextStyle.current
     // make sure there is no background color in the decoration box
-    val colors = TextFieldDefaults.textFieldColors(containerColor = Color.Unspecified)
+    val colors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.Unspecified,
+        unfocusedContainerColor = Color.Unspecified,
+        disabledContainerColor = Color.Unspecified,
+    )
 
     // If color is not provided via the text style, use content color as a default
     val textColor = textStyle.color.takeOrElse {
@@ -57,21 +70,16 @@ fun AppBarTextFieldComponent(
     }
 
     // set the correct cursor position when this composable is first initialized
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(value, TextRange(value.length)))
+    var textFieldValue by rememberSaveable {
+        mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
-    textFieldValue = textFieldValue.copy(text = value) // make sure to keep the value updated
+    textFieldValue =
+        textFieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
 
     CompositionLocalProvider(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
     ) {
         BasicTextField(
-            value = textFieldValue,
-            onValueChange = {
-                textFieldValue = it
-                // remove newlines to avoid strange layout issues, and also because singleLine=true
-                onValueChange(it.text.replace("\n", ""))
-            },
             modifier = modifier
                 .fillMaxWidth()
                 .heightIn(32.dp)
@@ -82,6 +90,14 @@ fun AppBarTextFieldComponent(
                     colors = colors
                 )
                 .focusRequester(focusRequester),
+            value = textFieldValue,
+            onValueChange = {
+                textFieldValue = it
+                // remove newlines to avoid strange layout issues, and also because singleLine=true
+                onValueChange(it.text.replace("\n", ""))
+            },
+            enabled = enabled,
+            readOnly = readOnly,
             textStyle = mergedTextStyle,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             keyboardOptions = keyboardOptions,
@@ -91,14 +107,16 @@ fun AppBarTextFieldComponent(
             decorationBox = { innerTextField ->
                 // places text field with placeholder and appropriate bottom padding
                 TextFieldDefaults.DecorationBox(
-                    value = value,
+                    value = textFieldValue.text,
                     innerTextField = innerTextField,
-                    enabled = true,
+                    enabled = enabled,
                     singleLine = true,
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
                     isError = false,
-                    placeholder = { Text(text = hint) },
+                    placeholder = placeholderResId?.let { { Text(text = stringResource(id = it)) } },
+                    leadingIcon = leadingIcon,
+                    trailingIcon = trailingIcon,
                     colors = colors,
                     contentPadding = PaddingValues(bottom = 4.dp),
                 )
@@ -110,7 +128,7 @@ fun AppBarTextFieldComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewAppBarTextFieldComponent() {
+fun PreviewBarTextFieldComponent() {
     /*
     var value by rememberSaveable { mutableStateOf("initial content") }
     CenterAlignedTopAppBar(

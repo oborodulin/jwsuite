@@ -18,8 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -56,21 +58,22 @@ fun TextFieldComponent(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     Timber.tag(TAG).d("TextFieldComponent(...) called")
-    var fieldValue by remember {
+    var fieldValue by rememberSaveable {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
+    fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
     Timber.tag(TAG).d(
         "TextFieldComponent(...): fieldValue.text = %s; inputWrapper.value = %s",
         fieldValue.text,
         inputWrapper.value
     )
-    if (fieldValue.text != inputWrapper.value) fieldValue =
-        TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length))
-    Timber.tag(TAG).d(
-        "TextFieldComponent(...): fieldValue = %s; inputWrapper = %s",
-        fieldValue,
-        inputWrapper
-    )
+    /*    if (fieldValue.text != inputWrapper.value) fieldValue =
+            TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length))
+        Timber.tag(TAG).d(
+            "TextFieldComponent(...): fieldValue = %s; inputWrapper = %s",
+            fieldValue,
+            inputWrapper
+        )*/
     Column {
         OutlinedTextField(
             modifier = modifier
@@ -95,11 +98,9 @@ fun TextFieldComponent(
             },
             colors = colors
         )
-        val errorMessage = inputWrapper.errorId?.let { stringResource(inputWrapper.errorId) }
-            ?: inputWrapper.errorMsg
-        errorMessage?.let {
+        inputWrapper.errorMessage(LocalContext.current)?.let {
             Text(
-                text = errorMessage,
+                text = it,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(start = 16.dp)

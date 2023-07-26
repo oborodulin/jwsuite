@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components.field
+package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
@@ -23,12 +23,12 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
 import timber.log.Timber
 
-private const val TAG = "Common.ui.ExposedDropdownMenuBoxComponent"
+private const val TAG = "Common.ui.BarExposedDropdownMenuBoxComponent"
 
 // https://alexzh.com/jetpack-compose-dropdownmenu/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExposedDropdownMenuBoxComponent(
+fun BarExposedDropdownMenuBoxComponent(
     modifier: Modifier,
     enabled: Boolean = true,
     inputWrapper: InputWrapper,         // enum.name
@@ -47,7 +47,7 @@ fun ExposedDropdownMenuBoxComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
+    Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
     val resValue =
         if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     val fieldValue = remember { mutableStateOf(resValue) } // resource
@@ -60,12 +60,11 @@ fun ExposedDropdownMenuBoxComponent(
         }
     ) {
         // text field
+        BarTextFieldComponent( modifier = modifier
+            .fillMaxWidth()
+            .menuAnchor())
         Column {
             OutlinedTextField(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
-                    .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
                 enabled = enabled,
                 readOnly = true,
                 value = fieldValue.value, // resource
@@ -118,10 +117,10 @@ fun ExposedDropdownMenuBoxComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewExposedDropdownMenuBoxComponent() {
+fun PreviewBarExposedDropdownMenuBoxComponent() {
     HomeComposableTheme {
         Surface {
-            ExposedDropdownMenuBoxComponent(modifier = Modifier
+            BarExposedDropdownMenuBoxComponent(modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
                 inputWrapper = InputWrapper(
