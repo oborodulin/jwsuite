@@ -3,7 +3,6 @@ package com.oborodulin.home.common.ui.components.bar
 import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -13,10 +12,8 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -70,7 +66,10 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
             TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
         )
     }
-    val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
+    val onFieldValueChange: OnTextFieldValueChange = {
+        fieldValue = it
+        onValueChange(ListItemModel(itemId, it.text))
+    }
     // make sure to keep the value updated
     onFieldValueChange(fieldValue.copy(text = inputWrapper.item.headline))
 
@@ -109,6 +108,7 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
         enabled = false,
         readOnly = true,
         fieldValue = fieldValue,
+        isError = inputWrapper.errorId != null,
         placeholderResId = placeholderResId,
         leadingIcon = leadingIcon,
         trailingIcon = {
@@ -133,45 +133,17 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
                 }
             }
         },
-        onValueChange = onFieldValueChange
+        keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
+        onValueChange = onFieldValueChange,
+        colors = if (enabled) TextFieldDefaults.colors(
+            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            //For Icons
+            disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ) else null
     )
-
-    Column {
-        // https://stackoverflow.com/questions/67902919/jetpack-compose-textfield-clickable-does-not-work
-        // https://github.com/JetBrains/compose-multiplatform/issues/220
-        OutlinedTextField(
-            value = fieldValue,
-            onValueChange = {
-                fieldValue = it
-                onValueChange(ListItemModel(itemId, it.text))
-            },
-            label = { Text(stringResource(placeholderResId)) },
-            leadingIcon = leadingIcon,
-            trailingIcon =
-            maxLines = maxLines,
-            isError = inputWrapper.errorId != null,
-            keyboardActions = remember {
-                KeyboardActions(onAny = { onImeKeyAction() })
-            },
-            colors = if (enabled) OutlinedTextFieldDefaults.colors(
-                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                disabledBorderColor = MaterialTheme.colorScheme.outline,
-                disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                //For Icons
-                disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
-            ) else OutlinedTextFieldDefaults.colors()
-        )
-        inputWrapper.errorMessage(LocalContext.current)?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-    }
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

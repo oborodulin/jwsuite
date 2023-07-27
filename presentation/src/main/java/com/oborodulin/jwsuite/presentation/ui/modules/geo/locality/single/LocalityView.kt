@@ -215,8 +215,8 @@ fun LocalityView(
                 )
             },
             inputWrapper = localityType,
-            resourceItems = localityTypes.values.toList(), // resolve Enums to Resource
-            listItems = localityTypes.keys.map { it.name }, // Enums
+            values = localityTypes.values.toList(), // resolve Enums to Resource
+            keys = localityTypes.keys.map { it.name }, // Enums
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
             },

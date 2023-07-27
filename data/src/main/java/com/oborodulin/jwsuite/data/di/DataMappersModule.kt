@@ -89,8 +89,8 @@ import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryE
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryToTerritoryCategoryEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryDistrictViewListToTerritoryDistrictListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryDistrictViewToTerritoryDistrictMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryLocationViewListToTerritoryLocationsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryLocationViewToTerritoryLocationMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetToTerritoryStreetEntityMapper
@@ -796,16 +796,16 @@ object DataMappersModule {
     fun provideTerritoriesIdleViewListToTerritoriesListMapper(mapper: TerritoriesIdleViewToTerritoryMapper): TerritoriesIdleViewListToTerritoriesListMapper =
         TerritoriesIdleViewListToTerritoriesListMapper(mapper = mapper)
 
-    // TerritoryDistrictView:
+    // TerritoryLocationView:
     @Singleton
     @Provides
-    fun provideTerritoryDistrictViewToTerritoryDistrictMapper(): TerritoryDistrictViewToTerritoryDistrictMapper =
-        TerritoryDistrictViewToTerritoryDistrictMapper()
+    fun provideTerritoryLocationViewToTerritoryLocationMapper(): TerritoryLocationViewToTerritoryLocationMapper =
+        TerritoryLocationViewToTerritoryLocationMapper()
 
     @Singleton
     @Provides
-    fun provideTerritoryDistrictViewListToTerritoryDistrictListMapper(mapper: TerritoryDistrictViewToTerritoryDistrictMapper): TerritoryDistrictViewListToTerritoryDistrictListMapper =
-        TerritoryDistrictViewListToTerritoryDistrictListMapper(mapper = mapper)
+    fun provideTerritoryLocationViewListToTerritoryLocationsListMapper(mapper: TerritoryLocationViewToTerritoryLocationMapper): TerritoryLocationViewListToTerritoryLocationsListMapper =
+        TerritoryLocationViewListToTerritoryLocationsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -814,8 +814,8 @@ object DataMappersModule {
         territoryViewToTerritoryMapper: TerritoryViewToTerritoryMapper,
         territoriesListToTerritoryEntityListMapper: TerritoriesListToTerritoryEntityListMapper,
         territoryToTerritoryEntityMapper: TerritoryToTerritoryEntityMapper,
-        territoryDistrictViewListToTerritoryDistrictListMapper: TerritoryDistrictViewListToTerritoryDistrictListMapper,
-        territoryDistrictViewToTerritoryDistrictMapper: TerritoryDistrictViewToTerritoryDistrictMapper,
+        territoryLocationViewListToTerritoryLocationsListMapper: TerritoryLocationViewListToTerritoryLocationsListMapper,
+        territoryLocationViewToTerritoryLocationMapper: TerritoryLocationViewToTerritoryLocationMapper,
         territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
         geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
@@ -830,8 +830,8 @@ object DataMappersModule {
         territoryViewToTerritoryMapper,
         territoriesListToTerritoryEntityListMapper,
         territoryToTerritoryEntityMapper,
-        territoryDistrictViewListToTerritoryDistrictListMapper,
-        territoryDistrictViewToTerritoryDistrictMapper,
+        territoryLocationViewListToTerritoryLocationsListMapper,
+        territoryLocationViewToTerritoryLocationMapper,
         territoryStreetViewListToTerritoryStreetsListMapper,
         geoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper,

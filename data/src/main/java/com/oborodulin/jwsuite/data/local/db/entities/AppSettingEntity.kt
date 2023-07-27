@@ -35,6 +35,11 @@ data class AppSettingEntity(
             paramName = AppSettingParam.CURRENCY_CODE, paramValue = currencyCode()
         )
 
+        fun allItemsParam(ctx: Context) = defaultParam(
+            paramName = AppSettingParam.ALL_ITEMS,
+            paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.all_items_unit)
+        )
+
         fun dayMuParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.DAY_MU,
             paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.day_unit)

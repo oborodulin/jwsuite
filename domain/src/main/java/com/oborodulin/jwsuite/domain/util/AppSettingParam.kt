@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.util
 enum class AppSettingParam {
     LANG,
     CURRENCY_CODE,
+    ALL_ITEMS,
     DAY_MU,
     MONTH_MU,
     YEAR_MU,

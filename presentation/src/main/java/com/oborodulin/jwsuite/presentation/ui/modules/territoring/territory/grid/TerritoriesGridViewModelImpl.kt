@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
@@ -51,8 +51,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             is TerritoriesGridUiAction.Load -> {
                 loadTerritories(
                     action.congregationId,
-                    action.territoryProcessType, action.territoryDistrictType,
-                    action.districtId, action.isPrivateSector
+                    action.territoryProcessType, action.territoryLocationType,
+                    action.locationId, action.isPrivateSector
                 )
             }
 
@@ -73,14 +73,14 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     private fun loadTerritories(
         congregationId: UUID?,
-        territoryProcessType: TerritoryProcessType, territoryDistrictType: TerritoryDistrictType,
+        territoryProcessType: TerritoryProcessType, territoryLocationType: TerritoryLocationType,
         districtId: UUID? = null, isPrivateSector: Boolean = false
     ): Job {
         Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoriesUseCase.execute(
                 GetTerritoriesUseCase.Request(
-                    congregationId, territoryProcessType, territoryDistrictType,
+                    congregationId, territoryProcessType, territoryLocationType,
                     districtId, isPrivateSector
                 )
             )

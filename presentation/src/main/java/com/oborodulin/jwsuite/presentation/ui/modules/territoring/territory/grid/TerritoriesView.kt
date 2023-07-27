@@ -33,12 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +48,7 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
@@ -73,7 +73,7 @@ fun TerritoriesView(
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
     territoryInput: TerritoryInput? = null,
-    territoryDistrictType: TerritoryDistrictType,
+    territoryLocationType: TerritoryLocationType,
     districtId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
@@ -85,7 +85,7 @@ fun TerritoriesView(
     LaunchedEffect(
         congregationId,
         territoryProcessType,
-        territoryDistrictType,
+        territoryLocationType,
         districtId,
         isPrivateSector
     ) {
@@ -94,8 +94,8 @@ fun TerritoriesView(
             TerritoriesGridUiAction.Load(
                 congregationId = congregationId,
                 territoryProcessType = territoryProcessType,
-                territoryDistrictType = territoryDistrictType,
-                districtId = districtId,
+                territoryLocationType = territoryLocationType,
+                locationId = districtId,
                 isPrivateSector = isPrivateSector
             )
         )
@@ -217,7 +217,8 @@ fun TerritoriesClickableGrid(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Row(modifier = Modifier.fillMaxWidth(),
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -292,6 +293,7 @@ fun TerritoriesClickableGrid(
                                     fontSize = 12.sp,
                                     style = MaterialTheme.typography.titleMedium,
                                     textAlign = TextAlign.End,
+                                    overflow = TextOverflow.Ellipsis,
                                 )
                                 territory.member?.memberShortName?.let {
                                     Text(
@@ -300,6 +302,8 @@ fun TerritoriesClickableGrid(
                                         fontWeight = FontWeight.Bold,
                                         style = MaterialTheme.typography.bodySmall,
                                         textAlign = TextAlign.Start,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                     )
                                 }
                                 territory.territoryDesc?.let {
@@ -313,6 +317,8 @@ fun TerritoriesClickableGrid(
                                         text = it,
                                         style = MaterialTheme.typography.bodySmall,
                                         textAlign = TextAlign.Start,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
                                     )
                                 }
                             }

@@ -11,6 +11,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
@@ -24,7 +25,7 @@ fun ScaffoldComponent(
     appState: AppState,
 //    scaffoldState: ScaffoldState = rememberScaffoldState(),
     nestedScrollConnection: NestedScrollConnection? = null,
-    @StringRes topBarTitleId: Int? = null,
+    @StringRes topBarTitleResId: Int? = null,
     topBarNavigationIcon: @Composable (() -> Unit)? = null,
     topBarActions: @Composable RowScope.() -> Unit = {},
     topBar: @Composable (() -> Unit)? = null,
@@ -59,15 +60,17 @@ fun ScaffoldComponent(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    appState.appName + when (topBarTitleId) {
+                                    text = appState.appName + when (topBarTitleResId) {
                                         null -> ""
-                                        else -> " - " + stringResource(topBarTitleId)
-                                    }
+                                        else -> " - " + stringResource(topBarTitleResId)
+                                    },
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 if (appState.actionBarSubtitle.value.isNotEmpty()) {
                                     Text(
                                         text = appState.actionBarSubtitle.value,
-                                        style = Typography.titleMedium
+                                        style = Typography.titleMedium,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
                             }

@@ -23,6 +23,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +39,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.TabRowItem
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.theme.Typography
@@ -45,9 +49,12 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoryLocationsListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoryLocationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -63,20 +70,25 @@ private const val TAG = "Territoring.TerritoringScreen"
 fun TerritoringScreen(
     //viewModel: CongregatingViewModelImpl = hiltViewModel(),
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    territoryLocationsListViewModel: TerritoryLocationsListViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val context = LocalContext.current
-    /*
-        LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("CongregatingScreen: LaunchedEffect() BEFORE collect ui state flow")
-            viewModel.submitAction(CongregatingUiAction.Init)
-        }
-        viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
 
-     */
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG).d("CongregatingScreen: LaunchedEffect() BEFORE collect ui state flow")
+        territoryLocationsListViewModel.submitAction(
+            TerritoryLocationsListUiAction.Load(congregationId = currentCongregation?.id)
+        )
+    }
+    territoryLocationsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+    }
+
     val tabRowItems = listOf(
         TabRowItem(
             title = stringResource(R.string.territory_tab_hand_out),
@@ -99,7 +111,7 @@ fun TerritoringScreen(
         ScaffoldComponent(
             appState = appState,
             nestedScrollConnection = nestedScrollConnection,
-            topBarTitleId = R.string.nav_item_congregating,
+            topBarTitleResId = R.string.nav_item_territoring,
             topBarActions = {
                 IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                     Icon(Icons.Outlined.Add, null)

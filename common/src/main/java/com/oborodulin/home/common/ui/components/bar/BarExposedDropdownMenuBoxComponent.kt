@@ -32,9 +32,9 @@ private const val TAG = "Common.ui.BarExposedDropdownMenuBoxComponent"
 fun BarExposedDropdownMenuBoxComponent(
     modifier: Modifier,
     enabled: Boolean = true,
-    inputWrapper: InputWrapper,             // enum.name
-    resourceItems: List<String> = listOf(), // resources
-    listItems: List<String> = listOf(),     // Enum.names
+    inputWrapper: InputWrapper,         // enum.name
+    values: List<String> = listOf(),    // resources
+    keys: List<String> = listOf(),      // Enum.names
     @StringRes placeholderResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
@@ -44,7 +44,7 @@ fun BarExposedDropdownMenuBoxComponent(
 ) {
     Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
     val value =
-        if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
+        if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     // set the correct cursor position when this composable is first initialized
     var fieldValue by rememberSaveable {
         mutableStateOf(TextFieldValue(value, TextRange(value.length))) // resource
@@ -84,10 +84,10 @@ fun BarExposedDropdownMenuBoxComponent(
             onDismissRequest = { expanded = false }
         ) {
             // listItems: Enum.names
-            listItems.forEach { selectedOption -> // Enum.name
+            keys.forEach { selectedOption -> // Enum.name
                 // menu item: Enums to resources
                 val option =
-                    if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(selectedOption)] else selectedOption // resource
+                    if (values.isNotEmpty()) values[keys.indexOf(selectedOption)] else selectedOption // resource
                 Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
                 DropdownMenuItem(text = { Text(text = option) },
                     onClick = {

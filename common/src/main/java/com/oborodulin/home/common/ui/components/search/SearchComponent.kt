@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.components.search
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,13 +30,18 @@ import com.oborodulin.home.common.util.OnTextFieldValueChange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchComponent(fieldValue: TextFieldValue, onValueChange: OnTextFieldValueChange) {
+fun SearchComponent(
+    fieldValue: TextFieldValue,
+    @StringRes placeholderResId: Int? = null,
+    onValueChange: OnTextFieldValueChange
+) {
 //    val containerColor = FilledTextFieldTokens.ContainerColor.toColor()
     TextField(
         value = fieldValue,
-        onValueChange = { onValueChange(it) },
+        onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
         textStyle = TextStyle(fontSize = 18.sp),
+        placeholder = placeholderResId?.let { { Text(text = stringResource(id = it)) } },
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
@@ -44,7 +52,7 @@ fun SearchComponent(fieldValue: TextFieldValue, onValueChange: OnTextFieldValueC
             )
         },
         trailingIcon = {
-            if (fieldValue != TextFieldValue("")) {
+            if (fieldValue.text.isNotEmpty()) {
                 // Remove text from TextField when you press the 'X' icon
                 IconButton(onClick = { onValueChange(TextFieldValue("")) })
                 {
@@ -82,6 +90,6 @@ fun SearchComponent(fieldValue: TextFieldValue, onValueChange: OnTextFieldValueC
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewSearchComponent() {
-    var textState by remember { mutableStateOf(TextFieldValue("")) }
+    var textState by remember { mutableStateOf(TextFieldValue("Search query")) }
     SearchComponent(textState) { textState = it }
 }

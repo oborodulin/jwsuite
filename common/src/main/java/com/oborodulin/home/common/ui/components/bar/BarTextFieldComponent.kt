@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -46,17 +47,16 @@ fun BarTextFieldComponent(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: OnTextFieldValueChange = {},
-    colors: TextFieldColors = TextFieldDefaults.colors()
+    colors: TextFieldColors? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val textStyle = LocalTextStyle.current
     // make sure there is no background color in the decoration box
-    val colors =  TextFieldDefaults.colors(
+    val btfColors = colors ?: TextFieldDefaults.colors(
         focusedContainerColor = Color.Unspecified,
         unfocusedContainerColor = Color.Unspecified,
         disabledContainerColor = Color.Unspecified,
     )
-
     // If color is not provided via the text style, use content color as a default
     val textColor = textStyle.color.takeOrElse {
         MaterialTheme.colorScheme.onSurface
@@ -80,13 +80,14 @@ fun BarTextFieldComponent(
                     enabled = true,
                     isError = isError,
                     interactionSource = interactionSource,
-                    colors = colors
+                    colors = btfColors
                 )
                 .focusRequester(focusRequester),
             value = fieldValue,
             onValueChange = {
                 // remove newlines to avoid strange layout issues, and also because singleLine=true
-                onValueChange(it.copy(text = it.text.replace("\n", "")))
+                val value = it.text.replace("\n", "")
+                onValueChange(TextFieldValue(value, TextRange(value.length)))
             },
             enabled = enabled,
             readOnly = readOnly,
@@ -109,7 +110,7 @@ fun BarTextFieldComponent(
                     placeholder = placeholderResId?.let { { Text(text = stringResource(id = it)) } },
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
-                    colors = colors,
+                    colors = btfColors,
                     contentPadding = PaddingValues(bottom = 4.dp),
                 )
             }

@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,7 +52,7 @@ fun LocalityScreen(
                 appState = appState,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Filled.ArrowBack, null)
+                        Icon(Icons.Outlined.ArrowBack, null)
                     }
                 }
             ) { it ->

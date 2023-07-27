@@ -18,6 +18,7 @@
     <string name="dlg_confirm_title">Подтверждение</string>
 
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
+    <string name="all_items_unit">ВСЕ</string>
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
     <string name="year_unit">г.</string>

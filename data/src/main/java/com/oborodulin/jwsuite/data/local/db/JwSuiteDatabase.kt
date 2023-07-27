@@ -42,7 +42,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
-        TerritoryView::class, TerritoryStreetView::class, TerritoryDistrictView::class,
+        TerritoryView::class, TerritoryStreetView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class
         //TerritoryInfoView::class
@@ -434,6 +434,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(currencyCode)
             )
+            // All Items
+            val allItems = AppSettingEntity.allItemsParam(context)
+            db.insert(
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(allItems)
+            )
             // Day Mu
             val dayMu = AppSettingEntity.dayMuParam(context)
             db.insert(
@@ -493,9 +499,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG)
                     .i(
-                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
+                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
                         it.toJson(lang),
                         it.toJson(currencyCode),
+                        it.toJson(allItems),
                         it.toJson(dayMu),
                         it.toJson(monthMu),
                         it.toJson(yearMu),

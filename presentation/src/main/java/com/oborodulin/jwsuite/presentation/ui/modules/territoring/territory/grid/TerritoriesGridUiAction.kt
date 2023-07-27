@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid
 
 import com.oborodulin.home.common.ui.state.UiAction
-import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import java.util.UUID
 
@@ -9,8 +9,8 @@ sealed class TerritoriesGridUiAction : UiAction {
     data class Load(
         val congregationId: UUID? = null,
         val territoryProcessType: TerritoryProcessType,
-        val territoryDistrictType: TerritoryDistrictType,
-        val districtId: UUID? = null,
+        val territoryLocationType: TerritoryLocationType,
+        val locationId: UUID? = null,
         val isPrivateSector: Boolean = false
     ) : TerritoriesGridUiAction()
 

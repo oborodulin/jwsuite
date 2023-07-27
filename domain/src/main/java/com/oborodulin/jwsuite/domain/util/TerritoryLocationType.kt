@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.domain.util
 
-enum class TerritoryDistrictType {
+enum class TerritoryLocationType {
     ALL,
     LOCALITY,
     LOCALITY_DISTRICT,

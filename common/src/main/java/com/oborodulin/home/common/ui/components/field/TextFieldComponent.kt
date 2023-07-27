@@ -47,12 +47,8 @@ fun TextFieldComponent(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     maxLines: Int = Int.MAX_VALUE,
-    keyboardOptions: KeyboardOptions = remember {
-        KeyboardOptions.Default
-    },
-    visualTransformation: VisualTransformation = remember {
-        VisualTransformation.None
-    },
+    keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
+    visualTransformation: VisualTransformation = remember { VisualTransformation.None },
     onValueChange: OnValueChange = {},
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()

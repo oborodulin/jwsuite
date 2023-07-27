@@ -32,25 +32,21 @@ private const val TAG = "Common.ui.ExposedDropdownMenuBoxComponent"
 fun ExposedDropdownMenuBoxComponent(
     modifier: Modifier,
     enabled: Boolean = true,
-    inputWrapper: InputWrapper,             // enum.name
-    resourceItems: List<String> = listOf(), // resources
-    listItems: List<String> = listOf(),     // Enum.names
+    inputWrapper: InputWrapper,         // enum.name
+    values: List<String> = listOf(),    // resources
+    keys: List<String> = listOf(),      // Enum.names
     @StringRes labelResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     maxLines: Int = Int.MAX_VALUE,
-    keyboardOptions: KeyboardOptions = remember {
-        KeyboardOptions.Default
-    },
-    visualTransformation: VisualTransformation = remember {
-        VisualTransformation.None
-    },
+    keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
+    visualTransformation: VisualTransformation = remember { VisualTransformation.None },
     onValueChange: OnValueChange,
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
     val value =
-        if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(inputWrapper.value)] else inputWrapper.value // resource
+        if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     val fieldValue = rememberSaveable { mutableStateOf(value) } // resource
     var expanded by rememberSaveable { mutableStateOf(false) }
     // the box
@@ -74,16 +70,14 @@ fun ExposedDropdownMenuBoxComponent(
                     fieldValue.value = it // resource
                     //onValueChange(it)
                 },
-                label = { labelResId?.let { Text(stringResource(it)) } },
+                label = labelResId?.let { { Text(stringResource(it)) } },
                 leadingIcon = leadingIcon,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 maxLines = maxLines,
                 isError = inputWrapper.errorId != null,
                 visualTransformation = visualTransformation,
                 keyboardOptions = keyboardOptions,
-                keyboardActions = remember {
-                    KeyboardActions(onAny = { onImeKeyAction() })
-                },
+                keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
                 colors = colors
             )
             inputWrapper.errorMessage(LocalContext.current)?.let {
@@ -99,11 +93,11 @@ fun ExposedDropdownMenuBoxComponent(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            // listItems: Enum.names
-            listItems.forEach { selectedOption -> // Enum.name
+            // keys: Enum.names
+            keys.forEach { selectedOption -> // Enum.name
                 // menu item: Enums to resources
                 val option =
-                    if (resourceItems.isNotEmpty()) resourceItems[listItems.indexOf(selectedOption)] else selectedOption // resource
+                    if (values.isNotEmpty()) values[keys.indexOf(selectedOption)] else selectedOption // resource
                 Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
                 DropdownMenuItem(text = { Text(text = option) },
                     onClick = {

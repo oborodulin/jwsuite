@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.di
 
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -19,11 +20,14 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converte
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryLocationsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoriesListToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryCategoriesListToTerritoryCategoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryCategoryToTerritoryCategoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryCategoryToTerritoryCategoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryCategoryUiToTerritoryCategoryMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationToTerritoryLocationsListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationsListToTerritoryLocationsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
@@ -57,6 +61,17 @@ object TerritoringModule {
     @Provides
     fun provideTerritoryCategoriesListToTerritoryCategoriesListItemMapper(mapper: TerritoryCategoryToTerritoryCategoriesListItemMapper): TerritoryCategoriesListToTerritoryCategoriesListItemMapper =
         TerritoryCategoriesListToTerritoryCategoriesListItemMapper(mapper = mapper)
+
+    // Territory Location:
+    @Singleton
+    @Provides
+    fun provideTerritoryLocationToTerritoryLocationsListItemMapper(): TerritoryLocationToTerritoryLocationsListItemMapper =
+        TerritoryLocationToTerritoryLocationsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryLocationsListToTerritoryLocationsListItemMapper(mapper: TerritoryLocationToTerritoryLocationsListItemMapper): TerritoryLocationsListToTerritoryLocationsListItemMapper =
+        TerritoryLocationsListToTerritoryLocationsListItemMapper(mapper = mapper)
 
     // Territory:
     @Singleton
@@ -125,6 +140,12 @@ object TerritoringModule {
     fun provideTerritoriesListConverter(mapper: TerritoriesListToTerritoriesListItemMapper): TerritoriesListConverter =
         TerritoriesListConverter(mapper = mapper)
 
+    // Territory Locations:
+    @Singleton
+    @Provides
+    fun provideTerritoryLocationsListConverter(mapper: TerritoryLocationsListToTerritoryLocationsListItemMapper): TerritoryLocationsListConverter =
+        TerritoryLocationsListConverter(mapper = mapper)
+
     // USE CASES:
     // Territory Category:
     @Singleton
@@ -148,11 +169,13 @@ object TerritoringModule {
         getTerritoriesUseCase: GetTerritoriesUseCase,
         getTerritoryUseCase: GetTerritoryUseCase,
         saveTerritoryUseCase: SaveTerritoryUseCase,
-        deleteTerritoryUseCase: DeleteTerritoryUseCase
+        deleteTerritoryUseCase: DeleteTerritoryUseCase,
+        getTerritoryLocationsUseCase: GetTerritoryLocationsUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getTerritoriesUseCase,
         getTerritoryUseCase,
         saveTerritoryUseCase,
-        deleteTerritoryUseCase
+        deleteTerritoryUseCase,
+        getTerritoryLocationsUseCase
     )
 }

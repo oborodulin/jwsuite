@@ -51,6 +51,7 @@ object Constants {
     // AppSettings:
     const val PRM_LANG_VAL = "'LANG'"
     const val PRM_CURRENCY_CODE_VAL = "'CURRENCY_CODE'"
+    const val PRM_ALL_ITEMS_VAL = "'ALL_ITEMS'"
     const val PRM_DAY_MU_VAL = "'DAY_MU'"
     const val PRM_MONTH_MU_VAL = "'MONTH_MU'"
     const val PRM_PERSON_NUM_MU_VAL = "'PERSON_NUM_MU'"
@@ -60,7 +61,7 @@ object Constants {
     const val PRM_TERRITORY_MAX_ROOMS_VAL = "'TERRITORY_MAX_ROOMS'"
     const val PRM_TERRITORY_IDLE_PERIOD_VAL = "'TERRITORY_IDLE_PERIOD'"
 
-    // TerritoryDistrictType:
+    // TerritoryLocationType:
     const val TDT_ALL_VAL = "'ALL'"
     const val TDT_LOCALITY_VAL = "'LOCALITY'"
     const val TDT_LOCALITY_DISTRICT_VAL = "'LOCALITY_DISTRICT'"

@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoom
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
-import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -31,27 +31,29 @@ class TerritoriesRepositoryImpl @Inject constructor(
             else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
         }.map(mappers.territoryViewListToTerritoriesListMapper::map)
 
-    override fun getCongregationTerritoryDistricts(isPrivateSector: Boolean, congregationId: UUID) =
-        localTerritoryDataSource.getCongregationTerritoryDistricts(isPrivateSector, congregationId)
-            .map(mappers.territoryDistrictViewListToTerritoryDistrictListMapper::map)
+    override fun getCongregationTerritoryLocations(
+        isPrivateSector: Boolean,
+        congregationId: UUID?
+    ) =
+        localTerritoryDataSource.getCongregationTerritoryLocations(isPrivateSector, congregationId)
+            .map(mappers.territoryLocationViewListToTerritoryLocationsListMapper::map)
 
     override fun getTerritories(
         territoryProcessType: TerritoryProcessType,
-        territoryDistrictType: TerritoryDistrictType,
-        districtId: UUID,
+        territoryLocationType: TerritoryLocationType, locationId: UUID?,
         isPrivateSector: Boolean,
         congregationId: UUID?
     ) = when (territoryProcessType) {
         TerritoryProcessType.HAND_OUT -> localTerritoryDataSource.getHandOutTerritories(
-            congregationId, isPrivateSector, territoryDistrictType, districtId
+            congregationId, isPrivateSector, territoryLocationType, locationId
         ).map(mappers.territoriesHandOutViewListToTerritoriesListMapper::map)
 
         TerritoryProcessType.AT_WORK -> localTerritoryDataSource.getAtWorkTerritories(
-            congregationId, isPrivateSector, territoryDistrictType, districtId
+            congregationId, isPrivateSector, territoryLocationType, locationId
         ).map(mappers.territoriesAtWorkViewListToTerritoriesListMapper::map)
 
         TerritoryProcessType.IDLE -> localTerritoryDataSource.getIdleTerritories(
-            congregationId, isPrivateSector, territoryDistrictType, districtId
+            congregationId, isPrivateSector, territoryLocationType, locationId
         ).map(mappers.territoriesIdleViewListToTerritoriesListMapper::map)
 
         TerritoryProcessType.ALL -> when (congregationId) {

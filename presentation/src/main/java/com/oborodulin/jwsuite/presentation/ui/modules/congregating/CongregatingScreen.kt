@@ -91,7 +91,7 @@ fun CongregatingScreen(
         ScaffoldComponent(
             appState = appState,
             nestedScrollConnection = nestedScrollConnection,
-            topBarTitleId = R.string.nav_item_congregating,
+            topBarTitleResId = R.string.nav_item_congregating,
             topBarActions = {
                 IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                     Icon(Icons.Outlined.Add, null)

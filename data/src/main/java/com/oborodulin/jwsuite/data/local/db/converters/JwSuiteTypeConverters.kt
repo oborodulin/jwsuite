@@ -10,7 +10,7 @@ import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.RoadType
-import com.oborodulin.jwsuite.domain.util.TerritoryDistrictType
+import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryMemberMark
 import com.oborodulin.jwsuite.domain.util.VillageType
 import java.math.BigDecimal
@@ -109,10 +109,10 @@ object JwSuiteTypeConverters {
     fun fromTerritoryMemberMark(value: TerritoryMemberMark) = value.name
 
     @TypeConverter
-    fun toTerritoryDistrictType(value: String) = enumValueOf<TerritoryDistrictType>(value)
+    fun toTerritoryLocationType(value: String) = enumValueOf<TerritoryLocationType>(value)
 
     @TypeConverter
-    fun fromTerritoryDistrictType(value: TerritoryDistrictType) = value.name
+    fun fromTerritoryLocationType(value: TerritoryLocationType) = value.name
 
     @TypeConverter
     fun toBuildingType(value: String) = enumValueOf<BuildingType>(value)

@@ -60,7 +60,7 @@ fun DashboardingScreen(
             ScaffoldComponent(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,
-                topBarTitleId = com.oborodulin.jwsuite.presentation.R.string.nav_item_dashboarding,
+                topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_dashboarding,
                 topBarActions = {
                     IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                         Icon(Icons.Outlined.Add, null)

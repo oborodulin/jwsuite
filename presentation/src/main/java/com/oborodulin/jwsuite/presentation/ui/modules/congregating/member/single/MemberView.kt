@@ -290,8 +290,8 @@ fun MemberView(
                 )
             },
             inputWrapper = memberType,
-            resourceItems = memberTypes.values.toList(), // resolve Enums to Resource
-            listItems = memberTypes.keys.map { it.name }, // Enums
+            values = memberTypes.values.toList(), // resolve Enums to Resource
+            keys = memberTypes.keys.map { it.name }, // Enums
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.MemberType(it)) },
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
