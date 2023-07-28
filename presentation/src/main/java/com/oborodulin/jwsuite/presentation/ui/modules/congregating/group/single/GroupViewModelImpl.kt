@@ -49,7 +49,7 @@ class GroupViewModelImpl @Inject constructor(
         state.getStateFlow(GroupFields.GROUP_ID.name, InputWrapper())
     }
 
-    override val congregation: StateFlow<InputListItemWrapper> by lazy {
+    override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(GroupFields.GROUP_CONGREGATION.name, InputListItemWrapper())
     }
 
@@ -100,7 +100,7 @@ class GroupViewModelImpl @Inject constructor(
 
     private fun saveGroup(): Job {
         val congregationUi = CongregationUi()
-        congregationUi.id = congregation.value.item.itemId
+        congregationUi.id = congregation.value.item?.itemId
         val groupUi = GroupUi(
             congregation = congregationUi,
             groupNum = groupNum.value.value.toInt(),
@@ -202,7 +202,7 @@ class GroupViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val congregation = MutableStateFlow(InputListItemWrapper())
+                override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val groupNum = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)

@@ -1,9 +1,11 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring
 
 import com.oborodulin.home.common.ui.state.UiAction
+import java.util.UUID
 
 sealed class TerritoringUiAction : UiAction {
-    object Init : TerritoringUiAction()
-    //data class Load(val payerId: UUID) : AccountingUiAction()
+    data class LoadLocations(
+        val congregationId: UUID? = null,
+        val isPrivateSector: Boolean = false
+    ) : TerritoringUiAction()
 }
-

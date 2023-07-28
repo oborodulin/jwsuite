@@ -62,11 +62,11 @@ class MemberViewModelImpl @Inject constructor(
         state.getStateFlow(MemberFields.MEMBER_ID.name, InputWrapper())
     }
 
-    override val congregation: StateFlow<InputListItemWrapper> by lazy {
+    override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
     }
 
-    override val group: StateFlow<InputListItemWrapper> by lazy {
+    override val group: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberFields.MEMBER_GROUP.name, InputListItemWrapper())
     }
 
@@ -169,9 +169,9 @@ class MemberViewModelImpl @Inject constructor(
     private fun saveMember(): Job {
         val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
         val congregationUi = CongregationUi()
-        congregationUi.id = congregation.value.item.itemId
+        congregationUi.id = congregation.value.item?.itemId
         val groupUi = GroupUi(congregation = congregationUi)
-        groupUi.id = group.value.item.itemId
+        groupUi.id = group.value.item?.itemId
         val memberUi = MemberUi(
             group = groupUi,
             memberNum = memberNum.value.value,
@@ -415,7 +415,7 @@ class MemberViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        MemberInputValidator.Group.errorIdOrNull(group.value.item.headline)?.let {
+        MemberInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = MemberFields.MEMBER_GROUP.name, errorId = it))
         }
         MemberInputValidator.MemberNum.errorIdOrNull(memberNum.value.value)?.let {
@@ -484,8 +484,8 @@ class MemberViewModelImpl @Inject constructor(
 
                 override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 
-                override val congregation = MutableStateFlow(InputListItemWrapper())
-                override val group = MutableStateFlow(InputListItemWrapper())
+                override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val group = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val memberNum = MutableStateFlow(InputWrapper())
                 override val memberName = MutableStateFlow(InputWrapper())
                 override val surname = MutableStateFlow(InputWrapper())

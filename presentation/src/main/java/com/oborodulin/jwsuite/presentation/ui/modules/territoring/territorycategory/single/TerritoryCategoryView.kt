@@ -124,13 +124,8 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_abc_36),
-                    null
-                )
-            },
+            labelResId = R.string.territory_category_mark_hint,
+            leadingIcon = { Icon(painterResource(R.drawable.ic_ab_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
@@ -154,12 +149,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
                     )
                 },
             labelResId = R.string.name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_abc_36),
-                    null
-                )
-            },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,

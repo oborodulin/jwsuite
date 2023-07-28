@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.di
 
+import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
@@ -169,13 +170,21 @@ object TerritoringModule {
         getTerritoriesUseCase: GetTerritoriesUseCase,
         getTerritoryUseCase: GetTerritoryUseCase,
         saveTerritoryUseCase: SaveTerritoryUseCase,
-        deleteTerritoryUseCase: DeleteTerritoryUseCase,
-        getTerritoryLocationsUseCase: GetTerritoryLocationsUseCase
+        deleteTerritoryUseCase: DeleteTerritoryUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getTerritoriesUseCase,
         getTerritoryUseCase,
         saveTerritoryUseCase,
-        deleteTerritoryUseCase,
+        deleteTerritoryUseCase
+    )
+
+    // Territoring:
+    @Singleton
+    @Provides
+    fun provideTerritoringUseCases(
+        getTerritoryLocationsUseCase: GetTerritoryLocationsUseCase
+    ): TerritoringUseCases = TerritoringUseCases(
         getTerritoryLocationsUseCase
     )
+
 }

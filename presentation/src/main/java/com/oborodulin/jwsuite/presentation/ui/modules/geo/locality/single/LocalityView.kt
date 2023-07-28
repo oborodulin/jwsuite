@@ -209,10 +209,7 @@ fun LocalityView(
             labelResId = R.string.type_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_signpost_36), null) },
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
             inputWrapper = localityType,
             values = localityTypes.values.toList(), // resolve Enums to Resource

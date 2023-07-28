@@ -74,7 +74,7 @@ fun TerritoriesView(
     congregationInput: CongregationInput? = null,
     territoryInput: TerritoryInput? = null,
     territoryLocationType: TerritoryLocationType,
-    districtId: UUID? = null,
+    locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("TerritoriesView(...) called")
@@ -86,7 +86,7 @@ fun TerritoriesView(
         congregationId,
         territoryProcessType,
         territoryLocationType,
-        districtId,
+        locationId,
         isPrivateSector
     ) {
         Timber.tag(TAG).d("TerritoriesView: LaunchedEffect() BEFORE collect ui state flow")
@@ -95,7 +95,7 @@ fun TerritoriesView(
                 congregationId = congregationId,
                 territoryProcessType = territoryProcessType,
                 territoryLocationType = territoryLocationType,
-                locationId = districtId,
+                locationId = locationId,
                 isPrivateSector = isPrivateSector
             )
         )

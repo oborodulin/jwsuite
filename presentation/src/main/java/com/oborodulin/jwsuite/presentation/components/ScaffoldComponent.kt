@@ -26,6 +26,7 @@ fun ScaffoldComponent(
 //    scaffoldState: ScaffoldState = rememberScaffoldState(),
     nestedScrollConnection: NestedScrollConnection? = null,
     @StringRes topBarTitleResId: Int? = null,
+    actionBar: @Composable (() -> Unit)? = null,
     topBarNavigationIcon: @Composable (() -> Unit)? = null,
     topBarActions: @Composable RowScope.() -> Unit = {},
     topBar: @Composable (() -> Unit)? = null,
@@ -59,13 +60,15 @@ fun ScaffoldComponent(
                             Column(
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = appState.appName + when (topBarTitleResId) {
-                                        null -> ""
-                                        else -> " - " + stringResource(topBarTitleResId)
-                                    },
-                                    overflow = TextOverflow.Ellipsis
-                                )
+                                if (actionBar == null) {
+                                    Text(
+                                        text = appState.appName + when (topBarTitleResId) {
+                                            null -> ""
+                                            else -> " - " + stringResource(topBarTitleResId)
+                                        },
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                                 if (appState.actionBarSubtitle.value.isNotEmpty()) {
                                     Text(
                                         text = appState.actionBarSubtitle.value,
@@ -73,6 +76,7 @@ fun ScaffoldComponent(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
+                                actionBar?.let { it() }
                             }
                         },
                         navigationIcon = {

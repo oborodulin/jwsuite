@@ -41,11 +41,11 @@ import timber.log.Timber
 private const val TAG = "Common.ui.BarComboBoxComponent"
 
 @Composable
-fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
+fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
     modifier: Modifier,
-    listViewModel: MviViewModeled<T, A, E>,
+    listViewModel: MviViewModeled<L, A, E>,
     loadListUiAction: A,
-    inputWrapper: InputListItemWrapper,
+    inputWrapper: InputListItemWrapper<T>,
     searchedItem: String = "",
     enabled: Boolean = true,
     @StringRes placeholderResId: Int,
@@ -55,32 +55,34 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> BarComboBoxComponent(
     onShowListDialog: () -> Unit,
     onDismissListDialog: () -> Unit,
     onShowSingleDialog: () -> Unit,
-    maxLines: Int = Int.MAX_VALUE,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("BarComboBoxComponent(...) called")
-    var itemId by rememberSaveable { mutableStateOf(inputWrapper.item.itemId) }
+    var itemId by rememberSaveable { mutableStateOf(inputWrapper.item?.itemId) }
     var fieldValue by rememberSaveable {
         mutableStateOf(
-            TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
+            TextFieldValue(
+                inputWrapper.item?.headline.orEmpty(),
+                TextRange(inputWrapper.item?.headline.orEmpty().length)
+            )
         )
     }
     val onFieldValueChange: OnTextFieldValueChange = {
         fieldValue = it
-        onValueChange(ListItemModel(itemId, it.text))
+        //onValueChange(ListItemModel(itemId, it.text))
     }
     // make sure to keep the value updated
-    onFieldValueChange(fieldValue.copy(text = inputWrapper.item.headline))
+    onFieldValueChange(fieldValue.copy(text = inputWrapper.item?.headline.orEmpty()))
 
     Timber.tag(TAG).d(
         "itemId = %s; fieldValue.text = %s; inputWrapper.item.headline = %s",
         itemId,
         fieldValue.text,
-        inputWrapper.item.headline
+        inputWrapper.item?.headline
     )
-    /*    if (fieldValue.text != inputWrapper.item.headline) fieldValue =
-            TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
+    /*    if (fieldValue.text != inputWrapper.item?.headline.orEmpty()) fieldValue =
+            TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
         Timber.tag(TAG).d(
             "BarComboBoxComponent(...): fieldValue = %s; inputWrapper = %s",
             fieldValue,

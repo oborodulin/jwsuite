@@ -44,7 +44,7 @@ class CongregationViewModelImpl @Inject constructor(
     private val congregationId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(CongregationFields.CONGREGATION_ID.name, InputWrapper())
     }
-    override val locality: StateFlow<InputListItemWrapper> by lazy {
+    override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(CongregationFields.CONGREGATION_LOCALITY.name, InputListItemWrapper())
     }
     override val congregationNum: StateFlow<InputWrapper> by lazy {
@@ -107,7 +107,7 @@ class CongregationViewModelImpl @Inject constructor(
 
     private fun saveCongregation(): Job {
         val localityUi = LocalityUi()
-        localityUi.id = locality.value.item.itemId
+        localityUi.id = locality.value.item?.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,
             congregationName = congregationName.value.value,
@@ -251,12 +251,12 @@ class CongregationViewModelImpl @Inject constructor(
             }
     }
 
-    override fun performValidation(){}
+    override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        CongregationInputValidator.Locality.errorIdOrNull(locality.value.item.headline)?.let {
+        CongregationInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
                     fieldName = CongregationFields.CONGREGATION_LOCALITY.name, errorId = it
@@ -309,7 +309,7 @@ class CongregationViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val locality = MutableStateFlow(InputListItemWrapper())
+                override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val congregationNum = MutableStateFlow(InputWrapper())
                 override val congregationName = MutableStateFlow(InputWrapper())
                 override val territoryMark = MutableStateFlow(InputWrapper())

@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model
 
+import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
@@ -24,4 +25,5 @@ data class TerritoriesListItem(
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
     val expiredDays: Int? = null
-) : ListItemModel(itemId = id, headline = "$cardNum $cardLocation", supportingText = territoryDesc)
+) : Parcelable,
+    ListItemModel(itemId = id, headline = "$cardNum $cardLocation", supportingText = territoryDesc)

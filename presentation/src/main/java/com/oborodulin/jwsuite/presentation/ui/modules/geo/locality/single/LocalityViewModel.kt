@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.util.LocalityType
@@ -19,8 +20,8 @@ interface LocalityViewModel : DialogViewModeled<LocalityUi, LocalityUiAction, Ui
     val actionsJobFlow: SharedFlow<Job?>
     val localityTypes: StateFlow<MutableMap<LocalityType, String>>
 
-    val region: StateFlow<InputListItemWrapper>
-    val regionDistrict: StateFlow<InputListItemWrapper>
+    val region: StateFlow<InputListItemWrapper<ListItemModel>>
+    val regionDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val localityCode: StateFlow<InputWrapper>
     val localityShortName: StateFlow<InputWrapper>
     val localityType: StateFlow<InputWrapper>

@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.model
 
+import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.domain.util.MemberType
 import java.time.OffsetDateTime
@@ -16,6 +17,6 @@ data class MembersListItem(
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
     val inactiveDate: OffsetDateTime? = null
-) : ListItemModel(
+) : Parcelable, ListItemModel(
     itemId = id, headline = memberFullName, supportingText = "${group.groupNum}.$memberNum"
 )

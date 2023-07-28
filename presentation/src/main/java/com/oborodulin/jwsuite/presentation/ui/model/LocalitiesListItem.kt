@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.model
 
+import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import java.util.UUID
@@ -10,7 +11,7 @@ data class LocalitiesListItem(
     val localityType: LocalityType,
     val localityShortName: String,
     val localityName: String
-) : ListItemModel(
+) : Parcelable, ListItemModel(
     itemId = id,
     headline = localityName,
     supportingText = "$localityCode: $localityShortName"

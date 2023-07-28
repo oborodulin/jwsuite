@@ -151,7 +151,9 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
 
     //InputListItemWrapper:
-    fun initStateValue(field: F, property: StateFlow<InputListItemWrapper>, item: ListItemModel) {
+    fun <T : ListItemModel> initStateValue(
+        field: F, property: StateFlow<InputListItemWrapper<T>>, item: T
+    ) {
         Timber.tag(TAG)
             .d("initStateValue(...): exist state %s = '%s'", field.key(), state[field.key()])
         if (property.value.isEmpty) {
@@ -160,24 +162,23 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
-    fun setStateValue(
-        field: F, property: StateFlow<InputListItemWrapper>, item: ListItemModel,
-        isValid: Boolean = false
+    fun <T : ListItemModel> setStateValue(
+        field: F, property: StateFlow<InputListItemWrapper<T>>, item: T, isValid: Boolean = false
     ) {
-        val listItem = if (item.headline.isEmpty()) ListItemModel() else item
+        //val listItem = if (item.headline.isEmpty()) ListItemModel() else item
         Timber.tag(TAG)
-            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), listItem, isValid)
+            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), item, isValid)
         if (isValid) {
             state[field.key()] =
-                property.value.copy(item = listItem, errorId = null, isEmpty = false)
+                property.value.copy(item = item, errorId = null, isEmpty = false)
         } else {
-            state[field.key()] = property.value.copy(item = listItem, isEmpty = false)
+            state[field.key()] = property.value.copy(item = item, isEmpty = false)
         }
     }
 
     @JvmName("setInputListItemWrapperStateValue")
-    fun setStateValue(
-        field: F, property: StateFlow<InputListItemWrapper>, @StringRes errorId: Int?
+    fun <T : ListItemModel> setStateValue(
+        field: F, property: StateFlow<InputListItemWrapper<T>>, @StringRes errorId: Int?
     ) {
         Timber.tag(TAG)
             .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)

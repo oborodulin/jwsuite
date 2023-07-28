@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
@@ -17,7 +18,7 @@ interface GroupViewModel : DialogViewModeled<GroupUi, GroupUiAction, UiSingleEve
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
-    val congregation: StateFlow<InputListItemWrapper>
+    val congregation: StateFlow<InputListItemWrapper<ListItemModel>>
     val groupNum: StateFlow<InputWrapper>
 
     val areInputsValid: StateFlow<Boolean>

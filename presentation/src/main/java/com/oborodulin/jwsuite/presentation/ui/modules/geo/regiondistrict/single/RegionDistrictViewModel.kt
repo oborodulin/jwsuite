@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictUi
@@ -18,7 +19,7 @@ interface RegionDistrictViewModel :
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 
-    val region: StateFlow<InputListItemWrapper>
+    val region: StateFlow<InputListItemWrapper<ListItemModel>>
     val districtShortName: StateFlow<InputWrapper>
     val districtName: StateFlow<InputWrapper>
 

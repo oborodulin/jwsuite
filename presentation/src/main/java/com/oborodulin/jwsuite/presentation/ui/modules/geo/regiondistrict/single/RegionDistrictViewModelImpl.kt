@@ -47,7 +47,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
             InputWrapper()
         )
     }
-    override val region: StateFlow<InputListItemWrapper> by lazy {
+    override val region: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(RegionDistrictFields.REGION_DISTRICT_REGION.name, InputListItemWrapper())
     }
     override val districtShortName: StateFlow<InputWrapper> by lazy {
@@ -102,7 +102,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 
     private fun saveRegionDistrict(): Job {
         val regionUi = RegionUi()
-        regionUi.id = region.value.item.itemId
+        regionUi.id = region.value.item?.itemId
         val regionDistrictUi = RegionDistrictUi(
             region = regionUi,
             districtShortName = districtShortName.value.value,
@@ -218,7 +218,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        RegionDistrictInputValidator.Region.errorIdOrNull(region.value.item.headline)?.let {
+        RegionDistrictInputValidator.Region.errorIdOrNull(region.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
                     fieldName = RegionDistrictFields.REGION_DISTRICT_REGION.name,
@@ -274,7 +274,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val region = MutableStateFlow(InputListItemWrapper())
+                override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())
 

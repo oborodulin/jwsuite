@@ -56,10 +56,10 @@ class LocalityViewModelImpl @Inject constructor(
     private val localityId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(LocalityFields.LOCALITY_ID.name, InputWrapper())
     }
-    override val region: StateFlow<InputListItemWrapper> by lazy {
+    override val region: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(LocalityFields.LOCALITY_REGION.name, InputListItemWrapper())
     }
-    override val regionDistrict: StateFlow<InputListItemWrapper> by lazy {
+    override val regionDistrict: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(LocalityFields.LOCALITY_REGION_DISTRICT.name, InputListItemWrapper())
     }
     override val localityCode: StateFlow<InputWrapper> by lazy {
@@ -128,9 +128,9 @@ class LocalityViewModelImpl @Inject constructor(
 
     private fun saveLocality(): Job {
         val regionUi = RegionUi()
-        regionUi.id = region.value.item.itemId
+        regionUi.id = region.value.item?.itemId
         val regionDistrictUi = RegionDistrictUi()
-        regionDistrictUi.id = regionDistrict.value.item.itemId
+        regionDistrictUi.id = regionDistrict.value.item?.itemId
 
         val localityUi = LocalityUi(
             region = regionUi,
@@ -296,7 +296,7 @@ class LocalityViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        LocalityInputValidator.Region.errorIdOrNull(region.value.item.headline)?.let {
+        LocalityInputValidator.Region.errorIdOrNull(region.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(fieldName = LocalityFields.LOCALITY_REGION.name, errorId = it)
             )
@@ -343,8 +343,9 @@ class LocalityViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val region = MutableStateFlow(InputListItemWrapper())
-                override val regionDistrict = MutableStateFlow(InputListItemWrapper())
+                override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val regionDistrict =
+                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityCode = MutableStateFlow(InputWrapper())
                 override val localityShortName = MutableStateFlow(InputWrapper())
                 override val localityType = MutableStateFlow(InputWrapper())

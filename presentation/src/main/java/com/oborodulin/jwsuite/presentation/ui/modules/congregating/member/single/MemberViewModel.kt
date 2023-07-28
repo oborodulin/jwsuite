@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.util.MemberType
@@ -20,8 +21,8 @@ interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingle
 
     val memberTypes: StateFlow<MutableMap<MemberType, String>>
 
-    val congregation: StateFlow<InputListItemWrapper>
-    val group: StateFlow<InputListItemWrapper>
+    val congregation: StateFlow<InputListItemWrapper<ListItemModel>>
+    val group: StateFlow<InputListItemWrapper<ListItemModel>>
     val memberNum: StateFlow<InputWrapper>
     val memberName: StateFlow<InputWrapper>
     val surname: StateFlow<InputWrapper>

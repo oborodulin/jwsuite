@@ -16,4 +16,6 @@ sealed class TerritoriesGridUiAction : UiAction {
 
     data class EditTerritory(val territoryId: UUID) : TerritoriesGridUiAction()
     data class DeleteTerritory(val territoryId: UUID) : TerritoriesGridUiAction()
+    data class HandOut(val memberId: UUID, val territoryIds: List<UUID>) : TerritoriesGridUiAction()
+    data class Process(val territoryIds: List<UUID>) : TerritoriesGridUiAction()
 }

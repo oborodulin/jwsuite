@@ -55,6 +55,7 @@
     <string name="locality_hint">Населённый пункт</string>
     <string name="congregation_hint">Собрание</string>
     <string name="member_hint">Возвещатель</string>
+    <string name="private_sector_hint">ч/с</string>
     <!--Собрание -->
     <string name="congregation_subheader">Собрание</string>
     <string name="congregation_new_subheader">Новое собрание</string>
@@ -90,6 +91,7 @@
     <!--Категория участка -->
     <string name="territory_category_subheader">Категория участка</string>
     <string name="territory_category_new_subheader">Новая категория участка</string>
+    <string name="territory_category_mark_hint">Признак категории</string>
     <!--Участок -->
     <string name="territory_subheader">Участок</string>
     <string name="territory_new_subheader">Новый участок</string>
@@ -118,6 +120,7 @@
     <string name="num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="region_empty_error">Укажите, пожалуйста, область!</string>
     <string name="locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
+    <string name="member_empty_error">Укажите, пожалуйста, возвещателя!</string>
     <!--формы собрания-->
     <string name="congregation_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <string name="territory_mark_empty_error">Укажите, пожалуйста, код территории!</string>

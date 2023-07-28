@@ -44,11 +44,11 @@ import timber.log.Timber
 private const val TAG = "Common.ui.ComboBoxComponent"
 
 @Composable
-fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
+fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     modifier: Modifier,
-    listViewModel: MviViewModeled<T, A, E>,
+    listViewModel: MviViewModeled<L, A, E>,
     loadListUiAction: A,
-    inputWrapper: InputListItemWrapper,
+    inputWrapper: InputListItemWrapper<T>,
     searchedItem: String = "",
     enabled: Boolean = true,
     @StringRes labelResId: Int,
@@ -66,19 +66,19 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> ComboBoxComponent(
     var itemId by rememberSaveable { mutableStateOf(inputWrapper.item.itemId) }
     var fieldValue by rememberSaveable {
         mutableStateOf(
-            TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
+            TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
         )
     }
     fieldValue =
-        fieldValue.copy(text = inputWrapper.item.headline) // make sure to keep the value updated
+        fieldValue.copy(text = inputWrapper.item?.headline.orEmpty()) // make sure to keep the value updated
     Timber.tag(TAG).d(
         "itemId = %s; fieldValue.text = %s; inputWrapper.item.headline = %s",
         itemId,
         fieldValue.text,
         inputWrapper.item.headline
     )
-    /*    if (fieldValue.text != inputWrapper.item.headline) fieldValue =
-            TextFieldValue(inputWrapper.item.headline, TextRange(inputWrapper.item.headline.length))
+    /*    if (fieldValue.text != inputWrapper.item?.headline.orEmpty()) fieldValue =
+            TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
         Timber.tag(TAG).d(
             "ComboBoxComponent(...): fieldValue = %s; inputWrapper = %s",
             fieldValue,

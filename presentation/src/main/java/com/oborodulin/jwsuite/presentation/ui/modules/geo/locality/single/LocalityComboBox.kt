@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
@@ -44,7 +45,7 @@ fun LocalityComboBox(
     regionViewModel: RegionViewModel,
     regionDistrictsListViewModel: RegionDistrictsListViewModel,
     regionDistrictViewModel: RegionDistrictViewModel,
-    inputWrapper: InputListItemWrapper,
+    inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {

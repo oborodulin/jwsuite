@@ -1,8 +1,15 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
@@ -26,7 +33,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -37,10 +47,17 @@ private const val TAG = "Territoring.TerritoriesListViewModelImpl"
 
 @HiltViewModel
 class TerritoriesGridViewModelImpl @Inject constructor(
+    private val state: SavedStateHandle,
     private val useCases: TerritoryUseCases,
     private val listConverter: TerritoriesListConverter
 ) : TerritoriesGridViewModel,
-    MviViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent>() {
+    SingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
+        state,
+        TerritoriesFields.TERRITORY_MEMBER
+    ) {
+    override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(TerritoriesFields.TERRITORY_MEMBER.name, InputListItemWrapper())
+    }
 
     override fun initState() = UiState.Loading
 
@@ -66,6 +83,14 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
             is TerritoriesGridUiAction.DeleteTerritory -> {
                 deleteTerritory(action.territoryId)
+            }
+
+            is TerritoriesGridUiAction.HandOut -> {
+                handOutTerritories()
+            }
+
+            is TerritoriesGridUiAction.Process -> {
+                processTerritories()
             }
         }
         return job
@@ -104,7 +129,81 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         return job
     }
 
+    private fun handOutTerritories(): Job {
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.deleteTerritoryUseCase.execute(DeleteTerritoryUseCase.Request(UUID.randomUUID()))
+                .collect {}
+        }
+        return job
+    }
+
+    private fun processTerritories(): Job {
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.deleteTerritoryUseCase.execute(DeleteTerritoryUseCase.Request(UUID.randomUUID()))
+                .collect {}
+        }
+        return job
+    }
+
+    override fun stateInputFields() = enumValues<TerritoriesFields>().map { it.name }
+
     override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+
+    override suspend fun observeInputEvents() {
+        Timber.tag(TAG).d("observeInputEvents() called")
+        inputEvents.receiveAsFlow()
+            .onEach { event ->
+                when (event) {
+                    is TerritoriesInputEvent.Member ->
+                        when (TerritoriesInputValidator.Member.errorIdOrNull(event.input.headline)) {
+                            null -> setStateValue(
+                                TerritoriesFields.TERRITORY_MEMBER, member, event.input,
+                                true
+                            )
+
+                            else -> setStateValue(
+                                TerritoriesFields.TERRITORY_MEMBER, member, event.input
+                            )
+                        }
+                }
+            }
+            .debounce(350)
+            .collect { event ->
+                when (event) {
+                    is TerritoriesInputEvent.Member ->
+                        setStateValue(
+                            TerritoriesFields.TERRITORY_MEMBER, member,
+                            TerritoriesInputValidator.Member.errorIdOrNull(event.input.headline)
+                        )
+                }
+            }
+    }
+
+    override fun performValidation() {}
+    override fun getInputErrorsOrNull(): List<InputError>? {
+        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        val inputErrors: MutableList<InputError> = mutableListOf()
+        TerritoriesInputValidator.Member.errorIdOrNull(member.value.item?.headline)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = TerritoriesFields.TERRITORY_MEMBER.name,
+                    errorId = it
+                )
+            )
+        }
+        return if (inputErrors.isEmpty()) null else inputErrors
+    }
+
+    override fun displayInputErrors(inputErrors: List<InputError>) {
+        Timber.tag(TAG)
+            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        for (error in inputErrors) {
+            state[error.fieldName] = when (error.fieldName) {
+                TerritoriesFields.TERRITORY_MEMBER.name -> member.value.copy(errorId = error.errorId)
+                else -> null
+            }
+        }
+    }
 
     companion object {
         fun previewModel(ctx: Context) =
@@ -112,10 +211,17 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow =
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
+                override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
+                override fun onTextFieldEntered(inputEvent: Inputable) {}
+
+                override fun moveFocusImeAction() {}
+                override fun onContinueClick(onSuccess: () -> Unit) {}
             }
 
         fun previewList(ctx: Context) = listOf(

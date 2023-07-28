@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
@@ -34,7 +35,7 @@ fun GroupComboBox(
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     listViewModel: GroupsListViewModelImpl = hiltViewModel(),
     singleViewModel: GroupViewModelImpl = hiltViewModel(),
-    inputWrapper: InputListItemWrapper,
+    inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
