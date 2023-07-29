@@ -63,10 +63,13 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("ComboBoxComponent(...) called")
-    var itemId by rememberSaveable { mutableStateOf(inputWrapper.item.itemId) }
+    var itemId by rememberSaveable { mutableStateOf(inputWrapper.item?.itemId) }
     var fieldValue by rememberSaveable {
         mutableStateOf(
-            TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
+            TextFieldValue(
+                inputWrapper.item?.headline.orEmpty(),
+                TextRange(inputWrapper.item?.headline.orEmpty().length)
+            )
         )
     }
     fieldValue =
@@ -75,7 +78,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
         "itemId = %s; fieldValue.text = %s; inputWrapper.item.headline = %s",
         itemId,
         fieldValue.text,
-        inputWrapper.item.headline
+        inputWrapper.item?.headline
     )
     /*    if (fieldValue.text != inputWrapper.item?.headline.orEmpty()) fieldValue =
             TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))

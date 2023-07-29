@@ -133,7 +133,7 @@ fun LocalityView(
                         isFocused = focusState.isFocused
                     )
                 },
-            regionId = region.item.itemId,
+            regionId = region.item?.itemId,
             listViewModel = regionDistrictsListViewModel,
             singleViewModel = regionDistrictViewModel,
             regionsListViewModel = regionsListViewModel,
@@ -161,10 +161,7 @@ fun LocalityView(
                 )
             },
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = localityCode,
             onValueChange = {
@@ -231,10 +228,7 @@ fun LocalityView(
             labelResId = R.string.name_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = localityName,

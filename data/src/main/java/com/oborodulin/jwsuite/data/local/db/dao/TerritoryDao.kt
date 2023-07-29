@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
+import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
@@ -74,7 +75,8 @@ interface TerritoryDao {
         """
     SELECT td.* 
     FROM ${TerritoryLocationView.VIEW_NAME} td LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = td.congregationId
-    WHERE td.isPrivateSector = :isPrivateSector AND td.congregationId = ifnull(:congregationId, fcv.congregationId) 
+    WHERE td.isPrivateSector = :isPrivateSector AND td.congregationId = ifnull(:congregationId, fcv.congregationId)
+    ORDER BY td.orderPos, td.locationName
         """
     )
     fun findTerritoryLocationsByPrivateSectorMarkAndCongregationId(

@@ -11,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +48,7 @@ fun MembersListView(
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    searchState: MutableState<TextFieldValue>,
+    searchedText: String,
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
     memberInput: MemberInput? = null
@@ -77,7 +76,7 @@ fun MembersListView(
                 congregationId = congregationId,
                 groupId = groupInput?.groupId,
                 members = it,
-                searchState = searchState,
+                searchedText = searchedText,
                 memberInput = memberInput,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
                 onDelete = { member ->
@@ -104,7 +103,7 @@ fun MembersList(
     congregationId: UUID?,
     groupId: UUID?,
     members: List<MembersListItem>,
-    searchState: MutableState<TextFieldValue>,
+    searchedText: String,
     memberInput: MemberInput? = null,
     onEdit: (MembersListItem) -> Unit,
     onDelete: (MembersListItem) -> Unit
@@ -120,7 +119,6 @@ fun MembersList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            val searchedText = searchState.value.text
             filteredItems = if (searchedText.isEmpty()) {
                 members
             } else {
@@ -168,14 +166,14 @@ fun MembersList(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMembersList() {
-    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
+    val searchMemberState by remember { mutableStateOf(TextFieldValue("")) }
     JWSuiteTheme {
         Surface {
             MembersList(
                 congregationId = UUID.randomUUID(),
                 groupId = UUID.randomUUID(),
                 members = MembersListViewModelImpl.previewList(LocalContext.current),
-                searchState = searchMemberState,
+                searchedText = searchMemberState.text,
                 onEdit = {},
                 onDelete = {}
             )

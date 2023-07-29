@@ -2,6 +2,8 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.singl
 
 import android.content.Context
 import androidx.annotation.ArrayRes
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result

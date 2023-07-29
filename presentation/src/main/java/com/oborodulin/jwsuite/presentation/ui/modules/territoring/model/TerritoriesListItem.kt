@@ -24,6 +24,9 @@ data class TerritoriesListItem(
     val member: MemberUi? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
-    val expiredDays: Int? = null
+    val handOutDays: Int? = null,
+    val expiredDays: Int? = null,
+    var isChecked: Boolean = false,
+    var isSelected: Boolean = false
 ) : Parcelable,
     ListItemModel(itemId = id, headline = "$cardNum $cardLocation", supportingText = territoryDesc)

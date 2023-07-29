@@ -23,9 +23,12 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -173,7 +176,7 @@ fun CongregatingScreen(
 @Composable
 fun CongregationMembersView(appState: AppState) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
-    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
+    var searchMemberState by rememberSaveable { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -216,17 +219,17 @@ fun CongregationMembersView(appState: AppState) {
         ) {
             MembersListView(
                 navController = appState.commonNavController,
-                searchState = searchMemberState
+                searchedText = searchMemberState.text
             )
         }
-        SearchComponent(searchMemberState)
+        SearchComponent(searchMemberState) { searchMemberState = it }
     }
 }
 
 @Composable
 fun GroupMembersView(appState: AppState) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
-    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
+    var searchMemberState by remember { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -266,10 +269,10 @@ fun GroupMembersView(appState: AppState) {
         ) {
             MembersListView(
                 navController = appState.commonNavController,
-                searchState = searchMemberState
+                searchedText = searchMemberState.text
             )
         }
-        SearchComponent(searchMemberState)
+        SearchComponent(searchMemberState) { searchMemberState = it }
     }
 }
 

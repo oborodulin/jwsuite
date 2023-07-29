@@ -52,7 +52,10 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     // set the correct cursor position when this composable is first initialized
     var fieldValue by rememberSaveable {
         mutableStateOf(
-            TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
+            TextFieldValue(
+                inputWrapper.item?.headline.orEmpty(),
+                TextRange(inputWrapper.item?.headline.orEmpty().length)
+            )
         )
     }
     val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
@@ -61,7 +64,7 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     Timber.tag(TAG).d(
         "fieldValue.text = %s; inputWrapper.item.headline = %s",
         fieldValue.text,
-        inputWrapper.item.headline
+        inputWrapper.item?.headline
     )
     var expanded by rememberSaveable { mutableStateOf(false) }
 

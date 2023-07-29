@@ -31,6 +31,7 @@ class TerritoryToTerritoriesListItemMapper(
         member = memberMapper.nullableMap(input.member),
         congregationId = input.congregationId,
         isPrivateSector = input.isPrivateSector,
+        handOutDays = input.handOutDays,
         expiredDays = input.expiredDays
     )
 }

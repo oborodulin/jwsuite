@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,8 +55,6 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -68,7 +67,7 @@ private const val TAG = "Territoring.TerritoriesView"
 fun TerritoriesView(
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     territoriesGridViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+//    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
@@ -103,68 +102,53 @@ fun TerritoriesView(
     territoriesGridViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            when (territoryProcessType) {
-                TerritoryProcessType.HAND_OUT ->
-                    TerritoriesClickableGrid(
-                        territories = it,
-                        territoryInput = territoryInput,
-                        onFavorite = { listItem ->
-                            /*listItem.itemId?.let { id ->
-                                territoriesGridViewModel.submitAction(
-                                    TerritoriesGridUiAction.MakeFavoriteCongregation(id)
-                                )
-                            }*/
-                        }
-                    ) { territory ->
-                        with(membersListViewModel) {
-                            submitAction(MembersListUiAction.LoadByCongregation(territory.id))
-                        }
-                    }
-
-                TerritoryProcessType.AT_WORK ->
-                    TerritoriesClickableGrid(
-                        territories = it,
-                        territoryInput = territoryInput,
-                        onFavorite = { listItem ->
-                            /*listItem.itemId?.let { id ->
-                                territoriesGridViewModel.submitAction(
-                                    TerritoriesGridUiAction.MakeFavoriteCongregation(id)
-                                )
-                            }*/
-                        }
-                    ) { territory ->
-                        with(membersListViewModel) {
-                            submitAction(MembersListUiAction.LoadByCongregation(territory.id))
-                        }
-                    }
-
-                TerritoryProcessType.IDLE -> {}
-                TerritoryProcessType.ALL ->
-                    TerritoriesEditableGrid(
-                        territories = it,
-                        territoryInput = territoryInput,
-                        onFavorite = { listItem ->
-                            listItem.itemId?.let { id ->
-                                /*territoriesGridViewModel.submitAction(
-                                    TerritoriesGridUiAction.MakeFavoriteCongregation(id)
-                                )*/
-                            }
-                        },
-                        onEdit = { territory ->
+            if (listOf(
+                    TerritoryProcessType.HAND_OUT,
+                    TerritoryProcessType.AT_WORK,
+                    TerritoryProcessType.IDLE
+                ).contains(territoryProcessType)
+            ) {
+                TerritoriesClickableGrid(
+                    territories = it,
+                    territoryInput = territoryInput,
+                    onFavorite = { listItem ->
+                        /*listItem.itemId?.let { id ->
                             territoriesGridViewModel.submitAction(
-                                TerritoriesGridUiAction.EditTerritory(territory.id)
+                                TerritoriesGridUiAction.MakeFavoriteCongregation(id)
                             )
-                        },
-                        onDelete = { territory ->
-                            territoriesGridViewModel.submitAction(
-                                TerritoriesGridUiAction.DeleteTerritory(territory.id)
-                            )
-                        }
-                    ) { territory ->
-                        with(membersListViewModel) {
-                            submitAction(MembersListUiAction.LoadByCongregation(territory.id))
-                        }
+                        }*/
                     }
+                ) { territory ->
+                    /*with(membersListViewModel) {
+                        submitAction(MembersListUiAction.LoadByCongregation(territory.id))
+                    }*/
+                }
+            } else { // TerritoryProcessType.ALL
+                TerritoriesEditableGrid(
+                    territories = it,
+                    territoryInput = territoryInput,
+                    onFavorite = { listItem ->
+                        listItem.itemId?.let { id ->
+                            /*territoriesGridViewModel.submitAction(
+                                TerritoriesGridUiAction.MakeFavoriteCongregation(id)
+                            )*/
+                        }
+                    },
+                    onEdit = { territory ->
+                        territoriesGridViewModel.submitAction(
+                            TerritoriesGridUiAction.EditTerritory(territory.id)
+                        )
+                    },
+                    onDelete = { territory ->
+                        territoriesGridViewModel.submitAction(
+                            TerritoriesGridUiAction.DeleteTerritory(territory.id)
+                        )
+                    }
+                ) { territory ->
+                    /*with(membersListViewModel) {
+                        submitAction(MembersListUiAction.LoadByCongregation(territory.id))
+                    }*/
+                }
             }
         }
     }
@@ -189,7 +173,6 @@ fun TerritoriesClickableGrid(
     onClick: (TerritoriesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoriesClickableGrid(...) called")
-    val checkedState = remember { mutableStateOf(true) }
     if (territories.isNotEmpty()) {
         val cellSize = 110.dp
         LazyVerticalGrid(
@@ -231,12 +214,16 @@ fun TerritoriesClickableGrid(
                                     style = MaterialTheme.typography.titleMedium,
                                     textAlign = TextAlign.End,
                                 )
+                                var checkedState by rememberSaveable { mutableStateOf(territory.isChecked) }
                                 Checkbox(
                                     modifier = Modifier
                                         .padding(0.dp)
                                         .align(Alignment.CenterVertically),
-                                    checked = checkedState.value,
-                                    onCheckedChange = { checkedState.value = it }
+                                    checked = checkedState,
+                                    onCheckedChange = {
+                                        checkedState = it
+                                        territory.isChecked = checkedState
+                                    }
                                 )
                             }
                             Divider(Modifier.width(cellSize.times(0.9f)), thickness = 2.dp)

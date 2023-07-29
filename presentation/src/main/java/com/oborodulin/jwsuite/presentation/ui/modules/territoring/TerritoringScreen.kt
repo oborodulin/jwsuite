@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -64,7 +65,6 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.home.common.util.OnTextFieldValueChange
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
@@ -72,10 +72,7 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListView
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesView
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
@@ -108,9 +105,9 @@ fun TerritoringScreen(
             Lifecycle.State.STARTED
         )
     }
-
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+
     val location by viewModel.location.collectAsStateWithLifecycle()
     val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
 
@@ -134,27 +131,54 @@ fun TerritoringScreen(
         TabRowItem(
             title = stringResource(R.string.territory_tab_hand_out),
             view = {
-                HandOutTerritoriesView(
-                    appState = appState,
-                    territoryProcessType = TerritoryProcessType.HAND_OUT,
-                    territoryLocationType = location.item?.territoryLocationType
-                        ?: TerritoryLocationType.ALL,
-                    locationId = location.item?.itemId,
-                    isPrivateSector = isPrivateSector.value.toBoolean()
-                )
+                location.item?.let {
+                    HandOutTerritoriesView(
+                        appState = appState,
+                        territoryLocationType = it.territoryLocationType,
+                        locationId = it.locationId,
+                        isPrivateSector = isPrivateSector.value.toBoolean()
+                    )
+                }
             },
         ),
         TabRowItem(
             title = stringResource(R.string.territory_tab_at_work),
-            view = { AtWorkTerritoriesView(appState = appState) },
+            view = {
+                location.item?.let {
+                    AtWorkTerritoriesView(
+                        appState = appState,
+                        territoryLocationType = it.territoryLocationType,
+                        locationId = it.locationId,
+                        isPrivateSector = isPrivateSector.value.toBoolean()
+                    )
+                }
+            },
         ),
         TabRowItem(
             title = stringResource(R.string.territory_tab_idle),
-            view = { AtWorkTerritoriesView(appState = appState) },
+            view = {
+                location.item?.let {
+                    IdleTerritoriesView(
+                        appState = appState,
+                        territoryLocationType = it.territoryLocationType,
+                        locationId = it.locationId,
+                        isPrivateSector = isPrivateSector.value.toBoolean()
+                    )
+                }
+            },
         ),
         TabRowItem(
             title = stringResource(R.string.territory_tab_all),
-            view = { AtWorkTerritoriesView(appState = appState) },
+            view = {
+                location.item?.let {
+                    AllTerritoriesView(
+                        appState = appState,
+                        territoryLocationType = it.territoryLocationType,
+                        locationId = it.locationId,
+                        isPrivateSector = isPrivateSector.value.toBoolean()
+                    )
+                }
+            },
         )
     )
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -297,15 +321,11 @@ fun TerritoringScreen(
 @Composable
 fun HandOutTerritoriesView(
     appState: AppState,
-    territoryProcessType: TerritoryProcessType,
-    congregationInput: NavigationInput.CongregationInput? = null,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("HandOutTerritoriesView(...) called")
-    var searchMemberState by remember { mutableStateOf(TextFieldValue("")) }
-    val onSearchStateChange: OnTextFieldValueChange = { searchMemberState = it }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -322,7 +342,7 @@ fun HandOutTerritoriesView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3.3f)
+                .weight(7f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -331,7 +351,7 @@ fun HandOutTerritoriesView(
         ) {
             TerritoriesView(
                 navController = appState.commonNavController,
-                territoryProcessType = territoryProcessType,
+                territoryProcessType = TerritoryProcessType.HAND_OUT,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
                 isPrivateSector = isPrivateSector
@@ -342,26 +362,26 @@ fun HandOutTerritoriesView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(6.7f)
+                .weight(3f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(
-                navController = appState.commonNavController,
-                searchState = searchMemberState
-            )
         }
-        SearchComponent(searchMemberState)
     }
 }
 
 @Composable
-fun AtWorkTerritoriesView(appState: AppState) {
+fun AtWorkTerritoriesView(
+    appState: AppState,
+    territoryLocationType: TerritoryLocationType,
+    locationId: UUID? = null,
+    isPrivateSector: Boolean = false
+) {
     Timber.tag(TAG).d("AtWorkTerritoriesView(...) called")
-    val searchMemberState = remember { mutableStateOf(TextFieldValue("")) }
+    var searchTerritoryState by rememberSaveable { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -378,33 +398,147 @@ fun AtWorkTerritoriesView(appState: AppState) {
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3.3f)
+                .weight(3f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            GroupsListView(navController = appState.commonNavController)
+            TerritoriesView(
+                navController = appState.commonNavController,
+                territoryProcessType = TerritoryProcessType.AT_WORK,
+                territoryLocationType = territoryLocationType,
+                locationId = locationId,
+                isPrivateSector = isPrivateSector
+            )
         }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(6.7f)
+                .weight(7f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(
+        }
+        SearchComponent(searchTerritoryState) { searchTerritoryState = it }
+    }
+}
+
+@Composable
+fun IdleTerritoriesView(
+    appState: AppState,
+    territoryLocationType: TerritoryLocationType,
+    locationId: UUID? = null,
+    isPrivateSector: Boolean = false
+) {
+    Timber.tag(TAG).d("IdleTerritoriesView(...) called")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
+                .weight(7f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            TerritoriesView(
                 navController = appState.commonNavController,
-                searchState = searchMemberState
+                territoryProcessType = TerritoryProcessType.IDLE,
+                territoryLocationType = territoryLocationType,
+                locationId = locationId,
+                isPrivateSector = isPrivateSector
             )
         }
-        SearchComponent(searchMemberState)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(3f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+        }
+    }
+}
+
+@Composable
+fun AllTerritoriesView(
+    appState: AppState,
+    territoryLocationType: TerritoryLocationType,
+    locationId: UUID? = null,
+    isPrivateSector: Boolean = false
+) {
+    Timber.tag(TAG).d("AllTerritoriesView(...) called")
+    var searchTerritoryState by rememberSaveable { mutableStateOf(TextFieldValue("")) }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
+                .weight(3f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            TerritoriesView(
+                navController = appState.commonNavController,
+                territoryProcessType = TerritoryProcessType.ALL,
+                territoryLocationType = territoryLocationType,
+                locationId = locationId,
+                isPrivateSector = isPrivateSector
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(7f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+        }
+        SearchComponent(searchTerritoryState) { searchTerritoryState = it }
     }
 }
 

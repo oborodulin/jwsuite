@@ -17,12 +17,12 @@ import java.util.UUID
 @DatabaseView(
     viewName = TerritoryLocationView.VIEW_NAME,
     value = """
-SELECT $TDT_ALL_VAL AS territoryLocationType, c.congregationId, NULL AS locationId,
+SELECT 0 AS orderPos, $TDT_ALL_VAL AS territoryLocationType, c.congregationId, NULL AS locationId,
         (SELECT paramValue FROM ${AppSettingEntity.TABLE_NAME} WHERE paramName = ${Constants.PRM_ALL_ITEMS_VAL}) AS locationName,
         NULL AS isPrivateSector
 FROM ${CongregationEntity.TABLE_NAME} c
 UNION ALL
-SELECT td.territoryLocationType, td.congregationId, td.locationId, td.locationName, tpsv.isPrivateSector 
+SELECT 1 AS orderPos, td.territoryLocationType, td.congregationId, td.locationId, td.locationName, tpsv.isPrivateSector 
 FROM (SELECT (CASE
                 WHEN md.microdistrictId IS NOT NULL THEN $TDT_MICRO_DISTRICT_VAL
                 WHEN ld.localityDistrictId IS NOT NULL THEN $TDT_LOCALITY_DISTRICT_VAL
@@ -37,10 +37,11 @@ FROM (SELECT (CASE
         LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ld ON ld.localityDistrictId = t.tLocalityDistrictsId
         LEFT JOIN ${MicrodistrictView.VIEW_NAME} md ON md.microdistrictId = t.tMicrodistrictsId) td
             JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tpsv ON tpsv.territoryId = td.territoryId
-GROUP BY territoryLocationType, congregationId, locationId, locationName, isPrivateSector
+GROUP BY orderPos, territoryLocationType, congregationId, locationId, locationName, isPrivateSector
 """
 )
 class TerritoryLocationView(
+    val orderPos: Int,
     val territoryLocationType: TerritoryLocationType,
     val congregationId: UUID,
     val locationId: UUID?,

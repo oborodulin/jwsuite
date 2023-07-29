@@ -16,7 +16,6 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
-import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.OnTextFieldValueChange
 import timber.log.Timber
 
@@ -34,7 +33,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
     leadingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
     visualTransformation: VisualTransformation = remember { VisualTransformation.None },
-    onValueChange: OnListItemEvent,
+    onValueChange: (T) -> Unit,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("BarListItemExposedDropdownMenuBoxComponent(...) called")
@@ -91,7 +90,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
                         onFieldValueChange(
                             TextFieldValue(option.headline, TextRange(option.headline.length))
                         )
-                        onValueChange(ListItemModel(option.itemId, option.headline))
+                        onValueChange(option)
                     }
                 )
             }

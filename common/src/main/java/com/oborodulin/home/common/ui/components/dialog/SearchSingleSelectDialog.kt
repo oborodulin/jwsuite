@@ -51,11 +51,11 @@ import java.util.Locale
 private const val TAG = "Common.ui.SearchSingleSelectDialog"
 
 @Composable
-fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
+fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
     isShow: Boolean,
     title: String,
     searchedItem: String = "",
-    viewModel: MviViewModeled<T, A, E>,
+    viewModel: MviViewModeled<L, A, E>,
     loadUiAction: A,
     onDismissRequest: () -> Unit,
     onAddButtonClick: () -> Unit,
@@ -80,7 +80,6 @@ fun <T : List<*>, A : UiAction, E : UiSingleEvent> SearchSingleSelectDialog(
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) { items ->
-                            items as List<ListItemModel>
                             if (items.isNotEmpty()) {
                                 var searchState by rememberSaveable {
                                     mutableStateOf(TextFieldValue(searchedItem))
