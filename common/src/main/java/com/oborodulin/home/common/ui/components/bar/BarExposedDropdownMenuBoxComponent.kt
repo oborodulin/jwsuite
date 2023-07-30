@@ -46,7 +46,7 @@ fun BarExposedDropdownMenuBoxComponent(
     val value =
         if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     // set the correct cursor position when this composable is first initialized
-    var fieldValue by rememberSaveable {
+    var fieldValue by remember {
         mutableStateOf(TextFieldValue(value, TextRange(value.length))) // resource
     }
     val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }

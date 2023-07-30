@@ -54,7 +54,7 @@ fun TextFieldComponent(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     Timber.tag(TAG).d("TextFieldComponent(...) called")
-    var fieldValue by rememberSaveable {
+    var fieldValue by remember {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated

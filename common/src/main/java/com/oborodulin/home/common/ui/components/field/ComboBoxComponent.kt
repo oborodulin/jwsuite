@@ -62,8 +62,8 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("ComboBoxComponent(...) called")
-    var itemId by rememberSaveable { mutableStateOf(inputWrapper.item?.itemId) }
-    var fieldValue by rememberSaveable {
+    var itemId by remember { mutableStateOf(inputWrapper.item?.itemId) }
+    var fieldValue by remember {
         mutableStateOf(
             TextFieldValue(
                 inputWrapper.item?.headline.orEmpty(),

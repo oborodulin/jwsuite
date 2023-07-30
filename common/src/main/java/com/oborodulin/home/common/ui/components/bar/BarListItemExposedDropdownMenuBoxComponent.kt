@@ -25,7 +25,7 @@ private const val TAG = "Common.ui.BarListItemExposedDropdownMenuBoxComponent"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     inputWrapper: InputListItemWrapper<T>,
     items: List<T> = listOf(),
@@ -38,7 +38,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
 ) {
     Timber.tag(TAG).d("BarListItemExposedDropdownMenuBoxComponent(...) called")
     // set the correct cursor position when this composable is first initialized
-    var fieldValue by rememberSaveable {
+    var fieldValue by remember {
         mutableStateOf(
             TextFieldValue(
                 inputWrapper.item?.headline.orEmpty(),
@@ -54,7 +54,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
         fieldValue.text,
         inputWrapper.item?.headline
     )
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
 
     // the box
     ExposedDropdownMenuBox(

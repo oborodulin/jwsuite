@@ -45,7 +45,7 @@ private const val TAG = "Common.ui.SwitchComponent"
 
 @Composable
 fun SwitchComponent(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     inputWrapper: InputWrapper, // string
     @StringRes labelResId: Int? = null,
     onCheckedChange: OnCheckedChange,

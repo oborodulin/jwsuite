@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,8 +33,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -57,11 +54,9 @@ import com.oborodulin.home.common.ui.components.TabRowItem
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
-import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
@@ -116,16 +111,21 @@ fun TerritoringScreen(
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
-    LaunchedEffect(Unit) {// currentCongregation?.id
-        Timber.tag(TAG).d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow")
-        events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
-            inputProcess(context, focusManager, keyboardController, event, focusRequesters)
-        }
+    LaunchedEffect(currentCongregation?.id) {
+        Timber.tag(TAG)
+            .d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow: submitAction")
         territoringViewModel.submitAction(
             TerritoringUiAction.LoadLocations(congregationId = currentCongregation?.id)
         )
     }
+    /* LaunchedEffect(Unit) {
+         Timber.tag(TAG)
+             .d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow: events.collect")
+         events.collect { event ->
+             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
+         }
+     }*/
     val tabRowItems = listOf(
         TabRowItem(
             title = stringResource(R.string.territory_tab_hand_out),
@@ -193,53 +193,61 @@ fun TerritoringScreen(
                 actionBar = {
                     CommonScreen(state = state) { territoringUi ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            SwitchComponent(
+                            Box(
                                 modifier = Modifier
-                                    .height(90.dp)
-                                    .focusRequester(focusRequesters[TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name]!!.focusRequester)
+                                    .weight(2f)
+                            ) {
+                                SwitchComponent(
+                                    modifier = Modifier.padding(end = 48.dp)
+                                    /*.focusRequester(focusRequesters[TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name]!!.focusRequester)
                                     .onFocusChanged { focusState ->
                                         territoringViewModel.onTextFieldFocusChanged(
                                             focusedField = TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR,
                                             isFocused = focusState.isFocused
                                         )
-                                    },
-                                labelResId = R.string.private_sector_hint,
-                                inputWrapper = isPrivateSector,
-                                onCheckedChange = {
-                                    territoringViewModel.onTextFieldEntered(
-                                        TerritoringInputEvent.IsPrivateSector(it)
-                                    )
-                                }
-                            )
-                            BarListItemExposedDropdownMenuBoxComponent(
+                                    }*/,
+                                    labelResId = R.string.private_sector_hint,
+                                    inputWrapper = isPrivateSector,
+                                    onCheckedChange = {
+                                        territoringViewModel.onTextFieldEntered(
+                                            TerritoringInputEvent.IsPrivateSector(it)
+                                        )
+                                    }
+                                )
+                            }
+                            Box(
                                 modifier = Modifier
-                                    .focusRequester(focusRequesters[TerritoringFields.TERRITORY_LOCATION.name]!!.focusRequester)
-                                    .onFocusChanged { focusState ->
-                                        territoringViewModel.onTextFieldFocusChanged(
-                                            focusedField = TerritoringFields.TERRITORY_LOCATION,
-                                            isFocused = focusState.isFocused
+                                    .fillMaxWidth()
+                                    .weight(3f)
+                            ) {
+                                BarListItemExposedDropdownMenuBoxComponent(
+                                    /*modifier = Modifier
+                                        .focusRequester(focusRequesters[TerritoringFields.TERRITORY_LOCATION.name]!!.focusRequester)
+                                        .onFocusChanged { focusState ->
+                                            territoringViewModel.onTextFieldFocusChanged(
+                                                focusedField = TerritoringFields.TERRITORY_LOCATION,
+                                                isFocused = focusState.isFocused
+                                            )
+                                        },*/
+                                    leadingIcon = {
+                                        Icon(painterResource(R.drawable.ic_location_pin_24), null)
+                                    },
+                                    keyboardOptions = remember {
+                                        KeyboardOptions(
+                                            keyboardType = KeyboardType.Text,
+                                            imeAction = ImeAction.Next
                                         )
                                     },
-                                leadingIcon = {
-                                    Icon(painterResource(R.drawable.ic_location_pin_24), null)
-                                },
-                                keyboardOptions = remember {
-                                    KeyboardOptions(
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next
-                                    )
-                                },
-                                inputWrapper = location,
-                                items = territoringUi.territoryLocations,
-                                onValueChange = {
-                                    territoringViewModel.onTextFieldEntered(
-                                        TerritoringInputEvent.Location(
-                                            it
+                                    inputWrapper = location,
+                                    items = territoringUi.territoryLocations,
+                                    onValueChange = {
+                                        territoringViewModel.onTextFieldEntered(
+                                            TerritoringInputEvent.Location(it)
                                         )
-                                    )
-                                },
-                                onImeKeyAction = territoringViewModel::moveFocusImeAction,
-                            )
+                                    },
+                                    onImeKeyAction = territoringViewModel::moveFocusImeAction,
+                                )
+                            }
                         }
                     }
                 },
@@ -247,9 +255,9 @@ fun TerritoringScreen(
                     IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                         Icon(Icons.Outlined.Add, null)
                     }
-                    IconButton(onClick = { context.toast("Settings button clicked...") }) {
+                    /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
                         Icon(Icons.Outlined.Settings, null)
-                    }
+                    }*/
                 },
                 bottomBar = bottomBar
             ) {
@@ -275,9 +283,7 @@ fun TerritoringScreen(
                                 selected = pagerState.currentPage == index,
                                 onClick = {
                                     coroutineScope.launch {
-                                        pagerState.animateScrollToPage(
-                                            index
-                                        )
+                                        pagerState.animateScrollToPage(index)
                                     }
                                 },
                                 icon = {

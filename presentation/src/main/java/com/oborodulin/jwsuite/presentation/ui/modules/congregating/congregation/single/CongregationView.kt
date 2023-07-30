@@ -76,14 +76,14 @@ fun CongregationView(
         )
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all payer fields")
+    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all congregation fields")
     val locality by congregationViewModel.locality.collectAsStateWithLifecycle()
     val congregationNum by congregationViewModel.congregationNum.collectAsStateWithLifecycle()
     val congregationName by congregationViewModel.congregationName.collectAsStateWithLifecycle()
     val territoryMark by congregationViewModel.territoryMark.collectAsStateWithLifecycle()
     val isFavorite by congregationViewModel.isFavorite.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all payer fields")
+    Timber.tag(TAG).d("Init Focus Requesters for all congregation fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
     enumValues<CongregationFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })

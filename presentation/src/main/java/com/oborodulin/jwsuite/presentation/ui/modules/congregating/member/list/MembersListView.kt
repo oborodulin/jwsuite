@@ -66,12 +66,14 @@ fun MembersListView(
             else -> viewModel.submitAction(MembersListUiAction.LoadByGroup(groupInput.groupId))
         }
     }
+    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             MembersList(
                 congregationId = congregationId,
                 groupId = groupInput?.groupId,
+                searchedText = searchText.text,
                 members = it,
                 memberInput = memberInput,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
@@ -98,6 +100,7 @@ fun MembersListView(
 fun MembersList(
     congregationId: UUID?,
     groupId: UUID?,
+    searchedText: String = "",
     members: List<MembersListItem>,
     memberInput: MemberInput? = null,
     onEdit: (MembersListItem) -> Unit,
@@ -106,7 +109,7 @@ fun MembersList(
     Timber.tag(TAG).d("MembersList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (members.isNotEmpty()) {
-        //var filteredItems: List<MembersListItem>
+        var filteredItems: List<MembersListItem>
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
@@ -114,23 +117,13 @@ fun MembersList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            /*  filteredItems = if (searchedText.isEmpty()) {
-                  members
-              } else {
-                  val resultList = mutableListOf<MembersListItem>()
-                  for (item in members) {
-                      if (item.headline.lowercase(Locale.getDefault())
-                              .contains(searchedText.lowercase(Locale.getDefault()))
-                      ) {
-                          resultList.add(item)
-                      }
-                  }
-                  resultList
-              }
-              items(filteredItems.size) { index ->
-             */
-            items(members.size) { index ->
-                members[index].let { member ->
+            filteredItems = if (searchedText.isEmpty()) {
+                members
+            } else {
+                members.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+            items(filteredItems.size) { index ->
+                filteredItems[index].let { member ->
                     val isSelected = (selectedIndex == index)
                     ListItemComponent(
                         item = member,

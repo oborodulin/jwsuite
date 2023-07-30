@@ -3,11 +3,9 @@ package com.oborodulin.home.common.ui.components.dialog
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,7 +18,6 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -86,43 +83,33 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                                 SearchComponent(
                                     searchText, onValueChange = viewModel::onSearchTextChange
                                 )
-                                //var filteredItems: List<ListItemModel>
-                                if (isSearching) {
-                                    Box(modifier = Modifier.fillMaxSize()) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.align(Alignment.Center)
-                                        )
+                                var filteredItems: List<ListItemModel>
+                                /*                                if (isSearching) {
+                                                                    Box(modifier = Modifier.fillMaxSize()) {
+                                                                        CircularProgressIndicator(
+                                                                            modifier = Modifier.align(Alignment.Center)
+                                                                        )
+                                                                    }
+                                                                } else {*/
+                                LazyColumn(
+                                    state = rememberLazyListState(),
+                                    modifier = Modifier
+                                        .selectableGroup() // Optional, for accessibility purpose
+                                        .padding(8.dp)
+                                        .focusable(enabled = true)
+                                ) {
+                                    val searchedText = searchText.text
+                                    filteredItems = if (searchedText.isEmpty()) {
+                                        items
+                                    } else {
+                                        items.filter { it.doesMatchSearchQuery(searchedText) }
                                     }
-                                } else {
-                                    LazyColumn(
-                                        state = rememberLazyListState(),
-                                        modifier = Modifier
-                                            .selectableGroup() // Optional, for accessibility purpose
-                                            .padding(8.dp)
-                                            .focusable(enabled = true)
-                                    ) {
-                                        /*val searchedText = searchState.text
-                                        filteredItems = if (searchedText.isEmpty()) {
-                                            items
-                                        } else {
-                                            val resultList = mutableListOf<ListItemModel>()
-                                            for (item in items) {
-                                                if (item.headline.lowercase(Locale.getDefault())
-                                                        .contains(searchedText.lowercase(Locale.getDefault()))
-                                                ) {
-                                                    resultList.add(item)
-                                                }
-                                            }
-                                            resultList
-                                        }
-                                        items(filteredItems.size) { index ->*/
-                                        items(items.size) { index ->
-                                            SingleSelectListItemComponent(items[index]) { selectedItem ->
-                                                Timber.tag(TAG)
-                                                    .d("onClick() selectedItem = %s", selectedItem)
-                                                onDismissRequest()
-                                                onListItemClick(selectedItem)
-                                            }
+                                    items(filteredItems.size) { index ->
+                                        SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
+                                            Timber.tag(TAG)
+                                                .d("onClick() selectedItem = %s", selectedItem)
+                                            onDismissRequest()
+                                            onListItemClick(selectedItem)
                                         }
                                     }
                                 }

@@ -50,7 +50,7 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
         listViewModel.submitAction(loadListUiAction)
     }
     // set the correct cursor position when this composable is first initialized
-    var fieldValue by rememberSaveable {
+    var fieldValue by remember {
         mutableStateOf(
             TextFieldValue(
                 inputWrapper.item?.headline.orEmpty(),

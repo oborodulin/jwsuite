@@ -49,7 +49,7 @@ fun LocalityComboBox(
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("RegionComboBox(...) called")
+    Timber.tag(TAG).d("LocalityComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
