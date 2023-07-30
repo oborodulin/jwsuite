@@ -13,7 +13,7 @@ open class ListItemModel(
     val headline: String = "",
     val supportingText: String? = null,
     val value: BigDecimal? = null
-) : Parcelable {
+) : Parcelable, Searchable {
     companion object {
         fun defaultListItemModel(ctx: Context) = ListItemModel(
             itemId = UUID.randomUUID(),
@@ -21,6 +21,15 @@ open class ListItemModel(
             supportingText = ctx.resources.getString(R.string.preview_blank_descr),
             value = BigDecimal("123456.54")
         )
+    }
+
+    // https://www.youtube.com/watch?v=CfL6Dl2_dAE
+    override fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            "$headline$supportingText",
+            "$headline $supportingText"
+        )
+        return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
 
     override fun equals(other: Any?): Boolean {

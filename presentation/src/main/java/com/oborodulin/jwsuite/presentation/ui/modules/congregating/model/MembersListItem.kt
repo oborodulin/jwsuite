@@ -19,4 +19,14 @@ data class MembersListItem(
     val inactiveDate: OffsetDateTime? = null
 ) : Parcelable, ListItemModel(
     itemId = id, headline = memberFullName, supportingText = "${group.groupNum}.$memberNum"
-)
+) {
+    override fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            "${group.groupNum}.$memberNum$memberFullName",
+            "${group.groupNum}.$memberNum $memberFullName",
+            "${group.groupNum}.$memberNum$memberShortName",
+            "${group.groupNum}.$memberNum $memberShortName"
+        )
+        return matchingCombinations.any { it.contains(query, ignoreCase = true) }
+    }
+}

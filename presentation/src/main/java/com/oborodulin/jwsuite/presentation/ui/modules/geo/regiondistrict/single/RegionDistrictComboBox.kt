@@ -70,7 +70,6 @@ fun RegionDistrictComboBox(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = RegionDistrictsListUiAction.Load(regionId),
-        searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

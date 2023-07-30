@@ -49,7 +49,6 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     listViewModel: MviViewModeled<L, A, E>,
     loadListUiAction: A,
     inputWrapper: InputListItemWrapper<T>,
-    searchedItem: String = "",
     enabled: Boolean = true,
     @StringRes labelResId: Int,
     @StringRes listTitleResId: Int,
@@ -90,7 +89,6 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     SearchSingleSelectDialog(
         isShow = isShowListDialog,
         title = stringResource(listTitleResId),
-        searchedItem = searchedItem,
         viewModel = listViewModel,
         loadUiAction = loadListUiAction,
         onDismissRequest = onDismissListDialog,

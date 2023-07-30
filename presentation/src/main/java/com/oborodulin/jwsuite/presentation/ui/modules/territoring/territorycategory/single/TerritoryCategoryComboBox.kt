@@ -55,7 +55,6 @@ fun TerritoryCategoryComboBox(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = TerritoryCategoriesListUiAction.Load,
-        searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

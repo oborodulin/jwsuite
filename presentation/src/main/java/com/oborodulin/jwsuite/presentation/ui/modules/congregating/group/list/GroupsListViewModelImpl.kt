@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list
 
 import android.content.Context
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
@@ -92,6 +93,10 @@ class GroupsListViewModelImpl @Inject constructor(
                 override val singleEventFlow =
                     Channel<GroupsListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
 
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}

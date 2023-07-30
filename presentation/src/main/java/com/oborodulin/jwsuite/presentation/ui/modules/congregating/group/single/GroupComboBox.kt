@@ -58,7 +58,6 @@ fun GroupComboBox(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = GroupsListUiAction.Load(currentCongregation?.id),
-        searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

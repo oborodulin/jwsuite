@@ -27,11 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -49,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,6 +69,8 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesView
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
@@ -89,7 +87,8 @@ private const val TAG = "Territoring.TerritoringScreen"
 fun TerritoringScreen(
     appState: AppState,
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
-    viewModel: TerritoringViewModelImpl = hiltViewModel(),
+    territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
+    territoriesGridViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
@@ -99,8 +98,8 @@ fun TerritoringScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
+    val events = remember(territoringViewModel.events, lifecycleOwner) {
+        territoringViewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
@@ -108,8 +107,8 @@ fun TerritoringScreen(
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
 
-    val location by viewModel.location.collectAsStateWithLifecycle()
-    val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
+    val location by territoringViewModel.location.collectAsStateWithLifecycle()
+    val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all territoring fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -123,7 +122,7 @@ fun TerritoringScreen(
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
-        viewModel.submitAction(
+        territoringViewModel.submitAction(
             TerritoringUiAction.LoadLocations(congregationId = currentCongregation?.id)
         )
     }
@@ -147,6 +146,7 @@ fun TerritoringScreen(
                 location.item?.let {
                     AtWorkTerritoriesView(
                         appState = appState,
+                        territoriesGridViewModel = territoriesGridViewModel,
                         territoryLocationType = it.territoryLocationType,
                         locationId = it.locationId,
                         isPrivateSector = isPrivateSector.value.toBoolean()
@@ -160,6 +160,7 @@ fun TerritoringScreen(
                 location.item?.let {
                     IdleTerritoriesView(
                         appState = appState,
+                        territoriesGridViewModel = territoriesGridViewModel,
                         territoryLocationType = it.territoryLocationType,
                         locationId = it.locationId,
                         isPrivateSector = isPrivateSector.value.toBoolean()
@@ -173,6 +174,7 @@ fun TerritoringScreen(
                 location.item?.let {
                     AllTerritoriesView(
                         appState = appState,
+                        territoriesGridViewModel = territoriesGridViewModel,
                         territoryLocationType = it.territoryLocationType,
                         locationId = it.locationId,
                         isPrivateSector = isPrivateSector.value.toBoolean()
@@ -181,7 +183,7 @@ fun TerritoringScreen(
             },
         )
     )
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
@@ -196,7 +198,7 @@ fun TerritoringScreen(
                                     .height(90.dp)
                                     .focusRequester(focusRequesters[TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name]!!.focusRequester)
                                     .onFocusChanged { focusState ->
-                                        viewModel.onTextFieldFocusChanged(
+                                        territoringViewModel.onTextFieldFocusChanged(
                                             focusedField = TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR,
                                             isFocused = focusState.isFocused
                                         )
@@ -204,7 +206,7 @@ fun TerritoringScreen(
                                 labelResId = R.string.private_sector_hint,
                                 inputWrapper = isPrivateSector,
                                 onCheckedChange = {
-                                    viewModel.onTextFieldEntered(
+                                    territoringViewModel.onTextFieldEntered(
                                         TerritoringInputEvent.IsPrivateSector(it)
                                     )
                                 }
@@ -213,7 +215,7 @@ fun TerritoringScreen(
                                 modifier = Modifier
                                     .focusRequester(focusRequesters[TerritoringFields.TERRITORY_LOCATION.name]!!.focusRequester)
                                     .onFocusChanged { focusState ->
-                                        viewModel.onTextFieldFocusChanged(
+                                        territoringViewModel.onTextFieldFocusChanged(
                                             focusedField = TerritoringFields.TERRITORY_LOCATION,
                                             isFocused = focusState.isFocused
                                         )
@@ -230,9 +232,13 @@ fun TerritoringScreen(
                                 inputWrapper = location,
                                 items = territoringUi.territoryLocations,
                                 onValueChange = {
-                                    viewModel.onTextFieldEntered(TerritoringInputEvent.Location(it))
+                                    territoringViewModel.onTextFieldEntered(
+                                        TerritoringInputEvent.Location(
+                                            it
+                                        )
+                                    )
                                 },
-                                onImeKeyAction = viewModel::moveFocusImeAction,
+                                onImeKeyAction = territoringViewModel::moveFocusImeAction,
                             )
                         }
                     }
@@ -376,12 +382,13 @@ fun HandOutTerritoriesView(
 @Composable
 fun AtWorkTerritoriesView(
     appState: AppState,
+    territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("AtWorkTerritoriesView(...) called")
-    var searchTerritoryState by rememberSaveable { mutableStateOf(TextFieldValue("")) }
+    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -426,18 +433,20 @@ fun AtWorkTerritoriesView(
                 )
         ) {
         }
-        SearchComponent(searchTerritoryState) { searchTerritoryState = it }
+        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
     }
 }
 
 @Composable
 fun IdleTerritoriesView(
     appState: AppState,
+    territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("IdleTerritoriesView(...) called")
+    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -482,18 +491,20 @@ fun IdleTerritoriesView(
                 )
         ) {
         }
+        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
     }
 }
 
 @Composable
 fun AllTerritoriesView(
     appState: AppState,
+    territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("AllTerritoriesView(...) called")
-    var searchTerritoryState by rememberSaveable { mutableStateOf(TextFieldValue("")) }
+    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -538,7 +549,7 @@ fun AllTerritoriesView(
                 )
         ) {
         }
-        SearchComponent(searchTerritoryState) { searchTerritoryState = it }
+        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
     }
 }
 

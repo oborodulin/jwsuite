@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring
 
 import android.content.Context
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
@@ -147,6 +148,10 @@ class TerritoringViewModelImpl @Inject constructor(
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override val location =
                     MutableStateFlow(InputListItemWrapper<TerritoryLocationsListItem>())

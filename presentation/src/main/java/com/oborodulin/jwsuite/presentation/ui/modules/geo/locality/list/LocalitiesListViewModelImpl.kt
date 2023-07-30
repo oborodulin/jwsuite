@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list
 
 import android.content.Context
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
@@ -112,6 +113,10 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 override val singleEventFlow =
                     Channel<LocalitiesListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
 
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}

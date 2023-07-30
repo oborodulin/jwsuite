@@ -55,7 +55,6 @@ fun RegionComboBox(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = RegionsListUiAction.Load,
-        searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

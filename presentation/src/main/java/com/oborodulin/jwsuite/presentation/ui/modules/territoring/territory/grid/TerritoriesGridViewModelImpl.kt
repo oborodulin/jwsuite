@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid
 
 import android.content.Context
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.field.util.InputError
@@ -213,6 +214,10 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 

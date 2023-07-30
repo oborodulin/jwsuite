@@ -28,5 +28,16 @@ data class TerritoriesListItem(
     val expiredDays: Int? = null,
     var isChecked: Boolean = false,
     var isSelected: Boolean = false
-) : Parcelable,
-    ListItemModel(itemId = id, headline = "$cardNum $cardLocation", supportingText = territoryDesc)
+) : Parcelable, ListItemModel(
+    itemId = id, headline = "$cardNum $cardLocation", supportingText = territoryDesc
+) {
+    override fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            "$cardNum$cardLocation${member?.memberFullName}$territoryDesc",
+            "$cardNum $cardLocation ${member?.memberFullName} $territoryDesc",
+            "$cardNum$cardLocation${member?.memberShortName}$territoryDesc",
+            "$cardNum $cardLocation ${member?.memberShortName} $territoryDesc"
+        )
+        return matchingCombinations.any { it.contains(query, ignoreCase = true) }
+    }
+}

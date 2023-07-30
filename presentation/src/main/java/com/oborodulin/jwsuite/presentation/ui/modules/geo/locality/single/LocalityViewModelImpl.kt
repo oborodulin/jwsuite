@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single
 
 import android.content.Context
 import androidx.annotation.ArrayRes
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -336,6 +337,11 @@ class LocalityViewModelImpl @Inject constructor(
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
+
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
+
                 override val localityTypes = MutableStateFlow(mutableMapOf<LocalityType, String>())
 
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))

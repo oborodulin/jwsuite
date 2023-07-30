@@ -74,7 +74,6 @@ fun LocalityComboBox(
         modifier = modifier,
         listViewModel = listViewModel,
         loadListUiAction = LocalitiesListUiAction.Load(),
-        searchedItem = "",
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

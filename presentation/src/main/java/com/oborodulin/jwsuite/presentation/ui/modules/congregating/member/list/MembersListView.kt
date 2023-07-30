@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +37,6 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.Members
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.util.Locale
 import java.util.UUID
 
 private const val TAG = "Congregating.MembersListView"
@@ -48,7 +46,6 @@ fun MembersListView(
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    searchedText: String,
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
     memberInput: MemberInput? = null
@@ -76,7 +73,6 @@ fun MembersListView(
                 congregationId = congregationId,
                 groupId = groupInput?.groupId,
                 members = it,
-                searchedText = searchedText,
                 memberInput = memberInput,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
                 onDelete = { member ->
@@ -103,7 +99,6 @@ fun MembersList(
     congregationId: UUID?,
     groupId: UUID?,
     members: List<MembersListItem>,
-    searchedText: String,
     memberInput: MemberInput? = null,
     onEdit: (MembersListItem) -> Unit,
     onDelete: (MembersListItem) -> Unit
@@ -111,7 +106,7 @@ fun MembersList(
     Timber.tag(TAG).d("MembersList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (members.isNotEmpty()) {
-        var filteredItems: List<MembersListItem>
+        //var filteredItems: List<MembersListItem>
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
@@ -119,21 +114,23 @@ fun MembersList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            filteredItems = if (searchedText.isEmpty()) {
-                members
-            } else {
-                val resultList = mutableListOf<MembersListItem>()
-                for (item in members) {
-                    if (item.headline.lowercase(Locale.getDefault())
-                            .contains(searchedText.lowercase(Locale.getDefault()))
-                    ) {
-                        resultList.add(item)
-                    }
-                }
-                resultList
-            }
-            items(filteredItems.size) { index ->
-                filteredItems[index].let { member ->
+            /*  filteredItems = if (searchedText.isEmpty()) {
+                  members
+              } else {
+                  val resultList = mutableListOf<MembersListItem>()
+                  for (item in members) {
+                      if (item.headline.lowercase(Locale.getDefault())
+                              .contains(searchedText.lowercase(Locale.getDefault()))
+                      ) {
+                          resultList.add(item)
+                      }
+                  }
+                  resultList
+              }
+              items(filteredItems.size) { index ->
+             */
+            items(members.size) { index ->
+                members[index].let { member ->
                     val isSelected = (selectedIndex == index)
                     ListItemComponent(
                         item = member,
@@ -166,14 +163,12 @@ fun MembersList(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMembersList() {
-    val searchMemberState by remember { mutableStateOf(TextFieldValue("")) }
     JWSuiteTheme {
         Surface {
             MembersList(
                 congregationId = UUID.randomUUID(),
                 groupId = UUID.randomUUID(),
                 members = MembersListViewModelImpl.previewList(LocalContext.current),
-                searchedText = searchMemberState.text,
                 onEdit = {},
                 onDelete = {}
             )
