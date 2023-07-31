@@ -66,7 +66,9 @@ data class TerritoryEntity(
             congregationId: UUID = UUID.randomUUID(), territoryCategoryId: UUID = UUID.randomUUID(),
             localityId: UUID = UUID.randomUUID(), localityDistrictId: UUID? = null,
             microdistrictId: UUID? = null,
-            territoryNum: Int, isBusiness: Boolean = false, isInPerimeter: Boolean = false,
+            territoryNum: Int,
+            isBusiness: Boolean = false, isInPerimeter: Boolean = false,
+            isGroupMinistry: Boolean = false,
             isProcessed: Boolean = false, isActive: Boolean = true, territoryDesc: String? = null
         ) = TerritoryEntity(
             tCongregationsId = congregationId, tTerritoryCategoriesId = territoryCategoryId,

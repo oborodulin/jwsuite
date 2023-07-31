@@ -36,13 +36,13 @@ class TerritoringViewModelImpl @Inject constructor(
 ) : TerritoringViewModel,
     SingleViewModel<TerritoringUi, UiState<TerritoringUi>, TerritoringUiAction, UiSingleEvent, TerritoringFields, InputWrapper>(
         state,
-        TerritoringFields.TERRITORY_LOCATION
+        //TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR
     ) {
-    override val location: StateFlow<InputListItemWrapper<TerritoryLocationsListItem>> by lazy {
-        state.getStateFlow(TerritoringFields.TERRITORY_LOCATION.name, InputListItemWrapper())
-    }
     override val isPrivateSector: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name, InputWrapper())
+    }
+    override val location: StateFlow<InputListItemWrapper<TerritoryLocationsListItem>> by lazy {
+        state.getStateFlow(TerritoringFields.TERRITORY_LOCATION.name, InputListItemWrapper())
     }
 
     override fun initState(): UiState<TerritoringUi> = UiState.Loading
@@ -90,16 +90,16 @@ class TerritoringViewModelImpl @Inject constructor(
                 territoringUi
             )
         initStateValue(
+            TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
+            territoringUi.isPrivateSector?.toString().orEmpty()
+        )
+        initStateValue(
             TerritoringFields.TERRITORY_LOCATION, location,
             TerritoryLocationsListItem(
                 locationId = territoringUi.territoryLocations.first().locationId,
-                locationName = territoringUi.territoryLocations.first().locationName,
+                locationShortName = territoringUi.territoryLocations.first().locationShortName,
                 territoryLocationType = territoringUi.territoryLocations.first().territoryLocationType
             )
-        )
-        initStateValue(
-            TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
-            territoringUi.isPrivateSector?.toString().orEmpty()
         )
         return null
     }
@@ -109,29 +109,30 @@ class TerritoringViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is TerritoringInputEvent.IsPrivateSector ->
+                        setStateValue(
+                            TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
+                            event.input.toString(), true
+                        )
+
                     is TerritoringInputEvent.Location ->
                         setStateValue(
                             TerritoringFields.TERRITORY_LOCATION, location, event.input,
                             true
                         )
 
-                    is TerritoringInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
-                            event.input.toString(), true
-                        )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is TerritoringInputEvent.Location ->
-                        setStateValue(TerritoringFields.TERRITORY_LOCATION, location, null)
-
                     is TerritoringInputEvent.IsPrivateSector ->
                         setStateValue(
                             TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector, null
                         )
+
+                    is TerritoringInputEvent.Location ->
+                        setStateValue(TerritoringFields.TERRITORY_LOCATION, location, null)
                 }
             }
     }
@@ -153,9 +154,9 @@ class TerritoringViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val location =
                     MutableStateFlow(InputListItemWrapper<TerritoryLocationsListItem>())
-                override val isPrivateSector = MutableStateFlow(InputWrapper())
 
                 override fun submitAction(action: TerritoringUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
@@ -172,28 +173,28 @@ class TerritoringViewModelImpl @Inject constructor(
             TerritoryLocationsListItem(
                 locationId = null,
                 congregationId = UUID.randomUUID(),
-                locationName = ctx.resources.getString(com.oborodulin.home.common.R.string.all_items_unit),
+                locationShortName = ctx.resources.getString(com.oborodulin.home.common.R.string.all_items_unit),
                 territoryLocationType = TerritoryLocationType.ALL,
                 isPrivateSector = false
             ),
             TerritoryLocationsListItem(
                 locationId = UUID.randomUUID(),
                 congregationId = UUID.randomUUID(),
-                locationName = ctx.resources.getString(R.string.def_mospino_short_name),
+                locationShortName = ctx.resources.getString(R.string.def_mospino_short_name),
                 territoryLocationType = TerritoryLocationType.LOCALITY,
                 isPrivateSector = false
             ),
             TerritoryLocationsListItem(
                 locationId = UUID.randomUUID(),
                 congregationId = UUID.randomUUID(),
-                locationName = ctx.resources.getString(R.string.def_budyonovsky_short_name),
+                locationShortName = ctx.resources.getString(R.string.def_budyonovsky_short_name),
                 territoryLocationType = TerritoryLocationType.LOCALITY_DISTRICT,
                 isPrivateSector = true
             ),
             TerritoryLocationsListItem(
                 locationId = UUID.randomUUID(),
                 congregationId = UUID.randomUUID(),
-                locationName = ctx.resources.getString(R.string.def_cvetochny_short_name),
+                locationShortName = ctx.resources.getString(R.string.def_cvetochny_short_name),
                 territoryLocationType = TerritoryLocationType.MICRO_DISTRICT,
                 isPrivateSector = false
             )
@@ -201,7 +202,7 @@ class TerritoringViewModelImpl @Inject constructor(
 
         fun previewUiModel(ctx: Context) = TerritoringUi(
             territoryLocations = previewList(ctx),
-            isPrivateSector = null
+            isPrivateSector = false
         )
     }
 }

@@ -9,5 +9,5 @@ data class TerritoryLocation(
     val congregationId: UUID,
     val isPrivateSector: Boolean?,
     val locationId: UUID?,
-    val locationName: String
+    val locationShortName: String
 ) : DomainModel()

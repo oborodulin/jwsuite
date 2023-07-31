@@ -28,9 +28,7 @@ fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
     congregation = this.congregation,
     territoryCategory = this.territoryCategory,
     locality = this.locality,
-    cardNum = "${this.congregation.territoryMark}${this.territoryCategory.territoryCategoryMark}".plus(
-        "-${this.territoryNum}"
-    ),
+    cardNum = "${this.congregation.territoryMark}${this.territoryCategory.territoryCategoryMark}-${this.territoryNum}",
     cardLocation = "[".plus(if (this.locality.id != this.congregation.locality.id) "${this.locality.localityShortName}:" else "")
         .plus(if (!this.districtShortName.isNullOrEmpty()) "${this.districtShortName}:" else "")
         .plus(if (!this.microdistrictShortName.isNullOrEmpty()) "${this.microdistrictShortName}]" else "]")

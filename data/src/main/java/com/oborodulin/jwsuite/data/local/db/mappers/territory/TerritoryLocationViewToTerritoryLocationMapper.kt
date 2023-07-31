@@ -13,7 +13,7 @@ class TerritoryLocationViewToTerritoryLocationMapper :
             congregationId = input.congregationId,
             isPrivateSector = input.isPrivateSector,
             locationId = input.locationId,
-            locationName = input.locationName
+            locationShortName = input.locationShortName
         )
         territoryLocation.id = UUID.randomUUID()
         return territoryLocation

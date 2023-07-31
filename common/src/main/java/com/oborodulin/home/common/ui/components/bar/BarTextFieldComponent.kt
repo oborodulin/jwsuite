@@ -2,10 +2,13 @@ package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
@@ -28,11 +32,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.util.OnTextFieldValueChange
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "Common.ui.BarTextFieldComponent"
 
 // https://stackoverflow.com/questions/73664765/showing-a-text-field-in-the-app-bar-in-jetpack-compose-with-material3
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun BarTextFieldComponent(
     modifier: Modifier = Modifier,
@@ -64,10 +70,13 @@ fun BarTextFieldComponent(
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor, lineHeight = 50.sp))
 
     // request focus when this composable is first initialized
-    val focusRequester = FocusRequester()
+    /*val focusRequester = FocusRequester()
     SideEffect {
         focusRequester.requestFocus()
-    }
+    }*/
+    // https://stackoverflow.com/questions/69036917/text-field-text-goes-below-the-ime-in-lazycolum-jetpack-compose/69120348#69120348
+    val relocation = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
 
     CompositionLocalProvider(
         LocalTextSelectionColors provides LocalTextSelectionColors.current
@@ -82,7 +91,12 @@ fun BarTextFieldComponent(
                     interactionSource = interactionSource,
                     colors = btfColors
                 )
-                .focusRequester(focusRequester),
+                .bringIntoViewRequester(relocation)
+                .onFocusEvent {
+                    if (it.isFocused) scope.launch { delay(300); relocation.bringIntoView() }
+                }
+                //.focusRequester(focusRequester)
+            ,
             value = fieldValue,
             onValueChange = {
                 // remove newlines to avoid strange layout issues, and also because singleLine=true

@@ -376,10 +376,14 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     db, TerritoryCategoryEntity.roomTerritoryCategory(context)
                 )
                 // Room territories:
-                val roomTerrs1 = insertDefTerritories(db, roomTerritoryCategory, congregation1)
+                val roomTerrs1 = insertDefTerritories(
+                    db, roomTerritoryCategory, congregation1, mospino, budyonovsky, donskoy
+                )
 
                 // House territories (private sector):
-                val houseTerrs1 = insertDefTerritories(db, houseTerritoryCategory, congregation1)
+                val houseTerrs1 = insertDefTerritories(
+                    db, houseTerritoryCategory, congregation1, mospino, budyonovsky, cvetochny
+                )
                 insertDefTerritoryStreet(
                     db, houseTerrs1.first { it.territoryNum == 1 }, baratynskogo
                 )
@@ -464,6 +468,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(personNumMu)
             )
+            // Territory Business Mark
+            val territoryBusinessMark =
+                AppSettingEntity.territoryBusinessMarkParam(context)
+            db.insert(
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(territoryBusinessMark)
+            )
             // Territory Processing Period
             val territoryProcessingPeriod =
                 AppSettingEntity.territoryProcessingPeriodParam(context)
@@ -499,7 +510,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG)
                     .i(
-                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
+                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryBusinessMark\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
                         it.toJson(lang),
                         it.toJson(currencyCode),
                         it.toJson(allItems),
@@ -507,11 +518,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         it.toJson(monthMu),
                         it.toJson(yearMu),
                         it.toJson(personNumMu),
-                        it.toJson(territoryProcessingPeriod),
-                        it.toJson(territoryAtHandPeriod),
-                        it.toJson(territoryRoomsLimit),
-                        it.toJson(territoryMaxRoomsParam),
-                        it.toJson(territoryIdlePeriod)
+                        it.toJson(territoryBusinessMark), it.toJson(territoryProcessingPeriod),
+                        it.toJson(territoryAtHandPeriod), it.toJson(territoryRoomsLimit),
+                        it.toJson(territoryMaxRoomsParam), it.toJson(territoryIdlePeriod)
                     )
             }
         }
@@ -785,13 +794,30 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         private fun insertDefTerritories(
             db: SupportSQLiteDatabase, territoryCategory: TerritoryCategoryEntity,
-            congregation: CongregationEntity
+            congregation: CongregationEntity,
+            locality: GeoLocalityEntity, localityDistrict: GeoLocalityDistrictEntity,
+            microdistrict: GeoMicrodistrictEntity
         ): MutableList<TerritoryEntity> {
             val territories = mutableListOf<TerritoryEntity>()
             for (num in 1..144) {
                 val territory = TerritoryEntity.defaultTerritory(
                     territoryCategoryId = territoryCategory.territoryCategoryId,
                     congregationId = congregation.congregationId,
+                    localityId = when (num % 2) {
+                        0 -> congregation.cLocalitiesId
+                        else -> locality.localityId
+                    },
+                    localityDistrictId = when (num % 4) {
+                        0 -> localityDistrict.localityDistrictId
+                        else -> null
+                    },
+                    microdistrictId = when (num % 6) {
+                        0 -> microdistrict.microdistrictId
+                        else -> null
+                    },
+                    isBusiness = num % 8 == 0,
+                    isInPerimeter = num % 10 == 0,
+                    isGroupMinistry = num % 20 == 0,
                     territoryNum = num
                 )
                 db.insert(

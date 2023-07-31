@@ -99,6 +99,7 @@ fun TerritoriesView(
             )
         )
     }
+    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     territoriesGridViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
@@ -111,6 +112,7 @@ fun TerritoriesView(
                 TerritoriesClickableGrid(
                     territories = it,
                     territoryInput = territoryInput,
+                    searchedText = searchText.text,
                     onFavorite = { listItem ->
                         /*listItem.itemId?.let { id ->
                             territoriesGridViewModel.submitAction(
@@ -127,6 +129,7 @@ fun TerritoriesView(
                 TerritoriesEditableGrid(
                     territories = it,
                     territoryInput = territoryInput,
+                    searchedText = searchText.text,
                     onFavorite = { listItem ->
                         listItem.itemId?.let { id ->
                             /*territoriesGridViewModel.submitAction(
@@ -169,11 +172,13 @@ fun TerritoriesView(
 fun TerritoriesClickableGrid(
     territories: List<TerritoriesListItem>,
     territoryInput: TerritoryInput?,
+    searchedText: String = "",
     onFavorite: OnListItemEvent,
     onClick: (TerritoriesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoriesClickableGrid(...) called")
     if (territories.isNotEmpty()) {
+        var filteredItems: List<TerritoriesListItem>
         val cellSize = 110.dp
         LazyVerticalGrid(
             columns = GridCells.Adaptive(cellSize),
@@ -185,8 +190,13 @@ fun TerritoriesClickableGrid(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(territories.size) { index ->
-                territories[index].let { territory ->
+            filteredItems = if (searchedText.isEmpty()) {
+                territories
+            } else {
+                territories.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+            items(filteredItems.size) { index ->
+                filteredItems[index].let { territory ->
                     Card(
                         modifier = Modifier
                             .padding(4.dp)
@@ -205,20 +215,37 @@ fun TerritoriesClickableGrid(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
-                                    modifier = Modifier
-                                        .padding(2.dp)
-                                        .align(Alignment.CenterVertically),
-                                    text = territory.cardNum,
-                                    fontSize = 20.sp,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    textAlign = TextAlign.End,
-                                )
+                                val territoryMarks = territory.cardNum.split("-")
+                                if (territoryMarks.isNotEmpty()) {
+                                    // CongregationMark + TerritoryCategoryMark -
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(start = 2.dp)
+                                            .alignByBaseline(),
+                                        text = "${territoryMarks[0]}-",
+                                        fontSize = 16.sp,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        textAlign = TextAlign.Start,
+                                    )
+                                }
+                                if (territoryMarks.size > 1) {
+                                    // TerritoryNum + TerritoryBusinessMark?
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(end = 2.dp)
+                                            .alignByBaseline(),
+                                        text = territoryMarks[1],
+                                        fontSize = 20.sp,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        textAlign = TextAlign.End,
+                                    )
+                                }
                                 var checkedState by rememberSaveable { mutableStateOf(territory.isChecked) }
                                 Checkbox(
                                     modifier = Modifier
                                         .padding(0.dp)
-                                        .align(Alignment.CenterVertically),
+                                        //.align(Alignment.CenterVertically),
+                                        .alignByBaseline(),
                                     checked = checkedState,
                                     onCheckedChange = {
                                         checkedState = it
@@ -329,6 +356,7 @@ fun TerritoriesClickableGrid(
 fun TerritoriesEditableGrid(
     territories: List<TerritoriesListItem>,
     territoryInput: TerritoryInput?,
+    searchedText: String = "",
     onFavorite: OnListItemEvent,
     onEdit: (TerritoriesListItem) -> Unit,
     onDelete: (TerritoriesListItem) -> Unit,
@@ -337,6 +365,7 @@ fun TerritoriesEditableGrid(
     Timber.tag(TAG).d("TerritoriesEditableGrid(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (territories.isNotEmpty()) {
+        var filteredItems: List<TerritoriesListItem>
         LazyVerticalGrid(
             columns = GridCells.Adaptive(100.dp),
             modifier = Modifier
@@ -347,8 +376,13 @@ fun TerritoriesEditableGrid(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(24.dp)
         ) {
-            items(territories.size) { index ->
-                territories[index].let { territory ->
+            filteredItems = if (searchedText.isEmpty()) {
+                territories
+            } else {
+                territories.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+            items(filteredItems.size) { index ->
+                filteredItems[index].let { territory ->
                     val isSelected =
                         ((selectedIndex == -1) and (territoryInput?.territoryId == territory.id)) || (selectedIndex == index)
                     TerritoriesListItemComponent(

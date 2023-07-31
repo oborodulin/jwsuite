@@ -6,6 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.home.common.util.Utils.Companion.currencyCode
+import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.util.AppSettingParam
 import java.util.Locale
 import java.util.UUID
@@ -58,6 +59,11 @@ data class AppSettingEntity(
         fun personNumMuParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.PERSON_NUM_MU,
             paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.person_unit)
+        )
+
+        fun territoryBusinessMarkParam(ctx: Context) = defaultParam(
+            paramName = AppSettingParam.TERRITORY_BUSINESS_MARK,
+            paramValue = ctx.resources.getString(R.string.territory_business_mark)
         )
 
         fun territoryProcessingPeriodParam(ctx: Context) = defaultParam(

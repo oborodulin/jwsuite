@@ -30,7 +30,8 @@ class TerritoriesIdleViewToTerritoryMapper(
                 isActive = this.territory.isActive,
                 territoryDesc = this.territory.territoryDesc,
                 congregationId = input.ctCongregationsId,
-                isPrivateSector = input.isPrivateSector
+                isPrivateSector = input.isPrivateSector,
+                territoryBusinessMark = input.idleTerritoryBusinessMark
             )
             territory.id = this.territory.territoryId
         }

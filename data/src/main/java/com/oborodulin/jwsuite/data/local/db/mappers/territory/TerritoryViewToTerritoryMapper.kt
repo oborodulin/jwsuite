@@ -26,7 +26,8 @@ class TerritoryViewToTerritoryMapper(
             isInPerimeter = input.territory.isInPerimeter,
             isProcessed = input.territory.isProcessed,
             isActive = input.territory.isActive,
-            territoryDesc = input.territory.territoryDesc
+            territoryDesc = input.territory.territoryDesc,
+            territoryBusinessMark = input.territoryBusinessMark
         )
         territory.id = input.territory.territoryId
         return territory

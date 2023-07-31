@@ -27,10 +27,13 @@ data class Territory(
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
     val handOutDays: Int? = null,
-    val expiredDays: Int? = null
+    val expiredDays: Int? = null,
+    val territoryBusinessMark: String? = null
 ) : DomainModel() {
     val cardNum =
-        "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}".plus("-${territoryNum}")
+        "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}-$territoryNum".plus(
+            if (isBusiness) "$territoryBusinessMark" else ""
+        )
     val cardLocation =
         "[".plus(if (locality.id != congregation.locality.id) "${locality.localityShortName}:" else "")
             .plus(if (!districtShortName.isNullOrEmpty()) "$districtShortName:" else "")

@@ -10,6 +10,8 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.data.util.Constants
+import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
@@ -25,7 +27,7 @@ import java.util.*
 @Dao
 interface TerritoryDao {
     // READS:
-    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${PX_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryNum")
+    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${PX_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryCategoryMark, territoryNum")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
@@ -42,7 +44,8 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId 
-    WHERE ct.ctCongregationsId = :congregationId AND t.${PX_LOCALITY}localityLocCode = :locale 
+    WHERE ct.ctCongregationsId = :congregationId AND t.${PX_LOCALITY}localityLocCode = :locale
+    ORDER BY t.territoryCategoryMark, t.territoryNum
         """
     )
     fun findByCongregationId(congregationId: UUID, locale: String? = Locale.getDefault().language):
@@ -57,7 +60,8 @@ interface TerritoryDao {
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
             ON ct.ctTerritoriesId = t.territoryId  AND t.${PX_LOCALITY}localityLocCode = :locale
-        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.ctCongregationsId    
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.ctCongregationsId
+    ORDER BY t.territoryCategoryMark, t.territoryNum            
         """
     )
     fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
@@ -75,8 +79,9 @@ interface TerritoryDao {
         """
     SELECT td.* 
     FROM ${TerritoryLocationView.VIEW_NAME} td LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = td.congregationId
-    WHERE td.isPrivateSector = :isPrivateSector AND td.congregationId = ifnull(:congregationId, fcv.congregationId)
-    ORDER BY td.orderPos, td.locationName
+    WHERE ifnull(td.isPrivateSector, $DB_FALSE) = (CASE WHEN :isPrivateSector = $DB_TRUE THEN $DB_TRUE ELSE ifnull(td.isPrivateSector, $DB_FALSE) END)
+        AND td.congregationId = ifnull(:congregationId, fcv.congregationId)
+    ORDER BY td.orderPos, td.locationShortName, ifnull(td.isPrivateSector, $DB_FALSE)
         """
     )
     fun findTerritoryLocationsByPrivateSectorMarkAndCongregationId(
@@ -87,12 +92,14 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoriesHandOutView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.isPrivateSector = ifnull(:isPrivateSector, t.isPrivateSector) 
+    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) 
+        AND t.isPrivateSector = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
         AND t.${PX_LOCALITY}localityLocCode = :locale
         AND ((:territoryLocationType = $TDT_ALL_VAL) OR
             (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :locationId))
+    ORDER BY t.territoryCategoryMark, t.territoryNum            
     """
     )
     fun findHandOutTerritories(
@@ -104,12 +111,14 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoriesAtWorkView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.isPrivateSector = ifnull(:isPrivateSector, t.isPrivateSector) 
+    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) 
+        AND t.isPrivateSector = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
         AND t.${PX_LOCALITY}localityLocCode = :locale
         AND ((:territoryLocationType = $TDT_ALL_VAL) OR
             (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :locationId))
+    ORDER BY t.territoryCategoryMark, t.territoryNum            
     """
     )
     fun findAtWorkTerritories(
@@ -121,12 +130,14 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoriesIdleView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
-    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) AND t.isPrivateSector = ifnull(:isPrivateSector, t.isPrivateSector) 
+    WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId)
+        AND t.isPrivateSector = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
         AND t.${PX_LOCALITY}localityLocCode = :locale
         AND ((:territoryLocationType = $TDT_ALL_VAL) OR
             (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :locationId))
+    ORDER BY t.territoryCategoryMark, t.territoryNum            
     """
     )
     fun findIdleTerritories(

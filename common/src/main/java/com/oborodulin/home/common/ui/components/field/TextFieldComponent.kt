@@ -2,10 +2,13 @@ package com.oborodulin.home.common.ui.components.field
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -18,9 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -33,10 +37,13 @@ import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Common.ui.TextFieldComponent"
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TextFieldComponent(
     modifier: Modifier,
@@ -63,6 +70,9 @@ fun TextFieldComponent(
         fieldValue.text,
         inputWrapper.value
     )
+    // https://stackoverflow.com/questions/69036917/text-field-text-goes-below-the-ime-in-lazycolum-jetpack-compose/69120348#69120348
+    val relocation = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
     /*    if (fieldValue.text != inputWrapper.value) fieldValue =
             TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length))
         Timber.tag(TAG).d(
@@ -74,14 +84,15 @@ fun TextFieldComponent(
         OutlinedTextField(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .bringIntoViewRequester(relocation)
+                .onFocusEvent {
+                    if (it.isFocused) scope.launch { delay(300); relocation.bringIntoView() }
+                },//.weight(1f),
             enabled = enabled,
             readOnly = readOnly,
             value = fieldValue,
-            onValueChange = {
-                fieldValue = it
-                onValueChange(it.text)
-            },
+            onValueChange = { fieldValue = it; onValueChange(it.text) },
             label = labelResId?.let { { Text(stringResource(it)) } },
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
@@ -89,9 +100,7 @@ fun TextFieldComponent(
             isError = inputWrapper.errorId != null,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
-            keyboardActions = remember {
-                KeyboardActions(onAny = { onImeKeyAction() })
-            },
+            keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
             colors = colors
         )
         inputWrapper.errorMessage(LocalContext.current)?.let {

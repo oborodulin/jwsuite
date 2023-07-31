@@ -9,7 +9,7 @@ class TerritoryLocationToTerritoryLocationsListItemMapper :
     Mapper<TerritoryLocation, TerritoryLocationsListItem> {
     override fun map(input: TerritoryLocation) = TerritoryLocationsListItem(
         locationId = input.id ?: UUID.randomUUID(),
-        locationName = input.locationName,
+        locationShortName = input.locationShortName,
         territoryLocationType = input.territoryLocationType,
         congregationId = input.congregationId,
         isPrivateSector = input.isPrivateSector

@@ -2,9 +2,12 @@ package com.oborodulin.home.common.ui.components.search
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -17,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -27,8 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.util.OnTextFieldValueChange
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SearchComponent(
     fieldValue: TextFieldValue,
@@ -36,10 +43,18 @@ fun SearchComponent(
     onValueChange: OnTextFieldValueChange
 ) {
 //    val containerColor = FilledTextFieldTokens.ContainerColor.toColor()
+    // https://stackoverflow.com/questions/69036917/text-field-text-goes-below-the-ime-in-lazycolum-jetpack-compose/69120348#69120348
+    val relocation = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
     TextField(
         value = fieldValue,
         onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .bringIntoViewRequester(relocation)
+            .onFocusEvent {
+                if (it.isFocused) scope.launch { delay(300); relocation.bringIntoView() }
+            },
         textStyle = TextStyle(fontSize = 18.sp),
         placeholder = placeholderResId?.let { { Text(text = stringResource(id = it)) } },
         leadingIcon = {

@@ -108,6 +108,7 @@
     <string name="def_gertsena_name">Герцена</string>
 
     <!--УЧАСТКИ-->
+    <string name="territory_business_mark">д</string>
     <!--Категории-->
     <string name="def_house_territory_category_code">HOUSES</string>
     <string name="def_house_territory_category_mark">Д</string>

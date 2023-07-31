@@ -45,7 +45,8 @@ private const val TAG = "Common.ui.SwitchComponent"
 
 @Composable
 fun SwitchComponent(
-    modifier: Modifier = Modifier,
+    componentModifier: Modifier = Modifier,
+    switchModifier: Modifier = Modifier,
     inputWrapper: InputWrapper, // string
     @StringRes labelResId: Int? = null,
     onCheckedChange: OnCheckedChange,
@@ -58,12 +59,12 @@ fun SwitchComponent(
         isChecked,
         inputWrapper.value
     )
-/*    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
-    Timber.tag(TAG).d(
-        "SwitchComponent(...): isChecked = %s; inputWrapper = %s",
-        isChecked,
-        inputWrapper
-    )*/
+    /*    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
+        Timber.tag(TAG).d(
+            "SwitchComponent(...): isChecked = %s; inputWrapper = %s",
+            isChecked,
+            inputWrapper
+        )*/
     Column {
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -74,18 +75,19 @@ fun SwitchComponent(
                     onClick = { onCheckedChange(!isChecked) }
                 )
                 .requiredHeight(ButtonDefaults.MinHeight)
-                .padding(4.dp),
+                .padding(4.dp)
+                .then(componentModifier),
             horizontalArrangement = Arrangement.SpaceBetween) {
             labelResId?.let {
                 Text(
                     modifier = Modifier
-                        .padding(end = 16.dp)
+                        .padding(end = 4.dp)
                         .weight(4f),
                     text = stringResource(it)
                 )
             }
             Switch(
-                modifier = modifier
+                modifier = switchModifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp, horizontal = 8.dp)
                     .weight(1f),
@@ -121,7 +123,7 @@ fun SwitchComponent(
 fun PreviewSwitchComponent() {
     HomeComposableTheme {
         Surface {
-            SwitchComponent(modifier = Modifier,
+            SwitchComponent(switchModifier = Modifier,
                 inputWrapper = InputWrapper(
                     value = "true",
                     errorId = R.string.preview_blank_text_field_err

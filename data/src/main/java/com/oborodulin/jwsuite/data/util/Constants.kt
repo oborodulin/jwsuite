@@ -4,7 +4,7 @@ package com.oborodulin.jwsuite.data.util
  * Created by tfakioglu on 13.December.2021
  */
 object Constants {
-    const val DATABASE_NAME = "home-database.sqlite"
+    const val DATABASE_NAME = "jwsuite-database.sqlite"
 
     // GEO Prefix:
     // Regions:
@@ -26,6 +26,9 @@ object Constants {
 
     // Congregation:
     const val PX_GROUP_CONGREGATION = "gc_"
+
+    // Territories:
+    const val PX_TERRITORY = "t_"
 
     // Group:
     const val PX_GROUP_REGION = PX_GROUP_CONGREGATION+PX_CONGREGATION_REGION
@@ -55,6 +58,7 @@ object Constants {
     const val PRM_DAY_MU_VAL = "'DAY_MU'"
     const val PRM_MONTH_MU_VAL = "'MONTH_MU'"
     const val PRM_PERSON_NUM_MU_VAL = "'PERSON_NUM_MU'"
+    const val PRM_TERRITORY_BUSINESS_MARK_VAL = "'TERRITORY_BUSINESS_MARK'"
     const val PRM_TERRITORY_PROCESSING_PERIOD_VAL = "'TERRITORY_PROCESSING_PERIOD'"
     const val PRM_TERRITORY_AT_HAND_PERIOD_VAL = "'TERRITORY_AT_HAND_PERIOD'"
     const val PRM_TERRITORY_ROOMS_LIMIT_VAL = "'TERRITORY_ROOMS_LIMIT'"

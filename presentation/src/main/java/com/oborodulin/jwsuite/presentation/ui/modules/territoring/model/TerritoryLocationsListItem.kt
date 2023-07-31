@@ -7,12 +7,12 @@ import java.util.UUID
 
 data class TerritoryLocationsListItem(
     val locationId: UUID?,
-    val locationName: String,
+    val locationShortName: String,
     val territoryLocationType: TerritoryLocationType,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null
 ) : Parcelable, ListItemModel(
     itemId = locationId,
-    headline = locationName,
+    headline = locationShortName,
     supportingText = territoryLocationType.name
 )

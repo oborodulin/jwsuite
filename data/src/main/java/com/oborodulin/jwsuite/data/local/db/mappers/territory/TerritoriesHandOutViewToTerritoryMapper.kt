@@ -34,7 +34,8 @@ class TerritoriesHandOutViewToTerritoryMapper(
                 member = memberMapper.nullableMap(input.member),
                 congregationId = input.ctCongregationsId,
                 isPrivateSector = input.isPrivateSector,
-                handOutDays = input.handOutDays
+                handOutDays = input.handOutDays,
+                territoryBusinessMark = input.handOutTerritoryBusinessMark
             )
             territory.id = this.territory.territoryId
         }

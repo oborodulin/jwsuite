@@ -213,7 +213,7 @@ fun CongregationView(
             onImeKeyAction = congregationViewModel::moveFocusImeAction
         )
         SwitchComponent(
-            modifier = Modifier
+            switchModifier = Modifier
                 .height(90.dp)
                 .focusRequester(focusRequesters[CongregationFields.IS_FAVORITE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->

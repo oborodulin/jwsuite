@@ -8,6 +8,7 @@ enum class AppSettingParam {
     MONTH_MU,
     YEAR_MU,
     PERSON_NUM_MU,
+    TERRITORY_BUSINESS_MARK,
     TERRITORY_PROCESSING_PERIOD,        // 1 year
     TERRITORY_AT_HAND_PERIOD,           // 4 months
     TERRITORY_ROOMS_LIMIT,              // 50-75 rooms per territory
