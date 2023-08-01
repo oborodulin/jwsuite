@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single
+package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single
 
 import android.content.res.Configuration
 import androidx.compose.material3.Icon
@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.bar.BarComboBoxComponent
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -22,24 +23,24 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.GroupComboBox"
+private const val TAG = "Congregating.BarMemberComboBox"
 
 @Composable
-fun GroupComboBox(
+fun BarMemberComboBox(
     modifier: Modifier = Modifier,
     sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
-    listViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    singleViewModel: GroupViewModelImpl = hiltViewModel(),
+    listViewModel: MembersListViewModelImpl = hiltViewModel(),
+    singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
-    onImeKeyAction: OnImeKeyAction
+    onImeKeyAction: OnImeKeyAction = {}
 ) {
-    Timber.tag(TAG).d("GroupComboBox(...) called")
+    Timber.tag(TAG).d("BarMemberComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -47,26 +48,24 @@ fun GroupComboBox(
     FullScreenDialog(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
-        loadUiAction = GroupUiAction.Load(),
-        confirmUiAction = GroupUiAction.Save,
-        dialogView = { GroupView(sharedViewModel, singleViewModel) },
+        loadUiAction = MemberUiAction.Load(),
+        confirmUiAction = MemberUiAction.Save,
+        dialogView = { MemberView(sharedViewModel, singleViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
     val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
-    ComboBoxComponent(
+    BarComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = GroupsListUiAction.Load(currentCongregation?.id),
+        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.id),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.member_group_num_hint,
-        listTitleResId = R.string.dlg_title_select_group,
-        leadingIcon = {
-            Icon(painterResource(com.oborodulin.home.common.R.drawable.ic_123_36), null)
-        },
+        placeholderResId = R.string.member_placeholder,
+        listTitleResId = R.string.dlg_title_select_member,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -76,26 +75,18 @@ fun GroupComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewGroupComboBox() {
-    val ctx = LocalContext.current
+fun PreviewBarMemberComboBox() {
+    /*val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-/*            GroupComboBox(
+            BarMemberComboBox(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                listViewModel = GroupsListViewModelImpl.previewModel(ctx),
-                singleViewModel = GroupViewModelImpl.previewModel(ctx),
-                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
-                congregationViewModel = CongregationViewModelImpl.previewModel(ctx),
-                localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(ctx),
-                localityViewModel = LocalityViewModelImpl.previewModel(ctx),
-                regionsListViewModel = RegionsListViewModelImpl.previewModel(ctx),
-                regionViewModel = RegionViewModelImpl.previewModel(ctx),
-                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(ctx),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx),
+                listViewModel = MembersListViewModelImpl.previewModel(ctx),
+                singleViewModel = MemberViewModelImpl.previewModel(ctx),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}
-            )*/
+            )
         }
-    }
+    }*/
 }

@@ -12,10 +12,12 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
@@ -34,15 +36,22 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.inject.Inject
+
+// ic_hand_map.png - https://www.flaticon.com/free-icon/hand_6242467?term=hand+map&page=1&position=9&origin=search&related_id=6242467
 
 private const val TAG = "Territoring.TerritoriesListViewModelImpl"
 
@@ -54,11 +63,28 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 ) : TerritoriesGridViewModel,
     SingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
         state,
-        TerritoriesFields.TERRITORY_MEMBER
+        //TerritoriesFields.TERRITORY_MEMBER
     ) {
     override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(TerritoriesFields.TERRITORY_MEMBER.name, InputListItemWrapper())
     }
+    override val receivingDate: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(
+            TerritoriesFields.TERRITORY_RECEIVING_DATE.name, InputWrapper(
+                OffsetDateTime.now().format(
+                    DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
+                )
+            )
+        )
+    }
+
+    override val areInputsValid =
+        combine(
+            member,
+            uiStateFlow
+        ) { member, uiState ->
+            member.errorId == null && uiState is UiState.Success && uiState.data.any { it.isChecked }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState() = UiState.Loading
 
@@ -132,8 +158,17 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     private fun handOutTerritories(): Job {
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteTerritoryUseCase.execute(DeleteTerritoryUseCase.Request(UUID.randomUUID()))
-                .collect {}
+            member.value.item?.itemId?.let { memberId ->
+                useCases.handOutTerritoriesUseCase.execute(
+                    HandOutTerritoriesUseCase.Request(
+                        memberId,
+                        (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.isChecked }
+                            .map { it.id },
+                        DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
+                            .parse(receivingDate.value.value, OffsetDateTime::from)
+                    )
+                ).collect {}
+            }
         }
         return job
     }
@@ -220,6 +255,9 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val receivingDate = MutableStateFlow(InputWrapper())
+
+                override val areInputsValid = MutableStateFlow(true)
 
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null

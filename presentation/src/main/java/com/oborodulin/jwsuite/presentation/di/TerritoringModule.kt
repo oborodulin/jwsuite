@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
@@ -170,12 +171,14 @@ object TerritoringModule {
         getTerritoriesUseCase: GetTerritoriesUseCase,
         getTerritoryUseCase: GetTerritoryUseCase,
         saveTerritoryUseCase: SaveTerritoryUseCase,
-        deleteTerritoryUseCase: DeleteTerritoryUseCase
+        deleteTerritoryUseCase: DeleteTerritoryUseCase,
+        handOutTerritoriesUseCase: HandOutTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getTerritoriesUseCase,
         getTerritoryUseCase,
         saveTerritoryUseCase,
-        deleteTerritoryUseCase
+        deleteTerritoryUseCase,
+        handOutTerritoriesUseCase
     )
 
     // Territoring:

@@ -41,4 +41,5 @@
     <string name="preview_blank_text_field_lbl">Field label</string>
     <string name="preview_blank_text_field_val">Text value</string>
     <string name="preview_blank_text_field_err">error message</string>
+    <string name="preview_blank_fab_text">Fab action</string>
 </resources>

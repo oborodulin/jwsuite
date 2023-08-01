@@ -74,16 +74,14 @@ interface GeoStreetDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByMicrodistrictIdAndPrivateSectorMark(
         microdistrictId: UUID, isPrivateSector: Boolean? = null
-    ) = findByMicrodistrictIdAndPrivateSectorMark(
-        microdistrictId, isPrivateSector
-    ).distinctUntilChanged()
+    ) = findByMicrodistrictIdAndPrivateSectorMark(microdistrictId, isPrivateSector)
+        .distinctUntilChanged()
 
     @Query(
         "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale"
     )
-    fun findByTerritoryId(
-        territoryId: UUID, locale: String? = Locale.getDefault().language
-    ): Flow<List<TerritoryStreetView>>
+    fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<List<TerritoryStreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =

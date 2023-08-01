@@ -49,7 +49,7 @@ data class TerritoryEntity(
     val isBusinessTerritory: Boolean = false,
     val isGroupMinistry: Boolean = false,
     val isInPerimeter: Boolean = false,
-    val isProcessed: Boolean = false, // for isGroupMinistry
+    val isProcessed: Boolean = true, // for isGroupMinistry
     val territoryDesc: String? = null,
     @ColumnInfo(index = true) val tMicrodistrictsId: UUID? = null,
     @ColumnInfo(index = true) val tLocalityDistrictsId: UUID? = null,

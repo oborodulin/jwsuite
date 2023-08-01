@@ -824,7 +824,8 @@ object DataMappersModule {
         roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
-        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper
+        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
+        memberToMemberEntityMapper: MemberToMemberEntityMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,
         territoryViewToTerritoryMapper,
@@ -840,7 +841,8 @@ object DataMappersModule {
         roomEntityListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper,
-        territoriesIdleViewListToTerritoriesListMapper
+        territoriesIdleViewListToTerritoriesListMapper,
+        memberToMemberEntityMapper
     )
 
 }

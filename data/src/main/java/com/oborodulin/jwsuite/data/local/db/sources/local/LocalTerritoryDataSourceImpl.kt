@@ -30,7 +30,10 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
 
     override fun getFavoriteCongregationTerritories() = territoryDao.findByFavoriteCongregation()
 
-    override fun getCongregationTerritoryLocations(isPrivateSector: Boolean, congregationId: UUID?) =
+    override fun getCongregationTerritoryLocations(
+        isPrivateSector: Boolean,
+        congregationId: UUID?
+    ) =
         territoryDao.findTerritoryLocationsByPrivateSectorMarkAndCongregationId(
             isPrivateSector, congregationId
         )
@@ -90,6 +93,18 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
         territory: TerritoryEntity, member: MemberEntity, receivingDate: OffsetDateTime
     ) = withContext(dispatcher) {
         territoryDao.insert(territory, member, receivingDate)
+    }
+
+    override suspend fun insertMember(
+        territory: TerritoryEntity, memberId: UUID, receivingDate: OffsetDateTime
+    ) = withContext(dispatcher) {
+        territoryDao.insert(territory, memberId, receivingDate)
+    }
+
+    override suspend fun insertMember(
+        territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime
+    ) = withContext(dispatcher) {
+        territoryDao.insert(territoryId, memberId, receivingDate)
     }
 
     override suspend fun updateMember(territoryMember: TerritoryMemberCrossRefEntity) =

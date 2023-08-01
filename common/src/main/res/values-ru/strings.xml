@@ -41,4 +41,5 @@
     <string name="preview_blank_text_field_lbl">Метка поля</string>
     <string name="preview_blank_text_field_val">Содержимое</string>
     <string name="preview_blank_text_field_err">текст ошибки</string>
+    <string name="preview_blank_fab_text">Fab action</string>
 </resources>

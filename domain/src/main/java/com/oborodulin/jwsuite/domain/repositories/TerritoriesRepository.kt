@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
+import java.time.OffsetDateTime
 import java.util.UUID
 
 interface TerritoriesRepository {
@@ -32,4 +33,8 @@ interface TerritoriesRepository {
     fun delete(territory: Territory): Flow<Territory>
     fun deleteById(territoryId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    fun handOutTerritories(
+        memberId: UUID, territoryIds: List<UUID> = emptyList(), receivingDate: OffsetDateTime
+    ): Flow<List<UUID>>
 }

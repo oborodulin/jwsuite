@@ -9,7 +9,6 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
-import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY
@@ -79,7 +78,8 @@ interface TerritoryDao {
         """
     SELECT td.* 
     FROM ${TerritoryLocationView.VIEW_NAME} td LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = td.congregationId
-    WHERE ifnull(td.isPrivateSector, $DB_FALSE) = (CASE WHEN :isPrivateSector = $DB_TRUE THEN $DB_TRUE ELSE ifnull(td.isPrivateSector, $DB_FALSE) END)
+    WHERE (td.locationId IS NULL OR -- for ALL 
+            ifnull(td.isPrivateSector, $DB_FALSE) = (CASE WHEN :isPrivateSector = $DB_TRUE THEN $DB_TRUE ELSE ifnull(td.isPrivateSector, $DB_FALSE) END))
         AND td.congregationId = ifnull(:congregationId, fcv.congregationId)
     ORDER BY td.orderPos, td.locationShortName, ifnull(td.isPrivateSector, $DB_FALSE)
         """
@@ -166,6 +166,28 @@ interface TerritoryDao {
         TerritoryMemberCrossRefEntity(
             tmcTerritoriesId = territory.territoryId,
             tmcMembersId = member.memberId,
+            receivingDate = receivingDate
+        )
+    )
+
+    suspend fun insert(
+        territory: TerritoryEntity, memberId: UUID,
+        receivingDate: OffsetDateTime = OffsetDateTime.now()
+    ) = insert(
+        TerritoryMemberCrossRefEntity(
+            tmcTerritoriesId = territory.territoryId,
+            tmcMembersId = memberId,
+            receivingDate = receivingDate
+        )
+    )
+
+    suspend fun insert(
+        territoryId: UUID, memberId: UUID,
+        receivingDate: OffsetDateTime = OffsetDateTime.now()
+    ) = insert(
+        TerritoryMemberCrossRefEntity(
+            tmcTerritoriesId = territoryId,
+            tmcMembersId = memberId,
             receivingDate = receivingDate
         )
     )

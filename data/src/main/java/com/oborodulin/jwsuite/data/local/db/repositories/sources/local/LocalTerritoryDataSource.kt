@@ -52,6 +52,15 @@ interface LocalTerritoryDataSource {
         receivingDate: OffsetDateTime = OffsetDateTime.now()
     )
 
+    suspend fun insertMember(
+        territory: TerritoryEntity, memberId: UUID,
+        receivingDate: OffsetDateTime = OffsetDateTime.now()
+    )
+
+    suspend fun insertMember(
+        territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime = OffsetDateTime.now()
+    )
+
     suspend fun updateMember(territoryMember: TerritoryMemberCrossRefEntity)
     suspend fun deleteMember(territoryMember: TerritoryMemberCrossRefEntity)
     suspend fun deleteMember(territoryMemberId: UUID)

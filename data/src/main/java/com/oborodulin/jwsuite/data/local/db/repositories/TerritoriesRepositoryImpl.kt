@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import java.time.OffsetDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -110,4 +111,14 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localTerritoryDataSource.deleteAllTerritories()
 
+    override fun handOutTerritories(
+        memberId: UUID, territoryIds: List<UUID>, receivingDate: OffsetDateTime
+    ) = flow {
+        val ids = mutableListOf<UUID>()
+        territoryIds.forEach {
+            localTerritoryDataSource.insertMember(it, memberId, receivingDate)
+            ids.add(it)
+        }
+        this.emit(ids)
+    }
 }

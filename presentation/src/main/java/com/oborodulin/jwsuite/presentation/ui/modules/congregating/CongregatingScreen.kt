@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -19,27 +16,21 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.TabRowItem
 import com.oborodulin.home.common.ui.components.search.SearchComponent
-import com.oborodulin.home.common.ui.theme.Typography
+import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
+import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
@@ -51,7 +42,6 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.M
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 
@@ -79,24 +69,6 @@ fun CongregatingScreen(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
-    val tabRowItems = listOf(
-        TabRowItem(
-            title = stringResource(R.string.congregation_tab_members),
-            view = {
-                CongregationMembersView(
-                    appState = appState, membersListViewModel = membersListViewModel
-                )
-            },
-        ),
-        TabRowItem(
-            title = stringResource(R.string.congregation_tab_groups),
-            view = {
-                GroupMembersView(
-                    appState = appState, membersListViewModel = membersListViewModel
-                )
-            },
-        )
-    )
     JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
             appState = appState,
@@ -111,56 +83,28 @@ fun CongregatingScreen(
                 }
             },
             bottomBar = bottomBar
-        ) {
-            val pagerState = rememberPagerState()
-            val coroutineScope = rememberCoroutineScope()
-
-            Column(
-                modifier = Modifier
-                    .padding(it)
-            ) {
-                TabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .height(50.dp)
-                    /*indicator = { tabPositions ->
-                        TabRowDefaults.Indicator(
-                            //https://github.com/google/accompanist/issues/1267
-                            //Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-                    },*/
-                ) {
-                    tabRowItems.forEachIndexed { index, item ->
-                        Tab(
-                            modifier = Modifier.height(50.dp),
-                            selected = pagerState.currentPage == index,
-                            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                            icon = {
-                                item.icon?.let { icon ->
-                                    Icon(imageVector = icon, contentDescription = "")
-                                }
-                            },
-                            text = {
-                                Text(
-                                    text = item.title,
-                                    style = if (pagerState.currentPage == index) Typography.bodyLarge.copy(
-                                        fontWeight = FontWeight.Bold
-                                    ) else Typography.bodyLarge,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
+        ) { paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(
+                            title = stringResource(R.string.congregation_tab_members),
+                            view = {
+                                CongregationMembersView(
+                                    appState = appState, membersListViewModel = membersListViewModel
+                                )
+                            }
+                        ),
+                        TabRowItem(
+                            title = stringResource(R.string.congregation_tab_groups),
+                            view = {
+                                GroupMembersView(
+                                    appState = appState, membersListViewModel = membersListViewModel
                                 )
                             }
                         )
-                    }
-                }
-                HorizontalPager(
-                    pageCount = tabRowItems.size,
-                    state = pagerState,
-                ) {
-                    tabRowItems[pagerState.currentPage].view()
-                }
+                    )
+                )
             }
         }
     }

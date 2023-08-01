@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components
+package com.oborodulin.home.common.ui.components.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector

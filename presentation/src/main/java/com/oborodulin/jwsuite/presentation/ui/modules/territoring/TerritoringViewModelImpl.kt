@@ -91,7 +91,7 @@ class TerritoringViewModelImpl @Inject constructor(
             )
         initStateValue(
             TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
-            territoringUi.isPrivateSector?.toString().orEmpty()
+            territoringUi.isPrivateSector.toString()
         )
         initStateValue(
             TerritoringFields.TERRITORY_LOCATION, location,
@@ -120,7 +120,6 @@ class TerritoringViewModelImpl @Inject constructor(
                             TerritoringFields.TERRITORY_LOCATION, location, event.input,
                             true
                         )
-
                 }
             }
             .debounce(350)

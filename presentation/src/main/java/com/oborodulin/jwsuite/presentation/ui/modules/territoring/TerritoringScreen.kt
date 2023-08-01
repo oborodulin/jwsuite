@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -9,10 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,16 +16,10 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -37,31 +27,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.TabRowItem
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.fab.FabComponent
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.search.SearchComponent
+import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
+import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.home.common.util.textWidthMatchedTabIndicatorOffset
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
@@ -69,11 +55,13 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesView
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
 
@@ -82,7 +70,7 @@ import java.util.UUID
  */
 private const val TAG = "Territoring.TerritoringScreen"
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoringScreen(
     appState: AppState,
@@ -109,6 +97,7 @@ fun TerritoringScreen(
 
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
+    val areInputsValid by territoriesGridViewModel.areInputsValid.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all territoring fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -136,63 +125,6 @@ fun TerritoringScreen(
      }*/
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        val tabRowItems = listOf(
-            TabRowItem(
-                title = stringResource(R.string.territory_tab_hand_out),
-                view = {
-                    location.item?.let {
-                        HandOutTerritoriesView(
-                            appState = appState,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                },
-            ),
-            TabRowItem(
-                title = stringResource(R.string.territory_tab_at_work),
-                view = {
-                    location.item?.let {
-                        AtWorkTerritoriesView(
-                            appState = appState,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                },
-            ),
-            TabRowItem(
-                title = stringResource(R.string.territory_tab_idle),
-                view = {
-                    location.item?.let {
-                        IdleTerritoriesView(
-                            appState = appState,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                },
-            ),
-            TabRowItem(
-                title = stringResource(R.string.territory_tab_all),
-                view = {
-                    location.item?.let {
-                        AllTerritoriesView(
-                            appState = appState,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                },
-            )
-        )
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
@@ -267,72 +199,76 @@ fun TerritoringScreen(
                         Icon(Icons.Outlined.Settings, null)
                     }*/
                 },
+                floatingActionButton = {
+                    FabComponent(
+                        enabled = areInputsValid,
+                        painterResId = R.drawable.ic_hand_map_24,
+                        textResId = R.string.fab_hand_out_text
+                    ) { territoriesGridViewModel.submitAction(TerritoriesGridUiAction.HandOut) }
+                },
                 bottomBar = bottomBar
-            ) {
-                val pagerState = rememberPagerState()
-                val coroutineScope = rememberCoroutineScope()
-                Column(modifier = Modifier.padding(it)) {
-                    // https://medium.com/@sukhdip_sandhu/jetpack-compose-scrollabletabrow-indicator-matches-width-of-text-e79c0e5826fe
-                    // https://stackoverflow.com/questions/70923243/how-to-adjust-tabrow-indicator-width-according-to-the-text-above-it
-                    val density = LocalDensity.current
-                    val tabWidths = remember {
-                        val tabWidthStateList = mutableStateListOf<Dp>()
-                        repeat(tabRowItems.size) {
-                            tabWidthStateList.add(0.dp)
-                        }
-                        tabWidthStateList
-                    }
-                    // https://stackoverflow.com/questions/65581582/scrollabletabrow-indicator-width-to-match-text-inside-tab
-                    ScrollableTabRow(
-                        selectedTabIndex = pagerState.currentPage,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .height(50.dp),
-                        edgePadding = 0.dp,
-                        indicator = { tabPositions ->
-                            TabRowDefaults.Indicator(
-                                modifier = Modifier.textWidthMatchedTabIndicatorOffset(
-                                    currentTabPosition = tabPositions[pagerState.currentPage],
-                                    tabWidth = tabWidths[pagerState.currentPage]
-                                )
-                            )
-                        }
-                    ) {
-                        tabRowItems.forEachIndexed { tabIndex, tab ->
-                            Tab(
-                                modifier = Modifier.height(50.dp),
-                                selected = pagerState.currentPage == tabIndex,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(tabIndex)
+            ) { paddingValues ->
+                Column(modifier = Modifier.padding(paddingValues)) {
+                    CustomScrollableTabRow(
+                        listOf(
+                            TabRowItem(
+                                title = stringResource(R.string.territory_tab_hand_out),
+                                view = {
+                                    location.item?.let {
+                                        HandOutTerritoriesView(
+                                            appState = appState,
+                                            territoriesGridViewModel = territoriesGridViewModel,
+                                            territoryLocationType = it.territoryLocationType,
+                                            locationId = it.locationId,
+                                            isPrivateSector = isPrivateSector.value.toBoolean()
+                                        )
                                     }
                                 },
-                                icon = tab.icon?.let { icon ->
-                                    { Icon(imageVector = icon, contentDescription = "") }
+                            ),
+                            TabRowItem(
+                                title = stringResource(R.string.territory_tab_at_work),
+                                view = {
+                                    location.item?.let {
+                                        AtWorkTerritoriesView(
+                                            appState = appState,
+                                            territoriesGridViewModel = territoriesGridViewModel,
+                                            territoryLocationType = it.territoryLocationType,
+                                            locationId = it.locationId,
+                                            isPrivateSector = isPrivateSector.value.toBoolean()
+                                        )
+                                    }
                                 },
-                                text = {
-                                    Text(
-                                        text = tab.title,
-                                        style = if (pagerState.currentPage == tabIndex) Typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Bold
-                                        ) else Typography.bodyLarge,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        onTextLayout = { textLayoutResult ->
-                                            tabWidths[tabIndex] =
-                                                with(density) { textLayoutResult.size.width.toDp() }
-                                        }
-                                    )
-                                }
+                            ),
+                            TabRowItem(
+                                title = stringResource(R.string.territory_tab_idle),
+                                view = {
+                                    location.item?.let {
+                                        IdleTerritoriesView(
+                                            appState = appState,
+                                            territoriesGridViewModel = territoriesGridViewModel,
+                                            territoryLocationType = it.territoryLocationType,
+                                            locationId = it.locationId,
+                                            isPrivateSector = isPrivateSector.value.toBoolean()
+                                        )
+                                    }
+                                },
+                            ),
+                            TabRowItem(
+                                title = stringResource(R.string.territory_tab_all),
+                                view = {
+                                    location.item?.let {
+                                        AllTerritoriesView(
+                                            appState = appState,
+                                            territoriesGridViewModel = territoriesGridViewModel,
+                                            territoryLocationType = it.territoryLocationType,
+                                            locationId = it.locationId,
+                                            isPrivateSector = isPrivateSector.value.toBoolean()
+                                        )
+                                    }
+                                },
                             )
-                        }
-                    }
-                    HorizontalPager(
-                        pageCount = tabRowItems.size,
-                        state = pagerState,
-                    ) {
-                        tabRowItems[pagerState.currentPage].view()
-                    }
+                        )
+                    )
                 }
             }
         }
@@ -356,11 +292,13 @@ fun TerritoringScreen(
 @Composable
 fun HandOutTerritoriesView(
     appState: AppState,
+    territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("HandOutTerritoriesView(...) called")
+    val member by territoriesGridViewModel.member.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -405,6 +343,12 @@ fun HandOutTerritoriesView(
                 )
         ) {
         }
+        BarMemberComboBox(
+            inputWrapper = member,
+            onValueChange = {
+                territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
+            }
+        )
     }
 }
 
@@ -434,7 +378,7 @@ fun AtWorkTerritoriesView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3f)
+                .weight(7f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -454,7 +398,7 @@ fun AtWorkTerritoriesView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(7f)
+                .weight(3f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,

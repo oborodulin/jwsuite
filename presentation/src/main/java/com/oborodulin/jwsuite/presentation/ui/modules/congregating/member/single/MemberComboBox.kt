@@ -65,7 +65,7 @@ fun MemberComboBox(
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.member_hint,
-        listTitleResId = R.string.dlg_title_select_group,
+        listTitleResId = R.string.dlg_title_select_member,
         leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
@@ -76,7 +76,7 @@ fun MemberComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewGroupComboBox() {
+fun PreviewMemberComboBox() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {

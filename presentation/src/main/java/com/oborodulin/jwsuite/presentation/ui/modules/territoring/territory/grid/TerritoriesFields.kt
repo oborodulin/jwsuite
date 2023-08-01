@@ -3,7 +3,8 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.gri
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class TerritoriesFields : Focusable {
-    TERRITORY_MEMBER;
+    TERRITORY_MEMBER,
+    TERRITORY_RECEIVING_DATE;
 
     override fun key(): String {
         return this.name
