@@ -51,7 +51,7 @@ fun TerritoryCategoryScreen(
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
                 }
-            ) { it ->
+            ) {
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     TerritoryCategoryView(viewModel)

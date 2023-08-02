@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
@@ -34,9 +35,9 @@ private const val TAG = "Congregating.MemberComboBox"
 @Composable
 fun MemberComboBox(
     modifier: Modifier = Modifier,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
-    listViewModel: MembersListViewModel,
-    singleViewModel: MemberViewModel,
+    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    listViewModel: MembersListViewModelImpl = hiltViewModel(),
+    singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
@@ -81,9 +82,9 @@ fun PreviewMemberComboBox() {
     JWSuiteTheme {
         Surface {
             MemberComboBox(
-                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
+                /*sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 listViewModel = MembersListViewModelImpl.previewModel(ctx),
-                singleViewModel = MemberViewModelImpl.previewModel(ctx),
+                singleViewModel = MemberViewModelImpl.previewModel(ctx),*/
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

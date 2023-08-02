@@ -1,5 +1,6 @@
 package com.oborodulin.home.common.ui.state
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,6 +17,8 @@ private const val TAG = "Common.SingleViewModel"
 abstract class SharedViewModel<T : Any?> : ViewModel() {
     private val _sharedFlow = MutableSharedFlow<T>(replay = 2) // , extraBufferCapacity = 1
     val sharedFlow = _sharedFlow.asSharedFlow()//.distinctUntilChanged()
+
+    var fabOnClick = mutableStateOf({})
 
     fun submitData(data: T) {
         viewModelScope.launch {

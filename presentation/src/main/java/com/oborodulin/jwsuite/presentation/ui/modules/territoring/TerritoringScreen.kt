@@ -60,7 +60,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListUiAction
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
@@ -204,7 +205,11 @@ fun TerritoringScreen(
                         enabled = areInputsValid,
                         painterResId = R.drawable.ic_hand_map_24,
                         textResId = R.string.fab_hand_out_text
-                    ) { territoriesGridViewModel.submitAction(TerritoriesGridUiAction.HandOut) }
+                    ) {
+                        territoriesGridViewModel.submitAction(
+                            TerritoriesGridUiAction.HandOutConfirmation
+                        )
+                    }
                 },
                 bottomBar = bottomBar
             ) { paddingValues ->
@@ -322,7 +327,7 @@ fun HandOutTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoriesView(
+            TerritoriesGridView(
                 navController = appState.commonNavController,
                 territoryProcessType = TerritoryProcessType.HAND_OUT,
                 territoryLocationType = territoryLocationType,
@@ -385,7 +390,7 @@ fun AtWorkTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoriesView(
+            TerritoriesGridView(
                 navController = appState.commonNavController,
                 territoryProcessType = TerritoryProcessType.AT_WORK,
                 territoryLocationType = territoryLocationType,
@@ -443,7 +448,7 @@ fun IdleTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoriesView(
+            TerritoriesGridView(
                 navController = appState.commonNavController,
                 territoryProcessType = TerritoryProcessType.IDLE,
                 territoryLocationType = territoryLocationType,
@@ -501,7 +506,7 @@ fun AllTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoriesView(
+            TerritoriesGridView(
                 navController = appState.commonNavController,
                 territoryProcessType = TerritoryProcessType.ALL,
                 territoryLocationType = territoryLocationType,

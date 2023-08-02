@@ -55,9 +55,7 @@ fun DatePickerComponent(
     inputWrapper: InputWrapper,
     @StringRes labelResId: Int? = null,
     @StringRes datePickerTitleResId: Int? = null,
-    keyboardOptions: KeyboardOptions = remember {
-        KeyboardOptions.Default
-    },
+    keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
     onValueChange: OnValueChange,
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
@@ -129,9 +127,7 @@ fun DatePickerComponent(
             },
             isError = inputWrapper.errorId != null,
             keyboardOptions = keyboardOptions,
-            keyboardActions = remember {
-                KeyboardActions(onAny = { onImeKeyAction() })
-            },
+            keyboardActions = remember {KeyboardActions(onAny = { onImeKeyAction() })},
             colors = colors
         )
         inputWrapper.errorMessage(LocalContext.current)?.let {

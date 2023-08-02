@@ -10,11 +10,14 @@
     <string name="nav_item_group">Группа</string>
     <string name="nav_item_member">Возвещатель</string>
     <string name="nav_item_territory">Участок</string>
+    <string name="nav_item_territory_category">Категория участка</string>
+    <string name="nav_item_territory_hand_out_confirmation">Подтверждение выдачи участка</string>
     <string name="nav_item_region">Область</string>
     <string name="nav_item_region_district">Район области</string>
     <string name="nav_item_locality">Населённый пункт</string>
 
     <!--BUTTONS: -->
+    <string name="btn_hand_out_lbl">Выдать</string>
     <!--FAB: -->
     <string name="fab_hand_out_text">Выдать</string>
 
@@ -98,7 +101,9 @@
     <!--Участок -->
     <string name="territory_subheader">Участок</string>
     <string name="territory_new_subheader">Новый участок</string>
+    <string name="territory_hand_out_subheader">Выдача участка</string>
     <string name="territory_category_hint">Категория участка</string>
+    <string name="territory_receiving_date_hint">Дата выдачи</string>
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
@@ -109,6 +114,7 @@
     <string name="dlg_title_select_region_district">Выберите район области</string>
     <string name="dlg_title_select_locality">Выберите населённый пункт</string>
     <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
+    <string name="dlg_title_set_territory_receiving_date">Укажите дату выдачи</string>
     <!--подтверждения-->
     <string name="dlg_confirm_del_congregation">Удалить собрание %1$s?</string>
     <string name="dlg_confirm_del_group">Удалить группу %1$s?</string>

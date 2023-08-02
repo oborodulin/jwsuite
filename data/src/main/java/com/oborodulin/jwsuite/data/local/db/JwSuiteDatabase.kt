@@ -397,9 +397,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 // Territory members:
                 // ivanov
                 insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 1 }, ivanov)
-                val territoryMember =
-                    insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 2 }, ivanov)
-                deliveryDefTerritoryMember(db, territoryMember)
+                // receive & delivery
+                val roomTerrNum2 = roomTerrs1.first { it.territoryNum == 2 }
+                insertDefTerritoryMember(db, roomTerrNum2, ivanov)
+                val territoryMember = insertDefTerritoryMember(db, roomTerrNum2, ivanov)
+                deliveryDefTerritoryMember(db, roomTerrNum2, territoryMember)
+
                 insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 3 }, ivanov)
                 insertDefTerritoryMember(db, houseTerrs1.first { it.territoryNum == 1 }, ivanov)
                 // petrov
@@ -856,13 +859,22 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 TerritoryMemberCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryMember)
             )
+            val handOutTerritory = territory.copy(isProcessed = false)
+            db.update(
+                TerritoryEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(handOutTerritory), "territoryId = ?",
+                Array(1) { handOutTerritory.territoryId.toString() }
+            )
             Timber.tag(TAG).i("TERRITORY: Default territory member imported")
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(territoryMember)) }
+            Timber.tag(TAG).i("TERRITORY: Default hand out territory imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(handOutTerritory)) }
             return territoryMember
         }
 
         private fun deliveryDefTerritoryMember(
-            db: SupportSQLiteDatabase, territoryMember: TerritoryMemberCrossRefEntity
+            db: SupportSQLiteDatabase, territory: TerritoryEntity,
+            territoryMember: TerritoryMemberCrossRefEntity
         ) {
             val deliveryTerritoryMember = territoryMember.copy(deliveryDate = OffsetDateTime.now())
             db.update(
@@ -870,8 +882,16 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Mapper.toContentValues(deliveryTerritoryMember), "territoryMemberId = ?",
                 Array(1) { territoryMember.territoryMemberId.toString() }
             )
+            val idleTerritory = territory.copy(isProcessed = true)
+            db.update(
+                TerritoryEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(idleTerritory), "territoryId = ?",
+                Array(1) { idleTerritory.territoryId.toString() }
+            )
             Timber.tag(TAG).i("TERRITORY: Delivery imported territory member")
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(deliveryTerritoryMember)) }
+            Timber.tag(TAG).i("TERRITORY: Delivery imported territory")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(idleTerritory)) }
         }
 
         private fun insertDefTerritoryStreet(

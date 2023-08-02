@@ -294,6 +294,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
+
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()

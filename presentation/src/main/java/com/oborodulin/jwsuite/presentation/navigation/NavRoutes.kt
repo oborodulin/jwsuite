@@ -12,6 +12,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CON
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GROUP
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
@@ -66,36 +67,19 @@ sealed class NavRoutes constructor(
     @StringRes open val titleResId: Int,
     val arguments: List<NamedNavArgument> = emptyList()
 ) {
-    object Home : NavRoutes(
-        ROUTE_HOME,
-        R.drawable.ic_dashboard_24,
-        R.string.nav_item_dashboarding
-    )
+    object Home : NavRoutes(ROUTE_HOME, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
 
-    object Dashboarding : NavRoutes(
-        ROUTE_DASHBOARDING,
-        R.drawable.ic_dashboard_24,
-        R.string.nav_item_dashboarding
-    )
+    object Dashboarding :
+        NavRoutes(ROUTE_DASHBOARDING, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
 
-    object Congregating : NavRoutes(
-        ROUTE_CONGREGATING,
-        R.drawable.ic_congregation_24,
-        R.string.nav_item_congregating
-    )
+    object Congregating :
+        NavRoutes(ROUTE_CONGREGATING, R.drawable.ic_congregation_24, R.string.nav_item_congregating)
 
-    object Territoring : NavRoutes(
-        ROUTE_TERRITORING,
-        R.drawable.ic_territory_map_24,
-        R.string.nav_item_territoring
-    )
+    object Territoring :
+        NavRoutes(ROUTE_TERRITORING, R.drawable.ic_territory_map_24, R.string.nav_item_territoring)
 
     object Ministring :
-        NavRoutes(
-            ROUTE_MINISTRING,
-            R.drawable.ic_maps_home_work_24,
-            R.string.nav_item_ministring
-        )
+        NavRoutes(ROUTE_MINISTRING, R.drawable.ic_maps_home_work_24, R.string.nav_item_ministring)
 
     // Geo:
     object Region : NavRoutes(
@@ -120,11 +104,7 @@ sealed class NavRoutes constructor(
 
         fun fromEntry(entry: NavBackStackEntry): RegionInput {
             val regionInput =
-                RegionInput(
-                    UUID.fromString(
-                        entry.arguments?.getString(ARG_REGION_ID).orEmpty()
-                    )
-                )
+                RegionInput(UUID.fromString(entry.arguments?.getString(ARG_REGION_ID).orEmpty()))
             Timber.tag(TAG).d("Region - fromEntry(...): '%s'", regionInput)
             return regionInput
         }
@@ -151,12 +131,9 @@ sealed class NavRoutes constructor(
         }
 
         fun fromEntry(entry: NavBackStackEntry): RegionDistrictInput {
-            val regionDistrictInput =
-                RegionDistrictInput(
-                    UUID.fromString(
-                        entry.arguments?.getString(ARG_REGION_DISTRICT_ID).orEmpty()
-                    )
-                )
+            val regionDistrictInput = RegionDistrictInput(
+                UUID.fromString(entry.arguments?.getString(ARG_REGION_DISTRICT_ID).orEmpty())
+            )
             Timber.tag(TAG).d("RegionDistrict - fromEntry(...): '%s'", regionDistrictInput)
             return regionDistrictInput
         }
@@ -183,12 +160,9 @@ sealed class NavRoutes constructor(
         }
 
         fun fromEntry(entry: NavBackStackEntry): LocalityInput {
-            val localityInput =
-                LocalityInput(
-                    UUID.fromString(
-                        entry.arguments?.getString(ARG_LOCALITY_ID).orEmpty()
-                    )
-                )
+            val localityInput = LocalityInput(
+                UUID.fromString(entry.arguments?.getString(ARG_LOCALITY_ID).orEmpty())
+            )
             Timber.tag(TAG).d("Locality - fromEntry(...): '%s'", localityInput)
             return localityInput
         }
@@ -216,12 +190,9 @@ sealed class NavRoutes constructor(
         }
 
         fun fromEntry(entry: NavBackStackEntry): CongregationInput {
-            val congregationInput =
-                CongregationInput(
-                    UUID.fromString(
-                        entry.arguments?.getString(ARG_CONGREGATION_ID).orEmpty()
-                    )
-                )
+            val congregationInput = CongregationInput(
+                UUID.fromString(entry.arguments?.getString(ARG_CONGREGATION_ID).orEmpty())
+            )
             Timber.tag(TAG).d("Congregation - fromEntry(...): '%s'", congregationInput)
             return congregationInput
         }
@@ -286,8 +257,8 @@ sealed class NavRoutes constructor(
 
     object TerritoryCategory : NavRoutes(
         String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
-        R.drawable.ic_map_marker_24,
-        R.string.nav_item_territory,
+        R.drawable.ic_location_pin_24,
+        R.string.nav_item_territory_category,
         arguments = listOf(navArgument(ARG_TERRITORY_CATEGORY_ID) {
             type = NavType.StringType
             nullable = true
@@ -308,14 +279,9 @@ sealed class NavRoutes constructor(
         }
 
         fun fromEntry(entry: NavBackStackEntry): TerritoryCategoryInput {
-            val territoryInput =
-                TerritoryCategoryInput(
-                    UUID.fromString(
-                        entry.arguments?.getString(
-                            ARG_TERRITORY_CATEGORY_ID
-                        ).orEmpty()
-                    )
-                )
+            val territoryInput = TerritoryCategoryInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_CATEGORY_ID).orEmpty())
+            )
             Timber.tag(TAG).d("TerritoryCategory - fromEntry(...): '%s'", territoryInput)
             return territoryInput
         }
@@ -342,10 +308,25 @@ sealed class NavRoutes constructor(
         }
 
         fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
-            val territoryInput =
-                TerritoryInput(UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()))
+            val territoryInput = TerritoryInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty())
+            )
             Timber.tag(TAG).d("Territory - fromEntry(...): '%s'", territoryInput)
             return territoryInput
+        }
+    }
+
+    object HandOutTerritoriesConfirmation : NavRoutes(
+        ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION,
+        R.drawable.ic_hand_map_24,
+        R.string.nav_item_territory_hand_out_confirmation
+    ) {
+        fun routeForHandOutTerritoriesConfirmation(): String {
+            Timber.tag(TAG).d(
+                "HandOutTerritoriesConfirmation - routeForHandOutTerritoriesConfirmation(...): '%s'",
+                this.route
+            )
+            return this.route
         }
     }
 

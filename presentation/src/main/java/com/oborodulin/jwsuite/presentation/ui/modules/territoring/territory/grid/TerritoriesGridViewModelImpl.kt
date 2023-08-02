@@ -10,7 +10,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SingleViewModel
+import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
@@ -61,7 +61,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val listConverter: TerritoriesListConverter
 ) : TerritoriesGridViewModel,
-    SingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
+    DialogSingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
         state,
         //TerritoriesFields.TERRITORY_MEMBER
     ) {
@@ -88,7 +88,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     override fun initState() = UiState.Loading
 
-    override suspend fun handleAction(action: TerritoriesGridUiAction): Job {
+    override suspend fun handleAction(action: TerritoriesGridUiAction): Job? {
         Timber.tag(TAG)
             .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
@@ -110,6 +110,15 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
             is TerritoriesGridUiAction.DeleteTerritory -> {
                 deleteTerritory(action.territoryId)
+            }
+
+            is TerritoriesGridUiAction.HandOutConfirmation -> {
+                setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_hand_out_subheader)
+                submitSingleEvent(
+                    TerritoriesGridUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
+                        NavRoutes.HandOutTerritoriesConfirmation.routeForHandOutTerritoriesConfirmation()
+                    )
+                )
             }
 
             is TerritoriesGridUiAction.HandOut -> {
@@ -244,6 +253,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : TerritoriesGridViewModel {
+                override val dialogTitleResId =
+                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+                override val savedListItem = MutableStateFlow(ListItemModel())
+                override val showDialog = MutableStateFlow(true)
+
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow =
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
@@ -263,8 +277,19 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
 
+                override fun onTextFieldFocusChanged(
+                    focusedField: TerritoriesFields, isFocused: Boolean
+                ) {
+                }
+
                 override fun moveFocusImeAction() {}
                 override fun onContinueClick(onSuccess: () -> Unit) {}
+
+                override fun setDialogTitleResId(dialogTitleResId: Int) {}
+                override fun setSavedListItem(savedListItem: ListItemModel) {}
+                override fun onOpenDialogClicked() {}
+                override fun onDialogConfirm(onConfirm: () -> Unit) {}
+                override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
         fun previewList(ctx: Context) = listOf(

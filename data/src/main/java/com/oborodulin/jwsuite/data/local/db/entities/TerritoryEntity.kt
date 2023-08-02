@@ -69,13 +69,14 @@ data class TerritoryEntity(
             territoryNum: Int,
             isBusiness: Boolean = false, isInPerimeter: Boolean = false,
             isGroupMinistry: Boolean = false,
-            isProcessed: Boolean = false, isActive: Boolean = true, territoryDesc: String? = null
+            isProcessed: Boolean = true, isActive: Boolean = true, territoryDesc: String? = null
         ) = TerritoryEntity(
             tCongregationsId = congregationId, tTerritoryCategoriesId = territoryCategoryId,
             tLocalitiesId = localityId, tLocalityDistrictsId = localityDistrictId,
             tMicrodistrictsId = microdistrictId,
             territoryId = territoryId,
-            territoryNum = territoryNum, isBusinessTerritory = isBusiness, isInPerimeter = isInPerimeter,
+            territoryNum = territoryNum, isBusinessTerritory = isBusiness,
+            isGroupMinistry = isGroupMinistry, isInPerimeter = isInPerimeter,
             isProcessed = isProcessed, isActive = isActive, territoryDesc = territoryDesc
         )
 

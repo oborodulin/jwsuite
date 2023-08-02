@@ -65,7 +65,7 @@ fun MemberView(
         )
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
+    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all member fields")
     val congregation by memberViewModel.congregation.collectAsStateWithLifecycle()
     val group by memberViewModel.group.collectAsStateWithLifecycle()
     val memberNum by memberViewModel.memberNum.collectAsStateWithLifecycle()
@@ -151,16 +151,10 @@ fun MemberView(
                 },
             labelResId = R.string.member_num_hint,
             leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                    null
-                )
+                Icon(painterResource(com.oborodulin.home.common.R.drawable.ic_123_36), null)
             },
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = memberNum,
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.MemberNum(it)) },

@@ -27,6 +27,13 @@ import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.MemberScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
@@ -85,6 +92,7 @@ private fun HomeNavigationHost(
 ) {
     Timber.tag(TAG).d("HomeNavigationHost(...) called")
     NavHost(appState.commonNavController, startDestination = NavRoutes.Home.route) {
+        // Congregation:
         composable(route = NavRoutes.Congregation.routeForCongregation()) {
             Timber.tag(TAG)
                 .d("Navigation Graph: to CongregationScreen [route = '%s']", it.destination.route)
@@ -102,6 +110,82 @@ private fun HomeNavigationHost(
                 appState = appState, congregationInput = NavRoutes.Congregation.fromEntry(it)
             )
         }
+        composable(route = NavRoutes.Group.route, arguments = NavRoutes.Group.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Group.arguments
+                )
+            GroupScreen(appState = appState, groupInput = NavRoutes.Group.fromEntry(it))
+        }
+        composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Member.arguments
+                )
+            MemberScreen(appState = appState, memberInput = NavRoutes.Member.fromEntry(it))
+        }
+
+        // Territory:
+        composable(
+            route = NavRoutes.TerritoryCategory.route,
+            arguments = NavRoutes.TerritoryCategory.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to TerritoryCategoryScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.TerritoryCategory.arguments
+                )
+            TerritoryCategoryScreen(
+                appState = appState,
+                territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it)
+            )
+        }
+        composable(
+            route = NavRoutes.HandOutTerritoriesConfirmation.route,
+            arguments = NavRoutes.HandOutTerritoriesConfirmation.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to HandOutTerritoriesConfirmationScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.HandOutTerritoriesConfirmation.arguments
+                )
+            HandOutTerritoriesConfirmationScreen(appState = appState)
+        }
+
+        // Geo:
+        composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to RegionScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Region.arguments
+                )
+            RegionScreen(appState = appState, regionInput = NavRoutes.Region.fromEntry(it))
+        }
+        composable(
+            route = NavRoutes.RegionDistrict.route, arguments = NavRoutes.RegionDistrict.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to RegionDistrictScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.RegionDistrict.arguments
+                )
+            RegionDistrictScreen(
+                appState = appState,
+                regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it)
+            )
+        }
+        composable(route = NavRoutes.Locality.route, arguments = NavRoutes.Locality.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to LocalityScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Locality.arguments
+                )
+            LocalityScreen(appState = appState, localityInput = NavRoutes.Locality.fromEntry(it))
+        }
+
+        // Nav Bar Navigation:
         composable(NavRoutes.Home.route) {
             // Dashboard: Congregations; Meters values; Payments
             Timber.tag(TAG)
