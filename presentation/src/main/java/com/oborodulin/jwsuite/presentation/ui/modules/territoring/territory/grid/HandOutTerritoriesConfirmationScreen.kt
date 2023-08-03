@@ -58,6 +58,7 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.CELL_SIZE
@@ -92,7 +93,7 @@ fun HandOutTerritoriesConfirmationScreen(
             ) { paddingValues ->
                 val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                 HandOutTerritoriesConfirmationView(
-                    paddingValues = paddingValues, viewModel = viewModel
+                    appState = appState, paddingValues = paddingValues, viewModel = viewModel
                 )
                 Spacer(Modifier.height(8.dp))
                 Button(
@@ -121,6 +122,7 @@ fun HandOutTerritoriesConfirmationScreen(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HandOutTerritoriesConfirmationView(
+    appState: AppState,
     paddingValues: PaddingValues? = null,
     viewModel: TerritoriesGridViewModel
 ) {
@@ -180,6 +182,7 @@ fun HandOutTerritoriesConfirmationView(
                         isFocused = focusState.isFocused
                     )
                 },
+            sharedViewModel = appState.sharedViewModel.value,
             inputWrapper = member,
             onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -233,6 +236,7 @@ fun PreviewGroupView() {
     JWSuiteTheme {
         Surface {
             HandOutTerritoriesConfirmationView(
+                appState = rememberAppState(),
                 viewModel = TerritoriesGridViewModelImpl.previewModel(ctx)
             )
         }

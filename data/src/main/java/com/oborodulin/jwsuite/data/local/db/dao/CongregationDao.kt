@@ -28,7 +28,7 @@ interface CongregationDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     @Query("SELECT * FROM ${CongregationEntity.TABLE_NAME} WHERE congregationNum = :congregationNum LIMIT 1")
-    fun findByCongregationNum(congregationNum: String): Flow<CongregationEntity>
+    fun findByCongregationNum(congregationNum: String): Flow<CongregationEntity?>
 
     @Query("SELECT EXISTS (SELECT * FROM ${CongregationEntity.TABLE_NAME} WHERE congregationNum = :congregationNum LIMIT 1)")
     fun existsByCongregationNum(congregationNum: String): Boolean
@@ -37,7 +37,7 @@ interface CongregationDao {
     fun findByCongregationName(congregationName: String): Flow<List<CongregationView>>
 
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE isFavorite = $DB_TRUE")
-    fun findFavorite(): Flow<CongregationView>
+    fun findFavorite(): Flow<CongregationView?>
 
     @ExperimentalCoroutinesApi
     fun findDistinctFavorite() = findFavorite().distinctUntilChanged()
@@ -142,5 +142,30 @@ interface CongregationDao {
     suspend fun makeFavoriteById(congregationId: UUID) {
         clearFavoritesById(congregationId)
         setFavoriteById(congregationId)
+    }
+
+    @Transaction
+    suspend fun insertWithFavorite(congregation: CongregationEntity) {
+        insert(congregation)
+        if (congregation.isFavorite) {
+            clearFavoritesById(congregation.congregationId)
+        }
+    }
+
+    @Transaction
+    suspend fun updateWithFavorite(congregation: CongregationEntity) {
+        var updatedCongregation = congregation
+        if (congregation.isFavorite) {
+            clearFavoritesById(congregation.congregationId)
+        } else {
+            findFavorite().collect {favorite ->
+                favorite?.let {
+                    if (it.congregation.congregationId == congregation.congregationId) {
+                        updatedCongregation = congregation.copy(isFavorite = true)
+                    }
+                }
+            }
+        }
+        update(updatedCongregation)
     }
 }

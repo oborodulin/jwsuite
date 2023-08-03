@@ -9,5 +9,5 @@ class FavoriteCongregationConverter(
     private val mapper: CongregationToCongregationUiMapper
 ) : CommonResultConverter<GetFavoriteCongregationUseCase.Response, DashboardingUi>() {
     override fun convertSuccess(data: GetFavoriteCongregationUseCase.Response) =
-        DashboardingUi(favoriteCongregation = mapper.map(data.congregation))
+        DashboardingUi(favoriteCongregation = mapper.nullableMap(data.congregation))
 }

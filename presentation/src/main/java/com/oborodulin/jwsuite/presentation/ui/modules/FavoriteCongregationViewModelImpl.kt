@@ -3,17 +3,19 @@ package com.oborodulin.jwsuite.presentation.ui.modules
 import com.oborodulin.home.common.ui.state.SharedViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteCongregationViewModelImpl @Inject constructor() :
-    FavoriteCongregationViewModel<CongregationsListItem>, SharedViewModel<CongregationsListItem>() {
+    FavoriteCongregationViewModel<CongregationsListItem?>,
+    SharedViewModel<CongregationsListItem?>() {
     companion object {
-        val previewModel = object : FavoriteCongregationViewModel<CongregationsListItem> {
-            override val sharedFlow: SharedFlow<CongregationsListItem> = MutableSharedFlow()
-            override fun submitData(data: CongregationsListItem) {}
+        val previewModel = object : FavoriteCongregationViewModel<CongregationsListItem?> {
+            override val sharedFlow: StateFlow<CongregationsListItem?> = MutableStateFlow(null)
+            override fun submitData(data: CongregationsListItem?) = null
+            override fun sharedData(): CongregationsListItem? = null
         }
     }
 }

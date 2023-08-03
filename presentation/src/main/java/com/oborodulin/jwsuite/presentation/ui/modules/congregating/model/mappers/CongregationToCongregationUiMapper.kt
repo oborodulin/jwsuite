@@ -1,12 +1,14 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 
 class CongregationToCongregationUiMapper(private val localityMapper: LocalityToLocalityUiMapper) :
-    Mapper<Congregation, CongregationUi> {
+    Mapper<Congregation, CongregationUi>,
+    NullableMapper<Congregation, CongregationUi> {
     override fun map(input: Congregation): CongregationUi {
         val congregationUi = CongregationUi(
             congregationNum = input.congregationNum,
@@ -18,4 +20,6 @@ class CongregationToCongregationUiMapper(private val localityMapper: LocalityToL
         congregationUi.id = input.id
         return congregationUi
     }
+
+    override fun nullableMap(input: Congregation?) = input?.let { map(it) }
 }

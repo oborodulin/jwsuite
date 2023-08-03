@@ -24,15 +24,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -43,21 +42,22 @@ private const val TAG = "Congregating.MembersListView"
 
 @Composable
 fun MembersListView(
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    appState: AppState,
     viewModel: MembersListViewModelImpl = hiltViewModel(),
-    navController: NavController,
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
     memberInput: MemberInput? = null
 ) {
     Timber.tag(TAG).d(
-        "MembersListView(...) called: congregationInput = %s, groupInput = %s",
+        "MembersListView(...) called: congregationInput = %s; groupInput = %s",
         congregationInput,
         groupInput
     )
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
-    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
+    Timber.tag(TAG)
+        .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
 
     LaunchedEffect(congregationId, groupInput?.groupId) {
         Timber.tag(TAG).d("MembersListView: LaunchedEffect() BEFORE collect ui state flow")
@@ -89,7 +89,7 @@ fun MembersListView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is MembersListUiSingleEvent.OpenMemberScreen -> {
-                    navController.navigate(it.navRoute)
+                    appState.commonNavController.navigate(it.navRoute)
                 }
             }
         }

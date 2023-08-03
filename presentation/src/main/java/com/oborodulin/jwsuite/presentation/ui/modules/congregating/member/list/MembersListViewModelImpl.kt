@@ -72,7 +72,7 @@ class MembersListViewModelImpl @Inject constructor(
         congregationId: UUID? = null, groupId: UUID? = null, byCongregation: Boolean
     ): Job {
         Timber.tag(TAG)
-            .d("loadMembers() called: congregationId = %s, groupId = %s", congregationId, groupId)
+            .d("loadMembers() called: congregationId = %s; groupId = %s", congregationId, groupId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(
                 GetMembersUseCase.Request(

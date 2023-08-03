@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.map
 class GetFavoriteCongregationUseCase(
     configuration: Configuration,
     private val congregationsRepository: CongregationsRepository
-) : UseCase<GetFavoriteCongregationUseCase.Request, GetFavoriteCongregationUseCase.Response>(configuration) {
+) : UseCase<GetFavoriteCongregationUseCase.Request, GetFavoriteCongregationUseCase.Response>(
+    configuration
+) {
 
     override fun process(request: Request): Flow<Response> =
         congregationsRepository.getFavorite().map {
@@ -17,5 +19,5 @@ class GetFavoriteCongregationUseCase(
         }
 
     object Request : UseCase.Request
-    data class Response(val congregation: Congregation) : UseCase.Response
+    data class Response(val congregation: Congregation?) : UseCase.Response
 }

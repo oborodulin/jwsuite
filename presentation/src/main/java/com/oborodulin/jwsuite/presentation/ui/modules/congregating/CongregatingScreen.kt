@@ -36,11 +36,13 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.*
@@ -151,10 +153,7 @@ fun CongregationMembersView(appState: AppState, membersListViewModel: MembersLis
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationsListView(
-                appState = appState,
-                navController = appState.commonNavController
-            )
+            CongregationsListView(appState = appState)
         }
         Box(
             modifier = Modifier
@@ -168,7 +167,7 @@ fun CongregationMembersView(appState: AppState, membersListViewModel: MembersLis
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(navController = appState.commonNavController)
+            MembersListView(appState = appState)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
@@ -201,7 +200,7 @@ fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewMo
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            GroupsListView(navController = appState.commonNavController)
+            GroupsListView(appState = appState)
         }
         Box(
             modifier = Modifier
@@ -215,7 +214,7 @@ fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewMo
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(navController = appState.commonNavController)
+            MembersListView(appState = appState)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }

@@ -14,7 +14,7 @@ interface LocalCongregationDataSource {
     // Congregations:
     fun getCongregations(): Flow<List<CongregationView>>
     fun getCongregation(congregationId: UUID): Flow<CongregationView>
-    fun getFavoriteCongregation(): Flow<CongregationView>
+    fun getFavoriteCongregation(): Flow<CongregationView?>
     suspend fun insertCongregation(congregation: CongregationEntity)
     suspend fun updateCongregation(congregation: CongregationEntity)
     suspend fun deleteCongregation(congregation: CongregationEntity)

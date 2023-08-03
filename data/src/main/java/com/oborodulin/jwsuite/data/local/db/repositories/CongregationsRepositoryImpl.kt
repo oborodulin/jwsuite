@@ -20,7 +20,7 @@ class CongregationsRepositoryImpl @Inject constructor(
         localCongregationDataSource.getCongregation(congregationId).map(mappers.congregationViewToCongregationMapper::map)
 
     override fun getFavorite() =
-        localCongregationDataSource.getFavoriteCongregation().map(mappers.congregationViewToCongregationMapper::map)
+        localCongregationDataSource.getFavoriteCongregation().map(mappers.congregationViewToCongregationMapper::nullableMap)
 
     override fun save(congregation: Congregation) = flow {
         if (congregation.id == null) {

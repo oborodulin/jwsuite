@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,7 +25,6 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -35,7 +35,7 @@ private const val TAG = "Congregating.MemberComboBox"
 @Composable
 fun MemberComboBox(
     modifier: Modifier = Modifier,
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
     listViewModel: MembersListViewModelImpl = hiltViewModel(),
     singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -52,11 +52,12 @@ fun MemberComboBox(
         viewModel = singleViewModel,
         loadUiAction = MemberUiAction.Load(),
         confirmUiAction = MemberUiAction.Save,
-        dialogView = { MemberView(sharedViewModel, singleViewModel) },
+        dialogView = { MemberView(sharedViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
@@ -82,9 +83,7 @@ fun PreviewMemberComboBox() {
     JWSuiteTheme {
         Surface {
             MemberComboBox(
-                /*sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                listViewModel = MembersListViewModelImpl.previewModel(ctx),
-                singleViewModel = MemberViewModelImpl.previewModel(ctx),*/
+                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -44,11 +45,10 @@ private const val TAG = "Congregating.GroupView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GroupView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
-    groupViewModel: GroupViewModel
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    groupViewModel: GroupViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("GroupView(...) called")
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -93,7 +93,6 @@ fun GroupView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        currentCongregation?.let { groupViewModel.onTextFieldEntered(GroupInputEvent.Congregation(it)) }
         CongregationComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[GroupFields.GROUP_CONGREGATION.name]!!.focusRequester)
@@ -104,7 +103,9 @@ fun GroupView(
                     )
                 },
             enabled = false,
+            sharedViewModel = sharedViewModel,
             inputWrapper = congregation,
+            onValueChange = { groupViewModel.onTextFieldEntered(GroupInputEvent.Congregation(it)) },
             onImeKeyAction = groupViewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -143,10 +144,7 @@ fun PreviewGroupView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            GroupView(
-                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                groupViewModel = GroupViewModelImpl.previewModel(ctx)
-            )
+            GroupView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

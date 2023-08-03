@@ -26,14 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
@@ -47,10 +45,8 @@ private const val TAG = "Congregating.CongregationsListView"
 @Composable
 fun CongregationsListView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    navController: NavController,
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationsListView(...) called")
@@ -82,7 +78,11 @@ fun CongregationsListView(
                     )
                 }
             ) { congregation ->
-                sharedViewModel.submitData(congregation)
+                Timber.tag(TAG).d(
+                    "CongregationsListView: sharedViewModel = %s",
+                    appState.sharedViewModel.value
+                )
+                appState.sharedViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 with(membersListViewModel) {
                     submitAction(MembersListUiAction.LoadByCongregation(congregation.id))
@@ -96,7 +96,7 @@ fun CongregationsListView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is CongregationsListUiSingleEvent.OpenCongregationScreen -> {
-                    navController.navigate(it.navRoute)
+                    appState.commonNavController.navigate(it.navRoute)
                 }
             }
         }

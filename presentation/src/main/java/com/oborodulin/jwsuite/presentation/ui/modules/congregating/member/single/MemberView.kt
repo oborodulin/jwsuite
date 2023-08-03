@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -48,11 +49,10 @@ private const val TAG = "Congregating.MemberView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemberView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem>,
-    memberViewModel: MemberViewModel
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    memberViewModel: MemberViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("MemberView(...) called")
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -109,9 +109,6 @@ fun MemberView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        currentCongregation?.let {
-            memberViewModel.onTextFieldEntered(MemberInputEvent.Congregation(it))
-        }
         CongregationComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberFields.MEMBER_CONGREGATION.name]!!.focusRequester)
@@ -122,7 +119,9 @@ fun MemberView(
                     )
                 },
             enabled = false,
+            sharedViewModel = sharedViewModel,
             inputWrapper = congregation,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.Congregation(it)) },
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
         GroupComboBox(
@@ -135,9 +134,8 @@ fun MemberView(
                     )
                 },
             inputWrapper = group,
-            onValueChange = {
-                memberViewModel.onTextFieldEntered(MemberInputEvent.Group(it))
-            },
+            sharedViewModel = sharedViewModel,
+            onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.Group(it)) },
             onImeKeyAction = memberViewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -300,10 +298,7 @@ fun MemberView(
                 },
             labelResId = R.string.member_date_of_birth_hint,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
             inputWrapper = dateOfBirth,
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.DateOfBirth(it)) },
@@ -320,10 +315,7 @@ fun MemberView(
                 },
             labelResId = R.string.member_date_of_baptism_hint,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
             inputWrapper = dateOfBaptism,
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.DateOfBaptism(it)) },
@@ -340,10 +332,7 @@ fun MemberView(
                 },
             labelResId = R.string.member_inactive_date_hint,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
             },
             inputWrapper = inactiveDate,
             onValueChange = { memberViewModel.onTextFieldEntered(MemberInputEvent.InactiveDate(it)) },
@@ -359,18 +348,7 @@ fun PreviewGroupView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberView(
-                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                memberViewModel = MemberViewModelImpl.previewModel(ctx),
-                /*congregationsListViewModel = CongregationsListViewModelImpl.previewModel(ctx),
-                congregationViewModel = CongregationViewModelImpl.previewModel(ctx),
-                localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(ctx),
-                localityViewModel = LocalityViewModelImpl.previewModel(ctx),
-                regionsListViewModel = RegionsListViewModelImpl.previewModel(ctx),
-                regionViewModel = RegionViewModelImpl.previewModel(ctx),
-                regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(ctx),
-                regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(ctx)*/
-            )
+            MemberView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

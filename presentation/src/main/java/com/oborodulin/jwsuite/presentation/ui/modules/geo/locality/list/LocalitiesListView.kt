@@ -45,7 +45,7 @@ fun LocalitiesListView(
     regionDistrictInput: RegionDistrictInput? = null
 ) {
     Timber.tag(TAG).d(
-        "LocalitiesListView(...) called: regionInput = %s, regionDistrictInput = %s",
+        "LocalitiesListView(...) called: regionInput = %s; regionDistrictInput = %s",
         regionInput,
         regionDistrictInput
     )

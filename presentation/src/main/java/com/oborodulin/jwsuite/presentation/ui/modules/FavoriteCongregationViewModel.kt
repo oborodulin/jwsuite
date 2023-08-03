@@ -1,8 +1,10 @@
 package com.oborodulin.jwsuite.presentation.ui.modules
 
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
 
 interface FavoriteCongregationViewModel<T : Any?> {
-    val sharedFlow: SharedFlow<T>
-    fun submitData(data: T)
+    val sharedFlow: StateFlow<T>
+    fun submitData(data: T): Job?
+    fun sharedData(): T?
 }

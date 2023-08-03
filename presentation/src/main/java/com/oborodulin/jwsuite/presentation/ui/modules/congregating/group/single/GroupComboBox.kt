@@ -21,9 +21,10 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -32,7 +33,7 @@ private const val TAG = "Congregating.GroupComboBox"
 @Composable
 fun GroupComboBox(
     modifier: Modifier = Modifier,
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
     listViewModel: GroupsListViewModelImpl = hiltViewModel(),
     singleViewModel: GroupViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -49,11 +50,12 @@ fun GroupComboBox(
         viewModel = singleViewModel,
         loadUiAction = GroupUiAction.Load(),
         confirmUiAction = GroupUiAction.Save,
-        dialogView = { GroupView(sharedViewModel, singleViewModel) },
+        dialogView = { GroupView(sharedViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,

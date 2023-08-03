@@ -14,13 +14,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.toast
@@ -28,8 +30,10 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -42,13 +46,14 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 
 @Composable
 fun DashboardingScreen(
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
     appState: AppState,
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardingScreen: LaunchedEffect() BEFORE collect ui state flow")
@@ -82,6 +87,11 @@ fun DashboardingScreen(
                                 dashboardingUi.favoriteCongregation?.let { favorite ->
                                     sharedViewModel.submitData(favorite.toCongregationsListItem())
                                     appState.actionBarSubtitle.value = favorite.congregationName
+                                    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle()
+                                    Timber.tag(TAG).d(
+                                        "DashboardingScreen: sharedViewModel = %s; currentCongregation = %s",
+                                        sharedViewModel, currentCongregation
+                                    )
                                 }
                                 CongregationSection(
                                     navController = appState.commonNavController,

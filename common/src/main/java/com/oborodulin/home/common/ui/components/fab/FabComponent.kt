@@ -12,6 +12,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 @Composable
 fun FabComponent(
@@ -37,13 +39,9 @@ fun FabComponent(
     onClick: () -> Unit = {}
 ) {
     // https://www.appsloveworld.com/kotlin/100/7/jetpack-compose-how-to-disable-floatingaction-button
-    val enabledFab by remember { mutableStateOf(enabled) }
-    CompositionLocalProvider(
-        LocalRippleTheme provides if (enabledFab) LocalRippleTheme.current else NoRippleTheme
-    ) {
-        // https://stackoverflow.com/questions/72574071/unable-to-change-text-emphasis-using-localcontentalpha-in-material-design-3
-        // https://stackoverflow.com/questions/70831743/customize-contentalpha-in-jetpack-compose-like-a-theme
-        val icon = when (painterResId) {
+    val fabEnabled by remember { mutableStateOf(enabled) }
+    val icon = @Composable {
+        when (painterResId) {
             null -> imageVector?.let {
                 Icon(
                     imageVector = it,
@@ -62,13 +60,19 @@ fun FabComponent(
                 //else DarkGray
             )
         }
+    }
+    CompositionLocalProvider(
+        LocalRippleTheme provides if (fabEnabled) LocalRippleTheme.current else NoRippleTheme
+    ) {
+        // https://stackoverflow.com/questions/72574071/unable-to-change-text-emphasis-using-localcontentalpha-in-material-design-3
+        // https://stackoverflow.com/questions/70831743/customize-contentalpha-in-jetpack-compose-like-a-theme
         ExtendedFloatingActionButton(
-            containerColor = if (enabledFab) MaterialTheme.colorScheme.secondary else Gray,
+            containerColor = if (fabEnabled) MaterialTheme.colorScheme.secondary else Gray,
             icon = {
-                if (enabledFab)
+                if (fabEnabled)
                 // High emphasis
                     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                        icon
+                        icon.invoke()
                     }
                 else
                 // Disabled emphasis
@@ -76,10 +80,10 @@ fun FabComponent(
                         LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(
                             alpha = 0.38f
                         )
-                    ) { icon }
+                    ) { icon.invoke() }
             },
             text = { textResId?.let { Text(stringResource(it)) } },
-            onClick = { if (enabledFab) onClick() },
+            onClick = { if (fabEnabled) onClick() },
             elevation = FloatingActionButtonDefaults.elevation(8.dp)
         )
     }
@@ -89,8 +93,13 @@ fun FabComponent(
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewFABComponent() {
-    FabComponent(
-        imageVector = Icons.Rounded.Add,
-        textResId = R.string.preview_blank_fab_text,
-        onClick = {})
+    HomeComposableTheme {
+        Surface {
+            FabComponent(
+                enabled = false,
+                imageVector = Icons.Rounded.Add,
+                textResId = R.string.preview_blank_fab_text,
+                onClick = {})
+        }
+    }
 }

@@ -254,4 +254,76 @@ interface TerritoryDao {
 
     @Query("DELETE FROM ${TerritoryEntity.TABLE_NAME}")
     suspend fun deleteAll()
+
+
+    // API:
+    @Query("SELECT ifnull(MAX(territoryNum), 0) FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId")
+    fun maxTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
+
+    @Query("SELECT ifnull(MAX(territoryNum), 0) + 1 FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId")
+    fun nextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
+
+    @Query(
+        """
+        UPDATE ${TerritoryEntity.TABLE_NAME} SET territoryNum = territoryNum + 1 
+        WHERE territoryNum >= :territoryNum AND tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId 
+        """
+    )
+    suspend fun updateTerritoryNum(
+        congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int
+    )
+
+    suspend fun changeWithTerritoryNum(territory: TerritoryEntity) {
+        var territories = emptyList<TerritoryView>()
+        findByTerritoryNum(
+            territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
+        ).collect { territories = it }
+        if (territories.isNotEmpty()) {
+            updateTerritoryNum(
+                territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
+            )
+        }
+    }
+
+    @Transaction
+    suspend fun insertWithTerritoryNum(territory: TerritoryEntity) {
+        changeWithTerritoryNum(territory)
+        insert(territory)
+    }
+
+    @Transaction
+    suspend fun updateWithTerritoryNum(territory: TerritoryEntity) {
+        changeWithTerritoryNum(territory)
+        update(territory)
+    }
+
+    /*
+        // API:
+        @Query(
+            "UPDATE ${PayerServiceCrossRefEntity.TABLE_NAME} SET isMeterOwner = ${Constants.DB_TRUE} " +
+                    "WHERE payerServiceId = :payerServiceId AND isMeterOwner = ${Constants.DB_FALSE}"
+        )
+        suspend fun setPayerServiceMeterOwnerById(payerServiceId: UUID)
+
+        @Query(
+            """
+    UPDATE ${PayerServiceCrossRefEntity.TABLE_NAME} SET isMeterOwner = ${Constants.DB_FALSE}
+    WHERE payerServiceId <> :payerServiceId
+        AND payersId = (SELECT ps.payersId FROM ${PayerServiceCrossRefEntity.TABLE_NAME} ps WHERE ps.payerServiceId = :payerServiceId)
+        AND servicesId IN (SELECT serviceId FROM ${ServiceEntity.TABLE_NAME}
+                            WHERE serviceMeterType = (
+                                SELECT s.serviceMeterType FROM ${ServiceEntity.TABLE_NAME} s
+                                    JOIN ${PayerServiceCrossRefEntity.TABLE_NAME} ps ON s.serviceId = ps.servicesId
+                                        AND ps.payerServiceId = :payerServiceId)
+                            )
+        """
+        )
+        suspend fun clearPayerServiceMeterOwnerById(payerServiceId: UUID)
+
+        @Transaction
+        suspend fun payerServiceMeterOwnerById(payerServiceId: UUID) {
+            clearPayerServiceMeterOwnerById(payerServiceId)
+            setPayerServiceMeterOwnerById(payerServiceId)
+        }
+     */
 }

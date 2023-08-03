@@ -22,6 +22,7 @@ interface TerritoriesGridViewModel :
 
     val areInputsValid: StateFlow<Boolean>
 
+    fun observeChecked()
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoriesFields, isFocused: Boolean)

@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.TabPosition
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,6 +31,19 @@ fun Context.toast(messageId: Int) {
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+@Composable
+fun NavBackStackEntry.rememberParentEntry(navController: NavHostController): NavBackStackEntry {
+    // First, get the parent of the current destination
+    // This always exists since every destination in your graph has a parent
+    val parentId = this.destination.parent!!.id
+
+    // Now get the NavBackStackEntry associated with the parent
+    // making sure to remember it
+    return remember(this) {
+        navController.getBackStackEntry(parentId)
+    }
 }
 
 fun Modifier.textWidthMatchedTabIndicatorOffset(

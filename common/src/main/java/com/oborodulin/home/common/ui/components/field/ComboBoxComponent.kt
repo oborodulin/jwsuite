@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +61,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("ComboBoxComponent(...) called")
+    var comboBoxEnabled by remember { mutableStateOf(enabled) }
     var itemId by remember { mutableStateOf(inputWrapper.item?.itemId) }
     var fieldValue by remember {
         mutableStateOf(
@@ -94,9 +94,11 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
         onDismissRequest = onDismissListDialog,
         onAddButtonClick = onShowSingleDialog
     ) { item ->
-        itemId = item.itemId
-        fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length))
-        onValueChange(ListItemModel(item.itemId, item.headline))
+        if (comboBoxEnabled) {
+            itemId = item.itemId
+            fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length))
+            onValueChange(ListItemModel(item.itemId, item.headline))
+        }
     }
     Column {
         // https://stackoverflow.com/questions/67902919/jetpack-compose-textfield-clickable-does-not-work
@@ -105,18 +107,20 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
-                .clickable { if (enabled) onShowListDialog() },
+                .clickable { if (comboBoxEnabled) onShowListDialog() },
             enabled = false,
             readOnly = true,
             value = fieldValue,
             onValueChange = {
-                fieldValue = it
-                onValueChange(ListItemModel(itemId, it.text))
+                if (comboBoxEnabled) {
+                    fieldValue = it
+                    onValueChange(ListItemModel(itemId, it.text))
+                }
             },
             label = { Text(stringResource(labelResId)) },
             leadingIcon = leadingIcon,
             trailingIcon = {
-                if (enabled) {
+                if (comboBoxEnabled) {
                     if (fieldValue.text.isEmpty()) {
                         Icon(
                             Icons.Outlined.ArrowDropDown,
@@ -131,7 +135,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
                                 .offset(x = 10.dp)
                                 .clickable {
                                     //just send an update that the field is now empty
-                                    onValueChange(ListItemModel())
+                                    if (comboBoxEnabled) onValueChange(ListItemModel())
                                 }
                         )
                     }
@@ -139,10 +143,8 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
             },
             maxLines = maxLines,
             isError = inputWrapper.errorId != null,
-            keyboardActions = remember {
-                KeyboardActions(onAny = { onImeKeyAction() })
-            },
-            colors = if (enabled) OutlinedTextFieldDefaults.colors(
+            keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
+            colors = if (comboBoxEnabled) OutlinedTextFieldDefaults.colors(
                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
                 disabledBorderColor = MaterialTheme.colorScheme.outline,
                 disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,

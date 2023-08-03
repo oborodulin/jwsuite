@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
@@ -78,13 +79,24 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         )
     }
 
+    private val _checkedTerritories: MutableStateFlow<List<TerritoriesListItem>> =
+        MutableStateFlow(emptyList())
+    private val checkedTerritories = _checkedTerritories.asStateFlow()
+
     override val areInputsValid =
-        combine(
-            member,
-            uiStateFlow
-        ) { member, uiState ->
-            member.errorId == null && uiState is UiState.Success && uiState.data.any { it.isChecked }
+        combine(member, checkedTerritories) { member, checkedTerritories ->
+            member.errorId == null && checkedTerritories.isNotEmpty()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    override fun observeChecked() {
+        Timber.tag(TAG).d("observeChecked() called")
+        if (uiStateFlow.value is UiState.Success<*>) {
+            val checkedTerritories =
+                (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.isChecked }
+            _checkedTerritories.value = checkedTerritories
+            Timber.tag(TAG).d("checked %s territories", checkedTerritories.size)
+        }
+    }
 
     override fun initState() = UiState.Loading
 
@@ -273,6 +285,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
+                override fun observeChecked() {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

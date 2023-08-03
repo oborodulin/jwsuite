@@ -80,8 +80,9 @@ dependencies {
     implementation deps.room.ktx
 
     // Dagger - Hilt
-    kapt deps.dagger.compiler
     implementation deps.dagger.hilt
+    kapt deps.dagger.compiler
+    implementation deps.hilt.navigationCompose
 
     implementation deps.androidx.coreKtx
     implementation deps.lifecycle.runtimeKtx

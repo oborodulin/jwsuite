@@ -114,7 +114,7 @@ fun DatePickerComponent(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
-            enabled = false,
+            //enabled = false,
             readOnly = true,
             value = fieldValue,
             onValueChange = { fieldValue = it },

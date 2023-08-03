@@ -64,11 +64,11 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     override fun getTerritory(territoryId: UUID) = territoryDao.findDistinctById(territoryId)
 
     override suspend fun insertTerritory(territory: TerritoryEntity) = withContext(dispatcher) {
-        territoryDao.insert(territory)
+        territoryDao.insertWithTerritoryNum(territory)
     }
 
     override suspend fun updateTerritory(territory: TerritoryEntity) = withContext(dispatcher) {
-        territoryDao.update(territory)
+        territoryDao.updateWithTerritoryNum(territory)
     }
 
     override suspend fun deleteTerritory(territory: TerritoryEntity) = withContext(dispatcher) {

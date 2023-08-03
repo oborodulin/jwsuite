@@ -28,16 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
+import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.CELL_SIZE
@@ -49,10 +48,9 @@ private const val TAG = "Territoring.TerritoriesGridView"
 
 @Composable
 fun TerritoriesGridView(
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
+    appState: AppState,
     territoriesGridViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
 //    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    navController: NavController,
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
     territoryInput: TerritoryInput? = null,
@@ -61,7 +59,8 @@ fun TerritoriesGridView(
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("TerritoriesGridView(...) called")
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
@@ -97,13 +96,7 @@ fun TerritoriesGridView(
                     territories = it,
                     territoryInput = territoryInput,
                     searchedText = searchText.text,
-                    onFavorite = { listItem ->
-                        /*listItem.itemId?.let { id ->
-                            territoriesGridViewModel.submitAction(
-                                TerritoriesGridUiAction.MakeFavoriteCongregation(id)
-                            )
-                        }*/
-                    }
+                    onChecked = { territoriesGridViewModel.observeChecked() }
                 ) { territory ->
                     /*with(membersListViewModel) {
                         submitAction(MembersListUiAction.LoadByCongregation(territory.id))
@@ -145,11 +138,11 @@ fun TerritoriesGridView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoriesGridUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    navController.navigate(it.navRoute)
+                    appState.commonNavController.navigate(it.navRoute)
                 }
 
                 is TerritoriesGridUiSingleEvent.OpenTerritoryScreen -> {
-                    navController.navigate(it.navRoute)
+                    appState.commonNavController.navigate(it.navRoute)
                 }
             }
         }
@@ -161,7 +154,7 @@ fun TerritoriesClickableGrid(
     territories: List<TerritoriesListItem>,
     territoryInput: TerritoryInput?,
     searchedText: String = "",
-    onFavorite: OnListItemEvent,
+    onChecked: (Boolean) -> Unit,
     onClick: (TerritoriesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoriesClickableGrid(...) called")
@@ -186,7 +179,7 @@ fun TerritoriesClickableGrid(
                 filteredItems[index].let { territory ->
                     TerritoriesClickableGridItemComponent(
                         territory = territory,
-                        onFavorite = onFavorite,
+                        onChecked = onChecked,
                         onClick = onClick
                     )
                 }
@@ -277,7 +270,7 @@ fun PreviewTerritoriesClickableGrid() {
             TerritoriesClickableGrid(
                 territories = TerritoriesGridViewModelImpl.previewList(LocalContext.current),
                 territoryInput = TerritoryInput(UUID.randomUUID()),
-                onFavorite = {},
+                onChecked = {},
                 onClick = {}
             )
         }

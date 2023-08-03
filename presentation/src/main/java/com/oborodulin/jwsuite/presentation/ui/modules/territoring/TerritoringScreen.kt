@@ -54,14 +54,12 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListUiAction
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
@@ -75,7 +73,6 @@ private const val TAG = "Territoring.TerritoringScreen"
 @Composable
 fun TerritoringScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
     territoriesGridViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
@@ -94,7 +91,9 @@ fun TerritoringScreen(
         )
     }
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
-    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle(null)
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
@@ -135,8 +134,7 @@ fun TerritoringScreen(
                     CommonScreen(state = state) { territoringUi ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
-                                modifier = Modifier
-                                    .weight(2f)
+                                modifier = Modifier.weight(2f)
                             ) {
                                 SwitchComponent(
                                     componentModifier = Modifier.padding(end = 36.dp)
@@ -328,7 +326,7 @@ fun HandOutTerritoriesView(
                 )
         ) {
             TerritoriesGridView(
-                navController = appState.commonNavController,
+                appState = appState,
                 territoryProcessType = TerritoryProcessType.HAND_OUT,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -349,6 +347,7 @@ fun HandOutTerritoriesView(
         ) {
         }
         BarMemberComboBox(
+            sharedViewModel = appState.sharedViewModel.value,
             inputWrapper = member,
             onValueChange = {
                 territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
@@ -391,7 +390,7 @@ fun AtWorkTerritoriesView(
                 )
         ) {
             TerritoriesGridView(
-                navController = appState.commonNavController,
+                appState = appState,
                 territoryProcessType = TerritoryProcessType.AT_WORK,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -449,7 +448,7 @@ fun IdleTerritoriesView(
                 )
         ) {
             TerritoriesGridView(
-                navController = appState.commonNavController,
+                appState = appState,
                 territoryProcessType = TerritoryProcessType.IDLE,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -507,7 +506,7 @@ fun AllTerritoriesView(
                 )
         ) {
             TerritoriesGridView(
-                navController = appState.commonNavController,
+                appState = appState,
                 territoryProcessType = TerritoryProcessType.ALL,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,

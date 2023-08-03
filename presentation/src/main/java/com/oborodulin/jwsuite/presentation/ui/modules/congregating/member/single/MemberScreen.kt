@@ -21,7 +21,6 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -31,7 +30,6 @@ private const val TAG = "Congregating.MemberScreen"
 @Composable
 fun MemberScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModelImpl = hiltViewModel(),
     memberViewModel: MemberViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null
 ) {
@@ -57,7 +55,7 @@ fun MemberScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by memberViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    MemberView(sharedViewModel, memberViewModel)
+                    MemberView(appState.sharedViewModel.value)
                     Spacer(Modifier.height(8.dp))
                     Button(
                         onClick = {

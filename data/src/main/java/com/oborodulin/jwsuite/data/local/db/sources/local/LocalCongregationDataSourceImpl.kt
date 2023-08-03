@@ -33,12 +33,12 @@ class LocalCongregationDataSourceImpl @Inject constructor(
 
     override suspend fun insertCongregation(congregation: CongregationEntity) =
         withContext(dispatcher) {
-            congregationDao.insert(congregation)
+            congregationDao.insertWithFavorite(congregation)
         }
 
     override suspend fun updateCongregation(congregation: CongregationEntity) =
         withContext(dispatcher) {
-            congregationDao.update(congregation)
+            congregationDao.updateWithFavorite(congregation)
         }
 
     override suspend fun deleteCongregation(congregation: CongregationEntity) =

@@ -7,7 +7,7 @@ import java.util.UUID
 interface CongregationsRepository {
     fun getAll(): Flow<List<Congregation>>
     fun get(congregationId: UUID): Flow<Congregation>
-    fun getFavorite(): Flow<Congregation>
+    fun getFavorite(): Flow<Congregation?>
     fun save(congregation: Congregation): Flow<Congregation>
     fun delete(congregation: Congregation): Flow<Congregation>
     fun deleteById(congregationId: UUID): Flow<UUID>

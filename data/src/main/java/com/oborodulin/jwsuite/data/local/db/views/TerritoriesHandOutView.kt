@@ -26,7 +26,7 @@ ORDER BY ifnull(rld.fullIdleMonths - rld.territoryIdlePeriod, 1000) DESC
 )
 class TerritoriesHandOutView(
     @Embedded val territory: TerritoryView,
-    @Embedded val member: MemberView,
+    @Embedded val member: MemberView?,
     val ctCongregationsId: UUID,
     val isPrivateSector: Boolean,
     val handOutDays: Int?,

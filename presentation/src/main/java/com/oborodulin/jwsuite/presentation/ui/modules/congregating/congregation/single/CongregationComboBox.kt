@@ -20,8 +20,10 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
@@ -37,6 +39,7 @@ private const val TAG = "Congregating.CongregationComboBox"
 fun CongregationComboBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
     listViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     singleViewModel: CongregationViewModelImpl = hiltViewModel(),
     localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
@@ -46,7 +49,7 @@ fun CongregationComboBox(
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
     regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent = {},
+    onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("CongregationComboBox(...) called")
@@ -73,6 +76,9 @@ fun CongregationComboBox(
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+    currentCongregation?.let { onValueChange(ListItemModel(it.id, it.headline)) }
     ComboBoxComponent(
         modifier = modifier,
         enabled = enabled,

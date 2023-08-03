@@ -49,7 +49,7 @@ private const val TAG = "Territoring.TerritoriesClickableGridItemComponent"
 fun TerritoriesClickableGridItemComponent(
     territory: TerritoriesListItem,
     cellSize: Dp = Constants.CELL_SIZE,
-    onFavorite: OnListItemEvent = {},
+    onChecked: (Boolean) -> Unit = {},
     onClick: (TerritoriesListItem) -> Unit = {}
 ) {
     Timber.tag(TAG).d("TerritoriesClickableGridItemComponent(...) called")
@@ -106,6 +106,7 @@ fun TerritoriesClickableGridItemComponent(
                     onCheckedChange = {
                         checkedState = it
                         territory.isChecked = checkedState
+                        onChecked(it)
                     }
                 )
             }
@@ -205,7 +206,7 @@ fun PreviewTerritoriesClickableGridItemComponent() {
             TerritoriesClickableGridItemComponent(
                 territory = TerritoriesGridViewModelImpl.previewList(LocalContext.current)[0],
                 cellSize = 110.dp,
-                onFavorite = {},
+                onChecked = {},
                 onClick = {}
             )
         }

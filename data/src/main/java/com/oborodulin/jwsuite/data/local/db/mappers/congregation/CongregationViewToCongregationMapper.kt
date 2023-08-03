@@ -1,13 +1,15 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.congregation
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data.local.db.views.CongregationView
 import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.domain.model.GeoLocality
 import com.oborodulin.jwsuite.domain.model.GeoRegion
 import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
 
-class CongregationViewToCongregationMapper : Mapper<CongregationView, Congregation> {
+class CongregationViewToCongregationMapper : Mapper<CongregationView, Congregation>,
+    NullableMapper<CongregationView, Congregation> {
     override fun map(input: CongregationView): Congregation {
         val region = GeoRegion(
             regionCode = input.region.data.regionCode,
@@ -46,4 +48,6 @@ class CongregationViewToCongregationMapper : Mapper<CongregationView, Congregati
         congregation.id = input.congregation.congregationId
         return congregation
     }
+
+    override fun nullableMap(input: CongregationView?) = input?.let { map(it) }
 }

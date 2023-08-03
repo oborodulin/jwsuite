@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -101,10 +100,11 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     }
     // text field
     BarTextFieldComponent(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-            .clickable { if (enabled) onShowListDialog() },
+            .padding(vertical = 4.dp)
+            .clickable { if (enabled) onShowListDialog() }
+            .then(modifier),
         enabled = false,
         readOnly = true,
         fieldValue = fieldValue,
