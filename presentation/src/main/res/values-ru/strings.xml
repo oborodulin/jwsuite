@@ -144,6 +144,8 @@
     <string name="locality_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <!--формы категории участка-->
     <string name="territory_category_mark_empty_error">Укажите, пожалуйста, код участка!</string>
+    <!--формы подтверждения выдачи участка-->
+    <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА -->
     <!--Участки-->

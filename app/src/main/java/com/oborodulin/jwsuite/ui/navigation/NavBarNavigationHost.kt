@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewMo
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.dashboarding.DashboardingScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.TerritoringScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "App.navigation.NavBarNavigationHost"
@@ -61,12 +62,11 @@ fun NavBarNavigationHost(
             // territoring: Territories Grid [hand_out, at_work, idle], Territory Details
             Timber.tag(TAG)
                 .d("Navigation Graph: to TerritoringScreen [route = '%s']", it.destination.route)
-            /*val parentEntry =
-                remember(it) { appState.navBarNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))*/
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             TerritoringScreen(
                 appState = appState,
+                territoriesGridViewModel = territoriesGridViewModel,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
             )

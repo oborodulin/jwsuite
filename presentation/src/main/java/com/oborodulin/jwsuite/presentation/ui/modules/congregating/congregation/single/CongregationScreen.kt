@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
@@ -88,21 +86,22 @@ fun CongregationScreen(
                             regionDistrictViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        Button(onClick = {
-                            Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
-                            // checks all errors
-                            congregationViewModel.onContinueClick {
-                                // if success, then save and backToBottomBarScreen
-                                // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                coroutineScope.launch {
-                                    congregationViewModel.submitAction(CongregationUiAction.Save)
-                                        .join()
-                                    appState.backToBottomBarScreen()
+                        SaveButtonComponent(
+                            enabled = areInputsValid,
+                            onClick = {
+                                Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
+                                // checks all errors
+                                congregationViewModel.onContinueClick {
+                                    // if success, then save and backToBottomBarScreen
+                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                                    coroutineScope.launch {
+                                        congregationViewModel.submitAction(CongregationUiAction.Save)
+                                            .join()
+                                        appState.backToBottomBarScreen()
+                                    }
                                 }
                             }
-                        }, enabled = areInputsValid) {
-                            Text(text = stringResource(R.string.btn_save_lbl))
-                        }
+                        )
                     }
                 }
             }

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface TerritoringViewModel :
-    SingleViewModeled<TerritoringUi, TerritoringUiAction, UiSingleEvent> {
+    SingleViewModeled<TerritoringUi, TerritoringUiAction, TerritoringUiSingleEvent> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
 

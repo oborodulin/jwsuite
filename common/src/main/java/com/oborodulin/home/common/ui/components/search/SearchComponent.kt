@@ -11,7 +11,6 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,11 +34,12 @@ import com.oborodulin.home.common.util.OnTextFieldValueChange
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchComponent(
     fieldValue: TextFieldValue,
     @StringRes placeholderResId: Int? = null,
+    modifier: Modifier = Modifier,
     onValueChange: OnTextFieldValueChange
 ) {
 //    val containerColor = FilledTextFieldTokens.ContainerColor.toColor()
@@ -51,19 +51,19 @@ fun SearchComponent(
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 4.dp)
             .bringIntoViewRequester(relocation)
             .onFocusEvent {
                 if (it.isFocused) scope.launch { delay(300); relocation.bringIntoView() }
-            },
+            }
+            .then(modifier),
         textStyle = TextStyle(fontSize = 18.sp),
         placeholder = placeholderResId?.let { { Text(text = stringResource(id = it)) } },
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
                 contentDescription = "",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(24.dp)
+                modifier = Modifier.size(24.dp)
             )
         },
         trailingIcon = {
@@ -74,9 +74,7 @@ fun SearchComponent(
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "",
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(24.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }

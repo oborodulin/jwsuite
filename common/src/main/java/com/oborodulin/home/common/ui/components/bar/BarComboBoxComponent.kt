@@ -102,7 +102,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     BarTextFieldComponent(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(top = 4.dp)
             .clickable { if (enabled) onShowListDialog() }
             .then(modifier),
         enabled = false,

@@ -41,6 +41,7 @@ import java.util.UUID
 // ic_room - https://www.flaticon.com/authors/andrejs-kirma
 // ic_floor - https://www.flaticon.com/authors/icon-hubs
 // ic_floors - https://www.flaticon.com/authors/bsd
+// ic_hand_map.png - https://www.flaticon.com/free-icon/hand_6242467?term=hand+map&page=1&position=9&origin=search&related_id=6242467
 
 private const val TAG = "Presentation.NavRoutes"
 

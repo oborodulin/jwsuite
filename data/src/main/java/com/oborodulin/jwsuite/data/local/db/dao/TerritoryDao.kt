@@ -95,10 +95,11 @@ interface TerritoryDao {
     WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) 
         AND t.isPrivateSector = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
         AND t.${PX_LOCALITY}localityLocCode = :locale
-        AND ((:territoryLocationType = $TDT_ALL_VAL) OR
-            (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
-            (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
-            (:territoryLocationType = $TDT_MICRO_DISTRICT_VAL AND t.tMicrodistrictsId = :locationId))
+        AND ifnull(:locationId, "") = (CASE WHEN :territoryLocationType = $TDT_LOCALITY_VAL THEN t.tLocalitiesId 
+                                            WHEN :territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL THEN ifnull(t.tLocalityDistrictsId, "0")
+                                            WHEN :territoryLocationType = $TDT_MICRO_DISTRICT_VAL THEN ifnull(t.tMicrodistrictsId, "0")
+                                            ELSE ifnull(:locationId, "")
+                                        END)
     ORDER BY t.territoryCategoryMark, t.territoryNum            
     """
     )

@@ -52,8 +52,6 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.inject.Inject
 
-// ic_hand_map.png - https://www.flaticon.com/free-icon/hand_6242467?term=hand+map&page=1&position=9&origin=search&related_id=6242467
-
 private const val TAG = "Territoring.TerritoriesListViewModelImpl"
 
 @HiltViewModel
@@ -81,20 +79,28 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     private val _checkedTerritories: MutableStateFlow<List<TerritoriesListItem>> =
         MutableStateFlow(emptyList())
-    private val checkedTerritories = _checkedTerritories.asStateFlow()
+    override val checkedTerritories = _checkedTerritories.asStateFlow()
 
     override val areInputsValid =
-        combine(member, checkedTerritories) { member, checkedTerritories ->
-            member.errorId == null && checkedTerritories.isNotEmpty()
+        combine(
+            member,
+            receivingDate,
+            checkedTerritories
+        ) { member, receivingDate, checkedTerritories ->
+            member.errorId == null && receivingDate.errorId == null && checkedTerritories.isNotEmpty()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun observeChecked() {
+    override fun observeCheckedTerritories() {
         Timber.tag(TAG).d("observeChecked() called")
         if (uiStateFlow.value is UiState.Success<*>) {
             val checkedTerritories =
                 (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.isChecked }
             _checkedTerritories.value = checkedTerritories
-            Timber.tag(TAG).d("checked %s territories", checkedTerritories.size)
+            Timber.tag(TAG).d(
+                "checked %s territories; areInputsValid = %s",
+                checkedTerritories.size,
+                areInputsValid.value
+            )
         }
     }
 
@@ -126,11 +132,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
             is TerritoriesGridUiAction.HandOutConfirmation -> {
                 setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_hand_out_subheader)
-                submitSingleEvent(
-                    TerritoriesGridUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
-                        NavRoutes.HandOutTerritoriesConfirmation.routeForHandOutTerritoriesConfirmation()
-                    )
-                )
+                null
             }
 
             is TerritoriesGridUiAction.HandOut -> {
@@ -147,14 +149,14 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     private fun loadTerritories(
         congregationId: UUID?,
         territoryProcessType: TerritoryProcessType, territoryLocationType: TerritoryLocationType,
-        districtId: UUID? = null, isPrivateSector: Boolean = false
+        locationId: UUID? = null, isPrivateSector: Boolean = false
     ): Job {
         Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoriesUseCase.execute(
                 GetTerritoriesUseCase.Request(
                     congregationId, territoryProcessType, territoryLocationType,
-                    districtId, isPrivateSector
+                    locationId, isPrivateSector
                 )
             )
                 .map {
@@ -183,8 +185,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 useCases.handOutTerritoriesUseCase.execute(
                     HandOutTerritoriesUseCase.Request(
                         memberId,
-                        (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.isChecked }
-                            .map { it.id },
+                        checkedTerritories.value.map { it.id },
                         DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
                             .parse(receivingDate.value.value, OffsetDateTime::from)
                     )
@@ -222,6 +223,19 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                                 TerritoriesFields.TERRITORY_MEMBER, member, event.input
                             )
                         }
+
+                    is TerritoriesInputEvent.ReceivingDate ->
+                        when (TerritoriesInputValidator.ReceivingDate.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
+                                event.input
+                            )
+                        }
                 }
             }
             .debounce(350)
@@ -231,6 +245,12 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                         setStateValue(
                             TerritoriesFields.TERRITORY_MEMBER, member,
                             TerritoriesInputValidator.Member.errorIdOrNull(event.input.headline)
+                        )
+
+                    is TerritoriesInputEvent.ReceivingDate ->
+                        setStateValue(
+                            TerritoriesFields.TERRITORY_RECEIVING_DATE, member,
+                            TerritoriesInputValidator.Member.errorIdOrNull(event.input)
                         )
                 }
             }
@@ -243,8 +263,14 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         TerritoriesInputValidator.Member.errorIdOrNull(member.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = TerritoriesFields.TERRITORY_MEMBER.name,
-                    errorId = it
+                    fieldName = TerritoriesFields.TERRITORY_MEMBER.name, errorId = it
+                )
+            )
+        }
+        TerritoriesInputValidator.ReceivingDate.errorIdOrNull(receivingDate.value.value)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = TerritoriesFields.TERRITORY_RECEIVING_DATE.name, errorId = it
                 )
             )
         }
@@ -257,6 +283,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
                 TerritoriesFields.TERRITORY_MEMBER.name -> member.value.copy(errorId = error.errorId)
+                TerritoriesFields.TERRITORY_RECEIVING_DATE.name -> receivingDate.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -275,6 +302,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+                override val checkedTerritories = MutableStateFlow(previewList(ctx))
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
@@ -285,7 +313,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun observeChecked() {}
+                override fun observeCheckedTerritories() {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

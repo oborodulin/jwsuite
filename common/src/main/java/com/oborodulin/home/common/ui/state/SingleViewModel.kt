@@ -207,13 +207,17 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             performValidation()
             when (val inputErrors = getInputErrorsOrNull()) {
                 null -> {
+                    Timber.tag(TAG).d("onContinueClick: no errors")
                     clearFocusAndHideKeyboard()
                     onSuccess()
                     //clearInputFieldsStates()
                     //_events.send(ScreenEvent.ShowToast(com.oborodulin.home.common.R.string.success))
                 }
 
-                else -> displayInputErrors(inputErrors)
+                else -> {
+                    Timber.tag(TAG).d("onContinueClick: errors %s", inputErrors)
+                    displayInputErrors(inputErrors)
+                }
             }
         }
     }
@@ -231,10 +235,12 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
 
     private suspend fun clearFocusAndHideKeyboard() {
         Timber.tag(TAG).d("clearFocusAndHideKeyboard() called")
-        _events.send(ScreenEvent.ClearFocus)
-        _events.send(ScreenEvent.UpdateKeyboard(false))
-        focusedTextField.textField = null
-        focusedTextField.key = null
+        if (focusedTextField.textField != null) {
+            _events.send(ScreenEvent.ClearFocus)
+            _events.send(ScreenEvent.UpdateKeyboard(false))
+            focusedTextField.textField = null
+            focusedTextField.key = null
+        }
     }
 
     private fun focusOnLastSelectedTextField() {

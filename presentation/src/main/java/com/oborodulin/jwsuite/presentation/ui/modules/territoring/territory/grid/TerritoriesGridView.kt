@@ -49,7 +49,7 @@ private const val TAG = "Territoring.TerritoriesGridView"
 @Composable
 fun TerritoriesGridView(
     appState: AppState,
-    territoriesGridViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
+    territoriesGridViewModel: TerritoriesGridViewModel,//Impl = hiltViewModel(),
 //    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
@@ -58,7 +58,13 @@ fun TerritoriesGridView(
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
-    Timber.tag(TAG).d("TerritoriesGridView(...) called")
+    Timber.tag(TAG).d(
+        "TerritoriesGridView(...) called: territoryProcessType = %s; territoryLocationType = %s; isPrivateSector = %s; locationId = %s",
+        territoryProcessType,
+        territoryLocationType,
+        isPrivateSector,
+        locationId
+    )
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
@@ -96,7 +102,7 @@ fun TerritoriesGridView(
                     territories = it,
                     territoryInput = territoryInput,
                     searchedText = searchText.text,
-                    onChecked = { territoriesGridViewModel.observeChecked() }
+                    onChecked = { territoriesGridViewModel.observeCheckedTerritories() }
                 ) { territory ->
                     /*with(membersListViewModel) {
                         submitAction(MembersListUiAction.LoadByCongregation(territory.id))
@@ -137,10 +143,6 @@ fun TerritoriesGridView(
         territoriesGridViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is TerritoriesGridUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
-                }
-
                 is TerritoriesGridUiSingleEvent.OpenTerritoryScreen -> {
                     appState.commonNavController.navigate(it.navRoute)
                 }

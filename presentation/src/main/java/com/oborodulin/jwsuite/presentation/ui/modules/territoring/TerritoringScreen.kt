@@ -41,7 +41,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
-import com.oborodulin.home.common.ui.components.fab.FabComponent
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.search.SearchComponent
@@ -52,15 +51,15 @@ import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
@@ -74,7 +73,7 @@ private const val TAG = "Territoring.TerritoringScreen"
 fun TerritoringScreen(
     appState: AppState,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
-    territoriesGridViewModel: TerritoriesGridViewModelImpl = hiltViewModel(),
+    territoriesGridViewModel: TerritoriesGridViewModel,
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
@@ -115,14 +114,14 @@ fun TerritoringScreen(
             )
         )
     }
-    /* LaunchedEffect(Unit) {
-         Timber.tag(TAG)
-             .d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow: events.collect")
-         events.collect { event ->
-             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
-             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
-         }
-     }*/
+    /*LaunchedEffect(Unit) {
+        Timber.tag(TAG)
+            .d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow: events.collect")
+        events.collect { event ->
+            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            inputProcess(context, focusManager, keyboardController, event, focusRequesters)
+        }
+    }*/
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         JWSuiteTheme { //(darkTheme = true)
@@ -198,17 +197,22 @@ fun TerritoringScreen(
                         Icon(Icons.Outlined.Settings, null)
                     }*/
                 },
-                floatingActionButton = {
+                /*floatingActionButton = {
                     FabComponent(
                         enabled = areInputsValid,
                         painterResId = R.drawable.ic_hand_map_24,
                         textResId = R.string.fab_hand_out_text
                     ) {
-                        territoriesGridViewModel.submitAction(
-                            TerritoriesGridUiAction.HandOutConfirmation
-                        )
+                        Timber.tag(TAG).d("TerritoringScreen(...): FAB onClick...")
+                        // checks all errors
+                        territoriesGridViewModel.onContinueClick {
+                            // if success, then go to Hand Out Confirmation
+                            territoriesGridViewModel.submitAction(
+                                TerritoriesGridUiAction.HandOutConfirmation
+                            )
+                        }
                     }
-                },
+                },*/
                 bottomBar = bottomBar
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
@@ -220,6 +224,8 @@ fun TerritoringScreen(
                                     location.item?.let {
                                         HandOutTerritoriesView(
                                             appState = appState,
+                                            enableAction = areInputsValid,
+                                            territoringViewModel = territoringViewModel,
                                             territoriesGridViewModel = territoriesGridViewModel,
                                             territoryLocationType = it.territoryLocationType,
                                             locationId = it.locationId,
@@ -276,31 +282,36 @@ fun TerritoringScreen(
             }
         }
     }
-    /*        }
-            LaunchedEffect(Unit) {
-                Timber.tag(TAG).d("TerritoringScreen: LaunchedEffect() AFTER collect ui state flow")
-                viewModel.singleEventFlow.collectLatest {
-                    Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
-                    when (it) {
-                        is CongregatingUiSingleEvent.OpenPayerScreen -> {
-                            appState.commonNavController.navigate(it.navRoute)
-                        }
-                    }
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG).d("TerritoringScreen: LaunchedEffect() AFTER collect ui state flow")
+        territoringViewModel.singleEventFlow.collectLatest {
+            Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
+            when (it) {
+                is TerritoringUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
+                    appState.commonNavController.navigate(it.navRoute)
                 }
             }
-
-     */
+        }
+    }
 }
 
 @Composable
 fun HandOutTerritoriesView(
     appState: AppState,
+    enableAction: Boolean,
+    territoringViewModel: TerritoringViewModel,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
     isPrivateSector: Boolean = false
 ) {
-    Timber.tag(TAG).d("HandOutTerritoriesView(...) called")
+    Timber.tag(TAG).d(
+        "HandOutTerritoriesView(...) called: territoryLocationType = %s; isPrivateSector = %s; locationId = %s",
+        territoryLocationType,
+        isPrivateSector,
+        locationId
+    )
+    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     val member by territoriesGridViewModel.member.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -315,6 +326,7 @@ fun HandOutTerritoriesView(
     {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
@@ -327,6 +339,7 @@ fun HandOutTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.HAND_OUT,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -346,13 +359,38 @@ fun HandOutTerritoriesView(
                 )
         ) {
         }
-        BarMemberComboBox(
-            sharedViewModel = appState.sharedViewModel.value,
-            inputWrapper = member,
-            onValueChange = {
-                territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
-            }
-        )
+        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BarMemberComboBox(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .weight(6f),
+                sharedViewModel = appState.sharedViewModel.value,
+                inputWrapper = member,
+                onValueChange = {
+                    territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
+                }
+            )
+            HandOutButtonComponent(
+                modifier = Modifier.weight(4f),
+                enabled = enableAction,
+                onClick = {
+                    Timber.tag(TAG).d("TerritoringScreen: HandOut Button onClick...")
+                    // checks all errors
+                    territoriesGridViewModel.onContinueClick {
+                        // if success, then go to Hand Out Confirmation
+                        Timber.tag(TAG)
+                            .d("TerritoringScreen: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
+                        territoringViewModel.submitAction(
+                            TerritoringUiAction.HandOutTerritoriesConfirmation
+                        )
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -379,6 +417,7 @@ fun AtWorkTerritoriesView(
     {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
@@ -391,6 +430,7 @@ fun AtWorkTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.AT_WORK,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -437,6 +477,7 @@ fun IdleTerritoriesView(
     {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
@@ -449,6 +490,7 @@ fun IdleTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.IDLE,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -468,7 +510,10 @@ fun IdleTerritoriesView(
                 )
         ) {
         }
-        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
+        SearchComponent(
+            searchText,
+            onValueChange = territoriesGridViewModel::onSearchTextChange
+        )
     }
 }
 
@@ -495,6 +540,7 @@ fun AllTerritoriesView(
     {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
@@ -507,6 +553,7 @@ fun AllTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.ALL,
                 territoryLocationType = territoryLocationType,
                 locationId = locationId,
@@ -526,7 +573,10 @@ fun AllTerritoriesView(
                 )
         ) {
         }
-        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
+        SearchComponent(
+            searchText,
+            onValueChange = territoriesGridViewModel::onSearchTextChange
+        )
     }
 }
 

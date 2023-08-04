@@ -1,23 +1,21 @@
-package com.oborodulin.home.common.ui.components.fab
+package com.oborodulin.home.common.ui.components.buttons
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,21 +24,24 @@ import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
+private const val TAG = "Common.ui.ButtonComponent"
+
 @Composable
-fun FabComponent(
+fun ButtonComponent(
+    modifier: Modifier = Modifier,
     enabled: Boolean = false,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
     @StringRes textResId: Int? = null,
     @StringRes contentDescriptionResId: Int? = null,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit,
+    content: @Composable (RowScope.() -> Unit)? = null
 ) {
-    // https://www.appsloveworld.com/kotlin/100/7/jetpack-compose-how-to-disable-floatingaction-button
     val icon = @Composable {
         when (painterResId) {
-            null -> imageVector?.let {
+            null -> imageVector?.let { iv ->
                 Icon(
-                    imageVector = it,
+                    imageVector = iv,
                     contentDescription = contentDescriptionResId?.let { stringResource(it) },
                     modifier = Modifier.padding(end = 4.dp),
                     //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
@@ -51,51 +52,39 @@ fun FabComponent(
             else -> Icon(
                 painter = painterResource(painterResId),
                 contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                modifier = Modifier.padding(end = 4.dp),
+                modifier = Modifier
+                    .padding(end = 4.dp)
+                    .size(24.dp),
                 //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
                 //else DarkGray
             )
         }
     }
-    CompositionLocalProvider(
-        LocalRippleTheme provides if (enabled) LocalRippleTheme.current else NoRippleTheme
+    Button(
+        modifier = modifier,
+        enabled = enabled,
+        onClick = onClick
     ) {
-        // https://stackoverflow.com/questions/72574071/unable-to-change-text-emphasis-using-localcontentalpha-in-material-design-3
-        // https://stackoverflow.com/questions/70831743/customize-contentalpha-in-jetpack-compose-like-a-theme
-        ExtendedFloatingActionButton(
-            modifier = Modifier.padding(bottom = 48.dp, end = 16.dp),
-            containerColor = if (enabled) MaterialTheme.colorScheme.primary else Gray,
-            icon = {
-                if (enabled)
-                // High emphasis
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimary) {
-                        icon.invoke()
-                    }
-                else
-                // Disabled emphasis
-                    CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.onSurface.copy(
-                            alpha = 0.38f
-                        )
-                    ) { icon.invoke() }
-            },
-            text = { textResId?.let { Text(stringResource(it)) } },
-            onClick = { if (enabled) onClick() },
-            elevation = FloatingActionButtonDefaults.elevation(8.dp)
-        )
+        if (content != null) {
+            content()
+        } else {
+            icon()
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            textResId?.let { Text(text = stringResource(it)) }
+        }
     }
 }
 
 @Preview(name = "Night Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewFABComponentEnabled() {
+fun PreviewButtonComponentEnabled() {
     HomeComposableTheme {
         Surface {
-            FabComponent(
+            ButtonComponent(
                 enabled = true,
                 imageVector = Icons.Rounded.Add,
-                textResId = R.string.preview_blank_fab_text,
+                textResId = R.string.preview_blank_button_text,
                 onClick = {})
         }
     }
@@ -104,13 +93,13 @@ fun PreviewFABComponentEnabled() {
 @Preview(name = "Night Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewFABComponentDisabled() {
+fun PreviewButtonComponentDisabled() {
     HomeComposableTheme {
         Surface {
-            FabComponent(
+            ButtonComponent(
                 enabled = false,
                 imageVector = Icons.Rounded.Add,
-                textResId = R.string.preview_blank_fab_text,
+                textResId = R.string.preview_blank_button_text,
                 onClick = {})
         }
     }

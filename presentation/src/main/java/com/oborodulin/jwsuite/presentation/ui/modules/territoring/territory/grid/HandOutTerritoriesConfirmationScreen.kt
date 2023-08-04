@@ -5,28 +5,24 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,15 +44,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.MemberComboBox
@@ -70,7 +65,7 @@ private const val TAG = "Territoring.HandOutTerritoriesConfirmationScreen"
 @Composable
 fun HandOutTerritoriesConfirmationScreen(
     appState: AppState,
-    viewModel: TerritoriesGridViewModelImpl = hiltViewModel()
+    viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("HandOutTerritoriesConfirmationScreen(...) called")
     val coroutineScope = rememberCoroutineScope()
@@ -92,28 +87,30 @@ fun HandOutTerritoriesConfirmationScreen(
                 }
             ) { paddingValues ->
                 val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                HandOutTerritoriesConfirmationView(
-                    appState = appState, paddingValues = paddingValues, viewModel = viewModel
-                )
-                Spacer(Modifier.height(8.dp))
-                Button(
-                    onClick = {
-                        viewModel.onContinueClick {
-                            Timber.tag(TAG)
-                                .d("HandOutTerritoriesConfirmationScreen(...): Hand Out Territory Button onClick...")
-                            // checks all errors
+                Column(modifier = Modifier.padding(paddingValues),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                    HandOutTerritoriesConfirmationView(appState = appState, viewModel = viewModel)
+                    Spacer(Modifier.height(8.dp))
+                    HandOutButtonComponent(
+                        enabled = areInputsValid,
+                        onClick = {
                             viewModel.onContinueClick {
-                                // if success, then save and backToBottomBarScreen
-                                // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                coroutineScope.launch {
-                                    viewModel.submitAction(TerritoriesGridUiAction.HandOut).join()
-                                    appState.backToBottomBarScreen()
+                                Timber.tag(TAG)
+                                    .d("HandOutTerritoriesConfirmationScreen(...): Hand Out Territory Button onClick...")
+                                // checks all errors
+                                viewModel.onContinueClick {
+                                    // if success, then HandOut and backToBottomBarScreen
+                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                                    coroutineScope.launch {
+                                        viewModel.submitAction(TerritoriesGridUiAction.HandOut)
+                                            ?.join()
+                                        appState.backToBottomBarScreen()
+                                    }
                                 }
                             }
                         }
-                    },
-                    enabled = areInputsValid
-                ) { Text(text = stringResource(com.oborodulin.jwsuite.presentation.R.string.btn_hand_out_lbl)) }
+                    )
+                }
             }
         }
     }
@@ -142,7 +139,7 @@ fun HandOutTerritoriesConfirmationView(
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all hand out territories fields")
     val member by viewModel.member.collectAsStateWithLifecycle()
     val receivingDate by viewModel.receivingDate.collectAsStateWithLifecycle()
-    val territories by viewModel.uiStateFlow.collectAsStateWithLifecycle()
+    val checkedTerritories by viewModel.checkedTerritories.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -161,14 +158,19 @@ fun HandOutTerritoriesConfirmationView(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+            .heightIn(max = 400.dp)
+            //java.lang.IllegalStateException: Asking for intrinsic measurements of SubcomposeLayout layouts is not supported. This includes components that are built on top of SubcomposeLayout, such as lazy lists, BoxWithConstraints, TabRow, etc. To mitigate this:
+            //- if intrinsic measurements are used to achieve 'match parent' sizing,, consider replacing the parent of the component with a custom layout which controls the order in which children are measured, making intrinsic measurement not needed
+            //- adding a size modifier to the component, in order to fast return the queried intrinsic measurement.
+            //.height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
+        //java.lang.IllegalStateException: Vertically scrollable component was measured with an infinity maximum height constraints, which is disallowed. One of the common reasons is nesting layouts like LazyColumn and Column(Modifier.verticalScroll()). If you want to add a header before the list of items please add a header as a separate item() before the main items() inside the LazyColumn scope. There are could be other reasons for this to happen: your ComposeView was added into a LinearLayout with some weight, you applied Modifier.wrapContentSize(unbounded = true) or wrote a custom layout. Please try to remove the source of infinite constraints in the hierarchy above the scrolling container.
+        //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -182,6 +184,7 @@ fun HandOutTerritoriesConfirmationView(
                         isFocused = focusState.isFocused
                     )
                 },
+            enabled = false,
             sharedViewModel = appState.sharedViewModel.value,
             inputWrapper = member,
             onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) },
@@ -207,22 +210,19 @@ fun HandOutTerritoriesConfirmationView(
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
-        Divider(thickness = 2.dp)
         LazyVerticalGrid(
             columns = GridCells.Adaptive(CELL_SIZE),
             modifier = Modifier
                 .selectableGroup() // Optional, for accessibility purpose
                 .padding(4.dp)
-                .focusable(enabled = true),
+                .focusable(enabled = true)
+                .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
-            val checkedItems = (territories as UiState.Success).data.filter { it.isChecked }
-            items(checkedItems.size) { index ->
-                TerritoriesClickableGridItemComponent(
-                    territory = checkedItems[index]
-                )
+            items(checkedTerritories.size) { index ->
+                TerritoriesClickableGridItemComponent(territory = checkedTerritories[index])
             }
         }
     }

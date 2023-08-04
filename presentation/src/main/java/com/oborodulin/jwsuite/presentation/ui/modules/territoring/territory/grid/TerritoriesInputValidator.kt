@@ -11,4 +11,11 @@ sealed class TerritoriesInputValidator : Validatable {
                 else -> null
             }
     }
+    object ReceivingDate : TerritoriesInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
+            when {
+                inputs[0].isNullOrEmpty() -> R.string.territory_receiving_date_empty_error
+                else -> null
+            }
+    }
 }

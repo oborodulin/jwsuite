@@ -19,8 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.R
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
@@ -33,6 +35,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.Locali
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
@@ -142,16 +145,18 @@ private fun HomeNavigationHost(
                 territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it)
             )
         }
-        composable(
-            route = NavRoutes.HandOutTerritoriesConfirmation.route,
-            arguments = NavRoutes.HandOutTerritoriesConfirmation.arguments
-        ) {
+        composable(route = NavRoutes.HandOutTerritoriesConfirmation.route) {
             Timber.tag(TAG)
                 .d(
-                    "Navigation Graph: to HandOutTerritoriesConfirmationScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.HandOutTerritoriesConfirmation.arguments
+                    "Navigation Graph: to HandOutTerritoriesConfirmationScreen [route = '%s']",
+                    it.destination.route
                 )
-            HandOutTerritoriesConfirmationScreen(appState = appState)
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            HandOutTerritoriesConfirmationScreen(
+                appState = appState,
+                viewModel = territoriesGridViewModel
+            )
         }
 
         // Geo:

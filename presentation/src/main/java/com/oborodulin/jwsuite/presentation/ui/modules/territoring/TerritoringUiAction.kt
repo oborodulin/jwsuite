@@ -8,4 +8,6 @@ sealed class TerritoringUiAction : UiAction {
         val congregationId: UUID? = null,
         val isPrivateSector: Boolean = false
     ) : TerritoringUiAction()
+
+    object HandOutTerritoriesConfirmation : TerritoringUiAction()
 }

@@ -143,6 +143,7 @@ fun CongregationMembersView(appState: AppState, membersListViewModel: MembersLis
     {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
@@ -190,6 +191,7 @@ fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewMo
     {
         Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))

@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
@@ -51,31 +50,33 @@ fun TerritoryCategoryScreen(
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
                 }
-            ) {
-                CommonScreen(paddingValues = it, state = state) {
+            ) { paddingValues ->
+                CommonScreen(paddingValues = paddingValues, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     TerritoryCategoryView(viewModel)
                     Spacer(Modifier.height(8.dp))
-                    Button(onClick = {
-                        viewModel.onContinueClick {
-                            Timber.tag(TAG)
-                                .d("TerritoryCategoryScreen(...): Start viewModelScope.launch")
-                            viewModel.viewModelScope().launch {
-                                viewModel.actionsJobFlow.collect {
-                                    Timber.tag(TAG).d(
-                                        "TerritoryCategoryScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                        it?.toString()
-                                    )
-                                    it?.join()
-                                    appState.backToBottomBarScreen()
+                    SaveButtonComponent(
+                        enabled = areInputsValid,
+                        onClick = {
+                            viewModel.onContinueClick {
+                                Timber.tag(TAG)
+                                    .d("TerritoryCategoryScreen(...): Start viewModelScope.launch")
+                                viewModel.viewModelScope().launch {
+                                    viewModel.actionsJobFlow.collect {
+                                        Timber.tag(TAG).d(
+                                            "TerritoryCategoryScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                            it?.toString()
+                                        )
+                                        it?.join()
+                                        appState.backToBottomBarScreen()
+                                    }
                                 }
+                                viewModel.submitAction(TerritoryCategoryUiAction.Save)
+                                Timber.tag(TAG)
+                                    .d("TerritoryCategoryScreen(...): onSubmit() executed")
                             }
-                            viewModel.submitAction(TerritoryCategoryUiAction.Save)
-                            Timber.tag(TAG).d("TerritoryCategoryScreen(...): onSubmit() executed")
                         }
-                    }, enabled = areInputsValid) {
-                        Text(text = stringResource(com.oborodulin.home.common.R.string.btn_save_lbl))
-                    }
+                    )
                 }
             }
         }

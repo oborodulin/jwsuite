@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,9 +15,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
@@ -57,7 +57,8 @@ fun MemberScreen(
                     val areInputsValid by memberViewModel.areInputsValid.collectAsStateWithLifecycle()
                     MemberView(appState.sharedViewModel.value)
                     Spacer(Modifier.height(8.dp))
-                    Button(
+                    SaveButtonComponent(
+                        enabled = areInputsValid,
                         onClick = {
                             memberViewModel.onContinueClick {
                                 Timber.tag(TAG).d("MemberScreen(...): Start viewModelScope.launch")
@@ -72,9 +73,8 @@ fun MemberScreen(
                                     }
                                 }
                             }
-                        },
-                        enabled = areInputsValid
-                    ) { Text(text = stringResource(com.oborodulin.home.common.R.string.btn_save_lbl)) }
+                        }
+                    )
                 }
             }
         }

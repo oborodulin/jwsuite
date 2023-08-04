@@ -35,6 +35,7 @@ private const val TAG = "Congregating.MemberComboBox"
 @Composable
 fun MemberComboBox(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
     listViewModel: MembersListViewModelImpl = hiltViewModel(),
     singleViewModel: MemberViewModelImpl = hiltViewModel(),
@@ -60,6 +61,7 @@ fun MemberComboBox(
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
         loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.id),
         isShowListDialog = isShowListDialog,

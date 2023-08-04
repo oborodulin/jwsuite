@@ -8,12 +8,12 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.state.SingleViewModel
-import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoringUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryLocationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryLocationsListConverter
@@ -34,9 +34,9 @@ class TerritoringViewModelImpl @Inject constructor(
     private val useCases: TerritoringUseCases,
     private val converter: TerritoryLocationsListConverter
 ) : TerritoringViewModel,
-    SingleViewModel<TerritoringUi, UiState<TerritoringUi>, TerritoringUiAction, UiSingleEvent, TerritoringFields, InputWrapper>(
+    SingleViewModel<TerritoringUi, UiState<TerritoringUi>, TerritoringUiAction, TerritoringUiSingleEvent, TerritoringFields, InputWrapper>(
         state,
-        //TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR
+        TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR
     ) {
     override val isPrivateSector: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name, InputWrapper())
@@ -54,6 +54,15 @@ class TerritoringViewModelImpl @Inject constructor(
                 action.congregationId,
                 action.isPrivateSector
             )
+
+            is TerritoringUiAction.HandOutTerritoriesConfirmation -> {
+                submitSingleEvent(
+                    TerritoringUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
+                        NavRoutes.HandOutTerritoriesConfirmation.routeForHandOutTerritoriesConfirmation()
+                    )
+                )
+            }
+
         }
         return job
     }
@@ -145,7 +154,7 @@ class TerritoringViewModelImpl @Inject constructor(
         fun previewModel(ctx: Context) =
             object : TerritoringViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
-                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+                override val singleEventFlow = Channel<TerritoringUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
