@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single
 
 import android.content.Context
 import androidx.annotation.ArrayRes
@@ -43,63 +43,63 @@ private const val TAG = "Congregating.MemberViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class MemberViewModelImpl @Inject constructor(
+class TerritoryViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val resHelper: ResourcesHelper,
     private val useCases: MemberUseCases,
     private val converter: MemberConverter,
     private val memberUiMapper: MemberUiToMemberMapper,
     private val memberMapper: MemberToMemberUiMapper
-) : MemberViewModel,
-    DialogSingleViewModel<MemberUi, UiState<MemberUi>, MemberUiAction, UiSingleEvent, MemberFields, InputWrapper>(
+) : TerritoryViewModel,
+    DialogSingleViewModel<MemberUi, UiState<MemberUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
         state,
-        MemberFields.MEMBER_NUM
+        TerritoryFields.MEMBER_NUM
     ) {
     private val _memberTypes: MutableStateFlow<MutableMap<MemberType, String>> =
         MutableStateFlow(mutableMapOf())
     override val memberTypes = _memberTypes.asStateFlow()
 
     private val memberId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_ID.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_ID.name, InputWrapper())
     }
 
     override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
     }
 
     override val group: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_GROUP.name, InputListItemWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_GROUP.name, InputListItemWrapper())
     }
 
     override val memberNum: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_NUM.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_NUM.name, InputWrapper())
     }
     override val memberName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_NAME.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_NAME.name, InputWrapper())
     }
     override val surname: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_SURNAME.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_SURNAME.name, InputWrapper())
     }
     override val patronymic: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_PATRONYMIC.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_PATRONYMIC.name, InputWrapper())
     }
     override val pseudonym: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_PSEUDONYM.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_PSEUDONYM.name, InputWrapper())
     }
     override val phoneNumber: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_PHONE_NUMBER.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_PHONE_NUMBER.name, InputWrapper())
     }
     override val memberType: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_TYPE.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_TYPE.name, InputWrapper())
     }
     override val dateOfBirth: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_DATE_OF_BIRTH.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_DATE_OF_BIRTH.name, InputWrapper())
     }
     override val dateOfBaptism: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_DATE_OF_BAPTISM.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_DATE_OF_BAPTISM.name, InputWrapper())
     }
     override val inactiveDate: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_INACTIVE_DATE.name, InputWrapper())
+        state.getStateFlow(TerritoryFields.MEMBER_INACTIVE_DATE.name, InputWrapper())
     }
 
     override val areInputsValid =
@@ -133,10 +133,10 @@ class MemberViewModelImpl @Inject constructor(
 
     override fun initState(): UiState<MemberUi> = UiState.Loading
 
-    override suspend fun handleAction(action: MemberUiAction): Job {
+    override suspend fun handleAction(action: TerritoryUiAction): Job {
         Timber.tag(TAG).d("handleAction(MemberUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is MemberUiAction.Load -> when (action.memberId) {
+            is TerritoryUiAction.Load -> when (action.memberId) {
                 null -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_subheader)
                     submitState(UiState.Success(MemberUi()))
@@ -148,7 +148,7 @@ class MemberViewModelImpl @Inject constructor(
                 }
             }
 
-            is MemberUiAction.Save -> saveMember()
+            is TerritoryUiAction.Save -> saveMember()
         }
         return job
     }
@@ -208,7 +208,7 @@ class MemberViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun stateInputFields() = enumValues<MemberFields>().map { it.name }
+    override fun stateInputFields() = enumValues<TerritoryFields>().map { it.name }
 
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
@@ -216,39 +216,39 @@ class MemberViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", memberUi)
         memberUi.id?.let {
-            initStateValue(MemberFields.MEMBER_ID, memberId, it.toString())
+            initStateValue(TerritoryFields.MEMBER_ID, memberId, it.toString())
         }
         initStateValue(
-            MemberFields.MEMBER_CONGREGATION, congregation,
+            TerritoryFields.MEMBER_CONGREGATION, congregation,
             ListItemModel(
                 memberUi.group.congregation.id, memberUi.group.congregation.congregationName
             )
         )
         initStateValue(
-            MemberFields.MEMBER_GROUP, group,
+            TerritoryFields.MEMBER_GROUP, group,
             ListItemModel(memberUi.group.id, memberUi.group.groupNum.toString())
         )
-        initStateValue(MemberFields.MEMBER_NUM, memberNum, memberUi.memberNum)
-        initStateValue(MemberFields.MEMBER_NAME, memberName, memberUi.memberName.orEmpty())
-        initStateValue(MemberFields.MEMBER_SURNAME, surname, memberUi.surname.orEmpty())
-        initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, memberUi.patronymic.orEmpty())
-        initStateValue(MemberFields.MEMBER_PSEUDONYM, pseudonym, memberUi.pseudonym)
+        initStateValue(TerritoryFields.MEMBER_NUM, memberNum, memberUi.memberNum)
+        initStateValue(TerritoryFields.MEMBER_NAME, memberName, memberUi.memberName.orEmpty())
+        initStateValue(TerritoryFields.MEMBER_SURNAME, surname, memberUi.surname.orEmpty())
+        initStateValue(TerritoryFields.MEMBER_PATRONYMIC, patronymic, memberUi.patronymic.orEmpty())
+        initStateValue(TerritoryFields.MEMBER_PSEUDONYM, pseudonym, memberUi.pseudonym)
         initStateValue(
-            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, memberUi.phoneNumber.orEmpty()
+            TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber, memberUi.phoneNumber.orEmpty()
         )
-        initStateValue(MemberFields.MEMBER_TYPE, memberType, memberUi.memberType.name)
+        initStateValue(TerritoryFields.MEMBER_TYPE, memberType, memberUi.memberType.name)
         initStateValue(
-            MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
+            TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
             memberUi.dateOfBirth?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
         initStateValue(
-            MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
+            TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
             memberUi.dateOfBaptism?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
         initStateValue(
-            MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
+            TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate,
             memberUi.inactiveDate?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
@@ -260,97 +260,97 @@ class MemberViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is MemberInputEvent.Congregation ->
+                    is TerritoryInputEvent.Congregation ->
                         setStateValue(
-                            MemberFields.MEMBER_CONGREGATION, congregation, event.input, true
+                            TerritoryFields.MEMBER_CONGREGATION, congregation, event.input, true
                         )
 
-                    is MemberInputEvent.Group ->
-                        when (MemberInputValidator.Group.errorIdOrNull(event.input.headline)) {
+                    is TerritoryInputEvent.Group ->
+                        when (TerritoryInputValidator.Group.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_GROUP, group, event.input, true
+                                TerritoryFields.MEMBER_GROUP, group, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_GROUP, group, event.input
+                                TerritoryFields.MEMBER_GROUP, group, event.input
                             )
                         }
 
-                    is MemberInputEvent.MemberNum ->
-                        when (MemberInputValidator.MemberNum.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.TerritoryNum ->
+                        when (TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_NUM, memberNum, event.input, true
+                                TerritoryFields.MEMBER_NUM, memberNum, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_NUM, memberNum, event.input
+                                TerritoryFields.MEMBER_NUM, memberNum, event.input
                             )
                         }
 
-                    is MemberInputEvent.Pseudonym ->
-                        when (MemberInputValidator.Pseudonym.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.Pseudonym ->
+                        when (TerritoryInputValidator.Pseudonym.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input, true
+                                TerritoryFields.MEMBER_PSEUDONYM, pseudonym, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input
+                                TerritoryFields.MEMBER_PSEUDONYM, pseudonym, event.input
                             )
                         }
 
-                    is MemberInputEvent.PhoneNumber ->
-                        when (MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.PhoneNumber ->
+                        when (TerritoryInputValidator.PhoneNumber.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input, true
+                                TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input
+                                TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input
                             )
                         }
 
-                    is MemberInputEvent.MemberType ->
-                        when (MemberInputValidator.MemberType.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.TerritoryType ->
+                        when (TerritoryInputValidator.TerritoryType.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_TYPE, memberType, event.input, true
+                                TerritoryFields.MEMBER_TYPE, memberType, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_TYPE, memberType, event.input
+                                TerritoryFields.MEMBER_TYPE, memberType, event.input
                             )
                         }
 
-                    is MemberInputEvent.DateOfBirth ->
-                        when (MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.DateOfBirth ->
+                        when (TerritoryInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input, true
+                                TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input
+                                TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input
                             )
                         }
 
-                    is MemberInputEvent.DateOfBaptism ->
-                        when (MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.DateOfBaptism ->
+                        when (TerritoryInputValidator.DateOfBaptism.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
+                                TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
                                 true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input
+                                TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input
                             )
                         }
 
-                    is MemberInputEvent.InactiveDate ->
-                        when (MemberInputValidator.InactiveDate.errorIdOrNull(event.input)) {
+                    is TerritoryInputEvent.InactiveDate ->
+                        when (TerritoryInputValidator.InactiveDate.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input, true
+                                TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input
+                                TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input
                             )
                         }
                 }
@@ -358,52 +358,52 @@ class MemberViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is MemberInputEvent.Group ->
+                    is TerritoryInputEvent.Group ->
                         setStateValue(
-                            MemberFields.MEMBER_GROUP, group,
-                            MemberInputValidator.Group.errorIdOrNull(event.input.headline)
+                            TerritoryFields.MEMBER_GROUP, group,
+                            TerritoryInputValidator.Group.errorIdOrNull(event.input.headline)
                         )
 
-                    is MemberInputEvent.MemberNum ->
+                    is TerritoryInputEvent.TerritoryNum ->
                         setStateValue(
-                            MemberFields.MEMBER_NUM, memberNum,
-                            MemberInputValidator.MemberNum.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_NUM, memberNum,
+                            TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.Pseudonym ->
+                    is TerritoryInputEvent.Pseudonym ->
                         setStateValue(
-                            MemberFields.MEMBER_PSEUDONYM, pseudonym,
-                            MemberInputValidator.Pseudonym.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_PSEUDONYM, pseudonym,
+                            TerritoryInputValidator.Pseudonym.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.PhoneNumber ->
+                    is TerritoryInputEvent.PhoneNumber ->
                         setStateValue(
-                            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber,
-                            MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber,
+                            TerritoryInputValidator.PhoneNumber.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.MemberType ->
+                    is TerritoryInputEvent.TerritoryType ->
                         setStateValue(
-                            MemberFields.MEMBER_TYPE, memberType,
-                            MemberInputValidator.MemberType.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_TYPE, memberType,
+                            TerritoryInputValidator.TerritoryType.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.DateOfBirth ->
+                    is TerritoryInputEvent.DateOfBirth ->
                         setStateValue(
-                            MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-                            MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
+                            TerritoryInputValidator.DateOfBirth.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.DateOfBaptism ->
+                    is TerritoryInputEvent.DateOfBaptism ->
                         setStateValue(
-                            MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-                            MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
+                            TerritoryInputValidator.DateOfBaptism.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.InactiveDate ->
+                    is TerritoryInputEvent.InactiveDate ->
                         setStateValue(
-                            MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
-                            MemberInputValidator.InactiveDate.errorIdOrNull(event.input)
+                            TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate,
+                            TerritoryInputValidator.InactiveDate.errorIdOrNull(event.input)
                         )
                 }
             }
@@ -416,38 +416,38 @@ class MemberViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        MemberInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
-            inputErrors.add(InputError(fieldName = MemberFields.MEMBER_GROUP.name, errorId = it))
+        TerritoryInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
+            inputErrors.add(InputError(fieldName = TerritoryFields.MEMBER_GROUP.name, errorId = it))
         }
-        MemberInputValidator.MemberNum.errorIdOrNull(memberNum.value.value)?.let {
-            inputErrors.add(InputError(fieldName = MemberFields.MEMBER_NUM.name, errorId = it))
+        TerritoryInputValidator.TerritoryNum.errorIdOrNull(memberNum.value.value)?.let {
+            inputErrors.add(InputError(fieldName = TerritoryFields.MEMBER_NUM.name, errorId = it))
         }
-        MemberInputValidator.Pseudonym.errorIdOrNull(pseudonym.value.value)?.let {
+        TerritoryInputValidator.Pseudonym.errorIdOrNull(pseudonym.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = MemberFields.MEMBER_PSEUDONYM.name, errorId = it)
+                InputError(fieldName = TerritoryFields.MEMBER_PSEUDONYM.name, errorId = it)
             )
         }
-        MemberInputValidator.PhoneNumber.errorIdOrNull(phoneNumber.value.value)?.let {
+        TerritoryInputValidator.PhoneNumber.errorIdOrNull(phoneNumber.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = MemberFields.MEMBER_PHONE_NUMBER.name, errorId = it)
+                InputError(fieldName = TerritoryFields.MEMBER_PHONE_NUMBER.name, errorId = it)
             )
         }
-        MemberInputValidator.MemberType.errorIdOrNull(memberType.value.value)?.let {
-            inputErrors.add(InputError(fieldName = MemberFields.MEMBER_TYPE.name, errorId = it))
+        TerritoryInputValidator.TerritoryType.errorIdOrNull(memberType.value.value)?.let {
+            inputErrors.add(InputError(fieldName = TerritoryFields.MEMBER_TYPE.name, errorId = it))
         }
-        MemberInputValidator.DateOfBirth.errorIdOrNull(dateOfBirth.value.value)?.let {
+        TerritoryInputValidator.DateOfBirth.errorIdOrNull(dateOfBirth.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = MemberFields.MEMBER_DATE_OF_BIRTH.name, errorId = it)
+                InputError(fieldName = TerritoryFields.MEMBER_DATE_OF_BIRTH.name, errorId = it)
             )
         }
-        MemberInputValidator.DateOfBaptism.errorIdOrNull(dateOfBaptism.value.value)?.let {
+        TerritoryInputValidator.DateOfBaptism.errorIdOrNull(dateOfBaptism.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = MemberFields.MEMBER_DATE_OF_BAPTISM.name, errorId = it)
+                InputError(fieldName = TerritoryFields.MEMBER_DATE_OF_BAPTISM.name, errorId = it)
             )
         }
-        MemberInputValidator.InactiveDate.errorIdOrNull(inactiveDate.value.value)?.let {
+        TerritoryInputValidator.InactiveDate.errorIdOrNull(inactiveDate.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = MemberFields.MEMBER_INACTIVE_DATE.name, errorId = it)
+                InputError(fieldName = TerritoryFields.MEMBER_INACTIVE_DATE.name, errorId = it)
             )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
@@ -458,14 +458,14 @@ class MemberViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                MemberFields.MEMBER_GROUP.name -> group.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_NUM.name -> memberNum.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_PSEUDONYM.name -> pseudonym.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_PHONE_NUMBER.name -> phoneNumber.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_TYPE.name -> memberType.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_DATE_OF_BIRTH.name -> dateOfBirth.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_DATE_OF_BAPTISM.name -> dateOfBaptism.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_INACTIVE_DATE.name -> inactiveDate.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_GROUP.name -> group.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_NUM.name -> memberNum.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_PSEUDONYM.name -> pseudonym.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_PHONE_NUMBER.name -> phoneNumber.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_TYPE.name -> memberType.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_DATE_OF_BIRTH.name -> dateOfBirth.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_DATE_OF_BAPTISM.name -> dateOfBaptism.value.copy(errorId = error.errorId)
+                TerritoryFields.MEMBER_INACTIVE_DATE.name -> inactiveDate.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -473,7 +473,7 @@ class MemberViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : MemberViewModel {
+            object : TerritoryViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
@@ -507,10 +507,10 @@ class MemberViewModelImpl @Inject constructor(
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun submitAction(action: MemberUiAction): Job? = null
+                override fun submitAction(action: TerritoryUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
-                    focusedField: MemberFields, isFocused: Boolean
+                    focusedField: TerritoryFields, isFocused: Boolean
                 ) {
                 }
 

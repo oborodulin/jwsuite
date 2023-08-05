@@ -32,6 +32,8 @@ fun NavBarNavigationHost(
             // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
             Timber.tag(TAG)
                 .d("Navigation Graph: to DashboardingScreen [route = '%s']", it.destination.route)
+            // https://stackoverflow.com/questions/68857820/how-to-share-a-viewmodel-between-two-or-more-jetpack-composables-inside-a-compos
+            // https://proandroiddev.com/jetpack-navigation-component-manual-implementation-of-multiple-back-stacks-62b33e95795c
             val parentEntry =
                 remember(it) { appState.navBarNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
             val sharedViewModel =

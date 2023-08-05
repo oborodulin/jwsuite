@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
@@ -90,7 +91,7 @@ class RegionsListViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: RegionsListUiAction): Job? = null
             }

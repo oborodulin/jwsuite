@@ -10,8 +10,8 @@ import com.oborodulin.jwsuite.data.util.Constants
     viewName = TerritoryMemberLastReceivingDateView.VIEW_NAME,
     value = """
 SELECT tmc.*,
-    (julianday(datetime('now', 'localtime')) - julianday(ifnull(tmc.deliveryDate, datetime('now', 'localtime')))) handOutDays,
-    (julianday(ifnull(tmc.deliveryDate, datetime('now', 'localtime'))) - julianday(tmc.receivingDate)) atWorkDays,
+    (julianday(datetime('now', 'localtime')) - julianday(ifnull(tmc.deliveryDate, datetime('now', 'localtime')))) handOutTotalDays,
+    (julianday(ifnull(tmc.deliveryDate, datetime('now', 'localtime'))) - julianday(tmc.receivingDate)) atWorkTotalDays,
     (CASE WHEN tmc.deliveryDate IS NULL
         THEN -1
         ELSE (strftime('%Y', datetime('now', 'localtime'), 'start of month', '-1 day') * 12 + strftime('%m', datetime('now', 'localtime'), 'start of month', '-1 day') -
@@ -29,8 +29,8 @@ FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME} tmc
 )
 class TerritoryMemberLastReceivingDateView(
     @Embedded val territoryMember: TerritoryMemberCrossRefEntity,
-    val handOutDays: Int,
-    val atWorkDays: Int,
+    val handOutTotalDays: Int,
+    val atWorkTotalDays: Int,
     val fullIdleMonths: Int,
     val territoryIdlePeriod: Int,
     val territoryAtHandPeriod: Int

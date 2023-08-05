@@ -33,10 +33,9 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     override fun getCongregationTerritoryLocations(
         isPrivateSector: Boolean,
         congregationId: UUID?
-    ) =
-        territoryDao.findTerritoryLocationsByPrivateSectorMarkAndCongregationId(
-            isPrivateSector, congregationId
-        )
+    ) = territoryDao.findTerritoryLocationsByPrivateSectorMarkAndCongregationId(
+        isPrivateSector, congregationId
+    )
 
     override fun getHandOutTerritories(
         congregationId: UUID?, isPrivateSector: Boolean?,
@@ -80,9 +79,7 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteTerritories(territories: List<TerritoryEntity>) =
-        withContext(dispatcher) {
-            territoryDao.delete(territories)
-        }
+        withContext(dispatcher) { territoryDao.delete(territories) }
 
     override suspend fun deleteAllTerritories() = withContext(dispatcher) {
         territoryDao.deleteAll()
@@ -91,31 +88,21 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     // Members:
     override suspend fun insertMember(
         territory: TerritoryEntity, member: MemberEntity, receivingDate: OffsetDateTime
-    ) = withContext(dispatcher) {
-        territoryDao.insert(territory, member, receivingDate)
-    }
+    ) = withContext(dispatcher) { territoryDao.insert(territory, member, receivingDate) }
 
     override suspend fun insertMember(
         territory: TerritoryEntity, memberId: UUID, receivingDate: OffsetDateTime
-    ) = withContext(dispatcher) {
-        territoryDao.insert(territory, memberId, receivingDate)
-    }
+    ) = withContext(dispatcher) { territoryDao.insert(territory, memberId, receivingDate) }
 
     override suspend fun insertMember(
         territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime
-    ) = withContext(dispatcher) {
-        territoryDao.insert(territoryId, memberId, receivingDate)
-    }
+    ) = withContext(dispatcher) { territoryDao.insert(territoryId, memberId, receivingDate) }
 
     override suspend fun updateMember(territoryMember: TerritoryMemberCrossRefEntity) =
-        withContext(dispatcher) {
-            territoryDao.update(territoryMember)
-        }
+        withContext(dispatcher) { territoryDao.update(territoryMember) }
 
     override suspend fun deleteMember(territoryMember: TerritoryMemberCrossRefEntity) =
-        withContext(dispatcher) {
-            territoryDao.deleteMember(territoryMember)
-        }
+        withContext(dispatcher) { territoryDao.deleteMember(territoryMember) }
 
     override suspend fun deleteMember(territoryMemberId: UUID) = withContext(dispatcher) {
         territoryDao.deleteMemberById(territoryMemberId)
@@ -134,14 +121,10 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateStreet(territoryStreet: TerritoryStreetEntity) =
-        withContext(dispatcher) {
-            territoryDao.update(territoryStreet)
-        }
+        withContext(dispatcher) { territoryDao.update(territoryStreet) }
 
     override suspend fun deleteStreet(territoryStreet: TerritoryStreetEntity) =
-        withContext(dispatcher) {
-            territoryDao.deleteStreet(territoryStreet)
-        }
+        withContext(dispatcher) { territoryDao.deleteStreet(territoryStreet) }
 
     override suspend fun deleteStreet(territoryStreetId: UUID) = withContext(dispatcher) {
         territoryDao.deleteStreetById(territoryStreetId)
@@ -151,4 +134,8 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
         territoryDao.deleteStreetsByTerritoryId(territoryId)
     }
 
+    // API:
+    override suspend fun handOut(
+        territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime
+    ) = withContext(dispatcher) { territoryDao.handOut(territoryId, memberId, receivingDate) }
 }

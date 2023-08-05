@@ -76,4 +76,9 @@ interface LocalTerritoryDataSource {
     suspend fun deleteStreet(territoryStreet: TerritoryStreetEntity)
     suspend fun deleteStreet(territoryStreetId: UUID)
     suspend fun deleteStreets(territoryId: UUID)
+
+    // API:
+    suspend fun handOut(
+        territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime = OffsetDateTime.now()
+    )
 }

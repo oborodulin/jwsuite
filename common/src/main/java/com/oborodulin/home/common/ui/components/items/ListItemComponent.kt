@@ -62,8 +62,8 @@ fun ListItemComponent(
     @DrawableRes iconResId: Int? = null,
     item: ListItemModel,
     selected: Boolean = false,
-    itemActions: List<ComponentUiAction> = emptyList(),
     background: Color = Color.Transparent,
+    itemActions: List<ComponentUiAction> = emptyList(),
     onClick: OnListItemEvent = EMPTY,
     content: @Composable (() -> Unit)? = null
 ) {
@@ -81,7 +81,7 @@ fun ListItemComponent(
             .fillMaxWidth()
             .height(88.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(background)
+            .background(if (selected) Color.LightGray else Color.Transparent)
             .selectable(selected = selected, onClick = { if (onClick !== EMPTY) onClick(item) })
             .padding(horizontal = 4.dp, vertical = 4.dp),
         //.background(color = MaterialTheme.colorScheme.background)

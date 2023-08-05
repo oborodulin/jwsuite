@@ -15,7 +15,7 @@ class TerritoryLocationViewToTerritoryLocationMapper :
             locationId = input.locationId,
             locationShortName = input.locationShortName
         )
-        territoryLocation.id = UUID.randomUUID()
+        territoryLocation.id = input.locationId
         return territoryLocation
     }
 }

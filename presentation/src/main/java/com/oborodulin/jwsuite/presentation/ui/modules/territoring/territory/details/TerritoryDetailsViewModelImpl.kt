@@ -1,21 +1,22 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
-import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.MembersListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -29,55 +30,34 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.MembersListViewModelImpl"
+private const val TAG = "Congregating.TerritoryDetailsViewModelImpl"
 
 @HiltViewModel
-class MembersListViewModelImpl @Inject constructor(
-    private val useCases: MemberUseCases,
-    private val converter: MembersListConverter
-) : MembersListViewModel,
-    MviViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, MembersListUiAction, MembersListUiSingleEvent>() {
+class TerritoryDetailsViewModelImpl @Inject constructor(
+    private val useCases: TerritoryUseCases,
+    private val converter: TerritoriesListConverter
+) : TerritoryDetailsViewModel,
+    MviViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, TerritoryDetailsUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
-    override suspend fun handleAction(action: MembersListUiAction): Job {
+    override suspend fun handleAction(action: TerritoryDetailsUiAction): Job {
         Timber.tag(TAG)
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is MembersListUiAction.LoadByCongregation -> {
-                loadMembers(congregationId = action.congregationId, byCongregation = true)
-            }
-
-            is MembersListUiAction.LoadByGroup -> {
-                loadMembers(groupId = action.groupId, byCongregation = false)
-            }
-
-            is MembersListUiAction.EditMember -> {
-                submitSingleEvent(
-                    MembersListUiSingleEvent.OpenMemberScreen(
-                        NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.memberId)
-                        )
-                    )
-                )
-            }
-
-            is MembersListUiAction.DeleteMember -> {
-                deleteMember(action.memberId)
+            is TerritoryDetailsUiAction.Load -> {
+                loadTerritoryDetails(territoryId = action.territoryId, byCongregation = true)
             }
         }
         return job
     }
 
-    private fun loadMembers(
-        congregationId: UUID? = null, groupId: UUID? = null, byCongregation: Boolean
-    ): Job {
-        Timber.tag(TAG)
-            .d("loadMembers() called: congregationId = %s; groupId = %s", congregationId, groupId)
+    private fun loadTerritoryDetails(territoryId: UUID): Job {
+        Timber.tag(TAG).d("loadTerritoryDetails() called: territoryId = %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(
                 GetMembersUseCase.Request(
-                    congregationId = congregationId, groupId = groupId,
+                    congregationId = territoryId, groupId = groupId,
                     byCongregation = byCongregation
                 )
             )
@@ -103,9 +83,9 @@ class MembersListViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : MembersListViewModel {
+            object : TerritoryDetailsViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
-                override val singleEventFlow = Channel<MembersListUiSingleEvent>().receiveAsFlow()
+                override val singleEventFlow = Channel<TerritoryDetailsUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
@@ -114,7 +94,7 @@ class MembersListViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
-                override fun submitAction(action: MembersListUiAction): Job? = null
+                override fun submitAction(action: TerritoryDetailsUiAction): Job? = null
             }
 
         fun previewList(ctx: Context) = listOf(

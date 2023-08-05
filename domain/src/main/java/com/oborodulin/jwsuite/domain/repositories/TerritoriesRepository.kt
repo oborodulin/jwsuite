@@ -34,6 +34,7 @@ interface TerritoriesRepository {
     fun deleteById(territoryId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
+    // API:
     fun handOutTerritories(
         memberId: UUID, territoryIds: List<UUID> = emptyList(), receivingDate: OffsetDateTime
     ): Flow<List<UUID>>

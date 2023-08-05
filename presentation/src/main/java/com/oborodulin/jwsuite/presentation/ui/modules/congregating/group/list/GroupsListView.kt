@@ -5,6 +5,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
@@ -12,12 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -83,7 +79,7 @@ fun GroupsListView(
             GroupsList(
                 congregationId = congregationInput?.congregationId ?: currentCongregation?.id,
                 groups = it,
-                groupInput = groupInput,
+                groupsListViewModel = groupsListViewModel,
                 onClick = { group ->
                     with(membersListViewModel) {
                         submitAction(MembersListUiAction.LoadByGroup(groupId = group.id))
@@ -114,40 +110,41 @@ fun GroupsListView(
 fun GroupsList(
     congregationId: UUID?,
     groups: List<GroupsListItem>,
-    groupInput: GroupInput?,
+    groupsListViewModel: GroupsListViewModel,
     onClick: (GroupsListItem) -> Unit,
     onEdit: (GroupsListItem) -> Unit,
     onDelete: (GroupsListItem) -> Unit
 ) {
     Timber.tag(TAG).d("GroupsList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) } // by
+    // https://stackoverflow.com/questions/72531840/how-to-select-only-one-item-in-a-list-lazycolumn
+    //var selectedIndex by remember { mutableStateOf(-1) }
     if (groups.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = groups.filter { it.selected }
+                .getOrNull(0)?.let { groups.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .selectableGroup() // Optional, for accessibility purpose
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(groups.size) { index ->
-                groups[index].let { group ->
-                    val isSelected =
-                        ((selectedIndex == -1) and (groupInput?.groupId == group.id)) || (selectedIndex == index)
-                    ListItemComponent(
-                        item = group,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(group) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(R.string.dlg_confirm_del_group, group.groupNum)
-                            ) { onDelete(group) }),
-                        selected = isSelected,
-                        background = (if (isSelected) Color.LightGray else Color.Transparent),
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                            onClick(group)
-                        }
-                    )
-                }
+            itemsIndexed(groups, key = { _, item -> item.id }) { _, group ->
+                ListItemComponent(
+                    item = group,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onEdit(group) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(R.string.dlg_confirm_del_group, group.groupNum)
+                        ) { onDelete(group) }),
+                    selected = group.selected, //((selectedIndex == -1) && group.selected) || selectedIndex == index,
+                    onClick = {
+                        //if (selectedIndex != index) selectedIndex = index
+                        groupsListViewModel.singleSelectItem(group)
+                        // allow deselection: selectedIndex = if (selectedIndex == index) -1 else index
+                        onClick(group)
+                    }
+                )
             }
         }
     } else {
@@ -172,7 +169,7 @@ fun PreviewGroupsCongregating() {
             GroupsList(
                 congregationId = UUID.randomUUID(),
                 groups = GroupsListViewModelImpl.previewList(LocalContext.current),
-                groupInput = GroupInput(UUID.randomUUID()),
+                groupsListViewModel = GroupsListViewModelImpl.previewModel(LocalContext.current),
                 onClick = {},
                 onEdit = {},
                 onDelete = {}

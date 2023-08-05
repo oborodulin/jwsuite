@@ -3,6 +3,7 @@ package com.oborodulin.home.common.ui.state
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -82,6 +83,34 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     override fun onSearchTextChange(text: TextFieldValue) {
         _searchText.value = text
     }
+
+    // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
+    override fun singleSelectItem(selectedItem: ListItemModel) {
+        Timber.tag(TAG).d("observeSelection() called")
+        if (uiStateFlow.value is UiState.Success<*>) {
+            if ((uiStateFlow.value as UiState.Success<*>).data is List<*>) {
+                ((uiStateFlow.value as UiState.Success<*>).data as List<*>).forEach {
+                    if (it is ListItemModel) it.selected = false
+                }
+                (((uiStateFlow.value as UiState.Success<*>).data as List<*>).find {
+                    (it is ListItemModel) && it.itemId == selectedItem.itemId
+                } as? ListItemModel)?.selected = true
+                Timber.tag(TAG).d("selected %s list item", selectedItem)
+            }
+        }
+    }
+
+    /*override fun checkItem(checkedItem: ListItemModel, checkValue: Boolean) {
+        Timber.tag(TAG).d("observeSelection() called")
+        if (uiStateFlow.value is UiState.Success<*>) {
+            if ((uiStateFlow.value as UiState.Success<*>).data is List<*>) {
+                (((uiStateFlow.value as UiState.Success<*>).data as List<*>).find {
+                    (it is ListItemModel) && it.itemId == checkedItem.itemId
+                } as? ListItemModel)?.checked = checkValue
+                Timber.tag(TAG).d("checked %s list item", checkedItem)
+            }
+        }
+    }*/
 
     abstract suspend fun handleAction(action: A): Job?
 

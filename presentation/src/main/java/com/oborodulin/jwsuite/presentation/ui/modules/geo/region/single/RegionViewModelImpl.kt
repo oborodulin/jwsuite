@@ -234,6 +234,7 @@ class RegionViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: RegionUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

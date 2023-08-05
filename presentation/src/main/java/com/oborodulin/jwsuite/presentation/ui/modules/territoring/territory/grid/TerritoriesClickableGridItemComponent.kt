@@ -19,10 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -81,31 +76,37 @@ fun TerritoriesClickableGridItemComponent(
                         text = territoryMarks[0],
                         fontSize = 16.sp,
                         style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Start
                     )
                 }
-                if (territoryMarks.size > 1) {
-                    // TerritoryNum + TerritoryBusinessMark?
+                territoryMarks.getOrNull(1)?.let {
+                    // TerritoryNum
                     Text(
                         modifier = Modifier
                             .padding(end = 2.dp)
                             .alignByBaseline(),
-                        text = territoryMarks[1],
+                        text = it,
                         fontSize = 20.sp,
-                        style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.End,
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
-                var checkedState by rememberSaveable { mutableStateOf(territory.isChecked) }
+                territoryMarks.getOrNull(2)?.let {
+                    // TerritoryBusinessMark?
+                    Text(
+                        modifier = Modifier.alignByBaseline(),
+                        text = "-$it",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.End
+                    )
+                }
                 Checkbox(
                     modifier = Modifier
                         .padding(0.dp)
                         //.align(Alignment.CenterVertically),
                         .alignByBaseline(),
-                    checked = checkedState,
+                    checked = territory.checked,
                     onCheckedChange = {
-                        checkedState = it
-                        territory.isChecked = checkedState
+                        territory.checked = it
                         onChecked(it)
                     }
                 )

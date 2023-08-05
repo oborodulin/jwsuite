@@ -111,12 +111,13 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localTerritoryDataSource.deleteAllTerritories()
 
+    // API:
     override fun handOutTerritories(
         memberId: UUID, territoryIds: List<UUID>, receivingDate: OffsetDateTime
     ) = flow {
         val ids = mutableListOf<UUID>()
         territoryIds.forEach {
-            localTerritoryDataSource.insertMember(it, memberId, receivingDate)
+            localTerritoryDataSource.handOut(it, memberId, receivingDate)
             ids.add(it)
         }
         this.emit(ids)

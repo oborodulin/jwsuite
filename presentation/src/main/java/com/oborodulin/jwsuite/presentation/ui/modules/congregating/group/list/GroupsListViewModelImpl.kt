@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
@@ -97,6 +98,7 @@ class GroupsListViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun singleSelectItem(selectedItem: ListItemModel) {}
 
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}

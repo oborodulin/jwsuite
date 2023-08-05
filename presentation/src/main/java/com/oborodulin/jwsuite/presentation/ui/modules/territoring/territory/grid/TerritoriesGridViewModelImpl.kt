@@ -94,7 +94,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("observeChecked() called")
         if (uiStateFlow.value is UiState.Success<*>) {
             val checkedTerritories =
-                (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.isChecked }
+                (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.checked }
             _checkedTerritories.value = checkedTerritories
             Timber.tag(TAG).d(
                 "checked %s territories; areInputsValid = %s",
@@ -314,6 +314,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun observeCheckedTerritories() {}
+                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

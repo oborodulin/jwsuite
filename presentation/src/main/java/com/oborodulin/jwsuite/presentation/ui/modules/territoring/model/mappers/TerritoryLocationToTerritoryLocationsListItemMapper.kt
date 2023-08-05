@@ -8,7 +8,7 @@ import java.util.UUID
 class TerritoryLocationToTerritoryLocationsListItemMapper :
     Mapper<TerritoryLocation, TerritoryLocationsListItem> {
     override fun map(input: TerritoryLocation) = TerritoryLocationsListItem(
-        locationId = input.id ?: UUID.randomUUID(),
+        locationId = input.id,
         locationShortName = input.locationShortName,
         territoryLocationType = input.territoryLocationType,
         congregationId = input.congregationId,

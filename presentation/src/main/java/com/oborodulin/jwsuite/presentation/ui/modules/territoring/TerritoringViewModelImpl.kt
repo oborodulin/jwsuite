@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data.R
@@ -166,6 +167,7 @@ class TerritoringViewModelImpl @Inject constructor(
                 override val location =
                     MutableStateFlow(InputListItemWrapper<TerritoryLocationsListItem>())
 
+                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoringUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

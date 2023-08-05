@@ -151,6 +151,7 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to HandOutTerritoriesConfirmationScreen [route = '%s']",
                     it.destination.route
                 )
+            // https://developer.android.com/jetpack/compose/libraries#hilt
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             HandOutTerritoriesConfirmationScreen(

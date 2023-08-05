@@ -158,7 +158,7 @@ fun HandOutTerritoriesConfirmationView(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(max = 400.dp)
+            .heightIn(max = 350.dp)
             //java.lang.IllegalStateException: Asking for intrinsic measurements of SubcomposeLayout layouts is not supported. This includes components that are built on top of SubcomposeLayout, such as lazy lists, BoxWithConstraints, TabRow, etc. To mitigate this:
             //- if intrinsic measurements are used to achieve 'match parent' sizing,, consider replacing the parent of the component with a custom layout which controls the order in which children are measured, making intrinsic measurement not needed
             //- adding a size modifier to the component, in order to fast return the queried intrinsic measurement.
@@ -184,7 +184,7 @@ fun HandOutTerritoriesConfirmationView(
                         isFocused = focusState.isFocused
                     )
                 },
-            enabled = false,
+            //enabled = false,
             sharedViewModel = appState.sharedViewModel.value,
             inputWrapper = member,
             onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) },

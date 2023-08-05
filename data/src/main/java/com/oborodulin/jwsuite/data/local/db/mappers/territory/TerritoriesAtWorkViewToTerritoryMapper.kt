@@ -34,7 +34,7 @@ class TerritoriesAtWorkViewToTerritoryMapper(
                 member = memberMapper.nullableMap(input.member),
                 congregationId = input.ctCongregationsId,
                 isPrivateSector = input.isPrivateSector,
-                expiredDays = input.expiredDays,
+                expiredTotalDays = input.expiredTotalDays,
                 territoryBusinessMark = input.atWorkTerritoryBusinessMark
             )
             territory.id = this.territory.territoryId

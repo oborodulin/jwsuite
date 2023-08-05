@@ -26,13 +26,13 @@ data class Territory(
     val member: Member? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
-    val handOutDays: Int? = null,
-    val expiredDays: Int? = null,
+    val handOutTotalDays: Int? = null,
+    val expiredTotalDays: Int? = null,
     val territoryBusinessMark: String? = null
 ) : DomainModel() {
     val cardNum =
         "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}-$territoryNum".plus(
-            if (isBusiness) "$territoryBusinessMark" else ""
+            if (isBusiness) "-$territoryBusinessMark" else ""
         )
     val cardLocation =
         "[".plus(if (locality.id != congregation.locality.id) "${locality.localityShortName}:" else "")
@@ -40,4 +40,13 @@ data class Territory(
             .plus(if (!microdistrictShortName.isNullOrEmpty()) "$microdistrictShortName]" else "]")
             .replace("[]", "")
             .replace(":]", "]")
+
+    // https://www.sanfoundry.com/java-program-convert-given-number-days-terms-years-weeks-days/
+    // https://stackoverflow.com/questions/29791881/how-to-convert-number-days-to-years-months-days
+    val handOutYears = handOutTotalDays?.let { it / 365 }
+    val handOutMonths = handOutTotalDays?.let { it % 365 / 30 }
+    val handOutDays = handOutTotalDays?.let { it % 365 % 30 }
+    val expiredYears = expiredTotalDays?.let { it / 365 }
+    val expiredMonths = expiredTotalDays?.let { it % 365 / 30 }
+    val expiredDays = expiredTotalDays?.let { it % 365 % 30 }
 }

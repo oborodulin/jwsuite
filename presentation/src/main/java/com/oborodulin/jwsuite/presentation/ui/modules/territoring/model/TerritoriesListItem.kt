@@ -24,10 +24,12 @@ data class TerritoriesListItem(
     val member: MemberUi? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
+    val handOutYears: Int? = null,
+    val handOutMonths: Int? = null,
     val handOutDays: Int? = null,
-    val expiredDays: Int? = null,
-    var isChecked: Boolean = false,
-    var isSelected: Boolean = false
+    val expiredYears: Int? = null,
+    val expiredMonths: Int? = null,
+    val expiredDays: Int? = null
 ) : Parcelable, ListItemModel(
     itemId = id, headline = "$cardNum $cardLocation", supportingText = territoryDesc
 ) {

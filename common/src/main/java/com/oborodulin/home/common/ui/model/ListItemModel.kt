@@ -2,6 +2,9 @@ package com.oborodulin.home.common.ui.model
 
 import android.content.Context
 import android.os.Parcelable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.oborodulin.home.common.R
 import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
@@ -12,8 +15,13 @@ open class ListItemModel(
     val itemId: UUID? = null,
     val headline: String = "",
     val supportingText: String? = null,
-    val value: BigDecimal? = null
+    val value: BigDecimal? = null,
+    var initChecked: Boolean = false,
+    var initSelected: Boolean = false
 ) : Parcelable, Searchable {
+    var checked by mutableStateOf(initChecked)
+    var selected by mutableStateOf(initSelected)
+
     companion object {
         fun defaultListItemModel(ctx: Context) = ListItemModel(
             itemId = UUID.randomUUID(),

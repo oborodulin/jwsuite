@@ -12,7 +12,7 @@ import java.util.UUID
 @DatabaseView(
     viewName = TerritoriesHandOutView.VIEW_NAME,
     value = """
-SELECT t.*, m.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, $DB_FALSE) AS isPrivateSector, rld.handOutDays, 
+SELECT t.*, m.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, $DB_FALSE) AS isPrivateSector, rld.handOutTotalDays, 
         s.paramValue AS handOutTerritoryBusinessMark
 FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
         ON ct.ctTerritoriesId = t.territoryId AND t.isActive = $DB_TRUE AND t.isProcessed = $DB_TRUE
@@ -29,7 +29,7 @@ class TerritoriesHandOutView(
     @Embedded val member: MemberView?,
     val ctCongregationsId: UUID,
     val isPrivateSector: Boolean,
-    val handOutDays: Int?,
+    val handOutTotalDays: Int?,
     val handOutTerritoryBusinessMark: String
 ) {
     companion object {
