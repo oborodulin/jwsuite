@@ -8,5 +8,6 @@ data class TerritoryStreet(
     val street: GeoStreet,
     val isEven: Boolean? = null,
     val isPrivateSector: Boolean? = null,
-    val estimatedHouses: Int? = null
+    val estimatedHouses: Int? = null,
+    val houses: List<House> = emptyList()
 ) : DomainModel()

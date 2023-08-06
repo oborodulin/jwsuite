@@ -18,6 +18,7 @@ class LocalEntranceDataSourceImpl @Inject constructor(
     private val entranceDao: EntranceDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalEntranceDataSource {
+    override fun getAllEntrances() = entranceDao.findAll()
     override fun getHouseEntrances(houseId: UUID) = entranceDao.findByHouseId(houseId)
 
     override fun getTerritoryEntrances(territoryId: UUID) =

@@ -42,7 +42,8 @@ private const val TAG = "JwSuiteDatabase"
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
-        TerritoryView::class, TerritoryStreetView::class, TerritoryLocationView::class,
+        TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
+        TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class
         //TerritoryInfoView::class

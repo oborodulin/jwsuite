@@ -18,9 +18,11 @@ class LocalHouseDataSourceImpl @Inject constructor(
     private val houseDao: HouseDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalHouseDataSource {
+    override fun getAllHouses() = houseDao.findAll()
     override fun getStreetHouses(streetId: UUID) = houseDao.findByStreetId(streetId)
-
     override fun getTerritoryHouses(territoryId: UUID) = houseDao.findByTerritoryId(territoryId)
+    override fun getTerritoryStreetHouses(territoryId: UUID) =
+        houseDao.findOnTerritoryStreetsByTerritoryId(territoryId)
 
     override fun getHouse(houseId: UUID) = houseDao.findDistinctById(houseId)
 

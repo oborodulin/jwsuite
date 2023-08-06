@@ -18,7 +18,9 @@ class LocalFloorDataSourceImpl @Inject constructor(
     private val floorDao: FloorDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalFloorDataSource {
-    override fun getHouseFloors(entranceId: UUID) = floorDao.findByEntranceId(entranceId)
+    override fun getAllFloors() = floorDao.findAll()
+    override fun getHouseFloors(houseId: UUID) = floorDao.findByHouseId(houseId)
+    override fun getEntranceFloors(entranceId: UUID) = floorDao.findByEntranceId(entranceId)
 
     override fun getTerritoryFloors(territoryId: UUID) = floorDao.findByTerritoryId(territoryId)
 

@@ -3,11 +3,16 @@ package com.oborodulin.jwsuite.data.di
 import com.oborodulin.jwsuite.data.local.db.mappers.*
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.geolocality.GeoLocalityMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.*
@@ -27,11 +32,16 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerr
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
+import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
+import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalitiesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
+import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
+import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
+import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
@@ -71,6 +81,12 @@ object RepositoriesModule {
         localLocalityDataSource: LocalGeoLocalityDataSource, mappers: GeoLocalityMappers
     ): GeoLocalitiesRepository = GeoLocalitiesRepositoryImpl(localLocalityDataSource, mappers)
 
+    @Singleton
+    @Provides
+    fun provideGeoStreetsRepository(
+        localStreetDataSource: LocalGeoStreetDataSource, mappers: GeoStreetMappers
+    ): GeoStreetsRepository = GeoStreetsRepositoryImpl(localStreetDataSource, mappers)
+
     // Congregations:
     @Singleton
     @Provides
@@ -93,6 +109,30 @@ object RepositoriesModule {
     ): MembersRepository = MembersRepositoryImpl(localMemberDataSource, mappers)
 
     // Territories:
+    @Singleton
+    @Provides
+    fun provideHousesRepository(
+        localHouseDataSource: LocalHouseDataSource, mappers: HouseMappers
+    ): HousesRepository = HousesRepositoryImpl(localHouseDataSource, mappers)
+
+    @Singleton
+    @Provides
+    fun provideEntrancesRepository(
+        localEntranceDataSource: LocalEntranceDataSource, mappers: EntranceMappers
+    ): EntrancesRepository = EntrancesRepositoryImpl(localEntranceDataSource, mappers)
+
+    @Singleton
+    @Provides
+    fun provideFloorsRepository(
+        localFloorDataSource: LocalFloorDataSource, mappers: FloorMappers
+    ): FloorsRepository = FloorsRepositoryImpl(localFloorDataSource, mappers)
+
+    @Singleton
+    @Provides
+    fun provideRoomsRepository(
+        localRoomDataSource: LocalRoomDataSource, mappers: RoomMappers
+    ): RoomsRepository = RoomsRepositoryImpl(localRoomDataSource, mappers)
+
     @Singleton
     @Provides
     fun provideTerritoryCategoriesRepository(

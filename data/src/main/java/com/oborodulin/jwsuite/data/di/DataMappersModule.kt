@@ -92,6 +92,8 @@ import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryT
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryLocationViewListToTerritoryLocationsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryLocationViewToTerritoryLocationMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetHouseViewListToHousesListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetHouseViewToHouseMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetToTerritoryStreetEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetViewListToTerritoryStreetsListMapper
@@ -386,13 +388,15 @@ object DataMappersModule {
         geoStreetViewToGeoStreetMapper: GeoStreetViewToGeoStreetMapper,
         geoStreetsListToGeoStreetEntityListMapper: GeoStreetsListToGeoStreetEntityListMapper,
         geoStreetToGeoStreetEntityMapper: GeoStreetToGeoStreetEntityMapper,
-        geoStreetToGeoStreetTlEntityMapper: GeoStreetToGeoStreetTlEntityMapper
+        geoStreetToGeoStreetTlEntityMapper: GeoStreetToGeoStreetTlEntityMapper,
+        territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper
     ): GeoStreetMappers = GeoStreetMappers(
         geoStreetViewListToGeoStreetsListMapper,
         geoStreetViewToGeoStreetMapper,
         geoStreetsListToGeoStreetEntityListMapper,
         geoStreetToGeoStreetEntityMapper,
-        geoStreetToGeoStreetTlEntityMapper
+        geoStreetToGeoStreetTlEntityMapper,
+        territoryStreetViewListToTerritoryStreetsListMapper
     )
 
     // CONGREGATION:
@@ -713,6 +717,17 @@ object DataMappersModule {
         territoryStreetToTerritoryStreetEntityMapper
     )
 
+    // TerritoryStreetHouses:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetHouseViewToHouseMapper(mapper: GeoStreetViewToGeoStreetMapper): TerritoryStreetHouseViewToHouseMapper =
+        TerritoryStreetHouseViewToHouseMapper(streetMapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetHouseViewListToHousesListMapper(mapper: TerritoryStreetHouseViewToHouseMapper): TerritoryStreetHouseViewListToHousesListMapper =
+        TerritoryStreetHouseViewListToHousesListMapper(mapper = mapper)
+
     // Territories:
     @Singleton
     @Provides
@@ -817,6 +832,7 @@ object DataMappersModule {
         territoryLocationViewListToTerritoryLocationsListMapper: TerritoryLocationViewListToTerritoryLocationsListMapper,
         territoryLocationViewToTerritoryLocationMapper: TerritoryLocationViewToTerritoryLocationMapper,
         territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
+        territoryStreetHouseViewListToHousesListMapper: TerritoryStreetHouseViewListToHousesListMapper,
         geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
         entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
@@ -834,6 +850,7 @@ object DataMappersModule {
         territoryLocationViewListToTerritoryLocationsListMapper,
         territoryLocationViewToTerritoryLocationMapper,
         territoryStreetViewListToTerritoryStreetsListMapper,
+        territoryStreetHouseViewListToHousesListMapper,
         geoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper,
         entranceEntityListToEntrancesListMapper,

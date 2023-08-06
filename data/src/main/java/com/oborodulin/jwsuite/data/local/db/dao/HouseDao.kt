@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data.local.db.dao
 import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data.local.db.views.HouseView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetHouseView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,6 +36,15 @@ interface HouseDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
         findByTerritoryId(territoryId).distinctUntilChanged()
+
+    @Query("SELECT tshv.* FROM ${TerritoryStreetHouseView.VIEW_NAME} tshv WHERE tshv.tsTerritoriesId = :territoryId AND tshv.streetLocCode = :locale")
+    fun findOnTerritoryStreetsByTerritoryId(
+        territoryId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryStreetHouseView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctOnTerritoryStreetsByTerritoryId(territoryId: UUID) =
+        findOnTerritoryStreetsByTerritoryId(territoryId).distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

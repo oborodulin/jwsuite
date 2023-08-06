@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoStreetDataSource {
+    fun getAllStreets(): Flow<List<GeoStreetView>>
     fun getLocalityStreets(localityId: UUID, isPrivateSector: Boolean? = null):
             Flow<List<GeoStreetView>>
 

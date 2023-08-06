@@ -19,6 +19,7 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
     private val streetDao: GeoStreetDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoStreetDataSource {
+    override fun getAllStreets() = streetDao.findAll()
     override fun getLocalityStreets(localityId: UUID, isPrivateSector: Boolean?) =
         streetDao.findByLocalityIdAndPrivateSectorMark(localityId, isPrivateSector)
 

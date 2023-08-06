@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalFloorDataSource {
-    fun getHouseFloors(entranceId: UUID): Flow<List<FloorEntity>>
+    fun getAllFloors(): Flow<List<FloorEntity>>
+    fun getHouseFloors(houseId: UUID): Flow<List<FloorEntity>>
+    fun getEntranceFloors(entranceId: UUID): Flow<List<FloorEntity>>
     fun getTerritoryFloors(territoryId: UUID): Flow<List<FloorEntity>>
     fun getFloor(floorId: UUID): Flow<FloorEntity>
     suspend fun insertFloor(floor: FloorEntity)

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalEntranceDataSource {
+    fun getAllEntrances(): Flow<List<EntranceEntity>>
     fun getHouseEntrances(houseId: UUID): Flow<List<EntranceEntity>>
     fun getTerritoryEntrances(territoryId: UUID): Flow<List<EntranceEntity>>
     fun getEntrance(entranceId: UUID): Flow<EntranceEntity>

@@ -67,6 +67,10 @@ class TerritoriesRepositoryImpl @Inject constructor(
         localGeoStreetDataSource.getTerritoryStreets(territoryId)
             .map(mappers.territoryStreetViewListToTerritoryStreetsListMapper::map)
 
+    override fun getTerritoryStreetHouses(territoryId: UUID) =
+        localHouseDataSource.getTerritoryStreetHouses(territoryId)
+            .map(mappers.territoryStreetHouseViewListToHousesListMapper::map)
+
     override fun getHouses(territoryId: UUID) = localHouseDataSource.getTerritoryHouses(territoryId)
         .map(mappers.houseViewListToHousesListMapper::map)
 

@@ -18,6 +18,7 @@ class LocalRoomDataSourceImpl @Inject constructor(
     private val roomDao: RoomDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalRoomDataSource {
+    override fun getAllRooms() = roomDao.findAll()
     override fun getHouseRooms(houseId: UUID) = roomDao.findByHouseId(houseId)
     override fun getEntranceRooms(entranceId: UUID) = roomDao.findByEntranceId(entranceId)
     override fun getFloorRooms(floorId: UUID) = roomDao.findByFloorId(floorId)
