@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.presentation.di
 
-import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
@@ -18,8 +17,6 @@ import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityToLocalityUiMapper
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.GroupConverter
@@ -38,6 +35,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberUiToMemberMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MembersListToMembersListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

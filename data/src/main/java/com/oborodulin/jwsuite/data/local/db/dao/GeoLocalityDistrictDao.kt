@@ -12,29 +12,32 @@ import java.util.*
 @Dao
 interface GeoLocalityDistrictDao {
     // READS:
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} ORDER BY locDistrictName")
-    fun findAll(): Flow<List<GeoLocalityDistrictView>>
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale ORDER BY locDistrictName")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE localityDistrictId = :localityDistrictId")
-    fun findById(localityDistrictId: UUID): Flow<GeoLocalityDistrictView>
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale AND localityDistrictId = :localityDistrictId")
+    fun findById(localityDistrictId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<GeoLocalityDistrictView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(localityDistrictId: UUID) =
         findById(localityDistrictId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId ORDER BY locDistrictName")
-    fun findByLocalityId(localityId: UUID): Flow<List<GeoLocalityDistrictView>>
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale AND ldLocalitiesId = :localityId ORDER BY locDistrictName")
+    fun findByLocalityId(localityId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ldLocalitiesId = :localityId AND locDistrictName LIKE '%' || :districtName || '%' ORDER BY locDistrictName")
-    fun findByDistrictName(localityId: UUID, districtName: String):
-            Flow<List<GeoLocalityDistrictView>>
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale AND ldLocalitiesId = :localityId AND locDistrictName LIKE '%' || :districtName || '%' ORDER BY locDistrictName")
+    fun findByDistrictName(
+        localityId: UUID, districtName: String, locale: String? = Locale.getDefault().language
+    ): Flow<List<GeoLocalityDistrictView>>
 
     @Transaction
     @Query("SELECT * FROM ${GeoLocalityDistrictEntity.TABLE_NAME} WHERE localityDistrictId = :localityDistrictId")

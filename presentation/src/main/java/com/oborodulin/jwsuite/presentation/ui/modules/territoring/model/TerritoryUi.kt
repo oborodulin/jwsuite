@@ -1,14 +1,14 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import java.util.UUID
 
 data class TerritoryUi(
     val congregation: CongregationUi = CongregationUi(),
     val territoryCategory: TerritoryCategoryUi = TerritoryCategoryUi(),
-    val locality: LocalityUi = LocalityUi(),
+    val locality: com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi(),
     val localityDistrictId: UUID? = null,
     val districtShortName: String? = null,
     val microdistrictId: UUID? = null,

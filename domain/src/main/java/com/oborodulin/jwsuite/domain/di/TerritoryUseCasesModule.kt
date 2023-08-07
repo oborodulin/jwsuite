@@ -6,6 +6,7 @@ import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
@@ -54,6 +55,12 @@ object TerritoryUseCasesModule {
         configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
     ): GetTerritoryLocationsUseCase =
         GetTerritoryLocationsUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetTerritoryDetailUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): GetTerritoryDetailUseCase = GetTerritoryDetailUseCase(configuration, territoriesRepository)
 
     @Singleton
     @Provides

@@ -6,6 +6,8 @@ import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationMap
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.geolocality.GeoLocalityMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.geomicrodistrict.GeoMicrodistrictMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetMappers
@@ -21,6 +23,8 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalCong
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalFloorDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoLocalityDataSource
+import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoLocalityDistrictDataSource
+import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoMicrodistrictDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoRegionDistrictDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoStreetDataSource
@@ -35,6 +39,8 @@ import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalitiesRepository
+import com.oborodulin.jwsuite.domain.repositories.GeoLocalityDistrictsRepository
+import com.oborodulin.jwsuite.domain.repositories.GeoMicrodistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
@@ -54,7 +60,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoriesModule {
-    @Singleton
+    @Singleton //@ViewModelScoped
     @Provides
     fun provideAppSettingsRepository(
         localAppSettingDataSource: LocalAppSettingDataSource, mappers: AppSettingMappers
@@ -80,6 +86,22 @@ object RepositoriesModule {
     fun provideGeoLocalitiesRepository(
         localLocalityDataSource: LocalGeoLocalityDataSource, mappers: GeoLocalityMappers
     ): GeoLocalitiesRepository = GeoLocalitiesRepositoryImpl(localLocalityDataSource, mappers)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictsRepository(
+        localLocalityDistrictDataSource: LocalGeoLocalityDistrictDataSource,
+        mappers: GeoLocalityDistrictMappers
+    ): GeoLocalityDistrictsRepository =
+        GeoLocalityDistrictsRepositoryImpl(localLocalityDistrictDataSource, mappers)
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictsRepository(
+        localMicrodistrictDataSource: LocalGeoMicrodistrictDataSource,
+        mappers: GeoMicrodistrictMappers
+    ): GeoMicrodistrictsRepository =
+        GeoMicrodistrictsRepositoryImpl(localMicrodistrictDataSource, mappers)
 
     @Singleton
     @Provides

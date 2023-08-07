@@ -69,7 +69,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override fun getTerritoryStreetHouses(territoryId: UUID) =
         localHouseDataSource.getTerritoryStreetHouses(territoryId)
-            .map(mappers.territoryStreetHouseViewListToHousesListMapper::map)
+            .map(mappers.territoryStreetHouseViewListToTerritoryStreetsListMapper::map)
 
     override fun getHouses(territoryId: UUID) = localHouseDataSource.getTerritoryHouses(territoryId)
         .map(mappers.houseViewListToHousesListMapper::map)

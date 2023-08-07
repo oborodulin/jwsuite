@@ -30,7 +30,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
-import com.oborodulin.jwsuite.presentation.ui.model.LocalitiesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -84,10 +84,10 @@ fun LocalitiesListView(
 
 @Composable
 fun LocalitiesList(
-    localities: List<LocalitiesListItem>,
-    onEdit: (LocalitiesListItem) -> Unit,
-    onDelete: (LocalitiesListItem) -> Unit,
-    onClick: (LocalitiesListItem) -> Unit
+    localities: List<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem>,
+    onEdit: (com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem) -> Unit,
+    onDelete: (com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem) -> Unit,
+    onClick: (com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("LocalitiesList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by

@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation.di
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
@@ -13,11 +14,11 @@ import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCate
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityToLocalityUiMapper
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
@@ -172,12 +173,14 @@ object TerritoringModule {
         getTerritoryUseCase: GetTerritoryUseCase,
         saveTerritoryUseCase: SaveTerritoryUseCase,
         deleteTerritoryUseCase: DeleteTerritoryUseCase,
+        getTerritoryDetailUseCase: GetTerritoryDetailUseCase,
         handOutTerritoriesUseCase: HandOutTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getTerritoriesUseCase,
         getTerritoryUseCase,
         saveTerritoryUseCase,
         deleteTerritoryUseCase,
+        getTerritoryDetailUseCase,
         handOutTerritoriesUseCase
     )
 

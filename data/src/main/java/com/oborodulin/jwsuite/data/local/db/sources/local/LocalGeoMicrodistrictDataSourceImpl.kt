@@ -21,7 +21,11 @@ class LocalGeoMicrodistrictDataSourceImpl @Inject constructor(
     private val microdistrictDao: GeoMicrodistrictDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoMicrodistrictDataSource {
-    override fun getMicrodistricts(localityDistrictId: UUID) =
+    override fun getAllMicrodistricts() = microdistrictDao.findAll()
+    override fun getLocalityMicrodistricts(localityId: UUID) =
+        microdistrictDao.findByLocalityId(localityId)
+
+    override fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID) =
         microdistrictDao.findByLocalityDistrictId(localityDistrictId)
 
     override fun getMicrodistrict(microdistrictId: UUID) =

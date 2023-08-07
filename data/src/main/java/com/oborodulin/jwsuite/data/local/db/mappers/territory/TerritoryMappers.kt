@@ -15,7 +15,7 @@ data class TerritoryMappers(
     val territoryLocationViewListToTerritoryLocationsListMapper: TerritoryLocationViewListToTerritoryLocationsListMapper,
     val territoryLocationViewToTerritoryLocationMapper: TerritoryLocationViewToTerritoryLocationMapper,
     val territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
-    val territoryStreetHouseViewListToHousesListMapper: TerritoryStreetHouseViewListToHousesListMapper,
+    val territoryStreetHouseViewListToTerritoryStreetsListMapper: TerritoryStreetHouseViewListToTerritoryStreetsListMapper,
     val geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
     val houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
     val entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,

@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoMicrodistrictDataSource {
-    fun getMicrodistricts(localityDistrictId: UUID): Flow<List<GeoMicrodistrictView>>
+    fun getAllMicrodistricts(): Flow<List<GeoMicrodistrictView>>
+    fun getLocalityMicrodistricts(localityId: UUID): Flow<List<GeoMicrodistrictView>>
+    fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID): Flow<List<GeoMicrodistrictView>>
     fun getMicrodistrict(microdistrictId: UUID): Flow<GeoMicrodistrictView>
     suspend fun insertMicrodistrict(
         microdistrict: GeoMicrodistrictEntity, textContent: GeoMicrodistrictTlEntity

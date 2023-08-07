@@ -5,5 +5,6 @@ data class TerritoryUseCases(
     val getTerritoryUseCase: GetTerritoryUseCase,
     val saveTerritoryUseCase: SaveTerritoryUseCase,
     val deleteTerritoryUseCase: DeleteTerritoryUseCase,
-    val handOutTerritoriesUseCase: HandOutTerritoriesUseCase
+    val getTerritoryDetailUseCase: GetTerritoryDetailUseCase,
+    val handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
 )

@@ -13,7 +13,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCa
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -130,7 +130,7 @@ class CongregationsListViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality = LocalityUi(),
+                locality = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi(),
                 isFavorite = true
             ),
             CongregationsListItem(
@@ -138,7 +138,7 @@ class CongregationsListViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation2_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation2_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation2_card_mark),
-                locality = LocalityUi()
+                locality = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi()
             )
         )
     }

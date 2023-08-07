@@ -25,7 +25,7 @@ interface GeoMicrodistrictDao {
     fun findDistinctById(microdistrictId: UUID) = findById(microdistrictId).distinctUntilChanged()
 
     @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalitiesId = :localityId ORDER BY microdistrictName")
-    fun findByLocalityId(localityId: UUID): Flow<GeoMicrodistrictView>
+    fun findByLocalityId(localityId: UUID): Flow<List<GeoMicrodistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =

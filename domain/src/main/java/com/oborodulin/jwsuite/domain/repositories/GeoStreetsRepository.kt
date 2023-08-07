@@ -11,7 +11,7 @@ interface GeoStreetsRepository {
     fun getAllByLocalityDistrict(localityDistrictId: UUID, isPrivateSector: Boolean? = null):
             Flow<List<GeoStreet>>
 
-    fun getAllByMicrodistrict(microdistrictId: UUID, isPrivateSector: Boolean?):
+    fun getAllByMicrodistrict(microdistrictId: UUID, isPrivateSector: Boolean? = null):
             Flow<List<GeoStreet>>
 
     fun getAllByTerritory(territoryId: UUID): Flow<List<TerritoryStreet>>

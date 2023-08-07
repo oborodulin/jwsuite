@@ -11,11 +11,9 @@ import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
-import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.MembersListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -46,13 +44,13 @@ class TerritoryDetailsViewModelImpl @Inject constructor(
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryDetailsUiAction.Load -> {
-                loadTerritoryDetails(territoryId = action.territoryId, byCongregation = true)
+                loadTerritoryDetail(territoryId = action.territoryId)
             }
         }
         return job
     }
 
-    private fun loadTerritoryDetails(territoryId: UUID): Job {
+    private fun loadTerritoryDetail(territoryId: UUID): Job {
         Timber.tag(TAG).d("loadTerritoryDetails() called: territoryId = %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(

@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.data.local.db.views
 import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data.local.db.entities.HouseEntity
-import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity
 
 @DatabaseView(
     viewName = TerritoryStreetHouseView.VIEW_NAME,

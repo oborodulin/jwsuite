@@ -15,7 +15,7 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
@@ -107,7 +107,7 @@ class CongregationViewModelImpl @Inject constructor(
     }
 
     private fun saveCongregation(): Job {
-        val localityUi = LocalityUi()
+        val localityUi = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi()
         localityUi.id = locality.value.item?.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,

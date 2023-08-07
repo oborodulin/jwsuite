@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
 import java.util.UUID
@@ -11,7 +11,7 @@ data class TerritoriesListItem(
     val id: UUID,
     val congregation: CongregationUi,
     val territoryCategory: TerritoryCategoryUi,
-    val locality: LocalityUi,
+    val locality: com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi,
     val cardNum: String,
     val cardLocation: String,
     val territoryNum: Int,

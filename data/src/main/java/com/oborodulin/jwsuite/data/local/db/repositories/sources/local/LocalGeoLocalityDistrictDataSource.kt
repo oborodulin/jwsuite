@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoLocalityDistrictDataSource {
+    fun getAllLocalityDistricts(): Flow<List<GeoLocalityDistrictView>>
     fun getLocalityDistricts(localityId: UUID): Flow<List<GeoLocalityDistrictView>>
     fun getLocalityDistrict(localityDistrictId: UUID): Flow<GeoLocalityDistrictView>
     suspend fun insertLocalityDistrict(

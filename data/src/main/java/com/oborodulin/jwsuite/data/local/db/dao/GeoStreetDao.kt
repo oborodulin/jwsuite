@@ -14,7 +14,7 @@ import java.util.*
 @Dao
 interface GeoStreetDao {
     // READS:
-    @Query("SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE streetLocCode = :locale")
+    @Query("SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE streetLocCode = :locale ORDER BY streetName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoStreetView>>
 
     @ExperimentalCoroutinesApi
@@ -28,7 +28,7 @@ interface GeoStreetDao {
     fun findDistinctById(streetId: UUID) = findById(streetId).distinctUntilChanged()
 
     @Query(
-        "SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE sLocalitiesId = :localityId AND isStreetPrivateSector = ifnull(:isPrivateSector, isStreetPrivateSector) AND streetLocCode = :locale"
+        "SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE sLocalitiesId = :localityId AND isStreetPrivateSector = ifnull(:isPrivateSector, isStreetPrivateSector) AND streetLocCode = :locale ORDER BY streetName"
     )
     fun findByLocalityIdAndPrivateSectorMark(
         localityId: UUID, isPrivateSector: Boolean? = null,
@@ -45,6 +45,7 @@ interface GeoStreetDao {
         SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd 
             ON sd.dsStreetsId = sw.streetId AND sd.dsLocalityDistrictsId = :localityDistrictId 
                 AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) AND sw.streetLocCode = :locale
+        ORDER BY sw.streetName                
         """
     )
     fun findByLocalityDistrictIdAndPrivateSectorMark(
@@ -64,6 +65,7 @@ interface GeoStreetDao {
         SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd 
             ON sd.dsStreetsId = sw.streetId AND sd.dsMicrodistrictsId = :microdistrictId 
                 AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) AND sw.streetLocCode = :locale
+        ORDER BY sw.streetName                
         """
     )
     fun findByMicrodistrictIdAndPrivateSectorMark(
@@ -78,7 +80,7 @@ interface GeoStreetDao {
         .distinctUntilChanged()
 
     @Query(
-        "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale"
+        "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale ORDER BY tsv.streetName"
     )
     fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<TerritoryStreetView>>

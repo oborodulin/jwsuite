@@ -1,10 +1,9 @@
 package com.oborodulin.jwsuite.domain.model
 
 import com.oborodulin.home.common.domain.model.DomainModel
-import java.util.UUID
 
 data class GeoLocalityDistrict(
-    val localityId: UUID,
+    val locality: GeoLocality,
     val districtShortName: String,
     val districtName: String,
     val microdistricts: List<GeoMicrodistrict> = emptyList(),

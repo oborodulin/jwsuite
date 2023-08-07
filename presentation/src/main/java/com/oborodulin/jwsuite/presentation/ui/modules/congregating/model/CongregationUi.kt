@@ -1,14 +1,14 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.congregating.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.presentation.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 
 data class CongregationUi(
     val congregationNum: String = "",
     val congregationName: String = "",
     val territoryMark: String = "",
     val isFavorite: Boolean = false,
-    val locality: LocalityUi = LocalityUi()
+    val locality: com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi()
 ) : ModelUi()
 
 fun CongregationUi.toCongregationsListItem() = CongregationsListItem(

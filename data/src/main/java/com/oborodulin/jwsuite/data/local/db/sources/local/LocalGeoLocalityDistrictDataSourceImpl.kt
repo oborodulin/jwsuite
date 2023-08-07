@@ -21,6 +21,7 @@ class LocalGeoLocalityDistrictDataSourceImpl @Inject constructor(
     private val localityDistrictDao: GeoLocalityDistrictDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoLocalityDistrictDataSource {
+    override fun getAllLocalityDistricts() = localityDistrictDao.findAll()
     override fun getLocalityDistricts(localityId: UUID) =
         localityDistrictDao.findByLocalityId(localityId)
 
