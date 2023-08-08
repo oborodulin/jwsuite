@@ -11,8 +11,8 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistric
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
-import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionDistrictsListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionDistrictsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionDistrictsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

@@ -84,10 +84,10 @@ fun LocalitiesListView(
 
 @Composable
 fun LocalitiesList(
-    localities: List<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem>,
-    onEdit: (com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem) -> Unit,
-    onDelete: (com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem) -> Unit,
-    onClick: (com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem) -> Unit
+    localities: List<LocalitiesListItem>,
+    onEdit: (LocalitiesListItem) -> Unit,
+    onDelete: (LocalitiesListItem) -> Unit,
+    onClick: (LocalitiesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("LocalitiesList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by

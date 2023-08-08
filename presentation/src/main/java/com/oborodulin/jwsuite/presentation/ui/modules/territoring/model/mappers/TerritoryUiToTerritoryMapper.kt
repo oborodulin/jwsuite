@@ -2,8 +2,8 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.Territory
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
 
 class TerritoryUiToTerritoryMapper(

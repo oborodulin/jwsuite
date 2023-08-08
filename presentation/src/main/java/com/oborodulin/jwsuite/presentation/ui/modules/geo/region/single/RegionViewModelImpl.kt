@@ -15,9 +15,9 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.RegionUi
-import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionConverter
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.region.RegionUiToRegionMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.region.RegionUiToRegionMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

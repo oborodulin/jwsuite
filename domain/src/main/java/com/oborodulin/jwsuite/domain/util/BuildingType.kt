@@ -7,5 +7,6 @@ enum class BuildingType {
     SHOP,
     MALL,
     POLYCLINIC,
-    HOSPITAL
+    HOSPITAL,
+    SCHOOL
 }

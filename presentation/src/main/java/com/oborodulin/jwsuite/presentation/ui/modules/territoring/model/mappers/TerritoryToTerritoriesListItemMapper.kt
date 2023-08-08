@@ -2,9 +2,9 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.Territory
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import java.util.UUID
 

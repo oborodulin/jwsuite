@@ -28,7 +28,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Congregating.TerritoryDetailsViewModelImpl"
+private const val TAG = "Territoring.TerritoryDetailsViewModelImpl"
 
 @HiltViewModel
 class TerritoryDetailsViewModelImpl @Inject constructor(

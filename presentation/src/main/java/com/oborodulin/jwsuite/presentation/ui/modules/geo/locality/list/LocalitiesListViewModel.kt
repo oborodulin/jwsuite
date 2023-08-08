@@ -6,7 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharedFlow
 
 interface LocalitiesListViewModel :
-    MviViewModeled<List<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem>, LocalitiesListUiAction, LocalitiesListUiSingleEvent> {
+    MviViewModeled<List<LocalitiesListItem>, LocalitiesListUiAction, LocalitiesListUiSingleEvent> {
     val actionsJobFlow: SharedFlow<Job?>
 
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)

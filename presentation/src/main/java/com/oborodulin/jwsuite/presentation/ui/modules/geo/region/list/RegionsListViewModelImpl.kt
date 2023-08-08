@@ -11,8 +11,8 @@ import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
-import com.oborodulin.jwsuite.presentation.ui.model.RegionsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionsListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

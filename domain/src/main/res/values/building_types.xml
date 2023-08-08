@@ -1,0 +1,11 @@
+<resources>
+    <string-array name="building_types">
+        <item>дом</item>
+        <item>общежитие</item>
+        <item>магазин</item>
+        <item>супермаркет</item>
+        <item>поликлиника</item>
+        <item>больница</item>
+        <item>школа</item>
+    </string-array>
+</resources>

@@ -15,10 +15,10 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.RegionDistrictUi
-import com.oborodulin.jwsuite.presentation.ui.model.RegionUi
-import com.oborodulin.jwsuite.presentation.ui.model.converters.RegionDistrictConverter
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionDistrictUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionDistrictConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*

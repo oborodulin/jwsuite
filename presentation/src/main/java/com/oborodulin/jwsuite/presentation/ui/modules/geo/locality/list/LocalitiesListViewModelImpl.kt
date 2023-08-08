@@ -14,7 +14,7 @@ import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem
-import com.oborodulin.jwsuite.presentation.ui.model.converters.LocalitiesListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.LocalitiesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -35,7 +35,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
     private val useCases: LocalityUseCases,
     private val converter: LocalitiesListConverter
 ) : LocalitiesListViewModel,
-    MviViewModel<List<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem>, UiState<List<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem>>, LocalitiesListUiAction, LocalitiesListUiSingleEvent>() {
+    MviViewModel<List<LocalitiesListItem>, UiState<List<LocalitiesListItem>>, LocalitiesListUiAction, LocalitiesListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
@@ -125,14 +125,14 @@ class LocalitiesListViewModelImpl @Inject constructor(
             }
 
         fun previewList(ctx: Context) = listOf(
-            com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem(
+            LocalitiesListItem(
                 id = UUID.randomUUID(),
                 localityCode = ctx.resources.getString(R.string.def_donetsk_code),
                 localityType = LocalityType.CITY,
                 localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
                 localityName = ctx.resources.getString(R.string.def_donetsk_name)
             ),
-            com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalitiesListItem(
+            LocalitiesListItem(
                 id = UUID.randomUUID(),
                 localityCode = ctx.resources.getString(R.string.def_luhansk_code),
                 localityType = LocalityType.CITY,

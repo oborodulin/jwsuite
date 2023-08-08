@@ -29,54 +29,44 @@ import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Congregating.MembersListView"
+private const val TAG = "Territoring.TerritoryDetailsView"
 
 @Composable
-fun MembersListView(
+fun TerritoryDetailsView(
     appState: AppState,
     viewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
-    congregationInput: CongregationInput? = null,
-    groupInput: GroupInput? = null,
-    memberInput: MemberInput? = null
+    territoryInput: TerritoryInput
 ) {
-    Timber.tag(TAG).d(
-        "MembersListView(...) called: congregationInput = %s; groupInput = %s",
-        congregationInput,
-        groupInput
-    )
-    val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
-    Timber.tag(TAG)
-        .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
-
-    LaunchedEffect(congregationId, groupInput?.groupId) {
-        Timber.tag(TAG).d("MembersListView: LaunchedEffect() BEFORE collect ui state flow")
-        when (groupInput?.groupId) {
-            null -> viewModel.submitAction(TerritoryDetailsUiAction.Load(congregationId))
-            else -> viewModel.submitAction(TerritoryDetailsUiAction.LoadByGroup(groupInput.groupId))
-        }
+    Timber.tag(TAG).d("TerritoryDetailsView(...) called: territoryInput = %s", territoryInput)
+    LaunchedEffect(territoryInput.territoryId) {
+        Timber.tag(TAG).d("TerritoryDetailsView: LaunchedEffect() BEFORE collect ui state flow")
+            viewModel.submitAction(TerritoryDetailsUiAction.Load(territoryInput.territoryId))
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            MembersList(
+            TerritoryDetails(
                 congregationId = congregationId,
-                groupId = groupInput?.groupId,
+                groupId = territoryInput?.groupId,
                 searchedText = searchText.text,
                 members = it,
                 memberInput = memberInput,
-                onEdit = { member -> viewModel.submitAction(TerritoryDetailsUiAction.EditMember(member.id)) },
+                onEdit = { member ->
+                    viewModel.submitAction(
+                        TerritoryDetailsUiAction.EditMember(
+                            member.id
+                        )
+                    )
+                },
                 onDelete = { member ->
                     viewModel.submitAction(TerritoryDetailsUiAction.DeleteMember(member.id))
                 }
@@ -84,7 +74,7 @@ fun MembersListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MembersListView: LaunchedEffect() AFTER collect ui state flow")
+        Timber.tag(TAG).d("TerritoryDetailsView: LaunchedEffect() AFTER collect ui state flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
@@ -97,7 +87,7 @@ fun MembersListView(
 }
 
 @Composable
-fun MembersList(
+fun TerritoryDetails(
     congregationId: UUID?,
     groupId: UUID?,
     searchedText: String = "",
@@ -158,7 +148,7 @@ fun MembersList(
 fun PreviewMembersList() {
     JWSuiteTheme {
         Surface {
-            MembersList(
+            TerritoryDetails(
                 congregationId = UUID.randomUUID(),
                 groupId = UUID.randomUUID(),
                 members = TerritoryDetailsViewModelImpl.previewList(LocalContext.current),

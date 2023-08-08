@@ -19,6 +19,9 @@
 
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
     <string name="all_items_unit">ВСЕ</string>
+    <string name="private_sector_unit">ч/с</string>
+    <string name="even_unit">чётн</string>
+    <string name="odd_unit">не чётн</string>
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
     <string name="year_unit">г.</string>

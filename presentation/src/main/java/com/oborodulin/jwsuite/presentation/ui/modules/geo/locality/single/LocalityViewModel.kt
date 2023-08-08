@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-interface LocalityViewModel : DialogViewModeled<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi, LocalityUiAction, UiSingleEvent> {
+interface LocalityViewModel : DialogViewModeled<LocalityUi, LocalityUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
     val localityTypes: StateFlow<MutableMap<LocalityType, String>>

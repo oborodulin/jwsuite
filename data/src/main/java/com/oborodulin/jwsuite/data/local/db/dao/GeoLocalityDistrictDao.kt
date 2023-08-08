@@ -4,6 +4,7 @@ import androidx.room.*
 import com.oborodulin.jwsuite.data.local.db.entities.*
 import com.oborodulin.jwsuite.data.local.db.entities.pojo.LocalityDistrictWithStreets
 import com.oborodulin.jwsuite.data.local.db.views.GeoLocalityDistrictView
+import com.oborodulin.jwsuite.data.util.Constants.PX_LOCALITY_DISTRICT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -12,13 +13,13 @@ import java.util.*
 @Dao
 interface GeoLocalityDistrictDao {
     // READS:
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale ORDER BY locDistrictName")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale AND localityDistrictId = :localityDistrictId")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale AND ${PX_LOCALITY_DISTRICT}localityDistrictId = :localityDistrictId")
     fun findById(localityDistrictId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoLocalityDistrictView>
 
@@ -26,7 +27,7 @@ interface GeoLocalityDistrictDao {
     fun findDistinctById(localityDistrictId: UUID) =
         findById(localityDistrictId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale AND ldLocalitiesId = :localityId ORDER BY locDistrictName")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale AND ${PX_LOCALITY_DISTRICT}ldLocalitiesId = :localityId ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
     fun findByLocalityId(localityId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<GeoLocalityDistrictView>>
 
@@ -34,7 +35,7 @@ interface GeoLocalityDistrictDao {
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE locDistrictLocCode = :locale AND ldLocalitiesId = :localityId AND locDistrictName LIKE '%' || :districtName || '%' ORDER BY locDistrictName")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale AND ${PX_LOCALITY_DISTRICT}ldLocalitiesId = :localityId AND ${PX_LOCALITY_DISTRICT}locDistrictName LIKE '%' || :districtName || '%' ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
     fun findByDistrictName(
         localityId: UUID, districtName: String, locale: String? = Locale.getDefault().language
     ): Flow<List<GeoLocalityDistrictView>>

@@ -104,6 +104,7 @@
     <string name="territory_hand_out_subheader">Выдача участков</string>
     <string name="territory_category_hint">Категория участка</string>
     <string name="territory_receiving_date_hint">Дата выдачи</string>
+    <!--Детали участка -->
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
