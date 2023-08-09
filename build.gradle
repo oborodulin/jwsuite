@@ -22,7 +22,7 @@ buildscript {
                 espresso               : '3.5.1',
                 fragment               : '1.5.7',
                 glide                  : '4.15.1',
-                gradle                 : '8.0.1',
+                gradle                 : '8.1.0',
                 gson                   : '2.10.1',
                 hamcrest               : '2.2',
                 hilt                   : '2.46.1',
@@ -226,8 +226,8 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
     }
 }
 plugins {
-    id 'com.android.application' version '8.0.1' apply false
-    id 'com.android.library' version '8.0.1' apply false
+    id 'com.android.application' version '8.1.0' apply false
+    id 'com.android.library' version '8.1.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.22' apply false
     // Compose Compiler 1.4.8 поддерживает 1.8.22
     id 'org.jlleitschuh.gradle.ktlint' version '11.3.1'

@@ -15,6 +15,10 @@ object Constants {
     const val PX_MICRODISTRICT_REGION = "mr_"
     const val PX_CONGREGATION_REGION = "cr_"
     const val PX_TERRITORY_REGION = "tr_"
+    const val PX_TERRITORY_LD_REGION = "tlr_"
+    const val PX_TERRITORY_M_REGION = "tmr_"
+    const val PX_HOUSE_LD_REGION = "hlr_"
+    const val PX_HOUSE_M_REGION = "hmr_"
 
     // Region Districts:
     const val PX_REGION_DISTRICT = "rd_"
@@ -22,6 +26,11 @@ object Constants {
     const val PX_LOCALITY_DISTRICT_REGION_DISTRICT = "ldrd_"
     const val PX_MICRODISTRICT_REGION_DISTRICT = "mrd_"
     const val PX_CONGREGATION_REGION_DISTRICT = "crd_"
+    const val PX_TERRITORY_REGION_DISTRICT = "trd_"
+    const val PX_TERRITORY_LD_REGION_DISTRICT = "tlrd_"
+    const val PX_TERRITORY_M_REGION_DISTRICT = "tmrd_"
+    const val PX_HOUSE_LD_REGION_DISTRICT = "hlrd_"
+    const val PX_HOUSE_M_REGION_DISTRICT = "hmrd_"
 
     // Localities:
     const val PX_LOCALITY = "l_"
@@ -29,13 +38,23 @@ object Constants {
     const val PX_LOCALITY_DISTRICT_LOCALITY = "ldl_"
     const val PX_MICRODISTRICT_LOCALITY = "ml_"
     const val PX_TERRITORY_LOCALITY = "tl_"
+    const val PX_TERRITORY_LD_LOCALITY = "tll_"
+    const val PX_TERRITORY_M_LOCALITY = "tml_"
+    const val PX_HOUSE_LD_LOCALITY = "hll_"
+    const val PX_HOUSE_M_LOCALITY = "hml_"
 
     // Locality Districts:
     const val PX_LOCALITY_DISTRICT = "ld_"
     const val PX_MICRODISTRICT_LOCALITY_DISTRICT = "mld_"
+    const val PX_TERRITORY_LD_LOCALITY_DISTRICT = "tlld_"
+    const val PX_TERRITORY_M_LOCALITY_DISTRICT = "tmld_"
+    const val PX_HOUSE_LD_LOCALITY_DISTRICT = "hlld_"
+    const val PX_HOUSE_M_LOCALITY_DISTRICT = "hmld_"
 
     // Microdistricts:
     const val PX_MICRODISTRICT = "md_"
+    const val PX_TERRITORY_MICRODISTRICT = "tm_"
+    const val PX_HOUSE_MICRODISTRICT = "hm_"
 
     // Congregation:
     const val PX_GROUP_CONGREGATION = "gc_"

@@ -36,7 +36,7 @@ data class TerritoryDetail(
                 }
             )
     val houseInfo = if (houses.isNotEmpty()) {
-        houses.groupBy { it.isPrivateSector }.forEach { isHousePrivateSector, houses ->
+        houses.groupBy { it.isPrivateSector }.forEach { (isHousePrivateSector, houses) ->
             (if (isPrivateSector == null && isHousePrivateSector) "${ctx.resources.getString(R.string.private_sector_unit)}: "
             else "").plus(
                 " ${ctx.resources.getString(R.string.house_unit)} ".plus(

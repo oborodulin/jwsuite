@@ -2,13 +2,12 @@ package com.oborodulin.jwsuite.domain.model
 
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.util.BuildingType
-import java.util.UUID
 
 data class House(
     val street: GeoStreet,
-    val localityDistrictId: UUID? = null,
-    val microdistrictId: UUID? = null,
-    val territoryId: UUID? = null,
+    val localityDistrict: GeoLocalityDistrict?,
+    val microdistrict: GeoMicrodistrict?,
+    val territory: Territory?,
     val zipCode: String? = null,
     val houseNum: Int,
     val buildingNum: String? = null,
