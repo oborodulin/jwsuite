@@ -1,10 +1,12 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.georegion
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data.local.db.views.GeoRegionView
 import com.oborodulin.jwsuite.domain.model.GeoRegion
 
-class GeoRegionViewToGeoRegionMapper : Mapper<GeoRegionView, GeoRegion> {
+class GeoRegionViewToGeoRegionMapper : Mapper<GeoRegionView, GeoRegion>,
+    NullableMapper<GeoRegionView, GeoRegion> {
     override fun map(input: GeoRegionView): GeoRegion {
         val region = GeoRegion(
             regionCode = input.data.regionCode,
@@ -14,4 +16,6 @@ class GeoRegionViewToGeoRegionMapper : Mapper<GeoRegionView, GeoRegion> {
         region.tlId = input.tl.regionTlId
         return region
     }
+
+    override fun nullableMap(input: GeoRegionView?) = input?.let { map(it) }
 }

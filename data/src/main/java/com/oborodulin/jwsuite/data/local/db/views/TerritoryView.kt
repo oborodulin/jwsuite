@@ -99,20 +99,20 @@ class TerritoryView(
     @Embedded val congregation: CongregationView,
     @Embedded val territoryCategory: TerritoryCategoryEntity,
 
-    @Embedded(prefix = PX_TERRITORY_REGION) val region: GeoRegionView,
-    @Embedded(prefix = PX_TERRITORY_REGION_DISTRICT) val district: RegionDistrictView?,
-    @Embedded(prefix = PX_TERRITORY_LOCALITY) val locality: LocalityView,
+    @Embedded(prefix = PX_TERRITORY_REGION) val tRegion: GeoRegionView,
+    @Embedded(prefix = PX_TERRITORY_REGION_DISTRICT) val tDistrict: RegionDistrictView?,
+    @Embedded(prefix = PX_TERRITORY_LOCALITY) val tLocality: LocalityView,
 
-    @Embedded(prefix = PX_TERRITORY_LD_REGION) val ldRegion: GeoRegionView?,
-    @Embedded(prefix = PX_TERRITORY_LD_REGION_DISTRICT) val ldDistrict: RegionDistrictView?,
-    @Embedded(prefix = PX_TERRITORY_LD_LOCALITY) val ldLocality: LocalityView?,
-    @Embedded(prefix = PX_TERRITORY_LD_LOCALITY_DISTRICT) val localityDistrict: LocalityDistrictView?,
+    @Embedded(prefix = PX_TERRITORY_LD_REGION) val tldRegion: GeoRegionView?,
+    @Embedded(prefix = PX_TERRITORY_LD_REGION_DISTRICT) val tldDistrict: RegionDistrictView?,
+    @Embedded(prefix = PX_TERRITORY_LD_LOCALITY) val tldLocality: LocalityView?,
+    @Embedded(prefix = PX_TERRITORY_LD_LOCALITY_DISTRICT) val tLocalityDistrict: LocalityDistrictView?,
 
-    @Embedded(prefix = PX_TERRITORY_M_REGION) val mRegion: GeoRegionView?,
-    @Embedded(prefix = PX_TERRITORY_M_REGION_DISTRICT) val mDistrict: RegionDistrictView?,
-    @Embedded(prefix = PX_TERRITORY_M_LOCALITY) val mLocality: LocalityView?,
-    @Embedded(prefix = PX_TERRITORY_M_LOCALITY_DISTRICT) val mLocalityDistrict: LocalityDistrictView?,
-    @Embedded(prefix = PX_TERRITORY_MICRODISTRICT) val microdistrict: MicrodistrictView?,
+    @Embedded(prefix = PX_TERRITORY_M_REGION) val tmRegion: GeoRegionView?,
+    @Embedded(prefix = PX_TERRITORY_M_REGION_DISTRICT) val tmDistrict: RegionDistrictView?,
+    @Embedded(prefix = PX_TERRITORY_M_LOCALITY) val tmLocality: LocalityView?,
+    @Embedded(prefix = PX_TERRITORY_M_LOCALITY_DISTRICT) val tmLocalityDistrict: LocalityDistrictView?,
+    @Embedded(prefix = PX_TERRITORY_MICRODISTRICT) val tMicrodistrict: MicrodistrictView?,
 
     val territoryBusinessMark: String
 ) {

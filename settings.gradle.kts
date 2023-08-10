@@ -11,12 +11,12 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         // for com.github.tfaki:ComposableSweetToast
-        maven { url "https://jitpack.io" }
+        maven("https://jitpack.io")
     }
 }
 rootProject.name = "JWSuite"
-include ':app'
-include ':common'
-include ':data'
-include ':domain'
-include ':presentation'
+include("app")
+include("common")
+include("data")
+include("domain")
+include("presentation")

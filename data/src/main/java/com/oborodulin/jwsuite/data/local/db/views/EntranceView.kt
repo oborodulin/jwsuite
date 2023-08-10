@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data.local.db.views
 
 import androidx.room.DatabaseView
 import androidx.room.Embedded
+import com.oborodulin.jwsuite.data.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data.util.Constants.PX_HOUSE_LD_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.PX_HOUSE_LD_LOCALITY_DISTRICT
@@ -15,7 +16,7 @@ import com.oborodulin.jwsuite.data.util.Constants.PX_HOUSE_M_REGION_DISTRICT
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_LOCALITY
 
 @DatabaseView(
-    viewName = HouseView.VIEW_NAME,
+    viewName = EntranceView.VIEW_NAME,
     value = """
 SELECT sv.*,
         rvl.regionId AS ${PX_HOUSE_LD_REGION}regionId, rvl.regionCode AS ${PX_HOUSE_LD_REGION}regionCode, 
@@ -54,8 +55,9 @@ SELECT sv.*,
             mdv.mLocalitiesId AS ${PX_HOUSE_MICRODISTRICT}mLocalitiesId, mdv.microdistrictTlId AS ${PX_HOUSE_MICRODISTRICT}microdistrictTlId, 
             mdv.microdistrictLocCode AS ${PX_HOUSE_MICRODISTRICT}microdistrictLocCode, mdv.microdistrictName AS ${PX_HOUSE_MICRODISTRICT}microdistrictName, 
             mdv.microdistrictsId AS ${PX_HOUSE_MICRODISTRICT}microdistrictsId,
-        tv.*, h.* 
-FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId
+        tv.*, h.*, e.* 
+FROM ${EntranceEntity.TABLE_NAME} e JOIN ${HouseEntity.TABLE_NAME} h ON h.houseId = e.eHousesId 
+    JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId
     LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvl ON ldvl.localityDistrictId = h.hLocalityDistrictsId AND ldvl.locDistrictLocCode = sv.streetLocCode
     LEFT JOIN ${LocalityView.VIEW_NAME} lvl ON lvl.localityId = ldvl.ldLocalitiesId AND lvl.localityLocCode = sv.streetLocCode 
     LEFT JOIN ${GeoRegionView.VIEW_NAME} rvl ON rvl.regionId = lvl.lRegionsId AND rvl.regionLocCode = sv.streetLocCode
@@ -67,27 +69,28 @@ FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.street
     LEFT JOIN ${GeoRegionView.VIEW_NAME} rvm ON rvm.regionId = lvm.lRegionsId AND rvm.regionLocCode = sv.streetLocCode
     LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvm ON rdvm.regionDistrictId = lvm.lRegionDistrictsId AND rdvm.regDistrictLocCode = sv.streetLocCode
 
-    LEFT JOIN ${TerritoryView.VIEW_NAME} tv ON tv.territoryId = h.hTerritoriesId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode  = sv.streetLocCode
+    LEFT JOIN ${TerritoryView.VIEW_NAME} tv ON tv.territoryId = e.eTerritoriesId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode  = sv.streetLocCode
 """
 )
-class HouseView(
+class EntranceView(
     @Embedded val street: GeoStreetView,
 
-    @Embedded(prefix = PX_HOUSE_LD_REGION) val hldRegion: GeoRegionView?,
-    @Embedded(prefix = PX_HOUSE_LD_REGION_DISTRICT) val hldDistrict: RegionDistrictView?,
-    @Embedded(prefix = PX_HOUSE_LD_LOCALITY) val hldLocality: LocalityView?,
-    @Embedded(prefix = PX_HOUSE_LD_LOCALITY_DISTRICT) val hLocalityDistrict: LocalityDistrictView?,
+    @Embedded(prefix = PX_HOUSE_LD_REGION) val eldRegion: GeoRegionView?,
+    @Embedded(prefix = PX_HOUSE_LD_REGION_DISTRICT) val eldDistrict: RegionDistrictView?,
+    @Embedded(prefix = PX_HOUSE_LD_LOCALITY) val eldLocality: LocalityView?,
+    @Embedded(prefix = PX_HOUSE_LD_LOCALITY_DISTRICT) val eLocalityDistrict: LocalityDistrictView?,
 
-    @Embedded(prefix = PX_HOUSE_M_REGION) val hmRegion: GeoRegionView?,
-    @Embedded(prefix = PX_HOUSE_M_REGION_DISTRICT) val hmDistrict: RegionDistrictView?,
-    @Embedded(prefix = PX_HOUSE_M_LOCALITY) val hmLocality: LocalityView?,
-    @Embedded(prefix = PX_HOUSE_M_LOCALITY_DISTRICT) val hmLocalityDistrict: LocalityDistrictView?,
-    @Embedded(prefix = PX_HOUSE_MICRODISTRICT) val hMicrodistrict: MicrodistrictView?,
+    @Embedded(prefix = PX_HOUSE_M_REGION) val emRegion: GeoRegionView?,
+    @Embedded(prefix = PX_HOUSE_M_REGION_DISTRICT) val emDistrict: RegionDistrictView?,
+    @Embedded(prefix = PX_HOUSE_M_LOCALITY) val emLocality: LocalityView?,
+    @Embedded(prefix = PX_HOUSE_M_LOCALITY_DISTRICT) val emLocalityDistrict: LocalityDistrictView?,
+    @Embedded(prefix = PX_HOUSE_MICRODISTRICT) val eMicrodistrict: MicrodistrictView?,
 
     @Embedded val territory: TerritoryView?,
-    @Embedded val house: HouseEntity
+    @Embedded val house: HouseEntity,
+    @Embedded val entrance: EntranceEntity
 ) {
     companion object {
-        const val VIEW_NAME = "houses_view"
+        const val VIEW_NAME = "entrances_view"
     }
 }

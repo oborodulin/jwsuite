@@ -11,7 +11,9 @@ class LocalityViewToGeoLocalityMapper : ConstructedMapper<LocalityView, GeoLocal
     NullableConstructedMapper<LocalityView, GeoLocality> {
     override fun map(input: LocalityView, vararg properties: Any?): GeoLocality {
         if (properties.size != 2 || properties[0] !is GeoRegion || properties[1] !is GeoRegionDistrict) throw IllegalArgumentException(
-            "Constructed Mapper properties not equal 2 or properties[0] is not GeoRegion class or properties[1] is not GeoRegionDistrict class"
+            "Constructed Mapper properties size not equal 2 or properties[0] is not GeoRegion class or properties[1] is not GeoRegionDistrict class: size = %d".format(
+                properties.size
+            )
         )
         val locality = GeoLocality(
             region = properties[0] as GeoRegion,

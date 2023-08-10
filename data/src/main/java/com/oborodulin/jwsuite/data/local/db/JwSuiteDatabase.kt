@@ -45,7 +45,7 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
         TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
-        HouseView::class
+        HouseView::class, EntranceView::class,
         //TerritoryInfoView::class
     ],
     version = 1

@@ -19,6 +19,10 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
@@ -82,11 +86,15 @@ object TerritoringModule {
     fun provideTerritoryToTerritoryUiMapper(
         congregationMapper: CongregationToCongregationUiMapper,
         territoryCategoryMapper: TerritoryCategoryToTerritoryCategoryUiMapper,
-        localityMapper: LocalityToLocalityUiMapper
+        localityMapper: LocalityToLocalityUiMapper,
+        localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
+        microdistrictMapper: MicrodistrictToMicrodistrictUiMapper
     ): TerritoryToTerritoryUiMapper = TerritoryToTerritoryUiMapper(
         congregationMapper = congregationMapper,
         territoryCategoryMapper = territoryCategoryMapper,
-        localityMapper = localityMapper
+        localityMapper = localityMapper,
+        localityDistrictMapper = localityDistrictMapper,
+        microdistrictMapper = microdistrictMapper
     )
 
     @Singleton
@@ -94,11 +102,15 @@ object TerritoringModule {
     fun provideTerritoryUiToTerritoryMapper(
         congregationUiMapper: CongregationUiToCongregationMapper,
         territoryCategoryUiMapper: TerritoryCategoryUiToTerritoryCategoryMapper,
-        localityUiMapper: LocalityUiToLocalityMapper
+        localityUiMapper: LocalityUiToLocalityMapper,
+        localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
+        microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper
     ): TerritoryUiToTerritoryMapper = TerritoryUiToTerritoryMapper(
         congregationUiMapper = congregationUiMapper,
         territoryCategoryUiMapper = territoryCategoryUiMapper,
-        localityUiMapper = localityUiMapper
+        localityUiMapper = localityUiMapper,
+        localityDistrictUiMapper = localityDistrictUiMapper,
+        microdistrictUiMapper = microdistrictUiMapper
     )
 
     @Singleton

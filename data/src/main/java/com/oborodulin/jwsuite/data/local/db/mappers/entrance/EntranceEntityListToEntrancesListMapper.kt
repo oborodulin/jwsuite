@@ -4,5 +4,5 @@ import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.domain.model.Entrance
 
-class EntranceEntityListToEntrancesListMapper(mapper: EntranceEntityToEntranceMapper) :
+class EntranceEntityListToEntrancesListMapper(mapper: EntranceViewToEntranceMapper) :
     ListMapperImpl<EntranceEntity, Entrance>(mapper)

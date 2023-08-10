@@ -24,7 +24,7 @@ class EntrancesRepositoryImpl @Inject constructor(
             .map(mappers.entranceEntityListToEntrancesListMapper::map)
 
     override fun get(entranceId: UUID) = localEntranceDataSource.getEntrance(entranceId)
-        .map(mappers.entranceEntityToEntranceMapper::map)
+        .map(mappers.entranceViewToEntranceMapper::map)
 
     override fun save(entrance: Entrance) = flow {
         if (entrance.id == null) {

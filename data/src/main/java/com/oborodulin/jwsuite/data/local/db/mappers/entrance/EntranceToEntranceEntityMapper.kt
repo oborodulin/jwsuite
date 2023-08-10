@@ -16,7 +16,7 @@ class EntranceToEntranceEntityMapper : Mapper<Entrance, EntranceEntity> {
         roomsByEntranceFloor = input.roomsByFloor,
         estEntranceRooms = input.estimatedRooms,
         entranceDesc = input.territoryDesc,
-        eTerritoriesId = input.territoryId,
-        eHousesId = input.houseId
+        eTerritoriesId = input.territory?.id,
+        eHousesId = input.house.id!!
     )
 }

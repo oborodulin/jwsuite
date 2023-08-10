@@ -12,7 +12,7 @@ FROM ${TerritoryStreetEntity.TABLE_NAME} ts JOIN ${GeoStreetView.VIEW_NAME} s ON
 """
 )
 class TerritoryStreetView(
-    @Embedded val geoStreet: GeoStreetView,
+    @Embedded val street: GeoStreetView,
     @Embedded val territoryStreet: TerritoryStreetEntity
 ) {
     companion object {

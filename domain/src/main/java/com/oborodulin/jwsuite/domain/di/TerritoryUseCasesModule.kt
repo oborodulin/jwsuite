@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.domain.di
 
+import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
@@ -18,6 +19,7 @@ import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -59,8 +61,10 @@ object TerritoryUseCasesModule {
     @Singleton
     @Provides
     fun provideGetTerritoryDetailUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
-    ): GetTerritoryDetailUseCase = GetTerritoryDetailUseCase(configuration, territoriesRepository)
+        configuration: UseCase.Configuration,
+        @ApplicationContext ctx: Context, territoriesRepository: TerritoriesRepository
+    ): GetTerritoryDetailUseCase =
+        GetTerritoryDetailUseCase(configuration, ctx, territoriesRepository)
 
     @Singleton
     @Provides

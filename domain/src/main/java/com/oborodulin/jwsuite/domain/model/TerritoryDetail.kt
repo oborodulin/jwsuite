@@ -9,15 +9,17 @@ import java.util.UUID
 
 data class TerritoryDetail(
     val ctx: Context,
-    val territoryStreetId: UUID?,
+    val territoryStreetId: UUID? = null,
     val streetId: UUID,
     val roadType: RoadType = RoadType.STREET,
     val isPrivateSector: Boolean? = false,
     val housesQty: Int? = null,
     val streetName: String,
     val isEven: Boolean? = null,
-    val houses: List<House> = emptyList()
-    //val rooms: List<Rooms> = emptyList()
+    val houses: List<House> = emptyList(),
+    val entrances: List<Entrance> = emptyList(),
+    val floors: List<Floor> = emptyList(),
+    val rooms: List<Room> = emptyList()
 ) : DomainModel() {
     val streetInfo =
         "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[roadType.ordinal]} $streetName"
@@ -40,7 +42,7 @@ data class TerritoryDetail(
             (if (isPrivateSector == null && isHousePrivateSector) "${ctx.resources.getString(R.string.private_sector_unit)}: "
             else "").plus(
                 " ${ctx.resources.getString(R.string.house_unit)} ".plus(
-                    houses.map {
+                    houses.joinToString(", ") {
                         "${it.houseNum}".plus(
                             when (it.buildingNum) {
                                 null -> ""
@@ -51,7 +53,7 @@ data class TerritoryDetail(
                                 ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.building_types)[it.buildingType.ordinal]
                             })" else ""
                         )
-                    }.joinToString(", ")
+                    }
                 )
             )
         }

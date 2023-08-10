@@ -4,8 +4,8 @@ import com.oborodulin.home.common.domain.model.DomainModel
 import java.util.UUID
 
 data class Entrance(
-    val houseId: UUID,
-    val territoryId: UUID? = null,
+    val house: House,
+    val territory: Territory? = null,
     val entranceNum: Int,
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,

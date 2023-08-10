@@ -23,9 +23,9 @@ class HouseToHouseEntityMapper : Mapper<House, HouseEntity> {
         isHousePrivateSector = input.isPrivateSector,
         buildingType = input.buildingType,
         houseDesc = input.houseDesc,
-        hTerritoriesId = input.territoryId,
-        hMicrodistrictsId = input.microdistrictId,
-        hLocalityDistrictsId = input.localityDistrictId,
+        hTerritoriesId = input.territory?.id,
+        hMicrodistrictsId = input.microdistrict?.id,
+        hLocalityDistrictsId = input.localityDistrict?.id,
         hStreetsId = input.street.id!!
     )
 }

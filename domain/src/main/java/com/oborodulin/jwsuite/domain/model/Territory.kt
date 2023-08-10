@@ -7,10 +7,8 @@ data class Territory(
     val congregation: Congregation,
     val territoryCategory: TerritoryCategory,
     val locality: GeoLocality,
-    val localityDistrictId: UUID? = null,
-    val districtShortName: String?,
-    val microdistrictId: UUID? = null,
-    val microdistrictShortName: String?,
+    val localityDistrict: GeoLocalityDistrict?,
+    val microdistrict: GeoMicrodistrict?,
     val territoryNum: Int,
     val isBusiness: Boolean = false,
     val isGroupMinistry: Boolean = false,
@@ -36,8 +34,8 @@ data class Territory(
         )
     val cardLocation =
         "[".plus(if (locality.id != congregation.locality.id) "${locality.localityShortName}:" else "")
-            .plus(if (!districtShortName.isNullOrEmpty()) "$districtShortName:" else "")
-            .plus(if (!microdistrictShortName.isNullOrEmpty()) "$microdistrictShortName]" else "]")
+            .plus(localityDistrict?.let { "${it.districtShortName}:" } ?: "")
+            .plus(microdistrict?.let { "${it.microdistrictShortName}]" } ?: "]")
             .replace("[]", "")
             .replace(":]", "]")
 
