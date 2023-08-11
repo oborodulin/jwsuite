@@ -8,7 +8,6 @@ import java.util.UUID
 data class LocalitiesListItem(
     val id: UUID,
     val localityCode: String,
-    val localityType: LocalityType,
     val localityShortName: String,
     val localityName: String
 ) : Parcelable, ListItemModel(

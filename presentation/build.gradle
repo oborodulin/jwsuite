@@ -121,4 +121,5 @@ dependencies {
     androidTestImplementation deps.test.extJunit
     androidTestImplementation deps.test.espressoCore
     androidTestImplementation deps.test.uiJunit4Bom
+    androidTestImplementation deps.test.monitor
 }

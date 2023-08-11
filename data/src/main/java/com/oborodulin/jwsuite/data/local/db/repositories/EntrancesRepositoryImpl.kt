@@ -14,14 +14,14 @@ class EntrancesRepositoryImpl @Inject constructor(
     private val mappers: EntranceMappers
 ) : EntrancesRepository {
     override fun getAll() = localEntranceDataSource.getAllEntrances()
-        .map(mappers.entranceEntityListToEntrancesListMapper::map)
+        .map(mappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getAllByHouse(houseId: UUID) = localEntranceDataSource.getHouseEntrances(houseId)
-        .map(mappers.entranceEntityListToEntrancesListMapper::map)
+        .map(mappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getAllByTerritory(territoryId: UUID) =
         localEntranceDataSource.getTerritoryEntrances(territoryId)
-            .map(mappers.entranceEntityListToEntrancesListMapper::map)
+            .map(mappers.entranceViewListToEntrancesListMapper::map)
 
     override fun get(entranceId: UUID) = localEntranceDataSource.getEntrance(entranceId)
         .map(mappers.entranceViewToEntranceMapper::map)

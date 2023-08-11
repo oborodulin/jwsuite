@@ -9,8 +9,7 @@ class LocalityToLocalitiesListItemMapper : Mapper<GeoLocality, LocalitiesListIte
     override fun map(input: GeoLocality) = LocalitiesListItem(
         id = input.id ?: UUID.randomUUID(),
         localityCode = input.localityCode,
-        localityType = input.localityType,
         localityShortName = input.localityShortName,
-        localityName = input.localityName
+        localityName = input.localityFullName
     )
 }

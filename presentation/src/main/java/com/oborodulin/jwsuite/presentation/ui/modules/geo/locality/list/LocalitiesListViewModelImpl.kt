@@ -128,16 +128,18 @@ class LocalitiesListViewModelImpl @Inject constructor(
             LocalitiesListItem(
                 id = UUID.randomUUID(),
                 localityCode = ctx.resources.getString(R.string.def_donetsk_code),
-                localityType = LocalityType.CITY,
                 localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
-                localityName = ctx.resources.getString(R.string.def_donetsk_name)
+                localityName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_types)[LocalityType.CITY.ordinal]} ${
+                    ctx.resources.getString(R.string.def_donetsk_name)
+                }"
             ),
             LocalitiesListItem(
                 id = UUID.randomUUID(),
                 localityCode = ctx.resources.getString(R.string.def_luhansk_code),
-                localityType = LocalityType.CITY,
                 localityShortName = ctx.resources.getString(R.string.def_luhansk_short_name),
-                localityName = ctx.resources.getString(R.string.def_luhansk_name)
+                localityName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_types)[LocalityType.CITY.ordinal]} ${
+                    ctx.resources.getString(R.string.def_luhansk_name)
+                }"
             )
         )
     }

@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import java.util.UUID
 
-class GetTerritoryDetailUseCase(
+class GetTerritoryDetailsUseCase(
     configuration: Configuration,
     private val ctx: Context,
     private val territoriesRepository: TerritoriesRepository
-) : UseCase<GetTerritoryDetailUseCase.Request, GetTerritoryDetailUseCase.Response>(
+) : UseCase<GetTerritoryDetailsUseCase.Request, GetTerritoryDetailsUseCase.Response>(
     configuration
 ) {
 
@@ -54,17 +54,17 @@ class GetTerritoryDetailUseCase(
                         )
                     )
                 }
-            houses.groupBy({ it.street }) { it }
-                .forEach { (street, houses) ->
+            entrances.groupBy({ it.house }) { it }
+                .forEach { (house, entrances) ->
                     territoryDetails.add(
                         TerritoryDetail(
                             ctx = ctx,
-                            streetId = street.id!!,
-                            roadType = street.roadType,
-                            isPrivateSector = street.isPrivateSector,
-                            housesQty = street.estimatedHouses,
-                            streetName = street.streetName,
-                            houses = houses
+                            streetId = house.street.id!!,
+                            roadType = house.street.roadType,
+                            isPrivateSector = house.street.isPrivateSector,
+                            housesQty = house.street.estimatedHouses,
+                            streetName = house.street.streetName,
+                            entrances = entrances
                         )
                     )
                 }

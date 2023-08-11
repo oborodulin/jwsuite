@@ -76,7 +76,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override fun getEntrances(territoryId: UUID) =
         localEntranceDataSource.getTerritoryEntrances(territoryId)
-            .map(mappers.entranceEntityListToEntrancesListMapper::map)
+            .map(mappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getFloors(territoryId: UUID) = localFloorDataSource.getTerritoryFloors(territoryId)
         .map(mappers.floorEntityListToFloorsListMapper::map)

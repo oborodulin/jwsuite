@@ -38,6 +38,8 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.CELL_SIZE
 import kotlinx.coroutines.flow.collectLatest
@@ -49,8 +51,8 @@ private const val TAG = "Territoring.TerritoriesGridView"
 @Composable
 fun TerritoriesGridView(
     appState: AppState,
-    territoriesGridViewModel: TerritoriesGridViewModel,//Impl = hiltViewModel(),
-//    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    territoriesGridViewModel: TerritoriesGridViewModel,
+    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
     territoryInput: TerritoryInput? = null,
@@ -104,9 +106,9 @@ fun TerritoriesGridView(
                     searchedText = searchText.text,
                     onChecked = { territoriesGridViewModel.observeCheckedTerritories() }
                 ) { territory ->
-                    /*with(membersListViewModel) {
-                        submitAction(MembersListUiAction.LoadByCongregation(territory.id))
-                    }*/
+                    with(territoryDetailsViewModel) {
+                        submitAction(TerritoryDetailsUiAction.Load(territory.id))
+                    }
                 }
             } else { // TerritoryProcessType.ALL
                 TerritoriesEditableGrid(
@@ -131,9 +133,9 @@ fun TerritoriesGridView(
                         )
                     }
                 ) { territory ->
-                    /*with(membersListViewModel) {
-                        submitAction(MembersListUiAction.LoadByCongregation(territory.id))
-                    }*/
+                    with(territoryDetailsViewModel) {
+                        submitAction(TerritoryDetailsUiAction.Load(territory.id))
+                    }
                 }
             }
         }

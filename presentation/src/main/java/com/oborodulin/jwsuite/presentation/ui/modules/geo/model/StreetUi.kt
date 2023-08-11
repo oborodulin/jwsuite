@@ -15,7 +15,6 @@ data class StreetUi(
 
 fun StreetUi.toStreetsListItem() = StreetsListItem(
     id = this.id!!,
-    roadType = this.roadType,
     isPrivateSector = this.isPrivateSector,
     estimatedHouses = this.estimatedHouses,
     streetName = this.streetName

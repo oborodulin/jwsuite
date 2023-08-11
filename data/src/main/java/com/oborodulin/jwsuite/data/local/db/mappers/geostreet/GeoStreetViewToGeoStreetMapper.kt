@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.geostreet
 
+import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
@@ -8,12 +9,13 @@ import com.oborodulin.jwsuite.data.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.domain.model.GeoStreet
 
 class GeoStreetViewToGeoStreetMapper(
-    private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
+    private val ctx: Context, private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
     private val localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
     private val microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
 ) : Mapper<GeoStreetView, GeoStreet> {
     override fun map(input: GeoStreetView): GeoStreet {
         val street = GeoStreet(
+            ctx = ctx,
             locality = localityMapper.map(input.locality),
             localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
             microdistrict = microdistrictMapper.nullableMap(input.microdistrict),

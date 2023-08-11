@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_LOCALITY
 @DatabaseView(
     viewName = TerritoryStreetHouseView.VIEW_NAME,
     value = """
-SELECT tsv.*, h.* 
+SELECT tsv.*, tv.*, h.* 
 FROM ${TerritoryStreetView.VIEW_NAME} tsv JOIN ${TerritoryView.VIEW_NAME} tv ON tv.territoryId = tsv.tsTerritoriesId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode  = tsv.streetLocCode
     LEFT JOIN ${HouseEntity.TABLE_NAME} h ON h.hStreetsId = tsv.tsStreetsId AND h.hTerritoriesId = tsv.tsTerritoriesId
         AND ifnull(h.hLocalityDistrictsId, "") = ifnull(tv.tLocalityDistrictsId, "") AND ifnull(h.hMicrodistrictsId, "") = ifnull(tv.tMicrodistrictsId, "") 

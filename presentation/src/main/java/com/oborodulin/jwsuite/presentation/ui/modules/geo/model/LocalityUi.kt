@@ -15,7 +15,6 @@ data class LocalityUi(
 fun LocalityUi.toLocalitiesListItem() = LocalitiesListItem(
     id = this.id!!,
     localityCode = this.localityCode,
-    localityType = this.localityType,
     localityShortName = this.localityShortName,
     localityName = this.localityName
 )

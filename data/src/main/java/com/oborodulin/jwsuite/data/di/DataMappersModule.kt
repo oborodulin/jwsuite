@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data.di
 
+import android.content.Context
 import com.oborodulin.jwsuite.data.local.db.mappers.*
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingEntityListToAppSettingListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingEntityToAppSettingMapper
@@ -11,9 +12,9 @@ import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationVie
 import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationsListToCongregationEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.congregation.FavoriteCongregationViewToCongregationMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceEntityListToEntrancesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceToEntranceEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceViewListToEntrancesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceViewToEntranceMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntrancesListToEntranceEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorEntityListToFloorsListMapper
@@ -111,6 +112,7 @@ import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -239,16 +241,18 @@ object DataMappersModule {
     // Localities:
     @Singleton
     @Provides
-    fun provideLocalityViewToGeoLocalityMapper(): LocalityViewToGeoLocalityMapper =
-        LocalityViewToGeoLocalityMapper()
+    fun provideLocalityViewToGeoLocalityMapper(@ApplicationContext ctx: Context): LocalityViewToGeoLocalityMapper =
+        LocalityViewToGeoLocalityMapper(ctx = ctx)
 
     @Singleton
     @Provides
     fun provideGeoLocalityViewToGeoLocalityMapper(
         regionMapper: GeoRegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper
+        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: LocalityViewToGeoLocalityMapper
     ): GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
-        regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper
+        regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper
     )
 
     @Singleton
@@ -298,11 +302,12 @@ object DataMappersModule {
     fun provideGeoLocalityDistrictViewToGeoLocalityDistrictMapper(
         regionMapper: GeoRegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper
+        localityMapper: LocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper
     ): GeoLocalityDistrictViewToGeoLocalityDistrictMapper =
         GeoLocalityDistrictViewToGeoLocalityDistrictMapper(
             regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper,
-            localityMapper = localityMapper
+            localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper
         )
 
     @Singleton
@@ -344,8 +349,8 @@ object DataMappersModule {
     // Microdistricts:
     @Singleton
     @Provides
-    fun provideMicrodistrictViewToGeoMicrodistrictMapper(): MicrodistrictViewToGeoMicrodistrictMapper =
-        MicrodistrictViewToGeoMicrodistrictMapper()
+    fun provideMicrodistrictViewToGeoMicrodistrictMapper(@ApplicationContext ctx: Context): MicrodistrictViewToGeoMicrodistrictMapper =
+        MicrodistrictViewToGeoMicrodistrictMapper(ctx = ctx)
 
     @Singleton
     @Provides
@@ -353,11 +358,13 @@ object DataMappersModule {
         regionMapper: GeoRegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper
+        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
     ): GeoMicrodistrictViewToGeoMicrodistrictMapper =
         GeoMicrodistrictViewToGeoMicrodistrictMapper(
             regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper,
-            localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper
+            localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper,
+            microdistrictMapper = microdistrictMapper
         )
 
     @Singleton
@@ -400,10 +407,12 @@ object DataMappersModule {
     @Singleton
     @Provides
     fun provideGeoStreetViewToGeoStreetMapper(
+        @ApplicationContext ctx: Context,
         localityMapper: GeoLocalityViewToGeoLocalityMapper,
         localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
         microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
     ): GeoStreetViewToGeoStreetMapper = GeoStreetViewToGeoStreetMapper(
+        ctx = ctx,
         localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper,
         microdistrictMapper = microdistrictMapper
     )
@@ -676,8 +685,8 @@ object DataMappersModule {
 
     @Singleton
     @Provides
-    fun provideEntranceEntityListToEntrancesListMapper(mapper: EntranceViewToEntranceMapper): EntranceEntityListToEntrancesListMapper =
-        EntranceEntityListToEntrancesListMapper(mapper = mapper)
+    fun provideEntranceEntityListToEntrancesListMapper(mapper: EntranceViewToEntranceMapper): EntranceViewListToEntrancesListMapper =
+        EntranceViewListToEntrancesListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -692,12 +701,12 @@ object DataMappersModule {
     @Singleton
     @Provides
     fun provideEntranceMappers(
-        entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
+        entranceViewListToEntrancesListMapper: EntranceViewListToEntrancesListMapper,
         entranceViewToEntranceMapper: EntranceViewToEntranceMapper,
         entrancesListToEntranceEntityListMapper: EntrancesListToEntranceEntityListMapper,
         entranceToEntranceEntityMapper: EntranceToEntranceEntityMapper
     ): EntranceMappers = EntranceMappers(
-        entranceEntityListToEntrancesListMapper,
+        entranceViewListToEntrancesListMapper,
         entranceViewToEntranceMapper,
         entrancesListToEntranceEntityListMapper,
         entranceToEntranceEntityMapper
@@ -954,7 +963,7 @@ object DataMappersModule {
         territoryStreetHouseViewListToTerritoryStreetsListMapper: TerritoryStreetHouseViewListToTerritoryStreetsListMapper,
         geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
-        entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
+        entranceViewListToEntrancesListMapper: EntranceViewListToEntrancesListMapper,
         floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
         roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
@@ -972,7 +981,7 @@ object DataMappersModule {
         territoryStreetHouseViewListToTerritoryStreetsListMapper,
         geoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper,
-        entranceEntityListToEntrancesListMapper,
+        entranceViewListToEntrancesListMapper,
         floorEntityListToFloorsListMapper,
         roomEntityListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper,

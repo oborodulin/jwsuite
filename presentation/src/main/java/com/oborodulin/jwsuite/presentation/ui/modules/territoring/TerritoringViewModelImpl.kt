@@ -183,7 +183,7 @@ class TerritoringViewModelImpl @Inject constructor(
             TerritoryLocationsListItem(
                 locationId = null,
                 congregationId = UUID.randomUUID(),
-                locationShortName = ctx.resources.getString(com.oborodulin.home.common.R.string.all_items_unit),
+                locationShortName = ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.all_items_expr),
                 territoryLocationType = TerritoryLocationType.ALL,
                 isPrivateSector = false
             ),

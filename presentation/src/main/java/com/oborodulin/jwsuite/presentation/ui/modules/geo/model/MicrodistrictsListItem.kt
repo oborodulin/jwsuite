@@ -7,7 +7,6 @@ import java.util.UUID
 
 data class MicrodistrictsListItem(
     val id: UUID,
-    val microdistrictType: VillageType,
     val microdistrictShortName: String,
     val microdistrictName: String
 ) : Parcelable, ListItemModel(

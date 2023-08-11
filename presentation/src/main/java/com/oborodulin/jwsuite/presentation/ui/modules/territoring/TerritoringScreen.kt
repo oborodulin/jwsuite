@@ -26,10 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -37,9 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
@@ -55,6 +49,8 @@ import com.oborodulin.jwsuite.presentation.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
@@ -72,28 +68,18 @@ private const val TAG = "Territoring.TerritoringScreen"
 @Composable
 fun TerritoringScreen(
     appState: AppState,
-    territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
     territoriesGridViewModel: TerritoriesGridViewModel,
+    territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
+    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    val events = remember(territoringViewModel.events, lifecycleOwner) {
-        territoringViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
-    }
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
+    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
     val areInputsValid by territoriesGridViewModel.areInputsValid.collectAsStateWithLifecycle()
@@ -358,6 +344,7 @@ fun HandOutTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
+            TerritoryDetailsView()
         }
         SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
         Row(
@@ -449,6 +436,7 @@ fun AtWorkTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
+            TerritoryDetailsView()
         }
         SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
     }
@@ -509,6 +497,7 @@ fun IdleTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
+            TerritoryDetailsView()
         }
         SearchComponent(
             searchText,
@@ -572,6 +561,7 @@ fun AllTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
+            TerritoryDetailsView()
         }
         SearchComponent(
             searchText,

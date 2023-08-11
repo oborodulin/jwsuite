@@ -18,16 +18,10 @@
     <string name="dlg_confirm_title">Подтверждение</string>
 
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
-    <string name="all_items_unit">ВСЕ</string>
-    <string name="private_sector_unit">ч/с</string>
-    <string name="even_unit">чётн</string>
-    <string name="odd_unit">не чётн</string>
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
     <string name="year_unit">г.</string>
     <string name="person_unit">чел.</string>
-    <string name="house_unit">д.</string>
-    <string name="room_unit">кв.</string>
     <string name="quantity_unit">шт</string>
     <string name="m2_unit">м2</string>
     <string name="m3_unit">м3</string>

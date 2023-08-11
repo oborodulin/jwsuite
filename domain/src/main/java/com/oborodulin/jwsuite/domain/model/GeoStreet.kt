@@ -1,9 +1,12 @@
 package com.oborodulin.jwsuite.domain.model
 
+import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
+import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.util.RoadType
 
 data class GeoStreet(
+    val ctx: Context? = null,
     val locality: GeoLocality,
     val localityDistrict: GeoLocalityDistrict?,
     val microdistrict: GeoMicrodistrict?,
@@ -13,4 +16,7 @@ data class GeoStreet(
     val estimatedHouses: Int? = null,
     val streetName: String,
     val houses: List<House> = emptyList()
-) : DomainModel()
+) : DomainModel() {
+    val streetFullName =
+        "${ctx?.let { it.resources.getStringArray(R.array.road_types)[roadType.ordinal] }} $streetName"
+}

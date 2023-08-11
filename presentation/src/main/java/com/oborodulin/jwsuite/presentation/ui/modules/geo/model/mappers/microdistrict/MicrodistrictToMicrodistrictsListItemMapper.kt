@@ -9,8 +9,7 @@ class MicrodistrictToMicrodistrictsListItemMapper :
     Mapper<GeoMicrodistrict, MicrodistrictsListItem> {
     override fun map(input: GeoMicrodistrict) = MicrodistrictsListItem(
         id = input.id ?: UUID.randomUUID(),
-        microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
-        microdistrictName = input.microdistrictName
+        microdistrictName = input.microdistrictFullName
     )
 }

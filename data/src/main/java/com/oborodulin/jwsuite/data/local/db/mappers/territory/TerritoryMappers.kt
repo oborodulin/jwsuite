@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.territory
 
-import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceEntityListToEntrancesListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceViewListToEntrancesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorEntityListToFloorsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewListToHousesListMapper
@@ -18,7 +18,7 @@ data class TerritoryMappers(
     val territoryStreetHouseViewListToTerritoryStreetsListMapper: TerritoryStreetHouseViewListToTerritoryStreetsListMapper,
     val geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
     val houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
-    val entranceEntityListToEntrancesListMapper: EntranceEntityListToEntrancesListMapper,
+    val entranceViewListToEntrancesListMapper: EntranceViewListToEntrancesListMapper,
     val floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
     val roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
 

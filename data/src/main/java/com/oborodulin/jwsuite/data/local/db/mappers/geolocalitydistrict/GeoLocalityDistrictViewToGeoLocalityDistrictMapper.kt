@@ -11,20 +11,17 @@ import com.oborodulin.jwsuite.domain.model.GeoLocalityDistrict
 class GeoLocalityDistrictViewToGeoLocalityDistrictMapper(
     private val regionMapper: GeoRegionViewToGeoRegionMapper,
     private val regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-    private val localityMapper: LocalityViewToGeoLocalityMapper
+    private val localityMapper: LocalityViewToGeoLocalityMapper,
+    private val localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper
 ) : Mapper<GeoLocalityDistrictView, GeoLocalityDistrict>,
     NullableMapper<GeoLocalityDistrictView, GeoLocalityDistrict> {
     override fun map(input: GeoLocalityDistrictView): GeoLocalityDistrict {
         val region = regionMapper.map(input.region)
         val regionDistrict = regionDistrictMapper.nullableMap(input.district, region)
-        val localityDistrict = GeoLocalityDistrict(
-            locality = localityMapper.map(input.locality, region, regionDistrict),
-            districtShortName = input.localityDistrict.data.locDistrictShortName,
-            districtName = input.localityDistrict.tl.locDistrictName
+        return localityDistrictMapper.map(
+            input.localityDistrict,
+            localityMapper.map(input.locality, region, regionDistrict)
         )
-        localityDistrict.id = input.localityDistrict.data.localityDistrictId
-        localityDistrict.tlId = input.localityDistrict.tl.localityDistrictTlId
-        return localityDistrict
     }
 
     override fun nullableMap(input: GeoLocalityDistrictView?) = input?.let { map(it) }

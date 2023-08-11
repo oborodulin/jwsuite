@@ -7,14 +7,10 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
-import com.oborodulin.jwsuite.data.R
-import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
-import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MembersListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryDetailsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryDetailsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -33,9 +29,9 @@ private const val TAG = "Territoring.TerritoryDetailsViewModelImpl"
 @HiltViewModel
 class TerritoryDetailsViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
-    private val converter: TerritoriesListConverter
+    private val converter: TerritoryDetailsListConverter
 ) : TerritoryDetailsViewModel,
-    MviViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, TerritoryDetailsUiAction, UiSingleEvent>() {
+    MviViewModel<List<TerritoryDetailsListItem>, UiState<List<TerritoryDetailsListItem>>, TerritoryDetailsUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
@@ -44,20 +40,17 @@ class TerritoryDetailsViewModelImpl @Inject constructor(
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryDetailsUiAction.Load -> {
-                loadTerritoryDetail(territoryId = action.territoryId)
+                loadTerritoryDetails(territoryId = action.territoryId)
             }
         }
         return job
     }
 
-    private fun loadTerritoryDetail(territoryId: UUID): Job {
+    private fun loadTerritoryDetails(territoryId: UUID): Job {
         Timber.tag(TAG).d("loadTerritoryDetails() called: territoryId = %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getMembersUseCase.execute(
-                GetMembersUseCase.Request(
-                    congregationId = territoryId, groupId = groupId,
-                    byCongregation = byCongregation
-                )
+            useCases.getTerritoryDetailsUseCase.execute(
+                GetTerritoryDetailsUseCase.Request(territoryId = territoryId)
             )
                 .map {
                     converter.convert(it)
@@ -69,21 +62,13 @@ class TerritoryDetailsViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deleteMember(memberId: UUID): Job {
-        Timber.tag(TAG).d("deleteMember() called: memberId = %s", memberId.toString())
-        val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteMemberUseCase.execute(DeleteMemberUseCase.Request(memberId)).collect {}
-        }
-        return job
-    }
-
     override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
 
     companion object {
         fun previewModel(ctx: Context) =
             object : TerritoryDetailsViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
-                override val singleEventFlow = Channel<TerritoryDetailsUiSingleEvent>().receiveAsFlow()
+                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
@@ -96,53 +81,23 @@ class TerritoryDetailsViewModelImpl @Inject constructor(
             }
 
         fun previewList(ctx: Context) = listOf(
-            MembersListItem(
-                id = UUID.randomUUID(),
-                group = GroupUi(),
-                memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                memberFullName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
-                    ctx.resources.getString(
-                        R.string.def_ivanov_member_name
-                    )
-                } ${ctx.resources.getString(R.string.def_ivanov_member_patronymic)} [${
-                    ctx.resources.getString(
-                        R.string.def_ivanov_member_pseudonym
-                    )
-                }]",
-                memberShortName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
-                    ctx.resources.getString(
-                        R.string.def_ivanov_member_name
-                    )[0]
-                }.${ctx.resources.getString(R.string.def_ivanov_member_patronymic)[0]}. [${
-                    ctx.resources.getString(
-                        R.string.def_ivanov_member_pseudonym
-                    )
-                }]",
-                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
+            TerritoryDetailsListItem(
+                territoryStreetId = UUID.randomUUID(),
+                streetId = UUID.randomUUID(),
+                streetInfo = "ул. Собинова",
+                housesInfo = "д. 129, 131 - не жилой (80 кв.)"
             ),
-            MembersListItem(
-                id = UUID.randomUUID(),
-                group = GroupUi(),
-                memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
-                memberFullName = "${ctx.resources.getString(R.string.def_tarasova_member_surname)} ${
-                    ctx.resources.getString(
-                        R.string.def_tarasova_member_name
-                    )
-                } ${ctx.resources.getString(R.string.def_tarasova_member_patronymic)} [${
-                    ctx.resources.getString(
-                        R.string.def_tarasova_member_pseudonym
-                    )
-                }]",
-                memberShortName = "${ctx.resources.getString(R.string.def_tarasova_member_surname)} ${
-                    ctx.resources.getString(
-                        R.string.def_tarasova_member_name
-                    )[0]
-                }.${ctx.resources.getString(R.string.def_tarasova_member_patronymic)[0]}. [${
-                    ctx.resources.getString(
-                        R.string.def_tarasova_member_pseudonym
-                    )
-                }]",
-                dateOfBirth = Utils.toOffsetDateTime("1979-08-01T14:29:10.212+03:00")
+            TerritoryDetailsListItem(
+                territoryStreetId = UUID.randomUUID(),
+                streetId = UUID.randomUUID(),
+                streetInfo = "пр-т Киевский",
+                entrancesInfo = "д. 5 (III-VI подъезды, 96 кв.)",
+            ),
+            TerritoryDetailsListItem(
+                territoryStreetId = UUID.randomUUID(),
+                streetId = UUID.randomUUID(),
+                streetInfo = "ул. Листопрокатчиков",
+                roomsInfo = "д. 14, кв. 1"
             )
         )
     }

@@ -8,9 +8,8 @@ import java.util.UUID
 class StreetToStreetsListItemMapper : Mapper<GeoStreet, StreetsListItem> {
     override fun map(input: GeoStreet) = StreetsListItem(
         id = input.id ?: UUID.randomUUID(),
-        roadType = input.roadType,
         isPrivateSector = input.isPrivateSector,
         estimatedHouses = input.estimatedHouses,
-        streetName = input.streetName
+        streetName = input.streetFullName
     )
 }

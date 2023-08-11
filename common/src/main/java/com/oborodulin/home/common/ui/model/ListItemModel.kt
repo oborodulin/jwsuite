@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.oborodulin.home.common.R
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 import java.util.UUID
@@ -19,7 +20,9 @@ open class ListItemModel(
     var initChecked: Boolean = false,
     var initSelected: Boolean = false
 ) : Parcelable, Searchable {
+    @IgnoredOnParcel
     var checked by mutableStateOf(initChecked)
+    @IgnoredOnParcel
     var selected by mutableStateOf(initSelected)
 
     companion object {

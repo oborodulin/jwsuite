@@ -10,7 +10,11 @@ class RegionDistrictViewToGeoRegionDistrictMapper :
     ConstructedMapper<RegionDistrictView, GeoRegionDistrict>,
     NullableConstructedMapper<RegionDistrictView, GeoRegionDistrict> {
     override fun map(input: RegionDistrictView, vararg properties: Any?): GeoRegionDistrict {
-        if (properties.isEmpty() || properties[0] !is GeoRegion) throw IllegalArgumentException("Constructed Mapper properties empty or properties[0] is not GeoRegion class")
+        if (properties.isEmpty() || properties[0] !is GeoRegion) throw IllegalArgumentException(
+            "RegionDistrictViewToGeoRegionDistrictMapper properties empty or properties[0] is not GeoRegion class: input.id = %s".format(
+                input.data.regionDistrictId
+            )
+        )
         val regionDistrict = GeoRegionDistrict(
             region = properties[0] as GeoRegion,
             districtShortName = input.data.regDistrictShortName,
