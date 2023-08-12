@@ -6,5 +6,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 data class TabRowItem (
     val title: String,
     val icon: ImageVector? = null,
+    val onClick: () -> Unit = {},
     val view: @Composable () -> Unit
 )

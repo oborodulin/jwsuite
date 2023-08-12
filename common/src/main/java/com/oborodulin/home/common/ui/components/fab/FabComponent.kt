@@ -28,6 +28,7 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 @Composable
 fun FabComponent(
+    modifier: Modifier = Modifier,
     enabled: Boolean = false,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
@@ -63,7 +64,7 @@ fun FabComponent(
         // https://stackoverflow.com/questions/72574071/unable-to-change-text-emphasis-using-localcontentalpha-in-material-design-3
         // https://stackoverflow.com/questions/70831743/customize-contentalpha-in-jetpack-compose-like-a-theme
         ExtendedFloatingActionButton(
-            modifier = Modifier.padding(bottom = 48.dp, end = 16.dp),
+            modifier = modifier,
             containerColor = if (enabled) MaterialTheme.colorScheme.primary else Gray,
             icon = {
                 if (enabled)

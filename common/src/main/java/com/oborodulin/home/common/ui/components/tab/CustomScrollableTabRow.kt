@@ -53,7 +53,14 @@ fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>) {
             Tab(
                 //modifier = Modifier.height(50.dp),
                 selected = pagerState.currentPage == tabIndex,
-                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(tabIndex) } },
+                onClick = {
+                    tab.onClick()
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(
+                            tabIndex
+                        )
+                    }
+                },
                 icon = tab.icon?.let { icon ->
                     { Icon(imageVector = icon, contentDescription = "") }
                 },

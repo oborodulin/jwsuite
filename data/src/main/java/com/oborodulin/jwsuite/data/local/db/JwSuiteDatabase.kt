@@ -48,7 +48,7 @@ private const val TAG = "JwSuiteDatabase"
         HouseView::class, EntranceView::class,
         //TerritoryInfoView::class
     ],
-    version = 1
+    version = 1, exportSchema = true
 )
 @TypeConverters(JwSuiteTypeConverters::class)
 abstract class JwSuiteDatabase : RoomDatabase() {

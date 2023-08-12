@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.fab.FabComponent
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.search.SearchComponent
@@ -50,7 +51,6 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsView
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
@@ -70,7 +70,7 @@ fun TerritoringScreen(
     appState: AppState,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
-    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
+//    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
@@ -183,22 +183,7 @@ fun TerritoringScreen(
                         Icon(Icons.Outlined.Settings, null)
                     }*/
                 },
-                /*floatingActionButton = {
-                    FabComponent(
-                        enabled = areInputsValid,
-                        painterResId = R.drawable.ic_hand_map_24,
-                        textResId = R.string.fab_hand_out_text
-                    ) {
-                        Timber.tag(TAG).d("TerritoringScreen(...): FAB onClick...")
-                        // checks all errors
-                        territoriesGridViewModel.onContinueClick {
-                            // if success, then go to Hand Out Confirmation
-                            territoriesGridViewModel.submitAction(
-                                TerritoriesGridUiAction.HandOutConfirmation
-                            )
-                        }
-                    }
-                },*/
+                floatingActionButton = appState.fab.value,
                 bottomBar = bottomBar
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
@@ -206,62 +191,86 @@ fun TerritoringScreen(
                         listOf(
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_hand_out),
-                                view = {
-                                    location.item?.let {
-                                        HandOutTerritoriesView(
-                                            appState = appState,
-                                            enableAction = areInputsValid,
-                                            territoringViewModel = territoringViewModel,
-                                            territoriesGridViewModel = territoriesGridViewModel,
-                                            territoryLocationType = it.territoryLocationType,
-                                            locationId = it.locationId,
-                                            isPrivateSector = isPrivateSector.value.toBoolean()
-                                        )
+                                onClick = {
+                                    appState.fab.value = {
+                                        FabComponent(
+                                            modifier = Modifier.padding(
+                                                bottom = 48.dp,
+                                                end = 16.dp
+                                            ),
+                                            enabled = areInputsValid,
+                                            painterResId = R.drawable.ic_hand_map_24,
+                                            textResId = R.string.fab_hand_out_text
+                                        ) {
+                                            Timber.tag(TAG)
+                                                .d("TerritoringScreen(...): FAB onClick...")
+                                            // checks all errors
+                                            territoriesGridViewModel.onContinueClick {
+                                                // if success, then go to Hand Out Confirmation
+                                                Timber.tag(TAG)
+                                                    .d("TerritoringScreen: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
+                                                territoringViewModel.submitAction(
+                                                    TerritoringUiAction.HandOutTerritoriesConfirmation
+                                                )
+                                            }
+                                        }
                                     }
                                 },
-                            ),
+                            ) {
+                                location.item?.let {
+                                    HandOutTerritoriesView(
+                                        appState = appState,
+                                        enableAction = areInputsValid,
+                                        territoringViewModel = territoringViewModel,
+                                        territoriesGridViewModel = territoriesGridViewModel,
+                                        territoryLocationType = it.territoryLocationType,
+                                        locationId = it.locationId,
+                                        isPrivateSector = isPrivateSector.value.toBoolean()
+                                    )
+                                }
+                            },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_at_work),
-                                view = {
-                                    location.item?.let {
-                                        AtWorkTerritoriesView(
-                                            appState = appState,
-                                            territoriesGridViewModel = territoriesGridViewModel,
-                                            territoryLocationType = it.territoryLocationType,
-                                            locationId = it.locationId,
-                                            isPrivateSector = isPrivateSector.value.toBoolean()
-                                        )
-                                    }
-                                },
-                            ),
+                                onClick = { appState.fab.value = {} }
+                            ) {
+                                location.item?.let {
+                                    AtWorkTerritoriesView(
+                                        appState = appState,
+                                        territoriesGridViewModel = territoriesGridViewModel,
+                                        territoryLocationType = it.territoryLocationType,
+                                        locationId = it.locationId,
+                                        isPrivateSector = isPrivateSector.value.toBoolean()
+                                    )
+                                }
+                            },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_idle),
-                                view = {
-                                    location.item?.let {
-                                        IdleTerritoriesView(
-                                            appState = appState,
-                                            territoriesGridViewModel = territoriesGridViewModel,
-                                            territoryLocationType = it.territoryLocationType,
-                                            locationId = it.locationId,
-                                            isPrivateSector = isPrivateSector.value.toBoolean()
-                                        )
-                                    }
-                                },
-                            ),
+                                onClick = { appState.fab.value = {} }
+                            ) {
+                                location.item?.let {
+                                    IdleTerritoriesView(
+                                        appState = appState,
+                                        territoriesGridViewModel = territoriesGridViewModel,
+                                        territoryLocationType = it.territoryLocationType,
+                                        locationId = it.locationId,
+                                        isPrivateSector = isPrivateSector.value.toBoolean()
+                                    )
+                                }
+                            },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_all),
-                                view = {
-                                    location.item?.let {
-                                        AllTerritoriesView(
-                                            appState = appState,
-                                            territoriesGridViewModel = territoriesGridViewModel,
-                                            territoryLocationType = it.territoryLocationType,
-                                            locationId = it.locationId,
-                                            isPrivateSector = isPrivateSector.value.toBoolean()
-                                        )
-                                    }
-                                },
-                            )
+                                onClick = { appState.fab.value = {} }
+                            ) {
+                                location.item?.let {
+                                    AllTerritoriesView(
+                                        appState = appState,
+                                        territoriesGridViewModel = territoriesGridViewModel,
+                                        territoryLocationType = it.territoryLocationType,
+                                        locationId = it.locationId,
+                                        isPrivateSector = isPrivateSector.value.toBoolean()
+                                    )
+                                }
+                            }
                         )
                     )
                 }
@@ -347,7 +356,16 @@ fun HandOutTerritoriesView(
             TerritoryDetailsView()
         }
         SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
-        Row(
+        BarMemberComboBox(
+            modifier = Modifier
+                .padding(end = 8.dp),
+            sharedViewModel = appState.sharedViewModel.value,
+            inputWrapper = member,
+            onValueChange = {
+                territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
+            }
+        )
+/*        Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -377,7 +395,7 @@ fun HandOutTerritoriesView(
                     }
                 }
             )
-        }
+        }*/
     }
 }
 

@@ -2,7 +2,8 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
-    id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
 }
 
 android {
@@ -56,7 +57,7 @@ dependencies {
     implementation deps.androidx.coreKtx
     implementation deps.androidx.appcompat
     implementation deps.google.material
-
+/*
     // Testing: Local
     implementation deps.test.extJunitKtx
     implementation deps.test.runner
@@ -79,4 +80,5 @@ dependencies {
     androidTestImplementation deps.test.espressoCore
     androidTestImplementation deps.test.uiJunit4Bom
     androidTestImplementation deps.test.monitor
+ */
 }

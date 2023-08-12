@@ -3,7 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
-    id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
 }
 
 android {
@@ -75,7 +76,7 @@ dependencies {
     //implementation deps.logging.logger
 
     // Room
-    kapt deps.room.compiler
+    ksp deps.room.compiler
     implementation deps.room.runtime
     implementation deps.room.ktx
 

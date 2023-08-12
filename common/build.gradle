@@ -3,7 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
-    id 'org.jetbrains.kotlin.kapt'
+    // id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
 }
 
 android {
@@ -82,12 +83,6 @@ dependencies {
     // Compose lifecycle
     implementation deps.lifecycle.runtimeCompose
 
-    // Coil
-    implementation deps.coil.compose
-    // Lottie
-    implementation deps.lottie.compose
-    // Desugaring
-    //coreLibraryDesugaring deps.tools.desugar
     // i18n
     implementation deps.i18n.nv
 
@@ -100,8 +95,17 @@ dependencies {
     // Compose preview
     debugImplementation deps.androidx.poolingcontainer
 
+    // Coil
+    implementation deps.coil.compose
+    // Lottie
+    implementation deps.lottie.compose
+/*
+    // Desugaring
+    //coreLibraryDesugaring deps.tools.desugar
+
     // Testing dependencies
     testImplementation deps.test.junit
     androidTestImplementation deps.test.extJunit
     androidTestImplementation deps.test.espressoCore
+ */
 }
