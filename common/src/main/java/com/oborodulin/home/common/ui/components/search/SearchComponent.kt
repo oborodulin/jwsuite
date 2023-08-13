@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
@@ -51,6 +52,7 @@ fun SearchComponent(
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(32.dp)
             .padding(vertical = 4.dp)
             .bringIntoViewRequester(relocation)
             .onFocusEvent {

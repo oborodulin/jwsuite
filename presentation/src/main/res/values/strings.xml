@@ -19,7 +19,10 @@
     <!--BUTTONS: -->
     <string name="btn_hand_out_lbl">Выдать</string>
     <!--FAB: -->
-    <string name="fab_hand_out_text">Выдать</string>
+    <string name="fab_territory_hand_out_text">Выдать</string>
+    <string name="fab_territory_at_work_text">Обработать</string>
+    <string name="fab_territory_idle_text">В работу</string>
+    <string name="fab_territory_all_text">Добавить</string>
 
     <!--МЕНЮ собрания -->
     <string name="congregation_add">Добавить</string>

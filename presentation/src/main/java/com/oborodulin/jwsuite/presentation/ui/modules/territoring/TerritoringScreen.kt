@@ -13,13 +13,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -35,7 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
-import com.oborodulin.home.common.ui.components.fab.FabComponent
+import com.oborodulin.home.common.ui.components.fab.MultiFabComponent
+import com.oborodulin.home.common.ui.components.fab.MultiFloatingState
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.search.SearchComponent
@@ -46,11 +50,11 @@ import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutFabComponent
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesInputEvent
@@ -83,6 +87,16 @@ fun TerritoringScreen(
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
     val areInputsValid by territoriesGridViewModel.areInputsValid.collectAsStateWithLifecycle()
+
+    appState.fab.value = {
+        HandOutFabComponent(
+            enabled = areInputsValid,
+            territoriesGridViewModel = territoriesGridViewModel,
+            territoringViewModel = territoringViewModel
+        )
+    }
+    var multiFloatingState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
+
 
     Timber.tag(TAG).d("Init Focus Requesters for all territoring fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -193,27 +207,11 @@ fun TerritoringScreen(
                                 title = stringResource(R.string.territory_tab_hand_out),
                                 onClick = {
                                     appState.fab.value = {
-                                        FabComponent(
-                                            modifier = Modifier.padding(
-                                                bottom = 48.dp,
-                                                end = 16.dp
-                                            ),
+                                        HandOutFabComponent(
                                             enabled = areInputsValid,
-                                            painterResId = R.drawable.ic_hand_map_24,
-                                            textResId = R.string.fab_hand_out_text
-                                        ) {
-                                            Timber.tag(TAG)
-                                                .d("TerritoringScreen(...): FAB onClick...")
-                                            // checks all errors
-                                            territoriesGridViewModel.onContinueClick {
-                                                // if success, then go to Hand Out Confirmation
-                                                Timber.tag(TAG)
-                                                    .d("TerritoringScreen: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
-                                                territoringViewModel.submitAction(
-                                                    TerritoringUiAction.HandOutTerritoriesConfirmation
-                                                )
-                                            }
-                                        }
+                                            territoriesGridViewModel = territoriesGridViewModel,
+                                            territoringViewModel = territoringViewModel
+                                        )
                                     }
                                 },
                             ) {
@@ -231,7 +229,19 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_at_work),
-                                onClick = { appState.fab.value = {} }
+                                onClick = {
+                                    appState.fab.value = {
+                                        MultiFabComponent(
+                                            multiFloatingState = multiFloatingState,
+                                            onMultiFabStateChange = {
+                                                multiFloatingState = it
+                                            },
+                                            enabled = true,
+                                            imageVector = Icons.Outlined.Done,
+                                            textResId = R.string.fab_territory_at_work_text
+                                        )
+                                    }
+                                }
                             ) {
                                 location.item?.let {
                                     AtWorkTerritoriesView(
@@ -357,45 +367,44 @@ fun HandOutTerritoriesView(
         }
         SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
         BarMemberComboBox(
-            modifier = Modifier
-                .padding(end = 8.dp),
+            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
             sharedViewModel = appState.sharedViewModel.value,
             inputWrapper = member,
             onValueChange = {
                 territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
             }
         )
-/*        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BarMemberComboBox(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .weight(6f),
-                sharedViewModel = appState.sharedViewModel.value,
-                inputWrapper = member,
-                onValueChange = {
-                    territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
-                }
-            )
-            HandOutButtonComponent(
-                modifier = Modifier.weight(4f),
-                enabled = enableAction,
-                onClick = {
-                    Timber.tag(TAG).d("TerritoringScreen: HandOut Button onClick...")
-                    // checks all errors
-                    territoriesGridViewModel.onContinueClick {
-                        // if success, then go to Hand Out Confirmation
-                        Timber.tag(TAG)
-                            .d("TerritoringScreen: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
-                        territoringViewModel.submitAction(
-                            TerritoringUiAction.HandOutTerritoriesConfirmation
-                        )
-                    }
-                }
-            )
-        }*/
+        /*        Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BarMemberComboBox(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .weight(6f),
+                        sharedViewModel = appState.sharedViewModel.value,
+                        inputWrapper = member,
+                        onValueChange = {
+                            territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
+                        }
+                    )
+                    HandOutButtonComponent(
+                        modifier = Modifier.weight(4f),
+                        enabled = enableAction,
+                        onClick = {
+                            Timber.tag(TAG).d("TerritoringScreen: HandOut Button onClick...")
+                            // checks all errors
+                            territoriesGridViewModel.onContinueClick {
+                                // if success, then go to Hand Out Confirmation
+                                Timber.tag(TAG)
+                                    .d("TerritoringScreen: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
+                                territoringViewModel.submitAction(
+                                    TerritoringUiAction.HandOutTerritoriesConfirmation
+                                )
+                            }
+                        }
+                    )
+                }*/
     }
 }
 

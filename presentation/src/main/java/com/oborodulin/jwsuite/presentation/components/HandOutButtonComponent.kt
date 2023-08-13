@@ -23,7 +23,7 @@ fun HandOutButtonComponent(
         modifier = modifier,
         enabled = enabled,
         painterResId = R.drawable.ic_hand_map_24,
-        textResId = R.string.fab_hand_out_text,
+        textResId = R.string.fab_territory_hand_out_text,
         contentDescriptionResId = contentDescriptionResId,
         onClick = onClick
     )

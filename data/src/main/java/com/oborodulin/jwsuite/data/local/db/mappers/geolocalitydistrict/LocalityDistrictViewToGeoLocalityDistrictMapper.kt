@@ -26,5 +26,5 @@ class LocalityDistrictViewToGeoLocalityDistrictMapper :
     }
 
     override fun nullableMap(input: LocalityDistrictView?, vararg properties: Any?) =
-        input?.let { map(it, properties) }
+        input?.let { map(it, *properties) }
 }

@@ -6,13 +6,20 @@ import com.oborodulin.jwsuite.data.local.db.views.RegionDistrictView
 import com.oborodulin.jwsuite.domain.model.GeoRegion
 import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
 
+private const val TAG = "Data.RegionDistrictViewToGeoRegionDistrictMapper"
+
 class RegionDistrictViewToGeoRegionDistrictMapper :
     ConstructedMapper<RegionDistrictView, GeoRegionDistrict>,
     NullableConstructedMapper<RegionDistrictView, GeoRegionDistrict> {
     override fun map(input: RegionDistrictView, vararg properties: Any?): GeoRegionDistrict {
+        /*
+                properties.forEach { property ->
+                    property?.let { Timber.tag(TAG).d("property class = %s", it::class) }
+                }
+         */
         if (properties.isEmpty() || properties[0] !is GeoRegion) throw IllegalArgumentException(
-            "RegionDistrictViewToGeoRegionDistrictMapper properties empty or properties[0] is not GeoRegion class: input.id = %s".format(
-                input.data.regionDistrictId
+            "RegionDistrictViewToGeoRegionDistrictMapper properties empty or properties[0] is not GeoRegion class: input.id = %s; properties.isEmpty() = %s".format(
+                input.data.regionDistrictId, properties.isEmpty()
             )
         )
         val regionDistrict = GeoRegionDistrict(
@@ -26,5 +33,5 @@ class RegionDistrictViewToGeoRegionDistrictMapper :
     }
 
     override fun nullableMap(input: RegionDistrictView?, vararg properties: Any?) =
-        input?.let { map(it, properties) }
+        input?.let { map(it, *properties) }
 }

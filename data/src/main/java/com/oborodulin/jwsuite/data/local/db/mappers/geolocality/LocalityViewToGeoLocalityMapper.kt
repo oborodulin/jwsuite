@@ -32,5 +32,5 @@ class LocalityViewToGeoLocalityMapper(private val ctx: Context) :
     }
 
     override fun nullableMap(input: LocalityView?, vararg properties: Any?) =
-        input?.let { map(it, properties) }
+        input?.let { map(it, *properties) }
 }

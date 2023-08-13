@@ -32,6 +32,7 @@ class TerritoriesHandOutViewToTerritoryMapper(
         var territory: Territory
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
+            Timber.tag(TAG).d("TerritoriesHandOutViewToTerritoryMapper: region = %s", region)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
             Timber.tag(TAG).d("Territory: Locality -> RegionDistrict -> Region mapped")
 
