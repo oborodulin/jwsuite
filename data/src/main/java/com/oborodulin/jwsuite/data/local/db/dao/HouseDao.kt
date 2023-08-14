@@ -46,6 +46,13 @@ interface HouseDao {
     fun findDistinctOnTerritoryStreetsByTerritoryId(territoryId: UUID) =
         findOnTerritoryStreetsByTerritoryId(territoryId).distinctUntilChanged()
 
+    @Query("SELECT group_concat((CASE WHEN buildingNum IS NOT NULL THEN houseNum || '-' || buildingNum ELSE houseNum END), ', ') AS houseNums FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId")
+    fun findNumsByTerritoryId(territoryId: UUID): Flow<String?>
+
+    @ExperimentalCoroutinesApi
+    fun findNumsDistinctByTerritoryId(territoryId: UUID) =
+        findNumsByTerritoryId(territoryId).distinctUntilChanged()
+
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(house: HouseEntity)

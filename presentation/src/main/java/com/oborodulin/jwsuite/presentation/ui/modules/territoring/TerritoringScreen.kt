@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.fab.MinFabItem
 import com.oborodulin.home.common.ui.components.fab.MultiFabComponent
 import com.oborodulin.home.common.ui.components.fab.MultiFloatingState
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
@@ -86,11 +89,13 @@ fun TerritoringScreen(
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
-    val areInputsValid by territoriesGridViewModel.areInputsValid.collectAsStateWithLifecycle()
+    val areHandOutInputsValid by territoriesGridViewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
+    val areTerritoriesChecked by territoriesGridViewModel.areTerritoriesChecked.collectAsStateWithLifecycle()
 
+    // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
     appState.fab.value = {
         HandOutFabComponent(
-            enabled = areInputsValid,
+            enabled = areHandOutInputsValid,
             territoriesGridViewModel = territoriesGridViewModel,
             territoringViewModel = territoringViewModel
         )
@@ -208,7 +213,7 @@ fun TerritoringScreen(
                                 onClick = {
                                     appState.fab.value = {
                                         HandOutFabComponent(
-                                            enabled = areInputsValid,
+                                            enabled = areHandOutInputsValid,
                                             territoriesGridViewModel = territoriesGridViewModel,
                                             territoringViewModel = territoringViewModel
                                         )
@@ -218,7 +223,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     HandOutTerritoriesView(
                                         appState = appState,
-                                        enableAction = areInputsValid,
+                                        enableAction = areHandOutInputsValid,
                                         territoringViewModel = territoringViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
@@ -236,9 +241,16 @@ fun TerritoringScreen(
                                             onMultiFabStateChange = {
                                                 multiFloatingState = it
                                             },
-                                            enabled = true,
-                                            imageVector = Icons.Outlined.Done,
-                                            textResId = R.string.fab_territory_at_work_text
+                                            enabled = areTerritoriesChecked,
+                                            collapsedImageVector = Icons.Outlined.Done,
+                                            collapsedTextResId = R.string.fab_territory_at_work_text,
+                                            expandedImageVector = Icons.Default.Close,
+                                            items = listOf(
+                                                    MinFabItem(
+                                                        labelResId = R.string.fab_territory_process_room_text,
+                                                        imageVector = Icons.Default.Email
+                                                    ),
+                                                )
                                         )
                                     }
                                 }

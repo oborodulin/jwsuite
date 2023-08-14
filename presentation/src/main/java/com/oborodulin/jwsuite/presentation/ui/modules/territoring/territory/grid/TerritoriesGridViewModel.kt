@@ -21,7 +21,8 @@ interface TerritoriesGridViewModel :
     val receivingDate: StateFlow<InputWrapper>
     val checkedTerritories: StateFlow<List<TerritoriesListItem>>
 
-    val areInputsValid: StateFlow<Boolean>
+    val areTerritoriesChecked: StateFlow<Boolean>
+    val areHandOutInputsValid: StateFlow<Boolean>
 
     fun observeCheckedTerritories()
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)

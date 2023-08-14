@@ -23,6 +23,11 @@
     <string name="fab_territory_at_work_text">Обработать</string>
     <string name="fab_territory_idle_text">В работу</string>
     <string name="fab_territory_all_text">Добавить</string>
+    <string name="fab_territory_process_room_text">Квартиру</string>
+    <string name="fab_territory_process_entrance_text">Подъезд</string>
+    <string name="fab_territory_process_house_text">Дом</string>
+    <string name="fab_territory_process_street_text">Улицу</string>
+    <string name="fab_territory_process_text">Участок</string>
 
     <!--МЕНЮ собрания -->
     <string name="congregation_add">Добавить</string>

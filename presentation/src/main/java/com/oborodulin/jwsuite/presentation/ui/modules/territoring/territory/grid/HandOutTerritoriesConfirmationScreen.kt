@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -86,7 +85,7 @@ fun HandOutTerritoriesConfirmationScreen(
                     }
                 }
             ) { paddingValues ->
-                val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+                val areInputsValid by viewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
                 Column(modifier = Modifier.padding(paddingValues),
                 horizontalAlignment = Alignment.CenterHorizontally) {
                     HandOutTerritoriesConfirmationView(appState = appState, viewModel = viewModel)

@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -81,13 +82,20 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         MutableStateFlow(emptyList())
     override val checkedTerritories = _checkedTerritories.asStateFlow()
 
-    override val areInputsValid =
+    override val areTerritoriesChecked =
+        flow { emit(checkedTerritories.value.isNotEmpty()) }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            false
+        )
+
+    override val areHandOutInputsValid =
         combine(
             member,
             receivingDate,
-            checkedTerritories
-        ) { member, receivingDate, checkedTerritories ->
-            member.errorId == null && receivingDate.errorId == null && checkedTerritories.isNotEmpty()
+            areTerritoriesChecked
+        ) { member, receivingDate, areTerritoriesChecked ->
+            member.errorId == null && receivingDate.errorId == null && areTerritoriesChecked
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun observeCheckedTerritories() {
@@ -99,7 +107,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             Timber.tag(TAG).d(
                 "checked %s territories; areInputsValid = %s",
                 checkedTerritories.size,
-                areInputsValid.value
+                areHandOutInputsValid.value
             )
         }
     }
@@ -311,7 +319,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val receivingDate = MutableStateFlow(InputWrapper())
 
-                override val areInputsValid = MutableStateFlow(true)
+                override val areTerritoriesChecked = MutableStateFlow(true)
+                override val areHandOutInputsValid = MutableStateFlow(true)
 
                 override fun observeCheckedTerritories() {}
                 override fun singleSelectItem(selectedItem: ListItemModel) {}

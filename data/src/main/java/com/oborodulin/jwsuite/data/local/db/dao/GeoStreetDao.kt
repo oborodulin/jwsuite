@@ -90,6 +90,16 @@ interface GeoStreetDao {
         findByTerritoryId(territoryId).distinctUntilChanged()
 
     @Query(
+        "SELECT group_concat(tsv.streetName, ', ') AS streetNames FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale"
+    )
+    fun findNamesByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<String?>
+
+    @ExperimentalCoroutinesApi
+    fun findNamesDistinctByTerritoryId(territoryId: UUID) =
+        findNamesByTerritoryId(territoryId).distinctUntilChanged()
+
+    @Query(
         """
         SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd ON sd.dsStreetsId = sw.streetId 
         WHERE sw.sLocalitiesId = :localityId
