@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
@@ -246,11 +245,27 @@ fun TerritoringScreen(
                                             collapsedTextResId = R.string.fab_territory_at_work_text,
                                             expandedImageVector = Icons.Default.Close,
                                             items = listOf(
-                                                    MinFabItem(
-                                                        labelResId = R.string.fab_territory_process_room_text,
-                                                        imageVector = Icons.Default.Email
-                                                    ),
+                                                MinFabItem(
+                                                    labelResId = R.string.fab_territory_process_room_text,
+                                                    painterResId = R.drawable.ic_room_24
+                                                ),
+                                                MinFabItem(
+                                                    labelResId = R.string.fab_territory_process_entrance_text,
+                                                    painterResId = R.drawable.ic_door_sliding_24
+                                                ),
+                                                MinFabItem(
+                                                    labelResId = R.string.fab_territory_process_house_text,
+                                                    painterResId = R.drawable.ic_house_24
+                                                ),
+                                                MinFabItem(
+                                                    labelResId = R.string.fab_territory_process_street_text,
+                                                    painterResId = R.drawable.ic_signpost_24
+                                                ),
+                                                MinFabItem(
+                                                    labelResId = R.string.fab_territory_process_text,
+                                                    painterResId = R.drawable.ic_map_marker_24
                                                 )
+                                            )
                                         )
                                     }
                                 }
@@ -328,7 +343,7 @@ fun HandOutTerritoriesView(
         isPrivateSector,
         locationId
     )
-    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
+    val searchText by territoriesGridViewModel.handOutSearchText.collectAsStateWithLifecycle()
     val member by territoriesGridViewModel.member.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -377,7 +392,10 @@ fun HandOutTerritoriesView(
         ) {
             TerritoryDetailsView()
         }
-        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
+        SearchComponent(
+            searchText,
+            onValueChange = territoriesGridViewModel::onHandOutSearchTextChange
+        )
         BarMemberComboBox(
             modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
             sharedViewModel = appState.sharedViewModel.value,
@@ -429,7 +447,7 @@ fun AtWorkTerritoriesView(
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("AtWorkTerritoriesView(...) called")
-    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
+    val searchText by territoriesGridViewModel.atWorkSearchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -477,7 +495,10 @@ fun AtWorkTerritoriesView(
         ) {
             TerritoryDetailsView()
         }
-        SearchComponent(searchText, onValueChange = territoriesGridViewModel::onSearchTextChange)
+        SearchComponent(
+            searchText,
+            onValueChange = territoriesGridViewModel::onAtWorkSearchTextChange
+        )
     }
 }
 
@@ -490,7 +511,7 @@ fun IdleTerritoriesView(
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("IdleTerritoriesView(...) called")
-    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
+    val searchText by territoriesGridViewModel.idleSearchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -540,7 +561,7 @@ fun IdleTerritoriesView(
         }
         SearchComponent(
             searchText,
-            onValueChange = territoriesGridViewModel::onSearchTextChange
+            onValueChange = territoriesGridViewModel::onIdleSearchTextChange
         )
     }
 }

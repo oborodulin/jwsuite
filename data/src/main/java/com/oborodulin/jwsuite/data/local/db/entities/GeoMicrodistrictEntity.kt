@@ -77,7 +77,7 @@ data class GeoMicrodistrictEntity(
         var result = mLocalitiesId.hashCode()
         result = result * 31 + microdistrictType.hashCode()
         result = result * 31 + microdistrictShortName.hashCode()
-        mLocalityDistrictsId?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + mLocalityDistrictsId.hashCode()
         return result
     }
 
@@ -85,9 +85,9 @@ data class GeoMicrodistrictEntity(
         val str = StringBuffer()
         str.append("Microdistrict Entity ").append(microdistrictType).append(" '")
             .append(microdistrictShortName).append("'")
-            .append(" [localitiesId = ").append(mLocalitiesId)
-        mLocalityDistrictsId?.let { str.append("; localityDistrictsId = ").append(it) }
-        str.append("] villageId = ").append(microdistrictId)
+            .append(" [mLocalitiesId = ").append(mLocalitiesId)
+            .append("; mLocalityDistrictsId = ").append(mLocalityDistrictsId)
+            .append("] microdistrictId = ").append(microdistrictId)
         return str.toString()
     }
 }

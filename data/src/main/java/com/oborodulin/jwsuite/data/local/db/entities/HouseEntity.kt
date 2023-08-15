@@ -12,7 +12,7 @@ import java.util.UUID
 @Entity(
     tableName = HouseEntity.TABLE_NAME,
     indices = [Index(
-        value = ["hStreetsId", "zipCode", "houseNum", "buildingNum"],
+        value = ["hStreetsId", "zipCode", "houseNum", "houseLetter", "buildingNum"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
@@ -42,7 +42,8 @@ data class HouseEntity(
     @PrimaryKey val houseId: UUID = UUID.randomUUID(),
     val zipCode: String? = null,
     val houseNum: Int,
-    val buildingNum: String? = null,
+    val houseLetter: String? = null,
+    val buildingNum: Int? = null,
     val buildingType: BuildingType = BuildingType.HOUSE,
     val isBusinessHouse: Boolean = false,
     val isSecurityHouse: Boolean = false,
@@ -67,8 +68,8 @@ data class HouseEntity(
         fun defaultHouse(
             streetId: UUID = UUID.randomUUID(), microdistrictId: UUID? = null,
             localityDistrictId: UUID? = null, houseId: UUID = UUID.randomUUID(),
-            zipCode: String? = null, houseNum: Int, buildingNum: String? = null,
-            isBusiness: Boolean = false,
+            zipCode: String? = null, houseNum: Int, houseLetter: String? = null,
+            buildingNum: Int? = null, isBusiness: Boolean = false,
             entrancesQty: Int? = null, floorsByEntrance: Int? = null, roomsByFloor: Int? = null,
             estimatedRooms: Int? = null, isForeignLanguage: Boolean = false,
             isPrivateSector: Boolean = false, buildingType: BuildingType = BuildingType.HOUSE,
@@ -77,7 +78,8 @@ data class HouseEntity(
             hStreetsId = streetId, hLocalityDistrictsId = localityDistrictId,
             hMicrodistrictsId = microdistrictId,
             houseId = houseId,
-            zipCode = zipCode, houseNum = houseNum, buildingNum = buildingNum,
+            zipCode = zipCode, houseNum = houseNum, houseLetter = houseLetter,
+            buildingNum = buildingNum,
             isBusinessHouse = isBusiness, houseEntrancesQty = entrancesQty,
             floorsByEntrance = floorsByEntrance, roomsByHouseFloor = roomsByFloor,
             estHouseRooms = estimatedRooms,
@@ -92,17 +94,19 @@ data class HouseEntity(
     override fun key(): Int {
         var result = hStreetsId.hashCode()
         result = result * 31 + houseNum.hashCode()
-        zipCode?.let { result = result * 31 + it.hashCode() }
-        buildingNum?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + zipCode.hashCode()
+        result = result * 31 + houseLetter.hashCode()
+        result = result * 31 + buildingNum.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
         str.append("House Entity ").append(buildingType).append(" №").append(houseNum)
-        buildingNum?.let { str.append(" - ").append(it) }
+        houseLetter?.let { str.append(it) }
+        buildingNum?.let { str.append("-").append(it) }
         zipCode?.let { str.append(". ZIP Code: ").append(it) }
-        str.append(" [houseStreetsId = ").append(hStreetsId)
+        str.append(" [hStreetsId = ").append(hStreetsId)
             .append("] houseId = ").append(houseId)
         return str.toString()
     }

@@ -82,9 +82,9 @@ data class TerritoryMemberReportEntity(
 
     override fun key(): Int {
         var result = tmrTerritoryMembersId.hashCode()
-        tmrTerritoryStreetsId?.let { result = result * 31 + it.hashCode() }
-        tmrHousesId?.let { result = result * 31 + it.hashCode() }
-        tmrRoomsId?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + tmrTerritoryStreetsId.hashCode()
+        result = result * 31 + tmrHousesId.hashCode()
+        result = result * 31 + tmrRoomsId.hashCode()
         return result
     }
 
@@ -93,9 +93,9 @@ data class TerritoryMemberReportEntity(
         str.append("Territory Member Report Entity ")
             .append(" [territoryMemberMark = ").append(territoryMemberMark)
             .append("; isProcessed = ").append(isProcessed)
-        tmrTerritoryStreetsId?.let { str.append("; territoryStreetsId = ").append(it) }
-        tmrHousesId?.let { str.append("; housesId = ").append(it) }
-        tmrRoomsId?.let { str.append("; roomsId = ").append(it) }
+        tmrTerritoryStreetsId?.let { str.append("; tmrTerritoryStreetsId = ").append(it) }
+        tmrHousesId?.let { str.append("; tmrHousesId = ").append(it) }
+        tmrRoomsId?.let { str.append("; tmrRoomsId = ").append(it) }
         territoryReportDesc?.let { str.append("; territoryReportDesc = ").append(it) }
         str.append("] territoryMemberReportId = ").append(territoryMemberReportId)
         return str.toString()

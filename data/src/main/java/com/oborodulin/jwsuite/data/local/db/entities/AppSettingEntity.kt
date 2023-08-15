@@ -38,7 +38,7 @@ data class AppSettingEntity(
 
         fun allItemsParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.ALL_ITEMS,
-            paramValue = ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.all_items_expr)
+            paramValue = ctx.resources.getString(com.oborodulin.home.common.R.string.all_items_val)
         )
 
         fun dayMuParam(ctx: Context) = defaultParam(

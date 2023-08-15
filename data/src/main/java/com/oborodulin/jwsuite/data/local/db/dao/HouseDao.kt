@@ -12,7 +12,7 @@ import java.util.*
 @Dao
 interface HouseDao {
     // READS:
-    @Query("SELECT * FROM ${HouseView.VIEW_NAME} ORDER BY hStreetsId, houseNum, buildingNum")
+    @Query("SELECT * FROM ${HouseView.VIEW_NAME} ORDER BY hStreetsId, houseNum, houseLetter, buildingNum")
     fun findAll(): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
@@ -24,20 +24,20 @@ interface HouseDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId ORDER BY houseNum, buildingNum")
+    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId ORDER BY houseNum, houseLetter, buildingNum")
     fun findByStreetId(streetId: UUID): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByStreetId(streetId: UUID) = findByStreetId(streetId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId ORDER BY streetName, houseNum, buildingNum")
+    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId ORDER BY streetName, houseNum, houseLetter, buildingNum")
     fun findByTerritoryId(territoryId: UUID): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
         findByTerritoryId(territoryId).distinctUntilChanged()
 
-    @Query("SELECT tshv.* FROM ${TerritoryStreetHouseView.VIEW_NAME} tshv WHERE tshv.tsTerritoriesId = :territoryId AND tshv.streetLocCode = :locale ORDER BY streetName, houseNum, buildingNum")
+    @Query("SELECT tshv.* FROM ${TerritoryStreetHouseView.VIEW_NAME} tshv WHERE tshv.tsTerritoriesId = :territoryId AND tshv.streetLocCode = :locale ORDER BY streetName, houseNum, houseLetter, buildingNum")
     fun findOnTerritoryStreetsByTerritoryId(
         territoryId: UUID, locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoryStreetHouseView>>
@@ -46,7 +46,7 @@ interface HouseDao {
     fun findDistinctOnTerritoryStreetsByTerritoryId(territoryId: UUID) =
         findOnTerritoryStreetsByTerritoryId(territoryId).distinctUntilChanged()
 
-    @Query("SELECT group_concat((CASE WHEN buildingNum IS NOT NULL THEN houseNum || '-' || buildingNum ELSE houseNum END), ', ') AS houseNums FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId")
+    @Query("SELECT group_concat((CASE WHEN buildingNum IS NOT NULL THEN houseNum || houseLetter || '-' || buildingNum ELSE houseNum || houseLetter END), ', ') AS houseNums FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId")
     fun findNumsByTerritoryId(territoryId: UUID): Flow<String?>
 
     @ExperimentalCoroutinesApi

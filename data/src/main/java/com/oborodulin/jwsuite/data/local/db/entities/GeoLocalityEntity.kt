@@ -84,7 +84,7 @@ data class GeoLocalityEntity(
     override fun key(): Int {
         var result = lRegionsId.hashCode()
         result = result * 31 + localityCode.hashCode()
-        lRegionDistrictsId?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + lRegionDistrictsId.hashCode()
         return result
     }
 
@@ -92,7 +92,7 @@ data class GeoLocalityEntity(
         val str = StringBuffer()
         str.append("Locality Entity ").append(localityType)
             .append(" '").append(localityCode).append("'")
-        lRegionDistrictsId?.let { str.append(" [regionDistrictsId = ").append(it).append("]") }
+        lRegionDistrictsId?.let { str.append(" [lRegionDistrictsId = ").append(it).append("]") }
         str.append(" localityId = ").append(localityId)
         return str.toString()
     }

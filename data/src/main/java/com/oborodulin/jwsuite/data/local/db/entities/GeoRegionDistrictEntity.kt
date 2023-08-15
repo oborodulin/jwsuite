@@ -61,7 +61,7 @@ data class GeoRegionDistrictEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Region District Entity '").append(regDistrictShortName).append("' ")
-            .append(" [regionsId = ").append(rRegionsId)
+            .append(" [rRegionsId = ").append(rRegionsId)
             .append("] regionDistrictId = ").append(regionDistrictId)
         return str.toString()
     }

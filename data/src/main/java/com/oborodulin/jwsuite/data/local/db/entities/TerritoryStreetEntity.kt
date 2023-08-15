@@ -83,17 +83,17 @@ data class TerritoryStreetEntity(
     override fun key(): Int {
         var result = tsTerritoriesId.hashCode()
         result = result * 31 + tsStreetsId.hashCode()
-        isEvenSide?.let { result = result * 31 + it.hashCode() }
-        isTerStreetPrivateSector?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + isEvenSide.hashCode()
+        result = result * 31 + isTerStreetPrivateSector.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Territory Street Entity ").append(" [territoriesId = ").append(tsTerritoriesId)
-            .append("; streetsId = ").append(tsStreetsId)
-            .append("; isEven = ").append(isEvenSide)
-            .append("; isPrivateSector = ").append(isTerStreetPrivateSector)
+            .append("; tsStreetsId = ").append(tsStreetsId)
+            .append("; isEvenSide = ").append(isEvenSide)
+            .append("; isTerStreetPrivateSector = ").append(isTerStreetPrivateSector)
             .append("] territoryStreetId = ").append(territoryStreetId)
         return str.toString()
     }

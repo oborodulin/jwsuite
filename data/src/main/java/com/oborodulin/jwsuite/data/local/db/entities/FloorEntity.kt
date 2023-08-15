@@ -77,9 +77,9 @@ data class FloorEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("House Floor Entity №").append(floorNum)
-        str.append(" [houseId = ").append(fHousesId)
-            .append("; entrancesId = ").append(fEntrancesId)
-            .append("; territoriesId = ").append(fTerritoriesId)
+        str.append(" [fHousesId = ").append(fHousesId)
+            .append("; fEntrancesId = ").append(fEntrancesId)
+            .append("; fTerritoriesId = ").append(fTerritoriesId)
             .append("] floorId = ").append(floorId)
         return str.toString()
     }

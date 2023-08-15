@@ -60,6 +60,9 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
 
     //override fun getTerritoryInfo(territoryId: UUID) = territoryDao.findInfoByTerritoryId(territoryId)
 
+    override fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID?) =
+        territoryDao.findStreetNamesAndHouseNumsByCongregationId(congregationId)
+
     override fun getTerritory(territoryId: UUID) = territoryDao.findDistinctById(territoryId)
 
     override suspend fun insertTerritory(territory: TerritoryEntity) = withContext(dispatcher) {

@@ -122,10 +122,10 @@ data class MemberEntity(
         result = result * 31 + memberNum.hashCode()
         result = result * 31 + pseudonym.hashCode()
         result = result * 31 + memberType.hashCode()
-        memberName?.let { result = result * 31 + it.hashCode() }
-        surname?.let { result = result * 31 + it.hashCode() }
-        patronymic?.let { result = result * 31 + it.hashCode() }
-        dateOfBirth?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + memberName.hashCode()
+        result = result * 31 + surname.hashCode()
+        result = result * 31 + patronymic.hashCode()
+        result = result * 31 + dateOfBirth.hashCode()
         return result
     }
 
@@ -141,7 +141,7 @@ data class MemberEntity(
         dateOfBaptism?.let {
             str.append(". Date of Baptism ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(it))
         }
-        str.append(" [groupsId = ").append(mGroupsId)
+        str.append(" [mGroupsId = ").append(mGroupsId)
             .append("] memberId = ").append(memberId)
         return str.toString()
     }

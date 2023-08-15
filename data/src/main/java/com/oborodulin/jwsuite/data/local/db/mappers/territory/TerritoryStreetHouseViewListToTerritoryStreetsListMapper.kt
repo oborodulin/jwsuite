@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.ListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetViewToTerritoryStreetMapper
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data.local.db.views.toKey
 import com.oborodulin.jwsuite.domain.model.House
@@ -26,7 +27,7 @@ class TerritoryStreetHouseViewListToTerritoryStreetsListMapper(
                             territory = territory,
                             zipCode = it.zipCode,
                             houseNum = it.houseNum,
-                            buildingNum = it.buildingNum,
+                            buildingNum = it.houseLetter,
                             isBusiness = it.isBusinessHouse,
                             isSecurity = it.isSecurityHouse,
                             isIntercom = it.isIntercomHouse,

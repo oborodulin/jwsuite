@@ -90,23 +90,25 @@ import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesHandOut
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesIdleViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesIdleViewToTerritoryMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoriesListToTerritoryEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoriesListToTerritoryCategoryEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryEntityListToTerritoryCategoriesListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryEntityToTerritoryCategoryMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryToTerritoryCategoryEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryLocationViewListToTerritoryLocationsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryLocationViewToTerritoryLocationMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.location.TerritoryLocationViewListToTerritoryLocationsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.location.TerritoryLocationViewToTerritoryLocationMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetHouseViewListToTerritoryStreetsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetToTerritoryStreetEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetViewListToTerritoryStreetsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetViewToTerritoryStreetMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetsListToTerritoryStreetEntityListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryToTerritoryEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryViewToTerritoryMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoriesListToTerritoryCategoryEntityListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryEntityListToTerritoryCategoriesListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryEntityToTerritoryCategoryMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryToTerritoryCategoryEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetToTerritoryStreetEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetViewListToTerritoryStreetsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetViewToTerritoryStreetMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetsListToTerritoryStreetEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.repositories.*
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
@@ -828,6 +830,7 @@ object DataMappersModule {
     @Singleton
     @Provides
     fun provideTerritoryViewToTerritoryMapper(
+        @ApplicationContext ctx: Context,
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
         regionMapper: GeoRegionViewToGeoRegionMapper,
@@ -836,6 +839,7 @@ object DataMappersModule {
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
         microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
     ): TerritoryViewToTerritoryMapper = TerritoryViewToTerritoryMapper(
+        ctx = ctx,
         congregationMapper = congregationMapper,
         territoryCategoryMapper = territoryCategoryMapper,
         regionMapper = regionMapper,
@@ -950,6 +954,17 @@ object DataMappersModule {
     fun provideTerritoryLocationViewListToTerritoryLocationsListMapper(mapper: TerritoryLocationViewToTerritoryLocationMapper): TerritoryLocationViewListToTerritoryLocationsListMapper =
         TerritoryLocationViewListToTerritoryLocationsListMapper(mapper = mapper)
 
+    // TerritoryStreetNamesAndHouseNumsView:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper(): TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper =
+        TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper(mapper: TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper): TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper =
+        TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper(mapper = mapper)
+
     @Singleton
     @Provides
     fun provideTerritoryMappers(
@@ -969,6 +984,7 @@ object DataMappersModule {
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
+        territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper: TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper,
         memberToMemberEntityMapper: MemberToMemberEntityMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,
@@ -987,6 +1003,7 @@ object DataMappersModule {
         territoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper,
+        territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper,
         memberToMemberEntityMapper
     )
 

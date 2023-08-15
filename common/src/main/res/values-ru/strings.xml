@@ -16,6 +16,8 @@
     <string name="btn_close_lbl">Закрыть</string>
     <!--диалог -->
     <string name="dlg_confirm_title">Подтверждение</string>
+    <!--значения -->
+    <string name="all_items_val">ВСЕ</string>
 
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
     <string name="day_unit">д.</string>

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data.local.db.mappers.territory
+package com.oborodulin.jwsuite.data.local.db.mappers.territory.street
 
 data class TerritoryStreetMappers(
     val territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,

@@ -43,7 +43,7 @@ private const val TAG = "JwSuiteDatabase"
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
-        TerritoryLocationView::class,
+        TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class,
         //TerritoryInfoView::class
@@ -273,7 +273,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     db, HouseEntity.defaultHouse(
                         streetId = strelkovojDivizii.streetId,
                         localityDistrictId = budyonovsky.localityDistrictId,
-                        houseNum = 7, buildingNum = "б"
+                        houseNum = 7, houseLetter = "б", buildingNum = 1,
                     )
                 )
                 val sd9a = insertDefHouse(
@@ -281,7 +281,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         streetId = strelkovojDivizii.streetId,
                         localityDistrictId = budyonovsky.localityDistrictId,
                         microdistrictId = donskoy.microdistrictId,
-                        houseNum = 9, buildingNum = "а", isBusiness = true
+                        houseNum = 9, houseLetter = "а", isBusiness = true
                     )
                 )
                 val sd21 = insertDefHouse(
@@ -314,7 +314,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         streetId = strelkovojDivizii.streetId,
                         localityDistrictId = budyonovsky.localityDistrictId,
                         microdistrictId = cvetochny.microdistrictId,
-                        houseNum = 29, buildingNum = "в", isBusiness = true
+                        houseNum = 29, houseLetter = "в", isBusiness = true
                     )
                 )
 

@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
@@ -145,6 +146,18 @@ interface TerritoryDao {
         territoryLocationType: TerritoryLocationType, locationId: UUID? = null,
         locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoriesIdleView>>
+
+    @Query(
+        """
+    SELECT tsh.congregationId, tsh.territoryId, GROUP_CONCAT(tsh.streetNames, ',') AS streetNames, tsh.streetLocCode, tsh.houseFullNums   
+    FROM ${TerritoryStreetNamesAndHouseNumsView.VIEW_NAME} tsh LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = tsh.congregationId
+    WHERE tsh.congregationId = ifnull(:congregationId, fcv.congregationId) AND tsh.streetLocCode = :locale
+    GROUP BY tsh.congregationId, tsh.territoryId, tsh.houseFullNums
+    """
+    )
+    fun findStreetNamesAndHouseNumsByCongregationId(
+        congregationId: UUID? = null, locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryStreetNamesAndHouseNumsView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

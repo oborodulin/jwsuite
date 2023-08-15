@@ -55,8 +55,8 @@ data class GeoDistrictStreetEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("District Street Entity ")
-            .append(" [streetsId = ").append(dsStreetsId)
-            .append("; localityDistrictsId = ").append(dsLocalityDistrictsId)
+            .append(" [dsStreetsId = ").append(dsStreetsId)
+            .append("; dsLocalityDistrictsId = ").append(dsLocalityDistrictsId)
         dsMicrodistrictsId?.let { str.append("; microdistrictsId = ").append(it) }
         str.append("] districtStreetId = ").append(districtStreetId)
         return str.toString()

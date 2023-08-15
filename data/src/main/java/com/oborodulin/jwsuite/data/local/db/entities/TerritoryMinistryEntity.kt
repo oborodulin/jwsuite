@@ -81,8 +81,8 @@ data class TerritoryMinistryEntity(
         var result = tmMembersId.hashCode()
         result = result * 31 + tmTerritoriesId.hashCode()
         result = result * 31 + dateOfVisit.hashCode()
-        tmHousesId?.let { result = result * 31 + it.hashCode() }
-        tmRoomsId?.let { result = result * 31 + it.hashCode() }
+         result = result * 31 + tmHousesId.hashCode()
+         result = result * 31 + tmRoomsId.hashCode()
         return result
     }
 

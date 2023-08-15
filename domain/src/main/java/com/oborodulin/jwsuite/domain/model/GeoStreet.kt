@@ -18,5 +18,5 @@ data class GeoStreet(
     val houses: List<House> = emptyList()
 ) : DomainModel() {
     val streetFullName =
-        "${ctx?.let { it.resources.getStringArray(R.array.road_types)[roadType.ordinal] }} $streetName"
+        "${ctx?.let { it.resources.getStringArray(R.array.road_types)[roadType.ordinal] }} $streetName".trim()
 }

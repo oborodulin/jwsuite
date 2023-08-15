@@ -6,6 +6,7 @@ import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
@@ -15,13 +16,24 @@ class GetTerritoriesUseCase(
 ) : UseCase<GetTerritoriesUseCase.Request, GetTerritoriesUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> =
-        territoriesRepository.getTerritories(
-            territoryProcessType = request.territoryProcessType,
-            territoryLocationType = request.territoryLocationType,
-            locationId = request.locationId,
-            isPrivateSector = request.isPrivateSector,
-            congregationId = request.congregationId
-        ).map {
+        combine(
+            territoriesRepository.getTerritories(
+                territoryProcessType = request.territoryProcessType,
+                territoryLocationType = request.territoryLocationType,
+                locationId = request.locationId,
+                isPrivateSector = request.isPrivateSector,
+                congregationId = request.congregationId
+            ),
+            territoriesRepository.getTerritoryStreetNamesAndHouseNums()
+        ) { territories, territoryStreetNamesAndHouseNums ->
+            territories.map { territory ->
+                val streetNamesAndHouseNums =
+                    territoryStreetNamesAndHouseNums.first { it.territoryId == territory.id }
+                territory.streetNames = streetNamesAndHouseNums.streetNames
+                territory.houseNums = streetNamesAndHouseNums.houseFullNums
+                territory
+            }
+        }.map {
             Response(it)
         }
 

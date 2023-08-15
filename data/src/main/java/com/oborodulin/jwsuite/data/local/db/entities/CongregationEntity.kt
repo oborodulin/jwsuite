@@ -68,7 +68,7 @@ data class CongregationEntity(
         str.append("Congregation Entity №").append(congregationNum)
             .append(" '").append(congregationName).append("' [territoryMark = '")
             .append(territoryMark)
-            .append("; localitiesId = ").append(cLocalitiesId)
+            .append("; cLocalitiesId = ").append(cLocalitiesId)
             .append("; isFavorite = ").append(isFavorite)
             .append("'] congregationId = ").append(congregationId)
         return str.toString()

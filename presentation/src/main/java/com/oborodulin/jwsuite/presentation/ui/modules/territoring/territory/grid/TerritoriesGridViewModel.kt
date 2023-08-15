@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
@@ -16,6 +17,14 @@ interface TerritoriesGridViewModel :
     DialogViewModeled<List<TerritoriesListItem>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent> {
     val events: Flow<ScreenEvent>
     val actionsJobFlow: SharedFlow<Job?>
+
+    // search
+    val handOutSearchText: StateFlow<TextFieldValue>
+    val atWorkSearchText: StateFlow<TextFieldValue>
+    val idleSearchText: StateFlow<TextFieldValue>
+     fun onHandOutSearchTextChange(text: TextFieldValue)
+    fun onAtWorkSearchTextChange(text: TextFieldValue)
+    fun onIdleSearchTextChange(text: TextFieldValue)
 
     val member: StateFlow<InputListItemWrapper<ListItemModel>>
     val receivingDate: StateFlow<InputWrapper>

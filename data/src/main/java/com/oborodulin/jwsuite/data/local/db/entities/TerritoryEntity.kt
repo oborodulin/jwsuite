@@ -48,7 +48,7 @@ data class TerritoryEntity(
     val isActive: Boolean = true,
     val isBusinessTerritory: Boolean = false,
     val isGroupMinistry: Boolean = false,
-    val isInPerimeter: Boolean = false,
+    val isInPerimeter: Boolean = false, // need ones table perimeter_streets
     val isProcessed: Boolean = true, // for isGroupMinistry
     val territoryDesc: String? = null,
     @ColumnInfo(index = true) val tMicrodistrictsId: UUID? = null,
@@ -96,13 +96,14 @@ data class TerritoryEntity(
 
     override fun id() = this.territoryId
 
+    // https://www.baeldung.com/java-hashcode
     override fun key(): Int {
         var result = tCongregationsId.hashCode()
         result = result * 31 + tTerritoryCategoriesId.hashCode()
         result = result * 31 + tLocalitiesId.hashCode()
         result = result * 31 + territoryNum.hashCode()
-        tLocalityDistrictsId?.let { result = result * 31 + it.hashCode() }
-        tMicrodistrictsId?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + tLocalityDistrictsId.hashCode()
+        result = result * 31 + tMicrodistrictsId.hashCode()
         return result
     }
 
@@ -111,7 +112,7 @@ data class TerritoryEntity(
         str.append("Territory Entity №").append(territoryNum)
             .append(" [tCongregationsId = ").append(tCongregationsId)
             .append("; isActive = ").append(isActive)
-            .append("; isBusiness = ").append(isBusinessTerritory)
+            .append("; isBusinessTerritory = ").append(isBusinessTerritory)
             .append("; isGroupMinistry = ").append(isGroupMinistry)
             .append("; isInPerimeter = ").append(isInPerimeter)
             .append("; isProcessed = ").append(isProcessed)

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data.local.db.mappers.territory
+package com.oborodulin.jwsuite.data.local.db.mappers.territory.street
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper

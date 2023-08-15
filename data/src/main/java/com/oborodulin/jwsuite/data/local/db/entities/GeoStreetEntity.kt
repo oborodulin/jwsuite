@@ -101,7 +101,7 @@ data class GeoStreetEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Street Entity '").append(roadType).append("'")
-            .append(" [localitiesId = ").append(sLocalitiesId)
+            .append(" [sLocalitiesId = ").append(sLocalitiesId)
             .append("; streetHashCode = ").append(streetHashCode)
             .append("] streetId = ").append(streetId)
         return str.toString()

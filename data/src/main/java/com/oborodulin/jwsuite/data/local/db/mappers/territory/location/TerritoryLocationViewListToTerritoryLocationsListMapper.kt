@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data.local.db.mappers.territory
+package com.oborodulin.jwsuite.data.local.db.mappers.territory.location
 
 import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView

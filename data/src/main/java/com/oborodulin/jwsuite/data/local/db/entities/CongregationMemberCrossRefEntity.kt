@@ -62,8 +62,8 @@ data class CongregationMemberCrossRefEntity(
         val str = StringBuffer()
         str.append("Territory Member Entity").append(" from ")
             .append(DateTimeFormatter.ISO_LOCAL_DATE.format(activityDate))
-            .append(" [congregationsId = ").append(cmCongregationsId)
-            .append("; membersId = ").append(cmMembersId)
+            .append(" [cmCongregationsId = ").append(cmCongregationsId)
+            .append("; cmMembersId = ").append(cmMembersId)
             .append("] congregationMemberId = ").append(congregationMemberId)
         return str.toString()
     }

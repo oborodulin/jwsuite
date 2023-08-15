@@ -11,7 +11,7 @@ import java.util.*
 @Dao
 interface EntranceDao {
     // READS:
-    @Query("SELECT * FROM ${EntranceView.VIEW_NAME} ORDER BY streetName, houseNum, buildingNum, entranceNum")
+    @Query("SELECT * FROM ${EntranceView.VIEW_NAME} ORDER BY streetName, houseNum, houseLetter, entranceNum")
     fun findAll(): Flow<List<EntranceView>>
 
     @ExperimentalCoroutinesApi
@@ -29,7 +29,7 @@ interface EntranceDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${EntranceView.VIEW_NAME} WHERE eTerritoriesId = :territoryId ORDER BY streetName, houseNum, buildingNum, entranceNum")
+    @Query("SELECT * FROM ${EntranceView.VIEW_NAME} WHERE eTerritoriesId = :territoryId ORDER BY streetName, houseNum, houseLetter, entranceNum")
     fun findByTerritoryId(territoryId: UUID): Flow<List<EntranceView>>
 
     @ExperimentalCoroutinesApi

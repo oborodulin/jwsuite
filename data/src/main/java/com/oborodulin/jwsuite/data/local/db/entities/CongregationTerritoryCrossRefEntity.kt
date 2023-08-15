@@ -69,8 +69,8 @@ data class CongregationTerritoryCrossRefEntity(
             .append(" - ").append(
                 if (endUsingDate != null) DateTimeFormatter.ISO_LOCAL_DATE.format(endUsingDate) else "..."
             )
-        str.append(" [congregationsId = ").append(ctCongregationsId)
-            .append("; territoriesId = ").append(ctTerritoriesId)
+        str.append(" [ctCongregationsId = ").append(ctCongregationsId)
+            .append("; ctTerritoriesId = ").append(ctTerritoriesId)
             .append("] congregationTerritoryId = ").append(congregationTerritoryId)
         return str.toString()
     }

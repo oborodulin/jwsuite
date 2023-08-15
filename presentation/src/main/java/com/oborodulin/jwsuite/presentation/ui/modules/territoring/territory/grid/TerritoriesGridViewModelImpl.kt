@@ -65,6 +65,25 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         state,
         //TerritoriesFields.TERRITORY_MEMBER
     ) {
+    private val _handOutSearchText = MutableStateFlow(TextFieldValue(""))
+    override val handOutSearchText = _handOutSearchText.asStateFlow()
+    private val _atWorkSearchText = MutableStateFlow(TextFieldValue(""))
+    override val atWorkSearchText = _atWorkSearchText.asStateFlow()
+    private val _idleSearchText = MutableStateFlow(TextFieldValue(""))
+    override val idleSearchText = _idleSearchText.asStateFlow()
+
+    override fun onHandOutSearchTextChange(text: TextFieldValue) {
+        _handOutSearchText.value = text
+    }
+
+    override fun onAtWorkSearchTextChange(text: TextFieldValue) {
+        _atWorkSearchText.value = text
+    }
+
+    override fun onIdleSearchTextChange(text: TextFieldValue) {
+        _idleSearchText.value = text
+    }
+
     override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(TerritoriesFields.TERRITORY_MEMBER.name, InputListItemWrapper())
     }
@@ -315,6 +334,12 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override val handOutSearchText = MutableStateFlow(TextFieldValue(""))
+                override val atWorkSearchText = MutableStateFlow(TextFieldValue(""))
+                override val idleSearchText = MutableStateFlow(TextFieldValue(""))
+                override fun onHandOutSearchTextChange(text: TextFieldValue) {}
+                override fun onAtWorkSearchTextChange(text: TextFieldValue) {}
+                override fun onIdleSearchTextChange(text: TextFieldValue) {}
 
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val receivingDate = MutableStateFlow(InputWrapper())

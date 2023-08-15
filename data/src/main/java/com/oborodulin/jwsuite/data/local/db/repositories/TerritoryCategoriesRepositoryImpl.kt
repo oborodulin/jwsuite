@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.data.local.db.repositories
 
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.domain.model.TerritoryCategory
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository

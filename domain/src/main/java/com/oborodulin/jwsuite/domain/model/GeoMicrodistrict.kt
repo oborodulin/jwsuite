@@ -15,5 +15,5 @@ data class GeoMicrodistrict(
     val streets: List<GeoStreet> = emptyList()
 ) : DomainModel() {
     val microdistrictFullName =
-        "${ctx?.let { it.resources.getStringArray(R.array.village_types)[microdistrictType.ordinal] }} $microdistrictName"
+        "${ctx?.let { it.resources.getStringArray(R.array.village_types)[microdistrictType.ordinal] }} $microdistrictName".trim()
 }

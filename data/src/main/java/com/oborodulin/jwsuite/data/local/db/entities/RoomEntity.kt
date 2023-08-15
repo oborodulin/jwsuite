@@ -68,17 +68,20 @@ data class RoomEntity(
     override fun key(): Int {
         var result = rHousesId.hashCode()
         result = result * 31 + roomNum.hashCode()
-        rEntrancesId?.let { result = result * 31 + it.hashCode() }
+        result = result * 31 + rEntrancesId.hashCode()
+        result = result * 31 + rFloorsId.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Room Entity №").append(roomNum).append(" [housesId = ").append(rHousesId)
-        rEntrancesId?.let { str.append("; entrancesId = ").append(it) }
+        str.append("Room Entity №").append(roomNum).append(" [rHousesId = ").append(rHousesId)
+        rEntrancesId?.let { str.append("; rEntrancesId = ").append(it) }
+        rFloorsId?.let { str.append("; rFloorsId = ").append(it) }
+        rTerritoriesId?.let { str.append("; rTerritoriesId = ").append(it) }
         str.append("; isIntercom = ").append(isIntercomRoom)
             .append("; isResidential = ").append(isResidentialRoom)
-            .append(" [housesId = ").append(rHousesId)
+            .append("] roomId = ").append(roomId)
         return str.toString()
     }
 }

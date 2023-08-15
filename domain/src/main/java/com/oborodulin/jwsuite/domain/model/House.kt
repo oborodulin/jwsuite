@@ -10,7 +10,8 @@ data class House(
     val territory: Territory?,
     val zipCode: String? = null,
     val houseNum: Int,
-    val buildingNum: String? = null,
+    val houseLetter: String? = null,
+    val buildingNum: Int? = null,
     val buildingType: BuildingType = BuildingType.HOUSE,
     val isBusiness: Boolean = false,
     val isSecurity: Boolean = false,
@@ -30,4 +31,6 @@ data class House(
         null -> (houseEntrancesQty ?: 0) * (floorsByEntrance ?: 0) * (roomsByHouseFloor ?: 0)
         else -> estimatedRooms
     }
+    val houseFullNum =
+        "$houseNum${houseLetter?.uppercase().orEmpty()}".plus(buildingNum?.let { "-$it" }.orEmpty())
 }

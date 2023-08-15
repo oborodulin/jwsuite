@@ -19,6 +19,7 @@ interface LocalGeoStreetDataSource {
             Flow<List<GeoStreetView>>
 
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
+    fun getTerritoryStreetNames(territoryId: UUID): Flow<String?>
     fun getStreet(streetId: UUID): Flow<GeoStreetView>
     suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)
     suspend fun updateStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)

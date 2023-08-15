@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +39,7 @@ interface LocalTerritoryDataSource {
     ): Flow<List<TerritoriesIdleView>>
 
     //    fun getTerritoryInfo(territoryId: UUID): Flow<List<TerritoryView>>
+    fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNumsView>>
     fun getTerritory(territoryId: UUID): Flow<TerritoryView>
     suspend fun insertTerritory(territory: TerritoryEntity)
     suspend fun updateTerritory(territory: TerritoryEntity)

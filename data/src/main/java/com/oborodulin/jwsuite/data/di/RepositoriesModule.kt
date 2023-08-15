@@ -15,7 +15,7 @@ import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryCategoryMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.*
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalAppSettingDataSource

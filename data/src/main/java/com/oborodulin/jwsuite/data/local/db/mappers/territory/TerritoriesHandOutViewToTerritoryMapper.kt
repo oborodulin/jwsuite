@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data.local.db.mappers.geomicrodistrict.Microdistri
 import com.oborodulin.jwsuite.data.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberViewToMemberMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.domain.model.Territory
 import timber.log.Timber

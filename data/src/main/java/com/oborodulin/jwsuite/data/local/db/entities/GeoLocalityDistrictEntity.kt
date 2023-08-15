@@ -70,7 +70,7 @@ data class GeoLocalityDistrictEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Locality District Entity '").append(locDistrictShortName).append("' ")
-            .append(" [localitiesId = ").append(ldLocalitiesId)
+            .append(" [ldLocalitiesId = ").append(ldLocalitiesId)
             .append("] localityDistrictId = ").append(localityDistrictId)
         return str.toString()
     }

@@ -17,5 +17,5 @@ data class GeoLocality(
     val streets: List<GeoStreet> = emptyList()
 ) : DomainModel() {
     val localityFullName =
-        "${ctx?.let { it.resources.getStringArray(R.array.locality_types)[localityType.ordinal] }} $localityName"
+        "${ctx?.let { it.resources.getStringArray(R.array.locality_types)[localityType.ordinal] }} $localityName".trim()
 }

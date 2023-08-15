@@ -28,14 +28,12 @@ class TerritoryToTerritoriesListItemMapper(
         isProcessed = input.isProcessed,
         isActive = input.isActive,
         territoryDesc = input.territoryDesc,
+        streetNames = input.streetNames,
+        houseNums = input.houseNums,
         member = memberMapper.nullableMap(input.member),
         congregationId = input.congregationId,
         isPrivateSector = input.isPrivateSector,
-        handOutYears = input.handOutYears,
-        handOutMonths = input.handOutMonths,
-        handOutDays = input.handOutDays,
-        expiredYears = input.expiredYears,
-        expiredMonths = input.expiredMonths,
-        expiredDays = input.expiredDays
+        handOutDaysPeriod = input.handOutDaysPeriod,
+        expiredDaysPeriod = input.expiredDaysPeriod
     )
 }

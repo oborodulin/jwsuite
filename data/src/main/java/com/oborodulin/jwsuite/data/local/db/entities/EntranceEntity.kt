@@ -75,8 +75,8 @@ data class EntranceEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Entrance Entity №").append(entranceNum)
-        str.append(" [entranceHousesId = ").append(eHousesId)
-            .append("; entranceTerritoriesId = ").append(eTerritoriesId)
+        str.append(" [eHousesId = ").append(eHousesId)
+            .append("; eTerritoriesId = ").append(eTerritoriesId)
             .append("] entranceId = ").append(entranceId)
         return str.toString()
     }

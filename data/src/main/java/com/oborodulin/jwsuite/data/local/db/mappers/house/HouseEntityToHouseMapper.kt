@@ -26,6 +26,7 @@ class HouseEntityToHouseMapper : ConstructedMapper<HouseEntity, House> {
             territory = properties[3] as? Territory,
             zipCode = input.zipCode,
             houseNum = input.houseNum,
+            houseLetter = input.houseLetter,
             buildingNum = input.buildingNum,
             isBusiness = input.isBusinessHouse,
             isSecurity = input.isSecurityHouse,

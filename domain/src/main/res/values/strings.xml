@@ -1,12 +1,13 @@
 <resources>
     <!--Строковые выражения -->
-    <string name="all_items_expr">ВСЕ</string>
     <string name="including_expr">в т.ч.</string>
     <string name="private_sector_expr">ч/с</string>
     <string name="even_expr">чётн</string>
     <string name="odd_expr">не чётн</string>
-    <string name="house_expr">д.</string>
     <string name="room_expr">кв.</string>
+    <string name="entrance_expr">подъезд</string>
+    <string name="floor_expr">этаж</string>
+    <string name="house_expr">д.</string>
 
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>

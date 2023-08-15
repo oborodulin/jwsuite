@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.domain.model.Room
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.model.TerritoryLocation
 import com.oborodulin.jwsuite.domain.model.TerritoryStreet
+import com.oborodulin.jwsuite.domain.model.TerritoryStreetNamesAndHouseNums
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,7 @@ interface TerritoriesRepository {
     fun getEntrances(territoryId: UUID): Flow<List<Entrance>>
     fun getFloors(territoryId: UUID): Flow<List<Floor>>
     fun getRooms(territoryId: UUID): Flow<List<Room>>
+    fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNums>>
     fun get(territoryId: UUID): Flow<Territory>
     fun save(territory: Territory): Flow<Territory>
     fun delete(territory: Territory): Flow<Territory>

@@ -110,7 +110,7 @@ data class GroupEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Group Entity №").append(groupNum)
-            .append(" [congregationsId = ").append(gCongregationsId)
+            .append(" [gCongregationsId = ").append(gCongregationsId)
             .append("] groupId = ").append(groupId)
         return str.toString()
     }

@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class TerritoriesRepositoryImpl @Inject constructor(
     private val localTerritoryDataSource: LocalTerritoryDataSource,
-    private val localGeoStreetDataSource: LocalGeoStreetDataSource,
+    private val localStreetDataSource: LocalGeoStreetDataSource,
     private val localHouseDataSource: LocalHouseDataSource,
     private val localEntranceDataSource: LocalEntranceDataSource,
     private val localFloorDataSource: LocalFloorDataSource,
@@ -64,7 +64,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
     }
 
     override fun getTerritoryStreets(territoryId: UUID) =
-        localGeoStreetDataSource.getTerritoryStreets(territoryId)
+        localStreetDataSource.getTerritoryStreets(territoryId)
             .map(mappers.territoryStreetViewListToTerritoryStreetsListMapper::map)
 
     override fun getTerritoryStreetHouses(territoryId: UUID) =
@@ -83,6 +83,10 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override fun getRooms(territoryId: UUID) = localRoomDataSource.getTerritoryRooms(territoryId)
         .map(mappers.roomEntityListToRoomsListMapper::map)
+
+    override fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID?) =
+        localTerritoryDataSource.getTerritoryStreetNamesAndHouseNums(congregationId)
+            .map(mappers.territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper::map)
 
     override fun get(territoryId: UUID) =
         localTerritoryDataSource.getTerritory(territoryId)

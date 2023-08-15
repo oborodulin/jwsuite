@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoStreetDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -30,6 +31,8 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
         streetDao.findByMicrodistrictIdAndPrivateSectorMark(microdistrictId, isPrivateSector)
 
     override fun getTerritoryStreets(territoryId: UUID) = streetDao.findByTerritoryId(territoryId)
+    override fun getTerritoryStreetNames(territoryId: UUID) =
+        streetDao.findNamesByTerritoryId(territoryId)
 
     override fun getStreet(streetId: UUID) = streetDao.findDistinctById(streetId)
     override suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity) =

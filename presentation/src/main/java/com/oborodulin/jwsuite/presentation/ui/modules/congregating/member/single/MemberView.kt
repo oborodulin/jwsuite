@@ -274,7 +274,7 @@ fun MemberView(
                     )
                 },
             labelResId = R.string.member_type_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.outline_badge_black_36), null) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_badge_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     keyboardType = KeyboardType.Text,

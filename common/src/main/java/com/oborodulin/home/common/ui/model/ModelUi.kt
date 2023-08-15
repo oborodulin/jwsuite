@@ -13,7 +13,7 @@ open class ModelUi(var id: UUID? = null) {
     }
 
     override fun hashCode(): Int {
-        return id?.hashCode() ?: 0
+        return id.hashCode()
     }
 
 }

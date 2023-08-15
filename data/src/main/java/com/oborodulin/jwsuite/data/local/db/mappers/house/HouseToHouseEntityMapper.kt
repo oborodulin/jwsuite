@@ -10,7 +10,7 @@ class HouseToHouseEntityMapper : Mapper<House, HouseEntity> {
         houseId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         zipCode = input.zipCode,
         houseNum = input.houseNum,
-        buildingNum = input.buildingNum,
+        houseLetter = input.buildingNum,
         isBusinessHouse = input.isBusiness,
         isSecurityHouse = input.isSecurity,
         isIntercomHouse = input.isIntercom,
