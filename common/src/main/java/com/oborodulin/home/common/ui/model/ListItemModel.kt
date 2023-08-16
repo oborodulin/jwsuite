@@ -17,8 +17,8 @@ open class ListItemModel(
     val headline: String = "",
     val supportingText: String? = null,
     val value: BigDecimal? = null,
-    val initChecked: Boolean = false,
-    val initSelected: Boolean = false
+    private var initChecked: Boolean = false,
+    private var initSelected: Boolean = false
 ) : Parcelable, Searchable {
     @IgnoredOnParcel
     var checked by mutableStateOf(initChecked)
@@ -39,7 +39,7 @@ open class ListItemModel(
     override fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
             "$headline${supportingText.orEmpty()}",
-            "$headline ${supportingText.orEmpty()}"
+            "$headline ${supportingText.orEmpty()}".trim()
         )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }

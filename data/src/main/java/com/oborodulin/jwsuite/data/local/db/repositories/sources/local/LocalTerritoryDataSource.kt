@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.data.local.db.repositories.sources.local
 
-import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryMemberCrossRefEntity
@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetNamesAndHouseNumsView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
@@ -69,6 +70,8 @@ interface LocalTerritoryDataSource {
     suspend fun deleteMembers(territoryId: UUID)
 
     // Streets:
+    fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
+    //fun getTerritoryStreetNames(territoryId: UUID): Flow<String?>
     suspend fun insertStreet(
         territory: TerritoryEntity, street: GeoStreetEntity,
         isEven: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null

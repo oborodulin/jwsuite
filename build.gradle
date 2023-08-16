@@ -67,6 +67,8 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                 */
                 runner                 : '1.0.1',
                 spotless               : '6.19.0',
+                sqlcipher              : '4.5.4',
+                sqlite                 : '2.3.1',
                 testCore               : '1.5.0',
                 testRunner             : '1.5.2',
                 testMonitor            : '1.6.1',
@@ -180,6 +182,8 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                 room                : [runtime : "androidx.room:room-runtime:$versions.room",
                                        compiler: "androidx.room:room-compiler:$versions.room",
                                        ktx     : "androidx.room:room-ktx:$versions.room"],
+                sql                 : [sqlcipher: "net.zetetic:android-database-sqlcipher:$versions.sqlcipher",
+                                       sqlite   : "androidx.sqlite:sqlite:$versions.sqlite"],
                 // Sweet Toast
                 TalhaFaki           : [composableSweetToast: "com.github.tfaki:ComposableSweetToast:$versions.composableSweetToast"],
                 test                : [junit          : "junit:junit:$versions.junit",

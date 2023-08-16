@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data.local.db.views
 import androidx.room.DatabaseView
 import com.oborodulin.jwsuite.data.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data.local.db.entities.FloorEntity
-import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity

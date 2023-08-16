@@ -6,6 +6,9 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import java.util.UUID
 
 @Entity(

@@ -66,18 +66,19 @@ android {
 dependencies {
     implementation(project(':common'))
     implementation(project(':domain'))
+    implementation(project(':data_geo'))
 
     // Logging
     implementation deps.logging.timber
-    // implementation deps.logging.logger
-
-    // KSP
-    //implementation deps.devtools.ksp
 
     // Room
     ksp deps.room.compiler
     implementation deps.room.runtime
     implementation deps.room.ktx
+
+    // SQLCipher
+    implementation deps.sql.sqlcipher
+    implementation deps.sql.sqlite
 
     // Hilt
     implementation deps.dagger.hilt

@@ -259,7 +259,7 @@ fun TerritoringScreen(
                                                 ),
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_street_text,
-                                                    painterResId = R.drawable.ic_signpost_24
+                                                    painterResId = R.drawable.ic_street_sign_24
                                                 ),
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_text,

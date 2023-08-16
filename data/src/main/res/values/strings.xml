@@ -55,58 +55,6 @@
     <string name="def_matveychuk_member_pseudonym">АС21</string>
     <string name="def_matveychuk_member_birth_date">05–09–1973</string>
 
-    <!--ГЕОГРАФИЯ -->
-    <!--Области -->
-    <string name="def_reg_donetsk_code">80</string>
-    <string name="def_reg_donetsk_name">Донецкая</string>
-    <string name="def_reg_luhansk_code">81</string>
-    <string name="def_reg_luhansk_name">Луганская</string>
-    <!--Районы областей -->
-    <string name="def_reg_maryinsky_short_name">МРН</string>
-    <string name="def_reg_maryinsky_name">Марьинский</string>
-    <string name="def_reg_donetsky_short_name">ДОН</string>
-    <string name="def_reg_donetsky_name">Донецкий</string>
-    <!--Населённые пункты (города, пгт, посёлки и пр.) -->
-    <string name="def_donetsk_code">7856</string>
-    <string name="def_donetsk_short_name">ДОН</string>
-    <string name="def_donetsk_name">Донецк</string>
-    <string name="def_makeevka_code">785632</string>
-    <string name="def_makeevka_short_name">МКВ</string>
-    <string name="def_makeevka_name">Макеевка</string>
-    <string name="def_luhansk_code">7857</string>
-    <string name="def_luhansk_short_name">ЛГН</string>
-    <string name="def_luhansk_name">Луганск</string>
-    <string name="def_marinka_code">7858</string>
-    <string name="def_marinka_short_name">МРН</string>
-    <string name="def_marinka_name">Марьинка</string>
-    <string name="def_mospino_code">7859</string>
-    <string name="def_mospino_short_name">МСП</string>
-    <string name="def_mospino_name">Моспино</string>
-    <!--Районы населённых пунктов -->
-    <string name="def_budyonovsky_short_name">БДН</string>
-    <string name="def_budyonovsky_name">Будённовский</string>
-    <string name="def_kievsky_short_name">КВК</string>
-    <string name="def_kievsky_name">Киевский</string>
-    <string name="def_kuybyshevsky_short_name">КБШ</string>
-    <string name="def_kuybyshevsky_name">Куйбышевский</string>
-    <string name="def_voroshilovsky_short_name">ВРШ</string>
-    <string name="def_voroshilovsky_name">Ворошиловский</string>
-    <!--Микрорайоны населённых пунктов -->
-    <string name="def_cvetochny_short_name">ЦВТ</string>
-    <string name="def_cvetochny_name">Цветочный</string>
-    <string name="def_don_short_name">ДОН</string>
-    <string name="def_don_name">Донской</string>
-    <!--Улицы Донецка -->
-    <string name="def_strelkovojDivizii_name">230-Стрелковой дивизии</string>
-    <string name="def_nezavisimosti_name">Независимости</string>
-    <!--ч/с -->
-    <string name="def_baratynskogo_name">Баратынского</string>
-    <string name="def_patorgynskogo_name">Паторжинского</string>
-    <string name="def_belogorodskaya_name">Белогородская</string>
-    <!--Улицы Моспино -->
-    <string name="def_novomospino_name">Новомоспино</string>
-    <string name="def_gertsena_name">Герцена</string>
-
     <!--УЧАСТКИ-->
     <string name="territory_business_mark">д</string>
     <!--Категории-->

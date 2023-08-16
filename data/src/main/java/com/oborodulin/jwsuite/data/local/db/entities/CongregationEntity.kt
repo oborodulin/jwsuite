@@ -8,6 +8,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import java.util.UUID
 
 @Entity(

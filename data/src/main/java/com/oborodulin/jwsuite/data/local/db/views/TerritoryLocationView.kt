@@ -12,6 +12,9 @@ import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_MICRO_DISTRICT_VAL
+import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
+import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import java.util.UUID
 

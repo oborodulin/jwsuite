@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data.local.db.mappers.territory.street
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 

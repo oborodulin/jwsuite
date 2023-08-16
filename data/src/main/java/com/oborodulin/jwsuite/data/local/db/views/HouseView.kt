@@ -13,6 +13,12 @@ import com.oborodulin.jwsuite.data.util.Constants.PX_HOUSE_M_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.data.util.Constants.PX_HOUSE_M_REGION
 import com.oborodulin.jwsuite.data.util.Constants.PX_HOUSE_M_REGION_DISTRICT
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_LOCALITY
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
+import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
+import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 
 @DatabaseView(
     viewName = HouseView.VIEW_NAME,

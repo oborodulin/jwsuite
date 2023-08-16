@@ -3,10 +3,10 @@ package com.oborodulin.jwsuite.data.local.db.repositories
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalFloorDataSource
-import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHouseDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
@@ -64,7 +64,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
     }
 
     override fun getTerritoryStreets(territoryId: UUID) =
-        localStreetDataSource.getTerritoryStreets(territoryId)
+        localTerritoryDataSource.getTerritoryStreets(territoryId)
             .map(mappers.territoryStreetViewListToTerritoryStreetsListMapper::map)
 
     override fun getTerritoryStreetHouses(territoryId: UUID) =

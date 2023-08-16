@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetNamesAndHouseNumsView
+import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
@@ -17,6 +18,7 @@ import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_MICRO_DISTRICT_VAL
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -147,6 +149,27 @@ interface TerritoryDao {
         locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoriesIdleView>>
 
+    // TerritoryStreets:
+    @Query(
+        "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale ORDER BY tsv.streetName"
+    )
+    fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<List<TerritoryStreetView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByTerritoryId(territoryId: UUID) =
+        findByTerritoryId(territoryId).distinctUntilChanged()
+/*
+    @Query(
+        "SELECT group_concat(DISTINCT tsv.streetName, ', ') AS streetNames FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale"
+    )
+    fun findNamesByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<String?>
+
+    @ExperimentalCoroutinesApi
+    fun findNamesDistinctByTerritoryId(territoryId: UUID) =
+        findNamesByTerritoryId(territoryId).distinctUntilChanged()
+*/
     @Query(
         """
     SELECT tsh.congregationId, tsh.territoryId, GROUP_CONCAT(tsh.streetNames, ',') AS streetNames, tsh.streetLocCode, tsh.houseFullNums   

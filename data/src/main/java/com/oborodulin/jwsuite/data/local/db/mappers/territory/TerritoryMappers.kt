@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data.local.db.mappers.territory
 
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceViewListToEntrancesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorEntityListToFloorsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewListToHousesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityListToRoomsListMapper

@@ -2,12 +2,12 @@ package com.oborodulin.jwsuite.data.local.db.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.db.dao.TerritoryDao
-import com.oborodulin.jwsuite.data.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -116,6 +116,12 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     }
 
     // Streets:
+    override fun getTerritoryStreets(territoryId: UUID) =
+        territoryDao.findByTerritoryId(territoryId)
+
+/*    override fun getTerritoryStreetNames(territoryId: UUID) =
+        territoryDao.findNamesByTerritoryId(territoryId)*/
+
     override suspend fun insertStreet(
         territory: TerritoryEntity, street: GeoStreetEntity,
         isEven: Boolean?, isPrivateSector: Boolean?, estimatedHouses: Int?

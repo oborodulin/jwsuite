@@ -6,6 +6,9 @@ import com.oborodulin.jwsuite.data.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data.util.Constants.PX_CONGREGATION_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.PX_CONGREGATION_REGION
 import com.oborodulin.jwsuite.data.util.Constants.PX_CONGREGATION_REGION_DISTRICT
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
+import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 
 @DatabaseView(
     viewName = CongregationView.VIEW_NAME,
