@@ -51,11 +51,12 @@ android {
 dependencies {
     implementation project(':common')
     implementation project(':data')
+    implementation project(':data_geo')
+    implementation project(':data_congregation')
     implementation project(':domain')
 
     // Logging
     implementation deps.logging.timber
-    // implementation deps.logging.logger
 
     // Room
     implementation deps.room.runtime

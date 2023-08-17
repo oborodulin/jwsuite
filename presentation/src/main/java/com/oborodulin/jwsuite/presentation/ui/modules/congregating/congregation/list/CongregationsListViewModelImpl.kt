@@ -6,16 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.CongregationsListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -130,7 +130,7 @@ class CongregationsListViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation1_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi(),
+                locality = LocalityUi(),
                 isFavorite = true
             ),
             CongregationsListItem(
@@ -138,7 +138,7 @@ class CongregationsListViewModelImpl @Inject constructor(
                 congregationNum = ctx.resources.getString(R.string.def_congregation2_num),
                 congregationName = ctx.resources.getString(R.string.def_congregation2_name),
                 territoryMark = ctx.resources.getString(R.string.def_congregation2_card_mark),
-                locality = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi()
+                locality = LocalityUi()
             )
         )
     }

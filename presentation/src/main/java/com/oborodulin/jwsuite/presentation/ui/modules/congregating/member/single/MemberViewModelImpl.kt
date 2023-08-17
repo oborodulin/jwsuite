@@ -16,7 +16,7 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.Utils
-import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase

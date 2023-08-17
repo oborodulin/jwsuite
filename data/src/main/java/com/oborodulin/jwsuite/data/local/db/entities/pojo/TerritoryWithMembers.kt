@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data.local.db.entities.pojo
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryMemberCrossRefEntity
 

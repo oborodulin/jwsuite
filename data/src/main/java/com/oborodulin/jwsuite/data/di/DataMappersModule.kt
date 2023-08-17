@@ -6,12 +6,6 @@ import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingEntityL
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingEntityToAppSettingMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingToAppSettingEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationToCongregationEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationViewListToCongregationsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationViewToCongregationMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationsListToCongregationEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.FavoriteCongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceToEntranceEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceViewListToEntrancesListMapper
@@ -22,23 +16,12 @@ import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorEntityToFloorMapp
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorToFloorEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorsListToFloorEntityListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupToGroupEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupViewListToGroupsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupViewToGroupMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupsListToGroupEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseEntityToHouseMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseToHouseEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewListToHousesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseViewToHouseMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HousesListToHouseEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberToMemberEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberViewListToMembersListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberViewToMemberMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MembersListToMemberEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityListToRoomsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityToRoomMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomMappers
@@ -71,45 +54,16 @@ import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritorySt
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetViewToTerritoryStreetMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetsListToTerritoryStreetEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.repositories.*
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityMappers
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityToGeoLocalityTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewListToGeoLocalitiesListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictMappers
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictToGeoLocalityDistrictEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictToGeoLocalityDistrictTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewListToGeoLocalityDistrictsListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictsListToGeoLocalityDistrictEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictMappers
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictToGeoMicrodistrictEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictToGeoMicrodistrictTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewListToGeoMicrodistrictsListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictsListToGeoMicrodistrictEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionToGeoRegionEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionToGeoRegionTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewListToGeoRegionsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionsListToGeoRegionEntityListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewListToGeoRegionDistrictsListMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictsListToGeoRegionDistrictEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetToGeoStreetEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetToGeoStreetTlEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetsListToGeoStreetEntityListMapper
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -148,118 +102,6 @@ object DataMappersModule {
         appSettingEntityListToAppSettingListMapper,
         appSettingEntityToAppSettingMapper,
         appSettingToAppSettingEntityMapper
-    )
-
-    // CONGREGATION:
-    // Congregations:
-    @Singleton
-    @Provides
-    fun provideCongregationViewToCongregationMapper(): CongregationViewToCongregationMapper =
-        CongregationViewToCongregationMapper()
-
-    @Singleton
-    @Provides
-    fun provideCongregationViewListToCongregationsListMapper(mapper: CongregationViewToCongregationMapper): CongregationViewListToCongregationsListMapper =
-        CongregationViewListToCongregationsListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideFavoriteCongregationViewToCongregationMapper(mapper: CongregationViewToCongregationMapper): FavoriteCongregationViewToCongregationMapper =
-        FavoriteCongregationViewToCongregationMapper(congregationViewMapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideCongregationToCongregationEntityMapper(): CongregationToCongregationEntityMapper =
-        CongregationToCongregationEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideCongregationsListToCongregationEntityListMapper(mapper: CongregationToCongregationEntityMapper): CongregationsListToCongregationEntityListMapper =
-        CongregationsListToCongregationEntityListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideCongregationMappers(
-        congregationViewListToCongregationsListMapper: CongregationViewListToCongregationsListMapper,
-        congregationViewToCongregationMapper: CongregationViewToCongregationMapper,
-        congregationsListToCongregationEntityListMapper: CongregationsListToCongregationEntityListMapper,
-        congregationToCongregationEntityMapper: CongregationToCongregationEntityMapper,
-        favoriteCongregationViewToCongregationMapper: FavoriteCongregationViewToCongregationMapper
-    ): CongregationMappers = CongregationMappers(
-        congregationViewListToCongregationsListMapper,
-        congregationViewToCongregationMapper,
-        congregationsListToCongregationEntityListMapper,
-        congregationToCongregationEntityMapper,
-        favoriteCongregationViewToCongregationMapper
-    )
-
-    // Groups:
-    @Singleton
-    @Provides
-    fun provideGroupViewToGroupMapper(mapper: CongregationViewToCongregationMapper): GroupViewToGroupMapper =
-        GroupViewToGroupMapper(congregationMapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGroupViewListToGroupsListMapper(mapper: GroupViewToGroupMapper): GroupViewListToGroupsListMapper =
-        GroupViewListToGroupsListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGroupToGroupEntityMapper(): GroupToGroupEntityMapper = GroupToGroupEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideGroupsListToGroupEntityListMapper(mapper: GroupToGroupEntityMapper): GroupsListToGroupEntityListMapper =
-        GroupsListToGroupEntityListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGroupMappers(
-        groupViewListToGroupsListMapper: GroupViewListToGroupsListMapper,
-        groupViewToGroupMapper: GroupViewToGroupMapper,
-        groupsListToGroupEntityListMapper: GroupsListToGroupEntityListMapper,
-        groupToGroupEntityMapper: GroupToGroupEntityMapper
-    ): GroupMappers = GroupMappers(
-        groupViewListToGroupsListMapper,
-        groupViewToGroupMapper,
-        groupsListToGroupEntityListMapper,
-        groupToGroupEntityMapper
-    )
-
-    // Members:
-    @Singleton
-    @Provides
-    fun provideMemberViewToMemberMapper(mapper: GroupViewToGroupMapper): MemberViewToMemberMapper =
-        MemberViewToMemberMapper(groupMapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMMemberViewListToMembersListMapper(mapper: MemberViewToMemberMapper): MemberViewListToMembersListMapper =
-        MemberViewListToMembersListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberToMemberEntityMapper(): MemberToMemberEntityMapper =
-        MemberToMemberEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideMembersListToMemberEntityListMapper(mapper: MemberToMemberEntityMapper): MembersListToMemberEntityListMapper =
-        MembersListToMemberEntityListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberMappers(
-        memberViewListToMembersListMapper: MemberViewListToMembersListMapper,
-        memberViewToMemberMapper: MemberViewToMemberMapper,
-        membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
-        memberToMemberEntityMapper: MemberToMemberEntityMapper
-    ): MemberMappers = MemberMappers(
-        memberViewListToMembersListMapper,
-        memberViewToMemberMapper,
-        membersListToMemberEntityListMapper,
-        memberToMemberEntityMapper
     )
 
     // TERRITORY:

@@ -7,6 +7,11 @@ sealed class NavigationInput(val id: UUID) {
     data class RegionInput(val regionId: UUID) : NavigationInput(regionId)
     data class RegionDistrictInput(val regionDistrictId: UUID) : NavigationInput(regionDistrictId)
     data class LocalityInput(val localityId: UUID) : NavigationInput(localityId)
+    data class LocalityDistrictInput(val localityDistrictId: UUID) :
+        NavigationInput(localityDistrictId)
+
+    data class MicrodistrictInput(val microdistrictId: UUID) : NavigationInput(microdistrictId)
+    data class StreetInput(val streetId: UUID) : NavigationInput(streetId)
 
     // Congregation:
     data class CongregationInput(val congregationId: UUID) : NavigationInput(congregationId)
@@ -18,6 +23,10 @@ sealed class NavigationInput(val id: UUID) {
         NavigationInput(territoryCategoryId)
 
     data class TerritoryInput(val territoryId: UUID) : NavigationInput(territoryId)
+    data class HouseInput(val houseId: UUID) : NavigationInput(houseId)
+    data class EntranceInput(val entranceId: UUID) : NavigationInput(entranceId)
+    data class FloorInput(val floorId: UUID) : NavigationInput(floorId)
+    data class RoomInput(val roomId: UUID) : NavigationInput(roomId)
 }
 
 

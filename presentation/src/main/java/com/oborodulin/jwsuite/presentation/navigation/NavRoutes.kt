@@ -14,20 +14,24 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DAS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GROUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_CATEGORY
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import timber.log.Timber
@@ -53,6 +57,7 @@ private const val TAG = "Presentation.NavRoutes"
 private const val ARG_REGION_ID = "regionId"
 private const val ARG_REGION_DISTRICT_ID = "regionDistrictId"
 private const val ARG_LOCALITY_ID = "localityId"
+private const val ARG_STREET_ID = "streetId"
 
 // Congregation:
 private const val ARG_CONGREGATION_ID = "congregationId"
@@ -62,6 +67,10 @@ private const val ARG_MEMBER_ID = "memberId"
 // Territory:
 private const val ARG_TERRITORY_CATEGORY_ID = "territoryCategoryId"
 private const val ARG_TERRITORY_ID = "territoryId"
+private const val ARG_HOUSE_ID = "houseId"
+private const val ARG_ENTRANCE_ID = "entranceId"
+private const val ARG_FLOOR_ID = "floorId"
+private const val ARG_ROOM_ID = "roomId"
 
 /**
  * Created by oborodulin on 12.December.2021
@@ -72,22 +81,23 @@ sealed class NavRoutes constructor(
     @StringRes open val titleResId: Int,
     val arguments: List<NamedNavArgument> = emptyList()
 ) {
-    object Home : NavRoutes(ROUTE_HOME, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
+    data object Home :
+        NavRoutes(ROUTE_HOME, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
 
-    object Dashboarding :
+    data object Dashboarding :
         NavRoutes(ROUTE_DASHBOARDING, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
 
-    object Congregating :
+    data object Congregating :
         NavRoutes(ROUTE_CONGREGATING, R.drawable.ic_congregation_24, R.string.nav_item_congregating)
 
-    object Territoring :
+    data object Territoring :
         NavRoutes(ROUTE_TERRITORING, R.drawable.ic_territory_map_24, R.string.nav_item_territoring)
 
-    object Ministring :
+    data object Ministring :
         NavRoutes(ROUTE_MINISTRING, R.drawable.ic_maps_home_work_24, R.string.nav_item_ministring)
 
     // Geo:
-    object Region : NavRoutes(
+    data object Region : NavRoutes(
         String.format(ROUTE_REGION, "{$ARG_REGION_ID}"),
         R.drawable.ic_region_24,
         R.string.nav_item_region,
@@ -115,7 +125,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object RegionDistrict : NavRoutes(
+    data object RegionDistrict : NavRoutes(
         String.format(ROUTE_REGION_DISTRICT, "{$ARG_REGION_DISTRICT_ID}"),
         R.drawable.ic_district_24,
         R.string.nav_item_region_district,
@@ -144,7 +154,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object Locality : NavRoutes(
+    data object Locality : NavRoutes(
         String.format(ROUTE_LOCALITY, "{$ARG_LOCALITY_ID}"),
         R.drawable.ic_location_city_24,
         R.string.nav_item_locality,
@@ -173,8 +183,37 @@ sealed class NavRoutes constructor(
         }
     }
 
+    data object Street : NavRoutes(
+        String.format(ROUTE_STREET, "{$ARG_STREET_ID}"),
+        R.drawable.ic_street_sign_24,
+        R.string.nav_item_street,
+        arguments = listOf(navArgument(ARG_STREET_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForStreet(streetInput: StreetInput? = null): String {
+            val route = when (streetInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_STREET, streetInput.streetId)
+            }
+            //val route = String.format(ROUTE_PAYER, payerId)
+            Timber.tag(TAG).d("Street - routeForStreet(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): StreetInput {
+            val streetInput = StreetInput(
+                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty())
+            )
+            Timber.tag(TAG).d("Street - fromEntry(...): '%s'", streetInput)
+            return streetInput
+        }
+    }
+
     // Congregation:
-    object Congregation : NavRoutes(
+    data object Congregation : NavRoutes(
         String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
         R.drawable.ic_congregation_24,
         R.string.nav_item_congregation,
@@ -203,7 +242,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object Group : NavRoutes(
+    data object Group : NavRoutes(
         String.format(ROUTE_GROUP, "{$ARG_GROUP_ID}"),
         R.drawable.ic_group_24,
         R.string.nav_item_group,
@@ -231,7 +270,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object Member : NavRoutes(
+    data object Member : NavRoutes(
         String.format(ROUTE_MEMBER, "{$ARG_MEMBER_ID}"),
         R.drawable.ic_person_24,
         R.string.nav_item_member,
@@ -260,7 +299,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object TerritoryCategory : NavRoutes(
+    data object TerritoryCategory : NavRoutes(
         String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
         R.drawable.ic_location_pin_24,
         R.string.nav_item_territory_category,
@@ -292,7 +331,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object Territory : NavRoutes(
+    data object Territory : NavRoutes(
         String.format(ROUTE_TERRITORY, "{$ARG_TERRITORY_ID}"),
         R.drawable.ic_map_marker_24,
         R.string.nav_item_territory,
@@ -321,7 +360,39 @@ sealed class NavRoutes constructor(
         }
     }
 
-    object HandOutTerritoriesConfirmation : NavRoutes(
+    data object House : NavRoutes(
+        String.format(ROUTE_HOUSE, "{$ARG_HOUSE_ID}"),
+        R.drawable.ic_house_24,
+        R.string.nav_item_house,
+        arguments = listOf(navArgument(ARG_HOUSE_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForHouse(houseInput: HouseInput? = null): String {
+            val route = when (houseInput) {
+                null -> baseRoute()
+                else -> String.format(
+                    ROUTE_HOUSE,
+                    houseInput.houseId
+                )
+            }
+            //val route = String.format(ROUTE_RATE, payerId)
+            Timber.tag(TAG).d("House - routeForHouse(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): HouseInput {
+            val territoryInput = HouseInput(
+                UUID.fromString(entry.arguments?.getString(ARG_HOUSE_ID).orEmpty())
+            )
+            Timber.tag(TAG).d("House - fromEntry(...): '%s'", territoryInput)
+            return territoryInput
+        }
+    }
+
+    data object HandOutTerritoriesConfirmation : NavRoutes(
         ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION,
         R.drawable.ic_hand_map_24,
         R.string.nav_item_territory_hand_out_confirmation

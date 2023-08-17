@@ -15,6 +15,11 @@
     <string name="nav_item_region">Область</string>
     <string name="nav_item_region_district">Район области</string>
     <string name="nav_item_locality">Населённый пункт</string>
+    <string name="nav_item_street">Улица</string>
+    <string name="nav_item_house">Дом</string>
+    <string name="nav_item_entrance">Подъезд</string>
+    <string name="nav_item_floor">Этаж</string>
+    <string name="nav_item_room">Квартира</string>
 
     <!--BUTTONS: -->
     <string name="btn_hand_out_lbl">Выдать</string>
@@ -45,8 +50,13 @@
     <string name="regions_list_empty_text">Областей пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="streets_list_empty_text">Улиц пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="territories_list_empty_text">Участков пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="houses_list_empty_text">Домов пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="entrances_list_empty_text">Подъездов пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="floors_list_empty_text">Этажей пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="room_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ: -->
     <!--Собрание -->
@@ -102,6 +112,9 @@
     <string name="locality_new_subheader">Новый населённый пункт</string>
     <string name="locality_region_hint">Область</string>
     <string name="locality_region_district_hint">Район области</string>
+    <!--Улица -->
+    <string name="street_subheader">Улица</string>
+    <string name="street_new_subheader">Новая улица</string>
     <!--Категория участка -->
     <string name="territory_category_subheader">Категория участка</string>
     <string name="territory_category_new_subheader">Новая категория участка</string>
@@ -113,6 +126,19 @@
     <string name="territory_category_hint">Категория участка</string>
     <string name="territory_receiving_date_hint">Дата выдачи</string>
     <!--Детали участка -->
+
+    <!--Дом -->
+    <string name="house_subheader">Дом</string>
+    <string name="house_new_subheader">Новый дом</string>
+    <!--Подъезд -->
+    <string name="entrance_subheader">Подъезд</string>
+    <string name="entrance_new_subheader">Новый подъезд</string>
+    <!--Этаж -->
+    <string name="floor_subheader">Этаж</string>
+    <string name="floor_new_subheader">Новый этаж</string>
+    <!--Квартира -->
+    <string name="room_subheader">Квартира</string>
+    <string name="room_new_subheader">Новая квартира</string>
 
     <!--ДИАЛОГИ -->
     <!--заголовки-->
@@ -131,12 +157,18 @@
     <string name="dlg_confirm_del_region">Удалить область %1$s?</string>
     <string name="dlg_confirm_del_region_district">Удалить район %1$s?</string>
     <string name="dlg_confirm_del_locality">Удалить населённый пункт %1$s?</string>
+    <string name="dlg_confirm_del_street">Удалить улицу %1$s?</string>
     <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
     <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
+    <string name="dlg_confirm_del_house">Удалить дом №%1$s?</string>
+    <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
+    <string name="dlg_confirm_del_floor">Удалить этаж №%1$s?</string>
+    <string name="dlg_confirm_del_room">Удалить квартиру №%1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <!--общие-->
     <string name="num_empty_error">Укажите, пожалуйста, номер!</string>
+    <string name="type_empty_error">Укажите, пожалуйста, тип!</string>
     <string name="region_empty_error">Укажите, пожалуйста, область!</string>
     <string name="locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
     <string name="member_empty_error">Укажите, пожалуйста, возвещателя!</string>

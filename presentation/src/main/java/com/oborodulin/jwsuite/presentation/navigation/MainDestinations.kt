@@ -12,6 +12,7 @@ object MainDestinations {
     const val ROUTE_REGION = "region/%s"
     const val ROUTE_REGION_DISTRICT = "regionDistrict/%s"
     const val ROUTE_LOCALITY = "locality/%s"
+    const val ROUTE_STREET = "street/%s"
 
     //Congregates:
     const val ROUTE_CONGREGATION = "congregation/%s"
@@ -22,4 +23,8 @@ object MainDestinations {
     const val ROUTE_TERRITORY_CATEGORY = "territoryCategory/%s"
     const val ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION = "handOutTerritoriesConfirmation"
     const val ROUTE_TERRITORY = "territory/%s"
+    const val ROUTE_HOUSE = "house/%s"
+    const val ROUTE_ENTRANCE = "entrance/%s"
+    const val ROUTE_FLOOR = "floor/%s"
+    const val ROUTE_ROOM = "room/%s"
 }

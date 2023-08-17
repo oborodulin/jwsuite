@@ -2,11 +2,13 @@ package com.oborodulin.jwsuite.data.local.db.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.db.dao.TerritoryDao
-import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
@@ -88,6 +90,32 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
         territoryDao.deleteAll()
     }
 
+    // Congregations:
+    override suspend fun insertTerritoryToCongregation(
+        congregation: CongregationEntity, territory: TerritoryEntity, startUsingDate: OffsetDateTime
+    ) = withContext(dispatcher) {
+        territoryDao.insert(congregation, territory, startUsingDate)
+    }
+
+    override suspend fun updateTerritoryInCongregation(congregationTerritory: CongregationTerritoryCrossRefEntity) =
+        withContext(dispatcher) {
+            territoryDao.update(congregationTerritory)
+        }
+
+    override suspend fun deleteTerritoryFromCongregation(congregationTerritory: CongregationTerritoryCrossRefEntity) =
+        withContext(dispatcher) {
+            territoryDao.deleteTerritory(congregationTerritory)
+        }
+
+    override suspend fun deleteTerritoryFromCongregation(congregationTerritoryId: UUID) =
+        withContext(dispatcher) {
+            territoryDao.deleteTerritoryById(congregationTerritoryId)
+        }
+
+    override suspend fun deleteAllTerritoriesFromCongregation(congregationId: UUID) = withContext(dispatcher) {
+        territoryDao.deleteTerritoriesByCongregationId(congregationId)
+    }
+
     // Members:
     override suspend fun insertMember(
         territory: TerritoryEntity, member: MemberEntity, receivingDate: OffsetDateTime
@@ -119,8 +147,8 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     override fun getTerritoryStreets(territoryId: UUID) =
         territoryDao.findByTerritoryId(territoryId)
 
-/*    override fun getTerritoryStreetNames(territoryId: UUID) =
-        territoryDao.findNamesByTerritoryId(territoryId)*/
+    /*    override fun getTerritoryStreetNames(territoryId: UUID) =
+            territoryDao.findNamesByTerritoryId(territoryId)*/
 
     override suspend fun insertStreet(
         territory: TerritoryEntity, street: GeoStreetEntity,

@@ -12,6 +12,18 @@ import com.oborodulin.jwsuite.data.local.db.dao.*
 import com.oborodulin.jwsuite.data.local.db.entities.*
 import com.oborodulin.jwsuite.data.local.db.views.*
 import com.oborodulin.jwsuite.data.util.Constants
+import com.oborodulin.jwsuite.data.util.Constants.DATABASE_PASSPHRASE
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
@@ -43,6 +55,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import kotlinx.coroutines.*
+import net.sqlcipher.database.SupportFactory
 import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.*
@@ -129,7 +142,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         context,
                         JwSuiteDatabase::class.java,
                         Constants.DATABASE_NAME
-                    )
+                    ).openHelperFactory(SupportFactory(DATABASE_PASSPHRASE.toByteArray()))
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:

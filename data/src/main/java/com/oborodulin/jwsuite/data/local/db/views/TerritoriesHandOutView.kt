@@ -5,8 +5,10 @@ import androidx.room.Embedded
 import com.oborodulin.jwsuite.data.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data.util.Constants
-import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
-import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
+import com.oborodulin.jwsuite.domain.util.Constants.PRM_TERRITORY_BUSINESS_MARK_VAL
 import java.util.UUID
 
 @DatabaseView(
@@ -19,7 +21,7 @@ FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TAB
     LEFT JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tps ON tps.territoryId = t.territoryId
     LEFT JOIN ${TerritoryMemberLastReceivingDateView.VIEW_NAME} rld ON rld.tmcTerritoriesId = t.territoryId
     LEFT JOIN ${MemberView.VIEW_NAME} m ON m.memberId = rld.tmcMembersId
-    JOIN ${AppSettingEntity.TABLE_NAME} s ON s.paramName = ${Constants.PRM_TERRITORY_BUSINESS_MARK_VAL}
+    JOIN ${AppSettingEntity.TABLE_NAME} s ON s.paramName = $PRM_TERRITORY_BUSINESS_MARK_VAL
 WHERE rld.fullIdleMonths IS NULL OR rld.fullIdleMonths >= rld.territoryIdlePeriod
 ORDER BY ifnull(rld.fullIdleMonths - rld.territoryIdlePeriod, 1000) DESC
 """

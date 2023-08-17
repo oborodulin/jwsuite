@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.group.DeleteGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupsUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases

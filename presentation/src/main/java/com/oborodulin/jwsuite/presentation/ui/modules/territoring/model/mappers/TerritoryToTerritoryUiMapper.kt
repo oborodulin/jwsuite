@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
 
 class TerritoryToTerritoryUiMapper(
     private val congregationMapper: CongregationToCongregationUiMapper,

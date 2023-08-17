@@ -14,7 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
@@ -26,6 +26,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.Local
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.toLocalitiesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -91,8 +92,7 @@ class LocalityViewModelImpl @Inject constructor(
         for (type in LocalityType.values()) _localityTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi> =
-        UiState.Loading
+    override fun initState(): UiState<LocalityUi> = UiState.Loading
 
     override suspend fun handleAction(action: LocalityUiAction): Job {
         Timber.tag(TAG).d("handleAction(LocalityUiAction) called: %s", action.javaClass.name)
@@ -100,7 +100,7 @@ class LocalityViewModelImpl @Inject constructor(
             is LocalityUiAction.Load -> when (action.localityId) {
                 null -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_new_subheader)
-                    submitState(UiState.Success(com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi()))
+                    submitState(UiState.Success(LocalityUi()))
                 }
 
                 else -> {
@@ -134,7 +134,7 @@ class LocalityViewModelImpl @Inject constructor(
         val regionDistrictUi = RegionDistrictUi()
         regionDistrictUi.id = regionDistrict.value.item?.itemId
 
-        val localityUi = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi(
+        val localityUi = LocalityUi(
             region = regionUi,
             regionDistrict = regionDistrictUi,
             localityCode = localityCode.value.value,
@@ -169,7 +169,7 @@ class LocalityViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
         val localityUi =
-            uiModel as com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
+            uiModel as LocalityUi
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(LocalityModel) called: localityUi = %s", localityUi)
         localityUi.id?.let {
@@ -379,9 +379,9 @@ class LocalityViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi {
-            val localityUi = com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi(
-                region = RegionUi(),
+        fun previewUiModel(ctx: Context): LocalityUi {
+            val localityUi = LocalityUi(
+                region = RegionViewModelImpl.previewUiModel(ctx),
                 //regionDistrict = ,
                 localityCode = ctx.resources.getString(R.string.def_donetsk_code),
                 localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),

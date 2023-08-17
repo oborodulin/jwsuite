@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.convert
 import com.oborodulin.home.common.ui.state.CommonResultConverter
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoryUi
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryCategoryToTerritoryCategoryUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
 
 class TerritoryCategoryConverter(private val mapper: TerritoryCategoryToTerritoryCategoryUiMapper) :
     CommonResultConverter<GetTerritoryCategoryUseCase.Response, TerritoryCategoryUi>() {

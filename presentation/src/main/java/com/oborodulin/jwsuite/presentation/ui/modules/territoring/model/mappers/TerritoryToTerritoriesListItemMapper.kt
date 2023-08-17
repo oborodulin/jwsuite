@@ -6,6 +6,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
 import java.util.UUID
 
 class TerritoryToTerritoriesListItemMapper(

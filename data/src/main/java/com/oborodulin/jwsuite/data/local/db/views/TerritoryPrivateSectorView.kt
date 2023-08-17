@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity
-import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import java.util.UUID
 
 @DatabaseView(

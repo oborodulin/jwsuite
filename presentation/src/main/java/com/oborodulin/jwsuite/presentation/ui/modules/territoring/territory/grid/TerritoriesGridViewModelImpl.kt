@@ -386,26 +386,20 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 territoryDesc = ctx.resources.getString(R.string.def_territory1_desc),
                 member = MemberUi(
                     group = GroupUi(),
-                    memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                    memberFullName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
+                    memberNum = ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_num),
+                    memberFullName = "${ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_surname)} ${
+                        ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_name)
+                    } ${ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_patronymic)} [${
                         ctx.resources.getString(
-                            R.string.def_ivanov_member_name
-                        )
-                    } ${ctx.resources.getString(R.string.def_ivanov_member_patronymic)} [${
-                        ctx.resources.getString(
-                            R.string.def_ivanov_member_pseudonym
+                            com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym
                         )
                     }]",
-                    memberShortName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
-                        ctx.resources.getString(
-                            R.string.def_ivanov_member_name
-                        )[0]
-                    }.${ctx.resources.getString(R.string.def_ivanov_member_patronymic)[0]}. [${
-                        ctx.resources.getString(
-                            R.string.def_ivanov_member_pseudonym
-                        )
+                    memberShortName = "${ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_surname)} ${
+                        ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_name)[0]
+                    }.${ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_patronymic)[0]}. [${
+                        ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym)
                     }]",
-                    pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
+                    pseudonym = ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym),
                     dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
                 )
             ),

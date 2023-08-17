@@ -4,14 +4,34 @@ package com.oborodulin.jwsuite.domain.util
  * Created by tfakioglu on 13.December.2021
  */
 object Constants {
-    const val TMDB_BASE_URL = "https://api.themoviedb.org/3/"
+    // Database constants:
+    const val DB_TRUE = 1
+    const val DB_FALSE = 0
+    const val DB_FRACT_SEC_TIME = "'%Y-%m-%dT%H:%M:%f'"
+    const val DB_DAY_TIME = "'%Y-%m-%d'"
+    const val DB_MON_TIME = "'%d-%02d-01T00:00:00.000'"
+    const val TZ_TIME =
+        "strftime('%Y-%m-%dT%H:%M:%S', datetime('now', 'localtime')) || printf('%+.2d:%.2d', round((julianday('now', 'localtime') - julianday('now')) * 24), abs(round((julianday('now', 'localtime') - julianday('now')) * 24 * 60) % 60))"
 
-    private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
-    private const val IMAGE_SIZE_W185 = "w185"
-    private const val IMAGE_SIZE_W780 = "w780"
+    const val FMT_IS_PER_PERSON_EXPR = "'%d %s x %.2f %s = %.2f %s'"
+    const val FMT_METER_VAL_EXPR = "'%.2f %s x %.2f %s = %.2f %s'"
+    const val FMT_DEBT_EXPR = "'%.2f %s'"
+    const val FMT_RATE_DEBT_EXPR = "'%.2f %s = %.2f %s'"
+    const val FMT_OPT_FACTOR_EXPR = "'%.2f %s x '"
+    const val FMT_PAYMENT_PERIOD_EXPR = "'%02d.%d: '"
+    const val FMT_HEATING_METER_EXPR = "'%.5f %s x '"
 
-    const val CAST_AVATAR_URL = IMAGE_BASE_URL + IMAGE_SIZE_W185
-    const val CAST_IMDB_URL = "https://www.imdb.com/name/"
-    const val POSTER_URL = IMAGE_BASE_URL + IMAGE_SIZE_W185
-    const val BACKDROP_URL = IMAGE_BASE_URL + IMAGE_SIZE_W780
+    // AppSettings:
+    const val PRM_LANG_VAL = "'LANG'"
+    const val PRM_CURRENCY_CODE_VAL = "'CURRENCY_CODE'"
+    const val PRM_ALL_ITEMS_VAL = "'ALL_ITEMS'"
+    const val PRM_DAY_MU_VAL = "'DAY_MU'"
+    const val PRM_MONTH_MU_VAL = "'MONTH_MU'"
+    const val PRM_PERSON_NUM_MU_VAL = "'PERSON_NUM_MU'"
+    const val PRM_TERRITORY_BUSINESS_MARK_VAL = "'TERRITORY_BUSINESS_MARK'"
+    const val PRM_TERRITORY_PROCESSING_PERIOD_VAL = "'TERRITORY_PROCESSING_PERIOD'"
+    const val PRM_TERRITORY_AT_HAND_PERIOD_VAL = "'TERRITORY_AT_HAND_PERIOD'"
+    const val PRM_TERRITORY_ROOMS_LIMIT_VAL = "'TERRITORY_ROOMS_LIMIT'"
+    const val PRM_TERRITORY_MAX_ROOMS_VAL = "'TERRITORY_MAX_ROOMS'"
+    const val PRM_TERRITORY_IDLE_PERIOD_VAL = "'TERRITORY_IDLE_PERIOD'"
 }

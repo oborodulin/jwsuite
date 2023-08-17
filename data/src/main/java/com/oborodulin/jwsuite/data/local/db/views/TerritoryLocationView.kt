@@ -2,12 +2,12 @@ package com.oborodulin.jwsuite.data.local.db.views
 
 import androidx.room.DatabaseView
 import com.oborodulin.jwsuite.data.local.db.entities.AppSettingEntity
-import com.oborodulin.jwsuite.data.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.util.Constants
-import com.oborodulin.jwsuite.data.util.Constants.DB_FALSE
-import com.oborodulin.jwsuite.data.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.data.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_DISTRICT_VAL
 import com.oborodulin.jwsuite.data.util.Constants.TDT_LOCALITY_VAL
@@ -15,6 +15,7 @@ import com.oborodulin.jwsuite.data.util.Constants.TDT_MICRO_DISTRICT_VAL
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
+import com.oborodulin.jwsuite.domain.util.Constants.PRM_ALL_ITEMS_VAL
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import java.util.UUID
 
@@ -22,7 +23,7 @@ import java.util.UUID
     viewName = TerritoryLocationView.VIEW_NAME,
     value = """
 SELECT 0 AS orderPos, $TDT_ALL_VAL AS territoryLocationType, c.congregationId, NULL AS locationId,
-        (SELECT paramValue FROM ${AppSettingEntity.TABLE_NAME} WHERE paramName = ${Constants.PRM_ALL_ITEMS_VAL}) AS locationShortName,
+        (SELECT paramValue FROM ${AppSettingEntity.TABLE_NAME} WHERE paramName = $PRM_ALL_ITEMS_VAL) AS locationShortName,
         NULL AS isPrivateSector
 FROM ${CongregationEntity.TABLE_NAME} c
 UNION ALL

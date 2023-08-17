@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.local.db.dao.AppSettingDao
-import com.oborodulin.jwsuite.data.local.db.dao.CongregationDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data.local.db.dao.EntranceDao
 import com.oborodulin.jwsuite.data.local.db.dao.FloorDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
@@ -11,9 +11,9 @@ import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoStreetDao
-import com.oborodulin.jwsuite.data.local.db.dao.GroupDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data.local.db.dao.HouseDao
-import com.oborodulin.jwsuite.data.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data.local.db.dao.RoomDao
 import com.oborodulin.jwsuite.data.local.db.dao.TerritoryCategoryDao
 import com.oborodulin.jwsuite.data.local.db.dao.TerritoryDao

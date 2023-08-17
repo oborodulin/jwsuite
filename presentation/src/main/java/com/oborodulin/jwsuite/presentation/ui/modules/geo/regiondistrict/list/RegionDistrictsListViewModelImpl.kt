@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.DeleteRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
@@ -107,13 +108,13 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             RegionDistrictsListItem(
                 id = UUID.randomUUID(),
-                districtShortName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_donetsky_short_name),
-                districtName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_donetsky_name)
+                districtShortName = ctx.resources.getString(R.string.def_reg_donetsky_short_name),
+                districtName = ctx.resources.getString(R.string.def_reg_donetsky_name)
             ),
             RegionDistrictsListItem(
                 id = UUID.randomUUID(),
-                districtShortName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_maryinsky_short_name),
-                districtName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_maryinsky_name)
+                districtShortName = ctx.resources.getString(R.string.def_reg_maryinsky_short_name),
+                districtName = ctx.resources.getString(R.string.def_reg_maryinsky_name)
             )
         )
     }

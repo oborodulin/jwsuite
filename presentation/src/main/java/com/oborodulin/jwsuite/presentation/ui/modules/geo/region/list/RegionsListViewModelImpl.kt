@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
@@ -99,13 +100,13 @@ class RegionsListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             RegionsListItem(
                 id = UUID.randomUUID(),
-                regionCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_donetsk_code),
-                regionName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_donetsk_name)
+                regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
+                regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
             ),
             RegionsListItem(
                 id = UUID.randomUUID(),
-                regionCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_luhansk_code),
-                regionName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_reg_luhansk_name)
+                regionCode = ctx.resources.getString(R.string.def_reg_luhansk_code),
+                regionName = ctx.resources.getString(R.string.def_reg_luhansk_name)
             )
         )
     }

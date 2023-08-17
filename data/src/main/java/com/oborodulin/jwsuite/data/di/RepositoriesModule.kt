@@ -2,34 +2,25 @@ package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.jwsuite.data.local.db.mappers.*
 import com.oborodulin.jwsuite.data.local.db.mappers.appsetting.AppSettingMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.floor.FloorMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.group.GroupMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.house.HouseMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.category.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data.local.db.repositories.*
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalAppSettingDataSource
-import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalCongregationDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalFloorDataSource
-import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalGroupDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHouseDataSource
-import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalMemberDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
-import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
-import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
-import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
@@ -48,27 +39,6 @@ object RepositoriesModule {
     fun provideAppSettingsRepository(
         localAppSettingDataSource: LocalAppSettingDataSource, mappers: AppSettingMappers
     ): AppSettingsRepository = AppSettingsRepositoryImpl(localAppSettingDataSource, mappers)
-
-    // Congregations:
-    @Singleton
-    @Provides
-    fun provideCongregationsRepository(
-        localCongregationDataSource: LocalCongregationDataSource,
-        mappers: CongregationMappers
-    ): CongregationsRepository =
-        CongregationsRepositoryImpl(localCongregationDataSource, mappers)
-
-    @Singleton
-    @Provides
-    fun provideGroupsRepository(
-        localGroupDataSource: LocalGroupDataSource, mappers: GroupMappers
-    ): GroupsRepository = GroupsRepositoryImpl(localGroupDataSource, mappers)
-
-    @Singleton
-    @Provides
-    fun provideMembersRepository(
-        localMemberDataSource: LocalMemberDataSource, mappers: MemberMappers
-    ): MembersRepository = MembersRepositoryImpl(localMemberDataSource, mappers)
 
     // Territories:
     @Singleton

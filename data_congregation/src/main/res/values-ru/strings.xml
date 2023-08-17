@@ -1,0 +1,57 @@
+<resources>
+    <!--Значения полей данных по-умолчанию -->
+    <!--Собрание 1-->
+    <string name="def_congregation1_num">1</string>
+    <string name="def_congregation1_name">Хорошее настроение</string>
+    <string name="def_congregation1_card_mark">Х</string>
+    <!--Собрание 2-->
+    <string name="def_congregation2_num">2</string>
+    <string name="def_congregation2_name">Добро пожаловать</string>
+    <string name="def_congregation2_card_mark">Д</string>
+    <!--Члены собрания 1 группа 1-->
+    <!--Иванов-->
+    <string name="def_ivanov_member_num">1</string>
+    <string name="def_ivanov_member_name">Сергей</string>
+    <string name="def_ivanov_member_surname">Иванов</string>
+    <string name="def_ivanov_member_patronymic">Михайлович</string>
+    <string name="def_ivanov_member_pseudonym">ИС11</string>
+    <string name="def_ivanov_member_birth_date">12–29–1980</string>
+    <!--Петров-->
+    <string name="def_petrov_member_num">2</string>
+    <string name="def_petrov_member_name">Валентин</string>
+    <string name="def_petrov_member_surname">Петров</string>
+    <string name="def_petrov_member_patronymic">Александрович</string>
+    <string name="def_petrov_member_pseudonym">ПВ12</string>
+    <string name="def_petrov_member_birth_date">01–21–1975</string>
+    <!--Члены собрания 1 группа 2-->
+    <!--Сидоров-->
+    <string name="def_sidorov_member_num">1</string>
+    <string name="def_sidorov_member_name">Иван</string>
+    <string name="def_sidorov_member_surname">Сидоров</string>
+    <string name="def_sidorov_member_patronymic">Сергеевич</string>
+    <string name="def_sidorov_member_pseudonym">СИ21</string>
+    <string name="def_sidorov_member_birth_date">08–13–1978</string>
+    <!--Члены собрания 2 группа 1-->
+    <!--Тарасова-->
+    <string name="def_tarasova_member_num">1</string>
+    <string name="def_tarasova_member_name">Ирина</string>
+    <string name="def_tarasova_member_surname">Тарасова</string>
+    <string name="def_tarasova_member_patronymic">Матвеевна</string>
+    <string name="def_tarasova_member_pseudonym">ТИ21</string>
+    <string name="def_tarasova_member_birth_date">10–15–1983</string>
+    <!--Шевчук-->
+    <string name="def_shevchuk_member_num">2</string>
+    <string name="def_shevchuk_member_name">Николай</string>
+    <string name="def_shevchuk_member_surname">Шевчук</string>
+    <string name="def_shevchuk_member_patronymic">Владимирович</string>
+    <string name="def_shevchuk_member_pseudonym">ШН22</string>
+    <string name="def_shevchuk_member_birth_date">01–21–1975</string>
+    <!--Члены собрания 2 группа 2-->
+    <!--Матвейчук-->
+    <string name="def_matveychuk_member_num">1</string>
+    <string name="def_matveychuk_member_name">Александр</string>
+    <string name="def_matveychuk_member_surname">Матвейчук</string>
+    <string name="def_matveychuk_member_patronymic">Степанович</string>
+    <string name="def_matveychuk_member_pseudonym">АС21</string>
+    <string name="def_matveychuk_member_birth_date">05–09–1973</string>
+</resources>

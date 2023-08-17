@@ -5,8 +5,6 @@ import androidx.room.Embedded
 import com.oborodulin.jwsuite.data.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryCategoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
-import com.oborodulin.jwsuite.data.util.Constants.PRM_TERRITORY_BUSINESS_MARK_VAL
-import com.oborodulin.jwsuite.data.util.Constants.PX_CONGREGATION_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_LD_LOCALITY
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_LD_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_LD_REGION
@@ -19,11 +17,14 @@ import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_M_REGION
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_M_REGION_DISTRICT
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_REGION
 import com.oborodulin.jwsuite.data.util.Constants.PX_TERRITORY_REGION_DISTRICT
+import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
+import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_CONGREGATION_LOCALITY
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
+import com.oborodulin.jwsuite.domain.util.Constants.PRM_TERRITORY_BUSINESS_MARK_VAL
 
 @DatabaseView(
     viewName = TerritoryView.VIEW_NAME,
@@ -96,7 +97,7 @@ FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${CongregationView.VIEW_NAME} cv ON cv
         LEFT JOIN ${GeoRegionView.VIEW_NAME} rvm ON rvm.regionId = lvm.lRegionsId AND rvm.regionLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
         LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvm ON rdvm.regionDistrictId = lvm.lRegionDistrictsId AND rdvm.regDistrictLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
 
-    JOIN ${AppSettingEntity.TABLE_NAME} s ON s.paramName = ${PRM_TERRITORY_BUSINESS_MARK_VAL}
+    JOIN ${AppSettingEntity.TABLE_NAME} s ON s.paramName = $PRM_TERRITORY_BUSINESS_MARK_VAL
 """
 )
 class TerritoryView(

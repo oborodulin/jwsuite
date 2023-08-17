@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -48,6 +49,7 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
@@ -99,8 +101,8 @@ fun TerritoringScreen(
             territoringViewModel = territoringViewModel
         )
     }
-    var multiFloatingState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
-
+    var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
+    var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
 
     Timber.tag(TAG).d("Init Focus Requesters for all territoring fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -126,6 +128,7 @@ fun TerritoringScreen(
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }*/
+    val ctx = LocalContext.current
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         JWSuiteTheme { //(darkTheme = true)
@@ -236,9 +239,9 @@ fun TerritoringScreen(
                                 onClick = {
                                     appState.fab.value = {
                                         MultiFabComponent(
-                                            multiFloatingState = multiFloatingState,
+                                            multiFloatingState = multiFloatingProcessState,
                                             onMultiFabStateChange = {
-                                                multiFloatingState = it
+                                                multiFloatingProcessState = it
                                             },
                                             enabled = areTerritoriesChecked,
                                             collapsedImageVector = Icons.Outlined.Done,
@@ -248,23 +251,33 @@ fun TerritoringScreen(
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_room_text,
                                                     painterResId = R.drawable.ic_room_24
-                                                ),
+                                                ) {
+                                                    ctx.toast("Room process")
+                                                },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_entrance_text,
                                                     painterResId = R.drawable.ic_door_sliding_24
-                                                ),
+                                                ) {
+                                                    ctx.toast("Entrance process")
+                                                },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_house_text,
                                                     painterResId = R.drawable.ic_house_24
-                                                ),
+                                                ) {
+                                                    ctx.toast("House process")
+                                                },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_street_text,
                                                     painterResId = R.drawable.ic_street_sign_24
-                                                ),
+                                                ) {
+                                                    ctx.toast("Street process")
+                                                },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_text,
                                                     painterResId = R.drawable.ic_map_marker_24
-                                                )
+                                                ) {
+                                                    ctx.toast("Territory process")
+                                                }
                                             )
                                         )
                                     }

@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.data.local.db.repositories.sources.local
 
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
-import com.oborodulin.jwsuite.data.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data.local.db.entities.TerritoryStreetEntity
@@ -12,6 +11,9 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
@@ -49,6 +51,17 @@ interface LocalTerritoryDataSource {
     suspend fun deleteTerritories(territories: List<TerritoryEntity>)
     suspend fun deleteAllTerritories()
 
+    // Congregations:
+    suspend fun insertTerritoryToCongregation(
+        congregation: CongregationEntity, territory: TerritoryEntity,
+        startUsingDate: OffsetDateTime = OffsetDateTime.now()
+    )
+
+    suspend fun updateTerritoryInCongregation(congregationTerritory: CongregationTerritoryCrossRefEntity)
+    suspend fun deleteTerritoryFromCongregation(congregationTerritory: CongregationTerritoryCrossRefEntity)
+    suspend fun deleteTerritoryFromCongregation(congregationTerritoryId: UUID)
+    suspend fun deleteAllTerritoriesFromCongregation(congregationId: UUID)
+
     // Members:
     suspend fun insertMember(
         territory: TerritoryEntity, member: MemberEntity,
@@ -71,6 +84,7 @@ interface LocalTerritoryDataSource {
 
     // Streets:
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
+
     //fun getTerritoryStreetNames(territoryId: UUID): Flow<String?>
     suspend fun insertStreet(
         territory: TerritoryEntity, street: GeoStreetEntity,

@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
