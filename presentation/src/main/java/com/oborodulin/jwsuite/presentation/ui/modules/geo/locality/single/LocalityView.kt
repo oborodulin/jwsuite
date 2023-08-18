@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -34,16 +35,8 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -51,13 +44,7 @@ private const val TAG = "Geo.LocalityView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LocalityView(
-    localityViewModel: LocalityViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
-    regionDistrictsListViewModel: RegionDistrictsListViewModel,
-    regionDistrictViewModel: RegionDistrictViewModel
-) {
+fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("LocalityView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -71,7 +58,7 @@ fun LocalityView(
         )
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all locality fields")
+    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all Locality fields")
     val region by localityViewModel.region.collectAsStateWithLifecycle()
     val regionDistrict by localityViewModel.regionDistrict.collectAsStateWithLifecycle()
     val localityCode by localityViewModel.localityCode.collectAsStateWithLifecycle()
@@ -81,7 +68,7 @@ fun LocalityView(
 
     val localityTypes by localityViewModel.localityTypes.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all locality fields")
+    Timber.tag(TAG).d("Init Focus Requesters for all Locality fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
     enumValues<LocalityFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
@@ -118,8 +105,6 @@ fun LocalityView(
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = regionsListViewModel,
-            singleViewModel = regionViewModel,
             inputWrapper = region,
             onValueChange = { localityViewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
             onImeKeyAction = localityViewModel::moveFocusImeAction
@@ -134,10 +119,6 @@ fun LocalityView(
                     )
                 },
             regionId = region.item?.itemId,
-            listViewModel = regionDistrictsListViewModel,
-            singleViewModel = regionDistrictViewModel,
-            regionsListViewModel = regionsListViewModel,
-            regionViewModel = regionViewModel,
             inputWrapper = regionDistrict,
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it))
@@ -246,7 +227,7 @@ fun LocalityView(
 fun PreviewLocalityView() {
     JWSuiteTheme {
         Surface {
-            LocalityView(
+            /*LocalityView(
                 localityViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
@@ -254,7 +235,7 @@ fun PreviewLocalityView() {
                     LocalContext.current
                 ),
                 regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current)
-            )
+            )*/
         }
     }
 }

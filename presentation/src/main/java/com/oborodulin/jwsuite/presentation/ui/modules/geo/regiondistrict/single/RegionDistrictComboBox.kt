@@ -9,9 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
@@ -20,12 +20,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
@@ -37,10 +32,8 @@ private const val TAG = "Geo.RegionDistrictComboBox"
 fun RegionDistrictComboBox(
     modifier: Modifier = Modifier,
     regionId: UUID?,
-    listViewModel: RegionDistrictsListViewModel,
-    singleViewModel: RegionDistrictViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
+    listViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
+    singleViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
@@ -55,13 +48,7 @@ fun RegionDistrictComboBox(
         viewModel = singleViewModel,
         loadUiAction = RegionDistrictUiAction.Load(),
         confirmUiAction = RegionDistrictUiAction.Save,
-        dialogView = {
-            RegionDistrictView(
-                singleViewModel,
-                regionsListViewModel,
-                regionViewModel
-            )
-        },
+        dialogView = { RegionDistrictView() },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
@@ -89,7 +76,7 @@ fun RegionDistrictComboBox(
 fun PreviewRegionDistrictComboBox() {
     JWSuiteTheme {
         Surface {
-            RegionDistrictComboBox(
+            /*RegionDistrictComboBox(
                 regionId = UUID.randomUUID(),
                 listViewModel = RegionDistrictsListViewModelImpl.previewModel(LocalContext.current),
                 singleViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current),
@@ -98,7 +85,7 @@ fun PreviewRegionDistrictComboBox() {
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}
-            )
+            )*/
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
@@ -20,36 +21,31 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.list.StreetsListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
+import java.util.UUID
 
-private const val TAG = "Geo.LocalityComboBox"
+private const val TAG = "Geo.StreetComboBox"
 
 @Composable
-fun LocalityComboBox(
+fun StreetComboBox(
     modifier: Modifier = Modifier,
-    listViewModel: LocalitiesListViewModel,
-    singleViewModel: StreetViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
-    regionDistrictsListViewModel: RegionDistrictsListViewModel,
-    regionDistrictViewModel: RegionDistrictViewModel,
+    listViewModel: StreetsListViewModelImpl = hiltViewModel(),
+    singleViewModel: StreetViewModelImpl = hiltViewModel(),
+    localityId: UUID? = null,
+    localityDistrictId: UUID? = null,
+    microdistrictId: UUID? = null,
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("LocalityComboBox(...) called")
+    Timber.tag(TAG).d("StreetComboBox(...) called")
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -59,21 +55,17 @@ fun LocalityComboBox(
         viewModel = singleViewModel,
         loadUiAction = StreetUiAction.Load(),
         confirmUiAction = StreetUiAction.Save,
-        dialogView = {
-            LocalityView(
-                singleViewModel,
-                regionsListViewModel,
-                regionViewModel,
-                regionDistrictsListViewModel,
-                regionDistrictViewModel
-            )
-        },
+        dialogView = { StreetView() },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = LocalitiesListUiAction.Load(),
+        loadListUiAction = StreetsListUiAction.Load(
+            localityId = localityId,
+            localityDistrictId = localityDistrictId,
+            microdistrictId = microdistrictId
+        ),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
@@ -90,11 +82,11 @@ fun LocalityComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewLocalityComboBox() {
+fun PreviewStreetComboBox() {
     JWSuiteTheme {
         Surface {
-            LocalityComboBox(
-                listViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
+            StreetComboBox(
+                listViewModel = StreetsListViewModelImpl.previewModel(LocalContext.current),
                 singleViewModel = StreetViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),

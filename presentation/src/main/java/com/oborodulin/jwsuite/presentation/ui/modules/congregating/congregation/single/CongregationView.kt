@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -34,19 +35,7 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -54,15 +43,7 @@ private const val TAG = "Congregating.CongregationView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CongregationView(
-    congregationViewModel: CongregationViewModel,
-    localitiesListViewModel: LocalitiesListViewModel,
-    localityViewModel: LocalityViewModel,
-    regionsListViewModel: RegionsListViewModel,
-    regionViewModel: RegionViewModel,
-    regionDistrictsListViewModel: RegionDistrictsListViewModel,
-    regionDistrictViewModel: RegionDistrictViewModel
-) {
+fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("CongregationView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -117,12 +98,6 @@ fun CongregationView(
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = localitiesListViewModel,
-            singleViewModel = localityViewModel,
-            regionsListViewModel = regionsListViewModel,
-            regionViewModel = regionViewModel,
-            regionDistrictsListViewModel = regionDistrictsListViewModel,
-            regionDistrictViewModel = regionDistrictViewModel,
             inputWrapper = locality,
             onValueChange = {
                 congregationViewModel.onTextFieldEntered(CongregationInputEvent.Locality(it))
@@ -237,7 +212,7 @@ fun CongregationView(
 fun PreviewCongregationView() {
     JWSuiteTheme {
         Surface {
-            CongregationView(
+            /*CongregationView(
                 congregationViewModel = CongregationViewModelImpl.previewModel(LocalContext.current),
                 localitiesListViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
                 localityViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
@@ -247,7 +222,7 @@ fun PreviewCongregationView() {
                     LocalContext.current
                 ),
                 regionDistrictViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current)
-            )
+            )*/
         }
     }
 }

@@ -16,6 +16,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAN
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
@@ -27,6 +28,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TER
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
@@ -50,6 +52,9 @@ import java.util.UUID
 // ic_room.png - https://www.flaticon.com/authors/dinosoftlabs
 // ic_street.png - https://www.freepik.com/
 // ic_street_sign.png - https://www.flaticon.com/authors/xnimrodx
+// ic_locality_district.png - https://www.flaticon.com/authors/andrejs-kirma
+// ic_cityscape.png - https://www.flaticon.com/authors/andrejs-kirma
+// ic_microdistrict.png - https://www.flaticon.com/authors/andrejs-kirma
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -57,6 +62,8 @@ private const val TAG = "Presentation.NavRoutes"
 private const val ARG_REGION_ID = "regionId"
 private const val ARG_REGION_DISTRICT_ID = "regionDistrictId"
 private const val ARG_LOCALITY_ID = "localityId"
+private const val ARG_LOCALITY_DISTRICT_ID = "localityDistrictId"
+private const val ARG_MICRODISTRICT_ID = "microdistrictId"
 private const val ARG_STREET_ID = "streetId"
 
 // Congregation:
@@ -180,6 +187,38 @@ sealed class NavRoutes constructor(
             )
             Timber.tag(TAG).d("Locality - fromEntry(...): '%s'", localityInput)
             return localityInput
+        }
+    }
+
+    data object LocalityDistrict : NavRoutes(
+        String.format(ROUTE_LOCALITY_DISTRICT, "{$ARG_LOCALITY_DISTRICT_ID}"),
+        R.drawable.ic_location_city_24,
+        R.string.nav_item_locality_district,
+        arguments = listOf(navArgument(ARG_LOCALITY_DISTRICT_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForLocalityDistrict(localityDistrictInput: LocalityDistrictInput? = null): String {
+            val route = when (localityDistrictInput) {
+                null -> baseRoute()
+                else -> String.format(
+                    ROUTE_LOCALITY_DISTRICT,
+                    localityDistrictInput.localityDistrictId
+                )
+            }
+            //val route = String.format(ROUTE_PAYER, payerId)
+            Timber.tag(TAG).d("LocalityDistrict - routeForLocalityDistrict(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): LocalityDistrictInput {
+            val localityDistrictInput = LocalityDistrictInput(
+                UUID.fromString(entry.arguments?.getString(ARG_LOCALITY_DISTRICT_ID).orEmpty())
+            )
+            Timber.tag(TAG).d("LocalityDistrict - fromEntry(...): '%s'", localityDistrictInput)
+            return localityDistrictInput
         }
     }
 

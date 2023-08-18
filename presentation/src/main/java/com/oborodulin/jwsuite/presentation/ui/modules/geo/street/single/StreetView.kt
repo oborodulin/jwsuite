@@ -34,6 +34,7 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionComboBox
@@ -110,7 +111,7 @@ fun LocalityView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        RegionComboBox(
+        LocalityComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -119,13 +120,11 @@ fun LocalityView(
                         isFocused = focusState.isFocused
                     )
                 },
-            listViewModel = regionsListViewModel,
-            singleViewModel = regionViewModel,
             inputWrapper = locality,
             onValueChange = { streetViewModel.onTextFieldEntered(StreetInputEvent.Locality(it)) },
             onImeKeyAction = streetViewModel::moveFocusImeAction
         )
-        RegionDistrictComboBox(
+        LocalityDistrictComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY_DISTRICT.name]!!.focusRequester)
                 .onFocusChanged { focusState ->

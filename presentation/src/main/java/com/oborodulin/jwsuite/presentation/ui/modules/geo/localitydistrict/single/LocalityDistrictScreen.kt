@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single
+package com.oborodulin.jwsuite.presentation.ui.modules.geo.localitydistrict.single
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -28,14 +28,14 @@ private const val TAG = "Geo.RegionDistrictScreen"
 @Composable
 fun RegionDistrictScreen(
     appState: AppState,
-    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
+    regionDistrictViewModel: LocalityDistrictViewModelImpl = hiltViewModel(),
     regionDistrictInput: RegionDistrictInput? = null
 ) {
     Timber.tag(TAG).d("RegionDistrictScreen(...) called: localityInput = %s", regionDistrictInput)
     LaunchedEffect(regionDistrictInput?.regionDistrictId) {
         Timber.tag(TAG).d("RegionDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
         regionDistrictViewModel.submitAction(
-            RegionDistrictUiAction.Load(regionDistrictInput?.regionDistrictId)
+            LocalityDistrictUiAction.Load(regionDistrictInput?.regionDistrictId)
         )
     }
     regionDistrictViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -72,7 +72,7 @@ fun RegionDistrictScreen(
                                         appState.backToBottomBarScreen()
                                     }
                                 }
-                                regionDistrictViewModel.submitAction(RegionDistrictUiAction.Save)
+                                regionDistrictViewModel.submitAction(LocalityDistrictUiAction.Save)
                                 Timber.tag(TAG).d("RegionDistrictScreen(...): onSubmit() executed")
                             }
                         }
