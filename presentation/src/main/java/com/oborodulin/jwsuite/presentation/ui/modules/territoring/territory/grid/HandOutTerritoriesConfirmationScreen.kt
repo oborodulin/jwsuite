@@ -199,7 +199,7 @@ fun HandOutTerritoriesConfirmationView(
                     )
                 },
             labelResId = com.oborodulin.jwsuite.presentation.R.string.territory_receiving_date_hint,
-            datePickerTitleResId = com.oborodulin.jwsuite.presentation.R.string.dlg_title_set_territory_receiving_date,
+            datePickerTitleResId = com.oborodulin.jwsuite.presentation.R.string.date_dlg_title_set_territory_receiving,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },

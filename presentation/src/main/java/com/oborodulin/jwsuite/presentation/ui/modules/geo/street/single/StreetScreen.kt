@@ -23,36 +23,28 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Geo.LocalityScreen"
+private const val TAG = "Geo.StreetScreen"
 
 @Composable
-fun LocalityScreen(
+fun StreetScreen(
     appState: AppState,
-    localityViewModel: StreetViewModelImpl = hiltViewModel(),
-    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
-    regionViewModel: RegionViewModelImpl = hiltViewModel(),
-    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
-    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
-    localityInput: LocalityInput? = null
+    viewModel: StreetViewModelImpl = hiltViewModel(),
+    streetInput: StreetInput? = null
 ) {
-    Timber.tag(TAG).d("LocalityScreen(...) called: localityInput = %s", localityInput)
+    Timber.tag(TAG).d("StreetScreen(...) called: streetInput = %s", streetInput)
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(localityInput?.localityId) {
-        Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
-        localityViewModel.submitAction(StreetUiAction.Load(localityInput?.localityId))
+    LaunchedEffect(streetInput?.streetId) {
+        Timber.tag(TAG).d("StreetScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(StreetUiAction.Load(streetInput?.streetId))
     }
-    localityViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        localityViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)
@@ -65,29 +57,25 @@ fun LocalityScreen(
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by localityViewModel.areInputsValid.collectAsStateWithLifecycle()
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        LocalityView(
-                            localityViewModel,
-                            regionsListViewModel, regionViewModel,
-                            regionDistrictsListViewModel, regionDistrictViewModel
-                        )
+                        StreetView()
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,
                             onClick = {
-                                Timber.tag(TAG).d("LocalityScreen(...): Save Button onClick...")
+                                Timber.tag(TAG).d("StreetScreen(...): Save Button onClick...")
                                 // checks all errors
-                                localityViewModel.onContinueClick {
+                                viewModel.onContinueClick {
                                     // if success, then save and backToBottomBarScreen
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
-                                        localityViewModel.submitAction(StreetUiAction.Save)
+                                        viewModel.submitAction(StreetUiAction.Save)
                                             .join()
                                         appState.backToBottomBarScreen()
                                     }

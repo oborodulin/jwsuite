@@ -10,3 +10,9 @@ data class MicrodistrictUi(
     val microdistrictShortName: String = "",
     val microdistrictName: String = ""
 ) : ModelUi()
+
+fun MicrodistrictUi.toMicrodistrictsListItem() = MicrodistrictsListItem(
+    id = this.id!!,
+    microdistrictShortName = this.microdistrictShortName,
+    microdistrictName = this.microdistrictName
+)

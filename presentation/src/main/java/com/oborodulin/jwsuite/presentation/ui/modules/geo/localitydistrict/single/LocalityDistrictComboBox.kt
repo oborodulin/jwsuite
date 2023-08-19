@@ -20,25 +20,25 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.localitydistrict.list.LocalityDistrictsListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Geo.RegionDistrictComboBox"
+private const val TAG = "Geo.LocalityDistrictComboBox"
 
 @Composable
-fun RegionDistrictComboBox(
+fun LocalityDistrictComboBox(
     modifier: Modifier = Modifier,
-    regionId: UUID?,
-    listViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
+    localityId: UUID?,
+    listViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
     singleViewModel: LocalityDistrictViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("RegionComboBox(...) called")
+    Timber.tag(TAG).d("LocalityDistrictComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -48,7 +48,7 @@ fun RegionDistrictComboBox(
         viewModel = singleViewModel,
         loadUiAction = LocalityDistrictUiAction.Load(),
         confirmUiAction = LocalityDistrictUiAction.Save,
-        dialogView = { RegionDistrictView() },
+        dialogView = { LocalityDistrictView() },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
@@ -56,14 +56,14 @@ fun RegionDistrictComboBox(
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = RegionDistrictsListUiAction.Load(regionId),
+        loadListUiAction = LocalityDistrictsListUiAction.Load(localityId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.locality_region_district_hint,
-        listTitleResId = R.string.dlg_title_select_region_district,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_district_36), null) },
+        labelResId = R.string.locality_district_hint,
+        listTitleResId = R.string.dlg_title_select_locality_district,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_locality_district_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -73,15 +73,15 @@ fun RegionDistrictComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRegionDistrictComboBox() {
+fun PreviewLocalityDistrictComboBox() {
     JWSuiteTheme {
         Surface {
-            /*RegionDistrictComboBox(
-                regionId = UUID.randomUUID(),
-                listViewModel = RegionDistrictsListViewModelImpl.previewModel(LocalContext.current),
-                singleViewModel = RegionDistrictViewModelImpl.previewModel(LocalContext.current),
-                regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
-                regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
+            /*LocalityDistrictComboBox(
+                localityId = UUID.randomUUID(),
+                listViewModel = LocalityDistrictsListViewModelImpl.previewModel(LocalContext.current),
+                singleViewModel = LocalityDistrictViewModelImpl.previewModel(LocalContext.current),
+                localitysListViewModel = LocalitysListViewModelImpl.previewModel(LocalContext.current),
+                localityViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

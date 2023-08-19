@@ -18,29 +18,29 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Geo.RegionDistrictScreen"
+private const val TAG = "Geo.LocalityDistrictScreen"
 
 @Composable
-fun RegionDistrictScreen(
+fun LocalityDistrictScreen(
     appState: AppState,
-    regionDistrictViewModel: LocalityDistrictViewModelImpl = hiltViewModel(),
-    regionDistrictInput: RegionDistrictInput? = null
+    viewModel: LocalityDistrictViewModelImpl = hiltViewModel(),
+    localityDistrictInput: LocalityDistrictInput? = null
 ) {
-    Timber.tag(TAG).d("RegionDistrictScreen(...) called: localityInput = %s", regionDistrictInput)
-    LaunchedEffect(regionDistrictInput?.regionDistrictId) {
-        Timber.tag(TAG).d("RegionDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
-        regionDistrictViewModel.submitAction(
-            LocalityDistrictUiAction.Load(regionDistrictInput?.regionDistrictId)
+    Timber.tag(TAG).d("LocalityDistrictScreen(...) called: localityInput = %s", localityDistrictInput)
+    LaunchedEffect(localityDistrictInput?.localityDistrictId) {
+        Timber.tag(TAG).d("LocalityDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(
+            LocalityDistrictUiAction.Load(localityDistrictInput?.localityDistrictId)
         )
     }
-    regionDistrictViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        regionDistrictViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme {
@@ -53,27 +53,27 @@ fun RegionDistrictScreen(
                 }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
-                    val areInputsValid by regionDistrictViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    RegionDistrictView()
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+                    LocalityDistrictView()
                     Spacer(Modifier.height(8.dp))
                     SaveButtonComponent(
                         enabled = areInputsValid,
                         onClick = {
-                            regionDistrictViewModel.onContinueClick {
+                            viewModel.onContinueClick {
                                 Timber.tag(TAG)
-                                    .d("RegionDistrictScreen(...): Start viewModelScope.launch")
-                                regionDistrictViewModel.viewModelScope().launch {
-                                    regionDistrictViewModel.actionsJobFlow.collect {
+                                    .d("LocalityDistrictScreen(...): Start viewModelScope.launch")
+                                viewModel.viewModelScope().launch {
+                                    viewModel.actionsJobFlow.collect {
                                         Timber.tag(TAG).d(
-                                            "RegionDistrictScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                            "LocalityDistrictScreen(...): Start actionsJobFlow.collect [job = %s]",
                                             it?.toString()
                                         )
                                         it?.join()
                                         appState.backToBottomBarScreen()
                                     }
                                 }
-                                regionDistrictViewModel.submitAction(LocalityDistrictUiAction.Save)
-                                Timber.tag(TAG).d("RegionDistrictScreen(...): onSubmit() executed")
+                                viewModel.submitAction(LocalityDistrictUiAction.Save)
+                                Timber.tag(TAG).d("LocalityDistrictScreen(...): onSubmit() executed")
                             }
                         }
                     )

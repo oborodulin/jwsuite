@@ -32,8 +32,10 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.MemberScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.microdistrict.single.MicrodistrictScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
@@ -189,6 +191,27 @@ private fun HomeNavigationHost(
                     it.destination.route, NavRoutes.Locality.arguments
                 )
             LocalityScreen(appState = appState, localityInput = NavRoutes.Locality.fromEntry(it))
+        }
+        composable(
+            route = NavRoutes.Microdistrict.route, arguments = NavRoutes.Microdistrict.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to MicrodistrictScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Microdistrict.arguments
+                )
+            MicrodistrictScreen(
+                appState = appState,
+                microdistrictInput = NavRoutes.Microdistrict.fromEntry(it)
+            )
+        }
+        composable(route = NavRoutes.Street.route, arguments = NavRoutes.Street.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to StreetScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Street.arguments
+                )
+            StreetScreen(appState = appState, streetInput = NavRoutes.Street.fromEntry(it))
         }
 
         // Nav Bar Navigation:

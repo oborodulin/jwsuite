@@ -58,7 +58,7 @@ fun RegionComboBox(
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.locality_region_hint,
+        labelResId = R.string.region_hint,
         listTitleResId = R.string.dlg_title_select_region,
         leadingIcon = { Icon(painterResource(R.drawable.ic_region_36), null) },
         inputWrapper = inputWrapper,

@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,10 +20,6 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.list.StreetsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -70,9 +65,9 @@ fun StreetComboBox(
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.locality_hint,
-        listTitleResId = R.string.dlg_title_select_locality,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
+        labelResId = R.string.street_hint,
+        listTitleResId = R.string.dlg_title_select_street,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_street_sign_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -85,7 +80,7 @@ fun StreetComboBox(
 fun PreviewStreetComboBox() {
     JWSuiteTheme {
         Surface {
-            StreetComboBox(
+            /*StreetComboBox(
                 listViewModel = StreetsListViewModelImpl.previewModel(LocalContext.current),
                 singleViewModel = StreetViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
@@ -97,7 +92,7 @@ fun PreviewStreetComboBox() {
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}
-            )
+            )*/
         }
     }
 }

@@ -7,15 +7,12 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.DeleteLocalityDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
-import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.DeleteLocalityDistrictUseCase
-import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetLocalityDistrictsUseCase
-import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.LocalityDistrictUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.LocalityDistrictsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.LocalityDistrictsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -64,10 +61,14 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadLocalityDistricts(regionId: UUID? = null): Job {
-        Timber.tag(TAG).d("loadLocalityDistricts() called: regionId = %s", regionId)
+    private fun loadLocalityDistricts(localityId: UUID? = null): Job {
+        Timber.tag(TAG).d("loadLocalityDistricts() called: localityId = %s", localityId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getLocalityDistrictsUseCase.execute(GetLocalityDistrictsUseCase.Request(regionId))
+            useCases.getLocalityDistrictsUseCase.execute(
+                GetLocalityDistrictsUseCase.Request(
+                    localityId
+                )
+            )
                 .map {
                     converter.convert(it)
                 }
@@ -78,12 +79,12 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deleteLocalityDistrict(regionDistrictId: UUID): Job {
+    private fun deleteLocalityDistrict(localityDistrictId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteLocalityDistrict() called: regionDistrictId = %s", regionDistrictId.toString())
+            .d("deleteLocalityDistrict() called: localityDistrictId = %s", localityDistrictId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteLocalityDistrictUseCase.execute(
-                DeleteLocalityDistrictUseCase.Request(regionDistrictId)
+                DeleteLocalityDistrictUseCase.Request(localityDistrictId)
             ).collect {}
         }
         return job

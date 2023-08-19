@@ -7,3 +7,9 @@ data class LocalityDistrictUi(
     val districtShortName: String = "",
     val districtName: String = ""
 ) : ModelUi()
+
+fun LocalityDistrictUi.toLocalityDistrictsListItem() = LocalityDistrictsListItem(
+    id = this.id!!,
+    districtShortName = this.districtShortName,
+    districtName = this.districtName
+)

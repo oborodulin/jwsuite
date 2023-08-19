@@ -12,14 +12,14 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictUseCase
-import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
-import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionDistrictUi
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionUi
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionDistrictConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
+import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.SaveLocalityDistrictUseCase
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.LocalityDistrictConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -28,68 +28,72 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.RegionDistrictViewModelImpl"
+private const val TAG = "Geo.LocalityDistrictViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class LocalityDistrictViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val useCases: RegionDistrictUseCases,
-    private val converter: RegionDistrictConverter,
-    private val mapper: RegionDistrictUiToRegionDistrictMapper
+    private val useCases: LocalityDistrictUseCases,
+    private val converter: LocalityDistrictConverter,
+    private val mapper: LocalityDistrictUiToLocalityDistrictMapper
 ) : LocalityDistrictViewModel,
-    DialogSingleViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, LocalityDistrictUiAction, UiSingleEvent, LocalityDistrictFields, InputWrapper>(
+    DialogSingleViewModel<LocalityDistrictUi, UiState<LocalityDistrictUi>, LocalityDistrictUiAction, UiSingleEvent, LocalityDistrictFields, InputWrapper>(
         state,
-        LocalityDistrictFields.REGION_DISTRICT_REGION
+        LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY
     ) {
-    private val regionDistrictId: StateFlow<InputWrapper> by lazy {
+    private val localityDistrictId: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            LocalityDistrictFields.REGION_DISTRICT_ID.name,
+            LocalityDistrictFields.LOCALITY_DISTRICT_ID.name,
             InputWrapper()
         )
     }
-    override val region: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(LocalityDistrictFields.REGION_DISTRICT_REGION.name, InputListItemWrapper())
+    override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(
+            LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY.name,
+            InputListItemWrapper()
+        )
     }
     override val districtShortName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(LocalityDistrictFields.DISTRICT_SHORT_NAME.name, InputWrapper())
+        state.getStateFlow(LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME.name, InputWrapper())
     }
     override val districtName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(LocalityDistrictFields.DISTRICT_NAME.name, InputWrapper())
+        state.getStateFlow(LocalityDistrictFields.LOCALITY_DISTRICT_NAME.name, InputWrapper())
     }
 
-    override val areInputsValid = combine(region, districtShortName, districtName)
-    { region, districtShortName, districtName ->
-        region.errorId == null && districtShortName.errorId == null && districtName.errorId == null
+    override val areInputsValid = combine(locality, districtShortName, districtName)
+    { locality, districtShortName, districtName ->
+        locality.errorId == null && districtShortName.errorId == null && districtName.errorId == null
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<RegionDistrictUi> = UiState.Loading
+    override fun initState(): UiState<LocalityDistrictUi> = UiState.Loading
 
     override suspend fun handleAction(action: LocalityDistrictUiAction): Job {
-        Timber.tag(TAG).d("handleAction(RegionDistrictUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG)
+            .d("handleAction(LocalityDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalityDistrictUiAction.Load -> when (action.regionDistrictId) {
+            is LocalityDistrictUiAction.Load -> when (action.localityDistrictId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_new_subheader)
-                    submitState(UiState.Success(RegionDistrictUi()))
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_district_new_subheader)
+                    submitState(UiState.Success(LocalityDistrictUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_subheader)
-                    loadRegionDistrict(action.regionDistrictId)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.locality_district_subheader)
+                    loadLocalityDistrict(action.localityDistrictId)
                 }
             }
 
-            is LocalityDistrictUiAction.Save -> saveRegionDistrict()
+            is LocalityDistrictUiAction.Save -> saveLocalityDistrict()
         }
         return job
     }
 
-    private fun loadRegionDistrict(regionDistrictId: UUID): Job {
-        Timber.tag(TAG).d("loadRegionDistrict(UUID) called: %s", regionDistrictId)
+    private fun loadLocalityDistrict(localityDistrictId: UUID): Job {
+        Timber.tag(TAG).d("loadLocalityDistrict(UUID) called: %s", localityDistrictId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getRegionDistrictUseCase.execute(
-                GetRegionDistrictUseCase.Request(regionDistrictId)
+            useCases.getLocalityDistrictUseCase.execute(
+                GetLocalityDistrictUseCase.Request(localityDistrictId)
             )
                 .map {
                     converter.convert(it)
@@ -101,21 +105,21 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveRegionDistrict(): Job {
-        val regionUi = RegionUi()
-        regionUi.id = region.value.item?.itemId
-        val regionDistrictUi = RegionDistrictUi(
-            region = regionUi,
+    private fun saveLocalityDistrict(): Job {
+        val localityUi = LocalityUi()
+        localityUi.id = locality.value.item?.itemId
+        val localityDistrictUi = LocalityDistrictUi(
+            locality = localityUi,
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
         )
-        regionDistrictUi.id = if (regionDistrictId.value.value.isNotEmpty()) {
-            UUID.fromString(regionDistrictId.value.value)
+        localityDistrictUi.id = if (localityDistrictId.value.value.isNotEmpty()) {
+            UUID.fromString(localityDistrictId.value.value)
         } else null
-        Timber.tag(TAG).d("saveRegionDistrict() called: UI model %s", regionDistrictUi)
+        Timber.tag(TAG).d("saveLocalityDistrict() called: UI model %s", localityDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.saveRegionDistrictUseCase.execute(
-                SaveRegionDistrictUseCase.Request(mapper.map(regionDistrictUi))
+            useCases.saveLocalityDistrictUseCase.execute(
+                SaveLocalityDistrictUseCase.Request(mapper.map(localityDistrictUi))
             ).collect {}
         }
         return job
@@ -125,25 +129,29 @@ class LocalityDistrictViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val regionDistrictUi = uiModel as RegionDistrictUi
+        val localityDistrictUi = uiModel as LocalityDistrictUi
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(RegionDistrictModel) called: regionDistrictUi = %s",
-                regionDistrictUi
+                "initFieldStatesByUiModel(LocalityDistrictModel) called: localityDistrictUi = %s",
+                localityDistrictUi
             )
-        regionDistrictUi.id?.let {
-            initStateValue(LocalityDistrictFields.REGION_DISTRICT_ID, regionDistrictId, it.toString())
+        localityDistrictUi.id?.let {
+            initStateValue(
+                LocalityDistrictFields.LOCALITY_DISTRICT_ID, localityDistrictId,
+                it.toString()
+            )
         }
         initStateValue(
-            LocalityDistrictFields.REGION_DISTRICT_REGION, region,
-            ListItemModel(regionDistrictUi.region.id, regionDistrictUi.region.regionName)
+            LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
+            ListItemModel(localityDistrictUi.locality.id, localityDistrictUi.locality.localityName)
         )
         initStateValue(
-            LocalityDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
-            regionDistrictUi.districtShortName
+            LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME, districtShortName,
+            localityDistrictUi.districtShortName
         )
         initStateValue(
-            LocalityDistrictFields.DISTRICT_NAME, districtName, regionDistrictUi.districtName
+            LocalityDistrictFields.LOCALITY_DISTRICT_NAME, districtName,
+            localityDistrictUi.districtName
         )
         return null
     }
@@ -156,36 +164,39 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                     is LocalityDistrictInputEvent.Locality ->
                         when (LocalityDistrictInputValidator.Locality.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                LocalityDistrictFields.REGION_DISTRICT_REGION, region, event.input,
-                                true
+                                LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
+                                event.input, true
                             )
 
                             else -> setStateValue(
-                                LocalityDistrictFields.REGION_DISTRICT_REGION, region, event.input
+                                LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
+                                event.input
                             )
                         }
 
                     is LocalityDistrictInputEvent.DistrictShortName ->
                         when (LocalityDistrictInputValidator.DistrictShortName.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                LocalityDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
-                                event.input, true
+                                LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME,
+                                districtShortName, event.input, true
                             )
 
                             else -> setStateValue(
-                                LocalityDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
-                                event.input
+                                LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME,
+                                districtShortName, event.input
                             )
                         }
 
                     is LocalityDistrictInputEvent.DistrictName ->
                         when (LocalityDistrictInputValidator.DistrictName.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                LocalityDistrictFields.DISTRICT_NAME, districtName, event.input, true
+                                LocalityDistrictFields.LOCALITY_DISTRICT_NAME, districtName,
+                                event.input, true
                             )
 
                             else -> setStateValue(
-                                LocalityDistrictFields.DISTRICT_NAME, districtName, event.input
+                                LocalityDistrictFields.LOCALITY_DISTRICT_NAME, districtName,
+                                event.input
                             )
                         }
                 }
@@ -195,19 +206,19 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 when (event) {
                     is LocalityDistrictInputEvent.Locality ->
                         setStateValue(
-                            LocalityDistrictFields.REGION_DISTRICT_REGION, region,
+                            LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
                             LocalityDistrictInputValidator.Locality.errorIdOrNull(event.input.headline)
                         )
 
                     is LocalityDistrictInputEvent.DistrictShortName ->
                         setStateValue(
-                            LocalityDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
+                            LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME, districtShortName,
                             LocalityDistrictInputValidator.DistrictShortName.errorIdOrNull(event.input)
                         )
 
                     is LocalityDistrictInputEvent.DistrictName ->
                         setStateValue(
-                            LocalityDistrictFields.DISTRICT_NAME, districtName,
+                            LocalityDistrictFields.LOCALITY_DISTRICT_NAME, districtName,
                             LocalityDistrictInputValidator.DistrictName.errorIdOrNull(event.input)
                         )
 
@@ -219,10 +230,10 @@ class LocalityDistrictViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        LocalityDistrictInputValidator.Locality.errorIdOrNull(region.value.item?.headline)?.let {
+        LocalityDistrictInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = LocalityDistrictFields.REGION_DISTRICT_REGION.name,
+                    fieldName = LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY.name,
                     errorId = it
                 )
             )
@@ -231,7 +242,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = LocalityDistrictFields.DISTRICT_SHORT_NAME.name,
+                        fieldName = LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME.name,
                         errorId = it
                     )
                 )
@@ -239,7 +250,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         LocalityDistrictInputValidator.DistrictName.errorIdOrNull(districtName.value.value)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = LocalityDistrictFields.DISTRICT_NAME.name,
+                    fieldName = LocalityDistrictFields.LOCALITY_DISTRICT_NAME.name,
                     errorId = it
                 )
             )
@@ -252,12 +263,18 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                LocalityDistrictFields.REGION_DISTRICT_REGION.name -> region.value.copy(errorId = error.errorId)
-                LocalityDistrictFields.DISTRICT_SHORT_NAME.name -> districtShortName.value.copy(
+                LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY.name -> locality.value.copy(
                     errorId = error.errorId
                 )
 
-                LocalityDistrictFields.DISTRICT_NAME.name -> districtName.value.copy(errorId = error.errorId)
+                LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME.name -> districtShortName.value.copy(
+                    errorId = error.errorId
+                )
+
+                LocalityDistrictFields.LOCALITY_DISTRICT_NAME.name -> districtName.value.copy(
+                    errorId = error.errorId
+                )
+
                 else -> null
             }
         }
@@ -279,7 +296,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())
 
@@ -303,14 +320,14 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): RegionDistrictUi {
-            val regionDistrictUi = RegionDistrictUi(
-                region = RegionViewModelImpl.previewUiModel(ctx),
-                districtShortName = ctx.resources.getString(R.string.def_reg_donetsky_short_name),
-                districtName = ctx.resources.getString(R.string.def_reg_donetsky_name)
+        fun previewUiModel(ctx: Context): LocalityDistrictUi {
+            val localityDistrictUi = LocalityDistrictUi(
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
+                districtShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
+                districtName = ctx.resources.getString(R.string.def_donetsk_name)
             )
-            regionDistrictUi.id = UUID.randomUUID()
-            return regionDistrictUi
+            localityDistrictUi.id = UUID.randomUUID()
+            return localityDistrictUi
         }
     }
 }
