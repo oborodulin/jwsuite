@@ -13,7 +13,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoRegionTlEntity.TABLE_NAME,
-    indices = [Index(value = ["regionsId", "regionLocCode"], unique = true)],
+    indices = [Index(value = ["regionsId", "regionLocCode", "regionTlCode"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
@@ -25,6 +25,7 @@ import java.util.UUID
 data class GeoRegionTlEntity(
     @PrimaryKey val regionTlId: UUID = UUID.randomUUID(),
     val regionLocCode: String = Locale.getDefault().language,
+    val regionTlCode: String? = null,
     val regionName: String,
     @ColumnInfo(index = true) val regionsId: UUID,
 ) : BaseEntity() {
@@ -33,9 +34,11 @@ data class GeoRegionTlEntity(
         const val TABLE_NAME = "geo_regions_tl"
 
         fun defaultRegionTl(
-            regionTlId: UUID = UUID.randomUUID(), regionId: UUID, regionName: String
+            regionTlId: UUID = UUID.randomUUID(), regionId: UUID, regionTlCode: String? = null,
+            regionName: String
         ) = GeoRegionTlEntity(
-            regionTlId = regionTlId, regionName = regionName, regionsId = regionId
+            regionTlId = regionTlId, regionTlCode = regionTlCode, regionName = regionName,
+            regionsId = regionId
         )
 
         fun donetskRegionTl(ctx: Context, regionId: UUID) = defaultRegionTl(

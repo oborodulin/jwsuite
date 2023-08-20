@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data.local.db.dao
 
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.oborodulin.jwsuite.data.local.db.entities.AppSettingEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -61,4 +62,8 @@ interface AppSettingDao {
 
     @Query("DELETE FROM ${AppSettingEntity.TABLE_NAME}")
     suspend fun deleteAll()
+
+    // API:
+    @RawQuery
+    fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery?): Flow<Int>
 }

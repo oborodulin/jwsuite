@@ -6,72 +6,27 @@ import com.oborodulin.jwsuite.presentation.R
 private const val TAG = "Congregating.GroupInputValidator"
 
 sealed class TerritoryInputValidator : Validatable {
-    object Group : TerritoryInputValidator() {
+    data object Category : TerritoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_group_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.territory_category_empty_error
                 else -> null
             }
     }
 
-    object TerritoryNum : TerritoryInputValidator() {
+    data object Locality : TerritoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
                 //etc..
                 else -> null
             }
     }
 
-    object Pseudonym : TerritoryInputValidator() {
+    data object TerritoryNum : TerritoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.member_pseudonym_empty_error
-                //etc..
-                else -> null
-            }
-    }
-
-    object PhoneNumber : TerritoryInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                !inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
-    }
-
-    object TerritoryType : TerritoryInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
-    }
-
-    object DateOfBirth : TerritoryInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
-    }
-
-    object DateOfBaptism : TerritoryInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
-    }
-
-    object InactiveDate : TerritoryInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.territory_num_empty_error
                 //etc..
                 else -> null
             }

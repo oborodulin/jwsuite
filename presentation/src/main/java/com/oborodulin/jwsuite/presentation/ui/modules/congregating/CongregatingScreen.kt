@@ -36,13 +36,11 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.*
@@ -90,7 +88,7 @@ fun CongregatingScreen(
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(
-                            title = stringResource(R.string.congregation_tab_members),
+                            title = stringResource(R.string.congregation_tab_congregations),
                             view = {
                                 CongregationMembersView(
                                     appState = appState, membersListViewModel = membersListViewModel
@@ -101,6 +99,14 @@ fun CongregatingScreen(
                             title = stringResource(R.string.congregation_tab_groups),
                             view = {
                                 GroupMembersView(
+                                    appState = appState, membersListViewModel = membersListViewModel
+                                )
+                            }
+                        ),
+                        TabRowItem(
+                            title = stringResource(R.string.congregation_tab_members),
+                            view = {
+                                MembersView(
                                     appState = appState, membersListViewModel = membersListViewModel
                                 )
                             }
@@ -217,6 +223,54 @@ fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewMo
                 )
         ) {
             MembersListView(appState = appState)
+        }
+        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
+    }
+}
+
+@Composable
+fun MembersView(appState: AppState, membersListViewModel: MembersListViewModel) {
+    Timber.tag(TAG).d("MembersView(...) called")
+    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
+                .weight(6.7f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            MembersListView(appState = appState)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(3.3f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }

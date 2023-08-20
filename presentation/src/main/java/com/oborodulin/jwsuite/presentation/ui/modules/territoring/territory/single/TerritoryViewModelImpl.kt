@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single
 
 import android.content.Context
-import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -13,150 +12,118 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Constants
-import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.util.Utils
-import com.oborodulin.jwsuite.data.R
-import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
-import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
-import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
-import com.oborodulin.jwsuite.domain.util.MemberType
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupViewModelImpl
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.MemberConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberUiToMemberMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toMembersListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.localitydistrict.single.LocalityDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.microdistrict.single.MicrodistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.MicrodistrictUi
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoryUi
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.toTerritoriesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Congregating.MemberViewModelImpl"
+private const val TAG = "Congregating.TerritoryViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class TerritoryViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val resHelper: ResourcesHelper,
-    private val useCases: MemberUseCases,
-    private val converter: MemberConverter,
-    private val memberUiMapper: MemberUiToMemberMapper,
-    private val memberMapper: MemberToMemberUiMapper
+    private val useCases: TerritoryUseCases,
+    private val converter: TerritoryConverter,
+    private val territoryUiMapper: TerritoryUiToTerritoryMapper,
+    private val territoryMapper: TerritoryToTerritoryUiMapper
 ) : TerritoryViewModel,
-    DialogSingleViewModel<MemberUi, UiState<MemberUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
+    DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
         state,
-        TerritoryFields.MEMBER_NUM
+        TerritoryFields.TERRITORY_NUM
     ) {
-    private val _memberTypes: MutableStateFlow<MutableMap<MemberType, String>> =
-        MutableStateFlow(mutableMapOf())
-    override val memberTypes = _memberTypes.asStateFlow()
-
-    private val memberId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_ID.name, InputWrapper())
+    private val territoryId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_ID.name, InputWrapper())
     }
-
     override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
+        state.getStateFlow(TerritoryFields.TERRITORY_CONGREGATION.name, InputListItemWrapper())
     }
-
-    override val group: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_GROUP.name, InputListItemWrapper())
+    override val category: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_CATEGORY.name, InputListItemWrapper())
     }
-
-    override val memberNum: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_NUM.name, InputWrapper())
+    override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_LOCALITY.name, InputListItemWrapper())
     }
-    override val memberName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_NAME.name, InputWrapper())
+    override val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_LOCALITY_DISTRICT.name, InputListItemWrapper())
     }
-    override val surname: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_SURNAME.name, InputWrapper())
+    override val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_MICRODISTRICT.name, InputListItemWrapper())
     }
-    override val patronymic: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_PATRONYMIC.name, InputWrapper())
+    override val territoryNum: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_NUM.name, InputWrapper())
     }
-    override val pseudonym: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_PSEUDONYM.name, InputWrapper())
+    override val isPrivateSector: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR.name, InputWrapper())
     }
-    override val phoneNumber: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_PHONE_NUMBER.name, InputWrapper())
+    override val isBusiness: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_IS_BUSINESS.name, InputWrapper())
     }
-    override val memberType: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_TYPE.name, InputWrapper())
+    override val isGroupMinistry: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_IS_GROUP_MINISTRY.name, InputWrapper())
     }
-    override val dateOfBirth: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_DATE_OF_BIRTH.name, InputWrapper())
+    override val isActive: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_IS_ACTIVE.name, InputWrapper())
     }
-    override val dateOfBaptism: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_DATE_OF_BAPTISM.name, InputWrapper())
-    }
-    override val inactiveDate: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.MEMBER_INACTIVE_DATE.name, InputWrapper())
+    override val territoryDesc: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryFields.TERRITORY_DESC.name, InputWrapper())
     }
 
     override val areInputsValid =
-        combine(
-            group,
-            memberNum,
-            memberName,
-            surname,
-            patronymic,
-            pseudonym,
-            phoneNumber,
-            memberType,
-            dateOfBirth,
-            dateOfBaptism,
-            inactiveDate
-        )
+        combine(category, locality, territoryNum)
         { stateFlowsArray ->
             var errorIdResult = true
             for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
             errorIdResult
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    init {
-        initMemberTypes(com.oborodulin.jwsuite.domain.R.array.member_types)
-    }
-
-    private fun initMemberTypes(@ArrayRes arrayId: Int) {
-        val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in MemberType.values()) _memberTypes.value[type] = resArray[type.ordinal]
-    }
-
-    override fun initState(): UiState<MemberUi> = UiState.Loading
+    override fun initState(): UiState<TerritoryUi> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryUiAction): Job {
-        Timber.tag(TAG).d("handleAction(MemberUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(TerritoryUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is TerritoryUiAction.Load -> when (action.memberId) {
+            is TerritoryUiAction.Load -> when (action.territoryId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_subheader)
-                    submitState(UiState.Success(MemberUi()))
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_new_subheader)
+                    submitState(UiState.Success(TerritoryUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_new_subheader)
-                    loadMember(action.memberId)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_subheader)
+                    loadTerritory(action.territoryId)
                 }
             }
 
-            is TerritoryUiAction.Save -> saveMember()
+            is TerritoryUiAction.Save -> saveTerritory()
         }
         return job
     }
 
-    private fun loadMember(memberId: UUID): Job {
-        Timber.tag(TAG).d("loadMember(UUID) called: %s", memberId.toString())
+    private fun loadTerritory(territoryId: UUID): Job {
+        Timber.tag(TAG).d("loadTerritory(UUID) called: %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getMemberUseCase.execute(GetMemberUseCase.Request(memberId))
+            useCases.getTerritoryUseCase.execute(GetTerritoryUseCase.Request(territoryId))
                 .map {
                     converter.convert(it)
                 }
@@ -167,43 +134,43 @@ class TerritoryViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveMember(): Job {
-        val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
+    private fun saveTerritory(): Job {
         val congregationUi = CongregationUi()
         congregationUi.id = congregation.value.item?.itemId
-        val groupUi = GroupUi(congregation = congregationUi)
-        groupUi.id = group.value.item?.itemId
-        val memberUi = MemberUi(
-            group = groupUi,
-            memberNum = memberNum.value.value,
-            memberName = memberName.value.value,
-            surname = surname.value.value,
-            patronymic = patronymic.value.value,
-            pseudonym = pseudonym.value.value,
-            phoneNumber = phoneNumber.value.value,
-            memberType = MemberType.valueOf(memberType.value.value),
-            dateOfBirth = if (dateOfBirth.value.value.isNotEmpty()) offsetFormatter.parse(
-                dateOfBirth.value.value, OffsetDateTime::from
-            ) else null,
-            dateOfBaptism = if (dateOfBaptism.value.value.isNotEmpty()) offsetFormatter.parse(
-                dateOfBaptism.value.value, OffsetDateTime::from
-            ) else null,
-            inactiveDate = if (inactiveDate.value.value.isNotEmpty()) offsetFormatter.parse(
-                inactiveDate.value.value, OffsetDateTime::from
-            ) else null
+        val territoryCategoryUi = TerritoryCategoryUi()
+        territoryCategoryUi.id = category.value.item?.itemId
+        val localityUi = LocalityUi()
+        localityUi.id = locality.value.item?.itemId
+        val localityDistrictUi = LocalityDistrictUi()
+        localityDistrictUi.id = localityDistrict.value.item?.itemId
+        val microdistrictUi = MicrodistrictUi()
+        microdistrictUi.id = microdistrict.value.item?.itemId
+        val territoryUi = TerritoryUi(
+            congregation = congregationUi,
+            territoryCategory = territoryCategoryUi,
+            locality = localityUi,
+            localityDistrict = localityDistrictUi,
+            microdistrict = microdistrictUi,
+            territoryNum = territoryNum.value.value.toInt(),
+            isPrivateSector = isPrivateSector.value.value.toBoolean(),
+            isBusiness = isBusiness.value.value.toBoolean(),
+            isGroupMinistry = isGroupMinistry.value.value.toBoolean(),
+            isActive = isActive.value.value.toBoolean(),
+            territoryDesc = territoryDesc.value.value
         )
-        memberUi.id = if (memberId.value.value.isNotEmpty()) {
-            UUID.fromString(memberId.value.value)
+        territoryUi.id = if (territoryId.value.value.isNotEmpty()) {
+            UUID.fromString(territoryId.value.value)
         } else null
-        Timber.tag(TAG).d("saveMember() called: UI model %s", memberUi)
+        Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))
-                .collect {
-                    Timber.tag(TAG).d("saveMember() collect: %s", it)
-                    if (it is Result.Success) setSavedListItem(
-                        memberMapper.map(it.data.member).toMembersListItem()
-                    )
-                }
+            useCases.saveTerritoryUseCase.execute(
+                SaveTerritoryUseCase.Request(territoryUiMapper.map(territoryUi))
+            ).collect {
+                Timber.tag(TAG).d("saveTerritory() collect: %s", it)
+                if (it is Result.Success) setSavedListItem(
+                    territoryMapper.map(it.data.territory).toTerritoriesListItem()
+                )
+            }
         }
         return job
     }
@@ -212,45 +179,60 @@ class TerritoryViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val memberUi = uiModel as MemberUi
+        val territoryUi = uiModel as TerritoryUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", memberUi)
-        memberUi.id?.let {
-            initStateValue(TerritoryFields.MEMBER_ID, memberId, it.toString())
+            .d("initFieldStatesByUiModel(TerritoryModel) called: territoryUi = %s", territoryUi)
+        territoryUi.id?.let {
+            initStateValue(TerritoryFields.TERRITORY_ID, territoryId, it.toString())
         }
         initStateValue(
-            TerritoryFields.MEMBER_CONGREGATION, congregation,
+            TerritoryFields.TERRITORY_CONGREGATION, congregation,
+            ListItemModel(territoryUi.congregation.id, territoryUi.congregation.congregationName)
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_CATEGORY, category,
             ListItemModel(
-                memberUi.group.congregation.id, memberUi.group.congregation.congregationName
+                territoryUi.territoryCategory.id,
+                territoryUi.territoryCategory.territoryCategoryName
             )
         )
         initStateValue(
-            TerritoryFields.MEMBER_GROUP, group,
-            ListItemModel(memberUi.group.id, memberUi.group.groupNum.toString())
-        )
-        initStateValue(TerritoryFields.MEMBER_NUM, memberNum, memberUi.memberNum)
-        initStateValue(TerritoryFields.MEMBER_NAME, memberName, memberUi.memberName.orEmpty())
-        initStateValue(TerritoryFields.MEMBER_SURNAME, surname, memberUi.surname.orEmpty())
-        initStateValue(TerritoryFields.MEMBER_PATRONYMIC, patronymic, memberUi.patronymic.orEmpty())
-        initStateValue(TerritoryFields.MEMBER_PSEUDONYM, pseudonym, memberUi.pseudonym)
-        initStateValue(
-            TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber, memberUi.phoneNumber.orEmpty()
-        )
-        initStateValue(TerritoryFields.MEMBER_TYPE, memberType, memberUi.memberType.name)
-        initStateValue(
-            TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-            memberUi.dateOfBirth?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                .orEmpty()
+            TerritoryFields.TERRITORY_LOCALITY, locality,
+            ListItemModel(territoryUi.locality.id, territoryUi.locality.localityName)
         )
         initStateValue(
-            TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-            memberUi.dateOfBaptism?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                .orEmpty()
+            TerritoryFields.TERRITORY_LOCALITY_DISTRICT, localityDistrict,
+            ListItemModel(
+                territoryUi.localityDistrict?.id,
+                territoryUi.localityDistrict?.districtName.orEmpty()
+            )
         )
         initStateValue(
-            TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate,
-            memberUi.inactiveDate?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                .orEmpty()
+            TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict,
+            ListItemModel(
+                territoryUi.microdistrict?.id,
+                territoryUi.microdistrict?.microdistrictName.orEmpty()
+            )
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_NUM, territoryNum, territoryUi.territoryNum.toString()
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR, isPrivateSector,
+            territoryUi.isPrivateSector.toString()
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness, territoryUi.isBusiness.toString()
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_IS_GROUP_MINISTRY, isGroupMinistry,
+            territoryUi.isGroupMinistry.toString()
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_IS_ACTIVE, isActive, territoryUi.isActive.toString()
+        )
+        initStateValue(
+            TerritoryFields.TERRITORY_DESC, territoryDesc, territoryUi.territoryDesc.orEmpty()
         )
         return null
     }
@@ -262,149 +244,135 @@ class TerritoryViewModelImpl @Inject constructor(
                 when (event) {
                     is TerritoryInputEvent.Congregation ->
                         setStateValue(
-                            TerritoryFields.MEMBER_CONGREGATION, congregation, event.input, true
+                            TerritoryFields.TERRITORY_CONGREGATION, congregation, event.input, true
                         )
 
-                    is TerritoryInputEvent.Group ->
-                        when (TerritoryInputValidator.Group.errorIdOrNull(event.input.headline)) {
+                    is TerritoryInputEvent.Category ->
+                        when (TerritoryInputValidator.Category.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                TerritoryFields.MEMBER_GROUP, group, event.input, true
+                                TerritoryFields.TERRITORY_CATEGORY, category, event.input, true
                             )
 
                             else -> setStateValue(
-                                TerritoryFields.MEMBER_GROUP, group, event.input
+                                TerritoryFields.TERRITORY_CATEGORY, category, event.input
                             )
                         }
+
+                    is TerritoryInputEvent.Locality ->
+                        when (TerritoryInputValidator.Locality.errorIdOrNull(event.input.headline)) {
+                            null -> setStateValue(
+                                TerritoryFields.TERRITORY_LOCALITY, locality, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                TerritoryFields.TERRITORY_LOCALITY, locality, event.input
+                            )
+                        }
+
+                    is TerritoryInputEvent.LocalityDistrict ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_LOCALITY_DISTRICT, localityDistrict,
+                            event.input, true
+                        )
+
+                    is TerritoryInputEvent.Microdistrict ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict,
+                            event.input, true
+                        )
 
                     is TerritoryInputEvent.TerritoryNum ->
                         when (TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                TerritoryFields.MEMBER_NUM, memberNum, event.input, true
+                                TerritoryFields.TERRITORY_NUM, territoryNum, event.input, true
                             )
 
                             else -> setStateValue(
-                                TerritoryFields.MEMBER_NUM, memberNum, event.input
+                                TerritoryFields.TERRITORY_NUM, territoryNum, event.input
                             )
                         }
 
-                    is TerritoryInputEvent.Pseudonym ->
-                        when (TerritoryInputValidator.Pseudonym.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoryFields.MEMBER_PSEUDONYM, pseudonym, event.input, true
-                            )
+                    is TerritoryInputEvent.IsPrivateSector ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR, isPrivateSector,
+                            event.input.toString(), true
+                        )
 
-                            else -> setStateValue(
-                                TerritoryFields.MEMBER_PSEUDONYM, pseudonym, event.input
-                            )
-                        }
+                    is TerritoryInputEvent.IsBusiness ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness,
+                            event.input.toString(), true
+                        )
 
-                    is TerritoryInputEvent.PhoneNumber ->
-                        when (TerritoryInputValidator.PhoneNumber.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input, true
-                            )
+                    is TerritoryInputEvent.IsGroupMinistry ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_IS_GROUP_MINISTRY, isGroupMinistry,
+                            event.input.toString(), true
+                        )
 
-                            else -> setStateValue(
-                                TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input
-                            )
-                        }
+                    is TerritoryInputEvent.IsActive ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_IS_ACTIVE, isActive, event.input.toString(),
+                            true
+                        )
 
-                    is TerritoryInputEvent.TerritoryType ->
-                        when (TerritoryInputValidator.TerritoryType.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoryFields.MEMBER_TYPE, memberType, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryFields.MEMBER_TYPE, memberType, event.input
-                            )
-                        }
-
-                    is TerritoryInputEvent.DateOfBirth ->
-                        when (TerritoryInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input
-                            )
-                        }
-
-                    is TerritoryInputEvent.DateOfBaptism ->
-                        when (TerritoryInputValidator.DateOfBaptism.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input
-                            )
-                        }
-
-                    is TerritoryInputEvent.InactiveDate ->
-                        when (TerritoryInputValidator.InactiveDate.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input
-                            )
-                        }
+                    is TerritoryInputEvent.TerritoryDesc ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_DESC, territoryDesc, event.input, true
+                        )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is TerritoryInputEvent.Group ->
+                    is TerritoryInputEvent.Congregation ->
+                        setStateValue(TerritoryFields.TERRITORY_CONGREGATION, congregation, null)
+
+                    is TerritoryInputEvent.Category ->
                         setStateValue(
-                            TerritoryFields.MEMBER_GROUP, group,
-                            TerritoryInputValidator.Group.errorIdOrNull(event.input.headline)
+                            TerritoryFields.TERRITORY_CATEGORY, category,
+                            TerritoryInputValidator.Category.errorIdOrNull(event.input.headline)
                         )
+
+                    is TerritoryInputEvent.Locality ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_LOCALITY, locality,
+                            TerritoryInputValidator.Locality.errorIdOrNull(event.input.headline)
+                        )
+
+                    is TerritoryInputEvent.LocalityDistrict ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_LOCALITY_DISTRICT, localityDistrict, null
+                        )
+
+                    is TerritoryInputEvent.Microdistrict ->
+                        setStateValue(TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict, null)
 
                     is TerritoryInputEvent.TerritoryNum ->
                         setStateValue(
-                            TerritoryFields.MEMBER_NUM, memberNum,
+                            TerritoryFields.TERRITORY_NUM, territoryNum,
                             TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)
                         )
 
-                    is TerritoryInputEvent.Pseudonym ->
+                    is TerritoryInputEvent.IsPrivateSector ->
                         setStateValue(
-                            TerritoryFields.MEMBER_PSEUDONYM, pseudonym,
-                            TerritoryInputValidator.Pseudonym.errorIdOrNull(event.input)
+                            TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR, isPrivateSector, null
                         )
 
-                    is TerritoryInputEvent.PhoneNumber ->
+                    is TerritoryInputEvent.IsBusiness ->
+                        setStateValue(TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness, null)
+
+                    is TerritoryInputEvent.IsGroupMinistry ->
                         setStateValue(
-                            TerritoryFields.MEMBER_PHONE_NUMBER, phoneNumber,
-                            TerritoryInputValidator.PhoneNumber.errorIdOrNull(event.input)
+                            TerritoryFields.TERRITORY_IS_GROUP_MINISTRY, isGroupMinistry,
+                            null
                         )
 
-                    is TerritoryInputEvent.TerritoryType ->
-                        setStateValue(
-                            TerritoryFields.MEMBER_TYPE, memberType,
-                            TerritoryInputValidator.TerritoryType.errorIdOrNull(event.input)
-                        )
+                    is TerritoryInputEvent.IsActive ->
+                        setStateValue(TerritoryFields.TERRITORY_IS_ACTIVE, isActive, null)
 
-                    is TerritoryInputEvent.DateOfBirth ->
-                        setStateValue(
-                            TerritoryFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-                            TerritoryInputValidator.DateOfBirth.errorIdOrNull(event.input)
-                        )
-
-                    is TerritoryInputEvent.DateOfBaptism ->
-                        setStateValue(
-                            TerritoryFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-                            TerritoryInputValidator.DateOfBaptism.errorIdOrNull(event.input)
-                        )
-
-                    is TerritoryInputEvent.InactiveDate ->
-                        setStateValue(
-                            TerritoryFields.MEMBER_INACTIVE_DATE, inactiveDate,
-                            TerritoryInputValidator.InactiveDate.errorIdOrNull(event.input)
-                        )
+                    is TerritoryInputEvent.TerritoryDesc ->
+                        setStateValue(TerritoryFields.TERRITORY_DESC, territoryDesc, null)
                 }
             }
     }
@@ -416,38 +384,19 @@ class TerritoryViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        TerritoryInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
-            inputErrors.add(InputError(fieldName = TerritoryFields.MEMBER_GROUP.name, errorId = it))
-        }
-        TerritoryInputValidator.TerritoryNum.errorIdOrNull(memberNum.value.value)?.let {
-            inputErrors.add(InputError(fieldName = TerritoryFields.MEMBER_NUM.name, errorId = it))
-        }
-        TerritoryInputValidator.Pseudonym.errorIdOrNull(pseudonym.value.value)?.let {
+        TerritoryInputValidator.Category.errorIdOrNull(category.value.item?.headline)?.let {
             inputErrors.add(
-                InputError(fieldName = TerritoryFields.MEMBER_PSEUDONYM.name, errorId = it)
+                InputError(fieldName = TerritoryFields.TERRITORY_CATEGORY.name, errorId = it)
             )
         }
-        TerritoryInputValidator.PhoneNumber.errorIdOrNull(phoneNumber.value.value)?.let {
+        TerritoryInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
-                InputError(fieldName = TerritoryFields.MEMBER_PHONE_NUMBER.name, errorId = it)
+                InputError(fieldName = TerritoryFields.TERRITORY_LOCALITY.name, errorId = it)
             )
         }
-        TerritoryInputValidator.TerritoryType.errorIdOrNull(memberType.value.value)?.let {
-            inputErrors.add(InputError(fieldName = TerritoryFields.MEMBER_TYPE.name, errorId = it))
-        }
-        TerritoryInputValidator.DateOfBirth.errorIdOrNull(dateOfBirth.value.value)?.let {
+        TerritoryInputValidator.TerritoryNum.errorIdOrNull(territoryNum.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = TerritoryFields.MEMBER_DATE_OF_BIRTH.name, errorId = it)
-            )
-        }
-        TerritoryInputValidator.DateOfBaptism.errorIdOrNull(dateOfBaptism.value.value)?.let {
-            inputErrors.add(
-                InputError(fieldName = TerritoryFields.MEMBER_DATE_OF_BAPTISM.name, errorId = it)
-            )
-        }
-        TerritoryInputValidator.InactiveDate.errorIdOrNull(inactiveDate.value.value)?.let {
-            inputErrors.add(
-                InputError(fieldName = TerritoryFields.MEMBER_INACTIVE_DATE.name, errorId = it)
+                InputError(fieldName = TerritoryFields.TERRITORY_NUM.name, errorId = it)
             )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
@@ -458,14 +407,9 @@ class TerritoryViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (error.fieldName) {
-                TerritoryFields.MEMBER_GROUP.name -> group.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_NUM.name -> memberNum.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_PSEUDONYM.name -> pseudonym.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_PHONE_NUMBER.name -> phoneNumber.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_TYPE.name -> memberType.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_DATE_OF_BIRTH.name -> dateOfBirth.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_DATE_OF_BAPTISM.name -> dateOfBaptism.value.copy(errorId = error.errorId)
-                TerritoryFields.MEMBER_INACTIVE_DATE.name -> inactiveDate.value.copy(errorId = error.errorId)
+                TerritoryFields.TERRITORY_CATEGORY.name -> category.value.copy(errorId = error.errorId)
+                TerritoryFields.TERRITORY_LOCALITY.name -> locality.value.copy(errorId = error.errorId)
+                TerritoryFields.TERRITORY_NUM.name -> territoryNum.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -486,26 +430,21 @@ class TerritoryViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
-
-                override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
-
                 override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val group = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val memberNum = MutableStateFlow(InputWrapper())
-                override val memberName = MutableStateFlow(InputWrapper())
-                override val surname = MutableStateFlow(InputWrapper())
-                override val patronymic = MutableStateFlow(InputWrapper())
-                override val pseudonym = MutableStateFlow(InputWrapper())
-                override val phoneNumber = MutableStateFlow(InputWrapper())
-                override val memberType = MutableStateFlow(InputWrapper())
-                override val dateOfBirth = MutableStateFlow(InputWrapper())
-                override val dateOfBaptism = MutableStateFlow(InputWrapper())
-                override val inactiveDate = MutableStateFlow(InputWrapper())
+                override val category = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val localityDistrict =
+                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val microdistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val territoryNum = MutableStateFlow(InputWrapper())
+                override val isPrivateSector = MutableStateFlow(InputWrapper())
+                override val isBusiness = MutableStateFlow(InputWrapper())
+                override val isGroupMinistry = MutableStateFlow(InputWrapper())
+                override val isActive = MutableStateFlow(InputWrapper())
+                override val territoryDesc = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoryUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
@@ -523,21 +462,23 @@ class TerritoryViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): MemberUi {
-            val memberUi = MemberUi(
-                group = GroupViewModelImpl.previewUiModel(ctx),
-                memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
-                surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
-                patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
-                pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
-                phoneNumber = "+79493851487",
-                memberType = MemberType.PREACHER,
-                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00"),
-                dateOfBaptism = Utils.toOffsetDateTime("1994-06-14T14:29:10.212+03:00")
+        fun previewUiModel(ctx: Context): TerritoryUi {
+            val territoryUi = TerritoryUi(
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
+                locality = LocalityViewModelImpl.previewUiModel(ctx),
+                localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
+                microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
+                territoryNum = 1,
+                isPrivateSector = true,
+                isBusiness = true,
+                isGroupMinistry = true,
+                isProcessed = false,
+                isActive = true,
+                territoryDesc = "Territory Desc"
             )
-            memberUi.id = UUID.randomUUID()
-            return memberUi
+            territoryUi.id = UUID.randomUUID()
+            return territoryUi
         }
     }
 }

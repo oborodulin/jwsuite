@@ -13,7 +13,10 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoRegionDistrictTlEntity.TABLE_NAME,
-    indices = [Index(value = ["regionDistrictsId", "regDistrictLocCode"], unique = true)],
+    indices = [Index(
+        value = ["regionDistrictsId", "regDistrictLocCode", "regDistrictTlShortName"],
+        unique = true
+    )],
     foreignKeys = [ForeignKey(
         entity = GeoRegionDistrictEntity::class,
         parentColumns = arrayOf("regionDistrictId"),
@@ -25,6 +28,7 @@ import java.util.UUID
 data class GeoRegionDistrictTlEntity(
     @PrimaryKey val regionDistrictTlId: UUID = UUID.randomUUID(),
     val regDistrictLocCode: String = Locale.getDefault().language,
+    val regDistrictTlShortName: String? = null,
     val regDistrictName: String,
     @ColumnInfo(index = true) val regionDistrictsId: UUID,
 ) : BaseEntity() {
@@ -34,10 +38,10 @@ data class GeoRegionDistrictTlEntity(
 
         fun defaultRegionDistrictTl(
             regionDistrictTlId: UUID = UUID.randomUUID(), regionDistrictId: UUID,
-            districtName: String
+            regDistrictTlShortName: String? = null, districtName: String
         ) = GeoRegionDistrictTlEntity(
             regionDistrictTlId = regionDistrictTlId, regionDistrictsId = regionDistrictId,
-            regDistrictName = districtName
+            regDistrictTlShortName = regDistrictTlShortName, regDistrictName = districtName
         )
 
         fun maryinskyRegionDistrictTl(ctx: Context, regionDistrictId: UUID) =

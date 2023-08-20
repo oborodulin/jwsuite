@@ -9,18 +9,20 @@ import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_CONGREGATION_R
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
+import com.oborodulin.jwsuite.data_geo.util.Constants
 
 @DatabaseView(
     viewName = CongregationView.VIEW_NAME,
     value = """
 SELECT c.*, 
         rv.regionId AS ${PX_CONGREGATION_REGION}regionId, rv.regionCode AS ${PX_CONGREGATION_REGION}regionCode, 
-            rv.regionTlId AS ${PX_CONGREGATION_REGION}regionTlId, rv.regionLocCode AS ${PX_CONGREGATION_REGION}regionLocCode, rv.regionName AS ${PX_CONGREGATION_REGION}regionName,
-            rv.regionsId AS ${PX_CONGREGATION_REGION}regionsId,
-        rdv.regionDistrictId AS ${PX_CONGREGATION_REGION_DISTRICT}regionDistrictId, rdv.regDistrictShortName  AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictShortName, 
-            rdv.rRegionsId  AS ${PX_CONGREGATION_REGION_DISTRICT}rRegionsId,
-            rdv.regionDistrictTlId  AS ${PX_CONGREGATION_REGION_DISTRICT}regionDistrictTlId, rdv.regDistrictLocCode  AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictLocCode, 
-            rdv.regDistrictName  AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictName, rdv.regionDistrictsId  AS ${PX_CONGREGATION_REGION_DISTRICT}regionDistrictsId,
+            rv.regionTlId AS ${PX_CONGREGATION_REGION}regionTlId, rv.regionLocCode AS ${PX_CONGREGATION_REGION}regionLocCode, rv.regionTlCode AS ${PX_CONGREGATION_REGION}regionTlCode, 
+            rv.regionName AS ${PX_CONGREGATION_REGION}regionName, rv.regionsId AS ${PX_CONGREGATION_REGION}regionsId,
+        rdv.regionDistrictId AS ${PX_CONGREGATION_REGION_DISTRICT}regionDistrictId, rdv.regDistrictShortName AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictShortName, 
+            rdv.rRegionsId AS ${PX_CONGREGATION_REGION_DISTRICT}rRegionsId,
+            rdv.regionDistrictTlId AS ${PX_CONGREGATION_REGION_DISTRICT}regionDistrictTlId, rdv.regDistrictLocCode AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictLocCode,
+            rdv.regDistrictTlShortName AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictTlShortName, 
+            rdv.regDistrictName AS ${PX_CONGREGATION_REGION_DISTRICT}regDistrictName, rdv.regionDistrictsId AS ${PX_CONGREGATION_REGION_DISTRICT}regionDistrictsId,
         lv.localityId AS ${PX_CONGREGATION_LOCALITY}localityId, lv.localityCode AS ${PX_CONGREGATION_LOCALITY}localityCode, lv.localityType AS ${PX_CONGREGATION_LOCALITY}localityType, 
             lv.lRegionDistrictsId AS ${PX_CONGREGATION_LOCALITY}lRegionDistrictsId, lv.lRegionsId AS ${PX_CONGREGATION_LOCALITY}lRegionsId,
             lv.localityTlId AS ${PX_CONGREGATION_LOCALITY}localityTlId, lv.localityLocCode AS ${PX_CONGREGATION_LOCALITY}localityLocCode, lv.localityShortName AS ${PX_CONGREGATION_LOCALITY}localityShortName, 

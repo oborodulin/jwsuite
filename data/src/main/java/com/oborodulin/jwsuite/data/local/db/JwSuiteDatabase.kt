@@ -173,8 +173,40 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             return instance
         }
 
+        // https://androidexplained.github.io/android/room/2020/10/03/room-backup-restore.html
+        @Synchronized
+        fun getBackupInstance(context: Context, jsonLogger: Gson? = Gson()): JwSuiteDatabase {
+            // Multiple threads can ask for the database at the same time, ensure we only initialize
+            // it once by using synchronized. Only one thread may enter a synchronized block at a
+            // time.
+            // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
+            // Smart cast is only available to local variables.
+            var instance = INSTANCE
+            // If instance is `null` make a new database instance.
+            if (instance == null) {
+                instance =
+                    Room.databaseBuilder(
+                        context,
+                        JwSuiteDatabase::class.java,
+                        Constants.DATABASE_NAME
+                    ).openHelperFactory(SupportFactory(DATABASE_PASSPHRASE.toByteArray()))
+                        // Wipes and rebuilds instead of migrating if no Migration object.
+                        // Migration is not part of this lesson. You can learn more about
+                        // migration with Room in this blog post:
+                        // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
+                        //.fallbackToDestructiveMigration()
+                        .addCallback(DatabaseCallback(context, jsonLogger))
+                        .setJournalMode(JournalMode.TRUNCATE)
+                        .build()
+                // Assign INSTANCE to the newly created database.
+                INSTANCE = instance
+            }
+            // Return instance; smart cast to be non-null.
+            return instance
+        }
+
         // https://stackoverflow.com/questions/2421189/version-of-sqlite-used-in-android
-        fun sqliteVersion() = SQLiteDatabase.create(null).use {
+        fun sqliteVersion(): String? = SQLiteDatabase.create(null).use {
             android.database.DatabaseUtils.stringForQuery(it, "SELECT sqlite_version()", null)
         }
 

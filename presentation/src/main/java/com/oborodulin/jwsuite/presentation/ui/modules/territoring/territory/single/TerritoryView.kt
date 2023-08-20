@@ -30,8 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.field.DatePickerComponent
-import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
@@ -39,56 +38,55 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.localitydistrict.single.LocalityDistrictComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.microdistrict.single.MicrodistrictComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryComboBox
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.MemberView"
+private const val TAG = "Territoring.TerritoryView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MemberView(
+fun TerritoryView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
-    memberViewModel: TerritoryViewModelImpl = hiltViewModel()
+    viewModel: TerritoryViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("MemberView(...) called")
+    Timber.tag(TAG).d("TerritoryView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(memberViewModel.events, lifecycleOwner) {
-        memberViewModel.events.flowWithLifecycle(
+    val events = remember(viewModel.events, lifecycleOwner) {
+        viewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all member fields")
-    val congregation by memberViewModel.congregation.collectAsStateWithLifecycle()
-    val group by memberViewModel.group.collectAsStateWithLifecycle()
-    val memberNum by memberViewModel.memberNum.collectAsStateWithLifecycle()
-    val memberName by memberViewModel.memberName.collectAsStateWithLifecycle()
-    val surname by memberViewModel.surname.collectAsStateWithLifecycle()
-    val patronymic by memberViewModel.patronymic.collectAsStateWithLifecycle()
-    val pseudonym by memberViewModel.pseudonym.collectAsStateWithLifecycle()
-    val phoneNumber by memberViewModel.phoneNumber.collectAsStateWithLifecycle()
-    val memberType by memberViewModel.memberType.collectAsStateWithLifecycle()
-    val dateOfBirth by memberViewModel.dateOfBirth.collectAsStateWithLifecycle()
-    val dateOfBaptism by memberViewModel.dateOfBaptism.collectAsStateWithLifecycle()
-    val inactiveDate by memberViewModel.inactiveDate.collectAsStateWithLifecycle()
-
-    val memberTypes by memberViewModel.memberTypes.collectAsStateWithLifecycle()
+    val congregation by viewModel.congregation.collectAsStateWithLifecycle()
+    val category by viewModel.category.collectAsStateWithLifecycle()
+    val locality by viewModel.locality.collectAsStateWithLifecycle()
+    val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
+    val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
+    val territoryNum by viewModel.territoryNum.collectAsStateWithLifecycle()
+    val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
+    val isBusiness by viewModel.isBusiness.collectAsStateWithLifecycle()
+    val isGroupMinistry by viewModel.isGroupMinistry.collectAsStateWithLifecycle()
+    val isActive by viewModel.isActive.collectAsStateWithLifecycle()
+    val territoryDesc by viewModel.territoryDesc.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
     enumValues<TerritoryFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
     }
-
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MemberView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("TerritoryView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -111,232 +109,171 @@ fun MemberView(
     ) {
         CongregationComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_CONGREGATION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_CONGREGATION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_CONGREGATION,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_CONGREGATION,
                         isFocused = focusState.isFocused
                     )
                 },
             enabled = false,
             sharedViewModel = sharedViewModel,
             inputWrapper = congregation,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.Congregation(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.Congregation(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
-        GroupComboBox(
+        TerritoryCategoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_GROUP.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_CATEGORY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_GROUP,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_CATEGORY,
                         isFocused = focusState.isFocused
                     )
                 },
-            inputWrapper = group,
-            sharedViewModel = sharedViewModel,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.Group(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            inputWrapper = category,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.Category(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        LocalityComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_LOCALITY.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_LOCALITY,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            inputWrapper = locality,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.Locality(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        LocalityDistrictComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_LOCALITY_DISTRICT.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_LOCALITY_DISTRICT,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            localityId = locality.item?.itemId,
+            inputWrapper = localityDistrict,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.LocalityDistrict(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        MicrodistrictComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_MICRODISTRICT.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_MICRODISTRICT,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            localityId = locality.item?.itemId,
+            localityDistrictId = localityDistrict.item?.itemId,
+            inputWrapper = microdistrict,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.Microdistrict(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_NUM.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_NUM,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_NUM,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_num_hint,
+            labelResId = R.string.territory_num_hint,
             leadingIcon = {
                 Icon(painterResource(com.oborodulin.home.common.R.drawable.ic_123_36), null)
             },
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
-            inputWrapper = memberNum,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            inputWrapper = territoryNum,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_SURNAME.name]!!.focusRequester)
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_SURNAME,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_surname_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = surname,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.Surname(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            labelResId = R.string.private_sector_hint,
+            inputWrapper = isPrivateSector,
+            onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsPrivateSector(it)) }
         )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_NAME.name]!!.focusRequester)
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_BUSINESS.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_NAME,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_IS_BUSINESS,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_name_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = memberName,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryName(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            labelResId = R.string.territory_is_business_hint,
+            inputWrapper = isBusiness,
+            onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsBusiness(it)) }
         )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_PATRONYMIC.name]!!.focusRequester)
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_GROUP_MINISTRY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_PATRONYMIC,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_IS_GROUP_MINISTRY,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_patronymic_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = patronymic,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.Patronymic(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            labelResId = R.string.territory_is_group_ministry_hint,
+            inputWrapper = isGroupMinistry,
+            onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsGroupMinistry(it)) }
         )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_PSEUDONYM.name]!!.focusRequester)
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_ACTIVE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_PSEUDONYM,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_IS_ACTIVE,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_pseudonym_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = pseudonym,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.Pseudonym(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            labelResId = R.string.territory_is_active_hint,
+            inputWrapper = isActive,
+            onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsActive(it)) }
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_PHONE_NUMBER.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_DESC.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_PHONE_NUMBER,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryFields.TERRITORY_DESC,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_phone_number_hint,
+            labelResId = R.string.territory_desc_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_phone_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = phoneNumber,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.PhoneNumber(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
-        )
-        ExposedDropdownMenuBoxComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_PHONE_NUMBER.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_PHONE_NUMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_type_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_badge_36), null) },
-            keyboardOptions = remember {
-                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Done
                 )
             },
-            inputWrapper = memberType,
-            values = memberTypes.values.toList(), // resolve Enums to Resource
-            keys = memberTypes.keys.map { it.name }, // Enums
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryType(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_DATE_OF_BIRTH.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_DATE_OF_BIRTH,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_date_of_birth_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = dateOfBirth,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.DateOfBirth(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_DATE_OF_BAPTISM.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_DATE_OF_BAPTISM,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_date_of_baptism_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = dateOfBaptism,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.DateOfBaptism(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.MEMBER_INACTIVE_DATE.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    memberViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.MEMBER_INACTIVE_DATE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_inactive_date_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
-            },
-            inputWrapper = inactiveDate,
-            onValueChange = { memberViewModel.onTextFieldEntered(TerritoryInputEvent.InactiveDate(it)) },
-            onImeKeyAction = memberViewModel::moveFocusImeAction
+            inputWrapper = territoryDesc,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryDesc(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
 }
@@ -348,7 +285,7 @@ fun PreviewGroupView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            TerritoryView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

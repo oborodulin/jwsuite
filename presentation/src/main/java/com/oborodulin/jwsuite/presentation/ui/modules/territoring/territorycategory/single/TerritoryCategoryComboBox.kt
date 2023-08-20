@@ -9,9 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
@@ -21,7 +21,6 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
@@ -31,8 +30,8 @@ private const val TAG = "Territoring.TerritoryCategoryComboBox"
 @Composable
 fun TerritoryCategoryComboBox(
     modifier: Modifier = Modifier,
-    listViewModel: TerritoryCategoriesListViewModel,
-    singleViewModel: TerritoryCategoryViewModel,
+    listViewModel: TerritoryCategoriesListViewModelImpl = hiltViewModel(),
+    singleViewModel: TerritoryCategoryViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
@@ -74,13 +73,13 @@ fun TerritoryCategoryComboBox(
 fun PreviewTerritoryCategoryComboBox() {
     JWSuiteTheme {
         Surface {
-            TerritoryCategoryComboBox(
+            /*TerritoryCategoryComboBox(
                 listViewModel = TerritoryCategoriesListViewModelImpl.previewModel(LocalContext.current),
                 singleViewModel = TerritoryCategoryViewModelImpl.previewModel(LocalContext.current),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}
-            )
+            )*/
         }
     }
 }

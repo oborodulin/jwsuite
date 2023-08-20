@@ -138,12 +138,12 @@ class MemberViewModelImpl @Inject constructor(
         val job = when (action) {
             is MemberUiAction.Load -> when (action.memberId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_new_subheader)
                     submitState(UiState.Success(MemberUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_new_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.member_subheader)
                     loadMember(action.memberId)
                 }
             }

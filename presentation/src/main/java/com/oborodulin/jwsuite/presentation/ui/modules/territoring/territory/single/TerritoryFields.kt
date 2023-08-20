@@ -3,19 +3,18 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.sin
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class TerritoryFields : Focusable {
-    MEMBER_ID,
-    MEMBER_CONGREGATION,
-    MEMBER_GROUP,
-    MEMBER_NUM,
-    MEMBER_NAME,
-    MEMBER_SURNAME,
-    MEMBER_PATRONYMIC,
-    MEMBER_PSEUDONYM,
-    MEMBER_PHONE_NUMBER,
-    MEMBER_TYPE,
-    MEMBER_DATE_OF_BIRTH,
-    MEMBER_DATE_OF_BAPTISM,
-    MEMBER_INACTIVE_DATE;
+    TERRITORY_ID,
+    TERRITORY_CONGREGATION,
+    TERRITORY_CATEGORY,
+    TERRITORY_LOCALITY,
+    TERRITORY_LOCALITY_DISTRICT,
+    TERRITORY_MICRODISTRICT,
+    TERRITORY_NUM,
+    TERRITORY_IS_PRIVATE_SECTOR,
+    TERRITORY_IS_BUSINESS,
+    TERRITORY_IS_GROUP_MINISTRY,
+    TERRITORY_IS_ACTIVE,
+    TERRITORY_DESC;
 
     override fun key(): String {
         return this.name

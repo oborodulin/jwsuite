@@ -12,7 +12,7 @@ data class TerritoryUi(
     val locality: LocalityUi = LocalityUi(),
     val localityDistrict: LocalityDistrictUi? = null,
     val microdistrict: MicrodistrictUi? = null,
-    val territoryNum: Int,
+    val territoryNum: Int = 0,
     val isPrivateSector: Boolean = false,
     val isBusiness: Boolean = false,
     val isGroupMinistry: Boolean = false,

@@ -5,17 +5,16 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 
 sealed class TerritoryInputEvent(val value: String) : Inputable {
     data class Congregation(val input: ListItemModel) : TerritoryInputEvent(input.headline)
-    data class Group(val input: ListItemModel) : TerritoryInputEvent(input.headline)
+    data class Category(val input: ListItemModel) : TerritoryInputEvent(input.headline)
+    data class Locality(val input: ListItemModel) : TerritoryInputEvent(input.headline)
+    data class LocalityDistrict(val input: ListItemModel) : TerritoryInputEvent(input.headline)
+    data class Microdistrict(val input: ListItemModel) : TerritoryInputEvent(input.headline)
     data class TerritoryNum(val input: String) : TerritoryInputEvent(input)
-    data class TerritoryName(val input: String) : TerritoryInputEvent(input)
-    data class Surname(val input: String) : TerritoryInputEvent(input)
-    data class Patronymic(val input: String) : TerritoryInputEvent(input)
-    data class Pseudonym(val input: String) : TerritoryInputEvent(input)
-    data class PhoneNumber(val input: String) : TerritoryInputEvent(input)
-    data class TerritoryType(val input: String) : TerritoryInputEvent(input)
-    data class DateOfBirth(val input: String) : TerritoryInputEvent(input)
-    data class DateOfBaptism(val input: String) : TerritoryInputEvent(input)
-    data class InactiveDate(val input: String) : TerritoryInputEvent(input)
+    data class IsPrivateSector(val input: Boolean) : TerritoryInputEvent(input.toString())
+    data class IsBusiness(val input: Boolean) : TerritoryInputEvent(input.toString())
+    data class IsGroupMinistry(val input: Boolean) : TerritoryInputEvent(input.toString())
+    data class IsActive(val input: Boolean) : TerritoryInputEvent(input.toString())
+    data class TerritoryDesc(val input: String) : TerritoryInputEvent(input)
 
     override fun value(): String {
         return this.value

@@ -64,8 +64,9 @@
 
     <!--ЭКРАНЫ МОДУЛЕЙ: -->
     <!--Собрание -->
-    <string name="congregation_tab_members">ВОЗВЕЩАТЕЛИ</string>
+    <string name="congregation_tab_congregations">СОБРАНИЯ</string>
     <string name="congregation_tab_groups">ГРУППЫ</string>
+    <string name="congregation_tab_members">ВОЗВЕЩАТЕЛИ</string>
     <!--Участки -->
     <string name="territory_tab_hand_out">К ВЫДАЧЕ</string>
     <string name="territory_tab_at_work">В РАБОТЕ</string>
@@ -137,8 +138,14 @@
     <!--Участок -->
     <string name="territory_subheader">Участок</string>
     <string name="territory_new_subheader">Новый участок</string>
-    <string name="territory_hand_out_subheader">Выдача участков</string>
     <string name="territory_category_hint">Категория участка</string>
+    <string name="territory_num_hint">№ участка</string>
+    <string name="territory_is_business_hint">Деловая территория</string>
+    <string name="territory_is_group_ministry_hint">Групповой участок</string>
+    <string name="territory_is_active_hint">Активный</string>
+    <string name="territory_desc_hint">Описание</string>
+    <!--Выдача участка -->
+    <string name="territory_hand_out_subheader">Выдача участков</string>
     <string name="territory_receiving_date_hint">Дата выдачи</string>
     <!--Детали участка -->
 
@@ -210,6 +217,9 @@
     <string name="locality_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <!--формы категории участка-->
     <string name="territory_category_mark_empty_error">Укажите, пожалуйста, код участка!</string>
+    <!--формы участка-->
+    <string name="territory_category_empty_error">Укажите, пожалуйста, категорию участка!</string>
+    <string name="territory_num_empty_error">Укажите, пожалуйста, номер участка!</string>
     <!--формы подтверждения выдачи участка-->
     <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
 
