@@ -263,7 +263,7 @@ fun TerritoryView(
                     )
                 },
             labelResId = R.string.territory_desc_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_phone_36), null) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_text_snippet_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
