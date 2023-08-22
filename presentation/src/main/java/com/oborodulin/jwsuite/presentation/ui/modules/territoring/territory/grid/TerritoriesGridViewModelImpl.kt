@@ -16,7 +16,8 @@ import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
@@ -137,8 +138,16 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is TerritoriesGridUiAction.Load -> {
-                loadTerritories(
+            is TerritoriesGridUiAction.LoadByProcessAndLocationType -> {
+                loadProcessAndLocationTerritories(
+                    action.congregationId,
+                    action.territoryProcessType, action.territoryLocationType,
+                    action.locationId, action.isPrivateSector
+                )
+            }
+
+            is TerritoriesGridUiAction.LoadByCongregation -> {
+                loadCongregationTerritories(
                     action.congregationId,
                     action.territoryProcessType, action.territoryLocationType,
                     action.locationId, action.isPrivateSector
@@ -173,18 +182,34 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadTerritories(
+    private fun loadProcessAndLocationTerritories(
         congregationId: UUID?,
         territoryProcessType: TerritoryProcessType, territoryLocationType: TerritoryLocationType,
         locationId: UUID? = null, isPrivateSector: Boolean = false
     ): Job {
         Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getTerritoriesUseCase.execute(
-                GetTerritoriesUseCase.Request(
+            useCases.getProcessAndLocationTerritoriesUseCase.execute(
+                GetProcessAndLocationTerritoriesUseCase.Request(
                     congregationId, territoryProcessType, territoryLocationType,
                     locationId, isPrivateSector
                 )
+            )
+                .map {
+                    listConverter.convert(it)
+                }
+                .collect {
+                    submitState(it)
+                }
+        }
+        return job
+    }
+
+    private fun loadCongregationTerritories(congregationId: UUID?): Job {
+        Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getCongregationTerritoriesUseCase.execute(
+                GetCongregationTerritoriesUseCase.Request(congregationId)
             )
                 .map {
                     listConverter.convert(it)

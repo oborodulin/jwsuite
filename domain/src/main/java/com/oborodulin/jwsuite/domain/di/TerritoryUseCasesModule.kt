@@ -6,7 +6,8 @@ import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
@@ -35,9 +36,17 @@ object TerritoryUseCasesModule {
 
     @Singleton
     @Provides
-    fun provideGetTerritoriesUseCase(
+    fun provideGetProcessAndLocationTerritoriesUseCase(
         configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
-    ): GetTerritoriesUseCase = GetTerritoriesUseCase(configuration, territoriesRepository)
+    ): GetProcessAndLocationTerritoriesUseCase =
+        GetProcessAndLocationTerritoriesUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetCongregationTerritoriesUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): GetCongregationTerritoriesUseCase =
+        GetCongregationTerritoriesUseCase(configuration, territoriesRepository)
 
     @Singleton
     @Provides

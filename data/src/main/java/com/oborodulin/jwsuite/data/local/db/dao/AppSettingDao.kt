@@ -65,5 +65,5 @@ interface AppSettingDao {
 
     // API:
     @RawQuery
-    fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery?): Flow<Int>
+    suspend fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Int
 }

@@ -81,7 +81,7 @@ fun TerritoriesGridView(
     ) {
         Timber.tag(TAG).d("TerritoriesGridView: LaunchedEffect() BEFORE collect ui state flow")
         territoriesGridViewModel.submitAction(
-            TerritoriesGridUiAction.Load(
+            TerritoriesGridUiAction.LoadByProcessAndLocationType(
                 congregationId = congregationId,
                 territoryProcessType = territoryProcessType,
                 territoryLocationType = territoryLocationType,

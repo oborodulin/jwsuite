@@ -13,4 +13,7 @@ interface LocalAppSettingDataSource {
     suspend fun deleteAppSettingById(settingId: UUID)
     suspend fun deleteAppSettings(settings: List<AppSettingEntity>)
     suspend fun deleteAppSettings()
+
+    // API:
+    suspend fun checkpoint(): Int
 }

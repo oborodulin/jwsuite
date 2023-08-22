@@ -23,26 +23,27 @@ import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.TerritoriesListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.TerritoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.MemberComboBox"
+private const val TAG = "Congregating.TerritoryComboBox"
 
 @Composable
-fun MemberComboBox(
+fun TerritoryComboBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
-    listViewModel: MembersListViewModelImpl = hiltViewModel(),
+    listViewModel: TerritoriesListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("MemberComboBox(...) called")
+    Timber.tag(TAG).d("TerritoryComboBox(...) called")
     var isShowListDialog by remember { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -52,7 +53,7 @@ fun MemberComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryUiAction.Load(),
         confirmUiAction = TerritoryUiAction.Save,
-        dialogView = { MemberView(sharedViewModel) },
+        dialogView = { TerritoryView(sharedViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
@@ -62,7 +63,7 @@ fun MemberComboBox(
         modifier = modifier,
         enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.id),
+        loadListUiAction = TerritoriesGridUiAction.LoadByCongregation(currentCongregation?.id),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
@@ -79,11 +80,11 @@ fun MemberComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewMemberComboBox() {
+fun PreviewTerritoryComboBox() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberComboBox(
+            TerritoryComboBox(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},

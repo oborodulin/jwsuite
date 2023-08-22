@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
-class GetTerritoriesUseCase(
+class GetProcessAndLocationTerritoriesUseCase(
     configuration: Configuration,
     private val territoriesRepository: TerritoriesRepository
-) : UseCase<GetTerritoriesUseCase.Request, GetTerritoriesUseCase.Response>(configuration) {
+) : UseCase<GetProcessAndLocationTerritoriesUseCase.Request, GetProcessAndLocationTerritoriesUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> =
         combine(

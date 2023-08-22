@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db.sources.local
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.oborodulin.home.common.di.IoDispatcher
+import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalAppSettingDataSource
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class LocalAppSettingDataSourceImpl @Inject constructor(
     private val appSettingDao: AppSettingDao,
+    //private val db: JwSuiteDatabase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalAppSettingDataSource {
     override fun getAppSettings() = appSettingDao.findDistinctAll()
@@ -44,5 +47,9 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
 
     override suspend fun deleteAppSettings() = withContext(dispatcher) {
         appSettingDao.deleteAll()
+    }
+
+    override suspend fun checkpoint() = withContext(dispatcher) {
+        appSettingDao.checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
     }
 }

@@ -24,12 +24,6 @@ import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewMo
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -42,12 +36,6 @@ fun CongregationComboBox(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
     listViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     singleViewModel: CongregationViewModelImpl = hiltViewModel(),
-    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
-    localityViewModel: LocalityViewModelImpl = hiltViewModel(),
-    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
-    regionViewModel: RegionViewModelImpl = hiltViewModel(),
-    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
-    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
@@ -62,17 +50,7 @@ fun CongregationComboBox(
         viewModel = singleViewModel,
         loadUiAction = CongregationUiAction.Load(),
         confirmUiAction = CongregationUiAction.Save,
-        dialogView = {
-            CongregationView(
-                singleViewModel,
-                localitiesListViewModel,
-                localityViewModel,
-                regionsListViewModel,
-                regionViewModel,
-                regionDistrictsListViewModel,
-                regionDistrictViewModel
-            )
-        },
+        dialogView = { CongregationView() },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )

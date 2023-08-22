@@ -2,7 +2,8 @@ package com.oborodulin.jwsuite.presentation.di
 
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
@@ -30,10 +31,6 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converte
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryDetailsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryLocationsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoriesListToTerritoriesListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoriesListToTerritoryCategoriesListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryDetailToTerritoryDetailsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryDetailsListToTerritoryDetailsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationToTerritoryLocationsListItemMapper
@@ -41,6 +38,10 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoriesListToTerritoryCategoriesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -201,14 +202,16 @@ object TerritoringModule {
     @Singleton
     @Provides
     fun provideTerritoryUseCases(
-        getTerritoriesUseCase: GetTerritoriesUseCase,
+        getProcessAndLocationTerritoriesUseCase: GetProcessAndLocationTerritoriesUseCase,
+        getCongregationTerritoriesUseCase: GetCongregationTerritoriesUseCase,
         getTerritoryUseCase: GetTerritoryUseCase,
         saveTerritoryUseCase: SaveTerritoryUseCase,
         deleteTerritoryUseCase: DeleteTerritoryUseCase,
         getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
         handOutTerritoriesUseCase: HandOutTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
-        getTerritoriesUseCase,
+        getProcessAndLocationTerritoriesUseCase,
+        getCongregationTerritoriesUseCase,
         getTerritoryUseCase,
         saveTerritoryUseCase,
         deleteTerritoryUseCase,
@@ -221,8 +224,6 @@ object TerritoringModule {
     @Provides
     fun provideTerritoringUseCases(
         getTerritoryLocationsUseCase: GetTerritoryLocationsUseCase
-    ): TerritoringUseCases = TerritoringUseCases(
-        getTerritoryLocationsUseCase
-    )
+    ): TerritoringUseCases = TerritoringUseCases(getTerritoryLocationsUseCase)
 
 }

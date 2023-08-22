@@ -43,26 +43,26 @@ private const val TAG = "Congregating.CongregationView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltViewModel()) {
+fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("CongregationView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(congregationViewModel.events, lifecycleOwner) {
-        congregationViewModel.events.flowWithLifecycle(
+    val events = remember(viewModel.events, lifecycleOwner) {
+        viewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all congregation fields")
-    val locality by congregationViewModel.locality.collectAsStateWithLifecycle()
-    val congregationNum by congregationViewModel.congregationNum.collectAsStateWithLifecycle()
-    val congregationName by congregationViewModel.congregationName.collectAsStateWithLifecycle()
-    val territoryMark by congregationViewModel.territoryMark.collectAsStateWithLifecycle()
-    val isFavorite by congregationViewModel.isFavorite.collectAsStateWithLifecycle()
+    val locality by viewModel.locality.collectAsStateWithLifecycle()
+    val congregationNum by viewModel.congregationNum.collectAsStateWithLifecycle()
+    val congregationName by viewModel.congregationName.collectAsStateWithLifecycle()
+    val territoryMark by viewModel.territoryMark.collectAsStateWithLifecycle()
+    val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all congregation fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -93,22 +93,22 @@ fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltView
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.CONGREGATION_LOCALITY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    congregationViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_LOCALITY,
                         isFocused = focusState.isFocused
                     )
                 },
             inputWrapper = locality,
             onValueChange = {
-                congregationViewModel.onTextFieldEntered(CongregationInputEvent.Locality(it))
+                viewModel.onTextFieldEntered(CongregationInputEvent.Locality(it))
             },
-            onImeKeyAction = congregationViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NUM.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    congregationViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_NUM,
                         isFocused = focusState.isFocused
                     )
@@ -125,15 +125,15 @@ fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltView
             },
             inputWrapper = congregationNum,
             onValueChange = {
-                congregationViewModel.onTextFieldEntered(CongregationInputEvent.CongregationNum(it))
+                viewModel.onTextFieldEntered(CongregationInputEvent.CongregationNum(it))
             },
-            onImeKeyAction = congregationViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    congregationViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -150,23 +150,23 @@ fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltView
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = congregationName,
             onValueChange = { value ->
-                congregationViewModel.onTextFieldEntered(
+                viewModel.onTextFieldEntered(
                     CongregationInputEvent.CongregationName(value)
                 )
                 val lastWord = value.replace("-[.,]", " ").split(" ").last()
                 //.joinToString("") { it.trim()[0].uppercase() }
-                congregationViewModel.onTextFieldEntered(
+                viewModel.onTextFieldEntered(
                     CongregationInputEvent.TerritoryMark(if (lastWord.isNotEmpty()) lastWord[0].uppercase() else "")
                 )
             },
-            onImeKeyAction = congregationViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .height(90.dp)
                 .focusRequester(focusRequesters[CongregationFields.TERRITORY_MARK.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    congregationViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.TERRITORY_MARK,
                         isFocused = focusState.isFocused
                     )
@@ -183,16 +183,16 @@ fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltView
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryMark,
             onValueChange = {
-                congregationViewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it))
+                viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it))
             },
-            onImeKeyAction = congregationViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
                 .focusRequester(focusRequesters[CongregationFields.IS_FAVORITE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    congregationViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.IS_FAVORITE,
                         isFocused = focusState.isFocused
                     )
@@ -200,7 +200,7 @@ fun CongregationView(congregationViewModel: CongregationViewModelImpl = hiltView
             labelResId = R.string.is_favorite_hint,
             inputWrapper = isFavorite,
             onCheckedChange = {
-                congregationViewModel.onTextFieldEntered(CongregationInputEvent.IsFavorite(it))
+                viewModel.onTextFieldEntered(CongregationInputEvent.IsFavorite(it))
             }
         )
     }

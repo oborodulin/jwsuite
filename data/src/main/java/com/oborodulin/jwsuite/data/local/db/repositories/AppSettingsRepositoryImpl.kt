@@ -35,7 +35,11 @@ class AppSettingsRepositoryImpl @Inject constructor(
     }
 
     override fun delete(setting: AppSetting) = flow {
-        localAppSettingDataSource.deleteAppSetting(mappers.appSettingToAppSettingEntityMapper.map(setting))
+        localAppSettingDataSource.deleteAppSetting(
+            mappers.appSettingToAppSettingEntityMapper.map(
+                setting
+            )
+        )
         this.emit(setting)
     }
 
@@ -52,4 +56,7 @@ class AppSettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localAppSettingDataSource.deleteAppSettings()
+
+    override suspend fun checkpoint() = localAppSettingDataSource.checkpoint()
+
 }
