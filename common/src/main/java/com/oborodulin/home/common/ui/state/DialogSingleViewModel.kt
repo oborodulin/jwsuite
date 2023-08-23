@@ -36,7 +36,7 @@ abstract class DialogSingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : 
     }
 
     override fun setSavedListItem(savedListItem: ListItemModel) {
-        Timber.tag(TAG).d("savedListItem() called: savedListItem = %s", savedListItem)
+        Timber.tag(TAG).d("setSavedListItem() called: savedListItem = %s", savedListItem)
         _savedListItem.value = savedListItem
     }
 

@@ -54,7 +54,7 @@ fun MemberScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by memberViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    MemberView(appState.sharedViewModel.value)
+                    TerritoryView(appState.sharedViewModel.value)
                     Spacer(Modifier.height(8.dp))
                     SaveButtonComponent(
                         enabled = areInputsValid,

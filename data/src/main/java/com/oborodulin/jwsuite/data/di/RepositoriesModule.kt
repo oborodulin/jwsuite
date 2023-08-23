@@ -16,7 +16,6 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHous
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
@@ -77,7 +76,6 @@ object RepositoriesModule {
     @Provides
     fun provideTerritoriesRepository(
         localTerritoryDataSource: LocalTerritoryDataSource,
-        localGeoStreetDataSource: LocalGeoStreetDataSource,
         localHouseDataSource: LocalHouseDataSource,
         localEntranceDataSource: LocalEntranceDataSource,
         localFloorDataSource: LocalFloorDataSource,
@@ -85,7 +83,6 @@ object RepositoriesModule {
         mappers: TerritoryMappers
     ): TerritoriesRepository = TerritoriesRepositoryImpl(
         localTerritoryDataSource,
-        localGeoStreetDataSource,
         localHouseDataSource,
         localEntranceDataSource,
         localFloorDataSource,

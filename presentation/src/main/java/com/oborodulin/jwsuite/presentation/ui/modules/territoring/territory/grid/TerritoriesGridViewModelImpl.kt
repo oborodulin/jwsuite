@@ -16,7 +16,6 @@ import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -29,7 +28,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -60,7 +59,7 @@ private const val TAG = "Territoring.TerritoriesListViewModelImpl"
 class TerritoriesGridViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: TerritoryUseCases,
-    private val listConverter: TerritoriesListConverter
+    private val listConverter: TerritoriesGridConverter
 ) : TerritoriesGridViewModel,
     DialogSingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
         state,
@@ -138,16 +137,8 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is TerritoriesGridUiAction.LoadByProcessAndLocationType -> {
-                loadProcessAndLocationTerritories(
-                    action.congregationId,
-                    action.territoryProcessType, action.territoryLocationType,
-                    action.locationId, action.isPrivateSector
-                )
-            }
-
-            is TerritoriesGridUiAction.LoadByCongregation -> {
-                loadCongregationTerritories(
+            is TerritoriesGridUiAction.Load -> {
+                loadTerritories(
                     action.congregationId,
                     action.territoryProcessType, action.territoryLocationType,
                     action.locationId, action.isPrivateSector
@@ -182,7 +173,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadProcessAndLocationTerritories(
+    private fun loadTerritories(
         congregationId: UUID?,
         territoryProcessType: TerritoryProcessType, territoryLocationType: TerritoryLocationType,
         locationId: UUID? = null, isPrivateSector: Boolean = false
@@ -194,22 +185,6 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                     congregationId, territoryProcessType, territoryLocationType,
                     locationId, isPrivateSector
                 )
-            )
-                .map {
-                    listConverter.convert(it)
-                }
-                .collect {
-                    submitState(it)
-                }
-        }
-        return job
-    }
-
-    private fun loadCongregationTerritories(congregationId: UUID?): Job {
-        Timber.tag(TAG).d("loadTerritories(...) called: congregationId = %s", congregationId)
-        val job = viewModelScope.launch(errorHandler) {
-            useCases.getCongregationTerritoriesUseCase.execute(
-                GetCongregationTerritoriesUseCase.Request(congregationId)
             )
                 .map {
                     listConverter.convert(it)

@@ -40,6 +40,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryI
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.list.TerritoriesListItemComponent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.CELL_SIZE
 import kotlinx.coroutines.flow.collectLatest
@@ -81,7 +82,7 @@ fun TerritoriesGridView(
     ) {
         Timber.tag(TAG).d("TerritoriesGridView: LaunchedEffect() BEFORE collect ui state flow")
         territoriesGridViewModel.submitAction(
-            TerritoriesGridUiAction.LoadByProcessAndLocationType(
+            TerritoriesGridUiAction.Load(
                 congregationId = congregationId,
                 territoryProcessType = territoryProcessType,
                 territoryLocationType = territoryLocationType,

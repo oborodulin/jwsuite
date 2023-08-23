@@ -112,7 +112,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                                 viewModel.submitAction(confirmUiAction)?.join()
                                                 // hide single dialog and onConfirmButtonClick
                                                 viewModel.onDialogConfirm(onConfirmButtonClick)
-                                                onValueChange(viewModel.savedListItem.value)
+                                                val savedListItem = viewModel.savedListItem.value
+                                                Timber.tag(TAG)
+                                                    .d("Done: savedListItem = %s", savedListItem)
+                                                onValueChange(savedListItem)
                                                 // show list dialog (option)
                                                 onShowListDialog()
                                             }

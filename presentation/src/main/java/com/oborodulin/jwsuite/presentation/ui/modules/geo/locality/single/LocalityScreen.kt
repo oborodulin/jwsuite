@@ -23,12 +23,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,22 +33,18 @@ private const val TAG = "Geo.LocalityScreen"
 @Composable
 fun LocalityScreen(
     appState: AppState,
-    localityViewModel: LocalityViewModelImpl = hiltViewModel(),
-    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
-    regionViewModel: RegionViewModelImpl = hiltViewModel(),
-    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
-    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
+    viewModel: LocalityViewModelImpl = hiltViewModel(),
     localityInput: LocalityInput? = null
 ) {
     Timber.tag(TAG).d("LocalityScreen(...) called: localityInput = %s", localityInput)
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(localityInput?.localityId) {
         Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
-        localityViewModel.submitAction(LocalityUiAction.Load(localityInput?.localityId))
+        viewModel.submitAction(LocalityUiAction.Load(localityInput?.localityId))
     }
-    localityViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        localityViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)
@@ -66,29 +57,25 @@ fun LocalityScreen(
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by localityViewModel.areInputsValid.collectAsStateWithLifecycle()
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        LocalityView(
-                            localityViewModel,
-                            regionsListViewModel, regionViewModel,
-                            regionDistrictsListViewModel, regionDistrictViewModel
-                        )
+                        LocalityView()
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,
                             onClick = {
                                 Timber.tag(TAG).d("LocalityScreen(...): Save Button onClick...")
                                 // checks all errors
-                                localityViewModel.onContinueClick {
+                                viewModel.onContinueClick {
                                     // if success, then save and backToBottomBarScreen
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
-                                        localityViewModel.submitAction(LocalityUiAction.Save)
+                                        viewModel.submitAction(LocalityUiAction.Save)
                                             .join()
                                         appState.backToBottomBarScreen()
                                     }

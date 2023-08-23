@@ -23,14 +23,13 @@ import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.TerritoriesListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.TerritoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.list.TerritoriesListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.list.TerritoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Congregating.TerritoryComboBox"
+private const val TAG = "Territoring.TerritoryComboBox"
 
 @Composable
 fun TerritoryComboBox(
@@ -63,14 +62,14 @@ fun TerritoryComboBox(
         modifier = modifier,
         enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = TerritoriesGridUiAction.LoadByCongregation(currentCongregation?.id),
+        loadListUiAction = TerritoriesListUiAction.Load(currentCongregation?.id),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.member_hint,
-        listTitleResId = R.string.dlg_title_select_member,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
+        labelResId = R.string.territory_hint,
+        listTitleResId = R.string.dlg_title_select_territory,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_map_marker_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

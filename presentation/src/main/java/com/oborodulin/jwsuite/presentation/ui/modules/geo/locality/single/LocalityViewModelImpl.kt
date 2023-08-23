@@ -23,9 +23,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.LocalityConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalityUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalitiesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.toLocalitiesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -45,7 +44,7 @@ class LocalityViewModelImpl @Inject constructor(
     private val useCases: LocalityUseCases,
     private val converter: LocalityConverter,
     private val localityUiMapper: LocalityUiToLocalityMapper,
-    private val localityMapper: LocalityToLocalityUiMapper
+    private val localityMapper: LocalityToLocalitiesListItemMapper
 ) : LocalityViewModel,
     DialogSingleViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
         state,
@@ -115,7 +114,7 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     private fun loadLocality(localityId: UUID): Job {
-        Timber.tag(TAG).d("loadLocality(UUID) called: %s", localityId.toString())
+        Timber.tag(TAG).d("loadLocality(UUID) called: %s", localityId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getLocalityUseCase.execute(GetLocalityUseCase.Request(localityId))
                 .map {
@@ -156,9 +155,9 @@ class LocalityViewModelImpl @Inject constructor(
                 SaveLocalityUseCase.Request(localityUiMapper.map(localityUi))
             ).collect {
                 Timber.tag(TAG).d("saveLocality() collect: %s", it)
-                if (it is Result.Success) setSavedListItem(
-                    localityMapper.map(it.data.locality).toLocalitiesListItem()
-                )
+                if (it is Result.Success) {
+                    setSavedListItem(localityMapper.map(it.data.locality))
+                }
             }
         }
         return job

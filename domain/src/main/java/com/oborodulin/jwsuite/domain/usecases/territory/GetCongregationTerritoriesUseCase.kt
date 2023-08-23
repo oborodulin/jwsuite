@@ -19,6 +19,6 @@ class GetCongregationTerritoriesUseCase(
             Response(it)
         }
 
-    data class Request(val congregationId: UUID) : UseCase.Request
+    data class Request(val congregationId: UUID?) : UseCase.Request
     data class Response(val territories: List<Territory>) : UseCase.Response
 }

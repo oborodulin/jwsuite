@@ -6,7 +6,6 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalFloo
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHouseDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
@@ -19,7 +18,6 @@ import javax.inject.Inject
 
 class TerritoriesRepositoryImpl @Inject constructor(
     private val localTerritoryDataSource: LocalTerritoryDataSource,
-    private val localStreetDataSource: LocalGeoStreetDataSource,
     private val localHouseDataSource: LocalHouseDataSource,
     private val localEntranceDataSource: LocalEntranceDataSource,
     private val localFloorDataSource: LocalFloorDataSource,

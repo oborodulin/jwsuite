@@ -42,24 +42,24 @@ private const val TAG = "Geo.RegionDistrictView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegionDistrictView(regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel()) {
+fun RegionDistrictView(viewModel: RegionDistrictViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("RegionDistrictView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(regionDistrictViewModel.events, lifecycleOwner) {
-        regionDistrictViewModel.events.flowWithLifecycle(
+    val events = remember(viewModel.events, lifecycleOwner) {
+        viewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all regionDistrict fields")
-    val region by regionDistrictViewModel.region.collectAsStateWithLifecycle()
-    val districtShortName by regionDistrictViewModel.districtShortName.collectAsStateWithLifecycle()
-    val districtName by regionDistrictViewModel.districtName.collectAsStateWithLifecycle()
+    val region by viewModel.region.collectAsStateWithLifecycle()
+    val districtShortName by viewModel.districtShortName.collectAsStateWithLifecycle()
+    val districtName by viewModel.districtName.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all regionDistrict fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -93,22 +93,22 @@ fun RegionDistrictView(regionDistrictViewModel: RegionDistrictViewModelImpl = hi
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_REGION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    regionDistrictViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = RegionDistrictFields.REGION_DISTRICT_REGION,
                         isFocused = focusState.isFocused
                     )
                 },
             inputWrapper = region,
             onValueChange = {
-                regionDistrictViewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
+                viewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))
             },
-            onImeKeyAction = regionDistrictViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_SHORT_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    regionDistrictViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = RegionDistrictFields.DISTRICT_SHORT_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -124,18 +124,18 @@ fun RegionDistrictView(regionDistrictViewModel: RegionDistrictViewModelImpl = hi
             },
             inputWrapper = districtShortName,
             onValueChange = {
-                regionDistrictViewModel.onTextFieldEntered(
+                viewModel.onTextFieldEntered(
                     RegionDistrictInputEvent.DistrictShortName(it)
                 )
             },
-            onImeKeyAction = regionDistrictViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_NAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    regionDistrictViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = RegionDistrictFields.DISTRICT_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -151,9 +151,9 @@ fun RegionDistrictView(regionDistrictViewModel: RegionDistrictViewModelImpl = hi
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = districtName,
             onValueChange = {
-                regionDistrictViewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictName(it))
+                viewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictName(it))
             },
-            onImeKeyAction = regionDistrictViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
 }

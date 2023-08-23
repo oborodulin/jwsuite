@@ -24,6 +24,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
@@ -164,6 +165,11 @@ object TerritoringModule {
     @Provides
     fun provideTerritoryConverter(mapper: TerritoryToTerritoryUiMapper): TerritoryConverter =
         TerritoryConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoriesGridConverter(mapper: TerritoriesListToTerritoriesListItemMapper): TerritoriesGridConverter =
+        TerritoriesGridConverter(mapper = mapper)
 
     @Singleton
     @Provides

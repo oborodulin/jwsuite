@@ -76,15 +76,7 @@ fun CongregationScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CongregationView(
-                            congregationViewModel,
-                            localitiesListViewModel,
-                            localityViewModel,
-                            regionsListViewModel,
-                            regionViewModel,
-                            regionDistrictsListViewModel,
-                            regionDistrictViewModel
-                        )
+                        CongregationView()
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,

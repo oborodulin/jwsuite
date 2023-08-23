@@ -89,6 +89,7 @@
     <string name="congregation_hint">Собрание</string>
     <string name="member_hint">Возвещатель</string>
     <string name="private_sector_hint">ч/с</string>
+    <string name="territory_hint">Участок</string>
 
     <string name="member_placeholder">Укажите возвещателя…</string>
     <!--Собрание -->
@@ -172,6 +173,7 @@
     <string name="dlg_title_select_locality">Выберите населённый пункт</string>
     <string name="dlg_title_select_locality_district">Выберите район населённого пункта</string>
     <string name="dlg_title_select_microdistrict">Выберите микрорайон</string>
+    <string name="dlg_title_select_territory">Выберите участок</string>
     <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
     <string name="date_dlg_title_set_territory_receiving">Укажите дату выдачи</string>
     <string name="dlg_title_select_street">Выберите улицу</string>
