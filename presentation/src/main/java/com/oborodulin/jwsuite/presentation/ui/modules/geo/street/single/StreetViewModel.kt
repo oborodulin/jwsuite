@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface StreetViewModel : DialogViewModeled<StreetUi, StreetUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
+
     val roadTypes: StateFlow<MutableMap<RoadType, String>>
 
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>

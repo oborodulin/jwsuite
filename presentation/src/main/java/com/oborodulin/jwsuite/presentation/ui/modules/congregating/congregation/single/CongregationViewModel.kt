@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface CongregationViewModel :
     DialogViewModeled<CongregationUi, CongregationUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
     val congregationNum: StateFlow<InputWrapper>

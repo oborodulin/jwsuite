@@ -7,8 +7,5 @@ import kotlinx.coroutines.flow.SharedFlow
 
 interface TerritoryCategoriesListViewModel :
     MviViewModeled<List<TerritoryCategoriesListItem>, TerritoryCategoriesListUiAction, TerritoryCategoriesListUiSingleEvent> {
-    val actionsJobFlow: SharedFlow<Job?>
-
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
-
 }

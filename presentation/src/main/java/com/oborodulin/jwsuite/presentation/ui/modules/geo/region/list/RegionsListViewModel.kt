@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.SharedFlow
 
 interface RegionsListViewModel :
     MviViewModeled<List<RegionsListItem>, RegionsListUiAction, RegionsListUiSingleEvent> {
-    val actionsJobFlow: SharedFlow<Job?>
 
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 

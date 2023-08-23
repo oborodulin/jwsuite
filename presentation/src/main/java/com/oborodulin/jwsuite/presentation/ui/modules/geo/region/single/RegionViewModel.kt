@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface RegionViewModel : DialogViewModeled<RegionUi, RegionUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     val regionCode: StateFlow<InputWrapper>
     val regionName: StateFlow<InputWrapper>

@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.di
 
+import android.content.Context
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetAllLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
@@ -70,6 +71,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.S
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -130,10 +132,11 @@ object GeoModule {
     @Singleton
     @Provides
     fun provideLocalityUiToLocalityMapper(
+        @ApplicationContext ctx: Context,
         regionUiMapper: RegionUiToRegionMapper,
         regionUiDistrictMapper: RegionDistrictUiToRegionDistrictMapper
     ): LocalityUiToLocalityMapper = LocalityUiToLocalityMapper(
-        regionUiMapper = regionUiMapper, regionUiDistrictMapper = regionUiDistrictMapper
+        ctx = ctx, regionUiMapper = regionUiMapper, regionUiDistrictMapper = regionUiDistrictMapper
     )
 
     @Singleton
@@ -295,7 +298,7 @@ object GeoModule {
     @Provides
     fun provideStreetConverter(mapper: StreetToStreetUiMapper): StreetConverter =
         StreetConverter(mapper = mapper)
-    
+
     // USE CASES:
     @Singleton
     @Provides

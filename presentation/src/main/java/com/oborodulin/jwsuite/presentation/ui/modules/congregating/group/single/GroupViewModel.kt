@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface GroupViewModel : DialogViewModeled<GroupUi, GroupUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     val congregation: StateFlow<InputListItemWrapper<ListItemModel>>
     val groupNum: StateFlow<InputWrapper>

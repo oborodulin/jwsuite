@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality
 
+import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.GeoLocality
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
@@ -7,11 +8,13 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.region.R
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
 
 class LocalityUiToLocalityMapper(
+    private val ctx: Context,
     private val regionUiMapper: RegionUiToRegionMapper,
     private val regionUiDistrictMapper: RegionDistrictUiToRegionDistrictMapper
 ) : Mapper<LocalityUi, GeoLocality> {
     override fun map(input: LocalityUi): GeoLocality {
         val locality = GeoLocality(
+            ctx = ctx,
             region = regionUiMapper.map(input.region),
             regionDistrict = regionUiDistrictMapper.nullableMap(input.regionDistrict),
             localityCode = input.localityCode,

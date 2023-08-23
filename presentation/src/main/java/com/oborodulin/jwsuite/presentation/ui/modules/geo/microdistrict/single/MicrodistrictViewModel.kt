@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface MicrodistrictViewModel :
     DialogViewModeled<MicrodistrictUi, MicrodistrictUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
+
     val microdistrictTypes: StateFlow<MutableMap<VillageType, String>>
 
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>

@@ -7,7 +7,5 @@ import kotlinx.coroutines.flow.SharedFlow
 
 interface MembersListViewModel :
     MviViewModeled<List<MembersListItem>, MembersListUiAction, MembersListUiSingleEvent> {
-    val actionsJobFlow: SharedFlow<Job?>
-
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

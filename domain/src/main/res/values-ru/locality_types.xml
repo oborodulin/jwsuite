@@ -1,9 +1,9 @@
 <resources>
     <string-array name="locality_types">
-        <item>г</item>
+        <item>г.</item>
         <item>пгт</item>
         <!--Село -->
-        <item>с</item>
+        <item>с.</item>
         <!--Дачный поселок -->
         <item>дп</item>
         <item>массив</item>

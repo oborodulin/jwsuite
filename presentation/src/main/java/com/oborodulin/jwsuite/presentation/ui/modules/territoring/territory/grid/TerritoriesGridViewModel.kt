@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface TerritoriesGridViewModel :
     DialogViewModeled<List<TerritoriesListItem>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     // search
     val handOutSearchText: StateFlow<TextFieldValue>

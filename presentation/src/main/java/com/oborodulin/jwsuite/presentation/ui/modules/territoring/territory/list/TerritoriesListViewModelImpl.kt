@@ -22,7 +22,9 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycateg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -34,7 +36,6 @@ private const val TAG = "Territoring.TerritoriesListViewModelImpl"
 
 @HiltViewModel
 class TerritoriesListViewModelImpl @Inject constructor(
-    private val state: SavedStateHandle,
     private val useCases: TerritoryUseCases,
     private val listConverter: TerritoriesListConverter
 ) : TerritoriesListViewModel,
@@ -76,6 +77,7 @@ class TerritoriesListViewModelImpl @Inject constructor(
             object : TerritoriesListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+                override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)

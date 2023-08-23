@@ -24,8 +24,9 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     override val uiStateFlow = _uiStateFlow
 
     private val _actionsFlow: MutableSharedFlow<A> = MutableSharedFlow()
+
     private val _actionsJobFlow: MutableSharedFlow<Job?> = MutableSharedFlow()
-    val actionsJobFlow: SharedFlow<Job?> = _actionsJobFlow
+    override val actionsJobFlow: SharedFlow<Job?> = _actionsJobFlow
 
     private val _singleEventFlow = Channel<E>()
     override val singleEventFlow = _singleEventFlow.receiveAsFlow()

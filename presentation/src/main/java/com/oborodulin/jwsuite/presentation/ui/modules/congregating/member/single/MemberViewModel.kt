@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     val memberTypes: StateFlow<MutableMap<MemberType, String>>
 

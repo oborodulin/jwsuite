@@ -36,6 +36,7 @@ import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.OnListItemEvent
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -108,17 +109,29 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                         viewModel.onContinueClick {
                                             // if success,
                                             coroutineScope.launch {
-                                                // execute viewModel.Save()
-                                                viewModel.submitAction(confirmUiAction)?.join()
-                                                // hide single dialog and onConfirmButtonClick
-                                                viewModel.onDialogConfirm(onConfirmButtonClick)
-                                                val savedListItem = viewModel.savedListItem.value
-                                                Timber.tag(TAG)
-                                                    .d("Done: savedListItem = %s", savedListItem)
-                                                onValueChange(savedListItem)
-                                                // show list dialog (option)
-                                                onShowListDialog()
+                                                // wait wile actionsJob executed
+                                                viewModel.actionsJobFlow.collectLatest { job ->
+                                                    Timber.tag(TAG).d(
+                                                        "FullScreenDialog(...): Start actionsJobFlow.collect [job = %s]",
+                                                        job?.toString()
+                                                    )
+                                                    job?.join()
+                                                    // hide single dialog and onConfirmButtonClick
+                                                    viewModel.onDialogConfirm(onConfirmButtonClick)
+                                                    val savedListItem =
+                                                        viewModel.savedListItem.value
+                                                    Timber.tag(TAG)
+                                                        .d(
+                                                            "Done: savedListItem = %s",
+                                                            savedListItem.itemId
+                                                        )
+                                                    onValueChange(savedListItem)
+                                                    // show list dialog (option)
+                                                    onShowListDialog()
+                                                }
                                             }
+                                            // execute viewModel.Save()
+                                            viewModel.submitAction(confirmUiAction)
                                         }
                                     }) {
                                         Icon(Icons.Outlined.Done, null)

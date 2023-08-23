@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface TerritoringViewModel :
     SingleViewModeled<TerritoringUi, TerritoringUiAction, TerritoringUiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     val isPrivateSector: StateFlow<InputWrapper>
     val location: StateFlow<InputListItemWrapper<TerritoryLocationsListItem>>

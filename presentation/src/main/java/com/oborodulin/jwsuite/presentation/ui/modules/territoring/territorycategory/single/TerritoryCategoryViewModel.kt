@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface TerritoryCategoryViewModel :
     DialogViewModeled<TerritoryCategoryUi, TerritoryCategoryUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
-    val actionsJobFlow: SharedFlow<Job?>
 
     val territoryCategoryCode: StateFlow<InputWrapper>
     val territoryCategoryMark: StateFlow<InputWrapper>

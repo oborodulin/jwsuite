@@ -424,6 +424,7 @@ class TerritoryViewModelImpl @Inject constructor(
                 override val showDialog = MutableStateFlow(true)
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+                override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
