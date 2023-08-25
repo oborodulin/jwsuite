@@ -116,7 +116,7 @@ class StreetsListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 isPrivateSector = true,
                 estimatedHouses = 56,
-                streetName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
+                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
                     ctx.resources.getString(R.string.def_baratynskogo_name)
                 }"
             ),
@@ -124,21 +124,21 @@ class StreetsListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 isPrivateSector = true,
                 estimatedHouses = 56,
-                streetName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
+                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
                     ctx.resources.getString(R.string.def_patorgynskogo_name)
                 }"
             ),
             StreetsListItem(
                 id = UUID.randomUUID(),
                 isPrivateSector = false,
-                streetName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
+                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
                     ctx.resources.getString(R.string.def_strelkovojDivizii_name)
                 }"
             ),
             StreetsListItem(
                 id = UUID.randomUUID(),
                 isPrivateSector = false,
-                streetName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
+                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
                     ctx.resources.getString(R.string.def_nezavisimosti_name)
                 }"
             )

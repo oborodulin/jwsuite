@@ -21,7 +21,5 @@ data class Floor(
         else -> estimatedRooms
     }
     val existingRooms: Int
-        get() {
-            return rooms.size
-        }
+        get() = rooms.size
 }

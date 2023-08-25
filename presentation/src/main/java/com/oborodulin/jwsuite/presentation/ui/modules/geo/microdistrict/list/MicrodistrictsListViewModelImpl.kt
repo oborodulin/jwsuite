@@ -128,14 +128,14 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
             MicrodistrictsListItem(
                 id = UUID.randomUUID(),
                 microdistrictShortName = ctx.resources.getString(R.string.def_cvetochny_short_name),
-                microdistrictName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.village_types)[VillageType.MICRO_DISTRICT.ordinal]} ${
+                microdistrictFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.village_types)[VillageType.MICRO_DISTRICT.ordinal]} ${
                     ctx.resources.getString(R.string.def_cvetochny_name)
                 }"
             ),
             MicrodistrictsListItem(
                 id = UUID.randomUUID(),
                 microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
-                microdistrictName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.village_types)[VillageType.MICRO_DISTRICT.ordinal]} ${
+                microdistrictFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.village_types)[VillageType.MICRO_DISTRICT.ordinal]} ${
                     ctx.resources.getString(R.string.def_don_name)
                 }"
             )

@@ -45,18 +45,42 @@ data class Territory(
         val handOutYears = totalDays / 365
         val handOutMonths = totalDays % 365 / 30
         val handOutDays = totalDays % 365 % 30
-        (if (handOutYears > 0) "$handOutYears ${ctx?.resources?.getString(com.oborodulin.home.common.R.string.year_unit)} " else "")
-            .plus(if (handOutMonths > 0) "$handOutMonths ${ctx?.resources?.getString(com.oborodulin.home.common.R.string.month_unit)} " else "")
-            .plus(if (handOutDays > 0) "$handOutDays ${ctx?.resources?.getString(com.oborodulin.home.common.R.string.day_unit)} " else "")
+        ((if (handOutYears > 0) "$handOutYears ${
+            ctx?.resources?.getString(com.oborodulin.home.common.R.string.year_unit).orEmpty()
+        } " else "")
+            .plus(
+                if (handOutMonths > 0) "$handOutMonths ${
+                    ctx?.resources?.getString(com.oborodulin.home.common.R.string.month_unit)
+                        .orEmpty()
+                } " else ""
+            )
+            .plus(
+                if (handOutDays > 0) "$handOutDays ${
+                    ctx?.resources?.getString(com.oborodulin.home.common.R.string.day_unit)
+                        .orEmpty()
+                }" else ""
+            ))
             .trim()
     }
     val expiredDaysPeriod = expiredTotalDays?.let { totalDays ->
         val expiredYears = totalDays / 365
         val expiredMonths = totalDays % 365 / 30
         val expiredDays = totalDays % 365 % 30
-        (if (expiredYears > 0) "$expiredYears ${ctx?.resources?.getString(com.oborodulin.home.common.R.string.year_unit)} " else "")
-            .plus(if (expiredMonths > 0) "$expiredMonths ${ctx?.resources?.getString(com.oborodulin.home.common.R.string.month_unit)} " else "")
-            .plus(if (expiredDays > 0) "$expiredDays ${ctx?.resources?.getString(com.oborodulin.home.common.R.string.day_unit)} " else "")
+        ((if (expiredYears > 0) "$expiredYears ${
+            ctx?.resources?.getString(com.oborodulin.home.common.R.string.year_unit).orEmpty()
+        } " else "")
+            .plus(
+                if (expiredMonths > 0) "$expiredMonths ${
+                    ctx?.resources?.getString(com.oborodulin.home.common.R.string.month_unit)
+                        .orEmpty()
+                } " else ""
+            )
+            .plus(
+                if (expiredDays > 0) "$expiredDays ${
+                    ctx?.resources?.getString(com.oborodulin.home.common.R.string.day_unit)
+                        .orEmpty()
+                }" else ""
+            ))
             .trim()
     }
 }

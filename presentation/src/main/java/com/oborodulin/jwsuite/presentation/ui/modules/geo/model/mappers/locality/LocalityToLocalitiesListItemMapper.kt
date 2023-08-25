@@ -10,6 +10,6 @@ class LocalityToLocalitiesListItemMapper : Mapper<GeoLocality, LocalitiesListIte
         id = input.id ?: UUID.randomUUID(),
         localityCode = input.localityCode,
         localityShortName = input.localityShortName,
-        localityName = input.localityFullName
+        localityFullName = input.localityFullName
     )
 }

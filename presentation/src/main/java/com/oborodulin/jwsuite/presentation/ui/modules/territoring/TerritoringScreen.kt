@@ -57,7 +57,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.BarMemberComboBox
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.list.TerritoryDetailsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutFabComponent
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModel
@@ -403,7 +403,7 @@ fun HandOutTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoryDetailsView()
+            TerritoryDetailsListView()
         }
         SearchComponent(
             searchText,
@@ -506,7 +506,7 @@ fun AtWorkTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoryDetailsView()
+            TerritoryDetailsListView()
         }
         SearchComponent(
             searchText,
@@ -570,7 +570,7 @@ fun IdleTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoryDetailsView()
+            TerritoryDetailsListView()
         }
         SearchComponent(
             searchText,
@@ -634,7 +634,7 @@ fun AllTerritoriesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            TerritoryDetailsView()
+            TerritoryDetailsListView()
         }
         SearchComponent(
             searchText,

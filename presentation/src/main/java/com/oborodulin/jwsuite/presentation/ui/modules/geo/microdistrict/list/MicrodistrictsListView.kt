@@ -111,7 +111,7 @@ fun MicrodistrictsList(
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
                                     R.string.dlg_confirm_del_microdistrict,
-                                    microdistrict.microdistrictName
+                                    microdistrict.microdistrictFullName
                                 )
                             ) { onDelete(microdistrict) }),
                         selected = isSelected,

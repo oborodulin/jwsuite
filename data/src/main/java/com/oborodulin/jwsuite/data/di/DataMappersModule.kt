@@ -143,7 +143,8 @@ object DataMappersModule {
     // Houses:
     @Singleton
     @Provides
-    fun provideHouseEntityToHouseMapper(): HouseEntityToHouseMapper = HouseEntityToHouseMapper()
+    fun provideHouseEntityToHouseMapper(@ApplicationContext ctx: Context): HouseEntityToHouseMapper =
+        HouseEntityToHouseMapper(ctx = ctx)
 
     @Singleton
     @Provides

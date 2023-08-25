@@ -38,7 +38,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Congregating.TerritoryViewModelImpl"
+private const val TAG = "Territoring.TerritoryViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel

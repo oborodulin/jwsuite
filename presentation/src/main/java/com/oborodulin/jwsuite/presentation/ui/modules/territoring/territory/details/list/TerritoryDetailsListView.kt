@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -29,17 +29,17 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.Territor
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Territoring.TerritoryDetailsView"
+private const val TAG = "Territoring.TerritoryDetailsListView"
 
 @Composable
-fun TerritoryDetailsView(
-    viewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
+fun TerritoryDetailsListView(
+    viewModel: TerritoryDetailsListViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput? = null
 ) {
-    Timber.tag(TAG).d("TerritoryDetailsView(...) called: territoryInput = %s", territoryInput)
+    Timber.tag(TAG).d("TerritoryDetailsListView(...) called: territoryInput = %s", territoryInput)
     LaunchedEffect(territoryInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryDetailsView: LaunchedEffect() BEFORE collect ui state flow")
-        territoryInput?.let { viewModel.submitAction(TerritoryDetailsUiAction.Load(it.territoryId)) }
+        Timber.tag(TAG).d("TerritoryDetailsListView: LaunchedEffect() BEFORE collect ui state flow")
+        territoryInput?.let { viewModel.submitAction(TerritoryDetailsListUiAction.Load(it.territoryId)) }
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -79,7 +79,7 @@ fun PreviewMembersList() {
     JWSuiteTheme {
         Surface {
             TerritoryDetails(
-                details = TerritoryDetailsViewModelImpl.previewList(LocalContext.current)
+                details = TerritoryDetailsListViewModelImpl.previewList(LocalContext.current)
             )
         }
     }

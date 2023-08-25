@@ -30,12 +30,10 @@ class GetTerritoryDetailsUseCase(
                     TerritoryDetail(
                         ctx = ctx,
                         territoryStreetId = it.id,
-                        streetId = it.street.id!!,
-                        roadType = it.street.roadType,
-                        isPrivateSector = it.isPrivateSector ?: it.street.isPrivateSector,
-                        housesQty = it.estimatedHouses,
-                        streetName = it.street.streetName,
-                        isEven = it.isEven,
+                        street = it.street,
+                        isPrivateSector = it.isPrivateSector,
+                        estimatedHouses = it.estimatedHouses,
+                        isEvenSide = it.isEvenSide,
                         houses = it.houses
                     )
                 )
@@ -43,29 +41,13 @@ class GetTerritoryDetailsUseCase(
             houses.groupBy({ it.street }) { it }
                 .forEach { (street, houses) ->
                     territoryDetails.add(
-                        TerritoryDetail(
-                            ctx = ctx,
-                            streetId = street.id!!,
-                            roadType = street.roadType,
-                            isPrivateSector = street.isPrivateSector,
-                            housesQty = street.estimatedHouses,
-                            streetName = street.streetName,
-                            houses = houses
-                        )
+                        TerritoryDetail(ctx = ctx, street = street, houses = houses)
                     )
                 }
             entrances.groupBy({ it.house }) { it }
                 .forEach { (house, entrances) ->
                     territoryDetails.add(
-                        TerritoryDetail(
-                            ctx = ctx,
-                            streetId = house.street.id!!,
-                            roadType = house.street.roadType,
-                            isPrivateSector = house.street.isPrivateSector,
-                            housesQty = house.street.estimatedHouses,
-                            streetName = house.street.streetName,
-                            entrances = entrances
-                        )
+                        TerritoryDetail(ctx = ctx, street = house.street, entrances = entrances)
                     )
                 }
             Response(territoryDetails)

@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.sin
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import com.oborodulin.jwsuite.presentation.R
 
-private const val TAG = "Congregating.GroupInputValidator"
+private const val TAG = "Territoring.GroupInputValidator"
 
 sealed class TerritoryInputValidator : Validatable {
     data object Category : TerritoryInputValidator() {

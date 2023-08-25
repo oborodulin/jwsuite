@@ -17,5 +17,5 @@ fun StreetUi.toStreetsListItem() = StreetsListItem(
     id = this.id!!,
     isPrivateSector = this.isPrivateSector,
     estimatedHouses = this.estimatedHouses,
-    streetName = this.streetName
+    streetFullName = this.streetName
 )

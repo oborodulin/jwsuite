@@ -116,7 +116,7 @@ fun StreetsList(
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
                                     R.string.dlg_confirm_del_street,
-                                    street.streetName
+                                    street.streetFullName
                                 )
                             ) { onDelete(street) }),
                         selected = isSelected,

@@ -9,7 +9,7 @@ class TerritoryStreetToTerritoryStreetEntityMapper :
     Mapper<TerritoryStreet, TerritoryStreetEntity> {
     override fun map(input: TerritoryStreet) = TerritoryStreetEntity(
         territoryStreetId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
-        isEvenSide = input.isEven,
+        isEvenSide = input.isEvenSide,
         isTerStreetPrivateSector = input.isPrivateSector,
         estTerStreetHouses = input.estimatedHouses,
         tsStreetsId = input.street.id!!,

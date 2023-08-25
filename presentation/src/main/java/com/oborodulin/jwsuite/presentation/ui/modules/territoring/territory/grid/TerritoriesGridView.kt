@@ -38,8 +38,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoriesListItem
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.list.TerritoryDetailsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.list.TerritoriesListItemComponent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.CELL_SIZE
@@ -53,7 +52,7 @@ private const val TAG = "Territoring.TerritoriesGridView"
 fun TerritoriesGridView(
     appState: AppState,
     territoriesGridViewModel: TerritoriesGridViewModel,
-    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
+    territoryDetailsViewModel: TerritoryDetailsListViewModelImpl = hiltViewModel(),
     territoryProcessType: TerritoryProcessType,
     congregationInput: CongregationInput? = null,
     territoryInput: TerritoryInput? = null,
@@ -108,7 +107,7 @@ fun TerritoriesGridView(
                     onChecked = { territoriesGridViewModel.observeCheckedTerritories() }
                 ) { territory ->
                     with(territoryDetailsViewModel) {
-                        submitAction(TerritoryDetailsUiAction.Load(territory.id))
+                        submitAction(com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(territory.id))
                     }
                 }
             } else { // TerritoryProcessType.ALL
@@ -135,7 +134,7 @@ fun TerritoriesGridView(
                     }
                 ) { territory ->
                     with(territoryDetailsViewModel) {
-                        submitAction(TerritoryDetailsUiAction.Load(territory.id))
+                        submitAction(com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(territory.id))
                     }
                 }
             }

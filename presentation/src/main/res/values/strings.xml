@@ -10,6 +10,7 @@
     <string name="nav_item_group">Группа</string>
     <string name="nav_item_member">Возвещатель</string>
     <string name="nav_item_territory">Участок</string>
+    <string name="nav_item_territory_details">Содержимое участка</string>
     <string name="nav_item_territory_category">Категория участка</string>
     <string name="nav_item_territory_hand_out_confirmation">Подтверждение выдачи участка</string>
     <string name="nav_item_region">Область</string>
@@ -72,6 +73,12 @@
     <string name="territory_tab_at_work">В РАБОТЕ</string>
     <string name="territory_tab_idle">В ОТСТОЕ</string>
     <string name="territory_tab_all">ВСЕ</string>
+    <!--Содержимое участка -->
+    <string name="territory_details_tab_streets">УЛИЦЫ</string>
+    <string name="territory_details_tab_houses">ДОМА</string>
+    <string name="territory_details_tab_entrances">ПОДЪЕЗДЫ</string>
+    <string name="territory_details_tab_floors">ПОДЪЕЗДЫ</string>
+    <string name="territory_details_tab_rooms">КВАРТИРЫ</string>
 
     <!--ФОРМА: -->
     <!--общие -->
@@ -191,12 +198,13 @@
     <string name="dlg_confirm_del_locality_district">Удалить район населённого пункта %1$s?</string>
     <string name="dlg_confirm_del_microdistrict">Удалить микрорайон %1$s?</string>
     <string name="dlg_confirm_del_street">Удалить улицу %1$s?</string>
-    <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
-    <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
     <string name="dlg_confirm_del_house">Удалить дом №%1$s?</string>
     <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
     <string name="dlg_confirm_del_floor">Удалить этаж №%1$s?</string>
     <string name="dlg_confirm_del_room">Удалить квартиру №%1$s?</string>
+    <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
+    <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
+    <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
     <!--общие-->

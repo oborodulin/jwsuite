@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.list
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
@@ -27,19 +27,19 @@ import javax.inject.Inject
 private const val TAG = "Territoring.TerritoryDetailsViewModelImpl"
 
 @HiltViewModel
-class TerritoryDetailsViewModelImpl @Inject constructor(
+class TerritoryDetailsListViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val converter: TerritoryDetailsListConverter
-) : TerritoryDetailsViewModel,
-    MviViewModel<List<TerritoryDetailsListItem>, UiState<List<TerritoryDetailsListItem>>, TerritoryDetailsUiAction, UiSingleEvent>() {
+) : TerritoryDetailsListViewModel,
+    MviViewModel<List<TerritoryDetailsListItem>, UiState<List<TerritoryDetailsListItem>>, TerritoryDetailsListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
-    override suspend fun handleAction(action: TerritoryDetailsUiAction): Job {
+    override suspend fun handleAction(action: TerritoryDetailsListUiAction): Job {
         Timber.tag(TAG)
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is TerritoryDetailsUiAction.Load -> {
+            is TerritoryDetailsListUiAction.Load -> {
                 loadTerritoryDetails(territoryId = action.territoryId)
             }
         }
@@ -66,7 +66,7 @@ class TerritoryDetailsViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : TerritoryDetailsViewModel {
+            object : TerritoryDetailsListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -77,7 +77,7 @@ class TerritoryDetailsViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
-                override fun submitAction(action: TerritoryDetailsUiAction): Job? = null
+                override fun submitAction(action: TerritoryDetailsListUiAction): Job? = null
             }
 
         fun previewList(ctx: Context) = listOf(

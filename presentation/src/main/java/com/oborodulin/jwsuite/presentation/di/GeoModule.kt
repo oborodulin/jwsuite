@@ -183,10 +183,12 @@ object GeoModule {
     @Singleton
     @Provides
     fun provideMicrodistrictUiToMicrodistrictMapper(
+        @ApplicationContext ctx: Context,
         localityUiMapper: LocalityUiToLocalityMapper,
         localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper
     ): MicrodistrictUiToMicrodistrictMapper = MicrodistrictUiToMicrodistrictMapper(
-        localityUiMapper = localityUiMapper, localityDistrictUiMapper = localityDistrictUiMapper
+        ctx = ctx, localityUiMapper = localityUiMapper,
+        localityDistrictUiMapper = localityDistrictUiMapper
     )
 
     @Singleton
@@ -214,11 +216,13 @@ object GeoModule {
     @Singleton
     @Provides
     fun provideStreetUiToStreetMapper(
+        @ApplicationContext ctx: Context,
         localityUiMapper: LocalityUiToLocalityMapper,
         localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
         microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper
     ): StreetUiToStreetMapper = StreetUiToStreetMapper(
-        localityUiMapper = localityUiMapper, localityDistrictUiMapper = localityDistrictUiMapper,
+        ctx = ctx, localityUiMapper = localityUiMapper,
+        localityDistrictUiMapper = localityDistrictUiMapper,
         microdistrictUiMapper = microdistrictUiMapper
     )
 

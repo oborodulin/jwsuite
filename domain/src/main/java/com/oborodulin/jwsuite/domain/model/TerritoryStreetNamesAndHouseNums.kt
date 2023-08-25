@@ -6,5 +6,5 @@ import java.util.UUID
 data class TerritoryStreetNamesAndHouseNums(
     val territoryId: UUID,
     val streetNames: String,
-    val houseFullNums: String
+    val houseFullNums: String?
 ) : DomainModel()

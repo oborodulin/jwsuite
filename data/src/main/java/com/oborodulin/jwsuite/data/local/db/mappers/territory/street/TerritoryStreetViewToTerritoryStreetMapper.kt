@@ -11,7 +11,7 @@ class TerritoryStreetViewToTerritoryStreetMapper(private val streetMapper: GeoSt
         val territoryStreet = TerritoryStreet(
             territoryId = input.territoryStreet.tsTerritoriesId,
             street = streetMapper.map(input.street),
-            isEven = input.territoryStreet.isEvenSide,
+            isEvenSide = input.territoryStreet.isEvenSide,
             isPrivateSector = input.territoryStreet.isTerStreetPrivateSector,
             estimatedHouses = input.territoryStreet.estTerStreetHouses
         )

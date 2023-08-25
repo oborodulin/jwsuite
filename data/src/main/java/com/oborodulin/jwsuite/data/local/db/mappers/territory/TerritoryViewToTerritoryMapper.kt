@@ -22,8 +22,7 @@ class TerritoryViewToTerritoryMapper(
     private val localityMapper: LocalityViewToGeoLocalityMapper,
     private val localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
     private val microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
-) : Mapper<TerritoryView, Territory>,
-    NullableMapper<TerritoryView, Territory> {
+) : Mapper<TerritoryView, Territory>, NullableMapper<TerritoryView, Territory> {
     override fun map(input: TerritoryView): Territory {
         val region = regionMapper.map(input.tRegion)
         val regionDistrict = regionDistrictMapper.nullableMap(input.tDistrict, region)
@@ -40,6 +39,7 @@ class TerritoryViewToTerritoryMapper(
         )
 
         val territory = Territory(
+            ctx = ctx,
             congregation = congregationMapper.map(input.congregation),
             territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
             locality = localityMapper.map(input.tLocality, region, regionDistrict),

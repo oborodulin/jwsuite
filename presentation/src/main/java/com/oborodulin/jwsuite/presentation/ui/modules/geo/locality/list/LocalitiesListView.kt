@@ -108,7 +108,7 @@ fun LocalitiesList(
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
                                     R.string.dlg_confirm_del_locality,
-                                    locality.localityName
+                                    locality.localityFullName
                                 )
                             ) { onDelete(locality) }),
                         selected = isSelected,

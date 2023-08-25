@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict
 
+import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.GeoMicrodistrict
@@ -8,12 +9,14 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
 
 class MicrodistrictUiToMicrodistrictMapper(
+    private val ctx: Context,
     private val localityUiMapper: LocalityUiToLocalityMapper,
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper
 ) : Mapper<MicrodistrictUi, GeoMicrodistrict>,
     NullableMapper<MicrodistrictUi, GeoMicrodistrict> {
     override fun map(input: MicrodistrictUi): GeoMicrodistrict {
         val locality = GeoMicrodistrict(
+            ctx = ctx,
             locality = localityUiMapper.map(input.locality),
             localityDistrict = localityDistrictUiMapper.map(input.localityDistrict),
             microdistrictType = input.microdistrictType,

@@ -14,5 +14,5 @@ data class MicrodistrictUi(
 fun MicrodistrictUi.toMicrodistrictsListItem() = MicrodistrictsListItem(
     id = this.id!!,
     microdistrictShortName = this.microdistrictShortName,
-    microdistrictName = this.microdistrictName
+    microdistrictFullName = this.microdistrictName
 )

@@ -10,6 +10,8 @@ class StreetToStreetsListItemMapper : Mapper<GeoStreet, StreetsListItem> {
         id = input.id ?: UUID.randomUUID(),
         isPrivateSector = input.isPrivateSector,
         estimatedHouses = input.estimatedHouses,
-        streetName = input.streetFullName
+        streetFullName = input.streetFullName,
+        isPrivateSectorInfo = input.isPrivateSectorInfo,
+        estHousesInfo = input.estHousesInfo
     )
 }

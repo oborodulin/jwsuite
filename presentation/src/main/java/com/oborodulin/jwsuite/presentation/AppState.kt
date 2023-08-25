@@ -105,6 +105,23 @@ class AppState(
         }
     }
 
+    // Переход по маршруту с пропуском предыдущего экрана.
+    // https://stackoverflow.com/questions/66845899/compose-navigation-remove-previous-composable-from-stack-before-navigating
+    // https://stackoverflow.com/questions/75978612/skip-back-stack-items-on-jetpack-compose-navigation
+    fun navigateToRoute(route: String, skippedPrevRoute: String? = null) {
+        Timber.tag(TAG)
+            .d(
+                "navigateToRoute(...) called: route = %s; skippedPrevRoute = %s",
+                route,
+                skippedPrevRoute
+            )
+        this.commonNavController.navigate(route) {
+            skippedPrevRoute?.let {
+                popUpTo(it) { inclusive = true }
+            }
+        }
+    }
+
     // Клик по навигационному меню, вкладке.
     fun navigateToBottomBarRoute(route: String) {
         if (route != this.navBarCurrentRoute) {

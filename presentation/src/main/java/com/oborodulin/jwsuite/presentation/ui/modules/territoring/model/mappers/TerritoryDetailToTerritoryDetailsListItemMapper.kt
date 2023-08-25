@@ -8,7 +8,7 @@ class TerritoryDetailToTerritoryDetailsListItemMapper :
     Mapper<TerritoryDetail, TerritoryDetailsListItem> {
     override fun map(input: TerritoryDetail) = TerritoryDetailsListItem(
         territoryStreetId = input.territoryStreetId,
-        streetId = input.streetId,
+        streetId = input.street.id!!,
         streetInfo = input.streetInfo,
         housesInfo = input.housesInfo,
         entrancesInfo = input.entrancesInfo,

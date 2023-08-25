@@ -129,7 +129,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 localityCode = ctx.resources.getString(R.string.def_donetsk_code),
                 localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
-                localityName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_types)[LocalityType.CITY.ordinal]} ${
+                localityFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_types)[LocalityType.CITY.ordinal]} ${
                     ctx.resources.getString(R.string.def_donetsk_name)
                 }"
             ),
@@ -137,7 +137,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 localityCode = ctx.resources.getString(R.string.def_luhansk_code),
                 localityShortName = ctx.resources.getString(R.string.def_luhansk_short_name),
-                localityName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_types)[LocalityType.CITY.ordinal]} ${
+                localityFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.locality_types)[LocalityType.CITY.ordinal]} ${
                     ctx.resources.getString(R.string.def_luhansk_name)
                 }"
             )

@@ -1,9 +1,12 @@
 package com.oborodulin.jwsuite.domain.model
 
+import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
+import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.util.BuildingType
 
 data class House(
+    val ctx: Context? = null,
     val street: GeoStreet,
     val localityDistrict: GeoLocalityDistrict?,
     val microdistrict: GeoMicrodistrict?,
@@ -32,5 +35,13 @@ data class House(
         else -> estimatedRooms
     }
     val houseFullNum =
-        "$houseNum${houseLetter?.uppercase().orEmpty()}".plus(buildingNum?.let { "-$it" }.orEmpty())
+        "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
+    val buildingTypeInfo =
+        if (buildingType != BuildingType.HOUSE) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
+    val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${
+        ctx?.resources?.getString(R.string.room_expr).orEmpty()
+    }" else null
+    val info = listOfNotNull(buildingTypeInfo, calcRoomsInfo, houseDesc)
+    val houseInfo =
+        houseFullNum.plus(if (info.isNotEmpty()) " (${info.joinToString(", ")})" else "")
 }

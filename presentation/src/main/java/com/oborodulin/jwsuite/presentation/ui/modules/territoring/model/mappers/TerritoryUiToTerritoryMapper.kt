@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers
 
+import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
@@ -10,6 +11,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.Territor
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
 
 class TerritoryUiToTerritoryMapper(
+    private val ctx: Context,
     private val congregationUiMapper: CongregationUiToCongregationMapper,
     private val territoryCategoryUiMapper: TerritoryCategoryUiToTerritoryCategoryMapper,
     private val localityUiMapper: LocalityUiToLocalityMapper,
@@ -18,6 +20,7 @@ class TerritoryUiToTerritoryMapper(
 ) : Mapper<TerritoryUi, Territory> {
     override fun map(input: TerritoryUi): Territory {
         val territory = Territory(
+            ctx = ctx,
             congregation = congregationUiMapper.map(input.congregation),
             territoryCategory = territoryCategoryUiMapper.map(input.territoryCategory),
             locality = localityUiMapper.map(input.locality),

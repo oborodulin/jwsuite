@@ -1,11 +1,13 @@
 package com.oborodulin.jwsuite.presentation.di
 
+import android.content.Context
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
@@ -31,11 +33,14 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converte
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryDetailsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryLocationsListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoriesListToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryDetailToTerritoryDetailsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryDetailsListToTerritoryDetailsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationToTerritoryLocationsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationsListToTerritoryLocationsListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryStreetToTerritoryStreetsListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryStreetsListToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
@@ -46,6 +51,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -85,7 +91,7 @@ object TerritoringModule {
     fun provideTerritoryLocationsListToTerritoryLocationsListItemMapper(mapper: TerritoryLocationToTerritoryLocationsListItemMapper): TerritoryLocationsListToTerritoryLocationsListItemMapper =
         TerritoryLocationsListToTerritoryLocationsListItemMapper(mapper = mapper)
 
-    // Territory Detail:
+    // Territory Details:
     @Singleton
     @Provides
     fun provideTerritoryDetailToTerritoryDetailsListItemMapper(): TerritoryDetailToTerritoryDetailsListItemMapper =
@@ -95,6 +101,17 @@ object TerritoringModule {
     @Provides
     fun provideTerritoryDetailsListToTerritoryDetailsListItemMapper(mapper: TerritoryDetailToTerritoryDetailsListItemMapper): TerritoryDetailsListToTerritoryDetailsListItemMapper =
         TerritoryDetailsListToTerritoryDetailsListItemMapper(mapper = mapper)
+
+    // Territory Streets:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetToTerritoryStreetsListItemMapper(): TerritoryStreetToTerritoryStreetsListItemMapper =
+        TerritoryStreetToTerritoryStreetsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetsListToTerritoryStreetsListItemMapper(mapper: TerritoryStreetToTerritoryStreetsListItemMapper): TerritoryStreetsListToTerritoryStreetsListItemMapper =
+        TerritoryStreetsListToTerritoryStreetsListItemMapper(mapper = mapper)
 
     // Territory:
     @Singleton
@@ -116,12 +133,14 @@ object TerritoringModule {
     @Singleton
     @Provides
     fun provideTerritoryUiToTerritoryMapper(
+        @ApplicationContext ctx: Context,
         congregationUiMapper: CongregationUiToCongregationMapper,
         territoryCategoryUiMapper: TerritoryCategoryUiToTerritoryCategoryMapper,
         localityUiMapper: LocalityUiToLocalityMapper,
         localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
         microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper
     ): TerritoryUiToTerritoryMapper = TerritoryUiToTerritoryMapper(
+        ctx = ctx,
         congregationUiMapper = congregationUiMapper,
         territoryCategoryUiMapper = territoryCategoryUiMapper,
         localityUiMapper = localityUiMapper,
@@ -188,6 +207,12 @@ object TerritoringModule {
     fun provideTerritoryDetailsListConverter(mapper: TerritoryDetailsListToTerritoryDetailsListItemMapper): TerritoryDetailsListConverter =
         TerritoryDetailsListConverter(mapper = mapper)
 
+    // Territory Streets:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetsListConverter(mapper: TerritoryStreetsListToTerritoryStreetsListItemMapper): TerritoryStreetsListConverter =
+        TerritoryStreetsListConverter(mapper = mapper)
+
     // USE CASES:
     // Territory Category:
     @Singleton
@@ -214,6 +239,7 @@ object TerritoringModule {
         saveTerritoryUseCase: SaveTerritoryUseCase,
         deleteTerritoryUseCase: DeleteTerritoryUseCase,
         getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
+        getTerritoryStreetsUseCase: GetTerritoryStreetsUseCase,
         handOutTerritoriesUseCase: HandOutTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getProcessAndLocationTerritoriesUseCase,
@@ -222,6 +248,7 @@ object TerritoringModule {
         saveTerritoryUseCase,
         deleteTerritoryUseCase,
         getTerritoryDetailsUseCase,
+        getTerritoryStreetsUseCase,
         handOutTerritoriesUseCase
     )
 

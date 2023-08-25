@@ -46,7 +46,7 @@ class TerritoryStreetNamesAndHouseNumsView(
     val territoryId: UUID,
     val streetNames: String,
     val streetLocCode: String,
-    val houseFullNums: String
+    val houseFullNums: String?
 ) {
     companion object {
         const val VIEW_NAME = "territory_street_names_and_house_nums_view"
