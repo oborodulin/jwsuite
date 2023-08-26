@@ -11,6 +11,13 @@ sealed class StreetsListUiAction : UiAction {
         val isPrivateSector: Boolean = false
     ) : StreetsListUiAction()
 
+    data class LoadForTerritory(
+        val localityId: UUID? = null,
+        val localityDistrictId: UUID? = null,
+        val microdistrictId: UUID? = null,
+        val excludes: List<UUID> = emptyList()
+    ) : StreetsListUiAction()
+
     data class EditStreet(val streetId: UUID) : StreetsListUiAction()
     data class DeleteStreet(val streetId: UUID) : StreetsListUiAction()
 }

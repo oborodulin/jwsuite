@@ -19,6 +19,10 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEn
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
+import com.oborodulin.jwsuite.data_geo.util.Constants
+import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
+import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
@@ -152,16 +156,50 @@ interface TerritoryDao {
     ): Flow<List<TerritoriesIdleView>>
 
     // TerritoryStreets:
+    //-----------------------------
+    @Query(
+        "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.territoryStreetId = :territoryStreetId AND tsv.streetLocCode = :locale"
+    )
+    fun findTerritoryStreetById(
+        territoryStreetId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<TerritoryStreetView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctTerritoryStreetById(territoryStreetId: UUID) =
+        findTerritoryStreetById(territoryStreetId).distinctUntilChanged()
+
+    //-----------------------------
     @Query(
         "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale ORDER BY tsv.streetName"
     )
-    fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
+    fun findStreetsByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<TerritoryStreetView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByTerritoryId(territoryId: UUID) =
-        findByTerritoryId(territoryId).distinctUntilChanged()
+    fun findDistinctStreetsByTerritoryId(territoryId: UUID) =
+        findStreetsByTerritoryId(territoryId).distinctUntilChanged()
 
+    //-----------------------------
+    @Query(
+        """
+    SELECT sv.* FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${GeoStreetView.VIEW_NAME} sv 
+        ON t.territoryId = :territoryId AND sv.streetLocCode = :locale AND
+            ifnull(sv.microdistrictId, '') = ifnull(t.tMicrodistrictsId, '') AND
+            ifnull(sv.${PX_LOCALITY_DISTRICT}localityDistrictId , '') = ifnull(t.tLocalityDistrictsId, '') AND
+            sv.${PX_LOCALITY}localityId = t.tLocalitiesId
+    WHERE NOT EXISTS (SELECT ts.territoryStreetId FROM ${TerritoryStreetEntity.TABLE_NAME} ts WHERE ts.tsTerritoriesId = :territoryId AND ts.tsStreetsId = sv.streetId)
+    ORDER BY sv.streetName
+    """
+    )
+    fun findStreetsForTerritoryByTerritoryId(
+        territoryId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<GeoStreetView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctStreetsForTerritoryByTerritoryId(territoryId: UUID) =
+        findStreetsForTerritoryByTerritoryId(territoryId).distinctUntilChanged()
+
+    //-----------------------------
     /*
         @Query(
             "SELECT group_concat(DISTINCT tsv.streetName, ', ') AS streetNames FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale"
@@ -249,12 +287,25 @@ interface TerritoryDao {
 
     suspend fun insert(
         territory: TerritoryEntity, street: GeoStreetEntity,
-        isEven: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
+        isEvenSide: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
     ) = insert(
         TerritoryStreetEntity(
             tsTerritoriesId = territory.territoryId,
             tsStreetsId = street.streetId,
-            isEvenSide = isEven,
+            isEvenSide = isEvenSide,
+            isTerStreetPrivateSector = isPrivateSector,
+            estTerStreetHouses = estimatedHouses
+        )
+    )
+
+    suspend fun insert(
+        territoryId: UUID, streetId: UUID, isEvenSide: Boolean? = null,
+        isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
+    ) = insert(
+        TerritoryStreetEntity(
+            tsTerritoriesId = territoryId,
+            tsStreetsId = streetId,
+            isEvenSide = isEvenSide,
             isTerStreetPrivateSector = isPrivateSector,
             estTerStreetHouses = estimatedHouses
         )

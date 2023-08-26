@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="radio_boolean_types">
+        <item>да</item>
+        <item>нет</item>
+        <item>не указано</item>
+    </string-array>
+</resources>

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.single
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single
 
 import android.content.res.Configuration
 import androidx.compose.material3.Icon
@@ -20,17 +20,19 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListUiAction
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.list.LocalitiesListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
+import java.util.UUID
 
 private const val TAG = "Territoring.TerritoryStreetComboBox"
 
 @Composable
 fun TerritoryStreetComboBox(
     modifier: Modifier = Modifier,
-    listViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
+    territoryId: UUID,
+    listViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
@@ -52,14 +54,14 @@ fun TerritoryStreetComboBox(
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = LocalitiesListUiAction.Load(),
+        loadListUiAction = TerritoryStreetsListUiAction.Load(territoryId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.locality_hint,
-        listTitleResId = R.string.dlg_title_select_locality,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
+        labelResId = R.string.territory_street_hint,
+        listTitleResId = R.string.dlg_title_select_territory_street,
+        leadingIcon = { Icon(painterResource(R.drawable.ic_street_sign_36), null) },
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -73,7 +75,7 @@ fun PreviewTerritoryStreetComboBox() {
     JWSuiteTheme {
         Surface {
             /*TerritoryStreetComboBox(
-                listViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
+                listViewModel = TerritoryStreetsListViewModelImpl.previewModel(LocalContext.current),
                 singleViewModel = TerritoryStreetViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),

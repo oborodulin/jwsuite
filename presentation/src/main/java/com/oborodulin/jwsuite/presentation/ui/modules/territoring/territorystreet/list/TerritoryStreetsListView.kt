@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.list
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
@@ -55,6 +55,11 @@ fun TerritoryStreetsListView(
         CommonScreen(state = state) {
             TerritoryStreetsList(
                 territoryStreets = it,
+                onEdit = { territoryStreet ->
+                    viewModel.submitAction(
+                        TerritoryStreetsListUiAction.EditTerritoryStreet(territoryStreet.id)
+                    )
+                },
                 onDelete = { territoryStreet ->
                     viewModel.submitAction(
                         TerritoryStreetsListUiAction.DeleteTerritoryStreet(territoryStreet.id)
@@ -80,6 +85,7 @@ fun TerritoryStreetsListView(
 @Composable
 fun TerritoryStreetsList(
     territoryStreets: List<TerritoryStreetsListItem>,
+    onEdit: (TerritoryStreetsListItem) -> Unit,
     onDelete: (TerritoryStreetsListItem) -> Unit,
     onClick: (TerritoryStreetsListItem) -> Unit
 ) {
@@ -98,9 +104,10 @@ fun TerritoryStreetsList(
                     ListItemComponent(
                         item = territoryStreet,
                         itemActions = listOf(
+                            ComponentUiAction.EditListItem { onEdit(territoryStreet) },
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
-                                    R.string.dlg_confirm_del_territory_category,
+                                    R.string.dlg_confirm_del_territory_street,
                                     territoryStreet.streetFullName
                                 )
                             ) { onDelete(territoryStreet) }),
@@ -116,7 +123,7 @@ fun TerritoryStreetsList(
         }
     } else {
         Text(
-            text = stringResource(R.string.territory_categories_list_empty_text),
+            text = stringResource(R.string.territory_streets_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -131,6 +138,7 @@ fun PreviewTerritoryStreetsList() {
         Surface {
             TerritoryStreetsList(
                 territoryStreets = TerritoryStreetsListViewModelImpl.previewList(LocalContext.current),
+                onEdit = {},
                 onDelete = {},
                 onClick = {}
             )

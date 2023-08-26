@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalHous
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalRoomDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.local.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
@@ -61,6 +62,11 @@ class TerritoriesRepositoryImpl @Inject constructor(
         }.map(mappers.territoryViewListToTerritoriesListMapper::map)
     }
 
+    // Territory Streets:
+    override fun getTerritoryStreet(territoryStreetId: UUID) =
+        localTerritoryDataSource.getTerritoryStreet(territoryStreetId)
+            .map(mappers.territoryStreetViewToTerritoryStreetMapper::map)
+
     override fun getTerritoryStreets(territoryId: UUID) =
         localTerritoryDataSource.getTerritoryStreets(territoryId)
             .map(mappers.territoryStreetViewListToTerritoryStreetsListMapper::map)
@@ -69,6 +75,29 @@ class TerritoriesRepositoryImpl @Inject constructor(
         localHouseDataSource.getTerritoryStreetHouses(territoryId)
             .map(mappers.territoryStreetHouseViewListToTerritoryStreetsListMapper::map)
 
+    override fun getStreetsForTerritory(territoryId: UUID) =
+        localTerritoryDataSource.getStreetsForTerritory(territoryId)
+            .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+
+    override fun saveTerritoryStreet(territoryStreet: TerritoryStreet) = flow {
+        if (territoryStreet.id == null) {
+            localTerritoryDataSource.insertStreet(
+                mappers.territoryStreetToTerritoryStreetEntityMapper.map(territoryStreet),
+            )
+        } else {
+            localTerritoryDataSource.updateStreet(
+                mappers.territoryStreetToTerritoryStreetEntityMapper.map(territoryStreet),
+            )
+        }
+        emit(territoryStreet)
+    }
+
+    override fun deleteTerritoryStreetById(territoryStreetId: UUID) = flow {
+        localTerritoryDataSource.deleteStreet(territoryStreetId)
+        this.emit(territoryStreetId)
+    }
+
+    // Territory Houses:
     override fun getHouses(territoryId: UUID) = localHouseDataSource.getTerritoryHouses(territoryId)
         .map(mappers.houseViewListToHousesListMapper::map)
 

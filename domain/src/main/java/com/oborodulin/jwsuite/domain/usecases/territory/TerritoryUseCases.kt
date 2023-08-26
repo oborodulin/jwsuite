@@ -1,15 +1,22 @@
 package com.oborodulin.jwsuite.domain.usecases.territory
 
+import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
+
 data class TerritoryUseCases(
     val getProcessAndLocationTerritoriesUseCase: GetProcessAndLocationTerritoriesUseCase,
     val getCongregationTerritoriesUseCase: GetCongregationTerritoriesUseCase,
-
     val getTerritoryUseCase: GetTerritoryUseCase,
     val saveTerritoryUseCase: SaveTerritoryUseCase,
     val deleteTerritoryUseCase: DeleteTerritoryUseCase,
-
     val getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
+
     val getTerritoryStreetsUseCase: GetTerritoryStreetsUseCase,
+    val getTerritoryStreetUseCase: GetTerritoryStreetUseCase,
+    val saveTerritoryStreetUseCase: SaveTerritoryStreetUseCase,
+    val deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase,
 
     val handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
 )

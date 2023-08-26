@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.single
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -35,8 +35,9 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetComboBox
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
@@ -44,29 +45,26 @@ private const val TAG = "Territoring.TerritoryStreetView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TerritoryStreetView(localityViewModel: TerritoryStreetViewModelImpl = hiltViewModel()) {
+fun TerritoryStreetView(viewModel: TerritoryStreetViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(localityViewModel.events, lifecycleOwner) {
-        localityViewModel.events.flowWithLifecycle(
+    val events = remember(viewModel.events, lifecycleOwner) {
+        viewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all Locality fields")
-    val region by localityViewModel.region.collectAsStateWithLifecycle()
-    val regionDistrict by localityViewModel.regionDistrict.collectAsStateWithLifecycle()
-    val localityCode by localityViewModel.localityCode.collectAsStateWithLifecycle()
-    val localityShortName by localityViewModel.localityShortName.collectAsStateWithLifecycle()
-    val localityType by localityViewModel.localityType.collectAsStateWithLifecycle()
-    val localityName by localityViewModel.localityName.collectAsStateWithLifecycle()
-
-    val localityTypes by localityViewModel.localityTypes.collectAsStateWithLifecycle()
+    val territory by viewModel.territory.collectAsStateWithLifecycle()
+    val street by viewModel.street.collectAsStateWithLifecycle()
+    val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
+    val isEvenSide by viewModel.isEvenSide.collectAsStateWithLifecycle()
+    val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all Locality fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -96,41 +94,43 @@ fun TerritoryStreetView(localityViewModel: TerritoryStreetViewModelImpl = hiltVi
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        RegionComboBox(
+        TerritoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.LOCALITY_REGION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryStreetFields.LOCALITY_REGION,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryStreetFields.TERRITORY_STREET_TERRITORY,
                         isFocused = focusState.isFocused
                     )
                 },
-            inputWrapper = region,
-            onValueChange = { localityViewModel.onTextFieldEntered(TerritoryStreetInputEvent.Region(it)) },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            enabled = false,
+            sharedViewModel = null,
+            inputWrapper = territory,
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryStreetInputEvent.Territory(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
-        RegionDistrictComboBox(
+        StreetComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.LOCALITY_REGION_DISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_STREET.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryStreetFields.LOCALITY_REGION_DISTRICT,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryStreetFields.TERRITORY_STREET_STREET,
                         isFocused = focusState.isFocused
                     )
                 },
-            regionId = region.item?.itemId,
-            inputWrapper = regionDistrict,
+            loadListUiAction =
+            inputWrapper = street,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(TerritoryStreetInputEvent.RegionDistrict(it))
+                viewModel.onTextFieldEntered(TerritoryStreetInputEvent.Street(it))
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.LOCALITY_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryStreetFields.LOCALITY_CODE,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -144,18 +144,22 @@ fun TerritoryStreetView(localityViewModel: TerritoryStreetViewModelImpl = hiltVi
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
-            inputWrapper = localityCode,
+            inputWrapper = isPrivateSector,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(TerritoryStreetInputEvent.TerritoryStreetCode(it))
+                viewModel.onTextFieldEntered(
+                    TerritoryStreetInputEvent.IsPrivateSector(
+                        it
+                    )
+                )
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.LOCALITY_SHORT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryStreetFields.LOCALITY_SHORT_NAME,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -168,18 +172,22 @@ fun TerritoryStreetView(localityViewModel: TerritoryStreetViewModelImpl = hiltVi
                     imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = localityShortName,
+            inputWrapper = isEvenSide,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(TerritoryStreetInputEvent.TerritoryStreetShortName(it))
+                viewModel.onTextFieldEntered(
+                    TerritoryStreetInputEvent.IsEvenSide(
+                        it
+                    )
+                )
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[TerritoryStreetFields.LOCALITY_TYPE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryStreetFields.LOCALITY_TYPE,
                         isFocused = focusState.isFocused
                     )
@@ -193,16 +201,20 @@ fun TerritoryStreetView(localityViewModel: TerritoryStreetViewModelImpl = hiltVi
             values = localityTypes.values.toList(), // resolve Enums to Resource
             keys = localityTypes.keys.map { it.name }, // Enums
             onValueChange = {
-                localityViewModel.onTextFieldEntered(TerritoryStreetInputEvent.TerritoryStreetType(it))
+                viewModel.onTextFieldEntered(
+                    TerritoryStreetInputEvent.TerritoryStreetType(
+                        it
+                    )
+                )
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction,
+            onImeKeyAction = viewModel::moveFocusImeAction,
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.LOCALITY_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryStreetFields.LOCALITY_NAME,
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -212,11 +224,15 @@ fun TerritoryStreetView(localityViewModel: TerritoryStreetViewModelImpl = hiltVi
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
             },
             //  visualTransformation = ::creditCardFilter,
-            inputWrapper = localityName,
+            inputWrapper = estimatedHouses,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(TerritoryStreetInputEvent.TerritoryStreetName(it))
+                viewModel.onTextFieldEntered(
+                    TerritoryStreetInputEvent.EstHouses(
+                        it
+                    )
+                )
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
 }

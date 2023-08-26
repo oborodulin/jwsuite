@@ -31,6 +31,7 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistric
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import dagger.Module
@@ -201,6 +202,13 @@ object GeoUseCasesModule {
     fun provideGetStreetsUseCase(
         configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
     ): GetStreetsUseCase = GetStreetsUseCase(configuration, streetsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetStreetsForTerritoryUseCase(
+        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
+    ): GetStreetsForTerritoryUseCase =
+        GetStreetsForTerritoryUseCase(configuration, streetsRepository)
 
     @Singleton
     @Provides

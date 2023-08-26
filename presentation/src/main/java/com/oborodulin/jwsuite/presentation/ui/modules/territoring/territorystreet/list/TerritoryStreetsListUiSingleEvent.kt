@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.list
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list
 
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 

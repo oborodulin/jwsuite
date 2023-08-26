@@ -36,6 +36,11 @@ fun StreetComboBox(
     localityId: UUID? = null,
     localityDistrictId: UUID? = null,
     microdistrictId: UUID? = null,
+    loadListUiAction: StreetsListUiAction = StreetsListUiAction.Load(
+        localityId = localityId,
+        localityDistrictId = localityDistrictId,
+        microdistrictId = microdistrictId
+    ),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
@@ -56,11 +61,7 @@ fun StreetComboBox(
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = StreetsListUiAction.Load(
-            localityId = localityId,
-            localityDistrictId = localityDistrictId,
-            microdistrictId = microdistrictId
-        ),
+        loadListUiAction = loadListUiAction,
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

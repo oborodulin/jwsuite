@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.list
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
@@ -8,9 +8,12 @@ import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
+import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetsListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +45,21 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
             .d("handleAction(TerritoryStreetsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryStreetsListUiAction.Load -> loadTerritoryStreets(action.territoryId)
+            is TerritoryStreetsListUiAction.EditTerritoryStreet -> {
+                submitSingleEvent(
+                    TerritoryStreetsListUiSingleEvent.OpenTerritoryStreetScreen(
+                        NavRoutes.TerritoryStreet.routeForTerritoryStreet(
+                            NavigationInput.TerritoryStreetInput(
+                                action.territoryStreetId
+                            )
+                        )
+                    )
+                )
+            }
+
+            is TerritoryStreetsListUiAction.DeleteTerritoryStreet -> deleteTerritoryStreet(
+                action.territoryStreetId
+            )
         }
         return job
     }
@@ -56,6 +74,17 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
             }.collect {
                 submitState(it)
             }
+        }
+        return job
+    }
+
+    private fun deleteTerritoryStreet(territoryStreetId: UUID): Job {
+        Timber.tag(TAG)
+            .d("deleteTerritoryStreet() called: territoryStreetId = %s", territoryStreetId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.deleteTerritoryStreetUseCase.execute(
+                DeleteTerritoryStreetUseCase.Request(territoryStreetId)
+            ).collect {}
         }
         return job
     }

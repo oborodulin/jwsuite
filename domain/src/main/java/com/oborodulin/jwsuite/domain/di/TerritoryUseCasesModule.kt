@@ -10,7 +10,6 @@ import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritori
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
@@ -18,6 +17,10 @@ import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryC
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -78,12 +81,6 @@ object TerritoryUseCasesModule {
 
     @Singleton
     @Provides
-    fun provideGetTerritoryStreetsUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
-    ): GetTerritoryStreetsUseCase = GetTerritoryStreetsUseCase(configuration, territoriesRepository)
-
-    @Singleton
-    @Provides
     fun provideHandOutTerritoriesUseCase(
         configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
     ): HandOutTerritoriesUseCase = HandOutTerritoriesUseCase(configuration, territoriesRepository)
@@ -120,5 +117,31 @@ object TerritoryUseCasesModule {
         territoryCategoriesRepository: TerritoryCategoriesRepository
     ): SaveTerritoryCategoryUseCase =
         SaveTerritoryCategoryUseCase(configuration, territoryCategoriesRepository)
+
+    // Territory Street:
+    @Singleton
+    @Provides
+    fun provideGetTerritoryStreetUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): GetTerritoryStreetUseCase = GetTerritoryStreetUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetTerritoryStreetsUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): GetTerritoryStreetsUseCase = GetTerritoryStreetsUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteTerritoryStreetUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): DeleteTerritoryStreetUseCase =
+        DeleteTerritoryStreetUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveTerritoryStreetUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): SaveTerritoryStreetUseCase = SaveTerritoryStreetUseCase(configuration, territoriesRepository)
 
 }

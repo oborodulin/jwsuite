@@ -112,9 +112,10 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
             territoryDao.deleteTerritoryById(congregationTerritoryId)
         }
 
-    override suspend fun deleteAllTerritoriesFromCongregation(congregationId: UUID) = withContext(dispatcher) {
-        territoryDao.deleteTerritoriesByCongregationId(congregationId)
-    }
+    override suspend fun deleteAllTerritoriesFromCongregation(congregationId: UUID) =
+        withContext(dispatcher) {
+            territoryDao.deleteTerritoriesByCongregationId(congregationId)
+        }
 
     // Members:
     override suspend fun insertMember(
@@ -144,18 +145,29 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     }
 
     // Streets:
+    override fun getTerritoryStreet(territoryStreetId: UUID) =
+        territoryDao.findTerritoryStreetById(territoryStreetId)
+
     override fun getTerritoryStreets(territoryId: UUID) =
-        territoryDao.findByTerritoryId(territoryId)
+        territoryDao.findStreetsByTerritoryId(territoryId)
+
+    override fun getStreetsForTerritory(territoryId: UUID) =
+        territoryDao.findStreetsForTerritoryByTerritoryId(territoryId)
 
     /*    override fun getTerritoryStreetNames(territoryId: UUID) =
             territoryDao.findNamesByTerritoryId(territoryId)*/
 
     override suspend fun insertStreet(
         territory: TerritoryEntity, street: GeoStreetEntity,
-        isEven: Boolean?, isPrivateSector: Boolean?, estimatedHouses: Int?
+        isEvenSide: Boolean?, isPrivateSector: Boolean?, estimatedHouses: Int?
     ) = withContext(dispatcher) {
-        territoryDao.insert(territory, street, isEven, isPrivateSector, estimatedHouses)
+        territoryDao.insert(territory, street, isEvenSide, isPrivateSector, estimatedHouses)
     }
+
+    override suspend fun insertStreet(territoryStreet: TerritoryStreetEntity) =
+        withContext(dispatcher) {
+            territoryDao.insert(territoryStreet)
+        }
 
     override suspend fun updateStreet(territoryStreet: TerritoryStreetEntity) =
         withContext(dispatcher) { territoryDao.update(territoryStreet) }

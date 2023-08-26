@@ -29,7 +29,7 @@ private const val TAG = "Common.ui.ButtonComponent"
 @Composable
 fun ButtonComponent(
     modifier: Modifier = Modifier,
-    enabled: Boolean = false,
+    enabled: Boolean = true,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
     @StringRes textResId: Int? = null,

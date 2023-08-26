@@ -23,6 +23,9 @@ sealed class NavigationInput(val id: UUID) {
         NavigationInput(territoryCategoryId)
 
     data class TerritoryInput(val territoryId: UUID) : NavigationInput(territoryId)
+    data class TerritoryStreetInput(val territoryStreetId: UUID) :
+        NavigationInput(territoryStreetId)
+
     data class HouseInput(val houseId: UUID) : NavigationInput(houseId)
     data class EntranceInput(val entranceId: UUID) : NavigationInput(entranceId)
     data class FloorInput(val floorId: UUID) : NavigationInput(floorId)

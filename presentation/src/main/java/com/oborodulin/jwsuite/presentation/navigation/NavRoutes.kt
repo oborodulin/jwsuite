@@ -29,6 +29,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_CATEGORY
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_STREET
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.EntranceInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.FloorInput
@@ -44,6 +45,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RoomInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
 import timber.log.Timber
 import java.util.UUID
 
@@ -64,6 +66,7 @@ import java.util.UUID
 // ic_cityscape.png - https://www.flaticon.com/authors/andrejs-kirma
 // ic_microdistrict.png - https://www.flaticon.com/authors/andrejs-kirma
 // ic_map_marker.png - https://www.flaticon.com/authors/dreamstale
+// ic_territory_street.png - https://www.freepik.com/
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -83,6 +86,7 @@ private const val ARG_MEMBER_ID = "memberId"
 // Territory:
 private const val ARG_TERRITORY_CATEGORY_ID = "territoryCategoryId"
 private const val ARG_TERRITORY_ID = "territoryId"
+private const val ARG_TERRITORY_STREET_ID = "territoryStreetId"
 private const val ARG_HOUSE_ID = "houseId"
 private const val ARG_ENTRANCE_ID = "entranceId"
 private const val ARG_FLOOR_ID = "floorId"
@@ -433,6 +437,37 @@ sealed class NavRoutes constructor(
             )
             Timber.tag(TAG).d("Territory - fromEntry(...): '%s'", territoryInput)
             return territoryInput
+        }
+    }
+
+    data object TerritoryStreet : NavRoutes(
+        String.format(ROUTE_TERRITORY_STREET, "{$ARG_TERRITORY_STREET_ID}"),
+        R.drawable.ic_territory_street_24,
+        R.string.nav_item_territory_street,
+        arguments = listOf(navArgument(ARG_TERRITORY_STREET_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForTerritoryStreet(territoryStreetInput: TerritoryStreetInput? = null): String {
+            val route = when (territoryStreetInput) {
+                null -> baseRoute()
+                else -> String.format(
+                    ROUTE_TERRITORY_STREET, territoryStreetInput.territoryStreetId
+                )
+            }
+            //val route = String.format(ROUTE_RATE, payerId)
+            Timber.tag(TAG).d("TerritoryStreet - routeForTerritoryStreet(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryStreetInput {
+            val territoryStreetInput = TerritoryStreetInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_STREET_ID).orEmpty())
+            )
+            Timber.tag(TAG).d("TerritoryStreet - fromEntry(...): '%s'", territoryStreetInput)
+            return territoryStreetInput
         }
     }
 

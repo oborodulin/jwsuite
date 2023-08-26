@@ -14,6 +14,7 @@ import com.oborodulin.jwsuite.data.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
@@ -83,13 +84,18 @@ interface LocalTerritoryDataSource {
     suspend fun deleteMembers(territoryId: UUID)
 
     // Streets:
+    fun getTerritoryStreet(territoryStreetId: UUID): Flow<TerritoryStreetView>
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
+
+    fun getStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreetView>>
 
     //fun getTerritoryStreetNames(territoryId: UUID): Flow<String?>
     suspend fun insertStreet(
         territory: TerritoryEntity, street: GeoStreetEntity,
-        isEven: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
+        isEvenSide: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
     )
+
+    suspend fun insertStreet(territoryStreet: TerritoryStreetEntity)
 
     suspend fun updateStreet(territoryStreet: TerritoryStreetEntity)
     suspend fun deleteStreet(territoryStreet: TerritoryStreetEntity)

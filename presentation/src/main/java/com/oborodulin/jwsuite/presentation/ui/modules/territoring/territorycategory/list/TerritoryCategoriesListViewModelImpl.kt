@@ -30,8 +30,8 @@ private const val TAG = "Territoring.TerritoryCategoriesListViewModelImpl"
 
 @HiltViewModel
 class TerritoryCategoriesListViewModelImpl @Inject constructor(
-    private val regionUseCases: TerritoryCategoryUseCases,
-    private val regionsListConverter: TerritoryCategoriesListConverter
+    private val useCases: TerritoryCategoryUseCases,
+    private val converter: TerritoryCategoriesListConverter
 ) : TerritoryCategoriesListViewModel,
     MviViewModel<List<TerritoryCategoriesListItem>, UiState<List<TerritoryCategoriesListItem>>, TerritoryCategoriesListUiAction, TerritoryCategoriesListUiSingleEvent>() {
 
@@ -65,21 +65,22 @@ class TerritoryCategoriesListViewModelImpl @Inject constructor(
     private fun loadTerritoryCategories(): Job {
         Timber.tag(TAG).d("loadTerritoryCategories() called")
         val job = viewModelScope.launch(errorHandler) {
-            regionUseCases.getTerritoryCategoriesUseCase.execute(GetTerritoryCategoriesUseCase.Request)
+            useCases.getTerritoryCategoriesUseCase.execute(GetTerritoryCategoriesUseCase.Request)
                 .map {
-                    regionsListConverter.convert(it)
+                    converter.convert(it)
                 }.collect {
-                    submitState(it)
-                }
+                submitState(it)
+            }
         }
         return job
     }
 
-    private fun deleteTerritoryCategory(regionId: UUID): Job {
-        Timber.tag(TAG).d("deleteTerritoryCategory() called: regionId = %s", regionId.toString())
+    private fun deleteTerritoryCategory(territoryCategoryId: UUID): Job {
+        Timber.tag(TAG)
+            .d("deleteTerritoryCategory() called: territoryCategoryId = %s", territoryCategoryId)
         val job = viewModelScope.launch(errorHandler) {
-            regionUseCases.deleteTerritoryCategoryUseCase.execute(
-                DeleteTerritoryCategoryUseCase.Request(regionId)
+            useCases.deleteTerritoryCategoryUseCase.execute(
+                DeleteTerritoryCategoryUseCase.Request(territoryCategoryId)
             ).collect {}
         }
         return job

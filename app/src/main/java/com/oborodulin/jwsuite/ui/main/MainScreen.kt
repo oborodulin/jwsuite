@@ -38,7 +38,9 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single.TerritoryStreetScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
@@ -159,6 +161,26 @@ private fun HomeNavigationHost(
             HandOutTerritoriesConfirmationScreen(
                 appState = appState,
                 viewModel = territoriesGridViewModel
+            )
+        }
+        composable(route = NavRoutes.Territory.route, arguments = NavRoutes.Territory.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to TerritoryScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Territory.arguments
+                )
+            TerritoryScreen(appState = appState, territoryInput = NavRoutes.Territory.fromEntry(it))
+        }
+        composable(
+            route = NavRoutes.TerritoryStreet.route, arguments = NavRoutes.TerritoryStreet.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to TerritoryStreetScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.TerritoryStreet.arguments
+                )
+            TerritoryStreetScreen(
+                appState = appState, territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }
 

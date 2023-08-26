@@ -8,16 +8,23 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberTo
 import com.oborodulin.jwsuite.data.local.db.mappers.room.RoomEntityListToRoomsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.location.TerritoryLocationViewListToTerritoryLocationsListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.location.TerritoryLocationViewToTerritoryLocationMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetToTerritoryStreetEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetViewListToTerritoryStreetsListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.territory.street.TerritoryStreetViewToTerritoryStreetMapper
 
 data class TerritoryMappers(
     val territoryViewListToTerritoriesListMapper: TerritoryViewListToTerritoriesListMapper,
     val territoryViewToTerritoryMapper: TerritoryViewToTerritoryMapper,
     val territoriesListToTerritoryEntityListMapper: TerritoriesListToTerritoryEntityListMapper,
     val territoryToTerritoryEntityMapper: TerritoryToTerritoryEntityMapper,
+
     val territoryLocationViewListToTerritoryLocationsListMapper: TerritoryLocationViewListToTerritoryLocationsListMapper,
     val territoryLocationViewToTerritoryLocationMapper: TerritoryLocationViewToTerritoryLocationMapper,
+
     val territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
+    val territoryStreetViewToTerritoryStreetMapper: TerritoryStreetViewToTerritoryStreetMapper,
+    val territoryStreetToTerritoryStreetEntityMapper: TerritoryStreetToTerritoryStreetEntityMapper,
+
     val territoryStreetHouseViewListToTerritoryStreetsListMapper: TerritoryStreetHouseViewListToTerritoryStreetsListMapper,
     val geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
     val houseViewListToHousesListMapper: HouseViewListToHousesListMapper,

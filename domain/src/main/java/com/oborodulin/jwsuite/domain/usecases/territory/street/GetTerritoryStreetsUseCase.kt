@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.domain.usecases.territory
+package com.oborodulin.jwsuite.domain.usecases.territory.street
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.TerritoryStreet

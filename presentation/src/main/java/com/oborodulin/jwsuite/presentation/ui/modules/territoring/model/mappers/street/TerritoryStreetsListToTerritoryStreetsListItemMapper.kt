@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street
 
 import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.domain.model.TerritoryStreet

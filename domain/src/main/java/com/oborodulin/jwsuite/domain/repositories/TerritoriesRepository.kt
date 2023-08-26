@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.Entrance
 import com.oborodulin.jwsuite.domain.model.Floor
+import com.oborodulin.jwsuite.domain.model.GeoStreet
 import com.oborodulin.jwsuite.domain.model.House
 import com.oborodulin.jwsuite.domain.model.Room
 import com.oborodulin.jwsuite.domain.model.Territory
@@ -24,8 +25,15 @@ interface TerritoriesRepository {
         locationId: UUID? = null, isPrivateSector: Boolean, congregationId: UUID? = null
     ): Flow<List<Territory>>
 
+    // Territory Streets:
+    fun getTerritoryStreet(territoryStreetId: UUID): Flow<TerritoryStreet>
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreet>>
     fun getTerritoryStreetHouses(territoryId: UUID): Flow<List<TerritoryStreet>>
+    fun getStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreet>>
+    fun saveTerritoryStreet(territoryStreet: TerritoryStreet): Flow<TerritoryStreet>
+    fun deleteTerritoryStreetById(territoryStreetId: UUID): Flow<UUID>
+
+    // Territory Houses:
     fun getHouses(territoryId: UUID): Flow<List<House>>
     fun getEntrances(territoryId: UUID): Flow<List<Entrance>>
     fun getFloors(territoryId: UUID): Flow<List<Floor>>

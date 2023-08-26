@@ -29,6 +29,7 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUs
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
@@ -382,11 +383,13 @@ object GeoModule {
         getStreetsUseCase: GetStreetsUseCase,
         getStreetUseCase: GetStreetUseCase,
         saveStreetUseCase: SaveStreetUseCase,
-        deleteStreetUseCase: DeleteStreetUseCase
+        deleteStreetUseCase: DeleteStreetUseCase,
+        getStreetsForTerritoryUseCase: GetStreetsForTerritoryUseCase
     ): StreetUseCases = StreetUseCases(
         getStreetsUseCase,
         getStreetUseCase,
         saveStreetUseCase,
-        deleteStreetUseCase
+        deleteStreetUseCase,
+        getStreetsForTerritoryUseCase
     )
 }

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.single
+package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,24 +23,25 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Territoring.LocalityScreen"
+private const val TAG = "Territoring.TerritoryStreetScreen"
 
 @Composable
-fun LocalityScreen(
+fun TerritoryStreetScreen(
     appState: AppState,
     viewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
-    localityInput: LocalityInput? = null
+    territoryStreetInput: TerritoryStreetInput? = null
 ) {
-    Timber.tag(TAG).d("LocalityScreen(...) called: localityInput = %s", localityInput)
+    Timber.tag(TAG)
+        .d("TerritoryStreetScreen(...) called: territoryStreetInput = %s", territoryStreetInput)
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(localityInput?.localityId) {
-        Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(TerritoryStreetUiAction.Load(localityInput?.localityId))
+    LaunchedEffect(territoryStreetInput?.territoryStreetId) {
+        Timber.tag(TAG).d("TerritoryStreetScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(TerritoryStreetUiAction.Load(territoryStreetInput?.territoryStreetId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -64,12 +65,13 @@ fun LocalityScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        LocalityView()
+                        TerritoryStreetView()
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,
                             onClick = {
-                                Timber.tag(TAG).d("LocalityScreen(...): Save Button onClick...")
+                                Timber.tag(TAG)
+                                    .d("TerritoryStreetScreen(...): Save Button onClick...")
                                 // checks all errors
                                 viewModel.onContinueClick {
                                     // if success, then save and backToBottomBarScreen

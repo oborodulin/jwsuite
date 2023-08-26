@@ -7,11 +7,14 @@ import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritori
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
+import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
@@ -26,6 +29,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetToStreetUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetUiToStreetMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
@@ -33,14 +38,13 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converte
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryDetailsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryLocationsListConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoriesListToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryDetailToTerritoryDetailsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryDetailsListToTerritoryDetailsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationToTerritoryLocationsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryLocationsListToTerritoryLocationsListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryStreetToTerritoryStreetsListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryStreetsListToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
@@ -48,6 +52,10 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetsListToTerritoryStreetsListItemMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -103,6 +111,16 @@ object TerritoringModule {
         TerritoryDetailsListToTerritoryDetailsListItemMapper(mapper = mapper)
 
     // Territory Streets:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetToTerritoryStreetUiMapper(mapper: StreetToStreetUiMapper): TerritoryStreetToTerritoryStreetUiMapper =
+        TerritoryStreetToTerritoryStreetUiMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetUiToTerritoryStreetMapper(mapper: StreetUiToStreetMapper): TerritoryStreetUiToTerritoryStreetMapper =
+        TerritoryStreetUiToTerritoryStreetMapper(mapper = mapper)
+
     @Singleton
     @Provides
     fun provideTerritoryStreetToTerritoryStreetsListItemMapper(): TerritoryStreetToTerritoryStreetsListItemMapper =
@@ -210,6 +228,11 @@ object TerritoringModule {
     // Territory Streets:
     @Singleton
     @Provides
+    fun provideTerritoryStreetConverter(mapper: TerritoryStreetToTerritoryStreetUiMapper): TerritoryStreetConverter =
+        TerritoryStreetConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideTerritoryStreetsListConverter(mapper: TerritoryStreetsListToTerritoryStreetsListItemMapper): TerritoryStreetsListConverter =
         TerritoryStreetsListConverter(mapper = mapper)
 
@@ -240,6 +263,9 @@ object TerritoringModule {
         deleteTerritoryUseCase: DeleteTerritoryUseCase,
         getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
         getTerritoryStreetsUseCase: GetTerritoryStreetsUseCase,
+        getTerritoryStreetUseCase: GetTerritoryStreetUseCase,
+        saveTerritoryStreetUseCase: SaveTerritoryStreetUseCase,
+        deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase,
         handOutTerritoriesUseCase: HandOutTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getProcessAndLocationTerritoriesUseCase,
@@ -249,6 +275,9 @@ object TerritoringModule {
         deleteTerritoryUseCase,
         getTerritoryDetailsUseCase,
         getTerritoryStreetsUseCase,
+        getTerritoryStreetUseCase,
+        saveTerritoryStreetUseCase,
+        deleteTerritoryStreetUseCase,
         handOutTerritoriesUseCase
     )
 

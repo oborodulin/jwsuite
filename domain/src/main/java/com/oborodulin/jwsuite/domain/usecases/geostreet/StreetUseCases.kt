@@ -4,5 +4,6 @@ data class StreetUseCases(
     val getStreetsUseCase: GetStreetsUseCase,
     val getStreetUseCase: GetStreetUseCase,
     val saveStreetUseCase: SaveStreetUseCase,
-    val deleteStreetUseCase: DeleteStreetUseCase
+    val deleteStreetUseCase: DeleteStreetUseCase,
+    val getStreetsForTerritoryUseCase: GetStreetsForTerritoryUseCase
 )

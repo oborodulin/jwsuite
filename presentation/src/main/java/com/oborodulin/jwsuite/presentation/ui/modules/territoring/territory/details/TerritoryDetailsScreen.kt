@@ -41,7 +41,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.Gr
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.street.list.TerritoryStreetsListView
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListView
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 

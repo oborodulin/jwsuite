@@ -8,6 +8,7 @@ import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.domain.util.RoadType
@@ -47,6 +48,11 @@ class StreetsListViewModelImpl @Inject constructor(
                 loadStreets(action.localityId, action.localityDistrictId, action.microdistrictId)
             }
 
+            is StreetsListUiAction.LoadForTerritory ->
+                loadStreetsForTerritory(
+                    action.localityId, action.localityDistrictId, action.microdistrictId,
+                    action.excludes
+                )
             /*          is StreetsListUiAction.FilteredLoad -> {
                           loadFilteredStreets(action.search)
                       }*/
@@ -74,6 +80,26 @@ class StreetsListViewModelImpl @Inject constructor(
                 GetStreetsUseCase.Request(
                     localityId = localityId, localityDistrictId = localityDistrictId,
                     microdistrictId = microdistrictId, isPrivateSector = isPrivateSector
+                )
+            ).map {
+                converter.convert(it)
+            }.collect {
+                submitState(it)
+            }
+        }
+        return job
+    }
+
+    private fun loadStreetsForTerritory(
+        localityId: UUID? = null, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
+        excludes: List<UUID> = emptyList()
+    ): Job {
+        Timber.tag(TAG).d("loadStreets() called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getStreetsForTerritoryUseCase.execute(
+                GetStreetsForTerritoryUseCase.Request(
+                    localityId = localityId, localityDistrictId = localityDistrictId,
+                    microdistrictId = microdistrictId, excludes = excludes
                 )
             ).map {
                 converter.convert(it)
