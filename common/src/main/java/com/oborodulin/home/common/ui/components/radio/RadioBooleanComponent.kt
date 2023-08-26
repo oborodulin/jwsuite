@@ -26,7 +26,7 @@ fun RadioBooleanComponent(
     modifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
-    @StringRes textResId: Int? = null,
+    @StringRes labelResId: Int? = null,
     @StringRes contentDescriptionResId: Int? = null,
     inputWrapper: InputWrapper,
     onValueChange: (Boolean?) -> Unit
@@ -50,7 +50,7 @@ fun RadioBooleanComponent(
         modifier = modifier,
         imageVector = imageVector,
         painterResId = painterResId,
-        textResId = textResId,
+        labelResId = labelResId,
         contentDescriptionResId = contentDescriptionResId,
         radioOptions = radioBooleanOptions,
         selectedItem = selectedItem,
@@ -76,7 +76,7 @@ fun PreviewRadioBooleanComponent() {
         Surface {
             RadioBooleanComponent(
                 imageVector = Icons.Rounded.List,
-                textResId = R.string.preview_blank_radio_boolean_text,
+                labelResId = R.string.preview_blank_radio_boolean_text,
                 inputWrapper = inputWrapper,
                 onValueChange = { inputWrapper = InputWrapper(it.toString()) }
             )

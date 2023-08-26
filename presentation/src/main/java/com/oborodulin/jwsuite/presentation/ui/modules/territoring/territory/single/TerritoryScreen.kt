@@ -13,7 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.NextButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
@@ -29,7 +28,7 @@ private const val TAG = "Territoring.TerritoryScreen"
 @Composable
 fun TerritoryScreen(
     appState: AppState,
-    viewModel: TerritoryViewModelImpl = hiltViewModel(),
+    viewModel: TerritoryViewModel,
     territoryInput: TerritoryInput? = null
 ) {
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
@@ -68,7 +67,7 @@ fun TerritoryScreen(
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
                                         viewModel.submitAction(TerritoryUiAction.Save)
-                                            .join()
+                                            ?.join()
                                         appState.backToBottomBarScreen()
                                     }
                                 }

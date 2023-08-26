@@ -14,6 +14,11 @@ interface GeoStreetsRepository {
     fun getAllByMicrodistrict(microdistrictId: UUID, isPrivateSector: Boolean? = null):
             Flow<List<GeoStreet>>
 
+    fun getAllForTerritory(
+        localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
+        excludes: List<UUID> = emptyList()
+    ): Flow<List<GeoStreet>>
+
     fun get(streetId: UUID): Flow<GeoStreet>
     fun save(street: GeoStreet): Flow<GeoStreet>
     fun delete(street: GeoStreet): Flow<GeoStreet>

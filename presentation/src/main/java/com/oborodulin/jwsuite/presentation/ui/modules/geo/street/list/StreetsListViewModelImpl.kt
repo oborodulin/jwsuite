@@ -15,6 +15,7 @@ import com.oborodulin.jwsuite.domain.util.RoadType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.StreetsForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.StreetsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -34,7 +35,8 @@ private const val TAG = "Geo.StreetsListViewModelImpl"
 @HiltViewModel
 class StreetsListViewModelImpl @Inject constructor(
     private val useCases: StreetUseCases,
-    private val converter: StreetsListConverter
+    private val streetsConverter: StreetsListConverter,
+    private val streetsForTerritoryConverter: StreetsForTerritoryListConverter
 ) : StreetsListViewModel,
     MviViewModel<List<StreetsListItem>, UiState<List<StreetsListItem>>, StreetsListUiAction, StreetsListUiSingleEvent>() {
 
@@ -82,7 +84,7 @@ class StreetsListViewModelImpl @Inject constructor(
                     microdistrictId = microdistrictId, isPrivateSector = isPrivateSector
                 )
             ).map {
-                converter.convert(it)
+                streetsConverter.convert(it)
             }.collect {
                 submitState(it)
             }
@@ -91,7 +93,7 @@ class StreetsListViewModelImpl @Inject constructor(
     }
 
     private fun loadStreetsForTerritory(
-        localityId: UUID? = null, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
+        localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
         excludes: List<UUID> = emptyList()
     ): Job {
         Timber.tag(TAG).d("loadStreets() called")
@@ -102,7 +104,7 @@ class StreetsListViewModelImpl @Inject constructor(
                     microdistrictId = microdistrictId, excludes = excludes
                 )
             ).map {
-                converter.convert(it)
+                streetsForTerritoryConverter.convert(it)
             }.collect {
                 submitState(it)
             }

@@ -38,7 +38,7 @@ fun <T : Any, M : Map<String, T>> RadioGroupComponent(
     modifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
-    @StringRes textResId: Int? = null,
+    @StringRes labelResId: Int? = null,
     @StringRes contentDescriptionResId: Int? = null,
     radioOptions: M,
     selectedItem: T,
@@ -78,7 +78,7 @@ fun <T : Any, M : Map<String, T>> RadioGroupComponent(
         Row(verticalAlignment = Alignment.CenterVertically) {
             icon()
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-            textResId?.let { Text(text = stringResource(it)) }
+            labelResId?.let { Text(text = stringResource(it)) }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (radioButtonViewState != null) {
@@ -109,7 +109,7 @@ fun PreviewRadioGroupComponent() {
         Surface {
             RadioGroupComponent(
                 imageVector = Icons.Rounded.List,
-                textResId = R.string.preview_blank_radio_group_text,
+                labelResId = R.string.preview_blank_radio_group_text,
                 radioOptions = radioOptions,
                 selectedItem = selectedItem,
                 onClick = { selectedItem = it }

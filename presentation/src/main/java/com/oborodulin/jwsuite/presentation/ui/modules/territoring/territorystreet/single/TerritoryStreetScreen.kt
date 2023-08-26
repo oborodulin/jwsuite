@@ -24,6 +24,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,7 +34,8 @@ private const val TAG = "Territoring.TerritoryStreetScreen"
 @Composable
 fun TerritoryStreetScreen(
     appState: AppState,
-    viewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
+    territoryViewModel: TerritoryViewModel,
+    territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput? = null
 ) {
     Timber.tag(TAG)
@@ -41,11 +43,11 @@ fun TerritoryStreetScreen(
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(territoryStreetInput?.territoryStreetId) {
         Timber.tag(TAG).d("TerritoryStreetScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(TerritoryStreetUiAction.Load(territoryStreetInput?.territoryStreetId))
+        territoryStreetViewModel.submitAction(TerritoryStreetUiAction.Load(territoryStreetInput?.territoryStreetId))
     }
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    territoryStreetViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        territoryStreetViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)
@@ -58,14 +60,14 @@ fun TerritoryStreetScreen(
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+                    val areInputsValid by territoryStreetViewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TerritoryStreetView()
+                        TerritoryStreetView(territoryViewModel = territoryViewModel)
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,
@@ -73,11 +75,13 @@ fun TerritoryStreetScreen(
                                 Timber.tag(TAG)
                                     .d("TerritoryStreetScreen(...): Save Button onClick...")
                                 // checks all errors
-                                viewModel.onContinueClick {
+                                territoryStreetViewModel.onContinueClick {
                                     // if success, then save and backToBottomBarScreen
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
-                                        viewModel.submitAction(TerritoryStreetUiAction.Save)
+                                        territoryStreetViewModel.submitAction(
+                                            TerritoryStreetUiAction.Save
+                                        )
                                             .join()
                                         appState.backToBottomBarScreen()
                                     }

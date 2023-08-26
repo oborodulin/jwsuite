@@ -10,31 +10,19 @@ import java.util.UUID
 class GetStreetsForTerritoryUseCase(
     configuration: Configuration,
     private val streetsRepository: GeoStreetsRepository
-) : UseCase<GetStreetsForTerritoryUseCase.Request, GetStreetsForTerritoryUseCase.Response>(configuration) {
-
-    override fun process(request: Request): Flow<Response> = when (request.microdistrictId) {
-        null -> when (request.localityDistrictId) {
-            null -> when (request.localityId) {
-                null -> streetsRepository.getAll()
-                else -> streetsRepository.getAllByLocality(
-                    request.localityId, request.isPrivateSector
-                )
-            }
-
-            else -> streetsRepository.getAllByLocalityDistrict(
-                request.localityDistrictId, request.isPrivateSector
-            )
+) : UseCase<GetStreetsForTerritoryUseCase.Request, GetStreetsForTerritoryUseCase.Response>(
+    configuration
+) {
+    override fun process(request: Request): Flow<Response> =
+        streetsRepository.getAllForTerritory(
+            request.localityId, request.localityDistrictId, request.microdistrictId,
+            request.excludes
+        ).map {
+            Response(it)
         }
 
-        else -> streetsRepository.getAllByMicrodistrict(
-            request.microdistrictId, request.isPrivateSector
-        )
-    }.map {
-        Response(it)
-    }
-
     data class Request(
-        val localityId: UUID? = null, val localityDistrictId: UUID? = null,
+        val localityId: UUID, val localityDistrictId: UUID? = null,
         val microdistrictId: UUID? = null, val excludes: List<UUID> = emptyList()
     ) : UseCase.Request
 

@@ -44,6 +44,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.Regio
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionDistrictsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.StreetConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.StreetsForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.StreetsListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalitiesListToLocalityListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.locality.LocalityToLocalitiesListItemMapper
@@ -298,6 +299,11 @@ object GeoModule {
     @Provides
     fun provideStreetsListConverter(mapper: StreetsListToStreetsListItemMapper): StreetsListConverter =
         StreetsListConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideStreetsForTerritoryListConverter(mapper: StreetsListToStreetsListItemMapper): StreetsForTerritoryListConverter =
+        StreetsForTerritoryListConverter(mapper = mapper)
 
     @Singleton
     @Provides

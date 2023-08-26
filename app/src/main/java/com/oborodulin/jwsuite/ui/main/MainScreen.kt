@@ -39,6 +39,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetSc
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single.TerritoryStreetScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -169,7 +170,14 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to TerritoryScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Territory.arguments
                 )
-            TerritoryScreen(appState = appState, territoryInput = NavRoutes.Territory.fromEntry(it))
+            // https://developer.android.com/jetpack/compose/libraries#hilt
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            TerritoryScreen(
+                appState = appState,
+                viewModel = territoryViewModel,
+                territoryInput = NavRoutes.Territory.fromEntry(it)
+            )
         }
         composable(
             route = NavRoutes.TerritoryStreet.route, arguments = NavRoutes.TerritoryStreet.arguments
@@ -179,8 +187,12 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to TerritoryStreetScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.TerritoryStreet.arguments
                 )
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             TerritoryStreetScreen(
-                appState = appState, territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
+                appState = appState,
+                territoryViewModel = territoryViewModel,
+                territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }
 

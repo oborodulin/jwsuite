@@ -12,7 +12,7 @@ sealed class StreetsListUiAction : UiAction {
     ) : StreetsListUiAction()
 
     data class LoadForTerritory(
-        val localityId: UUID? = null,
+        val localityId: UUID,
         val localityDistrictId: UUID? = null,
         val microdistrictId: UUID? = null,
         val excludes: List<UUID> = emptyList()
