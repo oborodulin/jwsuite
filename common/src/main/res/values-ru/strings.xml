@@ -1,25 +1,25 @@
 <resources>
     <!--string name="app_name">Home-Common</string-->
-    <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ -->
+    <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <string name="success">успешно</string>
     <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>
     <string name="name_too_short_error">Наименование слишком короткое!</string>
     <string name="card_number_too_short_error">Номер карты слишком короткий!</string>
 
-    <!--ОБЩИЕ МЕТКИ UI -->
-    <!--кнопки -->
+    <!--ОБЩИЕ МЕТКИ UI-->
+    <!--кнопки-->
     <string name="btn_save_lbl">Сохранить</string>
     <string name="btn_cancel_lbl">Отменить</string>
     <string name="btn_ok_lbl">ОК</string>
     <string name="btn_add_lbl">Добавить</string>
     <string name="btn_next_lbl">Далее</string>
     <string name="btn_close_lbl">Закрыть</string>
-    <!--диалог -->
+    <!--диалог-->
     <string name="dlg_confirm_title">Подтверждение</string>
-    <!--значения -->
+    <!--значения-->
     <string name="all_items_val">ВСЕ</string>
 
-    <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
+    <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ-->
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
     <string name="year_unit">г.</string>
@@ -33,16 +33,18 @@
     <string name="GJ_unit">ГДж</string>
     <string name="MWh_unit">МВт*ч</string>
 
-    <!--ЗАПОЛНИТЕЛИ (Compose Preview) -->
+    <!--ЗАПОЛНИТЕЛИ (Compose Preview)-->
     <string name="preview_blank_title">Заголовок</string>
     <string name="preview_blank_descr">Описание</string>
-    <string name="preview_list_item_text">List Item Content</string>
+    <string name="preview_list_item_text">Содержимое элемента списка</string>
+    <string name="preview_blank_text_field_ph">Пример значения</string>
     <string name="preview_blank_text_field_lbl">Метка поля</string>
+    <string name="preview_blank_text_field_hlp">Подсказка</string>
     <string name="preview_blank_text_field_val">Содержимое</string>
-    <string name="preview_blank_text_field_err">текст ошибки</string>
-    <string name="preview_blank_button_text">Button action</string>
-    <string name="preview_blank_radio_button_text">Radio Button</string>
-    <string name="preview_blank_radio_group_text">Radio Group</string>
-    <string name="preview_blank_radio_boolean_text">Radio Boolean</string>
-    <string name="preview_blank_fab_text">Fab action</string>
+    <string name="preview_blank_text_field_err">Текст ошибки</string>
+    <string name="preview_blank_button_text">Метка кнопки</string>
+    <string name="preview_blank_radio_button_text">Радио-кнопка</string>
+    <string name="preview_blank_radio_group_text">Радио-группа</string>
+    <string name="preview_blank_radio_boolean_text">Логическая радио-группа</string>
+    <string name="preview_blank_fab_text">Плавающая кнопка</string>
 </resources>

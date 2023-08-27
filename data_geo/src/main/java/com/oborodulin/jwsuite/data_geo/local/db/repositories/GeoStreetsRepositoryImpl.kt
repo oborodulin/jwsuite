@@ -28,6 +28,12 @@ class GeoStreetsRepositoryImpl @Inject constructor(
         localStreetDataSource.getMicrodistrictStreets(microdistrictId, isPrivateSector)
             .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
 
+    override fun getAllForTerritory(
+        localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?, excludes: List<UUID>
+    ) = localStreetDataSource.getStreetsForTerritory(
+        localityId, localityDistrictId, microdistrictId, excludes
+    ).map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+
     override fun get(streetId: UUID) =
         localStreetDataSource.getStreet(streetId)
             .map(mappers.geoStreetViewToGeoStreetMapper::map)

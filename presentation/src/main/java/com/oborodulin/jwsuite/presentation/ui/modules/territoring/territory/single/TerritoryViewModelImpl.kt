@@ -26,9 +26,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -47,15 +46,11 @@ class TerritoryViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val converter: TerritoryConverter,
     private val territoryUiMapper: TerritoryUiToTerritoryMapper,
-    private val territoryMapper: TerritoryToTerritoryUiMapper
+    private val territoryMapper: TerritoryToTerritoriesListItemMapper
 ) : TerritoryViewModel,
     DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
-        state,
-        TerritoryFields.TERRITORY_NUM
+        state, TerritoryFields.TERRITORY_ID.name, TerritoryFields.TERRITORY_NUM
     ) {
-    private val territoryId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.TERRITORY_ID.name, InputWrapper())
-    }
     override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(TerritoryFields.TERRITORY_CONGREGATION.name, InputListItemWrapper())
     }
@@ -73,9 +68,6 @@ class TerritoryViewModelImpl @Inject constructor(
     }
     override val territoryNum: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoryFields.TERRITORY_NUM.name, InputWrapper())
-    }
-    override val isPrivateSector: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR.name, InputWrapper())
     }
     override val isBusiness: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoryFields.TERRITORY_IS_BUSINESS.name, InputWrapper())
@@ -152,14 +144,13 @@ class TerritoryViewModelImpl @Inject constructor(
             localityDistrict = localityDistrictUi,
             microdistrict = microdistrictUi,
             territoryNum = territoryNum.value.value.toInt(),
-            isPrivateSector = isPrivateSector.value.value.toBoolean(),
             isBusiness = isBusiness.value.value.toBoolean(),
             isGroupMinistry = isGroupMinistry.value.value.toBoolean(),
             isActive = isActive.value.value.toBoolean(),
             territoryDesc = territoryDesc.value.value
         )
-        territoryUi.id = if (territoryId.value.value.isNotEmpty()) {
-            UUID.fromString(territoryId.value.value)
+        territoryUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)
         val job = viewModelScope.launch(errorHandler) {
@@ -167,9 +158,9 @@ class TerritoryViewModelImpl @Inject constructor(
                 SaveTerritoryUseCase.Request(territoryUiMapper.map(territoryUi))
             ).collect {
                 Timber.tag(TAG).d("saveTerritory() collect: %s", it)
-                if (it is Result.Success) setSavedListItem(
-                    territoryMapper.map(it.data.territory).toTerritoriesListItem()
-                )
+                if (it is Result.Success) {
+                    setSavedListItem(territoryMapper.map(it.data.territory))
+                }
             }
         }
         return job
@@ -183,7 +174,7 @@ class TerritoryViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(TerritoryModel) called: territoryUi = %s", territoryUi)
         territoryUi.id?.let {
-            initStateValue(TerritoryFields.TERRITORY_ID, territoryId, it.toString())
+            initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString())
         }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,
@@ -216,10 +207,6 @@ class TerritoryViewModelImpl @Inject constructor(
         )
         initStateValue(
             TerritoryFields.TERRITORY_NUM, territoryNum, territoryUi.territoryNum.toString()
-        )
-        initStateValue(
-            TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR, isPrivateSector,
-            territoryUi.isPrivateSector.toString()
         )
         initStateValue(
             TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness, territoryUi.isBusiness.toString()
@@ -292,12 +279,6 @@ class TerritoryViewModelImpl @Inject constructor(
                             )
                         }
 
-                    is TerritoryInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR, isPrivateSector,
-                            event.input.toString(), true
-                        )
-
                     is TerritoryInputEvent.IsBusiness ->
                         setStateValue(
                             TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness,
@@ -352,11 +333,6 @@ class TerritoryViewModelImpl @Inject constructor(
                         setStateValue(
                             TerritoryFields.TERRITORY_NUM, territoryNum,
                             TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)
-                        )
-
-                    is TerritoryInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR, isPrivateSector, null
                         )
 
                     is TerritoryInputEvent.IsBusiness ->
@@ -438,7 +414,6 @@ class TerritoryViewModelImpl @Inject constructor(
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val microdistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val territoryNum = MutableStateFlow(InputWrapper())
-                override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val isBusiness = MutableStateFlow(InputWrapper())
                 override val isGroupMinistry = MutableStateFlow(InputWrapper())
                 override val isActive = MutableStateFlow(InputWrapper())
@@ -471,7 +446,6 @@ class TerritoryViewModelImpl @Inject constructor(
                 localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
                 microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
                 territoryNum = 1,
-                isPrivateSector = true,
                 isBusiness = true,
                 isGroupMinistry = true,
                 isProcessed = false,

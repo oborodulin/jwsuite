@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -19,6 +20,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.Locali
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.LocalityDistrictConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -36,18 +38,13 @@ class LocalityDistrictViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: LocalityDistrictUseCases,
     private val converter: LocalityDistrictConverter,
-    private val mapper: LocalityDistrictUiToLocalityDistrictMapper
+    private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
+    private val localityDistrictMapper: LocalityDistrictToLocalityDistrictsListItemMapper
 ) : LocalityDistrictViewModel,
     DialogSingleViewModel<LocalityDistrictUi, UiState<LocalityDistrictUi>, LocalityDistrictUiAction, UiSingleEvent, LocalityDistrictFields, InputWrapper>(
-        state,
+        state, LocalityDistrictFields.LOCALITY_DISTRICT_ID.name,
         LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY
     ) {
-    private val localityDistrictId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            LocalityDistrictFields.LOCALITY_DISTRICT_ID.name,
-            InputWrapper()
-        )
-    }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
             LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY.name,
@@ -113,14 +110,19 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
         )
-        localityDistrictUi.id = if (localityDistrictId.value.value.isNotEmpty()) {
-            UUID.fromString(localityDistrictId.value.value)
+        localityDistrictUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveLocalityDistrict() called: UI model %s", localityDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityDistrictUseCase.execute(
-                SaveLocalityDistrictUseCase.Request(mapper.map(localityDistrictUi))
-            ).collect {}
+                SaveLocalityDistrictUseCase.Request(localityDistrictUiMapper.map(localityDistrictUi))
+            ).collect {
+                Timber.tag(TAG).d("saveLocalityDistrict() collect: %s", it)
+                if (it is Result.Success) {
+                    setSavedListItem(localityDistrictMapper.map(it.data.localityDistrict))
+                }
+            }
         }
         return job
     }
@@ -137,7 +139,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             )
         localityDistrictUi.id?.let {
             initStateValue(
-                LocalityDistrictFields.LOCALITY_DISTRICT_ID, localityDistrictId,
+                LocalityDistrictFields.LOCALITY_DISTRICT_ID, id,
                 it.toString()
             )
         }
@@ -262,16 +264,16 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY.name -> locality.value.copy(
+            state[error.fieldName] = when (LocalityDistrictFields.valueOf(error.fieldName)) {
+                LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY -> locality.value.copy(
                     errorId = error.errorId
                 )
 
-                LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME.name -> districtShortName.value.copy(
+                LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME -> districtShortName.value.copy(
                     errorId = error.errorId
                 )
 
-                LocalityDistrictFields.LOCALITY_DISTRICT_NAME.name -> districtName.value.copy(
+                LocalityDistrictFields.LOCALITY_DISTRICT_NAME -> districtName.value.copy(
                     errorId = error.errorId
                 )
 

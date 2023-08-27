@@ -17,6 +17,11 @@ interface LocalGeoStreetDataSource {
     fun getMicrodistrictStreets(microdistrictId: UUID, isPrivateSector: Boolean? = null):
             Flow<List<GeoStreetView>>
 
+    fun getStreetsForTerritory(
+        localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
+        excludes: List<UUID> = emptyList()
+    ): Flow<List<GeoStreetView>>
+
     fun getStreet(streetId: UUID): Flow<GeoStreetView>
     suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)
     suspend fun updateStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)

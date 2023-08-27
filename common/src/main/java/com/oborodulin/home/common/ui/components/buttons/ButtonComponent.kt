@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 private const val TAG = "Common.ui.ButtonComponent"
@@ -37,29 +38,6 @@ fun ButtonComponent(
     onClick: () -> Unit,
     content: @Composable (RowScope.() -> Unit)? = null
 ) {
-    val icon = @Composable {
-        when (painterResId) {
-            null -> imageVector?.let { iv ->
-                Icon(
-                    imageVector = iv,
-                    contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                    modifier = Modifier.padding(end = 4.dp),
-                    //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                    //else DarkGray
-                )
-            }
-
-            else -> Icon(
-                painter = painterResource(painterResId),
-                contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                modifier = Modifier
-                    .padding(end = 4.dp)
-                    .size(24.dp),
-                //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                //else DarkGray
-            )
-        }
-    }
     Button(
         modifier = modifier,
         enabled = enabled,
@@ -68,7 +46,11 @@ fun ButtonComponent(
         if (content != null) {
             content()
         } else {
-            icon()
+            IconComponent(
+                imageVector = imageVector,
+                painterResId = painterResId,
+                contentDescriptionResId = contentDescriptionResId
+            )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             textResId?.let { Text(text = stringResource(it)) }
         }

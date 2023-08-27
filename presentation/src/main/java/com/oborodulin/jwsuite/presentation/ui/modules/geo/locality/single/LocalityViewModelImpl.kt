@@ -47,16 +47,12 @@ class LocalityViewModelImpl @Inject constructor(
     private val localityMapper: LocalityToLocalitiesListItemMapper
 ) : LocalityViewModel,
     DialogSingleViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
-        state,
-        LocalityFields.LOCALITY_REGION
+        state, LocalityFields.LOCALITY_ID.name, LocalityFields.LOCALITY_REGION
     ) {
     private val _localityTypes: MutableStateFlow<MutableMap<LocalityType, String>> =
         MutableStateFlow(mutableMapOf())
     override val localityTypes = _localityTypes.asStateFlow()
 
-    private val localityId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(LocalityFields.LOCALITY_ID.name, InputWrapper())
-    }
     override val region: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(LocalityFields.LOCALITY_REGION.name, InputListItemWrapper())
     }
@@ -141,8 +137,8 @@ class LocalityViewModelImpl @Inject constructor(
             localityShortName = localityShortName.value.value,
             localityName = localityName.value.value
         )
-        localityUi.id = if (localityId.value.value.isNotEmpty()) {
-            UUID.fromString(localityId.value.value)
+        localityUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d(
             "saveLocality() called: UI model %s; regionUi.id = %s; regionDistrictUi.id = %s",
@@ -172,7 +168,7 @@ class LocalityViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(LocalityModel) called: localityUi = %s", localityUi)
         localityUi.id?.let {
-            initStateValue(LocalityFields.LOCALITY_ID, localityId, it.toString())
+            initStateValue(LocalityFields.LOCALITY_ID, id, it.toString())
         }
         initStateValue(
             LocalityFields.LOCALITY_REGION, region,
@@ -321,11 +317,11 @@ class LocalityViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                LocalityFields.LOCALITY_REGION.name -> region.value.copy(errorId = error.errorId)
-                LocalityFields.LOCALITY_CODE.name -> localityCode.value.copy(errorId = error.errorId)
-                LocalityFields.LOCALITY_SHORT_NAME.name -> localityShortName.value.copy(errorId = error.errorId)
-                LocalityFields.LOCALITY_NAME.name -> localityName.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (LocalityFields.valueOf(error.fieldName)) {
+                LocalityFields.LOCALITY_REGION -> region.value.copy(errorId = error.errorId)
+                LocalityFields.LOCALITY_CODE -> localityCode.value.copy(errorId = error.errorId)
+                LocalityFields.LOCALITY_SHORT_NAME -> localityShortName.value.copy(errorId = error.errorId)
+                LocalityFields.LOCALITY_NAME -> localityName.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

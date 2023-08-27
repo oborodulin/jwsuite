@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -17,6 +18,7 @@ import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.region.RegionToRegionsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.region.RegionUiToRegionMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -34,18 +36,12 @@ class RegionViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: RegionUseCases,
     private val converter: RegionConverter,
-    private val mapper: RegionUiToRegionMapper
+    private val regionUiMapper: RegionUiToRegionMapper,
+    private val regionMapper: RegionToRegionsListItemMapper
 ) : RegionViewModel,
     DialogSingleViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
-        state,
-        RegionFields.REGION_CODE
+        state, RegionFields.REGION_ID.name, RegionFields.REGION_CODE
     ) {
-    private val regionId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.REGION_ID.name,
-            InputWrapper()
-        )
-    }
     override val regionCode: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
             RegionFields.REGION_CODE.name,
@@ -114,13 +110,18 @@ class RegionViewModelImpl @Inject constructor(
             regionCode = regionCode.value.value,
             regionName = regionName.value.value
         )
-        regionUi.id = if (regionId.value.value.isNotEmpty()) {
-            UUID.fromString(regionId.value.value)
+        regionUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(mapper.map(regionUi)))
-                .collect {}
+            useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(regionUiMapper.map(regionUi)))
+                .collect {
+                    Timber.tag(TAG).d("saveRegion() collect: %s", it)
+                    if (it is Result.Success) {
+                        setSavedListItem(regionMapper.map(it.data.region))
+                    }
+                }
         }
         return job
     }
@@ -133,7 +134,7 @@ class RegionViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", regionUi)
         regionUi.id?.let {
-            initStateValue(RegionFields.REGION_ID, regionId, it.toString())
+            initStateValue(RegionFields.REGION_ID, id, it.toString())
         }
         initStateValue(RegionFields.REGION_CODE, regionCode, regionUi.regionCode)
         initStateValue(RegionFields.REGION_NAME, regionName, regionUi.regionName)
@@ -204,9 +205,9 @@ class RegionViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                RegionFields.REGION_CODE.name -> regionCode.value.copy(errorId = error.errorId)
-                RegionFields.REGION_NAME.name -> regionName.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (RegionFields.valueOf(error.fieldName)) {
+                RegionFields.REGION_CODE -> regionCode.value.copy(errorId = error.errorId)
+                RegionFields.REGION_NAME -> regionName.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

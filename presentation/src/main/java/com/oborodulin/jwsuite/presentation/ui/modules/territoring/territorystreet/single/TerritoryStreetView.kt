@@ -35,13 +35,17 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
+import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.list.StreetsListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
+import java.util.UUID
 
 private const val TAG = "Territoring.TerritoryStreetView"
 
@@ -49,6 +53,7 @@ private const val TAG = "Territoring.TerritoryStreetView"
 @Composable
 fun TerritoryStreetView(
     territoryViewModel: TerritoryViewModel,
+    territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
@@ -63,19 +68,29 @@ fun TerritoryStreetView(
             Lifecycle.State.STARTED
         )
     }
-
+    Timber.tag(TAG).d("Territory: CollectAsStateWithLifecycle for some fields")
+    val territoryId by territoryViewModel.territoryId.collectAsStateWithLifecycle()
     val locality by territoryViewModel.locality.collectAsStateWithLifecycle()
     val localityDistrict by territoryViewModel.localityDistrict.collectAsStateWithLifecycle()
     val microdistrict by territoryViewModel.microdistrict.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all Locality fields")
+    LaunchedEffect(territoryId.value) {
+        Timber.tag(TAG)
+            .d("TerritoryStreetView: LaunchedEffect() BEFORE collect ui state flow")
+        territoryStreetsListViewModel.submitAction(
+            TerritoryStreetsListUiAction.Load(UUID.fromString(territoryId.value))
+        )
+    }
+    val territoryStreets by territoryStreetsListViewModel.uiStateFlow.collectAsStateWithLifecycle()
+
+    Timber.tag(TAG).d("Territory Street: CollectAsStateWithLifecycle for all fields")
     val territory by territoryStreetViewModel.territory.collectAsStateWithLifecycle()
     val street by territoryStreetViewModel.street.collectAsStateWithLifecycle()
     val isPrivateSector by territoryStreetViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val isEvenSide by territoryStreetViewModel.isEvenSide.collectAsStateWithLifecycle()
     val estimatedHouses by territoryStreetViewModel.estimatedHouses.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all Locality fields")
+    Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
     enumValues<TerritoryStreetFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
@@ -117,9 +132,7 @@ fun TerritoryStreetView(
             inputWrapper = territory,
             onValueChange = {
                 territoryStreetViewModel.onTextFieldEntered(
-                    TerritoryStreetInputEvent.Territory(
-                        it
-                    )
+                    TerritoryStreetInputEvent.Territory(it)
                 )
             },
             onImeKeyAction = territoryStreetViewModel::moveFocusImeAction
@@ -137,7 +150,7 @@ fun TerritoryStreetView(
                 localityId = locality.item?.itemId!!,
                 localityDistrictId = localityDistrict.item?.itemId,
                 microdistrictId = microdistrict.item?.itemId,
-                excludes = emptyList()
+                excludes = (territoryStreets as UiState.Success).data.map { it.id }
             ),
             inputWrapper = street,
             onValueChange = {
@@ -154,8 +167,8 @@ fun TerritoryStreetView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.code_hint,
-            painterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
+            labelResId = R.string.is_private_sector_hint,
+            painterResId = R.drawable.ic_private_sector_36,
             inputWrapper = isPrivateSector,
             onValueChange = {
                 territoryStreetViewModel.onTextFieldEntered(

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -18,6 +19,7 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistri
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.RegionUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.RegionDistrictConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.regiondistrict.RegionDistrictToRegionDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,18 +38,13 @@ class RegionDistrictViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: RegionDistrictUseCases,
     private val converter: RegionDistrictConverter,
-    private val mapper: RegionDistrictUiToRegionDistrictMapper
+    private val regionDistrictUiMapper: RegionDistrictUiToRegionDistrictMapper,
+    private val regionDistrictMapper: RegionDistrictToRegionDistrictsListItemMapper
 ) : RegionDistrictViewModel,
     DialogSingleViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
-        state,
+        state, RegionDistrictFields.REGION_DISTRICT_ID.name,
         RegionDistrictFields.REGION_DISTRICT_REGION
     ) {
-    private val regionDistrictId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionDistrictFields.REGION_DISTRICT_ID.name,
-            InputWrapper()
-        )
-    }
     override val region: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(RegionDistrictFields.REGION_DISTRICT_REGION.name, InputListItemWrapper())
     }
@@ -109,14 +106,19 @@ class RegionDistrictViewModelImpl @Inject constructor(
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
         )
-        regionDistrictUi.id = if (regionDistrictId.value.value.isNotEmpty()) {
-            UUID.fromString(regionDistrictId.value.value)
+        regionDistrictUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveRegionDistrict() called: UI model %s", regionDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionDistrictUseCase.execute(
-                SaveRegionDistrictUseCase.Request(mapper.map(regionDistrictUi))
-            ).collect {}
+                SaveRegionDistrictUseCase.Request(regionDistrictUiMapper.map(regionDistrictUi))
+            ).collect {
+                Timber.tag(TAG).d("saveRegionDistrict() collect: %s", it)
+                if (it is Result.Success) {
+                    setSavedListItem(regionDistrictMapper.map(it.data.regionDistrict))
+                }
+            }
         }
         return job
     }
@@ -132,7 +134,10 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 regionDistrictUi
             )
         regionDistrictUi.id?.let {
-            initStateValue(RegionDistrictFields.REGION_DISTRICT_ID, regionDistrictId, it.toString())
+            initStateValue(
+                RegionDistrictFields.REGION_DISTRICT_ID,
+                id, it.toString()
+            )
         }
         initStateValue(
             RegionDistrictFields.REGION_DISTRICT_REGION, region,
@@ -251,13 +256,13 @@ class RegionDistrictViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                RegionDistrictFields.REGION_DISTRICT_REGION.name -> region.value.copy(errorId = error.errorId)
-                RegionDistrictFields.DISTRICT_SHORT_NAME.name -> districtShortName.value.copy(
+            state[error.fieldName] = when (RegionDistrictFields.valueOf(error.fieldName)) {
+                RegionDistrictFields.REGION_DISTRICT_REGION -> region.value.copy(errorId = error.errorId)
+                RegionDistrictFields.DISTRICT_SHORT_NAME -> districtShortName.value.copy(
                     errorId = error.errorId
                 )
 
-                RegionDistrictFields.DISTRICT_NAME.name -> districtName.value.copy(errorId = error.errorId)
+                RegionDistrictFields.DISTRICT_NAME -> districtName.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

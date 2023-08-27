@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.components.field
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -25,14 +26,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
@@ -50,9 +54,17 @@ fun TextFieldComponent(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     inputWrapper: InputWrapper,
+    @StringRes placeholderResId: Int? = null,
     @StringRes labelResId: Int? = null,
+    @StringRes helperResId: Int? = null,
+    leadingImageVector: ImageVector? = null,
+    @DrawableRes leadingPainterResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    @StringRes leadingCntDescResId: Int? = null,
+    trailingImageVector: ImageVector? = null,
+    @DrawableRes trailingPainterResId: Int? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    @StringRes trailingCntDescResId: Int? = null,
     maxLines: Int = Int.MAX_VALUE,
     keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
     visualTransformation: VisualTransformation = remember { VisualTransformation.None },
@@ -94,8 +106,28 @@ fun TextFieldComponent(
             value = fieldValue,
             onValueChange = { fieldValue = it; onValueChange(it.text) },
             label = labelResId?.let { { Text(stringResource(it)) } },
-            leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
+            placeholder = placeholderResId?.let {
+                { Text(text = stringResource(it), maxLines = 1, overflow = TextOverflow.Ellipsis) }
+            },
+            leadingIcon = {
+                IconComponent(
+                    icon = leadingIcon,
+                    imageVector = leadingImageVector,
+                    painterResId = leadingPainterResId,
+                    contentDescriptionResId = leadingCntDescResId
+                )
+            },
+            trailingIcon = {
+                IconComponent(
+                    icon = trailingIcon,
+                    imageVector = trailingImageVector,
+                    painterResId = trailingPainterResId,
+                    contentDescriptionResId = trailingCntDescResId
+                )
+            },
+            supportingText = helperResId?.let {
+                { Text(text = stringResource(it), maxLines = 1, overflow = TextOverflow.Ellipsis) }
+            },
             maxLines = maxLines,
             isError = inputWrapper.errorId != null,
             visualTransformation = visualTransformation,
@@ -127,9 +159,12 @@ fun PreviewTextFieldComponent() {
                     value = stringResource(R.string.preview_blank_text_field_val),
                     errorId = R.string.preview_blank_text_field_err
                 ),
+                placeholderResId = R.string.preview_blank_text_field_ph,
                 labelResId = R.string.preview_blank_text_field_lbl,
+                helperResId = R.string.preview_blank_text_field_hlp,
                 onValueChange = {},
-                onImeKeyAction = {})
+                onImeKeyAction = {}
+            )
         }
     }
 }

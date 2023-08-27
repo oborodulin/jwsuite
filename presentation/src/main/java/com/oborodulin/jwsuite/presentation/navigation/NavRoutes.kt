@@ -67,6 +67,8 @@ import java.util.UUID
 // ic_microdistrict.png - https://www.flaticon.com/authors/andrejs-kirma
 // ic_map_marker.png - https://www.flaticon.com/authors/dreamstale
 // ic_territory_street.png - https://www.freepik.com/
+// ic_private_sector.png - https://www.flaticon.com/authors/noomtah
+// ic_street_side.png - https://www.flaticon.com/authors/freepik
 
 private const val TAG = "Presentation.NavRoutes"
 

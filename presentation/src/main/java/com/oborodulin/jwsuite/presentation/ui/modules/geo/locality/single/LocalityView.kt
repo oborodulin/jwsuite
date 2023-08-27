@@ -134,7 +134,9 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
+            placeholderResId = R.string.locality_code_placeholder,
             labelResId = R.string.code_hint,
+            helperResId = R.string.locality_code_helper,
             leadingIcon = {
                 Icon(
                     painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
@@ -209,7 +211,10 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             labelResId = R.string.name_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = localityName,

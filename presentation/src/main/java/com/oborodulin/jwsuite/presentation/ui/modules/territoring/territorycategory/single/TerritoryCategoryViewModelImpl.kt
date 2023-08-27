@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -17,6 +18,7 @@ import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCat
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -34,15 +36,13 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: TerritoryCategoryUseCases,
     private val converter: TerritoryCategoryConverter,
-    private val mapper: TerritoryCategoryUiToTerritoryCategoryMapper
+    private val territoryCategoryUiMapper: TerritoryCategoryUiToTerritoryCategoryMapper,
+    private val territoryCategoryMapper: TerritoryCategoryToTerritoryCategoriesListItemMapper
 ) : TerritoryCategoryViewModel,
     DialogSingleViewModel<TerritoryCategoryUi, UiState<TerritoryCategoryUi>, TerritoryCategoryUiAction, UiSingleEvent, TerritoryCategoryFields, InputWrapper>(
-        state,
+        state, TerritoryCategoryFields.TERRITORY_CATEGORY_ID.name,
         TerritoryCategoryFields.TERRITORY_CATEGORY_CODE
     ) {
-    private val territoryCategoryId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryCategoryFields.TERRITORY_CATEGORY_ID.name, InputWrapper())
-    }
     override val territoryCategoryCode: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoryCategoryFields.TERRITORY_CATEGORY_CODE.name, InputWrapper())
     }
@@ -107,14 +107,23 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
             territoryCategoryMark = territoryCategoryMark.value.value,
             territoryCategoryName = territoryCategoryName.value.value
         )
-        territoryCategoryUi.id = if (territoryCategoryId.value.value.isNotEmpty()) {
-            UUID.fromString(territoryCategoryId.value.value)
+        territoryCategoryUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveTerritoryCategory() called: UI model %s", territoryCategoryUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryCategoryUseCase.execute(
-                SaveTerritoryCategoryUseCase.Request(mapper.map(territoryCategoryUi))
-            ).collect {}
+                SaveTerritoryCategoryUseCase.Request(
+                    territoryCategoryUiMapper.map(
+                        territoryCategoryUi
+                    )
+                )
+            ).collect {
+                Timber.tag(TAG).d("saveTerritoryCategory() collect: %s", it)
+                if (it is Result.Success) {
+                    setSavedListItem(territoryCategoryMapper.map(it.data.territoryCategory))
+                }
+            }
         }
         return job
     }
@@ -130,9 +139,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 territoryCategoryUi
             )
         territoryCategoryUi.id?.let {
-            initStateValue(
-                TerritoryCategoryFields.TERRITORY_CATEGORY_ID, territoryCategoryId, it.toString()
-            )
+            initStateValue(TerritoryCategoryFields.TERRITORY_CATEGORY_ID, id, it.toString())
         }
         initStateValue(
             TerritoryCategoryFields.TERRITORY_CATEGORY_CODE, territoryCategoryCode,
@@ -269,16 +276,16 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                TerritoryCategoryFields.TERRITORY_CATEGORY_CODE.name -> territoryCategoryCode.value.copy(
+            state[error.fieldName] = when (TerritoryCategoryFields.valueOf(error.fieldName)) {
+                TerritoryCategoryFields.TERRITORY_CATEGORY_CODE -> territoryCategoryCode.value.copy(
                     errorId = error.errorId
                 )
 
-                TerritoryCategoryFields.TERRITORY_CATEGORY_MARK.name -> territoryCategoryMark.value.copy(
+                TerritoryCategoryFields.TERRITORY_CATEGORY_MARK -> territoryCategoryMark.value.copy(
                     errorId = error.errorId
                 )
 
-                TerritoryCategoryFields.TERRITORY_CATEGORY_NAME.name -> territoryCategoryName.value.copy(
+                TerritoryCategoryFields.TERRITORY_CATEGORY_NAME -> territoryCategoryName.value.copy(
                     errorId = error.errorId
                 )
 

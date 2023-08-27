@@ -13,7 +13,6 @@ data class TerritoryUi(
     val localityDistrict: LocalityDistrictUi? = null,
     val microdistrict: MicrodistrictUi? = null,
     val territoryNum: Int = 0,
-    val isPrivateSector: Boolean = false,
     val isBusiness: Boolean = false,
     val isGroupMinistry: Boolean = false,
     val isInPerimeter: Boolean = false,
@@ -34,7 +33,6 @@ fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
         .replace("[]", "")
         .replace(":]", "]"),
     territoryNum = this.territoryNum,
-    isPrivateSector = this.isPrivateSector,
     isBusiness = this.isBusiness,
     isGroupMinistry = this.isGroupMinistry,
     isInPerimeter = this.isInPerimeter,

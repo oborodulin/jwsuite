@@ -6,6 +6,7 @@ import java.util.UUID
 
 data class TerritoryStreetsListItem(
     val id: UUID,
+    val streetId: UUID,
     val streetFullName: String,
     val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(

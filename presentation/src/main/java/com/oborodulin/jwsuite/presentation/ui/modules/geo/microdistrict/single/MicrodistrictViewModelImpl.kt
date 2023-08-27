@@ -25,9 +25,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrict
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.MicrodistrictConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictToMicrodistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.toMicrodistrictsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -46,19 +45,15 @@ class MicrodistrictViewModelImpl @Inject constructor(
     private val useCases: MicrodistrictUseCases,
     private val converter: MicrodistrictConverter,
     private val microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper,
-    private val microdistrictMapper: MicrodistrictToMicrodistrictUiMapper
+    private val microdistrictMapper: MicrodistrictToMicrodistrictsListItemMapper
 ) : MicrodistrictViewModel,
     DialogSingleViewModel<MicrodistrictUi, UiState<MicrodistrictUi>, MicrodistrictUiAction, UiSingleEvent, MicrodistrictFields, InputWrapper>(
-        state,
-        MicrodistrictFields.MICRODISTRICT_LOCALITY
+        state, MicrodistrictFields.MICRODISTRICT_ID.name, MicrodistrictFields.MICRODISTRICT_LOCALITY
     ) {
     private val _microdistrictTypes: MutableStateFlow<MutableMap<VillageType, String>> =
         MutableStateFlow(mutableMapOf())
     override val microdistrictTypes = _microdistrictTypes.asStateFlow()
 
-    private val microdistrictId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MicrodistrictFields.MICRODISTRICT_ID.name, InputWrapper())
-    }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MicrodistrictFields.MICRODISTRICT_LOCALITY.name, InputListItemWrapper())
     }
@@ -142,8 +137,8 @@ class MicrodistrictViewModelImpl @Inject constructor(
             microdistrictShortName = microdistrictShortName.value.value,
             microdistrictName = microdistrictName.value.value
         )
-        microdistrictUi.id = if (microdistrictId.value.value.isNotEmpty()) {
-            UUID.fromString(microdistrictId.value.value)
+        microdistrictUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d(
             "saveMicrodistrict() called: UI model %s; localityUi.id = %s; localityDistrictUi.id = %s",
@@ -156,9 +151,9 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 SaveMicrodistrictUseCase.Request(microdistrictUiMapper.map(microdistrictUi))
             ).collect {
                 Timber.tag(TAG).d("saveMicrodistrict() collect: %s", it)
-                if (it is Result.Success) setSavedListItem(
-                    microdistrictMapper.map(it.data.microdistrict).toMicrodistrictsListItem()
-                )
+                if (it is Result.Success) {
+                    setSavedListItem(microdistrictMapper.map(it.data.microdistrict))
+                }
             }
         }
         return job
@@ -175,7 +170,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 microdistrictUi
             )
         microdistrictUi.id?.let {
-            initStateValue(MicrodistrictFields.MICRODISTRICT_ID, microdistrictId, it.toString())
+            initStateValue(MicrodistrictFields.MICRODISTRICT_ID, id, it.toString())
         }
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_LOCALITY, locality,
@@ -309,8 +304,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
         MicrodistrictInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = MicrodistrictFields.MICRODISTRICT_LOCALITY.name,
-                    errorId = it
+                    fieldName = MicrodistrictFields.MICRODISTRICT_LOCALITY.name, errorId = it
                 )
             )
         }
@@ -327,8 +321,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = MicrodistrictFields.MICRODISTRICT_SHORT_NAME.name,
-                        errorId = it
+                        fieldName = MicrodistrictFields.MICRODISTRICT_SHORT_NAME.name, errorId = it
                     )
                 )
             }
@@ -336,8 +329,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = MicrodistrictFields.MICRODISTRICT_NAME.name,
-                        errorId = it
+                        fieldName = MicrodistrictFields.MICRODISTRICT_NAME.name, errorId = it
                     )
                 )
             }
@@ -348,17 +340,17 @@ class MicrodistrictViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                MicrodistrictFields.MICRODISTRICT_LOCALITY.name -> locality.value.copy(errorId = error.errorId)
-                MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT.name -> localityDistrict.value.copy(
+            state[error.fieldName] = when (MicrodistrictFields.valueOf(error.fieldName)) {
+                MicrodistrictFields.MICRODISTRICT_LOCALITY -> locality.value.copy(errorId = error.errorId)
+                MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT -> localityDistrict.value.copy(
                     errorId = error.errorId
                 )
 
-                MicrodistrictFields.MICRODISTRICT_SHORT_NAME.name -> microdistrictShortName.value.copy(
+                MicrodistrictFields.MICRODISTRICT_SHORT_NAME -> microdistrictShortName.value.copy(
                     errorId = error.errorId
                 )
 
-                MicrodistrictFields.MICRODISTRICT_NAME.name -> microdistrictName.value.copy(errorId = error.errorId)
+                MicrodistrictFields.MICRODISTRICT_NAME -> microdistrictName.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

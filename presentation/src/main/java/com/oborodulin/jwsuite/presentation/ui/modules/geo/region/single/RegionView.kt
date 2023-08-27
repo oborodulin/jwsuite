@@ -133,8 +133,7 @@ fun RegionView(viewModel: RegionViewModel) {
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
                 )
             },
             //  visualTransformation = ::creditCardFilter,

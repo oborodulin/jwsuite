@@ -20,9 +20,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.GroupConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.GroupToGroupUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.GroupToGroupsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.GroupUiToGroupMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toGroupsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -40,16 +39,11 @@ class GroupViewModelImpl @Inject constructor(
     private val useCases: GroupUseCases,
     private val converter: GroupConverter,
     private val groupUiMapper: GroupUiToGroupMapper,
-    private val groupMapper: GroupToGroupUiMapper
+    private val groupMapper: GroupToGroupsListItemMapper
 ) : GroupViewModel,
     DialogSingleViewModel<GroupUi, UiState<GroupUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
-        state,
-        GroupFields.GROUP_NUM
+        state, GroupFields.GROUP_ID.name, GroupFields.GROUP_NUM
     ) {
-    private val groupId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(GroupFields.GROUP_ID.name, InputWrapper())
-    }
-
     override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(GroupFields.GROUP_CONGREGATION.name, InputListItemWrapper())
     }
@@ -70,12 +64,12 @@ class GroupViewModelImpl @Inject constructor(
         val job = when (action) {
             is GroupUiAction.Load -> when (action.groupId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.group_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.group_new_subheader)
                     submitState(UiState.Success(GroupUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.group_new_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.group_subheader)
                     loadGroup(action.groupId)
                 }
             }
@@ -106,17 +100,15 @@ class GroupViewModelImpl @Inject constructor(
             congregation = congregationUi,
             groupNum = groupNum.value.value.toInt(),
         )
-        groupUi.id = if (groupId.value.value.isNotEmpty()) {
-            UUID.fromString(groupId.value.value)
+        groupUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveGroup() called: UI model %s", groupUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveGroupUseCase.execute(SaveGroupUseCase.Request(groupUiMapper.map(groupUi)))
                 .collect {
                     Timber.tag(TAG).d("saveGroup() collect: %s", it)
-                    if (it is Result.Success) setSavedListItem(
-                        groupMapper.map(it.data.group).toGroupsListItem()
-                    )
+                    if (it is Result.Success) setSavedListItem(groupMapper.map(it.data.group))
                 }
         }
         return job
@@ -130,7 +122,7 @@ class GroupViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", groupUi)
         groupUi.id?.let {
-            initStateValue(GroupFields.GROUP_ID, groupId, it.toString())
+            initStateValue(GroupFields.GROUP_ID, id, it.toString())
         }
         initStateValue(
             GroupFields.GROUP_CONGREGATION, congregation,
@@ -184,8 +176,8 @@ class GroupViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                GroupFields.GROUP_NUM.name -> groupNum.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (GroupFields.valueOf(error.fieldName)) {
+                GroupFields.GROUP_NUM -> groupNum.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

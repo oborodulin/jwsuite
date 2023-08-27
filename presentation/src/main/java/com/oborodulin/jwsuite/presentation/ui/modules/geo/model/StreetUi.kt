@@ -12,10 +12,3 @@ data class StreetUi(
     val estimatedHouses: Int? = null,
     val streetName: String = ""
 ) : ModelUi()
-
-fun StreetUi.toStreetsListItem() = StreetsListItem(
-    id = this.id!!,
-    isPrivateSector = this.isPrivateSector,
-    estimatedHouses = this.estimatedHouses,
-    streetFullName = this.streetName
-)

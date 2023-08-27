@@ -20,7 +20,6 @@ interface TerritoryViewModel : DialogViewModeled<TerritoryUi, TerritoryUiAction,
     val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val territoryNum: StateFlow<InputWrapper>
-    val isPrivateSector: StateFlow<InputWrapper>
     val isBusiness: StateFlow<InputWrapper>
     val isGroupMinistry: StateFlow<InputWrapper>
     val isActive: StateFlow<InputWrapper>

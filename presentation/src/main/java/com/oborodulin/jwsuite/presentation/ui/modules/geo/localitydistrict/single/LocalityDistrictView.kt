@@ -144,17 +144,15 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
             leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
                 )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = districtName,
             onValueChange = {
                 localityDistrictViewModel.onTextFieldEntered(
-                    LocalityDistrictInputEvent.DistrictName(
-                        it
-                    )
+                    LocalityDistrictInputEvent.DistrictName(it)
                 )
             },
             onImeKeyAction = localityDistrictViewModel::moveFocusImeAction

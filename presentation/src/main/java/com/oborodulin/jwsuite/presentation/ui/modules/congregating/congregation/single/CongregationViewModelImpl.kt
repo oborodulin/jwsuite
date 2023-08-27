@@ -38,12 +38,8 @@ class CongregationViewModelImpl @Inject constructor(
     private val mapper: CongregationUiToCongregationMapper
 ) : CongregationViewModel,
     DialogSingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
-        state,
-        CongregationFields.CONGREGATION_LOCALITY
+        state, CongregationFields.CONGREGATION_ID.name, CongregationFields.CONGREGATION_LOCALITY
     ) {
-    private val congregationId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(CongregationFields.CONGREGATION_ID.name, InputWrapper())
-    }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(CongregationFields.CONGREGATION_LOCALITY.name, InputListItemWrapper())
     }
@@ -115,8 +111,8 @@ class CongregationViewModelImpl @Inject constructor(
             isFavorite = isFavorite.value.value.toBoolean(),
             locality = localityUi
         )
-        congregationUi.id = if (congregationId.value.value.isNotEmpty()) {
-            UUID.fromString(congregationId.value.value)
+        congregationUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveCongregation() called: UI model %s", congregationUi)
         val job = viewModelScope.launch(errorHandler) {
@@ -138,7 +134,7 @@ class CongregationViewModelImpl @Inject constructor(
                 congregationUi
             )
         congregationUi.id?.let {
-            initStateValue(CongregationFields.CONGREGATION_ID, congregationId, it.toString())
+            initStateValue(CongregationFields.CONGREGATION_ID, id, it.toString())
         }
         initStateValue(
             CongregationFields.CONGREGATION_LOCALITY, locality,
@@ -286,11 +282,11 @@ class CongregationViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                CongregationFields.CONGREGATION_LOCALITY.name -> locality.value.copy(errorId = error.errorId)
-                CongregationFields.CONGREGATION_NUM.name -> congregationNum.value.copy(errorId = error.errorId)
-                CongregationFields.CONGREGATION_NAME.name -> congregationName.value.copy(errorId = error.errorId)
-                CongregationFields.TERRITORY_MARK.name -> territoryMark.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (CongregationFields.valueOf(error.fieldName)) {
+                CongregationFields.CONGREGATION_LOCALITY -> locality.value.copy(errorId = error.errorId)
+                CongregationFields.CONGREGATION_NUM -> congregationNum.value.copy(errorId = error.errorId)
+                CongregationFields.CONGREGATION_NAME -> congregationName.value.copy(errorId = error.errorId)
+                CongregationFields.TERRITORY_MARK -> territoryMark.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

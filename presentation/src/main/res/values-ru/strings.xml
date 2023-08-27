@@ -1,11 +1,11 @@
 <resources>
-    <!--НАВИГАЦИЯ: -->
-    <!--основная -->
+    <!--НАВИГАЦИЯ:-->
+    <!--основная-->
     <string name="nav_item_dashboarding">Главная</string>
     <string name="nav_item_congregating">Собрания</string>
     <string name="nav_item_territoring">Участки</string>
     <string name="nav_item_ministring">Служение</string>
-    <!--дополнительная -->
+    <!--дополнительная-->
     <string name="nav_item_congregation">Собрание</string>
     <string name="nav_item_group">Группа</string>
     <string name="nav_item_member">Возвещатель</string>
@@ -25,9 +25,9 @@
     <string name="nav_item_floor">Этаж</string>
     <string name="nav_item_room">Квартира</string>
 
-    <!--BUTTONS: -->
+    <!--BUTTONS:-->
     <string name="btn_hand_out_lbl">Выдать</string>
-    <!--FAB: -->
+    <!--FAB:-->
     <string name="fab_territory_hand_out_text">Выдать</string>
     <string name="fab_territory_at_work_text">Обработать</string>
     <string name="fab_territory_idle_text">В работу</string>
@@ -38,28 +38,28 @@
     <string name="fab_territory_process_street_text">Улицу</string>
     <string name="fab_territory_process_text">Участок</string>
 
-    <!--МЕНЮ собрания -->
+    <!--МЕНЮ собрания-->
     <string name="congregation_add">Добавить</string>
     <string name="congregation_delete">Удалить</string>
     <string name="congregation_select_all">Выбрать все</string>
 
-    <!--МЕНЮ: -->
-    <!--собрания -->
+    <!--МЕНЮ:-->
+    <!--собрания-->
     <string name="new_congregation_menu_item">Новое собрание</string>
 
-    <!--СПИСОК: -->
-    <!--собрания -->
+    <!--СПИСОК:-->
+    <!--собрания-->
     <string name="congregations_list_empty_text">Собраний пока нет. Добавте, пожалуйста, хотя бы одно</string>
     <string name="groups_list_empty_text">Групп пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="members_list_empty_text">Возвещателей пока нет. Добавте, пожалуйста, хотя бы одного</string>
-    <!--география -->
+    <!--география-->
     <string name="regions_list_empty_text">Областей пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="locality_districts_list_empty_text">Районов пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="locality_districts_list_empty_text">Районов населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="microdistricts_list_empty_text">Микрорайонов пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="streets_list_empty_text">Улиц пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <!--участки -->
+    <!--участки-->
     <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="territories_list_empty_text">Участков пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="territory_streets_list_empty_text">Улиц участка пока нет. Добавте, пожалуйста, хотя бы одну</string>
@@ -72,54 +72,57 @@
     <string name="floors_list_empty_text">Этажей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="room_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
 
-    <!--ЭКРАНЫ МОДУЛЕЙ: -->
-    <!--Собрание -->
+    <!--ЭКРАНЫ МОДУЛЕЙ:-->
+    <!--Собрание-->
     <string name="congregation_tab_congregations">СОБРАНИЯ</string>
     <string name="congregation_tab_groups">ГРУППЫ</string>
     <string name="congregation_tab_members">ВОЗВЕЩАТЕЛИ</string>
-    <!--Участки -->
+    <!--Участки-->
     <string name="territory_tab_hand_out">К ВЫДАЧЕ</string>
     <string name="territory_tab_at_work">В РАБОТЕ</string>
     <string name="territory_tab_idle">В ОТСТОЕ</string>
     <string name="territory_tab_all">ВСЕ</string>
-    <!--Детали участка -->
+    <!--Детали участка-->
     <string name="territory_details_tab_streets">УЛИЦЫ</string>
     <string name="territory_details_tab_houses">ДОМА</string>
     <string name="territory_details_tab_entrances">ПОДЪЕЗДЫ</string>
     <string name="territory_details_tab_floors">ЭТАЖИ</string>
     <string name="territory_details_tab_rooms">КВАРТИРЫ</string>
 
-    <!--ФОРМА: -->
-    <!--общие -->
+    <!--ФОРМЫ:-->
+    <!--общие-->
     <string name="code_hint">Код</string>
     <string name="name_hint">Наименование</string>
     <string name="short_name_hint">Короткое наименование</string>
     <string name="type_hint">Тип</string>
+    <string name="is_private_sector_hint">Частный сектор?</string>
+    <!--география-->
     <string name="region_hint">Область</string>
     <string name="region_district_hint">Район области</string>
     <string name="locality_hint">Населённый пункт</string>
-    <string name="locality_district_hint">Район</string>
+    <string name="locality_district_hint">Район населённого пункта</string>
     <string name="microdistrict_hint">Микрорайон</string>
     <string name="street_hint">Улица</string>
     <string name="house_hint">Дом</string>
+    <!--собрание-->
     <string name="congregation_hint">Собрание</string>
     <string name="member_hint">Возвещатель</string>
-    <string name="private_sector_hint">ч/с</string>
+    <!--участки-->
     <string name="territory_hint">Участок</string>
 
     <string name="member_placeholder">Укажите возвещателя…</string>
-    <!--Собрание -->
+    <!--Собрание-->
     <string name="congregation_subheader">Собрание</string>
     <string name="congregation_new_subheader">Новое собрание</string>
     <string name="congregation_num_hint">№</string>
-    <string name="territory_mark_hint">Код территории</string>
-    <string name="territory_mark_helper">Любая буква участка</string>
-    <string name="is_favorite_hint">Избранное</string>
-    <!--Группа -->
+    <string name="congregation_territory_mark_hint">Код территории</string>
+    <string name="congregation_territory_mark_helper">Любая буква нумерации участков</string>
+    <string name="congregation_is_favorite_hint">Избранное?</string>
+    <!--Группа-->
     <string name="group_subheader">Группа</string>
     <string name="group_new_subheader">Новая группа</string>
     <string name="member_group_num_hint">№ группы</string>
-    <!--Возвещатель -->
+    <!--Возвещатель-->
     <string name="member_subheader">Возвещатель</string>
     <string name="member_new_subheader">Новый возвещатель</string>
     <string name="member_num_hint">№ в группе</string>
@@ -132,62 +135,64 @@
     <string name="member_date_of_birth_hint">Дата рождения</string>
     <string name="member_date_of_baptism_hint">Дата крещения</string>
     <string name="member_inactive_date_hint">Дата неактивности</string>
-    <!--Область -->
+    <!--Область-->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
-    <!--Населённый пункт -->
+    <!--Населённый пункт-->
     <string name="locality_subheader">Населённый пункт</string>
     <string name="locality_new_subheader">Новый населённый пункт</string>
-    <!--Район населённого пункта -->
+    <string name="locality_code_placeholder">7856</string>
+    <string name="locality_code_helper">Уникальный (например, телефонный) код</string>
+    <!--Район населённого пункта-->
     <string name="locality_district_subheader">Район</string>
     <string name="locality_district_new_subheader">Новый район</string>
-    <!--Микрорайон -->
+    <!--Микрорайон-->
     <string name="microdistrict_subheader">Микрорайон</string>
     <string name="microdistrict_new_subheader">Новый микрорайон</string>
-    <!--Улица -->
+    <!--Улица-->
     <string name="street_subheader">Улица</string>
     <string name="street_new_subheader">Новая улица</string>
     <string name="estimated_houses_hint">Кол-во домов</string>
-    <!--Категория участка -->
+    <!--Категория участка-->
     <string name="territory_category_subheader">Категория участка</string>
     <string name="territory_category_new_subheader">Новая категория участка</string>
     <string name="territory_category_mark_hint">Признак категории</string>
-    <!--Участок -->
+    <!--Участок-->
     <string name="territory_subheader">Участок</string>
     <string name="territory_new_subheader">Новый участок</string>
     <string name="territory_category_hint">Категория участка</string>
     <string name="territory_num_hint">№ участка</string>
-    <string name="territory_is_business_hint">Деловая территория</string>
-    <string name="territory_is_group_ministry_hint">Групповой участок</string>
-    <string name="territory_is_active_hint">Активный</string>
+    <string name="territory_is_business_hint">Деловая территория?</string>
+    <string name="territory_is_group_ministry_hint">Групповой участок?</string>
+    <string name="territory_is_active_hint">Активный?</string>
     <string name="territory_desc_hint">Описание</string>
-    <!--Выдача участка -->
+    <!--Выдача участка-->
     <string name="territory_hand_out_subheader">Выдача участков</string>
     <string name="territory_receiving_date_hint">Дата выдачи</string>
-    <!--Детали участка -->
+    <!--Детали участка-->
     <string name="territory_street_hint">Улица участка</string>
     <string name="territory_house_hint">Дом участка</string>
     <string name="territory_entrance_hint">Подъезд участка</string>
     <string name="territory_floor_hint">Этаж участка</string>
     <string name="territory_room_hint">Квартира участка</string>
-    <!--Улицы участка -->
+    <!--Улицы участка-->
     <string name="territory_street_subheader">Улица участка</string>
     <string name="territory_street_new_subheader">Новая улица участка</string>
 
-    <!--Дом -->
+    <!--Дом-->
     <string name="house_subheader">Дом</string>
     <string name="house_new_subheader">Новый дом</string>
-    <!--Подъезд -->
+    <!--Подъезд-->
     <string name="entrance_subheader">Подъезд</string>
     <string name="entrance_new_subheader">Новый подъезд</string>
-    <!--Этаж -->
+    <!--Этаж-->
     <string name="floor_subheader">Этаж</string>
     <string name="floor_new_subheader">Новый этаж</string>
-    <!--Квартира -->
+    <!--Квартира-->
     <string name="room_subheader">Квартира</string>
     <string name="room_new_subheader">Новая квартира</string>
 
-    <!--ДИАЛОГИ -->
+    <!--ДИАЛОГИ-->
     <!--заголовки-->
     <string name="dlg_title_select_congregation">Выберите собрание</string>
     <string name="dlg_title_select_group">Выберите группу</string>
@@ -202,7 +207,7 @@
     <string name="dlg_title_select_entrance">Выберите подъезд</string>
     <string name="dlg_title_select_floor">Выберите этаж</string>
     <string name="dlg_title_select_room">Выберите квартиру</string>
-    <!--участки -->
+    <!--участки-->
     <string name="dlg_title_select_territory">Выберите участок</string>
     <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
     <string name="date_dlg_title_set_territory_receiving">Укажите дату выдачи</string>
@@ -229,7 +234,7 @@
     <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
     <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
 
-    <!--СООБЩЕНИЯ ОБ ОШИБКАХ -->
+    <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->
     <string name="num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="type_empty_error">Укажите, пожалуйста, тип!</string>
@@ -257,7 +262,7 @@
     <!--формы подтверждения выдачи участка-->
     <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
 
-    <!--ОПИСАНИЕ КОНТЕНТА -->
+    <!--ОПИСАНИЕ КОНТЕНТА-->
     <!--Участки-->
     <string name="ter_in_perimeter_cnt_desc">в периметре</string>
     <string name="ter_private_sector_cnt_desc">ч/с</string>

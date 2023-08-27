@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -176,7 +177,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.private_sector_hint,
+            labelResId = R.string.is_private_sector_hint,
             inputWrapper = isPrivateSector,
             onCheckedChange = {
                 viewModel.onTextFieldEntered(StreetInputEvent.IsPrivateSector(it))
@@ -215,7 +216,10 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
             labelResId = R.string.name_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = streetName,

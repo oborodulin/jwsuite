@@ -25,9 +25,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.StreetUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.converters.StreetConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetToStreetUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetUiToStreetMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.toStreetsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -46,19 +45,15 @@ class StreetViewModelImpl @Inject constructor(
     private val useCases: StreetUseCases,
     private val converter: StreetConverter,
     private val streetUiMapper: StreetUiToStreetMapper,
-    private val streetMapper: StreetToStreetUiMapper
+    private val streetMapper: StreetToStreetsListItemMapper
 ) : StreetViewModel,
     DialogSingleViewModel<StreetUi, UiState<StreetUi>, StreetUiAction, UiSingleEvent, StreetFields, InputWrapper>(
-        state,
-        StreetFields.STREET_LOCALITY
+        state, StreetFields.STREET_ID.name, StreetFields.STREET_LOCALITY
     ) {
     private val _roadTypes: MutableStateFlow<MutableMap<RoadType, String>> =
         MutableStateFlow(mutableMapOf())
     override val roadTypes = _roadTypes.asStateFlow()
 
-    private val streetId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(StreetFields.STREET_ID.name, InputWrapper())
-    }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(StreetFields.STREET_LOCALITY.name, InputListItemWrapper())
     }
@@ -147,8 +142,8 @@ class StreetViewModelImpl @Inject constructor(
             estimatedHouses = estimatedHouses.value.value.toIntOrNull(),
             streetName = streetName.value.value
         )
-        streetUi.id = if (streetId.value.value.isNotEmpty()) {
-            UUID.fromString(streetId.value.value)
+        streetUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d(
             "saveStreet() called: UI model %s; regionUi.id = %s; regionDistrictUi.id = %s",
@@ -161,9 +156,9 @@ class StreetViewModelImpl @Inject constructor(
                 SaveStreetUseCase.Request(streetUiMapper.map(streetUi))
             ).collect {
                 Timber.tag(TAG).d("saveStreet() collect: %s", it)
-                if (it is Result.Success) setSavedListItem(
-                    streetMapper.map(it.data.street).toStreetsListItem()
-                )
+                if (it is Result.Success) {
+                    setSavedListItem(streetMapper.map(it.data.street))
+                }
             }
         }
         return job
@@ -177,7 +172,7 @@ class StreetViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(StreetModel) called: localityUi = %s", streetUi)
         streetUi.id?.let {
-            initStateValue(StreetFields.STREET_ID, streetId, it.toString())
+            initStateValue(StreetFields.STREET_ID, id, it.toString())
         }
         initStateValue(
             StreetFields.STREET_LOCALITY, locality,
@@ -317,9 +312,9 @@ class StreetViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                StreetFields.STREET_LOCALITY.name -> locality.value.copy(errorId = error.errorId)
-                StreetFields.STREET_NAME.name -> streetName.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (StreetFields.valueOf(error.fieldName)) {
+                StreetFields.STREET_LOCALITY -> locality.value.copy(errorId = error.errorId)
+                StreetFields.STREET_NAME -> streetName.value.copy(errorId = error.errorId)
                 else -> null
             }
         }

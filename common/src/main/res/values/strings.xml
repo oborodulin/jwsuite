@@ -1,25 +1,25 @@
 <resources>
     <!--string name="app_name">Home-Common</string-->
-    <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ -->
+    <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <string name="success">success</string>
     <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>
     <string name="name_too_short_error">Name is too short!</string>
     <string name="card_number_too_short_error">Number is too short!</string>
 
-    <!--ОБЩИЕ МЕТКИ UI -->
-    <!--кнопки -->
+    <!--ОБЩИЕ МЕТКИ UI-->
+    <!--кнопки-->
     <string name="btn_save_lbl">Сохранить</string>
     <string name="btn_cancel_lbl">Отменить</string>
     <string name="btn_ok_lbl">ОК</string>
     <string name="btn_add_lbl">Добавить</string>
     <string name="btn_next_lbl">Далее</string>
     <string name="btn_close_lbl">Закрыть</string>
-    <!--диалог -->
+    <!--диалог-->
     <string name="dlg_confirm_title">Подтверждение</string>
-    <!--значения -->
+    <!--значения-->
     <string name="all_items_val">ВСЕ</string>
 
-    <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ -->
+    <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ-->
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
     <string name="year_unit">г.</string>
@@ -33,13 +33,15 @@
     <string name="GJ_unit">ГДж</string>
     <string name="MWh_unit">МВт*ч</string>
 
-    <!--ЗАПОЛНИТЕЛИ (Compose Preview) -->
+    <!--ЗАПОЛНИТЕЛИ (Compose Preview)-->
     <string name="preview_blank_title">Title</string>
     <string name="preview_blank_descr">Description</string>
     <string name="preview_list_item_text">List Item Content</string>
+    <string name="preview_blank_text_field_ph">Placeholder</string>
     <string name="preview_blank_text_field_lbl">Field label</string>
+    <string name="preview_blank_text_field_hlp">Supporting text</string>
     <string name="preview_blank_text_field_val">Text value</string>
-    <string name="preview_blank_text_field_err">error message</string>
+    <string name="preview_blank_text_field_err">Error message</string>
     <string name="preview_blank_button_text">Button action</string>
     <string name="preview_blank_radio_button_text">Radio Button action</string>
     <string name="preview_blank_radio_group_text">Radio Group</string>

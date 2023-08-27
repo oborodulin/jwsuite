@@ -150,14 +150,16 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = congregationName,
             onValueChange = { value ->
-                viewModel.onTextFieldEntered(
-                    CongregationInputEvent.CongregationName(value)
-                )
-                val lastWord = value.replace("-[.,]", " ").split(" ").last()
-                //.joinToString("") { it.trim()[0].uppercase() }
-                viewModel.onTextFieldEntered(
-                    CongregationInputEvent.TerritoryMark(if (lastWord.isNotEmpty()) lastWord[0].uppercase() else "")
-                )
+                viewModel.onTextFieldEntered(CongregationInputEvent.CongregationName(value))
+                viewModel.onInsert {
+                    val lastWord = value.replace("-[.,]", " ").split(" ").last()
+                    //.joinToString("") { it.trim()[0].uppercase() }
+                    viewModel.onTextFieldEntered(
+                        CongregationInputEvent.TerritoryMark(
+                            lastWord.getOrNull(0)?.uppercase() ?: ""
+                        )
+                    )
+                }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -171,7 +173,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.territory_mark_hint,
+            labelResId = R.string.congregation_territory_mark_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_map_marker_36), null) },
             keyboardOptions = remember {
                 KeyboardOptions(
@@ -197,7 +199,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.is_favorite_hint,
+            labelResId = R.string.congregation_is_favorite_hint,
             inputWrapper = isFavorite,
             onCheckedChange = {
                 viewModel.onTextFieldEntered(CongregationInputEvent.IsFavorite(it))

@@ -29,6 +29,12 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
     override fun getMicrodistrictStreets(microdistrictId: UUID, isPrivateSector: Boolean?) =
         streetDao.findByMicrodistrictIdAndPrivateSectorMark(microdistrictId, isPrivateSector)
 
+    override fun getStreetsForTerritory(
+        localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?, excludes: List<UUID>
+    ) = streetDao.findByLocalityIdAndLocalityDistrictIdAndMicrodistrictIdWithExcludes(
+        localityId, localityDistrictId, microdistrictId, excludes
+    )
+
     override fun getStreet(streetId: UUID) = streetDao.findDistinctById(streetId)
     override suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity) =
         withContext(dispatcher) {

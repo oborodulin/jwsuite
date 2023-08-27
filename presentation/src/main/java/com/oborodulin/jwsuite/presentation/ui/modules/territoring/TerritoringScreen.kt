@@ -151,7 +151,7 @@ fun TerritoringScreen(
                                             isFocused = focusState.isFocused
                                         )
                                     }*/,
-                                    labelResId = R.string.private_sector_hint,
+                                    labelResId = R.string.is_private_sector_hint,
                                     inputWrapper = isPrivateSector,
                                     onCheckedChange = {
                                         territoringViewModel.onTextFieldEntered(

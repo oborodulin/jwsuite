@@ -26,9 +26,8 @@ import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.Congreg
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.GroupUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.MemberUi
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.converters.MemberConverter
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMemberUiMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.mappers.MemberUiToMemberMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.toMembersListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -49,19 +48,14 @@ class MemberViewModelImpl @Inject constructor(
     private val useCases: MemberUseCases,
     private val converter: MemberConverter,
     private val memberUiMapper: MemberUiToMemberMapper,
-    private val memberMapper: MemberToMemberUiMapper
+    private val memberMapper: MemberToMembersListItemMapper
 ) : MemberViewModel,
     DialogSingleViewModel<MemberUi, UiState<MemberUi>, MemberUiAction, UiSingleEvent, MemberFields, InputWrapper>(
-        state,
-        MemberFields.MEMBER_NUM
+        state, MemberFields.MEMBER_ID.name, MemberFields.MEMBER_NUM
     ) {
     private val _memberTypes: MutableStateFlow<MutableMap<MemberType, String>> =
         MutableStateFlow(mutableMapOf())
     override val memberTypes = _memberTypes.asStateFlow()
-
-    private val memberId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_ID.name, InputWrapper())
-    }
 
     override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
@@ -192,17 +186,15 @@ class MemberViewModelImpl @Inject constructor(
                 inactiveDate.value.value, OffsetDateTime::from
             ) else null
         )
-        memberUi.id = if (memberId.value.value.isNotEmpty()) {
-            UUID.fromString(memberId.value.value)
+        memberUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d("saveMember() called: UI model %s", memberUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))
                 .collect {
                     Timber.tag(TAG).d("saveMember() collect: %s", it)
-                    if (it is Result.Success) setSavedListItem(
-                        memberMapper.map(it.data.member).toMembersListItem()
-                    )
+                    if (it is Result.Success) setSavedListItem(memberMapper.map(it.data.member))
                 }
         }
         return job
@@ -216,7 +208,7 @@ class MemberViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", memberUi)
         memberUi.id?.let {
-            initStateValue(MemberFields.MEMBER_ID, memberId, it.toString())
+            initStateValue(MemberFields.MEMBER_ID, id, it.toString())
         }
         initStateValue(
             MemberFields.MEMBER_CONGREGATION, congregation,

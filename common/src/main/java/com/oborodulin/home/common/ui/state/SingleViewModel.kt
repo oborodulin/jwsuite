@@ -27,9 +27,12 @@ private const val FOCUSED_FIELD_KEY = "focusedTextField"
 
 abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent, F : Focusable, W : InputWrapped>(
     private val state: SavedStateHandle,
+    private val idFieldName: String,
     initFocusedTextField: Focusable? = null
 ) : MviViewModel<T, S, A, E>(), SingleViewModeled<T, A, E> {
-
+    val id: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(idFieldName, InputWrapper())
+    }
     private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
         key = state[FOCUSED_FIELD_KEY] ?: initFocusedTextField?.key()
@@ -57,6 +60,21 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
 
     abstract suspend fun observeInputEvents()
+    fun onInsert(block: () -> Unit) {
+        if (id.value.value.isEmpty()) {
+            block.invoke()
+        }
+    }
+
+    fun onUpdate(block: () -> Unit) {
+        if (id.value.value.isNotEmpty()) {
+            block.invoke()
+        }
+    }
+
+    fun onDelete(block: () -> Unit) {
+        block.invoke()
+    }
 
     //InputWrapper:
     fun initStateValue(field: F, property: StateFlow<InputWrapper>, value: String) {

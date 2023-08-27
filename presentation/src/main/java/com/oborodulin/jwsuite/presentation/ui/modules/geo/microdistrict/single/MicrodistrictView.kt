@@ -183,7 +183,10 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
             labelResId = R.string.name_hint,
             leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = microdistrictName,

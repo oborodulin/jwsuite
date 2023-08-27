@@ -74,7 +74,6 @@ fun TerritoryView(
     val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
     val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
     val territoryNum by viewModel.territoryNum.collectAsStateWithLifecycle()
-    val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
     val isBusiness by viewModel.isBusiness.collectAsStateWithLifecycle()
     val isGroupMinistry by viewModel.isGroupMinistry.collectAsStateWithLifecycle()
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
@@ -196,20 +195,6 @@ fun TerritoryView(
             inputWrapper = territoryNum,
             onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        SwitchComponent(
-            switchModifier = Modifier
-                .height(90.dp)
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryFields.TERRITORY_IS_PRIVATE_SECTOR,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.private_sector_hint,
-            inputWrapper = isPrivateSector,
-            onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsPrivateSector(it)) }
         )
         SwitchComponent(
             switchModifier = Modifier
