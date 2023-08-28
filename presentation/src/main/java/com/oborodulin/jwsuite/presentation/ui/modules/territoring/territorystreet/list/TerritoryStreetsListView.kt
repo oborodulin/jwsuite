@@ -57,7 +57,9 @@ fun TerritoryStreetsListView(
                 territoryStreets = it,
                 onEdit = { territoryStreet ->
                     viewModel.submitAction(
-                        TerritoryStreetsListUiAction.EditTerritoryStreet(territoryStreet.id)
+                        TerritoryStreetsListUiAction.EditTerritoryStreet(
+                            territoryInput.id, territoryStreet.id
+                        )
                     )
                 },
                 onDelete = { territoryStreet ->

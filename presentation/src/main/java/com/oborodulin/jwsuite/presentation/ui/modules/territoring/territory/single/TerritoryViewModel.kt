@@ -7,6 +7,7 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +15,9 @@ import kotlinx.coroutines.flow.StateFlow
 interface TerritoryViewModel : DialogViewModeled<TerritoryUi, TerritoryUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
 
+    val id: StateFlow<InputWrapper>
     val congregation: StateFlow<InputListItemWrapper<ListItemModel>>
-    val category: StateFlow<InputListItemWrapper<ListItemModel>>
+    val category: StateFlow<InputListItemWrapper<TerritoryCategoriesListItem>>
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
     val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>>

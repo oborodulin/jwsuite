@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.components.field
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,12 +24,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
@@ -51,7 +54,10 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     enabled: Boolean = true,
     @StringRes labelResId: Int,
     @StringRes listTitleResId: Int,
+    leadingImageVector: ImageVector? = null,
+    @DrawableRes leadingPainterResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    @StringRes leadingCntDescResId: Int? = null,
     isShowListDialog: Boolean,
     onShowListDialog: () -> Unit,
     onDismissListDialog: () -> Unit,
@@ -61,8 +67,9 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("ComboBoxComponent(...) called")
-    var comboBoxEnabled by remember { mutableStateOf(enabled) }
+    val comboBoxEnabled by remember { mutableStateOf(enabled) }
     var itemId by remember { mutableStateOf(inputWrapper.item?.itemId) }
+    var supportingText by remember { mutableStateOf(inputWrapper.item?.supportingText) }
     var fieldValue by remember {
         mutableStateOf(
             TextFieldValue(
@@ -96,8 +103,9 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     ) { item ->
         if (comboBoxEnabled) {
             itemId = item.itemId
+            supportingText = item.supportingText
             fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length))
-            onValueChange(ListItemModel(item.itemId, item.headline))
+            onValueChange(ListItemModel(item.itemId, item.headline, item.supportingText))
         }
     }
     Column {
@@ -114,11 +122,18 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
             onValueChange = {
                 if (comboBoxEnabled) {
                     fieldValue = it
-                    onValueChange(ListItemModel(itemId, it.text))
+                    onValueChange(ListItemModel(itemId, it.text, supportingText))
                 }
             },
             label = { Text(stringResource(labelResId)) },
-            leadingIcon = leadingIcon,
+            leadingIcon = {
+                IconComponent(
+                    icon = leadingIcon,
+                    imageVector = leadingImageVector,
+                    painterResId = leadingPainterResId,
+                    contentDescriptionResId = leadingCntDescResId
+                )
+            },
             trailingIcon = {
                 if (comboBoxEnabled) {
                     if (fieldValue.text.isEmpty()) {

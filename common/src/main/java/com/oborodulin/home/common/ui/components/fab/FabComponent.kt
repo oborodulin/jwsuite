@@ -3,13 +3,11 @@ package com.oborodulin.home.common.ui.components.fab
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,11 +17,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 @Composable
@@ -38,25 +36,11 @@ fun FabComponent(
 ) {
     // https://www.appsloveworld.com/kotlin/100/7/jetpack-compose-how-to-disable-floatingaction-button
     val icon = @Composable {
-        when (painterResId) {
-            null -> imageVector?.let {
-                Icon(
-                    imageVector = it,
-                    contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                    modifier = Modifier.padding(end = 4.dp),
-                    //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                    //else DarkGray
-                )
-            }
-
-            else -> Icon(
-                painter = painterResource(painterResId),
-                contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                modifier = Modifier.padding(end = 4.dp),
-                //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                //else DarkGray
-            )
-        }
+        IconComponent(
+            imageVector = imageVector,
+            painterResId = painterResId,
+            contentDescriptionResId = contentDescriptionResId
+        )
     }
     CompositionLocalProvider(
         LocalRippleTheme provides if (enabled) LocalRippleTheme.current else NoRippleTheme

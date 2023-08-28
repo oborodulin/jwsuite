@@ -20,23 +20,3 @@ data class TerritoryUi(
     val isActive: Boolean = true,
     val territoryDesc: String? = null
 ) : ModelUi()
-
-fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
-    id = this.id!!,
-    congregation = this.congregation,
-    territoryCategory = this.territoryCategory,
-    locality = this.locality,
-    cardNum = "${this.congregation.territoryMark}${this.territoryCategory.territoryCategoryMark}-${this.territoryNum}",
-    cardLocation = "[".plus(if (this.locality.id != this.congregation.locality.id) "${this.locality.localityShortName}:" else "")
-        .plus(localityDistrict?.let { "${it.districtShortName}:" } ?: "")
-        .plus(microdistrict?.let { "${it.microdistrictShortName}]" } ?: "]")
-        .replace("[]", "")
-        .replace(":]", "]"),
-    territoryNum = this.territoryNum,
-    isBusiness = this.isBusiness,
-    isGroupMinistry = this.isGroupMinistry,
-    isInPerimeter = this.isInPerimeter,
-    isProcessed = this.isProcessed,
-    isActive = this.isActive,
-    territoryDesc = this.territoryDesc
-)

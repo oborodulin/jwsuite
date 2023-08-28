@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.components.field
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,11 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnCheckedChange
@@ -47,8 +50,11 @@ private const val TAG = "Common.ui.SwitchComponent"
 fun SwitchComponent(
     componentModifier: Modifier = Modifier,
     switchModifier: Modifier = Modifier,
-    inputWrapper: InputWrapper, // string
+    imageVector: ImageVector? = null,
+    @DrawableRes painterResId: Int? = null,
     @StringRes labelResId: Int? = null,
+    @StringRes contentDescriptionResId: Int? = null,
+    inputWrapper: InputWrapper, // string
     onCheckedChange: OnCheckedChange,
     colors: SwitchColors = SwitchDefaults.colors()
 ) {
@@ -78,6 +84,11 @@ fun SwitchComponent(
                 .padding(4.dp)
                 .then(componentModifier),
             horizontalArrangement = Arrangement.SpaceBetween) {
+            IconComponent(
+                imageVector = imageVector,
+                painterResId = painterResId,
+                contentDescriptionResId = contentDescriptionResId
+            )
             labelResId?.let {
                 Text(
                     modifier = Modifier
@@ -128,6 +139,7 @@ fun PreviewSwitchComponent() {
                     value = "true",
                     errorId = R.string.preview_blank_text_field_err
                 ),
+
                 labelResId = R.string.preview_blank_text_field_lbl,
                 onCheckedChange = {})
         }

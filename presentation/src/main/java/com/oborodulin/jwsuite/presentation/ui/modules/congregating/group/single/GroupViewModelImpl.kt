@@ -108,7 +108,9 @@ class GroupViewModelImpl @Inject constructor(
             useCases.saveGroupUseCase.execute(SaveGroupUseCase.Request(groupUiMapper.map(groupUi)))
                 .collect {
                     Timber.tag(TAG).d("saveGroup() collect: %s", it)
-                    if (it is Result.Success) setSavedListItem(groupMapper.map(it.data.group))
+                    if (it is Result.Success) {
+                        setSavedListItem(groupMapper.map(it.data.group))
+                    }
                 }
         }
         return job

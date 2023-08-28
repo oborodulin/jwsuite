@@ -67,7 +67,7 @@ fun TerritoryStreetScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TerritoryStreetView(territoryViewModel = territoryViewModel)
+                        TerritoryStreetView()
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,

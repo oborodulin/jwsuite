@@ -60,8 +60,9 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
 
     abstract suspend fun observeInputEvents()
+    fun isNewUiState() = id.value.value.isEmpty()
     fun onInsert(block: () -> Unit) {
-        if (id.value.value.isEmpty()) {
+        if (isNewUiState()) {
             block.invoke()
         }
     }

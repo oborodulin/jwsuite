@@ -16,6 +16,7 @@ import com.oborodulin.jwsuite.data.R
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
+import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoryConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
@@ -103,7 +104,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
 
     private fun saveTerritoryCategory(): Job {
         val territoryCategoryUi = TerritoryCategoryUi(
-            territoryCategoryCode = territoryCategoryCode.value.value,
+            territoryCategoryCode = TerritoryCategoryType.valueOf(territoryCategoryCode.value.value),
             territoryCategoryMark = territoryCategoryMark.value.value,
             territoryCategoryName = territoryCategoryName.value.value
         )
@@ -114,9 +115,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryCategoryUseCase.execute(
                 SaveTerritoryCategoryUseCase.Request(
-                    territoryCategoryUiMapper.map(
-                        territoryCategoryUi
-                    )
+                    territoryCategoryUiMapper.map(territoryCategoryUi)
                 )
             ).collect {
                 Timber.tag(TAG).d("saveTerritoryCategory() collect: %s", it)
@@ -143,7 +142,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
         }
         initStateValue(
             TerritoryCategoryFields.TERRITORY_CATEGORY_CODE, territoryCategoryCode,
-            territoryCategoryUi.territoryCategoryCode
+            territoryCategoryUi.territoryCategoryCode.name
         )
         initStateValue(
             TerritoryCategoryFields.TERRITORY_CATEGORY_MARK, territoryCategoryMark,
@@ -337,7 +336,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
 
         fun previewUiModel(ctx: Context): TerritoryCategoryUi {
             val territoryCategoryUi = TerritoryCategoryUi(
-                territoryCategoryCode = ctx.resources.getString(R.string.def_house_territory_category_code),
+                territoryCategoryCode = TerritoryCategoryType.HOUSES,
                 territoryCategoryMark = ctx.resources.getString(R.string.def_house_territory_category_mark),
                 territoryCategoryName = ctx.resources.getString(R.string.def_house_territory_category_name)
             )

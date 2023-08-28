@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.time.OffsetDateTime
 import java.util.*
@@ -59,6 +60,9 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     ) = territoryDao.findIdleTerritories(
         congregationId, isPrivateSector, territoryLocationType, locationId
     )
+
+    override fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID) =
+        territoryDao.nextTerritoryNum(congregationId, territoryCategoryId)
 
     //override fun getTerritoryInfo(territoryId: UUID) = territoryDao.findInfoByTerritoryId(territoryId)
 

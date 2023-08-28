@@ -16,10 +16,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
-import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoriesListItem
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.toTerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListUiAction
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.list.TerritoryCategoriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -32,8 +32,8 @@ fun TerritoryCategoryComboBox(
     modifier: Modifier = Modifier,
     listViewModel: TerritoryCategoriesListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryCategoryViewModelImpl = hiltViewModel(),
-    inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent,
+    inputWrapper: InputListItemWrapper<TerritoryCategoriesListItem>,
+    onValueChange: (TerritoryCategoriesListItem) -> Unit,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("TerritoryCategoryComboBox(...) called")
@@ -47,7 +47,7 @@ fun TerritoryCategoryComboBox(
         loadUiAction = TerritoryCategoryUiAction.Load(),
         confirmUiAction = TerritoryCategoryUiAction.Save,
         dialogView = { TerritoryCategoryView(singleViewModel) },
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toTerritoryCategoriesListItem()) },
         //onShowListDialog = onShowListDialog
     )
     ComboBoxComponent(
@@ -60,9 +60,9 @@ fun TerritoryCategoryComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.territory_category_hint,
         listTitleResId = R.string.dlg_title_select_territory_category,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_location_pin_36), null) },
+        leadingIcon = { Icon(painterResource(R.drawable.ic_territory_category_36), null) },
         inputWrapper = inputWrapper,
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toTerritoryCategoriesListItem()) },
         onImeKeyAction = onImeKeyAction
     )
 }

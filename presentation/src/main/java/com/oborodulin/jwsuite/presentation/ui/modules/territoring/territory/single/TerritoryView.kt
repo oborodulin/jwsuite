@@ -7,6 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -131,7 +133,17 @@ fun TerritoryView(
                     )
                 },
             inputWrapper = category,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.Category(it)) },
+            onValueChange = { categoryItem ->
+                Timber.tag(TAG).d("onValueChange: categoryItem.itemId = %s", categoryItem.itemId)
+                viewModel.onTextFieldEntered(TerritoryInputEvent.Category(categoryItem))
+                categoryItem.itemId?.let {
+                    viewModel.onInsert {
+                        viewModel.submitAction(
+                            TerritoryUiAction.GetNextTerritoryNum(congregation.item?.itemId!!, it)
+                        )
+                    }
+                }
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         LocalityComboBox(
@@ -193,7 +205,7 @@ fun TerritoryView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryNum,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it.toInt())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         SwitchComponent(
@@ -206,6 +218,7 @@ fun TerritoryView(
                         isFocused = focusState.isFocused
                     )
                 },
+            painterResId = R.drawable.ic_business_center_36,
             labelResId = R.string.territory_is_business_hint,
             inputWrapper = isBusiness,
             onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsBusiness(it)) }
@@ -220,6 +233,7 @@ fun TerritoryView(
                         isFocused = focusState.isFocused
                     )
                 },
+            painterResId = R.drawable.ic_group_36,
             labelResId = R.string.territory_is_group_ministry_hint,
             inputWrapper = isGroupMinistry,
             onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsGroupMinistry(it)) }
@@ -234,6 +248,7 @@ fun TerritoryView(
                         isFocused = focusState.isFocused
                     )
                 },
+            imageVector = Icons.Outlined.CheckCircle,
             labelResId = R.string.territory_is_active_hint,
             inputWrapper = isActive,
             onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsActive(it)) }
@@ -267,7 +282,7 @@ fun TerritoryView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    val ctx = LocalContext.current
+    //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
             TerritoryView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)

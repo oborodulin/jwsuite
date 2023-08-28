@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.gri
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class TerritoriesFields : Focusable {
+    TERRITORY_GRID_ID,
     TERRITORY_MEMBER,
     TERRITORY_RECEIVING_DATE;
 

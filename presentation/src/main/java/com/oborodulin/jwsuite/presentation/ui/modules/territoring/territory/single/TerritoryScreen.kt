@@ -20,8 +20,10 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 private const val TAG = "Territoring.TerritoryScreen"
 
@@ -52,6 +54,7 @@ fun TerritoryScreen(
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
+                    val territoryId by viewModel.id.collectAsStateWithLifecycle()
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     TerritoryView(appState.sharedViewModel.value)
                     Spacer(Modifier.height(8.dp))
@@ -63,13 +66,25 @@ fun TerritoryScreen(
                                     .d("TerritoryScreen(...): Start viewModelScope.launch")
                                 // checks all errors
                                 viewModel.onContinueClick {
-                                    // if success, then save and backToBottomBarScreen
-                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                                    // if success,
                                     coroutineScope.launch {
-                                        viewModel.submitAction(TerritoryUiAction.Save)
-                                            ?.join()
-                                        appState.backToBottomBarScreen()
+                                        // wait wile actionsJob executed
+                                        viewModel.actionsJobFlow.collectLatest { job ->
+                                            Timber.tag(TAG).d(
+                                                "TerritoryScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                                job?.toString()
+                                            )
+                                            job?.join()
+                                            // navigate to TerritoryDetailsScreen
+                                            viewModel.submitAction(
+                                                TerritoryUiAction.EditTerritoryDetails(
+                                                    UUID.fromString(territoryId.value)
+                                                )
+                                            )
+                                        }
                                     }
+                                    // execute viewModel.Save()
+                                    viewModel.submitAction(TerritoryUiAction.Save)
                                 }
                             }
                         }

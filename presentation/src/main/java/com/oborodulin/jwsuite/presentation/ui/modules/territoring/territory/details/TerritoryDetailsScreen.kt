@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,27 +20,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
-import com.oborodulin.home.common.util.toast
+import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListView
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
@@ -53,74 +49,58 @@ private const val TAG = "Territoring.TerritoryDetailsScreen"
 @Composable
 fun TerritoryDetailsScreen(
     appState: AppState,
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    nestedScrollConnection: NestedScrollConnection,
-    territoryInput: TerritoryInput,
-    bottomBar: @Composable () -> Unit
+    territoryViewModel: TerritoryViewModel,
+    territoryInput: TerritoryInput
 ) {
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called")
-    val context = LocalContext.current
+    val category by territoryViewModel.category.collectAsStateWithLifecycle()
+    val tabStreets = TabRowItem(
+        title = stringResource(R.string.territory_details_tab_streets),
+        view = {
+            TerritoryStreetsListView(
+                navController = appState.commonNavController,
+                territoryInput = territoryInput
+            )
+        }
+    )
+    val tabHouses = TabRowItem(
+        title = stringResource(R.string.territory_details_tab_houses),
+        view = {}
+    )
+    val tabEntraces = TabRowItem(
+        title = stringResource(R.string.territory_details_tab_entrances),
+        view = {}
+    )
+    val tabFloors = TabRowItem(
+        title = stringResource(R.string.territory_details_tab_floors),
+        view = {}
+    )
+    val tabRooms = TabRowItem(
+        title = stringResource(R.string.territory_details_tab_rooms),
+        view = {}
+    )
+    val tabs = when (category.item?.territoryCategoryCode) {
+        TerritoryCategoryType.HOUSES -> listOf(tabStreets, tabHouses, tabEntraces)
+        TerritoryCategoryType.FLOORS -> listOf(tabFloors)
+        TerritoryCategoryType.ROOMS -> listOf(tabRooms)
+        else -> emptyList()
+    }
     JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
             appState = appState,
-            nestedScrollConnection = nestedScrollConnection,
-            topBarTitleResId = R.string.nav_item_territory_details,
-            topBarActions = {
-                IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
-                    Icon(Icons.Outlined.Add, null)
-                }
-                IconButton(onClick = { context.toast("Settings button clicked...") }) {
-                    Icon(Icons.Outlined.Settings, null)
+            topBarNavigationIcon = {
+                IconButton(onClick = { appState.commonNavPopBackStack() }) {
+                    Icon(Icons.Outlined.ArrowBack, null)
                 }
             },
-            bottomBar = bottomBar
+            topBarActions = {
+                IconButton(onClick = { appState.backToBottomBarScreen() }) {
+                    Icon(Icons.Outlined.Done, null)
+                }
+            }
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
-                CustomScrollableTabRow(
-                    listOf(
-                        TabRowItem(
-                            title = stringResource(R.string.territory_details_tab_streets),
-                            view = {
-                                TerritoryStreetsListView(
-                                    navController = appState.commonNavController,
-                                    territoryInput = territoryInput
-                                )
-                            }
-                        ),
-                        TabRowItem(
-                            title = stringResource(R.string.territory_details_tab_houses),
-                            view = {
-                                GroupMembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
-                                )
-                            }
-                        ),
-                        TabRowItem(
-                            title = stringResource(R.string.territory_details_tab_entrances),
-                            view = {
-                                MembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
-                                )
-                            }
-                        ),
-                        TabRowItem(
-                            title = stringResource(R.string.territory_details_tab_floors),
-                            view = {
-                                MembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
-                                )
-                            }
-                        ),
-                        TabRowItem(
-                            title = stringResource(R.string.territory_details_tab_rooms),
-                            view = {
-                                MembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
-                                )
-                            }
-                        )
-                    )
-                )
+                CustomScrollableTabRow(tabs)
             }
         }
     }

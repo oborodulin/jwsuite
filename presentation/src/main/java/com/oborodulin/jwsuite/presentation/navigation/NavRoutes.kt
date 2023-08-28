@@ -29,6 +29,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_CATEGORY
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_DETAILS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_STREET
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.EntranceInput
@@ -69,6 +70,8 @@ import java.util.UUID
 // ic_territory_street.png - https://www.freepik.com/
 // ic_private_sector.png - https://www.flaticon.com/authors/noomtah
 // ic_street_side.png - https://www.flaticon.com/authors/freepik
+// ic_territory_category.png - https://www.flaticon.com/authors/anggara
+// ic_territory_details.png - https://www.flaticon.com/authors/anggara
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -383,7 +386,7 @@ sealed class NavRoutes constructor(
 
     data object TerritoryCategory : NavRoutes(
         String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
-        R.drawable.ic_location_pin_24,
+        R.drawable.ic_territory_category_24,
         R.string.nav_item_territory_category,
         arguments = listOf(navArgument(ARG_TERRITORY_CATEGORY_ID) {
             type = NavType.StringType
@@ -442,23 +445,56 @@ sealed class NavRoutes constructor(
         }
     }
 
+    data object TerritoryDetails : NavRoutes(
+        String.format(ROUTE_TERRITORY_DETAILS, "{$ARG_TERRITORY_ID}"),
+        R.drawable.ic_territory_category_24,
+        R.string.nav_item_territory_category,
+        arguments = listOf(navArgument(ARG_TERRITORY_ID) {
+            type = NavType.StringType
+            nullable = true
+            //defaultValue = null
+        })
+    ) {
+        fun routeForTerritoryDetails(territoryInput: TerritoryInput? = null): String {
+            val route = when (territoryInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_TERRITORY_DETAILS, territoryInput.territoryId)
+            }
+            //val route = String.format(ROUTE_RATE, payerId)
+            Timber.tag(TAG).d("TerritoryDetails - routeForTerritoryDetails(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
+            val territoryInput = TerritoryInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty())
+            )
+            Timber.tag(TAG).d("TerritoryDetails - fromEntry(...): '%s'", territoryInput)
+            return territoryInput
+        }
+    }
+
     data object TerritoryStreet : NavRoutes(
-        String.format(ROUTE_TERRITORY_STREET, "{$ARG_TERRITORY_STREET_ID}"),
+        String.format(ROUTE_TERRITORY_STREET, "{$ARG_TERRITORY_ID}", "{$ARG_TERRITORY_STREET_ID}"),
         R.drawable.ic_territory_street_24,
         R.string.nav_item_territory_street,
-        arguments = listOf(navArgument(ARG_TERRITORY_STREET_ID) {
+        arguments = listOf(navArgument(ARG_TERRITORY_ID) {
+            type = NavType.StringType
+            nullable = false
+            //defaultValue = null
+        }, navArgument(ARG_TERRITORY_STREET_ID) {
             type = NavType.StringType
             nullable = true
             //defaultValue = null
         })
     ) {
         fun routeForTerritoryStreet(territoryStreetInput: TerritoryStreetInput? = null): String {
-            val route = when (territoryStreetInput) {
-                null -> baseRoute()
-                else -> String.format(
-                    ROUTE_TERRITORY_STREET, territoryStreetInput.territoryStreetId
+            val route = territoryStreetInput?.let {
+                String.format(
+                    ROUTE_TERRITORY_STREET,
+                    territoryStreetInput.territoryId, territoryStreetInput.territoryStreetId
                 )
-            }
+            } ?: baseRoute()
             //val route = String.format(ROUTE_RATE, payerId)
             Timber.tag(TAG).d("TerritoryStreet - routeForTerritoryStreet(...): '%s'", route)
             return route
@@ -466,6 +502,7 @@ sealed class NavRoutes constructor(
 
         fun fromEntry(entry: NavBackStackEntry): TerritoryStreetInput {
             val territoryStreetInput = TerritoryStreetInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_STREET_ID).orEmpty())
             )
             Timber.tag(TAG).d("TerritoryStreet - fromEntry(...): '%s'", territoryStreetInput)

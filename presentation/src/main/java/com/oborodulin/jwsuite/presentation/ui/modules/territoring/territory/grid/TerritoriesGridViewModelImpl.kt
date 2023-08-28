@@ -62,7 +62,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     private val listConverter: TerritoriesGridConverter
 ) : TerritoriesGridViewModel,
     DialogSingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
-        state,
+        state, TerritoriesFields.TERRITORY_GRID_ID.name
         //TerritoriesFields.TERRITORY_MEMBER
     ) {
     private val _handOutSearchText = MutableStateFlow(TextFieldValue(""))

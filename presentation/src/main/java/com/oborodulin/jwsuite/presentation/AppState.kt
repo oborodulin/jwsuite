@@ -91,9 +91,9 @@ class AppState(
     val navBarCurrentRoute: String?
         get() = this.navBarNavController.currentDestination?.route
 
-    fun navBarUpPress() {
-        this.navBarNavController.navigateUp()
-    }
+    fun navBarUpPress() = this.navBarNavController.navigateUp()
+
+    fun commonNavPopBackStack() = this.commonNavController.popBackStack()
 
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen() {

@@ -18,6 +18,7 @@ import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStre
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.StreetUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetUi
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
@@ -42,13 +43,10 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     private val territoryStreetUiMapper: TerritoryStreetUiToTerritoryStreetMapper,
     private val territoryStreetMapper: TerritoryStreetToTerritoryStreetsListItemMapper
 ) : TerritoryStreetViewModel,
-    DialogSingleViewModel<TerritoryStreetUi, UiState<TerritoryStreetUi>, TerritoryStreetUiAction, UiSingleEvent, TerritoryStreetFields, InputWrapper>(
-        state,
+    DialogSingleViewModel<TerritoryStreetUiModel, UiState<TerritoryStreetUiModel>, TerritoryStreetUiAction, UiSingleEvent, TerritoryStreetFields, InputWrapper>(
+        state, TerritoryStreetFields.TERRITORY_STREET_ID.name,
         TerritoryStreetFields.TERRITORY_STREET_TERRITORY
     ) {
-    private val territoryStreetId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryStreetFields.TERRITORY_STREET_ID.name, InputWrapper())
-    }
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name,
@@ -80,7 +78,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         false
     )
 
-    override fun initState(): UiState<TerritoryStreetUi> = UiState.Loading
+    override fun initState(): UiState<TerritoryStreetUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryStreetUiAction): Job {
         Timber.tag(TAG).d("handleAction(TerritoryStreetUiAction) called: %s", action.javaClass.name)
@@ -88,7 +86,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             is TerritoryStreetUiAction.Load -> when (action.territoryStreetId) {
                 null -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_street_new_subheader)
-                    submitState(UiState.Success(TerritoryStreetUi()))
+                    submitState(UiState.Success(TerritoryStreetUiModel()))
                 }
 
                 else -> {
@@ -131,8 +129,8 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             isEvenSide = isEvenSide.value.value.toBoolean(),
             estimatedHouses = estimatedHouses.value.value.toInt()
         )
-        territoryStreetUi.id = if (territoryStreetId.value.value.isNotEmpty()) {
-            UUID.fromString(territoryStreetId.value.value)
+        territoryStreetUi.id = if (id.value.value.isNotEmpty()) {
+            UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d(
             "saveTerritoryStreet() called: UI model %s; territoryUi.id = %s; streetUi.id = %s",
@@ -165,7 +163,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             )
         territoryStreetUi.id?.let {
             initStateValue(
-                TerritoryStreetFields.TERRITORY_STREET_ID, territoryStreetId, it.toString()
+                TerritoryStreetFields.TERRITORY_STREET_ID, id, it.toString()
             )
         }
         initStateValue(

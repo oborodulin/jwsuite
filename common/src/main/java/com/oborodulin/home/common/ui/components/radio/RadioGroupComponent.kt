@@ -4,16 +4,17 @@ import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,11 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 private const val TAG = "Common.ui.RadioGroupComponent"
@@ -44,45 +45,28 @@ fun <T : Any, M : Map<String, T>> RadioGroupComponent(
     selectedItem: T,
     onClick: (T) -> Unit
 ) {
-    val icon = @Composable {
-        when (painterResId) {
-            null -> imageVector?.let { iv ->
-                Icon(
-                    imageVector = iv,
-                    contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                    modifier = Modifier.padding(end = 4.dp),
-                    //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                    //else DarkGray
-                )
-            }
-
-            else -> Icon(
-                painter = painterResource(painterResId),
-                contentDescription = contentDescriptionResId?.let { stringResource(it) },
-                modifier = Modifier
-                    .padding(end = 4.dp)
-                    .size(24.dp),
-                //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                //else DarkGray
-            )
-        }
-    }
     var radioButtonViewState: Pair<String, T>? by remember { mutableStateOf(null) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
+            .height(IntrinsicSize.Min)
             .selectableGroup()
             .then(modifier)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            icon()
+            IconComponent(
+                imageVector = imageVector,
+                painterResId = painterResId,
+                contentDescriptionResId = contentDescriptionResId
+            )
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             labelResId?.let { Text(text = stringResource(it)) }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (radioButtonViewState != null) {
                 RadioButtonComponent(
+                    modifier = Modifier.weight(3.3f),
                     label = radioButtonViewState!!.first,
                     selected = (radioButtonViewState!!.second == selectedItem),
                     onClick = { onClick(radioButtonViewState!!.second) }

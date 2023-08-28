@@ -9,6 +9,7 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
+import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoriesListItem
@@ -69,8 +70,8 @@ class TerritoryCategoriesListViewModelImpl @Inject constructor(
                 .map {
                     converter.convert(it)
                 }.collect {
-                submitState(it)
-            }
+                    submitState(it)
+                }
         }
         return job
     }
@@ -108,19 +109,19 @@ class TerritoryCategoriesListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             TerritoryCategoriesListItem(
                 id = UUID.randomUUID(),
-                territoryCategoryCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_house_territory_category_code),
+                territoryCategoryCode = TerritoryCategoryType.HOUSES,
                 territoryCategoryMark = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_house_territory_category_mark),
                 territoryCategoryName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_house_territory_category_name)
             ),
             TerritoryCategoriesListItem(
                 id = UUID.randomUUID(),
-                territoryCategoryCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_floor_territory_category_code),
+                territoryCategoryCode = TerritoryCategoryType.FLOORS,
                 territoryCategoryMark = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_floor_territory_category_mark),
                 territoryCategoryName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_floor_territory_category_name)
             ),
             TerritoryCategoriesListItem(
                 id = UUID.randomUUID(),
-                territoryCategoryCode = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_room_territory_category_code),
+                territoryCategoryCode = TerritoryCategoryType.ROOMS,
                 territoryCategoryMark = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_room_territory_category_mark),
                 territoryCategoryName = ctx.resources.getString(com.oborodulin.jwsuite.data.R.string.def_room_territory_category_name)
             )

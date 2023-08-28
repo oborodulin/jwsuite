@@ -50,7 +50,7 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
                     TerritoryStreetsListUiSingleEvent.OpenTerritoryStreetScreen(
                         NavRoutes.TerritoryStreet.routeForTerritoryStreet(
                             NavigationInput.TerritoryStreetInput(
-                                action.territoryStreetId
+                                action.territoryId, action.territoryStreetId
                             )
                         )
                     )
@@ -110,6 +110,7 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             TerritoryStreetsListItem(
                 id = UUID.randomUUID(),
+                streetId = UUID.randomUUID(),
                 streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
                     ctx.resources.getString(R.string.def_baratynskogo_name)
                 }",
@@ -120,6 +121,7 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
             ),
             TerritoryStreetsListItem(
                 id = UUID.randomUUID(),
+                streetId = UUID.randomUUID(),
                 streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
                     ctx.resources.getString(R.string.def_patorgynskogo_name)
                 }",

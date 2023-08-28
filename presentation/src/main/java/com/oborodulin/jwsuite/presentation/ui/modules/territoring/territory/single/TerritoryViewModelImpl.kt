@@ -12,9 +12,12 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityViewModelImpl
@@ -23,11 +26,14 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.microdistrict.single.M
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.LocalityUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.MicrodistrictUi
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoriesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryToTerritoryUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.TerritoryUiToTerritoryMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.toTerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -46,7 +52,8 @@ class TerritoryViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val converter: TerritoryConverter,
     private val territoryUiMapper: TerritoryUiToTerritoryMapper,
-    private val territoryMapper: TerritoryToTerritoriesListItemMapper
+    private val territoryMapper: TerritoryToTerritoryUiMapper,
+    private val territoryListItemMapper: TerritoryToTerritoriesListItemMapper
 ) : TerritoryViewModel,
     DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
         state, TerritoryFields.TERRITORY_ID.name, TerritoryFields.TERRITORY_NUM
@@ -54,7 +61,7 @@ class TerritoryViewModelImpl @Inject constructor(
     override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(TerritoryFields.TERRITORY_CONGREGATION.name, InputListItemWrapper())
     }
-    override val category: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val category: StateFlow<InputListItemWrapper<TerritoryCategoriesListItem>> by lazy {
         state.getStateFlow(TerritoryFields.TERRITORY_CATEGORY.name, InputListItemWrapper())
     }
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -107,7 +114,21 @@ class TerritoryViewModelImpl @Inject constructor(
                 }
             }
 
+            is TerritoryUiAction.GetNextTerritoryNum -> getNextTerritoryNum(
+                action.congregationId, action.territoryCategoryId
+            )
+
             is TerritoryUiAction.Save -> saveTerritory()
+            is TerritoryUiAction.EditTerritoryDetails -> {
+                submitSingleEvent(
+                    TerritoryUiSingleEvent.OpenTerritoryDetailsScreen(
+                        NavRoutes.TerritoryDetails.routeForTerritoryDetails(
+                            NavigationInput.TerritoryInput(action.territoryId!!)
+                        )
+                    )
+                )
+            }
+
         }
         return job
     }
@@ -122,6 +143,24 @@ class TerritoryViewModelImpl @Inject constructor(
                 .collect {
                     submitState(it)
                 }
+        }
+        return job
+    }
+
+    private fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Job {
+        Timber.tag(TAG).d(
+            "loadTerritory(UUID) called: congregationId = %s; territoryCategoryId = %s",
+            congregationId,
+            territoryCategoryId
+        )
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getNextTerritoryNumUseCase.execute(
+                GetNextTerritoryNumUseCase.Request(congregationId, territoryCategoryId)
+            ).collect {
+                if (it is Result.Success) {
+                    onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it.data.territoryNum))
+                }
+            }
         }
         return job
     }
@@ -159,7 +198,8 @@ class TerritoryViewModelImpl @Inject constructor(
             ).collect {
                 Timber.tag(TAG).d("saveTerritory() collect: %s", it)
                 if (it is Result.Success) {
-                    setSavedListItem(territoryMapper.map(it.data.territory))
+                    submitState(UiState.Success(territoryMapper.map(it.data.territory)))
+                    setSavedListItem(territoryListItemMapper.map(it.data.territory))
                 }
             }
         }
@@ -173,19 +213,14 @@ class TerritoryViewModelImpl @Inject constructor(
         val territoryUi = uiModel as TerritoryUi
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(TerritoryModel) called: territoryUi = %s", territoryUi)
-        territoryUi.id?.let {
-            initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString())
-        }
+        territoryUi.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,
             ListItemModel(territoryUi.congregation.id, territoryUi.congregation.congregationName)
         )
         initStateValue(
             TerritoryFields.TERRITORY_CATEGORY, category,
-            ListItemModel(
-                territoryUi.territoryCategory.id,
-                territoryUi.territoryCategory.territoryCategoryName
-            )
+            territoryUi.territoryCategory.toTerritoryCategoriesListItem()
         )
         initStateValue(
             TerritoryFields.TERRITORY_LOCALITY, locality,
@@ -229,11 +264,6 @@ class TerritoryViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is TerritoryInputEvent.Congregation ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_CONGREGATION, congregation, event.input, true
-                        )
-
                     is TerritoryInputEvent.Category ->
                         when (TerritoryInputValidator.Category.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
@@ -269,9 +299,10 @@ class TerritoryViewModelImpl @Inject constructor(
                         )
 
                     is TerritoryInputEvent.TerritoryNum ->
-                        when (TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)) {
+                        when (TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input.toString())) {
                             null -> setStateValue(
-                                TerritoryFields.TERRITORY_NUM, territoryNum, event.input, true
+                                TerritoryFields.TERRITORY_NUM, territoryNum, event.input.toString(),
+                                true
                             )
 
                             else -> setStateValue(
@@ -306,9 +337,6 @@ class TerritoryViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is TerritoryInputEvent.Congregation ->
-                        setStateValue(TerritoryFields.TERRITORY_CONGREGATION, congregation, null)
-
                     is TerritoryInputEvent.Category ->
                         setStateValue(
                             TerritoryFields.TERRITORY_CATEGORY, category,
@@ -332,7 +360,7 @@ class TerritoryViewModelImpl @Inject constructor(
                     is TerritoryInputEvent.TerritoryNum ->
                         setStateValue(
                             TerritoryFields.TERRITORY_NUM, territoryNum,
-                            TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input)
+                            TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input.toString())
                         )
 
                     is TerritoryInputEvent.IsBusiness ->
@@ -382,10 +410,10 @@ class TerritoryViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                TerritoryFields.TERRITORY_CATEGORY.name -> category.value.copy(errorId = error.errorId)
-                TerritoryFields.TERRITORY_LOCALITY.name -> locality.value.copy(errorId = error.errorId)
-                TerritoryFields.TERRITORY_NUM.name -> territoryNum.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (TerritoryFields.valueOf(error.fieldName)) {
+                TerritoryFields.TERRITORY_CATEGORY -> category.value.copy(errorId = error.errorId)
+                TerritoryFields.TERRITORY_LOCALITY -> locality.value.copy(errorId = error.errorId)
+                TerritoryFields.TERRITORY_NUM -> territoryNum.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -407,8 +435,10 @@ class TerritoryViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val category = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val category =
+                    MutableStateFlow(InputListItemWrapper<TerritoryCategoriesListItem>())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

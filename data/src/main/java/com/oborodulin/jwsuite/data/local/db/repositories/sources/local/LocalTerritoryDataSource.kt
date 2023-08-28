@@ -42,6 +42,8 @@ interface LocalTerritoryDataSource {
         territoryLocationType: TerritoryLocationType, locationId: UUID? = null
     ): Flow<List<TerritoriesIdleView>>
 
+    fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
+
     //    fun getTerritoryInfo(territoryId: UUID): Flow<List<TerritoryView>>
     fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNumsView>>
     fun getTerritory(territoryId: UUID): Flow<TerritoryView>

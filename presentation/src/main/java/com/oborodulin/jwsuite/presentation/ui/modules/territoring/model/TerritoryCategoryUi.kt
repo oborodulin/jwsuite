@@ -1,9 +1,10 @@
 package com.oborodulin.jwsuite.presentation.ui.modules.territoring.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
+import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 
 data class TerritoryCategoryUi(
-    val territoryCategoryCode: String = "",
+    val territoryCategoryCode: TerritoryCategoryType = TerritoryCategoryType.HOUSES,
     val territoryCategoryMark: String = "",
     val territoryCategoryName: String = ""
 ) : ModelUi()

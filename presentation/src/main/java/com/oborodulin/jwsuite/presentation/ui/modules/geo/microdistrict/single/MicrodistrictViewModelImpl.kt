@@ -137,9 +137,8 @@ class MicrodistrictViewModelImpl @Inject constructor(
             microdistrictShortName = microdistrictShortName.value.value,
             microdistrictName = microdistrictName.value.value
         )
-        microdistrictUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        microdistrictUi.id =
+            if (id.value.value.isNotEmpty()) UUID.fromString(id.value.value) else null
         Timber.tag(TAG).d(
             "saveMicrodistrict() called: UI model %s; localityUi.id = %s; localityDistrictUi.id = %s",
             microdistrictUi,

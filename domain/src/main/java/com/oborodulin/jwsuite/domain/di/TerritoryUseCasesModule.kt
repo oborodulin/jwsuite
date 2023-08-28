@@ -7,20 +7,21 @@ import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
-import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +38,12 @@ object TerritoryUseCasesModule {
     fun provideGetTerritoryUseCase(
         configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
     ): GetTerritoryUseCase = GetTerritoryUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextTerritoryNumUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): GetNextTerritoryNumUseCase = GetNextTerritoryNumUseCase(configuration, territoriesRepository)
 
     @Singleton
     @Provides

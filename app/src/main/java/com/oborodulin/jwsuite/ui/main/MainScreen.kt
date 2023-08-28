@@ -36,6 +36,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.microdistrict.single.M
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetScreen
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryScreen
@@ -177,6 +178,22 @@ private fun HomeNavigationHost(
                 appState = appState,
                 viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it)
+            )
+        }
+        composable(
+            route = NavRoutes.TerritoryDetails.route, arguments = NavRoutes.TerritoryDetails.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to TerritoryDetailsScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.TerritoryDetails.arguments
+                )
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            TerritoryDetailsScreen(
+                appState = appState,
+                territoryViewModel = territoryViewModel,
+                territoryInput = NavRoutes.TerritoryDetails.fromEntry(it)
             )
         }
         composable(

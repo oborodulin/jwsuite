@@ -9,6 +9,7 @@ data class TerritoryUseCases(
     val getProcessAndLocationTerritoriesUseCase: GetProcessAndLocationTerritoriesUseCase,
     val getCongregationTerritoriesUseCase: GetCongregationTerritoriesUseCase,
     val getTerritoryUseCase: GetTerritoryUseCase,
+    val getNextTerritoryNumUseCase:GetNextTerritoryNumUseCase,
     val saveTerritoryUseCase: SaveTerritoryUseCase,
     val deleteTerritoryUseCase: DeleteTerritoryUseCase,
     val getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,

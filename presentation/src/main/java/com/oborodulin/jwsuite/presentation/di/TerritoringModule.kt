@@ -4,6 +4,7 @@ import android.content.Context
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
@@ -259,6 +260,7 @@ object TerritoringModule {
         getProcessAndLocationTerritoriesUseCase: GetProcessAndLocationTerritoriesUseCase,
         getCongregationTerritoriesUseCase: GetCongregationTerritoriesUseCase,
         getTerritoryUseCase: GetTerritoryUseCase,
+        getNextTerritoryNumUseCase: GetNextTerritoryNumUseCase,
         saveTerritoryUseCase: SaveTerritoryUseCase,
         deleteTerritoryUseCase: DeleteTerritoryUseCase,
         getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
@@ -271,6 +273,7 @@ object TerritoringModule {
         getProcessAndLocationTerritoriesUseCase,
         getCongregationTerritoriesUseCase,
         getTerritoryUseCase,
+        getNextTerritoryNumUseCase,
         saveTerritoryUseCase,
         deleteTerritoryUseCase,
         getTerritoryDetailsUseCase,

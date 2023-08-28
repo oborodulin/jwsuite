@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.domain.util.LocalityType
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryMemberMark
 import com.oborodulin.jwsuite.domain.util.VillageType
@@ -28,12 +29,14 @@ object JwSuiteTypeConverters {
     @TypeConverter
     fun fromUUID(uuid: UUID?): String? = uuid?.toString()
 
+    //-----------------------------
     @TypeConverter
     fun fromDate(date: Date?): Long? = date?.time
 
     @TypeConverter
     fun toDate(millisSinceEpoch: Long?): Date? = millisSinceEpoch?.let { Date(it) }
 
+    //-----------------------------
     @TypeConverter
     @JvmStatic
     fun toOffsetDateTime(value: String?): OffsetDateTime? = value?.let {
@@ -44,6 +47,7 @@ object JwSuiteTypeConverters {
     @JvmStatic
     fun fromOffsetDateTime(date: OffsetDateTime?): String? = date?.format(formatter)
 
+    //-----------------------------
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromLocalDate(date: LocalDate?): Long? =
@@ -55,6 +59,7 @@ object JwSuiteTypeConverters {
         Instant.ofEpochMilli(millisSinceEpoch).atZone(ZoneId.systemDefault()).toLocalDate()
     }
 
+    //-----------------------------
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun fromLocalDateTime(time: LocalDateTime?): Long? =
@@ -70,6 +75,7 @@ object JwSuiteTypeConverters {
             )
         }
 
+    //-----------------------------
     @TypeConverter
     fun toBigDecimal(value: Long?): BigDecimal? =
         value?.let { BigDecimal(it).divide(BigDecimal(CONV_COEFF_BIGDECIMAL)) }
@@ -78,48 +84,63 @@ object JwSuiteTypeConverters {
     fun fromBigDecimal(bigDecimal: BigDecimal?): Long? =
         bigDecimal?.multiply(BigDecimal(CONV_COEFF_BIGDECIMAL))?.toLong()
 
+    //-----------------------------
     @TypeConverter
     fun toLocalityType(value: String) = enumValueOf<LocalityType>(value)
 
     @TypeConverter
     fun fromLocalityType(value: LocalityType) = value.name
 
+    //-----------------------------
     @TypeConverter
     fun toVillageType(value: String) = enumValueOf<VillageType>(value)
 
     @TypeConverter
     fun fromVillageType(value: VillageType) = value.name
 
+    //-----------------------------
     @TypeConverter
     fun toRoadType(value: String) = enumValueOf<RoadType>(value)
 
     @TypeConverter
     fun fromRoadType(value: RoadType) = value.name
 
+    //-----------------------------
     @TypeConverter
     fun toMemberType(value: String) = enumValueOf<MemberType>(value)
 
     @TypeConverter
     fun fromMemberType(value: MemberType) = value.name
 
+    //-----------------------------
     @TypeConverter
     fun toTerritoryMemberMark(value: String) = enumValueOf<TerritoryMemberMark>(value)
 
     @TypeConverter
     fun fromTerritoryMemberMark(value: TerritoryMemberMark) = value.name
 
+    //-----------------------------
     @TypeConverter
     fun toTerritoryLocationType(value: String) = enumValueOf<TerritoryLocationType>(value)
 
     @TypeConverter
     fun fromTerritoryLocationType(value: TerritoryLocationType) = value.name
 
+    //-----------------------------
     @TypeConverter
     fun toBuildingType(value: String) = enumValueOf<BuildingType>(value)
 
     @TypeConverter
     fun fromBuildingType(value: BuildingType) = value.name
 
+    //-----------------------------
+    @TypeConverter
+    fun toTerritoryCategoryType(value: String) = enumValueOf<TerritoryCategoryType>(value)
+
+    @TypeConverter
+    fun fromTerritoryCategoryType(value: TerritoryCategoryType) = value.name
+
+    //-----------------------------
     @TypeConverter
     fun toAppSettingParam(value: String) = enumValueOf<AppSettingParam>(value)
 
