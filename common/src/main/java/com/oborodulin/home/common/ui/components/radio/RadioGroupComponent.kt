@@ -4,13 +4,12 @@ import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.List
@@ -45,12 +44,11 @@ fun <T : Any, M : Map<String, T>> RadioGroupComponent(
     selectedItem: T,
     onClick: (T) -> Unit
 ) {
-    var radioButtonViewState: Pair<String, T>? by remember { mutableStateOf(null) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
-            .height(IntrinsicSize.Min)
+            //.height(IntrinsicSize.Min)
             .selectableGroup()
             .then(modifier)
     ) {
@@ -63,17 +61,14 @@ fun <T : Any, M : Map<String, T>> RadioGroupComponent(
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             labelResId?.let { Text(text = stringResource(it)) }
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (radioButtonViewState != null) {
+        LazyRow(verticalAlignment = Alignment.CenterVertically) {
+            items(radioOptions.entries.size) {
                 RadioButtonComponent(
-                    modifier = Modifier.weight(3.3f),
-                    label = radioButtonViewState!!.first,
-                    selected = (radioButtonViewState!!.second == selectedItem),
-                    onClick = { onClick(radioButtonViewState!!.second) }
+                    modifier = Modifier.weight(1f / radioOptions.entries.size),
+                    label = radioOptions.keys.elementAt(it),
+                    selected = (radioOptions.values.elementAt(it) == selectedItem),
+                    onClick = { onClick(radioOptions.values.elementAt(it)) }
                 )
-            }
-            radioOptions.forEach { label, value ->
-                radioButtonViewState = Pair(label, value)
             }
         }
     }

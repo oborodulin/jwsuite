@@ -48,7 +48,7 @@ fun TerritoryStreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryStreetUiAction.Load(),
         confirmUiAction = TerritoryStreetUiAction.Save,
-        dialogView = { TerritoryStreetView() },
+        dialogView = { TerritoryStreetView(it) },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(

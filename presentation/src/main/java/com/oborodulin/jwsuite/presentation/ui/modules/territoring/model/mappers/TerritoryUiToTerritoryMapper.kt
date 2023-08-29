@@ -27,7 +27,6 @@ class TerritoryUiToTerritoryMapper(
             localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
             microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
             territoryNum = input.territoryNum,
-            isPrivateSector = input.isPrivateSector,
             isBusiness = input.isBusiness,
             isGroupMinistry = input.isGroupMinistry,
             isInPerimeter = input.isInPerimeter,

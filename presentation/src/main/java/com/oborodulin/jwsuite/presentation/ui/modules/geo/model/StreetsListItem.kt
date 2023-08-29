@@ -10,9 +10,11 @@ data class StreetsListItem(
     val estimatedHouses: Int? = null,
     val streetFullName: String,
     val isPrivateSectorInfo: String? = null,
-    val estHousesInfo: String = ""
+    val estHousesInfo: String? = null
 ) : Parcelable, ListItemModel(
     itemId = id,
     headline = streetFullName,
-    supportingText = "${isPrivateSectorInfo?.let { "$it: " }.orEmpty()} $estHousesInfo".trim()
+    supportingText = "${
+        isPrivateSectorInfo?.let { "$it: " }.orEmpty()
+    } ${estHousesInfo.orEmpty()}".trim()
 )

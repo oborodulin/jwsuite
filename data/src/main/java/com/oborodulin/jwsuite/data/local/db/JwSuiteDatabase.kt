@@ -142,7 +142,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         context,
                         JwSuiteDatabase::class.java,
                         Constants.DATABASE_NAME
-                    ).openHelperFactory(SupportFactory(DATABASE_PASSPHRASE.toByteArray()))
+                    )//.openHelperFactory(SupportFactory(DATABASE_PASSPHRASE.toByteArray()))
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
