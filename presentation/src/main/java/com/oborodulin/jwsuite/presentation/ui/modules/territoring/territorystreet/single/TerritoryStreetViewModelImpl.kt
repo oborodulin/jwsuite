@@ -16,12 +16,14 @@ import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.StreetUi
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -45,6 +47,10 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         state, TerritoryStreetFields.TERRITORY_STREET_ID.name,
         TerritoryStreetFields.TERRITORY_STREET_TERRITORY
     ) {
+    val localityId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE.name, InputWrapper())
+    }
+
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name, InputListItemWrapper()
@@ -81,7 +87,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             is TerritoryStreetUiAction.Load -> when (action.territoryStreetId) {
                 null -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_street_new_subheader)
-                    submitState(UiState.Success(TerritoryStreetUiModel()))
+                    loadTerritoryStreetUiModel(action.territoryId!!)
                 }
 
                 else -> {
@@ -95,7 +101,10 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadTerritoryStreetUiModel(territoryId: UUID, territoryStreetId: UUID): Job {
+    private fun loadTerritoryStreetUiModel(
+        territoryId: UUID,
+        territoryStreetId: UUID? = null
+    ): Job {
         Timber.tag(TAG).d("loadTerritoryStreet(UUID) called: %s", territoryStreetId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoryStreetUseCase.execute(
@@ -145,15 +154,14 @@ class TerritoryStreetViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoryStreetFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: TerritoryStreetUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val territoryStreetUi = uiModel as TerritoryStreetUiModel
         Timber.tag(TAG)
             .d(
                 "initFieldStatesByUiModel(TerritoryStreetModel) called: territoryStreetUi = %s",
-                territoryStreetUi
+                uiModel
             )
-        territoryStreetUi.id?.let {
+        uiModel.id?.let {
             initStateValue(
                 TerritoryStreetFields.TERRITORY_STREET_ID, id, it.toString()
             )
@@ -161,28 +169,28 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY, territory,
             ListItemModel(
-                territoryStreetUi.territory.id,
-                territoryStreetUi.territory.territoryNum.toString()
+                uiModel.territory.id,
+                uiModel.territory.territoryNum.toString()
             )
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_STREET, street,
             ListItemModel(
-                territoryStreetUi.territoryStreet.street.id,
-                territoryStreetUi.territoryStreet.street.streetName
+                uiModel.territoryStreet.street.id,
+                uiModel.territoryStreet.street.streetName
             )
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR, isPrivateSector,
-            territoryStreetUi.territoryStreet.isPrivateSector.toString()
+            uiModel.territoryStreet.isPrivateSector.toString()
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide,
-            territoryStreetUi.territoryStreet.isEvenSide.toString()
+            uiModel.territoryStreet.isEvenSide.toString()
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
-            territoryStreetUi.territoryStreet.estimatedHouses.toString()
+            uiModel.territoryStreet.estimatedHouses.toString()
         )
         return null
     }
@@ -292,7 +300,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                //override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -323,7 +331,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): TerritoryStreetUi {
+        fun previewUiModel(ctx: Context): TerritoryStreetUiModel {
             val territoryStreetUi = TerritoryStreetUi(
                 territoryId = UUID.randomUUID(),
                 street = StreetViewModelImpl.previewUiModel(ctx),
@@ -332,7 +340,13 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 estimatedHouses = 38
             )
             territoryStreetUi.id = UUID.randomUUID()
-            return territoryStreetUi
+            val territoryStreetUiModel = TerritoryStreetUiModel(
+                territoryStreet = territoryStreetUi,
+                territory = TerritoryViewModelImpl.previewUiModel(ctx),
+                streets = StreetsListViewModelImpl.previewList(ctx)
+            )
+            territoryStreetUiModel.id = UUID.randomUUID()
+            return territoryStreetUiModel
         }
     }
 }

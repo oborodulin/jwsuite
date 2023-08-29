@@ -232,7 +232,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoriesFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: List<TerritoriesListItem>): Job? = null
 
     override suspend fun observeInputEvents() {
         Timber.tag(TAG).d("observeInputEvents() called")

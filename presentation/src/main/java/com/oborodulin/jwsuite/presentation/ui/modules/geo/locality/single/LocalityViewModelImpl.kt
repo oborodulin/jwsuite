@@ -161,31 +161,29 @@ class LocalityViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<LocalityFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: LocalityUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val localityUi =
-            uiModel as LocalityUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(LocalityModel) called: localityUi = %s", localityUi)
-        localityUi.id?.let {
+            .d("initFieldStatesByUiModel(LocalityModel) called: localityUi = %s", uiModel)
+        uiModel.id?.let {
             initStateValue(LocalityFields.LOCALITY_ID, id, it.toString())
         }
         initStateValue(
             LocalityFields.LOCALITY_REGION, region,
-            ListItemModel(localityUi.region.id, localityUi.region.regionName)
+            ListItemModel(uiModel.region.id, uiModel.region.regionName)
         )
         initStateValue(
             LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict,
             ListItemModel(
-                localityUi.regionDistrict?.id, localityUi.regionDistrict?.districtName.orEmpty()
+                uiModel.regionDistrict?.id, uiModel.regionDistrict?.districtName.orEmpty()
             )
         )
-        initStateValue(LocalityFields.LOCALITY_CODE, localityCode, localityUi.localityCode)
+        initStateValue(LocalityFields.LOCALITY_CODE, localityCode, uiModel.localityCode)
         initStateValue(
-            LocalityFields.LOCALITY_SHORT_NAME, localityShortName, localityUi.localityShortName
+            LocalityFields.LOCALITY_SHORT_NAME, localityShortName, uiModel.localityShortName
         )
-        initStateValue(LocalityFields.LOCALITY_TYPE, localityType, localityUi.localityType.name)
-        initStateValue(LocalityFields.LOCALITY_NAME, localityName, localityUi.localityName)
+        initStateValue(LocalityFields.LOCALITY_TYPE, localityType, uiModel.localityType.name)
+        initStateValue(LocalityFields.LOCALITY_NAME, localityName, uiModel.localityName)
         return null
     }
 

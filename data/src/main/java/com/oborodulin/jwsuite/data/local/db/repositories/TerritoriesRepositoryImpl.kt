@@ -67,9 +67,12 @@ class TerritoriesRepositoryImpl @Inject constructor(
     }
 
     // Territory Streets:
-    override fun getTerritoryStreet(territoryStreetId: UUID) =
-        localTerritoryDataSource.getTerritoryStreet(territoryStreetId)
-            .map(mappers.territoryStreetViewToTerritoryStreetMapper::map)
+    override fun getTerritoryStreet(territoryStreetId: UUID?) = flow {
+        when (territoryStreetId) {
+            null -> emit(null)
+            else -> localTerritoryDataSource.getTerritoryStreet(territoryStreetId)
+        }
+    }.map(mappers.territoryStreetViewToTerritoryStreetMapper::nullableMap)
 
     override fun getTerritoryStreets(territoryId: UUID) =
         localTerritoryDataSource.getTerritoryStreets(territoryId)

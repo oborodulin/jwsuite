@@ -36,7 +36,7 @@ class TerritoringViewModelImpl @Inject constructor(
     private val converter: TerritoryLocationsListConverter
 ) : TerritoringViewModel,
     SingleViewModel<TerritoringUi, UiState<TerritoringUi>, TerritoringUiAction, TerritoringUiSingleEvent, TerritoringFields, InputWrapper>(
-        state,
+        state, TerritoringFields.TERRITORING_ID.name,
         TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR
     ) {
     override val isPrivateSector: StateFlow<InputWrapper> by lazy {
@@ -91,24 +91,23 @@ class TerritoringViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoringFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: TerritoringUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val territoringUi = uiModel as TerritoringUi
         Timber.tag(TAG)
             .d(
                 "initFieldStatesByUiModel(TerritoringUiModel) called: territoringUi = %s",
-                territoringUi
+                uiModel
             )
         initStateValue(
             TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
-            territoringUi.isPrivateSector.toString()
+            uiModel.isPrivateSector.toString()
         )
         initStateValue(
             TerritoringFields.TERRITORY_LOCATION, location,
             TerritoryLocationsListItem(
-                locationId = territoringUi.territoryLocations.first().locationId,
-                locationShortName = territoringUi.territoryLocations.first().locationShortName,
-                territoryLocationType = territoringUi.territoryLocations.first().territoryLocationType
+                locationId = uiModel.territoryLocations.first().locationId,
+                locationShortName = uiModel.territoryLocations.first().locationShortName,
+                territoryLocationType = uiModel.territoryLocations.first().territoryLocationType
             )
         )
         return null

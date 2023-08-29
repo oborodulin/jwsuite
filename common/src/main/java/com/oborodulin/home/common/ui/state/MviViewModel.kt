@@ -88,12 +88,12 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
     override fun singleSelectItem(selectedItem: ListItemModel) {
         Timber.tag(TAG).d("observeSelection() called")
-        if (uiStateFlow.value is UiState.Success<*>) {
-            if ((uiStateFlow.value as UiState.Success<*>).data is List<*>) {
-                ((uiStateFlow.value as UiState.Success<*>).data as List<*>).forEach {
+        uiState()?.let { uiState ->
+            if (uiState is List<*>) {
+                (uiState as List<*>).forEach {
                     if (it is ListItemModel) it.selected = false
                 }
-                (((uiStateFlow.value as UiState.Success<*>).data as List<*>).find {
+                ((uiState as List<*>).find {
                     (it is ListItemModel) && it.itemId == selectedItem.itemId
                 } as? ListItemModel)?.selected = true
                 Timber.tag(TAG).d("selected %s list item", selectedItem)
@@ -103,9 +103,9 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     /*override fun checkItem(checkedItem: ListItemModel, checkValue: Boolean) {
         Timber.tag(TAG).d("observeSelection() called")
-        if (uiStateFlow.value is UiState.Success<*>) {
-            if ((uiStateFlow.value as UiState.Success<*>).data is List<*>) {
-                (((uiStateFlow.value as UiState.Success<*>).data as List<*>).find {
+        uiState()?.let { uiState ->
+            if (uiState is List<*>) {
+                ((uiState as List<*>).find {
                     (it is ListItemModel) && it.itemId == checkedItem.itemId
                 } as? ListItemModel)?.checked = checkValue
                 Timber.tag(TAG).d("checked %s list item", checkedItem)
@@ -115,7 +115,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     abstract suspend fun handleAction(action: A): Job?
 
-    abstract fun initFieldStatesByUiModel(uiModel: Any): Job?
+    abstract fun initFieldStatesByUiModel(uiModel: T): Job?
 
     fun viewModelScope() = viewModelScope
 
@@ -149,13 +149,18 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         Timber.tag(TAG).d("submitState(S): change ui state = %s", state.javaClass.name)
         val job = viewModelScope.launch(errorHandler) {
             _uiStateFlow.value = state
-            if (state is UiState.Success<*>) {
-                Timber.tag(TAG).d("submitState: state.data = %s", state.data)
-                initFieldStatesByUiModel(state.data)
+            uiState()?.let {
+                Timber.tag(TAG).d("submitState: state.data = %s", it)
+                initFieldStatesByUiModel(it)
             }
         }
         Timber.tag(TAG).d("submitState(S) ended")
         return job
+    }
+
+    fun uiState(): T? = when (_uiStateFlow.value) {
+        is UiState.Success<*> -> (_uiStateFlow.value as UiState.Success<*>).data as T
+        else -> null
     }
 
     fun submitSingleEvent(event: E): Job {

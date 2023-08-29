@@ -178,6 +178,8 @@
     <!--Улицы участка-->
     <string name="territory_street_subheader">Улица участка</string>
     <string name="territory_street_new_subheader">Новая улица участка</string>
+    <string name="territory_street_is_even_side_hint">Чётная сторона?</string>
+    <string name="territory_street_estimated_houses_hint">Кол-во домов</string>
 
     <!--Дом-->
     <string name="house_subheader">Дом</string>

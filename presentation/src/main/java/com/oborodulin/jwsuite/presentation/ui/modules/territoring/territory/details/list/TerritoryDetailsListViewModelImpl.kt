@@ -62,7 +62,7 @@ class TerritoryDetailsListViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: List<TerritoryDetailsListItem>): Job? = null
 
     companion object {
         fun previewModel(ctx: Context) =

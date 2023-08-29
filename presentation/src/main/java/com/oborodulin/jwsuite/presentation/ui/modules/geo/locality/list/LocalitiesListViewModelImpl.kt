@@ -105,7 +105,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: List<LocalitiesListItem>): Job? = null
 
     companion object {
         fun previewModel(ctx: Context) =

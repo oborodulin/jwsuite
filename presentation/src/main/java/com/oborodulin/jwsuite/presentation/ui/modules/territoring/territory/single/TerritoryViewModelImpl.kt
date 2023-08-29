@@ -208,53 +208,52 @@ class TerritoryViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoryFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: TerritoryUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val territoryUi = uiModel as TerritoryUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(TerritoryModel) called: territoryUi = %s", territoryUi)
-        territoryUi.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
+            .d("initFieldStatesByUiModel(TerritoryModel) called: territoryUi = %s", uiModel)
+        uiModel.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,
-            ListItemModel(territoryUi.congregation.id, territoryUi.congregation.congregationName)
+            ListItemModel(uiModel.congregation.id, uiModel.congregation.congregationName)
         )
         initStateValue(
             TerritoryFields.TERRITORY_CATEGORY, category,
-            territoryUi.territoryCategory.toTerritoryCategoriesListItem()
+            uiModel.territoryCategory.toTerritoryCategoriesListItem()
         )
         initStateValue(
             TerritoryFields.TERRITORY_LOCALITY, locality,
-            ListItemModel(territoryUi.locality.id, territoryUi.locality.localityName)
+            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
         )
         initStateValue(
             TerritoryFields.TERRITORY_LOCALITY_DISTRICT, localityDistrict,
             ListItemModel(
-                territoryUi.localityDistrict?.id,
-                territoryUi.localityDistrict?.districtName.orEmpty()
+                uiModel.localityDistrict?.id,
+                uiModel.localityDistrict?.districtName.orEmpty()
             )
         )
         initStateValue(
             TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict,
             ListItemModel(
-                territoryUi.microdistrict?.id,
-                territoryUi.microdistrict?.microdistrictName.orEmpty()
+                uiModel.microdistrict?.id,
+                uiModel.microdistrict?.microdistrictName.orEmpty()
             )
         )
         initStateValue(
-            TerritoryFields.TERRITORY_NUM, territoryNum, territoryUi.territoryNum.toString()
+            TerritoryFields.TERRITORY_NUM, territoryNum, uiModel.territoryNum.toString()
         )
         initStateValue(
-            TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness, territoryUi.isBusiness.toString()
+            TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness, uiModel.isBusiness.toString()
         )
         initStateValue(
             TerritoryFields.TERRITORY_IS_GROUP_MINISTRY, isGroupMinistry,
-            territoryUi.isGroupMinistry.toString()
+            uiModel.isGroupMinistry.toString()
         )
         initStateValue(
-            TerritoryFields.TERRITORY_IS_ACTIVE, isActive, territoryUi.isActive.toString()
+            TerritoryFields.TERRITORY_IS_ACTIVE, isActive, uiModel.isActive.toString()
         )
         initStateValue(
-            TerritoryFields.TERRITORY_DESC, territoryDesc, territoryUi.territoryDesc.orEmpty()
+            TerritoryFields.TERRITORY_DESC, territoryDesc, uiModel.territoryDesc.orEmpty()
         )
         return null
     }

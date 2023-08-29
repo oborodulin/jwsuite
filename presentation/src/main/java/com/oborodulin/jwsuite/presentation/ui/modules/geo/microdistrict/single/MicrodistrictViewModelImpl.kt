@@ -160,39 +160,36 @@ class MicrodistrictViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<MicrodistrictFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: MicrodistrictUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val microdistrictUi = uiModel as MicrodistrictUi
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(MicrodistrictModel) called: localityUi = %s",
-                microdistrictUi
+                "initFieldStatesByUiModel(MicrodistrictModel) called: microdistrictUi = %s",
+                uiModel
             )
-        microdistrictUi.id?.let {
-            initStateValue(MicrodistrictFields.MICRODISTRICT_ID, id, it.toString())
-        }
+        uiModel.id?.let { initStateValue(MicrodistrictFields.MICRODISTRICT_ID, id, it.toString()) }
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_LOCALITY, locality,
-            ListItemModel(microdistrictUi.locality.id, microdistrictUi.locality.localityName)
+            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
         )
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT, localityDistrict,
             ListItemModel(
-                microdistrictUi.localityDistrict.id,
-                microdistrictUi.localityDistrict.districtName
+                uiModel.localityDistrict.id,
+                uiModel.localityDistrict.districtName
             )
         )
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_SHORT_NAME, microdistrictShortName,
-            microdistrictUi.microdistrictShortName
+            uiModel.microdistrictShortName
         )
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_TYPE, microdistrictType,
-            microdistrictUi.microdistrictType.name
+            uiModel.microdistrictType.name
         )
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_NAME, microdistrictName,
-            microdistrictUi.microdistrictName
+            uiModel.microdistrictName
         )
         return null
     }

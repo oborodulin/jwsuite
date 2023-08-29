@@ -28,7 +28,7 @@ class GetTerritoryStreetUseCase(
             Response(it)
         }
 
-    data class Request(val territoryId: UUID, val territoryStreetId: UUID) : UseCase.Request
+    data class Request(val territoryId: UUID, val territoryStreetId: UUID? = null) : UseCase.Request
     data class Response(val territoryStreetWithTerritoryAndStreets: TerritoryStreetWithTerritoryAndStreets) :
         UseCase.Response
 }

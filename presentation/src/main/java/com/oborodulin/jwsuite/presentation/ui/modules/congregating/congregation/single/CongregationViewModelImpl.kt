@@ -125,32 +125,31 @@ class CongregationViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<CongregationFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: CongregationUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val congregationUi = uiModel as CongregationUi
         Timber.tag(TAG)
             .d(
                 "initFieldStatesByUiModel(CongregationUi) called: CongregationUi = %s",
-                congregationUi
+                uiModel
             )
-        congregationUi.id?.let {
+        uiModel.id?.let {
             initStateValue(CongregationFields.CONGREGATION_ID, id, it.toString())
         }
         initStateValue(
             CongregationFields.CONGREGATION_LOCALITY, locality,
-            ListItemModel(congregationUi.locality.id, congregationUi.locality.localityName)
+            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
         )
         initStateValue(
-            CongregationFields.CONGREGATION_NUM, congregationNum, congregationUi.congregationNum
+            CongregationFields.CONGREGATION_NUM, congregationNum, uiModel.congregationNum
         )
         initStateValue(
-            CongregationFields.CONGREGATION_NAME, congregationName, congregationUi.congregationName
+            CongregationFields.CONGREGATION_NAME, congregationName, uiModel.congregationName
         )
         initStateValue(
-            CongregationFields.TERRITORY_MARK, territoryMark, congregationUi.territoryMark
+            CongregationFields.TERRITORY_MARK, territoryMark, uiModel.territoryMark
         )
         initStateValue(
-            CongregationFields.IS_FAVORITE, isFavorite, congregationUi.isFavorite.toString()
+            CongregationFields.IS_FAVORITE, isFavorite, uiModel.isFavorite.toString()
         )
         return null
     }

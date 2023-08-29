@@ -129,28 +129,27 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoryCategoryFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: TerritoryCategoryUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val territoryCategoryUi = uiModel as TerritoryCategoryUi
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(TerritoryCategoryModel) called: regionUi = %s",
-                territoryCategoryUi
+                "initFieldStatesByUiModel(TerritoryCategoryModel) called: territoryCategoryUi = %s",
+                uiModel
             )
-        territoryCategoryUi.id?.let {
+        uiModel.id?.let {
             initStateValue(TerritoryCategoryFields.TERRITORY_CATEGORY_ID, id, it.toString())
         }
         initStateValue(
             TerritoryCategoryFields.TERRITORY_CATEGORY_CODE, territoryCategoryCode,
-            territoryCategoryUi.territoryCategoryCode.name
+            uiModel.territoryCategoryCode.name
         )
         initStateValue(
             TerritoryCategoryFields.TERRITORY_CATEGORY_MARK, territoryCategoryMark,
-            territoryCategoryUi.territoryCategoryMark
+            uiModel.territoryCategoryMark
         )
         initStateValue(
             TerritoryCategoryFields.TERRITORY_CATEGORY_NAME, territoryCategoryName,
-            territoryCategoryUi.territoryCategoryName
+            uiModel.territoryCategoryName
         )
         return null
     }

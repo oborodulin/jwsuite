@@ -57,7 +57,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: T): Job? = null
 
     abstract suspend fun observeInputEvents()
     fun isNewUiState() = id.value.value.isEmpty()

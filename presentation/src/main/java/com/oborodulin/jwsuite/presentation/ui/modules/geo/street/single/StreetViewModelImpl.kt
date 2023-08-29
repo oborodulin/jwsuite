@@ -166,40 +166,37 @@ class StreetViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<StreetFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: StreetUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val streetUi = uiModel as StreetUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(StreetModel) called: localityUi = %s", streetUi)
-        streetUi.id?.let {
-            initStateValue(StreetFields.STREET_ID, id, it.toString())
-        }
+            .d("initFieldStatesByUiModel(StreetModel) called: localityUi = %s", uiModel)
+        uiModel.id?.let { initStateValue(StreetFields.STREET_ID, id, it.toString()) }
         initStateValue(
             StreetFields.STREET_LOCALITY, locality,
-            ListItemModel(streetUi.locality.id, streetUi.locality.localityName)
+            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
         )
         initStateValue(
             StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict,
             ListItemModel(
-                streetUi.localityDistrict?.id, streetUi.localityDistrict?.districtName.orEmpty()
+                uiModel.localityDistrict?.id, uiModel.localityDistrict?.districtName.orEmpty()
             )
         )
         initStateValue(
             StreetFields.STREET_MICRODISTRICT, microdistrict,
             ListItemModel(
-                streetUi.microdistrict?.id, streetUi.microdistrict?.microdistrictName.orEmpty()
+                uiModel.microdistrict?.id, uiModel.microdistrict?.microdistrictName.orEmpty()
             )
         )
-        initStateValue(StreetFields.STREET_ROAD_TYPE, roadType, streetUi.roadType.name)
+        initStateValue(StreetFields.STREET_ROAD_TYPE, roadType, uiModel.roadType.name)
         initStateValue(
             StreetFields.STREET_IS_PRIVATE_SECTOR,
             isPrivateSector,
-            streetUi.isPrivateSector.toString()
+            uiModel.isPrivateSector.toString()
         )
         initStateValue(
-            StreetFields.STREET_EST_HOUSES, estimatedHouses, streetUi.estimatedHouses.toString()
+            StreetFields.STREET_EST_HOUSES, estimatedHouses, uiModel.estimatedHouses.toString()
         )
-        initStateValue(StreetFields.STREET_NAME, streetName, streetUi.streetName)
+        initStateValue(StreetFields.STREET_NAME, streetName, uiModel.streetName)
         return null
     }
 

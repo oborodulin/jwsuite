@@ -202,46 +202,45 @@ class MemberViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<MemberFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: MemberUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val memberUi = uiModel as MemberUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", memberUi)
-        memberUi.id?.let {
+            .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
+        uiModel.id?.let {
             initStateValue(MemberFields.MEMBER_ID, id, it.toString())
         }
         initStateValue(
             MemberFields.MEMBER_CONGREGATION, congregation,
             ListItemModel(
-                memberUi.group.congregation.id, memberUi.group.congregation.congregationName
+                uiModel.group.congregation.id, uiModel.group.congregation.congregationName
             )
         )
         initStateValue(
             MemberFields.MEMBER_GROUP, group,
-            ListItemModel(memberUi.group.id, memberUi.group.groupNum.toString())
+            ListItemModel(uiModel.group.id, uiModel.group.groupNum.toString())
         )
-        initStateValue(MemberFields.MEMBER_NUM, memberNum, memberUi.memberNum)
-        initStateValue(MemberFields.MEMBER_NAME, memberName, memberUi.memberName.orEmpty())
-        initStateValue(MemberFields.MEMBER_SURNAME, surname, memberUi.surname.orEmpty())
-        initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, memberUi.patronymic.orEmpty())
-        initStateValue(MemberFields.MEMBER_PSEUDONYM, pseudonym, memberUi.pseudonym)
+        initStateValue(MemberFields.MEMBER_NUM, memberNum, uiModel.memberNum)
+        initStateValue(MemberFields.MEMBER_NAME, memberName, uiModel.memberName.orEmpty())
+        initStateValue(MemberFields.MEMBER_SURNAME, surname, uiModel.surname.orEmpty())
+        initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, uiModel.patronymic.orEmpty())
+        initStateValue(MemberFields.MEMBER_PSEUDONYM, pseudonym, uiModel.pseudonym)
         initStateValue(
-            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, memberUi.phoneNumber.orEmpty()
+            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, uiModel.phoneNumber.orEmpty()
         )
-        initStateValue(MemberFields.MEMBER_TYPE, memberType, memberUi.memberType.name)
+        initStateValue(MemberFields.MEMBER_TYPE, memberType, uiModel.memberType.name)
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-            memberUi.dateOfBirth?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+            uiModel.dateOfBirth?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-            memberUi.dateOfBaptism?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+            uiModel.dateOfBaptism?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
-            memberUi.inactiveDate?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+            uiModel.inactiveDate?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
         return null

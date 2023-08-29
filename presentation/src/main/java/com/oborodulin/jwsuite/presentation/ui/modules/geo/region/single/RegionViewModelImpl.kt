@@ -128,16 +128,13 @@ class RegionViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<RegionFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: RegionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val regionUi = uiModel as RegionUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", regionUi)
-        regionUi.id?.let {
-            initStateValue(RegionFields.REGION_ID, id, it.toString())
-        }
-        initStateValue(RegionFields.REGION_CODE, regionCode, regionUi.regionCode)
-        initStateValue(RegionFields.REGION_NAME, regionName, regionUi.regionName)
+            .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", uiModel)
+        uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
+        initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
+        initStateValue(RegionFields.REGION_NAME, regionName, uiModel.regionName)
         return null
     }
 

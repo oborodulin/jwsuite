@@ -70,7 +70,7 @@ class TerritoriesListViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun initFieldStatesByUiModel(uiModel: Any) = null
+    override fun initFieldStatesByUiModel(uiModel: List<TerritoriesListItem>) = null
 
     companion object {
         fun previewModel(ctx: Context) =

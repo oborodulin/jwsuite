@@ -105,7 +105,7 @@ class CongregationsListViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: List<CongregationsListItem>): Job? = null
 
     companion object {
         fun previewModel(ctx: Context) =

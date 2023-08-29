@@ -89,7 +89,7 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: List<TerritoryStreetsListItem>): Job? = null
 
     companion object {
         fun previewModel(ctx: Context) =

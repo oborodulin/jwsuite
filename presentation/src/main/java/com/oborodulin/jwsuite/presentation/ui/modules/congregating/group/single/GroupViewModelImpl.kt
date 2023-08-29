@@ -118,19 +118,18 @@ class GroupViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<GroupFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: GroupUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val groupUi = uiModel as GroupUi
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", groupUi)
-        groupUi.id?.let {
+            .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", uiModel)
+        uiModel.id?.let {
             initStateValue(GroupFields.GROUP_ID, id, it.toString())
         }
         initStateValue(
             GroupFields.GROUP_CONGREGATION, congregation,
-            ListItemModel(groupUi.congregation.id, groupUi.congregation.congregationName)
+            ListItemModel(uiModel.congregation.id, uiModel.congregation.congregationName)
         )
-        initStateValue(GroupFields.GROUP_NUM, groupNum, groupUi.groupNum.toString())
+        initStateValue(GroupFields.GROUP_NUM, groupNum, uiModel.groupNum.toString())
         return null
     }
 

@@ -129,31 +129,27 @@ class LocalityDistrictViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<LocalityDistrictFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: Any): Job? {
+    override fun initFieldStatesByUiModel(uiModel: LocalityDistrictUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val localityDistrictUi = uiModel as LocalityDistrictUi
         Timber.tag(TAG)
             .d(
                 "initFieldStatesByUiModel(LocalityDistrictModel) called: localityDistrictUi = %s",
-                localityDistrictUi
+                uiModel
             )
-        localityDistrictUi.id?.let {
-            initStateValue(
-                LocalityDistrictFields.LOCALITY_DISTRICT_ID, id,
-                it.toString()
-            )
+        uiModel.id?.let {
+            initStateValue(LocalityDistrictFields.LOCALITY_DISTRICT_ID, id, it.toString())
         }
         initStateValue(
             LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
-            ListItemModel(localityDistrictUi.locality.id, localityDistrictUi.locality.localityName)
+            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
         )
         initStateValue(
             LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME, districtShortName,
-            localityDistrictUi.districtShortName
+            uiModel.districtShortName
         )
         initStateValue(
             LocalityDistrictFields.LOCALITY_DISTRICT_NAME, districtName,
-            localityDistrictUi.districtName
+            uiModel.districtName
         )
         return null
     }
