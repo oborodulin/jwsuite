@@ -24,7 +24,8 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModel
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListUiAction
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,7 +35,7 @@ private const val TAG = "Territoring.TerritoryStreetScreen"
 @Composable
 fun TerritoryStreetScreen(
     appState: AppState,
-    territoryViewModel: TerritoryViewModel,
+    territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput? = null
 ) {
@@ -43,7 +44,14 @@ fun TerritoryStreetScreen(
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(territoryStreetInput?.territoryStreetId) {
         Timber.tag(TAG).d("TerritoryStreetScreen: LaunchedEffect() BEFORE collect ui state flow")
-        territoryStreetViewModel.submitAction(TerritoryStreetUiAction.Load(territoryStreetInput?.territoryStreetId))
+        territoryStreetViewModel.submitAction(
+            TerritoryStreetUiAction.Load(
+                territoryStreetInput?.territoryId, territoryStreetInput?.territoryStreetId
+            )
+        )
+        territoryStreetInput?.territoryId?.let {
+            territoryStreetsListViewModel.submitAction(TerritoryStreetsListUiAction.Load(it))
+        }
     }
     territoryStreetViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)

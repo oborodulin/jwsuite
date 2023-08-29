@@ -447,8 +447,8 @@ sealed class NavRoutes constructor(
 
     data object TerritoryDetails : NavRoutes(
         String.format(ROUTE_TERRITORY_DETAILS, "{$ARG_TERRITORY_ID}"),
-        R.drawable.ic_territory_category_24,
-        R.string.nav_item_territory_category,
+        R.drawable.ic_territory_details_24,
+        R.string.nav_item_territory_details,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType
             nullable = true
@@ -503,7 +503,7 @@ sealed class NavRoutes constructor(
         fun fromEntry(entry: NavBackStackEntry): TerritoryStreetInput {
             val territoryStreetInput = TerritoryStreetInput(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
-                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_STREET_ID).orEmpty())
+                entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.let { UUID.fromString(it) }
             )
             Timber.tag(TAG).d("TerritoryStreet - fromEntry(...): '%s'", territoryStreetInput)
             return territoryStreetInput

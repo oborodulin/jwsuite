@@ -19,11 +19,9 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.StreetUi
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryStreetUiModel
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryStreetConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -49,20 +47,17 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     ) {
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name,
-            InputListItemWrapper()
+            TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name, InputListItemWrapper()
         )
     }
     override val street: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            TerritoryStreetFields.TERRITORY_STREET_STREET.name,
-            InputListItemWrapper()
+            TerritoryStreetFields.TERRITORY_STREET_STREET.name, InputListItemWrapper()
         )
     }
     override val isPrivateSector: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR.name,
-            InputWrapper()
+            TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR.name, InputWrapper()
         )
     }
     override val isEvenSide: StateFlow<InputWrapper> by lazy {
@@ -91,7 +86,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
 
                 else -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_street_subheader)
-                    loadTerritoryStreet(action.territoryStreetId)
+                    loadTerritoryStreetUiModel(action.territoryId!!, action.territoryStreetId)
                 }
             }
 
@@ -100,11 +95,11 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadTerritoryStreet(territoryStreetId: UUID): Job {
+    private fun loadTerritoryStreetUiModel(territoryId: UUID, territoryStreetId: UUID): Job {
         Timber.tag(TAG).d("loadTerritoryStreet(UUID) called: %s", territoryStreetId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoryStreetUseCase.execute(
-                GetTerritoryStreetUseCase.Request(territoryStreetId)
+                GetTerritoryStreetUseCase.Request(territoryId, territoryStreetId)
             )
                 .map {
                     converter.convert(it)
@@ -117,13 +112,11 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
 
     private fun saveTerritoryStreet(): Job {
-        val territoryUi = TerritoryUi()
-        territoryUi.id = territory.value.item?.itemId
         val streetUi = StreetUi()
         streetUi.id = street.value.item?.itemId
 
         val territoryStreetUi = TerritoryStreetUi(
-            territory = territoryUi,
+            territoryId = territory.value.item?.itemId!!,
             street = streetUi,
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             isEvenSide = isEvenSide.value.value.toBoolean(),
@@ -133,9 +126,8 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d(
-            "saveTerritoryStreet() called: UI model %s; territoryUi.id = %s; streetUi.id = %s",
+            "saveTerritoryStreet() called: UI model %s; streetUi.id = %s",
             territoryStreetUi,
-            territoryUi.id,
             streetUi.id
         )
         val job = viewModelScope.launch(errorHandler) {
@@ -155,7 +147,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: Any): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        val territoryStreetUi = uiModel as TerritoryStreetUi
+        val territoryStreetUi = uiModel as TerritoryStreetUiModel
         Timber.tag(TAG)
             .d(
                 "initFieldStatesByUiModel(TerritoryStreetModel) called: territoryStreetUi = %s",
@@ -175,19 +167,22 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_STREET, street,
-            ListItemModel(territoryStreetUi.street.id, territoryStreetUi.street.streetName)
+            ListItemModel(
+                territoryStreetUi.territoryStreet.street.id,
+                territoryStreetUi.territoryStreet.street.streetName
+            )
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR, isPrivateSector,
-            territoryStreetUi.isPrivateSector.toString()
+            territoryStreetUi.territoryStreet.isPrivateSector.toString()
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide,
-            territoryStreetUi.isEvenSide.toString()
+            territoryStreetUi.territoryStreet.isEvenSide.toString()
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
-            territoryStreetUi.estimatedHouses.toString()
+            territoryStreetUi.territoryStreet.estimatedHouses.toString()
         )
         return null
     }
@@ -200,13 +195,12 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                     is TerritoryStreetInputEvent.Street ->
                         when (TerritoryStreetInputValidator.Street.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                TerritoryStreetFields.TERRITORY_STREET_STREET, street,
-                                event.input, true
+                                TerritoryStreetFields.TERRITORY_STREET_STREET, street, event.input,
+                                true
                             )
 
                             else -> setStateValue(
-                                TerritoryStreetFields.TERRITORY_STREET_STREET, street,
-                                event.input
+                                TerritoryStreetFields.TERRITORY_STREET_STREET, street, event.input
                             )
                         }
 
@@ -241,8 +235,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                     is TerritoryStreetInputEvent.IsPrivateSector ->
                         setStateValue(
                             TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
-                            isPrivateSector,
-                            null
+                            isPrivateSector, null
                         )
 
                     is TerritoryStreetInputEvent.IsEvenSide ->
@@ -299,7 +292,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                //override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -332,7 +325,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
 
         fun previewUiModel(ctx: Context): TerritoryStreetUi {
             val territoryStreetUi = TerritoryStreetUi(
-                territory = TerritoryViewModelImpl.previewUiModel(ctx),
+                territoryId = UUID.randomUUID(),
                 street = StreetViewModelImpl.previewUiModel(ctx),
                 isEvenSide = true,
                 isPrivateSector = true,

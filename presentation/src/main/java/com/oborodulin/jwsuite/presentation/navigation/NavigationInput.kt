@@ -23,8 +23,8 @@ sealed class NavigationInput(val id: UUID) {
         NavigationInput(territoryCategoryId)
 
     data class TerritoryInput(val territoryId: UUID) : NavigationInput(territoryId)
-    data class TerritoryStreetInput(val territoryId: UUID, val territoryStreetId: UUID) :
-        NavigationInput(territoryStreetId)
+    data class TerritoryStreetInput(val territoryId: UUID, val territoryStreetId: UUID? = null) :
+        NavigationInput(territoryStreetId ?: territoryId)
 
     data class HouseInput(val houseId: UUID) : NavigationInput(houseId)
     data class EntranceInput(val entranceId: UUID) : NavigationInput(entranceId)

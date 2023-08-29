@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 @DatabaseView(
     viewName = TerritoryStreetView.VIEW_NAME,
     value = """
-SELECT s.*, ts.territoryStreetId, ts.tsStreetsId, ts.tsTerritoriesId, ts.isEvenSide, ts.isTerStreetPrivateSector, ts.estTerStreetHouses 
+SELECT s.*, ts.* 
 FROM ${TerritoryStreetEntity.TABLE_NAME} ts JOIN ${GeoStreetView.VIEW_NAME} s ON s.streetId = ts.tsStreetsId
 """
 )

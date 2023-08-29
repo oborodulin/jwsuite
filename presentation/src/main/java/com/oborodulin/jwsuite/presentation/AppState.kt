@@ -93,7 +93,7 @@ class AppState(
 
     fun navBarUpPress() = this.navBarNavController.navigateUp()
 
-    fun commonNavPopBackStack() = this.commonNavController.popBackStack()
+    fun commonNavigateUp() = this.commonNavController.navigateUp()
 
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen() {

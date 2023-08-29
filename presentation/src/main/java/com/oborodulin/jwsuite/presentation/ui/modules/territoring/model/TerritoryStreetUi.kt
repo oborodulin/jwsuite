@@ -5,7 +5,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.StreetUi
 import java.util.UUID
 
 data class TerritoryStreetUi(
-    val territoryId: UUID? = null,
+    val territoryId: UUID = UUID.randomUUID(),
     val street: StreetUi = StreetUi(),
     val isEvenSide: Boolean? = null,
     val isPrivateSector: Boolean? = null,

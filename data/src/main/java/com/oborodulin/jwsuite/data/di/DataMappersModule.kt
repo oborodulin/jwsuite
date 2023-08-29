@@ -320,7 +320,7 @@ object DataMappersModule {
     @Singleton
     @Provides
     fun provideTerritoryStreetViewToTerritoryStreetMapper(mapper: GeoStreetViewToGeoStreetMapper): TerritoryStreetViewToTerritoryStreetMapper =
-        TerritoryStreetViewToTerritoryStreetMapper(streetMapper = mapper)
+        TerritoryStreetViewToTerritoryStreetMapper(mapper = mapper)
 
     @Singleton
     @Provides

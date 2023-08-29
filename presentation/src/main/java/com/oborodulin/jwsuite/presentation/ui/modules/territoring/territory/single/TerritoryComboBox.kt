@@ -39,7 +39,7 @@ fun TerritoryComboBox(
     listViewModel: TerritoriesListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent,
+    onValueChange: OnListItemEvent = {},
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("TerritoryComboBox(...) called")

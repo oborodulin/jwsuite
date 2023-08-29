@@ -32,6 +32,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdis
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetToStreetUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetUiToStreetMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.geo.model.mappers.street.StreetsListToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.converters.TerritoryCategoriesListConverter
@@ -56,6 +57,7 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetUiMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
+import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.model.mappers.street.TerritoryStreetsListToTerritoryStreetsListItemMapper
 import dagger.Module
 import dagger.Provides
@@ -131,6 +133,19 @@ object TerritoringModule {
     @Provides
     fun provideTerritoryStreetsListToTerritoryStreetsListItemMapper(mapper: TerritoryStreetToTerritoryStreetsListItemMapper): TerritoryStreetsListToTerritoryStreetsListItemMapper =
         TerritoryStreetsListToTerritoryStreetsListItemMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper(
+        territoryStreetMapper: TerritoryStreetToTerritoryStreetUiMapper,
+        territoryMapper: TerritoryToTerritoryUiMapper,
+        streetListItemMapper: StreetsListToStreetsListItemMapper
+    ): TerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper =
+        TerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper(
+            territoryStreetMapper = territoryStreetMapper,
+            territoryMapper = territoryMapper,
+            streetListItemMapper = streetListItemMapper
+        )
 
     // Territory:
     @Singleton
@@ -229,7 +244,7 @@ object TerritoringModule {
     // Territory Streets:
     @Singleton
     @Provides
-    fun provideTerritoryStreetConverter(mapper: TerritoryStreetToTerritoryStreetUiMapper): TerritoryStreetConverter =
+    fun provideTerritoryStreetConverter(mapper: TerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper): TerritoryStreetConverter =
         TerritoryStreetConverter(mapper = mapper)
 
     @Singleton

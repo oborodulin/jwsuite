@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.components.field
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,12 +13,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.util.OnImeKeyAction
@@ -36,7 +39,10 @@ fun ExposedDropdownMenuBoxComponent(
     values: List<String> = listOf(),    // resources
     keys: List<String> = listOf(),      // Enum.names
     @StringRes labelResId: Int? = null,
+    leadingImageVector: ImageVector? = null,
+    @DrawableRes leadingPainterResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    @StringRes leadingCntDescResId: Int? = null,
     maxLines: Int = Int.MAX_VALUE,
     keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
     visualTransformation: VisualTransformation = remember { VisualTransformation.None },
@@ -71,7 +77,14 @@ fun ExposedDropdownMenuBoxComponent(
                     //onValueChange(it)
                 },
                 label = labelResId?.let { { Text(stringResource(it)) } },
-                leadingIcon = leadingIcon,
+                leadingIcon = {
+                    IconComponent(
+                        icon = leadingIcon,
+                        imageVector = leadingImageVector,
+                        painterResId = leadingPainterResId,
+                        contentDescriptionResId = leadingCntDescResId
+                    )
+                },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 maxLines = maxLines,
                 isError = inputWrapper.errorId != null,

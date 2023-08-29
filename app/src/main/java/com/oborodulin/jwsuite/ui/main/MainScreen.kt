@@ -181,7 +181,8 @@ private fun HomeNavigationHost(
             )
         }
         composable(
-            route = NavRoutes.TerritoryDetails.route, arguments = NavRoutes.TerritoryDetails.arguments
+            route = NavRoutes.TerritoryDetails.route,
+            arguments = NavRoutes.TerritoryDetails.arguments
         ) {
             Timber.tag(TAG)
                 .d(
@@ -204,11 +205,8 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to TerritoryStreetScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.TerritoryStreet.arguments
                 )
-            val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             TerritoryStreetScreen(
                 appState = appState,
-                territoryViewModel = territoryViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }
