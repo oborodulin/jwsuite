@@ -70,6 +70,7 @@ dependencies {
     implementation project(':data')
     implementation project(':domain')
     implementation project(':presentation')
+    implementation project(':presentation_geo')
 
     // Logging
     implementation deps.logging.timber
