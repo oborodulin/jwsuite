@@ -1,0 +1,4 @@
+<resources>
+    <!--Значения полей данных по-умолчанию -->
+    <string name="territory_business_mark">д</string>
+</resources>
