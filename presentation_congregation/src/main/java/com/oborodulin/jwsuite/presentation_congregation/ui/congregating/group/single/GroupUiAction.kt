@@ -5,5 +5,5 @@ import java.util.UUID
 
 sealed class GroupUiAction : UiAction {
     data class Load(val groupId: UUID? = null) : GroupUiAction()
-    object Save : GroupUiAction()
+    data object Save : GroupUiAction()
 }

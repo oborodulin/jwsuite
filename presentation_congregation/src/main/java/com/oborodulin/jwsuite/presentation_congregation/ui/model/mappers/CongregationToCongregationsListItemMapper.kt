@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.model.mappers.locality.LocalityToLocalityUiMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
 import java.util.UUID
 
 class CongregationToCongregationsListItemMapper(private val localityMapper: LocalityToLocalityUiMapper) :

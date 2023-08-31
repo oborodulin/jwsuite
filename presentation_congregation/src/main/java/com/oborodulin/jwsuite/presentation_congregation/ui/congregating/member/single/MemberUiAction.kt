@@ -5,5 +5,5 @@ import java.util.UUID
 
 sealed class MemberUiAction : UiAction {
     data class Load(val memberId: UUID? = null) : MemberUiAction()
-    object Save : MemberUiAction()
+    data object Save : MemberUiAction()
 }

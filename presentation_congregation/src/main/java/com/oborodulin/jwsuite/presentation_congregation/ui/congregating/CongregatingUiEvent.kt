@@ -11,5 +11,5 @@ sealed class CongregatingUiEvent {
     data class HeatedVolumeChanged(val heatedVolume: BigDecimal?) : CongregatingUiEvent()
     data class PaymentDayChanged(val paymentDay: Int?) : CongregatingUiEvent()
     data class PersonsNumChanged(val personsNum: Int?) : CongregatingUiEvent()
-    object Submit : CongregatingUiEvent()
+    data object Submit : CongregatingUiEvent()
 }
