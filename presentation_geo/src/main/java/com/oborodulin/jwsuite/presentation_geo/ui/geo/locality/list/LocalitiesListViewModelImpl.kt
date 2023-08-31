@@ -11,10 +11,10 @@ import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.util.LocalityType
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.LocalityInput
-import com.oborodulin.jwsuite.presentation_geo.model.LocalitiesListItem
-import com.oborodulin.jwsuite.presentation_geo.model.converters.LocalitiesListConverter
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalitiesListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalitiesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -35,15 +35,15 @@ class LocalitiesListViewModelImpl @Inject constructor(
     private val useCases: LocalityUseCases,
     private val converter: LocalitiesListConverter
 ) : LocalitiesListViewModel,
-    MviViewModel<List<LocalitiesListItem>, UiState<List<LocalitiesListItem>>, com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction, com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiSingleEvent>() {
+    MviViewModel<List<LocalitiesListItem>, UiState<List<LocalitiesListItem>>, LocalitiesListUiAction, LocalitiesListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
-    override suspend fun handleAction(action: com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction): Job {
+    override suspend fun handleAction(action: LocalitiesListUiAction): Job {
         Timber.tag(TAG)
             .d("handleAction(LocalitiesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.Load -> {
+            is LocalitiesListUiAction.Load -> {
                 loadLocalities(action.regionId, action.regionDistrictId)
             }
 
@@ -51,15 +51,15 @@ class LocalitiesListViewModelImpl @Inject constructor(
                           loadFilteredLocalities(action.search)
                       }*/
 
-            is com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.EditLocality -> {
+            is LocalitiesListUiAction.EditLocality -> {
                 submitSingleEvent(
-                    com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiSingleEvent.OpenLocalityScreen(
+                    LocalitiesListUiSingleEvent.OpenLocalityScreen(
                         NavRoutes.Locality.routeForLocality(LocalityInput(action.localityId))
                     )
                 )
             }
 
-            is com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.DeleteLocality -> deleteLocality(action.localityId)
+            is LocalitiesListUiAction.DeleteLocality -> deleteLocality(action.localityId)
         }
         return job
     }
@@ -112,7 +112,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
             object : LocalitiesListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow =
-                    Channel<com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiSingleEvent>().receiveAsFlow()
+                    Channel<LocalitiesListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
@@ -121,7 +121,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
-                override fun submitAction(action: com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction): Job? = null
+                override fun submitAction(action: LocalitiesListUiAction): Job? = null
             }
 
         fun previewList(ctx: Context) = listOf(

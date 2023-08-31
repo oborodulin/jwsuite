@@ -25,14 +25,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation_congregation.AppState
+import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
@@ -42,6 +44,7 @@ private const val TAG = "Congregating.GroupsListView"
 @Composable
 fun GroupsListView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
@@ -59,8 +62,8 @@ fun GroupsListView(
     //        Lifecycle.State.STARTED
     //    )
     //}
-    val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
     Timber.tag(TAG)
         .d(

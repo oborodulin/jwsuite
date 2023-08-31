@@ -21,16 +21,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation_congregation.AppState
-import com.oborodulin.jwsuite.presentation_congregation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.CongregationInput
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.region.list.RegionsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.region.single.RegionViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.regiondistrict.single.RegionDistrictViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -39,24 +33,18 @@ private const val TAG = "Congregating.CongregationScreen"
 @Composable
 fun CongregationScreen(
     appState: AppState,
-    congregationViewModel: CongregationViewModelImpl = hiltViewModel(),
-    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
-    localityViewModel: LocalityViewModelImpl = hiltViewModel(),
-    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
-    regionViewModel: RegionViewModelImpl = hiltViewModel(),
-    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
-    regionDistrictViewModel: RegionDistrictViewModelImpl = hiltViewModel(),
+    viewModel: CongregationViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(congregationInput?.congregationId) {
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
-        congregationViewModel.submitAction(CongregationUiAction.Load(congregationInput?.congregationId))
+        viewModel.submitAction(CongregationUiAction.Load(congregationInput?.congregationId))
     }
-    congregationViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        congregationViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme {
@@ -69,7 +57,7 @@ fun CongregationScreen(
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by congregationViewModel.areInputsValid.collectAsStateWithLifecycle()
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -83,11 +71,11 @@ fun CongregationScreen(
                             onClick = {
                                 Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
                                 // checks all errors
-                                congregationViewModel.onContinueClick {
+                                viewModel.onContinueClick {
                                     // if success, then save and backToBottomBarScreen
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
-                                        congregationViewModel.submitAction(CongregationUiAction.Save)
+                                        viewModel.submitAction(CongregationUiAction.Save)
                                             .join()
                                         appState.backToBottomBarScreen()
                                     }

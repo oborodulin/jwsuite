@@ -17,11 +17,11 @@ import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDis
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.SaveLocalityDistrictUseCase
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.model.LocalityDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.model.LocalityUi
-import com.oborodulin.jwsuite.presentation_geo.model.converters.LocalityDistrictConverter
-import com.oborodulin.jwsuite.presentation_geo.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictsListItemMapper
-import com.oborodulin.jwsuite.presentation_geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityDistrictConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictsListItemMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

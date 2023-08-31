@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -32,28 +31,29 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.presentation_congregation.AppState
+import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import timber.log.Timber
-import java.util.*
 
 /**
  * Created by o.borodulin 10.June.2023
  */
 private const val TAG = "Congregating.CongregatingScreen"
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CongregatingScreen(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
@@ -73,7 +73,7 @@ fun CongregatingScreen(
         ScaffoldComponent(
             appState = appState,
             nestedScrollConnection = nestedScrollConnection,
-            topBarTitleResId = R.string.nav_item_congregating,
+            topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating,
             topBarActions = {
                 IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                     Icon(Icons.Outlined.Add, null)
@@ -91,7 +91,9 @@ fun CongregatingScreen(
                             title = stringResource(R.string.congregation_tab_congregations),
                             view = {
                                 CongregationMembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
+                                    appState = appState,
+                                    sharedViewModel = sharedViewModel,
+                                    membersListViewModel = membersListViewModel
                                 )
                             }
                         ),
@@ -99,7 +101,9 @@ fun CongregatingScreen(
                             title = stringResource(R.string.congregation_tab_groups),
                             view = {
                                 GroupMembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
+                                    appState = appState,
+                                    sharedViewModel = sharedViewModel,
+                                    membersListViewModel = membersListViewModel
                                 )
                             }
                         ),
@@ -107,7 +111,9 @@ fun CongregatingScreen(
                             title = stringResource(R.string.congregation_tab_members),
                             view = {
                                 MembersView(
-                                    appState = appState, membersListViewModel = membersListViewModel
+                                    appState = appState,
+                                    sharedViewModel = sharedViewModel,
+                                    membersListViewModel = membersListViewModel
                                 )
                             }
                         )
@@ -133,7 +139,11 @@ fun CongregatingScreen(
 }
 
 @Composable
-fun CongregationMembersView(appState: AppState, membersListViewModel: MembersListViewModel) {
+fun CongregationMembersView(
+    appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    membersListViewModel: MembersListViewModel
+) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
@@ -160,7 +170,7 @@ fun CongregationMembersView(appState: AppState, membersListViewModel: MembersLis
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationsListView(appState = appState)
+            CongregationsListView(appState = appState, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier
@@ -174,14 +184,18 @@ fun CongregationMembersView(appState: AppState, membersListViewModel: MembersLis
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)
+            MembersListView(appState = appState, sharedViewModel = sharedViewModel)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 
 @Composable
-fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewModel) {
+fun GroupMembersView(
+    appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    membersListViewModel: MembersListViewModel
+) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
@@ -208,7 +222,7 @@ fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewMo
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            GroupsListView(appState = appState)
+            GroupsListView(appState = appState, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier
@@ -222,14 +236,18 @@ fun GroupMembersView(appState: AppState, membersListViewModel: MembersListViewMo
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)
+            MembersListView(appState = appState, sharedViewModel = sharedViewModel)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 
 @Composable
-fun MembersView(appState: AppState, membersListViewModel: MembersListViewModel) {
+fun MembersView(
+    appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    membersListViewModel: MembersListViewModel
+) {
     Timber.tag(TAG).d("MembersView(...) called")
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
@@ -256,7 +274,7 @@ fun MembersView(appState: AppState, membersListViewModel: MembersListViewModel) 
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)
+            MembersListView(appState = appState, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier

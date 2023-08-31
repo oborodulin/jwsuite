@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,18 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnListItemEvent
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
 
 /**
  * Created by tfakioglu on 12.December.2021
@@ -67,15 +69,20 @@ fun CongregationsListItemComponent(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
                                 .padding(4.dp)
+                                .size(20.dp)
                                 .clickable {
                                     if (!item.isFavorite) {
                                         onFavorite(item)
                                     }
                                 },
-                            painter = when (item.isFavorite) {
+                            imageVector = when (item.isFavorite) {
+                                true -> Icons.Outlined.Favorite
+                                false -> Icons.Outlined.FavoriteBorder
+                            },
+                            /*painter = when (item.isFavorite) {
                                 true -> painterResource(R.drawable.outline_favorite_black_20)
                                 false -> painterResource(R.drawable.outline_favorite_border_black_20)
-                            },
+                            },*/
                             contentDescription = ""
                         )
                     }

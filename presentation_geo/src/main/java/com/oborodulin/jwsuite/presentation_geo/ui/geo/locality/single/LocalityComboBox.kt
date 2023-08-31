@@ -21,7 +21,7 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.LocalityComboBox"
@@ -58,7 +58,7 @@ fun LocalityComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.locality_hint,
         listTitleResId = R.string.dlg_title_select_locality,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_location_city_36), null) },
+        leadingPainterResId = R.drawable.ic_location_city_36,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single
 
 import android.content.res.Configuration
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,10 +17,10 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
 
@@ -63,7 +61,7 @@ fun RegionDistrictComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.region_district_hint,
         listTitleResId = R.string.dlg_title_select_region_district,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_district_36), null) },
+        leadingPainterResId = R.drawable.ic_district_36,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

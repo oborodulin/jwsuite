@@ -18,19 +18,19 @@ import java.util.UUID
         unique = true
     )],
     foreignKeys = [ForeignKey(
-        entity = RoomEntity::class,
+        entity = com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity::class,
         parentColumns = arrayOf("roomId"),
         childColumns = arrayOf("tmRoomsId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
-        entity = HouseEntity::class,
+        entity = com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity::class,
         parentColumns = arrayOf("houseId"),
         childColumns = arrayOf("tmHousesId"),
         onDelete = ForeignKey.CASCADE,
         deferred = true
     ), ForeignKey(
-        entity = TerritoryEntity::class,
+        entity = com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity::class,
         parentColumns = arrayOf("territoryId"),
         childColumns = arrayOf("tmTerritoriesId"),
         onDelete = ForeignKey.CASCADE,

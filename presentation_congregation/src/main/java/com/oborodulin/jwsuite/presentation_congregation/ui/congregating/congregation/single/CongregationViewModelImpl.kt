@@ -18,7 +18,8 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCa
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationUiToCongregationMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -102,7 +103,7 @@ class CongregationViewModelImpl @Inject constructor(
     }
 
     private fun saveCongregation(): Job {
-        val localityUi = com.oborodulin.jwsuite.presentation_congregation.ui.geo.model.LocalityUi()
+        val localityUi = LocalityUi()
         localityUi.id = locality.value.item?.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,

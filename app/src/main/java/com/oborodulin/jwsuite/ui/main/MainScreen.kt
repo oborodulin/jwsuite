@@ -44,6 +44,10 @@ import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.sing
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single.TerritoryStreetScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -125,7 +129,13 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Group.arguments
                 )
-            GroupScreen(appState = appState, groupInput = NavRoutes.Group.fromEntry(it))
+            val sharedViewModel =
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            GroupScreen(
+                appState = appState,
+                sharedViewModel = sharedViewModel,
+                groupInput = NavRoutes.Group.fromEntry(it)
+            )
         }
         composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
             Timber.tag(TAG)
@@ -133,7 +143,9 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Member.arguments
                 )
-            MemberScreen(appState = appState, memberInput = NavRoutes.Member.fromEntry(it))
+            val sharedViewModel =
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            MemberScreen(appState = appState, sharedViewModel = sharedViewModel, memberInput = NavRoutes.Member.fromEntry(it))
         }
 
         // Territory:

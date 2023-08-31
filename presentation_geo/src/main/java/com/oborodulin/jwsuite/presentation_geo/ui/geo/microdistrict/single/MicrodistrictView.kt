@@ -34,10 +34,10 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.MicrodistrictView"
@@ -159,7 +159,7 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.type_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_signpost_36), null) },
+            leadingPainterResId = com.oborodulin.jwsuite.presentation_geo.R.drawable.ic_signpost_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },

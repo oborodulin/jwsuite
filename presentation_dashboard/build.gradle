@@ -54,6 +54,7 @@ dependencies {
     implementation project(':data_geo')
     implementation project(':domain')
     implementation project(':presentation')
+    implementation project(':presentation_geo')
     implementation project(':presentation_congregation')
 
     // Logging

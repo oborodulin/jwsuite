@@ -1,31 +1,4 @@
 <resources>
-    <!--Значения полей данных по-умолчанию -->
-    <!--УЧАСТКИ-->
-    <string name="territory_business_mark">д</string>
-    <!--Категории-->
-    <string name="def_house_territory_category_code">HOUSES</string>
-    <string name="def_house_territory_category_mark">Д</string>
-    <string name="def_house_territory_category_name">Подомовые</string>
-    <string name="def_floor_territory_category_code">FLOORS</string>
-    <string name="def_floor_territory_category_mark">Э</string>
-    <string name="def_floor_territory_category_name">Поэтажные</string>
-    <string name="def_room_territory_category_code">ROOMS</string>
-    <string name="def_room_territory_category_mark">К</string>
-    <string name="def_room_territory_category_name">Поквартирные</string>
-    <!--Участки-->
-    <string name="def_territory1_card_num">ХД-1</string>
-    <string name="def_territory1_card_location">[БДН:ДОН]</string>
-    <string name="def_territory1_desc">возле маг. "Базилик"</string>
-    <string name="def_territory2_card_num">ХД-2</string>
-    <string name="def_territory2_card_location">МСП</string>
-    <string name="def_territory2_desc">напротив Храма</string>
-    <string name="def_territory3_card_num">ХД-3</string>
-    <string name="def_territory3_card_location"> </string>
-    <string name="def_territory3_desc"> </string>
-    <string name="def_territory4_card_num">ХД-4д</string>
-    <string name="def_territory4_card_location">[БДН]</string>
-    <string name="def_territory4_desc">ДКАД</string>
-
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>
     <string name="lang_name_en">Английский</string>

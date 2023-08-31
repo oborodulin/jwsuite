@@ -87,7 +87,8 @@ fun SwitchComponent(
             IconComponent(
                 imageVector = imageVector,
                 painterResId = painterResId,
-                contentDescriptionResId = contentDescriptionResId
+                contentDescriptionResId = contentDescriptionResId,
+                size = 36.dp
             )
             labelResId?.let {
                 Text(
@@ -139,7 +140,7 @@ fun PreviewSwitchComponent() {
                     value = "true",
                     errorId = R.string.preview_blank_text_field_err
                 ),
-
+                painterResId = R.drawable.outline_photo_black_24,
                 labelResId = R.string.preview_blank_text_field_lbl,
                 onCheckedChange = {})
         }

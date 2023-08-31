@@ -16,11 +16,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation_congregation.AppState
-import com.oborodulin.jwsuite.presentation_congregation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.GroupInput
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -29,6 +30,7 @@ private const val TAG = "Congregating.GroupScreen"
 @Composable
 fun GroupScreen(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     groupViewModel: GroupViewModelImpl = hiltViewModel(),
     groupInput: GroupInput? = null
 ) {
@@ -53,7 +55,7 @@ fun GroupScreen(
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by groupViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    GroupView(appState.sharedViewModel.value)
+                    GroupView(sharedViewModel)
                     Spacer(Modifier.height(8.dp))
                     SaveButtonComponent(
                         enabled = areInputsValid,

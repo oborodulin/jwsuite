@@ -17,11 +17,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation_congregation.AppState
-import com.oborodulin.jwsuite.presentation_congregation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.MemberInput
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -30,18 +31,19 @@ private const val TAG = "Congregating.MemberScreen"
 @Composable
 fun MemberScreen(
     appState: AppState,
-    memberViewModel: MemberViewModelImpl = hiltViewModel(),
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    viewModel: MemberViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: groupInput = %s", memberInput)
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(memberInput?.memberId) {
         Timber.tag(TAG).d("MemberScreen: LaunchedEffect() BEFORE collect ui state flow")
-        memberViewModel.submitAction(MemberUiAction.Load(memberInput?.memberId))
+        viewModel.submitAction(MemberUiAction.Load(memberInput?.memberId))
     }
-    memberViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        memberViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)
@@ -52,22 +54,22 @@ fun MemberScreen(
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
                 }
-            ) { it ->
-                CommonScreen(paddingValues = it, state = state) {
-                    val areInputsValid by memberViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    MemberView(appState.sharedViewModel.value)
+            ) { paddingValues ->
+                CommonScreen(paddingValues = paddingValues, state = state) {
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+                    MemberView(sharedViewModel)
                     Spacer(Modifier.height(8.dp))
                     SaveButtonComponent(
                         enabled = areInputsValid,
                         onClick = {
-                            memberViewModel.onContinueClick {
+                            viewModel.onContinueClick {
                                 Timber.tag(TAG).d("MemberScreen(...): Start viewModelScope.launch")
                                 // checks all errors
-                                memberViewModel.onContinueClick {
+                                viewModel.onContinueClick {
                                     // if success, then save and backToBottomBarScreen
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
-                                        memberViewModel.submitAction(MemberUiAction.Save)
+                                        viewModel.submitAction(MemberUiAction.Save)
                                             .join()
                                         appState.backToBottomBarScreen()
                                     }

@@ -3,6 +3,10 @@ package com.oborodulin.jwsuite.presentation.navigation
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
@@ -102,30 +106,46 @@ private const val ARG_ROOM_ID = "roomId"
  */
 sealed class NavRoutes constructor(
     val route: String,
-    @DrawableRes open val iconResId: Int,
+    val iconImageVector: ImageVector? = null,
+    @DrawableRes open val iconPainterResId: Int? = null,
     @StringRes open val titleResId: Int,
     val arguments: List<NamedNavArgument> = emptyList()
 ) {
-    data object Home :
-        NavRoutes(ROUTE_HOME, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
+    data object Home : NavRoutes(
+        route = ROUTE_HOME,
+        iconPainterResId = R.drawable.ic_dashboard_24,
+        titleResId = R.string.nav_item_dashboarding
+    )
 
-    data object Dashboarding :
-        NavRoutes(ROUTE_DASHBOARDING, R.drawable.ic_dashboard_24, R.string.nav_item_dashboarding)
+    data object Dashboarding : NavRoutes(
+        route = ROUTE_DASHBOARDING,
+        iconPainterResId = R.drawable.ic_dashboard_24,
+        titleResId = R.string.nav_item_dashboarding
+    )
 
-    data object Congregating :
-        NavRoutes(ROUTE_CONGREGATING, R.drawable.ic_congregation_24, R.string.nav_item_congregating)
+    data object Congregating : NavRoutes(
+        route = ROUTE_CONGREGATING,
+        iconPainterResId = R.drawable.ic_congregation_24,
+        titleResId = R.string.nav_item_congregating
+    )
 
-    data object Territoring :
-        NavRoutes(ROUTE_TERRITORING, R.drawable.ic_territory_map_24, R.string.nav_item_territoring)
+    data object Territoring : NavRoutes(
+        route = ROUTE_TERRITORING,
+        iconPainterResId = R.drawable.ic_territory_map_24,
+        titleResId = R.string.nav_item_territoring
+    )
 
-    data object Ministring :
-        NavRoutes(ROUTE_MINISTRING, R.drawable.ic_maps_home_work_24, R.string.nav_item_ministring)
+    data object Ministring : NavRoutes(
+        route = ROUTE_MINISTRING,
+        iconPainterResId = R.drawable.ic_maps_home_work_24,
+        titleResId = R.string.nav_item_ministring
+    )
 
     // Geo:
     data object Region : NavRoutes(
-        String.format(ROUTE_REGION, "{$ARG_REGION_ID}"),
-        R.drawable.ic_region_24,
-        R.string.nav_item_region,
+        route = String.format(ROUTE_REGION, "{$ARG_REGION_ID}"),
+        iconPainterResId = R.drawable.ic_region_24,
+        titleResId = R.string.nav_item_region,
         arguments = listOf(navArgument(ARG_REGION_ID) {
             type = NavType.StringType
             nullable = true
@@ -151,9 +171,10 @@ sealed class NavRoutes constructor(
     }
 
     data object RegionDistrict : NavRoutes(
+        route =
         String.format(ROUTE_REGION_DISTRICT, "{$ARG_REGION_DISTRICT_ID}"),
-        R.drawable.ic_district_24,
-        R.string.nav_item_region_district,
+        iconPainterResId = R.drawable.ic_district_24,
+        titleResId = R.string.nav_item_region_district,
         arguments = listOf(navArgument(ARG_REGION_DISTRICT_ID) {
             type = NavType.StringType
             nullable = true
@@ -180,9 +201,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Locality : NavRoutes(
-        String.format(ROUTE_LOCALITY, "{$ARG_LOCALITY_ID}"),
-        R.drawable.ic_location_city_24,
-        R.string.nav_item_locality,
+        route = String.format(ROUTE_LOCALITY, "{$ARG_LOCALITY_ID}"),
+        iconPainterResId = R.drawable.ic_location_city_24,
+        titleResId = R.string.nav_item_locality,
         arguments = listOf(navArgument(ARG_LOCALITY_ID) {
             type = NavType.StringType
             nullable = true
@@ -209,9 +230,9 @@ sealed class NavRoutes constructor(
     }
 
     data object LocalityDistrict : NavRoutes(
-        String.format(ROUTE_LOCALITY_DISTRICT, "{$ARG_LOCALITY_DISTRICT_ID}"),
-        R.drawable.ic_locality_district_24,
-        R.string.nav_item_locality_district,
+        route = String.format(ROUTE_LOCALITY_DISTRICT, "{$ARG_LOCALITY_DISTRICT_ID}"),
+        iconPainterResId = R.drawable.ic_locality_district_24,
+        titleResId = R.string.nav_item_locality_district,
         arguments = listOf(navArgument(ARG_LOCALITY_DISTRICT_ID) {
             type = NavType.StringType
             nullable = true
@@ -240,9 +261,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Microdistrict : NavRoutes(
-        String.format(ROUTE_MICRODISTRICT, "{$ARG_MICRODISTRICT_ID}"),
-        R.drawable.ic_microdistrict_24,
-        R.string.nav_item_microdistrict,
+        route = String.format(ROUTE_MICRODISTRICT, "{$ARG_MICRODISTRICT_ID}"),
+        iconPainterResId = R.drawable.ic_microdistrict_24,
+        titleResId = R.string.nav_item_microdistrict,
         arguments = listOf(navArgument(ARG_MICRODISTRICT_ID) {
             type = NavType.StringType
             nullable = true
@@ -269,9 +290,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Street : NavRoutes(
-        String.format(ROUTE_STREET, "{$ARG_STREET_ID}"),
-        R.drawable.ic_street_sign_24,
-        R.string.nav_item_street,
+        route = String.format(ROUTE_STREET, "{$ARG_STREET_ID}"),
+        iconPainterResId = R.drawable.ic_street_sign_24,
+        titleResId = R.string.nav_item_street,
         arguments = listOf(navArgument(ARG_STREET_ID) {
             type = NavType.StringType
             nullable = true
@@ -299,9 +320,9 @@ sealed class NavRoutes constructor(
 
     // Congregation:
     data object Congregation : NavRoutes(
-        String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
-        R.drawable.ic_congregation_24,
-        R.string.nav_item_congregation,
+        route = String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
+        iconPainterResId = R.drawable.ic_congregation_24,
+        titleResId = R.string.nav_item_congregation,
         arguments = listOf(navArgument(ARG_CONGREGATION_ID) {
             type = NavType.StringType
             nullable = true
@@ -328,9 +349,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Group : NavRoutes(
-        String.format(ROUTE_GROUP, "{$ARG_GROUP_ID}"),
-        R.drawable.ic_group_24,
-        R.string.nav_item_group,
+        route = String.format(ROUTE_GROUP, "{$ARG_GROUP_ID}"),
+        iconPainterResId = R.drawable.ic_group_24,
+        titleResId = R.string.nav_item_group,
         arguments = listOf(navArgument(ARG_GROUP_ID) {
             type = NavType.StringType
             nullable = true
@@ -356,9 +377,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Member : NavRoutes(
-        String.format(ROUTE_MEMBER, "{$ARG_MEMBER_ID}"),
-        R.drawable.ic_person_24,
-        R.string.nav_item_member,
+        route = String.format(ROUTE_MEMBER, "{$ARG_MEMBER_ID}"),
+        iconImageVector = Icons.Outlined.Person,
+        titleResId = R.string.nav_item_member,
         arguments = listOf(navArgument(ARG_MEMBER_ID) {
             type = NavType.StringType
             nullable = true
@@ -385,9 +406,9 @@ sealed class NavRoutes constructor(
     }
 
     data object TerritoryCategory : NavRoutes(
-        String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
-        R.drawable.ic_territory_category_24,
-        R.string.nav_item_territory_category,
+        route = String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
+        iconPainterResId = R.drawable.ic_territory_category_24,
+        titleResId = R.string.nav_item_territory_category,
         arguments = listOf(navArgument(ARG_TERRITORY_CATEGORY_ID) {
             type = NavType.StringType
             nullable = true
@@ -417,9 +438,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Territory : NavRoutes(
-        String.format(ROUTE_TERRITORY, "{$ARG_TERRITORY_ID}"),
-        R.drawable.ic_map_marker_24,
-        R.string.nav_item_territory,
+        route = String.format(ROUTE_TERRITORY, "{$ARG_TERRITORY_ID}"),
+        iconPainterResId = R.drawable.ic_territory_map_24,
+        titleResId = R.string.nav_item_territory,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType
             nullable = true
@@ -446,9 +467,9 @@ sealed class NavRoutes constructor(
     }
 
     data object TerritoryDetails : NavRoutes(
-        String.format(ROUTE_TERRITORY_DETAILS, "{$ARG_TERRITORY_ID}"),
-        R.drawable.ic_territory_details_24,
-        R.string.nav_item_territory_details,
+        route = String.format(ROUTE_TERRITORY_DETAILS, "{$ARG_TERRITORY_ID}"),
+        iconPainterResId = R.drawable.ic_territory_details_24,
+        titleResId = R.string.nav_item_territory_details,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType
             nullable = true
@@ -475,9 +496,13 @@ sealed class NavRoutes constructor(
     }
 
     data object TerritoryStreet : NavRoutes(
-        String.format(ROUTE_TERRITORY_STREET, "{$ARG_TERRITORY_ID}", "{$ARG_TERRITORY_STREET_ID}"),
-        R.drawable.ic_territory_street_24,
-        R.string.nav_item_territory_street,
+        route = String.format(
+            ROUTE_TERRITORY_STREET,
+            "{$ARG_TERRITORY_ID}",
+            "{$ARG_TERRITORY_STREET_ID}"
+        ),
+        iconPainterResId = R.drawable.ic_territory_street_24,
+        titleResId = R.string.nav_item_territory_street,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType
             nullable = false
@@ -511,9 +536,9 @@ sealed class NavRoutes constructor(
     }
 
     data object House : NavRoutes(
-        String.format(ROUTE_HOUSE, "{$ARG_HOUSE_ID}"),
-        R.drawable.ic_house_24,
-        R.string.nav_item_house,
+        route = String.format(ROUTE_HOUSE, "{$ARG_HOUSE_ID}"),
+        iconImageVector = Icons.Outlined.Home,
+        titleResId = R.string.nav_item_house,
         arguments = listOf(navArgument(ARG_HOUSE_ID) {
             type = NavType.StringType
             nullable = true
@@ -540,9 +565,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Entrance : NavRoutes(
-        String.format(ROUTE_ENTRANCE, "{$ARG_ENTRANCE_ID}"),
-        R.drawable.ic_entrance_24,
-        R.string.nav_item_entrance,
+        route = String.format(ROUTE_ENTRANCE, "{$ARG_ENTRANCE_ID}"),
+        iconPainterResId = R.drawable.ic_entrance_24,
+        titleResId = R.string.nav_item_entrance,
         arguments = listOf(navArgument(ARG_ENTRANCE_ID) {
             type = NavType.StringType
             nullable = true
@@ -569,9 +594,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Floor : NavRoutes(
-        String.format(ROUTE_FLOOR, "{$ARG_FLOOR_ID}"),
-        R.drawable.ic_floors_24,
-        R.string.nav_item_floor,
+        route = String.format(ROUTE_FLOOR, "{$ARG_FLOOR_ID}"),
+        iconPainterResId = R.drawable.ic_floors_24,
+        titleResId = R.string.nav_item_floor,
         arguments = listOf(navArgument(ARG_FLOOR_ID) {
             type = NavType.StringType
             nullable = true
@@ -598,9 +623,9 @@ sealed class NavRoutes constructor(
     }
 
     data object Room : NavRoutes(
-        String.format(ROUTE_ROOM, "{$ARG_ROOM_ID}"),
-        R.drawable.ic_room_24,
-        R.string.nav_item_room,
+        route = String.format(ROUTE_ROOM, "{$ARG_ROOM_ID}"),
+        iconPainterResId = R.drawable.ic_room_24,
+        titleResId = R.string.nav_item_room,
         arguments = listOf(navArgument(ARG_ROOM_ID) {
             type = NavType.StringType
             nullable = true
@@ -627,9 +652,9 @@ sealed class NavRoutes constructor(
     }
 
     data object HandOutTerritoriesConfirmation : NavRoutes(
-        ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION,
-        R.drawable.ic_hand_map_24,
-        R.string.nav_item_territory_hand_out_confirmation
+        route = ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION,
+        iconPainterResId = R.drawable.ic_hand_map_24,
+        titleResId = R.string.nav_item_territory_hand_out_confirmation
     ) {
         fun routeForHandOutTerritoriesConfirmation(): String {
             Timber.tag(TAG).d(

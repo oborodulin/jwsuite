@@ -1,11 +1,11 @@
 package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -20,11 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
@@ -48,7 +50,10 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     enabled: Boolean = true,
     @StringRes placeholderResId: Int,
     @StringRes listTitleResId: Int,
+    leadingImageVector: ImageVector? = null,
+    @DrawableRes leadingPainterResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    @StringRes leadingCntDescResId: Int? = null,
     isShowListDialog: Boolean,
     onShowListDialog: () -> Unit,
     onDismissListDialog: () -> Unit,
@@ -109,7 +114,14 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
         fieldValue = fieldValue,
         isError = inputWrapper.errorId != null,
         placeholderResId = placeholderResId,
-        leadingIcon = leadingIcon,
+        leadingIcon = {
+            IconComponent(
+                icon = leadingIcon,
+                imageVector = leadingImageVector,
+                painterResId = leadingPainterResId,
+                contentDescriptionResId = leadingCntDescResId
+            )
+        },
         trailingIcon = {
             if (enabled) {
                 if (fieldValue.text.isEmpty()) {

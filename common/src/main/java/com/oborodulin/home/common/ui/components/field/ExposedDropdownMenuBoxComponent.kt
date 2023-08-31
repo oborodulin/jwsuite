@@ -82,7 +82,8 @@ fun ExposedDropdownMenuBoxComponent(
                         icon = leadingIcon,
                         imageVector = leadingImageVector,
                         painterResId = leadingPainterResId,
-                        contentDescriptionResId = leadingCntDescResId
+                        contentDescriptionResId = leadingCntDescResId,
+                        size = 36.dp
                     )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },

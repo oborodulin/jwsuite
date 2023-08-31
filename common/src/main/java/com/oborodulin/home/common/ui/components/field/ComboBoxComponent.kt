@@ -67,7 +67,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("ComboBoxComponent(...) called")
-    val comboBoxEnabled by remember { mutableStateOf(enabled) }
+    //val enabled by remember { mutableStateOf(enabled) }
     var itemId by remember { mutableStateOf(inputWrapper.item?.itemId) }
     var supportingText by remember { mutableStateOf(inputWrapper.item?.supportingText) }
     var fieldValue by remember {
@@ -101,7 +101,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
         onDismissRequest = onDismissListDialog,
         onAddButtonClick = onShowSingleDialog
     ) { item ->
-        if (comboBoxEnabled) {
+        if (enabled) {
             itemId = item.itemId
             supportingText = item.supportingText
             fieldValue = TextFieldValue(item.headline, TextRange(item.headline.length))
@@ -115,12 +115,12 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp)
-                .clickable { if (comboBoxEnabled) onShowListDialog() },
+                .clickable { if (enabled) onShowListDialog() },
             enabled = false,
             readOnly = true,
             value = fieldValue,
             onValueChange = {
-                if (comboBoxEnabled) {
+                if (enabled) {
                     fieldValue = it
                     onValueChange(ListItemModel(itemId, it.text, supportingText))
                 }
@@ -131,11 +131,12 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
                     icon = leadingIcon,
                     imageVector = leadingImageVector,
                     painterResId = leadingPainterResId,
-                    contentDescriptionResId = leadingCntDescResId
+                    contentDescriptionResId = leadingCntDescResId,
+                    size = 36.dp
                 )
             },
             trailingIcon = {
-                if (comboBoxEnabled) {
+                if (enabled) {
                     if (fieldValue.text.isEmpty()) {
                         Icon(
                             Icons.Outlined.ArrowDropDown,
@@ -150,7 +151,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
                                 .offset(x = 10.dp)
                                 .clickable {
                                     //just send an update that the field is now empty
-                                    if (comboBoxEnabled) onValueChange(ListItemModel())
+                                    if (enabled) onValueChange(ListItemModel())
                                 }
                         )
                     }
@@ -159,7 +160,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
             maxLines = maxLines,
             isError = inputWrapper.errorId != null,
             keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
-            colors = if (comboBoxEnabled) OutlinedTextFieldDefaults.colors(
+            colors = if (enabled) OutlinedTextFieldDefaults.colors(
                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
                 disabledBorderColor = MaterialTheme.colorScheme.outline,
                 disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,

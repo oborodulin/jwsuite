@@ -7,6 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,11 +36,11 @@ import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.StreetView"
@@ -145,6 +146,28 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[StreetFields.STREET_NAME.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = StreetFields.STREET_NAME,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.name_hint,
+            leadingPainterResId = R.drawable.ic_abc_36,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
+                )
+            },
+            //  visualTransformation = ::creditCardFilter,
+            inputWrapper = streetName,
+            onValueChange = { viewModel.onTextFieldEntered(StreetInputEvent.StreetName(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[StreetFields.STREET_ROAD_TYPE.name]!!.focusRequester)
@@ -155,7 +178,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.type_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_road_36), null) },
+            leadingPainterResId = com.oborodulin.jwsuite.presentation_geo.R.drawable.ic_road_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
@@ -192,10 +215,10 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.estimated_houses_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_format_list_numbered_36), null) },
+            labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.estimated_houses_hint,
+            leadingImageVector = Icons.Outlined.Home,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
             },
             inputWrapper = estimatedHouses,
             onValueChange = {
@@ -203,28 +226,6 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
             },
             onImeKeyAction = viewModel::moveFocusImeAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_NAME.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = StreetFields.STREET_NAME,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.name_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
-                )
-            },
-            //  visualTransformation = ::creditCardFilter,
-            inputWrapper = streetName,
-            onValueChange = { viewModel.onTextFieldEntered(StreetInputEvent.StreetName(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
 }

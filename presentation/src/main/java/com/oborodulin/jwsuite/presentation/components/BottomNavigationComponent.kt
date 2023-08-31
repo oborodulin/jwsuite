@@ -1,8 +1,6 @@
 package com.oborodulin.jwsuite.presentation.components
 
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -10,11 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import timber.log.Timber
@@ -43,10 +40,11 @@ fun BottomNavigationComponent(modifier: Modifier, appState: AppState) {
         NavRoutes.bottomNavBarRoutes().forEach { item ->
             NavigationBarItem(
                 icon = {
-                    Icon(
-                        painter = painterResource(id = item.iconResId),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        contentDescription = stringResource(item.titleResId)
+                    IconComponent(
+                        imageVector = item.iconImageVector,
+                        painterResId = item.iconPainterResId,
+                        contentDescriptionResId = item.titleResId,
+                        //tint = MaterialTheme.colorScheme.onSurface,
                     )
                 },
                 label = {

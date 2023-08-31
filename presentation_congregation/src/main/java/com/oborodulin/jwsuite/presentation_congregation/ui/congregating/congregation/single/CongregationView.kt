@@ -7,6 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,9 +35,9 @@ import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.locality.single.LocalityComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import timber.log.Timber
 
 private const val TAG = "Congregating.CongregationView"
@@ -114,9 +115,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.congregation_num_hint,
-            leadingIcon = {
-                Icon(painterResource(com.oborodulin.home.common.R.drawable.ic_123_36), null)
-            },
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -138,8 +137,8 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.name_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
+            labelResId = com.oborodulin.jwsuite.presentation.R.string.name_hint,
+            leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_abc_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
@@ -174,7 +173,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.congregation_territory_mark_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_map_marker_36), null) },
+            leadingPainterResId = R.drawable.ic_map_marker_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
@@ -199,6 +198,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
+            imageVector = Icons.Outlined.Favorite,
             labelResId = R.string.congregation_is_favorite_hint,
             inputWrapper = isFavorite,
             onCheckedChange = {

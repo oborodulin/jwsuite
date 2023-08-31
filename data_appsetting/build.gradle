@@ -1,0 +1,107 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
+}
+
+android {
+    namespace 'com.oborodulin.jwsuite.data_appsetting'
+    compileSdk cfg.sdk.compileVersion
+
+    defaultConfig {
+        minSdk cfg.sdk.minVersion
+        targetSdk cfg.sdk.targetVersion
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility cfg.jvm.compatibility.source
+        targetCompatibility cfg.jvm.compatibility.target
+    }
+    kotlinOptions {
+        jvmTarget = cfg.jvm.target
+    }
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+        //test.java.srcDirs += files("$projectDir/schemas".toString())
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+dependencies {
+    implementation(project(':common'))
+    implementation(project(':domain'))
+
+    // Logging
+    implementation deps.logging.timber
+
+    // Room
+    ksp deps.room.compiler
+    implementation deps.room.runtime
+    implementation deps.room.ktx
+
+    // Hilt
+    implementation deps.dagger.hilt
+    kapt deps.dagger.compiler
+    implementation deps.hilt.navigationCompose
+
+    implementation deps.jvm.inject
+
+    // JSON
+    implementation deps.google.gson
+
+    // Coroutines
+    implementation deps.coroutines.android
+    implementation deps.coroutines.core
+
+    implementation deps.androidx.coreKtx
+/*
+    // Networking
+    implementation deps.retrofit2.retrofit
+    implementation deps.retrofit2.converterGson
+    implementation deps.retrofit2.converterScalars
+    implementation deps.okhttp3.loggingInterceptor
+*/
+    // Testing: Local
+    testImplementation deps.test.extJunitKtx
+    testImplementation deps.test.runner
+
+    testImplementation deps.test.junit
+    testImplementation deps.test.robolectric
+    testImplementation deps.test.mockito
+    testImplementation deps.test.coroutines
+    testImplementation deps.coroutines.android
+    testImplementation deps.test.archCore
+    testImplementation deps.test.core
+    testImplementation deps.test.monitor
+    testImplementation deps.test.truth
+    testImplementation deps.dagger.testing
+    testImplementation deps.test.turbine
+    kaptTest deps.dagger.hiltCompiler
+
+    // Testing: Instrumentation
+    androidTestImplementation deps.test.extJunit
+    androidTestImplementation deps.test.espressoCore
+    androidTestImplementation deps.test.uiJunit4Bom
+    androidTestImplementation deps.test.monitor
+}

@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.presentation_geo.R
 private const val TAG = "Geo.LocalityInputValidator"
 
 sealed class LocalityInputValidator : Validatable {
-    object Region : LocalityInputValidator() {
+    data object Region : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.region_empty_error
@@ -14,7 +14,7 @@ sealed class LocalityInputValidator : Validatable {
             }
     }
 
-    object LocalityCode : LocalityInputValidator() {
+    data object LocalityCode : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.locality_code_empty_error
@@ -23,7 +23,7 @@ sealed class LocalityInputValidator : Validatable {
             }
     }
 
-    object LocalityShortName : LocalityInputValidator() {
+    data object LocalityShortName : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.locality_short_name_empty_error
@@ -31,7 +31,7 @@ sealed class LocalityInputValidator : Validatable {
             }
     }
 
-    object LocalityName : LocalityInputValidator() {
+    data object LocalityName : LocalityInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.locality_name_empty_error

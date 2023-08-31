@@ -1,14 +1,14 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single
 
 import android.content.res.Configuration
-import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,7 +63,7 @@ fun BarMemberComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         placeholderResId = R.string.member_placeholder,
         listTitleResId = R.string.dlg_title_select_member,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_person_36), null) },
+        leadingImageVector = Icons.Outlined.Person,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

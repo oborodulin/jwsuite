@@ -114,7 +114,8 @@ fun TextFieldComponent(
                     icon = leadingIcon,
                     imageVector = leadingImageVector,
                     painterResId = leadingPainterResId,
-                    contentDescriptionResId = leadingCntDescResId
+                    contentDescriptionResId = leadingCntDescResId,
+                    size = 36.dp
                 )
             },
             trailingIcon = {
@@ -159,6 +160,7 @@ fun PreviewTextFieldComponent() {
                     value = stringResource(R.string.preview_blank_text_field_val),
                     errorId = R.string.preview_blank_text_field_err
                 ),
+                leadingPainterResId = R.drawable.outline_photo_black_24,
                 placeholderResId = R.string.preview_blank_text_field_ph,
                 labelResId = R.string.preview_blank_text_field_lbl,
                 helperResId = R.string.preview_blank_text_field_hlp,

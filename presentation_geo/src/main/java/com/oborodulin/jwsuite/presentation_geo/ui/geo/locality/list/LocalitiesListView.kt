@@ -27,11 +27,11 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.model.LocalitiesListItem
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.RegionDistrictInput
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.RegionInput
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalitiesListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -52,7 +52,10 @@ fun LocalitiesListView(
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LocalitiesListView: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(
-            com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.Load(regionInput.regionId, regionDistrictInput?.regionDistrictId)
+            com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.Load(
+                regionInput.regionId,
+                regionDistrictInput?.regionDistrictId
+            )
         )
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -61,10 +64,10 @@ fun LocalitiesListView(
             LocalitiesList(
                 localities = it,
                 onEdit = { locality ->
-                    viewModel.submitAction(com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.EditLocality(locality.id))
+                    viewModel.submitAction(LocalitiesListUiAction.EditLocality(locality.id))
                 },
                 onDelete = { locality ->
-                    viewModel.submitAction(com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.DeleteLocality(locality.id))
+                    viewModel.submitAction(LocalitiesListUiAction.DeleteLocality(locality.id))
                 }
             ) {}
         }
@@ -74,7 +77,7 @@ fun LocalitiesListView(
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiSingleEvent.OpenLocalityScreen -> {
+                is LocalitiesListUiSingleEvent.OpenLocalityScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }

@@ -10,10 +10,10 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.DeleteLocalityDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.LocalityDistrictInput
-import com.oborodulin.jwsuite.presentation_geo.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.model.converters.LocalityDistrictsListConverter
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityDistrictsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

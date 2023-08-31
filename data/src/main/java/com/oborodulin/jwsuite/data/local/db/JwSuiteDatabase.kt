@@ -8,11 +8,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.oborodulin.home.common.util.Mapper
 import com.oborodulin.jwsuite.data.local.db.converters.JwSuiteTypeConverters
-import com.oborodulin.jwsuite.data.local.db.dao.*
 import com.oborodulin.jwsuite.data.local.db.entities.*
-import com.oborodulin.jwsuite.data.local.db.views.*
 import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.DATABASE_PASSPHRASE
+import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
@@ -54,6 +53,34 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
+import com.oborodulin.jwsuite.data_territory.local.db.dao.EntranceDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.FloorDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.HouseDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.RoomDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryCategoryDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
+import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryCategoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
+import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberLastReceivingDateView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import kotlinx.coroutines.*
 import net.sqlcipher.database.SupportFactory
 import timber.log.Timber
@@ -64,7 +91,7 @@ import java.util.concurrent.Executors
 private const val TAG = "JwSuiteDatabase"
 
 @Database(
-    entities = [AppSettingEntity::class,
+    entities = [com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity::class,
         GeoRegionEntity::class, GeoRegionTlEntity::class,
         GeoRegionDistrictEntity::class, GeoRegionDistrictTlEntity::class,
         GeoLocalityEntity::class, GeoLocalityTlEntity::class,
@@ -506,83 +533,129 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         private fun insertDefAppSettings(db: SupportSQLiteDatabase) {
             // Lang
-            val lang = AppSettingEntity.langParam()
+            val lang =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.langParam()
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(lang)
             )
             // Currency Code
-            val currencyCode = AppSettingEntity.currencyCodeParam()
+            val currencyCode =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.currencyCodeParam()
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(currencyCode)
             )
             // All Items
-            val allItems = AppSettingEntity.allItemsParam(context)
+            val allItems =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.allItemsParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(allItems)
             )
             // Day Mu
-            val dayMu = AppSettingEntity.dayMuParam(context)
+            val dayMu =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.dayMuParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(dayMu)
             )
             // Month Mu
-            val monthMu = AppSettingEntity.monthMuParam(context)
+            val monthMu =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.monthMuParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
             // Year Mu
-            val yearMu = AppSettingEntity.yearMuParam(context)
+            val yearMu =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.yearMuParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
             // Person Num MU
-            val personNumMu = AppSettingEntity.personNumMuParam(context)
+            val personNumMu =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.personNumMuParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(personNumMu)
             )
             // Territory Business Mark
             val territoryBusinessMark =
-                AppSettingEntity.territoryBusinessMarkParam(context)
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryBusinessMarkParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryBusinessMark)
             )
             // Territory Processing Period
             val territoryProcessingPeriod =
-                AppSettingEntity.territoryProcessingPeriodParam(context)
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryProcessingPeriodParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryProcessingPeriod)
             )
             // Territory At Hand Period
-            val territoryAtHandPeriod = AppSettingEntity.territoryAtHandPeriodParam(context)
+            val territoryAtHandPeriod =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryAtHandPeriodParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryAtHandPeriod)
             )
             // Territory Rooms Limit
-            val territoryRoomsLimit = AppSettingEntity.territoryRoomsLimitParam(context)
+            val territoryRoomsLimit =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryRoomsLimitParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryRoomsLimit)
             )
             // Territory Max Rooms
-            val territoryMaxRoomsParam = AppSettingEntity.territoryMaxRoomsParam(context)
+            val territoryMaxRoomsParam =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryMaxRoomsParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryMaxRoomsParam)
             )
             // Territory Idle Period
-            val territoryIdlePeriod = AppSettingEntity.territoryIdlePeriodParam(context)
+            val territoryIdlePeriod =
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryIdlePeriodParam(
+                    context
+                )
             db.insert(
-                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
+                SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryIdlePeriod)
             )
             Timber.tag(TAG).i("Default app parameters imported")

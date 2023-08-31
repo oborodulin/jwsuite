@@ -11,11 +11,11 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationsListConverter
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.model.LocalityUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

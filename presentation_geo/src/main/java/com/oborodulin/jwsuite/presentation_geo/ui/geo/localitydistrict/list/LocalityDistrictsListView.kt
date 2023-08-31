@@ -34,9 +34,9 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.LocalityInput
-import com.oborodulin.jwsuite.presentation_geo.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 

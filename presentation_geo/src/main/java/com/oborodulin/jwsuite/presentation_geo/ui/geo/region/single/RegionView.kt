@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,8 +31,8 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.RegionView"
@@ -96,22 +95,12 @@ fun RegionView(viewModel: RegionViewModel) {
                     )
                 },
             labelResId = R.string.code_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                    null
-                )
-            },
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = regionCode,
-            onValueChange = {
-                viewModel.onTextFieldEntered(RegionInputEvent.RegionCode(it))
-            },
+            onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionCode(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -124,12 +113,7 @@ fun RegionView(viewModel: RegionViewModel) {
                     )
                 },
             labelResId = R.string.name_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_abc_36),
-                    null
-                )
-            },
+            leadingPainterResId = R.drawable.ic_abc_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
@@ -138,9 +122,7 @@ fun RegionView(viewModel: RegionViewModel) {
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = regionName,
-            onValueChange = {
-                viewModel.onTextFieldEntered(RegionInputEvent.RegionName(it))
-            },
+            onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionName(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

@@ -16,12 +16,12 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
-import com.oborodulin.jwsuite.presentation_geo.model.RegionDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.model.RegionUi
-import com.oborodulin.jwsuite.presentation_geo.model.converters.RegionDistrictConverter
-import com.oborodulin.jwsuite.presentation_geo.model.mappers.regiondistrict.RegionDistrictToRegionDistrictsListItemMapper
-import com.oborodulin.jwsuite.presentation_geo.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictToRegionDistrictsListItemMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -67,12 +67,12 @@ class RegionDistrictViewModelImpl @Inject constructor(
         val job = when (action) {
             is RegionDistrictUiAction.Load -> when (action.regionDistrictId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_new_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.region_district_new_subheader)
                     submitState(UiState.Success(RegionDistrictUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.region_district_subheader)
                     loadRegionDistrict(action.regionDistrictId)
                 }
             }

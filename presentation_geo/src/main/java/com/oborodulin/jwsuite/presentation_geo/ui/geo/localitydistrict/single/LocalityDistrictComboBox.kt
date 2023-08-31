@@ -22,7 +22,7 @@ import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
 
@@ -63,7 +63,7 @@ fun LocalityDistrictComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.locality_district_hint,
         listTitleResId = R.string.dlg_title_select_locality_district,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_locality_district_36), null) },
+        leadingPainterResId = R.drawable.ic_locality_district_36,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

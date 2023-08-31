@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list
 
 import com.oborodulin.home.common.ui.state.MviViewModeled
-import com.oborodulin.jwsuite.presentation_geo.model.RegionDistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictsListItem
 
 interface RegionDistrictsListViewModel :
     MviViewModeled<List<RegionDistrictsListItem>, RegionDistrictsListUiAction, RegionDistrictsListUiSingleEvent> {

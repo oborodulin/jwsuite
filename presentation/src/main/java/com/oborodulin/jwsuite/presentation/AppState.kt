@@ -8,8 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.modules.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.model.CongregationsListItem
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
@@ -24,9 +22,12 @@ fun rememberAppState(
     //payerScaffoldState: ScaffoldState = rememberScaffoldState(),
     commonNavController: NavHostController = rememberNavController(),
     navBarNavController: NavHostController = rememberNavController(),
-    sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?> = remember {
-        mutableStateOf(null)
-    },
+    /*
+        sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?> = remember {
+            mutableStateOf(null)
+        },
+
+     */
     fab: MutableState<@Composable () -> Unit> = remember { mutableStateOf({ }) },
     resources: Resources = LocalContext.current.resources,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
@@ -38,7 +39,7 @@ fun rememberAppState(
         //payerScaffoldState,
         commonNavController,
         navBarNavController,
-        sharedViewModel,
+//        sharedViewModel,
         fab,
         resources,
         coroutineScope,
@@ -49,7 +50,7 @@ fun rememberAppState(
             //payerScaffoldState,
             commonNavController,
             navBarNavController,
-            sharedViewModel,
+//            sharedViewModel,
             fab,
             appName,
             actionBarSubtitle
@@ -63,7 +64,7 @@ fun rememberAppState(
 class AppState(
     val commonNavController: NavHostController,
     val navBarNavController: NavHostController,
-    val sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?>,
+//    val sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?>,
     val fab: MutableState<@Composable () -> Unit>,
     val appName: String,
     val actionBarSubtitle: MutableState<String>

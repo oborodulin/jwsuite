@@ -1,8 +1,0 @@
-package com.oborodulin.jwsuite.data.local.db.mappers.territory
-
-import com.oborodulin.home.common.mapping.ListMapperImpl
-import com.oborodulin.jwsuite.data.local.db.views.TerritoryStreetNamesAndHouseNumsView
-import com.oborodulin.jwsuite.domain.model.TerritoryStreetNamesAndHouseNums
-
-class TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper(mapper: TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper) :
-    ListMapperImpl<TerritoryStreetNamesAndHouseNumsView, TerritoryStreetNamesAndHouseNums>(mapper)

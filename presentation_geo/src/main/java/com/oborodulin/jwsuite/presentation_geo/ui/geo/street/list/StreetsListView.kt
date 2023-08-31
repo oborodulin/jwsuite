@@ -27,12 +27,12 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.LocalityDistrictInput
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.LocalityInput
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.MicrodistrictInput
-import com.oborodulin.jwsuite.presentation_geo.model.StreetsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 

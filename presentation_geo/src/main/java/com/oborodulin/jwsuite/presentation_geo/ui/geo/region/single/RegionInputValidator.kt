@@ -6,19 +6,19 @@ import com.oborodulin.jwsuite.presentation_geo.R
 private const val TAG = "Geo.RegionInputValidator"
 
 sealed class RegionInputValidator : Validatable {
-    object RegionCode : RegionInputValidator() {
+    data object RegionCode : RegionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_code_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.region_code_empty_error
                 //etc..
                 else -> null
             }
     }
 
-    object RegionName : RegionInputValidator() {
+    data object RegionName : RegionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_name_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.region_name_empty_error
                 else -> null
             }
     }

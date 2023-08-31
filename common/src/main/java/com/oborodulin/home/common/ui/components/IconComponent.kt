@@ -40,6 +40,8 @@ fun IconComponent(
                 contentDescription = contentDescriptionResId?.let { stringResource(it) },
                 modifier = Modifier
                     //.padding(end = 4.dp)
+// https://stackoverflow.com/questions/64377952/material-icon-size-adjustment-in-jetpack-compose
+                    .size(size)
                     .then(modifier),
                 //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
                 //else DarkGray

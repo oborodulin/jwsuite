@@ -6,24 +6,24 @@ import com.oborodulin.jwsuite.presentation_congregation.R
 private const val TAG = "Congregating.CongregationInputValidator"
 
 sealed class CongregationInputValidator : Validatable {
-    object Locality : CongregationInputValidator() {
+    data object Locality : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
+                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation_geo.R.string.locality_empty_error
                 else -> null
             }
     }
 
-    object CongregationNum : CongregationInputValidator() {
+    data object CongregationNum : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+                inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
                 //etc..
                 else -> null
             }
     }
 
-    object CongregationName : CongregationInputValidator() {
+    data object CongregationName : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.congregation_name_empty_error
@@ -31,7 +31,7 @@ sealed class CongregationInputValidator : Validatable {
             }
     }
 
-    object TerritoryMark : CongregationInputValidator() {
+    data object TerritoryMark : CongregationInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.territory_mark_empty_error

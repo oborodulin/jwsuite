@@ -29,13 +29,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.presentation_congregation.AppState
+import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
@@ -45,6 +46,7 @@ private const val TAG = "Congregating.CongregationsListView"
 @Composable
 fun CongregationsListView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null
@@ -80,9 +82,10 @@ fun CongregationsListView(
             ) { congregation ->
                 Timber.tag(TAG).d(
                     "CongregationsListView: sharedViewModel = %s",
-                    appState.sharedViewModel.value
+                    sharedViewModel //appState.sharedViewModel.value
                 )
-                appState.sharedViewModel.value?.submitData(congregation)
+                // appState.sharedViewModel.value?.submitData(congregation)
+                sharedViewModel.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 with(membersListViewModel) {
                     submitAction(MembersListUiAction.LoadByCongregation(congregation.id))

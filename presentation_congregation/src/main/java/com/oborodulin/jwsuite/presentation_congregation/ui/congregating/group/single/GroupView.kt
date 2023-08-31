@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,12 +31,12 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation_congregation.R
+import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Congregating.GroupView"
@@ -118,12 +117,7 @@ fun GroupView(
                     )
                 },
             labelResId = R.string.code_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                    null
-                )
-            },
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -141,7 +135,7 @@ fun GroupView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    val ctx = LocalContext.current
+    //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
             GroupView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)

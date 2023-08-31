@@ -35,8 +35,8 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberT
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberUiToMemberMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MembersListToMembersListItemMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.model.mappers.locality.LocalityToLocalityUiMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.geo.model.mappers.locality.LocalityUiToLocalityMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

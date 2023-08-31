@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.presentation_congregation.R
 private const val TAG = "Congregating.GroupInputValidator"
 
 sealed class MemberInputValidator : Validatable {
-    object Group : MemberInputValidator() {
+    data object Group : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.member_group_empty_error
@@ -14,7 +14,7 @@ sealed class MemberInputValidator : Validatable {
             }
     }
 
-    object MemberNum : MemberInputValidator() {
+    data object MemberNum : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
@@ -23,7 +23,7 @@ sealed class MemberInputValidator : Validatable {
             }
     }
 
-    object Pseudonym : MemberInputValidator() {
+    data object Pseudonym : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.member_pseudonym_empty_error
@@ -32,48 +32,53 @@ sealed class MemberInputValidator : Validatable {
             }
     }
 
-    object PhoneNumber : MemberInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                !inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+    data object PhoneNumber : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*    when {
+                !inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
                 //etc..
                 else -> null
             }
+         */
     }
 
-    object MemberType : MemberInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
+    data object MemberType : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*when {
+            inputs[0].isNullOrEmpty() -> com.oborodulin.jwsuite.presentation.R.string.num_empty_error
+            //etc..
+            else -> null
+        }
+     */
     }
 
-    object DateOfBirth : MemberInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
+    data object DateOfBirth : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*when {
+            inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+            //etc..
+            else -> null
+        }
+     */
     }
 
-    object DateOfBaptism : MemberInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
+    data object DateOfBaptism : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*when {
+            inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+            //etc..
+            else -> null
+        }
+     */
     }
 
-    object InactiveDate : MemberInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.num_empty_error
-                //etc..
-                else -> null
-            }
+    data object InactiveDate : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*when {
+            inputs[0].isNullOrEmpty() -> R.string.num_empty_error
+            //etc..
+            else -> null
+        }
+     */
     }
 }

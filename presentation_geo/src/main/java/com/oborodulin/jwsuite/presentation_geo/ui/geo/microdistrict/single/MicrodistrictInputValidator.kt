@@ -26,7 +26,7 @@ sealed class MicrodistrictInputValidator : Validatable {
     data object MicrodistrictShortName : MicrodistrictInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_short_name_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.microdistrict_short_name_empty_error
                 else -> null
             }
     }
@@ -34,7 +34,7 @@ sealed class MicrodistrictInputValidator : Validatable {
     data object MicrodistrictName : MicrodistrictInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_name_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.microdistrict_name_empty_error
                 else -> null
             }
     }

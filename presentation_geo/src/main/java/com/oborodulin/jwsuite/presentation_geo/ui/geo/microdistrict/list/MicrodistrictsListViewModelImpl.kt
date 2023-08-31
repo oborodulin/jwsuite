@@ -11,10 +11,10 @@ import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.DeleteMicrodistri
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.GetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.MicrodistrictUseCases
 import com.oborodulin.jwsuite.domain.util.VillageType
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput.MicrodistrictInput
-import com.oborodulin.jwsuite.presentation_geo.model.MicrodistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.model.converters.MicrodistrictsListConverter
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.MicrodistrictsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

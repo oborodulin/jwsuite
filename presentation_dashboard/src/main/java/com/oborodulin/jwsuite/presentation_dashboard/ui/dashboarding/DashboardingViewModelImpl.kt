@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardingUi
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.FavoriteCongregationConverter
-import com.oborodulin.jwsuite.presentation_dashboard.ui.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -34,6 +33,7 @@ class DashboardingViewModelImpl @Inject constructor(
     override fun initState(): UiState<DashboardingUi> = UiState.Loading
 
     override suspend fun handleAction(action: DashboardingUiAction): Job {
+        /*
         Timber.tag(TAG)
             .d(
                 "handleAction(DashboardingUiAction) called: %s [JwSuiteDatabase.isImportExecute = %s]",
@@ -47,6 +47,7 @@ class DashboardingViewModelImpl @Inject constructor(
                 JwSuiteDatabase.isImportExecute,
                 JwSuiteDatabase.isImportDone
             )
+         */
         val job = when (action) {
             is DashboardingUiAction.Init -> loadFavoriteCongregation()
         }

@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,10 +33,10 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Geo.LocalityView"
@@ -134,15 +133,10 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
                         isFocused = focusState.isFocused
                     )
                 },
-            placeholderResId = R.string.locality_code_placeholder,
+            placeholderResId = com.oborodulin.jwsuite.presentation_geo.R.string.locality_code_placeholder,
             labelResId = R.string.code_hint,
-            helperResId = R.string.locality_code_helper,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                    null
-                )
-            },
+            helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.locality_code_helper,
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
@@ -162,7 +156,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.short_name_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_ab_36), null) },
+            leadingPainterResId = R.drawable.ic_ab_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
@@ -187,7 +181,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.type_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_signpost_36), null) },
+            leadingPainterResId = com.oborodulin.jwsuite.presentation_geo.R.drawable.ic_signpost_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
@@ -209,7 +203,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
                     )
                 },
             labelResId = R.string.name_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
+            leadingPainterResId = R.drawable.ic_abc_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,

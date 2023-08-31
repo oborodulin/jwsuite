@@ -10,8 +10,8 @@ import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.group.DeleteGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupsUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_congregation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel

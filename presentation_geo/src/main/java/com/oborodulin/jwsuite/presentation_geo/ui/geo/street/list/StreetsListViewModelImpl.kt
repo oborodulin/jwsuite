@@ -12,11 +12,11 @@ import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUs
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.domain.util.RoadType
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_geo.navigation.NavigationInput
-import com.oborodulin.jwsuite.presentation_geo.model.StreetsListItem
-import com.oborodulin.jwsuite.presentation_geo.model.converters.StreetsForTerritoryListConverter
-import com.oborodulin.jwsuite.presentation_geo.model.converters.StreetsListConverter
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetsForTerritoryListConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
