@@ -34,7 +34,7 @@ private const val TAG = "Congregating.MemberComboBox"
 fun MemberComboBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     listViewModel: MembersListViewModelImpl = hiltViewModel(),
     singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,

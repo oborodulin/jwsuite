@@ -7,6 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,12 +34,14 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
-import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.street.list.StreetsListUiAction
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.street.single.StreetComboBox
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
+import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Territoring.TerritoryStreetView"
@@ -45,7 +49,9 @@ private const val TAG = "Territoring.TerritoryStreetView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoryStreetView(
-    uiModel: TerritoryStreetUiModel, viewModel: TerritoryStreetViewModelImpl = hiltViewModel()
+    uiModel: TerritoryStreetUiModel,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    viewModel: TerritoryStreetViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
     val context = LocalContext.current
@@ -104,7 +110,7 @@ fun TerritoryStreetView(
                     )
                 },
             enabled = false,
-            sharedViewModel = null,
+            sharedViewModel = sharedViewModel,
             inputWrapper = territory,
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -136,8 +142,8 @@ fun TerritoryStreetView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.is_private_sector_hint,
-            painterResId = R.drawable.ic_private_sector_36,
+            labelResId = com.oborodulin.jwsuite.presentation.R.string.is_private_sector_hint,
+            painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_private_sector_36,
             inputWrapper = isPrivateSector,
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryStreetInputEvent.IsPrivateSector(it))
@@ -167,7 +173,7 @@ fun TerritoryStreetView(
                     )
                 },
             labelResId = R.string.territory_street_estimated_houses_hint,
-            leadingPainterResId = R.drawable.ic_house_36,
+            leadingImageVector = Icons.Outlined.Home,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
             },

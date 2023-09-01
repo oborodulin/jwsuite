@@ -14,7 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
-import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
@@ -23,10 +23,10 @@ import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.congregation.single.CongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.model.GroupUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.model.MemberUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
@@ -158,7 +158,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             }
 
             is TerritoriesGridUiAction.HandOutConfirmation -> {
-                setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_hand_out_subheader)
+                setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_hand_out_subheader)
                 null
             }
 

@@ -20,6 +20,8 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,6 +32,7 @@ private const val TAG = "Territoring.TerritoryScreen"
 @Composable
 fun TerritoryScreen(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: TerritoryViewModel,
     territoryInput: TerritoryInput? = null
 ) {
@@ -56,7 +59,7 @@ fun TerritoryScreen(
                 CommonScreen(paddingValues = paddingValues, state = state) {
                     val territoryId by viewModel.id.collectAsStateWithLifecycle()
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                    TerritoryView(appState.sharedViewModel.value)
+                    TerritoryView(sharedViewModel)
                     Spacer(Modifier.height(8.dp))
                     NextButtonComponent(
                         enabled = areInputsValid,

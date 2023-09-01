@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -32,9 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.util.Constants
 import timber.log.Timber
 
@@ -122,8 +125,10 @@ fun TerritoriesClickableGridItemComponent(
                 territory.isPrivateSector?.let {
                     if (it) {
                         Image(
-                            modifier = Modifier.clip(RoundedCornerShape(4.dp)),
-                            painter = painterResource(R.drawable.ic_cottage_18),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .size(18.dp),
+                            imageVector = Icons.Outlined.Home,
                             contentDescription = stringResource(R.string.ter_private_sector_cnt_desc)
                         )
                     }
@@ -145,7 +150,7 @@ fun TerritoriesClickableGridItemComponent(
                 if (territory.isGroupMinistry) {
                     Image(
                         modifier = Modifier.clip(RoundedCornerShape(4.dp)),
-                        painter = painterResource(R.drawable.ic_group_18),
+                        painter = painterResource(com.oborodulin.jwsuite.presentation_congregation.R.drawable.ic_group_18),
                         contentDescription = stringResource(R.string.ter_group_ministry_cnt_desc)
                     )
                 }

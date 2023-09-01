@@ -44,7 +44,7 @@ private const val TAG = "Congregating.GroupView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GroupView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     groupViewModel: GroupViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("GroupView(...) called")
@@ -119,10 +119,7 @@ fun GroupView(
             labelResId = R.string.code_hint,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = groupNum,
             onValueChange = { groupViewModel.onTextFieldEntered(GroupInputEvent.GroupNum(it)) },

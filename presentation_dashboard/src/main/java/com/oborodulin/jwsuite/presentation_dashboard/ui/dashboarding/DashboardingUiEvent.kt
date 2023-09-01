@@ -11,5 +11,5 @@ sealed class DashboardingUiEvent {
     data class HeatedVolumeChanged(val heatedVolume: BigDecimal?) : DashboardingUiEvent()
     data class PaymentDayChanged(val paymentDay: Int?) : DashboardingUiEvent()
     data class PersonsNumChanged(val personsNum: Int?) : DashboardingUiEvent()
-    object Submit : DashboardingUiEvent()
+    data object Submit : DashboardingUiEvent()
 }

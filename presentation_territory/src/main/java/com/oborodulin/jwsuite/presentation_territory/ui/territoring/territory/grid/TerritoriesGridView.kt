@@ -34,13 +34,15 @@ import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.list.TerritoriesListItemComponent
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -51,6 +53,7 @@ private const val TAG = "Territoring.TerritoriesGridView"
 @Composable
 fun TerritoriesGridView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryDetailsViewModel: TerritoryDetailsListViewModelImpl = hiltViewModel(),
     territoryProcessType: TerritoryProcessType,
@@ -67,8 +70,8 @@ fun TerritoriesGridView(
         isPrivateSector,
         locationId
     )
-    val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
@@ -107,7 +110,11 @@ fun TerritoriesGridView(
                     onChecked = { territoriesGridViewModel.observeCheckedTerritories() }
                 ) { territory ->
                     with(territoryDetailsViewModel) {
-                        submitAction(com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(territory.id))
+                        submitAction(
+                            com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(
+                                territory.id
+                            )
+                        )
                     }
                 }
             } else { // TerritoryProcessType.ALL
@@ -134,7 +141,11 @@ fun TerritoriesGridView(
                     }
                 ) { territory ->
                     with(territoryDetailsViewModel) {
-                        submitAction(com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(territory.id))
+                        submitAction(
+                            com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(
+                                territory.id
+                            )
+                        )
                     }
                 }
             }

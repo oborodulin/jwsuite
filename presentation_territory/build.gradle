@@ -52,6 +52,9 @@ android {
 dependencies {
     implementation project(':common')
     implementation project(':data')
+    implementation project(':data_geo')
+    implementation project(':data_congregation')
+    implementation project(':data_territory')
     implementation project(':domain')
     implementation project(':presentation')
     implementation project(':presentation_geo')
@@ -123,12 +126,11 @@ dependencies {
     // Network
     implementation deps.retrofit2.retrofit
     implementation deps.retrofit2.converterGson
-
+*/
     // Testing dependencies
     testImplementation deps.test.junit
     androidTestImplementation deps.test.extJunit
     androidTestImplementation deps.test.espressoCore
     androidTestImplementation deps.test.uiJunit4Bom
     androidTestImplementation deps.test.monitor
- */
 }

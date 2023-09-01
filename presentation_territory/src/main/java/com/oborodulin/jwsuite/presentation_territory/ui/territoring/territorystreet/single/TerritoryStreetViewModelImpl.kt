@@ -15,9 +15,9 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.StreetUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.street.list.StreetsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.street.single.StreetViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryStreetConverter
@@ -86,12 +86,12 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         val job = when (action) {
             is TerritoryStreetUiAction.Load -> when (action.territoryStreetId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_street_new_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_street_new_subheader)
                     loadTerritoryStreetUiModel(action.territoryId!!)
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_street_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_street_subheader)
                     loadTerritoryStreetUiModel(action.territoryId!!, action.territoryStreetId)
                 }
             }

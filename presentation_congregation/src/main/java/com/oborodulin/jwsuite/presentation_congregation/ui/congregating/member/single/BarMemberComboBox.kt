@@ -30,7 +30,7 @@ private const val TAG = "Congregating.BarMemberComboBox"
 @Composable
 fun BarMemberComboBox(
     modifier: Modifier = Modifier,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     listViewModel: MembersListViewModelImpl = hiltViewModel(),
     singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,

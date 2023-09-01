@@ -1,10 +1,10 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.model.CongregationUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.LocalityDistrictUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.LocalityUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.MicrodistrictUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 
 data class TerritoryUi(
     val congregation: CongregationUi = CongregationUi(),

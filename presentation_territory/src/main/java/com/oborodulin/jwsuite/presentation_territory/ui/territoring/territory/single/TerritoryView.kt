@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,16 +35,16 @@ import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.locality.single.LocalityComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.localitydistrict.single.LocalityDistrictComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.microdistrict.single.MicrodistrictComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryComboBox
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
+import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryComboBox
 import timber.log.Timber
 
 private const val TAG = "Territoring.TerritoryView"
@@ -53,7 +52,7 @@ private const val TAG = "Territoring.TerritoryView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoryView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: TerritoryViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryView(...) called")
@@ -198,9 +197,7 @@ fun TerritoryView(
                     )
                 },
             labelResId = R.string.territory_num_hint,
-            leadingIcon = {
-                Icon(painterResource(com.oborodulin.home.common.R.drawable.ic_123_36), null)
-            },
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
@@ -233,7 +230,7 @@ fun TerritoryView(
                         isFocused = focusState.isFocused
                     )
                 },
-            painterResId = R.drawable.ic_group_36,
+            painterResId = com.oborodulin.jwsuite.presentation_congregation.R.drawable.ic_group_36,
             labelResId = R.string.territory_is_group_ministry_hint,
             inputWrapper = isGroupMinistry,
             onCheckedChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.IsGroupMinistry(it)) }
@@ -263,7 +260,7 @@ fun TerritoryView(
                     )
                 },
             labelResId = R.string.territory_desc_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_text_snippet_36), null) },
+            leadingPainterResId = R.drawable.ic_text_snippet_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,

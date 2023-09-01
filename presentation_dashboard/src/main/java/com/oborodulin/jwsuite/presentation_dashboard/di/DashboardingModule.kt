@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.di
+package com.oborodulin.jwsuite.presentation_dashboard.di
 
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase

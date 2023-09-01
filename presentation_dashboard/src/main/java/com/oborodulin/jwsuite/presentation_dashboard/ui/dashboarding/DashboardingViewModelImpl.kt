@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
@@ -88,9 +87,9 @@ class DashboardingViewModelImpl @Inject constructor(
 
         fun previewCongregationModel(ctx: Context): CongregationUi {
             val congregationUi = CongregationUi(
-                congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
-                congregationName = ctx.resources.getString(R.string.def_congregation1_name),
-                territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
+                congregationNum = "12",// ctx.resources.getString(R.string.def_congregation1_num),
+                congregationName = "",//ctx.resources.getString(R.string.def_congregation1_name),
+                territoryMark = "R",//ctx.resources.getString(R.string.def_congregation1_card_mark),
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
                 isFavorite = true
             )

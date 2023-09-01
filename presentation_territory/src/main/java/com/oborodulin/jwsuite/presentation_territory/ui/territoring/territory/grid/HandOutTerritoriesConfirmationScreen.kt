@@ -50,11 +50,14 @@ import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation_territory.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.rememberAppState
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -64,6 +67,7 @@ private const val TAG = "Territoring.HandOutTerritoriesConfirmationScreen"
 @Composable
 fun HandOutTerritoriesConfirmationScreen(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("HandOutTerritoriesConfirmationScreen(...) called")
@@ -86,9 +90,14 @@ fun HandOutTerritoriesConfirmationScreen(
                 }
             ) { paddingValues ->
                 val areInputsValid by viewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
-                Column(modifier = Modifier.padding(paddingValues),
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                    HandOutTerritoriesConfirmationView(appState = appState, viewModel = viewModel)
+                Column(
+                    modifier = Modifier.padding(paddingValues),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    HandOutTerritoriesConfirmationView(
+                        sharedViewModel = sharedViewModel,
+                        viewModel = viewModel
+                    )
                     Spacer(Modifier.height(8.dp))
                     HandOutButtonComponent(
                         enabled = areInputsValid,
@@ -118,7 +127,7 @@ fun HandOutTerritoriesConfirmationScreen(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HandOutTerritoriesConfirmationView(
-    appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     paddingValues: PaddingValues? = null,
     viewModel: TerritoriesGridViewModel
 ) {
@@ -184,7 +193,7 @@ fun HandOutTerritoriesConfirmationView(
                     )
                 },
             //enabled = false,
-            sharedViewModel = appState.sharedViewModel.value,
+            sharedViewModel = sharedViewModel,
             inputWrapper = member,
             onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -198,8 +207,8 @@ fun HandOutTerritoriesConfirmationView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = com.oborodulin.jwsuite.presentation.R.string.territory_receiving_date_hint,
-            datePickerTitleResId = com.oborodulin.jwsuite.presentation.R.string.date_dlg_title_set_territory_receiving,
+            labelResId = R.string.territory_receiving_date_hint,
+            datePickerTitleResId = R.string.date_dlg_title_set_territory_receiving,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
@@ -235,7 +244,8 @@ fun PreviewGroupView() {
     JWSuiteTheme {
         Surface {
             HandOutTerritoriesConfirmationView(
-                appState = rememberAppState(),
+                //appState = rememberAppState(),
+                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 viewModel = TerritoriesGridViewModelImpl.previewModel(ctx)
             )
         }

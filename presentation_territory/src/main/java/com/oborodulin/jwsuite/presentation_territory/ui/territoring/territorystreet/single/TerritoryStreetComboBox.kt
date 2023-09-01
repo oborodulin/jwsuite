@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single
 
 import android.content.res.Configuration
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,10 +17,12 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.UUID
 
@@ -32,6 +32,7 @@ private const val TAG = "Territoring.TerritoryStreetComboBox"
 fun TerritoryStreetComboBox(
     modifier: Modifier = Modifier,
     territoryId: UUID,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     listViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -48,7 +49,7 @@ fun TerritoryStreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryStreetUiAction.Load(),
         confirmUiAction = TerritoryStreetUiAction.Save,
-        dialogView = { TerritoryStreetView(it) },
+        dialogView = { TerritoryStreetView(it, sharedViewModel) },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(
@@ -61,7 +62,7 @@ fun TerritoryStreetComboBox(
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
         labelResId = R.string.territory_street_hint,
         listTitleResId = R.string.dlg_title_select_territory_street,
-        leadingIcon = { Icon(painterResource(R.drawable.ic_street_sign_36), null) },
+        leadingPainterResId = R.drawable.ic_territory_street_36,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction

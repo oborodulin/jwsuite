@@ -3,10 +3,10 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.Territory
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.model.mappers.CongregationUiToCongregationMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.mappers.locality.LocalityUiToLocalityMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationUiToCongregationMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
 

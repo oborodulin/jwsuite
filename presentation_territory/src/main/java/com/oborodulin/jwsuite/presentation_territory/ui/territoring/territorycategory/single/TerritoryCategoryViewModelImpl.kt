@@ -12,7 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data.R
+import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
@@ -71,12 +71,12 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
         val job = when (action) {
             is TerritoryCategoryUiAction.Load -> when (action.territoryCategoryId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_category_new_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_category_new_subheader)
                     submitState(UiState.Success(TerritoryCategoryUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_category_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_category_subheader)
                     loadTerritoryCategory(action.territoryCategoryId)
                 }
             }

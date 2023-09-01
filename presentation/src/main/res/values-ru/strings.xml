@@ -26,47 +26,14 @@
     <string name="nav_item_room">Квартира</string>
 
     <!--BUTTONS:-->
-    <string name="btn_hand_out_lbl">Выдать</string>
     <!--FAB:-->
-    <string name="fab_territory_hand_out_text">Выдать</string>
-    <string name="fab_territory_at_work_text">Обработать</string>
-    <string name="fab_territory_idle_text">В работу</string>
-    <string name="fab_territory_all_text">Добавить</string>
-    <string name="fab_territory_process_room_text">Квартиру</string>
-    <string name="fab_territory_process_entrance_text">Подъезд</string>
-    <string name="fab_territory_process_house_text">Дом</string>
-    <string name="fab_territory_process_street_text">Улицу</string>
-    <string name="fab_territory_process_text">Участок</string>
 
     <!--МЕНЮ:-->
     <!--собрания-->
 
     <!--СПИСОК:-->
-    <!--участки-->
-    <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="territories_list_empty_text">Участков пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_streets_list_empty_text">Улиц участка пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="territory_houses_list_empty_text">Домов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="houses_list_empty_text">Домов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="entrances_list_empty_text">Подъездов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="floors_list_empty_text">Этажей пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="room_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
-    <!--Участки-->
-    <string name="territory_tab_hand_out">К ВЫДАЧЕ</string>
-    <string name="territory_tab_at_work">В РАБОТЕ</string>
-    <string name="territory_tab_idle">В ОТСТОЕ</string>
-    <string name="territory_tab_all">ВСЕ</string>
-    <!--Детали участка-->
-    <string name="territory_details_tab_streets">УЛИЦЫ</string>
-    <string name="territory_details_tab_houses">ДОМА</string>
-    <string name="territory_details_tab_entrances">ПОДЪЕЗДЫ</string>
-    <string name="territory_details_tab_floors">ЭТАЖИ</string>
-    <string name="territory_details_tab_rooms">КВАРТИРЫ</string>
 
     <!--ФОРМЫ:-->
     <!--общие-->
@@ -77,88 +44,14 @@
     <string name="is_private_sector_hint">Частный сектор?</string>
     <!--участки-->
     <string name="territory_hint">Участок</string>
-    <!--Категория участка-->
-    <string name="territory_category_subheader">Категория участка</string>
-    <string name="territory_category_new_subheader">Новая категория участка</string>
-    <string name="territory_category_mark_hint">Признак категории</string>
-    <!--Участок-->
-    <string name="territory_subheader">Участок</string>
-    <string name="territory_new_subheader">Новый участок</string>
-    <string name="territory_category_hint">Категория участка</string>
-    <string name="territory_num_hint">№ участка</string>
-    <string name="territory_is_business_hint">Деловая территория?</string>
-    <string name="territory_is_group_ministry_hint">Групповой участок?</string>
-    <string name="territory_is_active_hint">Активный?</string>
-    <string name="territory_desc_hint">Описание</string>
-    <!--Выдача участка-->
-    <string name="territory_hand_out_subheader">Выдача участков</string>
-    <string name="territory_receiving_date_hint">Дата выдачи</string>
-    <!--Детали участка-->
-    <string name="territory_street_hint">Улица участка</string>
-    <string name="territory_house_hint">Дом участка</string>
-    <string name="territory_entrance_hint">Подъезд участка</string>
-    <string name="territory_floor_hint">Этаж участка</string>
-    <string name="territory_room_hint">Квартира участка</string>
-    <!--Улицы участка-->
-    <string name="territory_street_subheader">Улица участка</string>
-    <string name="territory_street_new_subheader">Новая улица участка</string>
-    <string name="territory_street_is_even_side_hint">Чётная сторона?</string>
-    <string name="territory_street_estimated_houses_hint">Кол-во домов</string>
-
-    <!--Дом-->
-    <string name="house_subheader">Дом</string>
-    <string name="house_new_subheader">Новый дом</string>
-    <!--Подъезд-->
-    <string name="entrance_subheader">Подъезд</string>
-    <string name="entrance_new_subheader">Новый подъезд</string>
-    <!--Этаж-->
-    <string name="floor_subheader">Этаж</string>
-    <string name="floor_new_subheader">Новый этаж</string>
-    <!--Квартира-->
-    <string name="room_subheader">Квартира</string>
-    <string name="room_new_subheader">Новая квартира</string>
 
     <!--ДИАЛОГИ-->
-    <!--заголовки-->
-    <string name="dlg_title_select_house">Выберите дом</string>
-    <string name="dlg_title_select_entrance">Выберите подъезд</string>
-    <string name="dlg_title_select_floor">Выберите этаж</string>
-    <string name="dlg_title_select_room">Выберите квартиру</string>
-    <!--участки-->
-    <string name="dlg_title_select_territory">Выберите участок</string>
-    <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
-    <string name="date_dlg_title_set_territory_receiving">Укажите дату выдачи</string>
-    <string name="dlg_title_select_territory_street">Выберите улицу участка</string>
-    <string name="dlg_title_select_territory_house">Выберите дом участка</string>
-    <string name="dlg_title_select_territory_entrance">Выберите подъезд участка</string>
-    <string name="dlg_title_select_territory_floor">Выберите этаж участка</string>
-    <string name="dlg_title_select_territory_room">Выберите квартиру участка</string>
-    <!--подтверждения-->
-    <string name="dlg_confirm_del_house">Удалить дом №%1$s?</string>
-    <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
-    <string name="dlg_confirm_del_floor">Удалить этаж №%1$s?</string>
-    <string name="dlg_confirm_del_room">Удалить квартиру №%1$s?</string>
-    <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
-    <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
-    <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->
     <string name="num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="type_empty_error">Укажите, пожалуйста, тип!</string>
     <string name="member_empty_error">Укажите, пожалуйста, возвещателя!</string>
-    <!--формы категории участка-->
-    <string name="territory_category_mark_empty_error">Укажите, пожалуйста, код участка!</string>
-    <!--формы участка-->
-    <string name="territory_category_empty_error">Укажите, пожалуйста, категорию участка!</string>
-    <string name="territory_num_empty_error">Укажите, пожалуйста, номер участка!</string>
-    <!--формы подтверждения выдачи участка-->
-    <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
-    <!--Участки-->
-    <string name="ter_in_perimeter_cnt_desc">в периметре</string>
-    <string name="ter_private_sector_cnt_desc">ч/с</string>
-    <string name="ter_business_cnt_desc">деловая территория</string>
-    <string name="ter_group_ministry_cnt_desc">групповое служение</string>
 </resources>

@@ -51,7 +51,7 @@ private const val TAG = "Congregating.MemberView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemberView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: MemberViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("MemberView(...) called")

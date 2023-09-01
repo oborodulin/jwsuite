@@ -1,21 +1,21 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single
 
 import com.oborodulin.home.common.ui.components.field.util.Validatable
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_territory.R
 
-private const val TAG = "Territoring.RegionInputValidator"
+private const val TAG = "Territoring.TerritoryCategoryInputValidator"
 
 sealed class TerritoryCategoryInputValidator : Validatable {
-    object TerritoryCategoryCode : TerritoryCategoryInputValidator() {
+    data object TerritoryCategoryCode : TerritoryCategoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_code_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.territory_category_code_empty_error
                 //etc..
                 else -> null
             }
     }
 
-    object TerritoryCategoryMark : TerritoryCategoryInputValidator() {
+    data object TerritoryCategoryMark : TerritoryCategoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.territory_category_mark_empty_error
@@ -24,10 +24,10 @@ sealed class TerritoryCategoryInputValidator : Validatable {
             }
     }
 
-    object TerritoryCategoryName : TerritoryCategoryInputValidator() {
+    data object TerritoryCategoryName : TerritoryCategoryInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.locality_name_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.territory_category_name_empty_error
                 else -> null
             }
     }

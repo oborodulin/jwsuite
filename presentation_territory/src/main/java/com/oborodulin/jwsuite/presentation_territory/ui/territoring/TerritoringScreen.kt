@@ -15,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,16 +54,18 @@ import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.member.single.BarMemberComboBox
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.BarMemberComboBox
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.HandOutFabComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
@@ -76,6 +79,7 @@ private const val TAG = "Territoring.TerritoringScreen"
 @Composable
 fun TerritoringScreen(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
 //    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
@@ -83,8 +87,8 @@ fun TerritoringScreen(
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
-    val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
@@ -135,7 +139,7 @@ fun TerritoringScreen(
             ScaffoldComponent(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,
-                topBarTitleResId = R.string.nav_item_territoring,
+                topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring,
                 actionBar = {
                     CommonScreen(state = state) { territoringUi ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -151,7 +155,7 @@ fun TerritoringScreen(
                                             isFocused = focusState.isFocused
                                         )
                                     }*/,
-                                    labelResId = R.string.is_private_sector_hint,
+                                    labelResId = R.string.territoring_is_private_sector_hint,
                                     inputWrapper = isPrivateSector,
                                     onCheckedChange = {
                                         territoringViewModel.onTextFieldEntered(
@@ -174,9 +178,7 @@ fun TerritoringScreen(
                                                 isFocused = focusState.isFocused
                                             )
                                         },*/
-                                    leadingIcon = {
-                                        Icon(painterResource(R.drawable.ic_location_pin_24), null)
-                                    },
+                                    leadingImageVector = Icons.Outlined.Place,
                                     keyboardOptions = remember {
                                         KeyboardOptions(
                                             keyboardType = KeyboardType.Text,
@@ -225,6 +227,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     HandOutTerritoriesView(
                                         appState = appState,
+                                        sharedViewModel = sharedViewModel,
                                         enableAction = areHandOutInputsValid,
                                         territoringViewModel = territoringViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
@@ -250,31 +253,31 @@ fun TerritoringScreen(
                                             items = listOf(
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_room_text,
-                                                    painterResId = R.drawable.ic_room_24
+                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24
                                                 ) {
                                                     ctx.toast("Room process")
                                                 },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_entrance_text,
-                                                    painterResId = R.drawable.ic_door_sliding_24
+                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_entrance_24
                                                 ) {
                                                     ctx.toast("Entrance process")
                                                 },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_house_text,
-                                                    painterResId = R.drawable.ic_house_24
+                                                    imageVector = Icons.Outlined.Home
                                                 ) {
                                                     ctx.toast("House process")
                                                 },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_street_text,
-                                                    painterResId = R.drawable.ic_street_sign_24
+                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_street_sign_24
                                                 ) {
                                                     ctx.toast("Street process")
                                                 },
                                                 MinFabItem(
                                                     labelResId = R.string.fab_territory_process_text,
-                                                    painterResId = R.drawable.ic_map_marker_24
+                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24
                                                 ) {
                                                     ctx.toast("Territory process")
                                                 }
@@ -286,6 +289,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     AtWorkTerritoriesView(
                                         appState = appState,
+                                        sharedViewModel = sharedViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
                                         locationId = it.locationId,
@@ -300,6 +304,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     IdleTerritoriesView(
                                         appState = appState,
+                                        sharedViewModel = sharedViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
                                         locationId = it.locationId,
@@ -314,6 +319,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     AllTerritoriesView(
                                         appState = appState,
+                                        sharedViewModel = sharedViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
                                         locationId = it.locationId,
@@ -343,6 +349,7 @@ fun TerritoringScreen(
 @Composable
 fun HandOutTerritoriesView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     enableAction: Boolean,
     territoringViewModel: TerritoringViewModel,
     territoriesGridViewModel: TerritoriesGridViewModel,
@@ -384,6 +391,7 @@ fun HandOutTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.HAND_OUT,
                 territoryLocationType = territoryLocationType,
@@ -411,7 +419,7 @@ fun HandOutTerritoriesView(
         )
         BarMemberComboBox(
             modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-            sharedViewModel = appState.sharedViewModel.value,
+            sharedViewModel = sharedViewModel,
             inputWrapper = member,
             onValueChange = {
                 territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
@@ -454,6 +462,7 @@ fun HandOutTerritoriesView(
 @Composable
 fun AtWorkTerritoriesView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
@@ -487,6 +496,7 @@ fun AtWorkTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.AT_WORK,
                 territoryLocationType = territoryLocationType,
@@ -518,6 +528,7 @@ fun AtWorkTerritoriesView(
 @Composable
 fun IdleTerritoriesView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
@@ -551,6 +562,7 @@ fun IdleTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.IDLE,
                 territoryLocationType = territoryLocationType,
@@ -582,6 +594,7 @@ fun IdleTerritoriesView(
 @Composable
 fun AllTerritoriesView(
     appState: AppState,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
@@ -615,6 +628,7 @@ fun AllTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.ALL,
                 territoryLocationType = territoryLocationType,

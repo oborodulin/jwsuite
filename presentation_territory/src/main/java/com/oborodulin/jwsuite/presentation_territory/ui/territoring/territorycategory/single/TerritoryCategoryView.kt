@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -97,17 +96,9 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
                     )
                 },
             labelResId = R.string.code_hint,
-            leadingIcon = {
-                Icon(
-                    painterResource(com.oborodulin.home.common.R.drawable.ic_123_36),
-                    null
-                )
-            },
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryCategoryCode,
             onValueChange = {
@@ -124,13 +115,12 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.territory_category_mark_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_ab_36), null) },
+            labelResId = com.oborodulin.jwsuite.presentation_territory.R.string.territory_category_mark_hint,
+            leadingPainterResId = R.drawable.ic_ab_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
             inputWrapper = territoryCategoryMark,
@@ -149,12 +139,11 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
                     )
                 },
             labelResId = R.string.name_hint,
-            leadingIcon = { Icon(painterResource(R.drawable.ic_abc_36), null) },
+            leadingPainterResId = R.drawable.ic_abc_36,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
                 )
             },
             //  visualTransformation = ::creditCardFilter,

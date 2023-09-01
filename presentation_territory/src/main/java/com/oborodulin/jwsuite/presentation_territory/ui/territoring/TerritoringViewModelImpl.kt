@@ -102,12 +102,13 @@ class TerritoringViewModelImpl @Inject constructor(
             TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
             uiModel.isPrivateSector.toString()
         )
+        val territoryLocation = uiModel.territoryLocations.first()
         initStateValue(
             TerritoringFields.TERRITORY_LOCATION, location,
             TerritoryLocationsListItem(
-                locationId = uiModel.territoryLocations.first().locationId,
-                locationShortName = uiModel.territoryLocations.first().locationShortName,
-                territoryLocationType = uiModel.territoryLocations.first().territoryLocationType
+                locationId = territoryLocation.locationId,
+                locationShortName = territoryLocation.locationShortName,
+                territoryLocationType = territoryLocation.territoryLocationType
             )
         )
         return null

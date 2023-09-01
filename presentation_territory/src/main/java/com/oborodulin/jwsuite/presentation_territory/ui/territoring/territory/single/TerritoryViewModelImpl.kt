@@ -18,14 +18,14 @@ import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.congregation.single.CongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.congregating.model.CongregationUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.localitydistrict.single.LocalityDistrictViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.microdistrict.single.MicrodistrictViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.LocalityDistrictUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.LocalityUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.MicrodistrictUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
@@ -104,12 +104,12 @@ class TerritoryViewModelImpl @Inject constructor(
         val job = when (action) {
             is TerritoryUiAction.Load -> when (action.territoryId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_new_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_new_subheader)
                     submitState(UiState.Success(TerritoryUi()))
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation.R.string.territory_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_subheader)
                     loadTerritory(action.territoryId)
                 }
             }

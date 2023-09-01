@@ -1,17 +1,19 @@
 package com.oborodulin.home.common.ui.components.bar
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
@@ -30,7 +32,10 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
     inputWrapper: InputListItemWrapper<T>,
     items: List<T> = listOf(),
     @StringRes placeholderResId: Int? = null,
+    leadingImageVector: ImageVector? = null,
+    @DrawableRes leadingPainterResId: Int? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    @StringRes leadingCntDescResId: Int? = null,
     keyboardOptions: KeyboardOptions = remember { KeyboardOptions.Default },
     visualTransformation: VisualTransformation = remember { VisualTransformation.None },
     onValueChange: (T) -> Unit,
@@ -69,13 +74,18 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
             fieldValue = fieldValue,
             isError = inputWrapper.errorId != null,
             placeholderResId = placeholderResId,
-            leadingIcon = leadingIcon,
+            leadingIcon = {
+                IconComponent(
+                    icon = leadingIcon,
+                    imageVector = leadingImageVector,
+                    painterResId = leadingPainterResId,
+                    contentDescriptionResId = leadingCntDescResId
+                )
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
-            keyboardActions = remember {
-                KeyboardActions(onAny = { onImeKeyAction() })
-            },
+            keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
             onValueChange = onFieldValueChange
         )
         ExposedDropdownMenu(

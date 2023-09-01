@@ -5,5 +5,5 @@ import java.util.UUID
 
 sealed class TerritoryCategoryUiAction : UiAction {
     data class Load(val territoryCategoryId: UUID? = null) : TerritoryCategoryUiAction()
-    object Save : TerritoryCategoryUiAction()
+    data object Save : TerritoryCategoryUiAction()
 }

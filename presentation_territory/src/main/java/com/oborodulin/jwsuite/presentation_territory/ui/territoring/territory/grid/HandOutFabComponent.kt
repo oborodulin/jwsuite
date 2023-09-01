@@ -9,11 +9,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.fab.FabComponent
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Territoring.HandOutFabComponent"
@@ -31,7 +31,7 @@ fun HandOutFabComponent(
             end = 16.dp
         ),
         enabled = enabled,
-        painterResId = R.drawable.ic_hand_map_24,
+        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
         textResId = R.string.fab_territory_hand_out_text
     ) {
         Timber.tag(TAG).d("HandOutFabComponent(...): FAB onClick...")

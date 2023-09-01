@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.presentation_territory.ui.modules.geo.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 
 data class TerritoryStreetUiModel(
     val territoryStreet: TerritoryStreetUi = TerritoryStreetUi(),

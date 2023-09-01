@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single
 
 import com.oborodulin.home.common.ui.components.field.util.Validatable
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_geo.R
 
 private const val TAG = "Territoring.TerritoryStreetInputValidator"
 

@@ -31,7 +31,7 @@ private const val TAG = "Congregating.GroupComboBox"
 @Composable
 fun GroupComboBox(
     modifier: Modifier = Modifier,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>?,
+    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     listViewModel: GroupsListViewModelImpl = hiltViewModel(),
     singleViewModel: GroupViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -52,7 +52,7 @@ fun GroupComboBox(
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,

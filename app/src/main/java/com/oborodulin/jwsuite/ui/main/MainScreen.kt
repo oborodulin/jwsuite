@@ -28,26 +28,23 @@ import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.rememberAppState
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.congregation.single.CongregationScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.group.single.GroupScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.congregating.member.single.MemberScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.locality.single.LocalityScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.microdistrict.single.MicrodistrictScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.region.single.RegionScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.regiondistrict.single.RegionDistrictScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.geo.street.single.StreetScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.details.TerritoryDetailsScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.grid.TerritoriesGridViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territory.single.TerritoryViewModelImpl
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorycategory.single.TerritoryCategoryScreen
-import com.oborodulin.jwsuite.presentation.ui.modules.territoring.territorystreet.single.TerritoryStreetScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetScreen
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -145,7 +142,11 @@ private fun HomeNavigationHost(
                 )
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            MemberScreen(appState = appState, sharedViewModel = sharedViewModel, memberInput = NavRoutes.Member.fromEntry(it))
+            MemberScreen(
+                appState = appState,
+                sharedViewModel = sharedViewModel,
+                memberInput = NavRoutes.Member.fromEntry(it)
+            )
         }
 
         // Territory:
@@ -170,10 +171,13 @@ private fun HomeNavigationHost(
                     it.destination.route
                 )
             // https://developer.android.com/jetpack/compose/libraries#hilt
+            val sharedViewModel =
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             HandOutTerritoriesConfirmationScreen(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel
             )
         }
@@ -184,10 +188,13 @@ private fun HomeNavigationHost(
                     it.destination.route, NavRoutes.Territory.arguments
                 )
             // https://developer.android.com/jetpack/compose/libraries#hilt
+            val sharedViewModel =
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
                 hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             TerritoryScreen(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it)
             )
@@ -217,8 +224,11 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to TerritoryStreetScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.TerritoryStreet.arguments
                 )
+            val sharedViewModel =
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             TerritoryStreetScreen(
                 appState = appState,
+                sharedViewModel = sharedViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }
@@ -241,8 +251,7 @@ private fun HomeNavigationHost(
                     it.destination.route, NavRoutes.RegionDistrict.arguments
                 )
             RegionDistrictScreen(
-                appState = appState,
-                regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it)
+                appState = appState, regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it)
             )
         }
         composable(route = NavRoutes.Locality.route, arguments = NavRoutes.Locality.arguments) {
@@ -262,8 +271,7 @@ private fun HomeNavigationHost(
                     it.destination.route, NavRoutes.Microdistrict.arguments
                 )
             MicrodistrictScreen(
-                appState = appState,
-                microdistrictInput = NavRoutes.Microdistrict.fromEntry(it)
+                appState = appState, microdistrictInput = NavRoutes.Microdistrict.fromEntry(it)
             )
         }
         composable(route = NavRoutes.Street.route, arguments = NavRoutes.Street.arguments) {

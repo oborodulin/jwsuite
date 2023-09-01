@@ -9,5 +9,5 @@ sealed class TerritoringUiAction : UiAction {
         val isPrivateSector: Boolean = false
     ) : TerritoringUiAction()
 
-    object HandOutTerritoriesConfirmation : TerritoringUiAction()
+    data object HandOutTerritoriesConfirmation : TerritoringUiAction()
 }

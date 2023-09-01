@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_territory.R
 
 private const val TAG = "Presentation.HandOutButtonComponent"
 
@@ -22,7 +22,7 @@ fun HandOutButtonComponent(
     ButtonComponent(
         modifier = modifier,
         enabled = enabled,
-        painterResId = R.drawable.ic_hand_map_24,
+        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
         textResId = R.string.fab_territory_hand_out_text,
         contentDescriptionResId = contentDescriptionResId,
         onClick = onClick
