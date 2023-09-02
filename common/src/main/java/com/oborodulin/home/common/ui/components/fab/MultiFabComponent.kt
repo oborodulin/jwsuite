@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,11 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 // https://www.youtube.com/watch?v=9SHNfpnzdEU
@@ -81,48 +80,20 @@ fun MultiFabComponent(
 
     // https://www.appsloveworld.com/kotlin/100/7/jetpack-compose-how-to-disable-floatingaction-button
     val collapsedIcon = @Composable {
-        when (collapsedPainterResId) {
-            null -> collapsedImageVector?.let { iv ->
-                Icon(
-                    imageVector = iv,
-                    contentDescription = collapsedCtxDescResId?.let { stringResource(it) },
-                    modifier = Modifier
-                        //    .rotate(rotate)
-                        .padding(end = 4.dp),
-                    //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                    //else DarkGray
-                )
-            }
-
-            else -> Icon(
-                painter = painterResource(collapsedPainterResId),
-                contentDescription = collapsedCtxDescResId?.let { stringResource(it) },
-                modifier = Modifier.padding(end = 4.dp),
-                //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                //else DarkGray
-            )
-        }
+        IconComponent(
+            modifier = Modifier.padding(end = 4.dp),
+            imageVector = collapsedImageVector,
+            painterResId = collapsedPainterResId,
+            contentDescriptionResId = collapsedCtxDescResId
+        )
     }
     val expandedIcon = @Composable {
-        when (expandedPainterResId) {
-            null -> expandedImageVector?.let { iv ->
-                Icon(
-                    imageVector = iv,
-                    contentDescription = expandedCtxDescResId?.let { stringResource(it) },
-                    modifier = Modifier.padding(end = 4.dp),
-                    //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                    //else DarkGray
-                )
-            }
-
-            else -> Icon(
-                painter = painterResource(expandedPainterResId),
-                contentDescription = expandedCtxDescResId?.let { stringResource(it) },
-                modifier = Modifier.padding(end = 4.dp),
-                //tint = if (enabledFab) LocalContentColor.current.copy(alpha = 0.4f) // LocalContentAlpha.current
-                //else DarkGray
-            )
-        }
+        IconComponent(
+            modifier = Modifier.padding(end = 4.dp),
+            imageVector = expandedImageVector,
+            painterResId = expandedPainterResId,
+            contentDescriptionResId = expandedCtxDescResId
+        )
     }
     // https://stackoverflow.com/questions/69780839/how-do-you-animate-a-swap-of-image
     val iconCrossfade = @Composable {
@@ -186,7 +157,7 @@ fun MultiFabComponent(
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMultiFabComponentEnabled() {
-    var multiFloatingState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
+    var multiFloatingState by remember { mutableStateOf(MultiFloatingState.Expanded) }
     HomeComposableTheme {
         Surface {
             MultiFabComponent(
@@ -227,7 +198,7 @@ fun PreviewMultiFabComponentEnabled() {
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMultiFabComponentDisabled() {
-    var multiFloatingState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
+    var multiFloatingState by remember { mutableStateOf(MultiFloatingState.Expanded) }
     HomeComposableTheme {
         Surface {
             MultiFabComponent(

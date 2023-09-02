@@ -103,7 +103,7 @@ class CongregationViewModelImpl @Inject constructor(
     }
 
     private fun saveCongregation(): Job {
-        val localityUi = LocalityUi()
+        val localityUi = LocalityUi(localityName = locality.value.item?.headline.orEmpty())
         localityUi.id = locality.value.item?.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,
@@ -115,7 +115,11 @@ class CongregationViewModelImpl @Inject constructor(
         congregationUi.id = if (id.value.value.isNotEmpty()) {
             UUID.fromString(id.value.value)
         } else null
-        Timber.tag(TAG).d("saveCongregation() called: UI model %s", congregationUi)
+        Timber.tag(TAG).d(
+            "saveCongregation() called: UI model %s; localityUi.id = %s",
+            congregationUi,
+            localityUi.id
+        )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveCongregationUseCase.execute(
                 SaveCongregationUseCase.Request(mapper.map(congregationUi))

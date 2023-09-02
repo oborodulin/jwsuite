@@ -16,15 +16,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,8 +49,10 @@ fun MinFabComponent(
     // https://stackoverflow.com/questions/70122336/how-to-draw-imagevector-on-canvas-jetpack-compose
     val vectorPainter = item.imageVector?.let { rememberVectorPainter(it) }
     // https://stackoverflow.com/questions/66186917/jetpack-compose-draw-on-image-with-painter
-    val imageBitmap = item.painterResId?.let { ImageBitmap.imageResource(it) }
-    Row {
+    //val imageBitmap = item.painterResId?.let { ImageBitmap.imageResource(it) }
+    // https://stackoverflow.com/questions/75932860/drawimage-with-vector-drawable-jetpack-compose-graphics
+    val painter = item.painterResId?.let { painterResource(id = it) }
+    Row(verticalAlignment = Alignment.CenterVertically) {
         item.labelResId?.let {
             Text(
                 stringResource(id = it), fontSize = 12.sp, fontWeight = FontWeight.Bold,
@@ -80,23 +82,31 @@ fun MinFabComponent(
                 )
             )
             drawCircle(color = buttonColor, radius = fabScale)
-            if (imageBitmap != null) {
-                drawImage(
+            if (painter != null) {
+                translate(
+                    left = center.x - (painter.intrinsicSize.width / 2f),
+                    top = center.y - (painter.intrinsicSize.width / 2f)
+                ) {
+                    with(painter) {
+                        draw(size = painter.intrinsicSize, alpha = alpha)
+                    }
+                }
+                /*drawImage(
                     image = imageBitmap,
                     topLeft = Offset(
-                        center.x - (imageBitmap.width / 2),
-                        center.y - (imageBitmap.width / 2),
+                        center.x - (imageBitmap.width / 2f),
+                        center.y - (imageBitmap.width / 2f),
                     ),
                     alpha = alpha
-                )
+                )*/
             } else {
                 vectorPainter?.let {
                     translate(
-                        left = (it.intrinsicSize.width / 2f),
-                        top = (it.intrinsicSize.width / 2f)
+                        left = center.x - (it.intrinsicSize.width / 2f),
+                        top = center.y - (it.intrinsicSize.width / 2f)
                     ) {
                         with(it) {
-                            draw(it.intrinsicSize)
+                            draw(size = it.intrinsicSize, alpha = alpha)
                         }
                     }
                 }
@@ -135,7 +145,7 @@ fun PreviewMinFabComponentDisabled() {
                 enabled = false,
                 item = MinFabItem(
                     labelResId = R.string.preview_blank_fab_text,
-                    imageVector = Icons.Rounded.Add
+                    painterResId = R.drawable.outline_photo_24
                 ),
                 alpha = 1f,
                 textShadow = 2.dp,

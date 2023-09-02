@@ -12,12 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +25,6 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
@@ -39,7 +33,6 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.l
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.util.UUID
 
 private const val TAG = "Congregating.CongregationsListView"
 
@@ -49,7 +42,6 @@ fun CongregationsListView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationsListView(...) called")
     LaunchedEffect(Unit) {
@@ -61,7 +53,7 @@ fun CongregationsListView(
         CommonScreen(state = state) {
             CongregationsList(
                 congregations = it,
-                congregationInput = congregationInput,
+                congregationsListViewModel = congregationsListViewModel,
                 onFavorite = { listItem ->
                     listItem.itemId?.let { id ->
                         congregationsListViewModel.submitAction(
@@ -80,11 +72,7 @@ fun CongregationsListView(
                     )
                 }
             ) { congregation ->
-                Timber.tag(TAG).d(
-                    "CongregationsListView: sharedViewModel = %s",
-                    sharedViewModel //appState.sharedViewModel.value
-                )
-                // appState.sharedViewModel.value?.submitData(congregation)
+                Timber.tag(TAG).d("CongregationsListView: sharedViewModel = %s", sharedViewModel)
                 sharedViewModel.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 with(membersListViewModel) {
@@ -109,17 +97,19 @@ fun CongregationsListView(
 @Composable
 fun CongregationsList(
     congregations: List<CongregationsListItem>,
-    congregationInput: CongregationInput?,
+    congregationsListViewModel: CongregationsListViewModel,
     onFavorite: OnListItemEvent,
     onEdit: (CongregationsListItem) -> Unit,
     onDelete: (CongregationsListItem) -> Unit,
     onClick: (CongregationsListItem) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) } // by
     if (congregations.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = congregations.filter { it.selected }
+                .getOrNull(0)?.let { congregations.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .selectableGroup() // Optional, for accessibility purpose
                 .padding(8.dp)
@@ -127,8 +117,6 @@ fun CongregationsList(
         ) {
             items(congregations.size) { index ->
                 congregations[index].let { congregation ->
-                    val isSelected =
-                        ((selectedIndex == -1) and ((congregationInput?.congregationId == congregation.id) || congregation.isFavorite)) || (selectedIndex == index)
                     CongregationsListItemComponent(
                         item = congregation,
                         itemActions = listOf(
@@ -139,11 +127,10 @@ fun CongregationsList(
                                     congregation.congregationName
                                 )
                             ) { onDelete(congregation) }),
-                        selected = isSelected,
-                        background = (if (isSelected) Color.LightGray else Color.Transparent),
+                        selected = congregation.selected,
                         onFavorite = onFavorite,
                         onClick = {
-                            if (selectedIndex != index) selectedIndex = index
+                            congregationsListViewModel.singleSelectItem(congregation)
                             onClick(congregation)
                         }
                     )
@@ -169,7 +156,9 @@ fun PreviewCongregationsList() {
         Surface {
             CongregationsList(
                 congregations = CongregationsListViewModelImpl.previewList(LocalContext.current),
-                congregationInput = CongregationInput(UUID.randomUUID()),
+                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(
+                    LocalContext.current
+                ),
                 onFavorite = {},
                 onEdit = {},
                 onDelete = {},

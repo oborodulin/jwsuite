@@ -17,7 +17,7 @@ object MainDestinations {
     const val ROUTE_STREET = "street/%s"
 
     //Congregates:
-    const val ROUTE_CONGREGATION = "congregation/%s"
+    const val ROUTE_CONGREGATION = "congregation?%s"
     const val ROUTE_GROUP = "group/%s"
     const val ROUTE_MEMBER = "member/%s"
 

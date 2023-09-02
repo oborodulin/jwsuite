@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -88,7 +89,6 @@ fun TerritoringScreen(
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
     val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
-    //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
@@ -98,12 +98,14 @@ fun TerritoringScreen(
     val areTerritoriesChecked by territoriesGridViewModel.areTerritoriesChecked.collectAsStateWithLifecycle()
 
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
-    appState.fab.value = {
-        HandOutFabComponent(
-            enabled = areHandOutInputsValid,
-            territoriesGridViewModel = territoriesGridViewModel,
-            territoringViewModel = territoringViewModel
-        )
+    val fab: MutableState<@Composable () -> Unit> = remember {
+        mutableStateOf({
+            HandOutFabComponent(
+                enabled = areHandOutInputsValid,
+                territoriesGridViewModel = territoriesGridViewModel,
+                territoringViewModel = territoringViewModel
+            )
+        })
     }
     var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
@@ -206,7 +208,7 @@ fun TerritoringScreen(
                         Icon(Icons.Outlined.Settings, null)
                     }*/
                 },
-                floatingActionButton = appState.fab.value,
+                floatingActionButton = { fab.value },
                 bottomBar = bottomBar
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
@@ -215,7 +217,7 @@ fun TerritoringScreen(
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_hand_out),
                                 onClick = {
-                                    appState.fab.value = {
+                                    fab.value = {
                                         HandOutFabComponent(
                                             enabled = areHandOutInputsValid,
                                             territoriesGridViewModel = territoriesGridViewModel,
@@ -240,7 +242,7 @@ fun TerritoringScreen(
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_at_work),
                                 onClick = {
-                                    appState.fab.value = {
+                                    fab.value = {
                                         MultiFabComponent(
                                             multiFloatingState = multiFloatingProcessState,
                                             onMultiFabStateChange = {
@@ -299,7 +301,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_idle),
-                                onClick = { appState.fab.value = {} }
+                                onClick = { fab.value = {} }
                             ) {
                                 location.item?.let {
                                     IdleTerritoriesView(
@@ -314,7 +316,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_all),
-                                onClick = { appState.fab.value = {} }
+                                onClick = { fab.value = {} }
                             ) {
                                 location.item?.let {
                                     AllTerritoriesView(

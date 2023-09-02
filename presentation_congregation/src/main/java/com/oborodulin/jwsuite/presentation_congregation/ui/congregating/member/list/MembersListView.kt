@@ -12,11 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,14 +24,13 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.UUID
@@ -48,8 +43,7 @@ fun MembersListView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
-    groupInput: GroupInput? = null,
-    memberInput: MemberInput? = null
+    groupInput: GroupInput? = null
 ) {
     Timber.tag(TAG).d(
         "MembersListView(...) called: congregationInput = %s; groupInput = %s",
@@ -57,7 +51,6 @@ fun MembersListView(
         groupInput
     )
     val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
-        //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
 
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
     Timber.tag(TAG)
@@ -79,7 +72,7 @@ fun MembersListView(
                 groupId = groupInput?.groupId,
                 searchedText = searchText.text,
                 members = it,
-                memberInput = memberInput,
+                viewModel = viewModel,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
                 onDelete = { member ->
                     viewModel.submitAction(MembersListUiAction.DeleteMember(member.id))
@@ -106,16 +99,18 @@ fun MembersList(
     groupId: UUID?,
     searchedText: String = "",
     members: List<MembersListItem>,
-    memberInput: MemberInput? = null,
+    viewModel: MembersListViewModel,
     onEdit: (MembersListItem) -> Unit,
     onDelete: (MembersListItem) -> Unit
 ) {
     Timber.tag(TAG).d("MembersList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) } // by
     if (members.isNotEmpty()) {
         var filteredItems: List<MembersListItem>
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = members.filter { it.selected }
+                .getOrNull(0)?.let { members.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .selectableGroup() // Optional, for accessibility purpose
                 .padding(8.dp)
@@ -128,7 +123,6 @@ fun MembersList(
             }
             items(filteredItems.size) { index ->
                 filteredItems[index].let { member ->
-                    val isSelected = (selectedIndex == index)
                     ListItemComponent(
                         item = member,
                         itemActions = listOf(
@@ -136,11 +130,8 @@ fun MembersList(
                             ComponentUiAction.DeleteListItem(
                                 stringResource(R.string.dlg_confirm_del_member, member.headline)
                             ) { onDelete(member) }),
-                        selected = isSelected,
-                        background = (if (isSelected) Color.LightGray else Color.Transparent),
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                        }
+                        selected = member.selected,
+                        onClick = { viewModel.singleSelectItem(member) }
                     )
                 }
             }
@@ -166,6 +157,7 @@ fun PreviewMembersList() {
                 congregationId = UUID.randomUUID(),
                 groupId = UUID.randomUUID(),
                 members = MembersListViewModelImpl.previewList(LocalContext.current),
+                viewModel = MembersListViewModelImpl.previewModel(LocalContext.current),
                 onEdit = {},
                 onDelete = {}
             )

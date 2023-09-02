@@ -14,7 +14,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsListItem
 import timber.log.Timber
 
 private const val TAG = "Territoring.TerritoryDetailsListView"
@@ -41,7 +40,6 @@ fun TerritoryDetailsListView(
         Timber.tag(TAG).d("TerritoryDetailsListView: LaunchedEffect() BEFORE collect ui state flow")
         territoryInput?.let { viewModel.submitAction(TerritoryDetailsListUiAction.Load(it.territoryId)) }
     }
-    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
@@ -57,7 +55,7 @@ fun TerritoryDetails(details: List<TerritoryDetailsListItem>) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .padding(horizontal = 4.dp, vertical = 4.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column(
@@ -65,9 +63,17 @@ fun TerritoryDetails(details: List<TerritoryDetailsListItem>) {
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            details.forEach { Text("${it.headline}${it.supportingText}") }
+            details.forEach {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Start)
+                        .padding(4.dp),
+                    text = "${it.headline}${it.supportingText}"
+                )
+            }
         }
     }
 }

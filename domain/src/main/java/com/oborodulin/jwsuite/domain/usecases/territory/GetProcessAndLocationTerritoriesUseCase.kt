@@ -13,7 +13,9 @@ import java.util.UUID
 class GetProcessAndLocationTerritoriesUseCase(
     configuration: Configuration,
     private val territoriesRepository: TerritoriesRepository
-) : UseCase<GetProcessAndLocationTerritoriesUseCase.Request, GetProcessAndLocationTerritoriesUseCase.Response>(configuration) {
+) : UseCase<GetProcessAndLocationTerritoriesUseCase.Request, GetProcessAndLocationTerritoriesUseCase.Response>(
+    configuration
+) {
 
     override fun process(request: Request): Flow<Response> =
         combine(
@@ -28,9 +30,11 @@ class GetProcessAndLocationTerritoriesUseCase(
         ) { territories, territoryStreetNamesAndHouseNums ->
             territories.map { territory ->
                 val streetNamesAndHouseNums =
-                    territoryStreetNamesAndHouseNums.first { it.territoryId == territory.id }
-                territory.streetNames = streetNamesAndHouseNums.streetNames
-                territory.houseNums = streetNamesAndHouseNums.houseFullNums
+                    territoryStreetNamesAndHouseNums.firstOrNull { it.territoryId == territory.id }
+                streetNamesAndHouseNums?.let {
+                    territory.streetNames = it.streetNames
+                    territory.houseNums = it.houseFullNums
+                }
                 territory
             }
         }.map {

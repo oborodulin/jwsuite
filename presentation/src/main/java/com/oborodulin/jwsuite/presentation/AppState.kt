@@ -27,8 +27,8 @@ fun rememberAppState(
             mutableStateOf(null)
         },
 
-     */
     fab: MutableState<@Composable () -> Unit> = remember { mutableStateOf({ }) },
+     */
     resources: Resources = LocalContext.current.resources,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     appName: String = "",
@@ -40,7 +40,7 @@ fun rememberAppState(
         commonNavController,
         navBarNavController,
 //        sharedViewModel,
-        fab,
+//        fab,
         resources,
         coroutineScope,
         actionBarSubtitle
@@ -51,7 +51,7 @@ fun rememberAppState(
             commonNavController,
             navBarNavController,
 //            sharedViewModel,
-            fab,
+//            fab,
             appName,
             actionBarSubtitle
         )
@@ -65,7 +65,7 @@ class AppState(
     val commonNavController: NavHostController,
     val navBarNavController: NavHostController,
 //    val sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?>,
-    val fab: MutableState<@Composable () -> Unit>,
+//    val fab: MutableState<@Composable () -> Unit>,
     val appName: String,
     val actionBarSubtitle: MutableState<String>
 ) {

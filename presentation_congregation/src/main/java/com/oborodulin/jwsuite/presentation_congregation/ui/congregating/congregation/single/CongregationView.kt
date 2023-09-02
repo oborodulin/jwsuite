@@ -117,10 +117,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
             labelResId = R.string.congregation_num_hint,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = congregationNum,
             onValueChange = {
@@ -177,14 +174,16 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryMark,
             onValueChange = {
-                viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it))
+                // https://stackoverflow.com/questions/67136058/textfield-maxlength-android-jetpack-compose
+                if (it.length <= 1) {
+                    viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it))
+                }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -201,9 +200,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
             imageVector = Icons.Outlined.Favorite,
             labelResId = R.string.congregation_is_favorite_hint,
             inputWrapper = isFavorite,
-            onCheckedChange = {
-                viewModel.onTextFieldEntered(CongregationInputEvent.IsFavorite(it))
-            }
+            onCheckedChange = { viewModel.onTextFieldEntered(CongregationInputEvent.IsFavorite(it)) }
         )
     }
 }

@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,7 +34,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsLi
  * Created by tfakioglu on 12.December.2021
  */
 private const val TAG = "Congregating.CongregationsListItemComponent"
-private val EMPTY: OnListItemEvent = {}
+private val _EMPTY: OnListItemEvent = {}
 
 @Composable
 fun CongregationsListItemComponent(
@@ -43,7 +42,6 @@ fun CongregationsListItemComponent(
     item: CongregationsListItem,
     selected: Boolean = false,
     itemActions: List<ComponentUiAction> = emptyList(),
-    background: Color = Color.Transparent,
     onFavorite: OnListItemEvent,
     onClick: OnListItemEvent
 ) {
@@ -52,19 +50,12 @@ fun CongregationsListItemComponent(
         item = item,
         selected = selected,
         itemActions = itemActions,
-        background = background,
         onClick = onClick
     ) {
-        Row(
-            Modifier
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(2f)
-            ) {
+        Row(Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.weight(2f)) {
                 Row {
-                    if (onFavorite !== EMPTY) {
+                    if (onFavorite !== _EMPTY) {
                         Image(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
@@ -79,10 +70,6 @@ fun CongregationsListItemComponent(
                                 true -> Icons.Outlined.Favorite
                                 false -> Icons.Outlined.FavoriteBorder
                             },
-                            /*painter = when (item.isFavorite) {
-                                true -> painterResource(R.drawable.outline_favorite_black_20)
-                                false -> painterResource(R.drawable.outline_favorite_border_black_20)
-                            },*/
                             contentDescription = ""
                         )
                     }

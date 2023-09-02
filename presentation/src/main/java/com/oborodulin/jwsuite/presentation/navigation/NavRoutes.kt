@@ -149,7 +149,7 @@ sealed class NavRoutes constructor(
         arguments = listOf(navArgument(ARG_REGION_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForRegion(regionInput: RegionInput? = null): String {
@@ -162,9 +162,9 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): RegionInput {
+        fun fromEntry(entry: NavBackStackEntry): RegionInput? {
             val regionInput =
-                RegionInput(UUID.fromString(entry.arguments?.getString(ARG_REGION_ID).orEmpty()))
+                entry.arguments?.getString(ARG_REGION_ID)?.let { RegionInput(UUID.fromString(it)) }
             Timber.tag(TAG).d("Region - fromEntry(...): '%s'", regionInput)
             return regionInput
         }
@@ -320,29 +320,34 @@ sealed class NavRoutes constructor(
 
     // Congregation:
     data object Congregation : NavRoutes(
-        route = String.format(ROUTE_CONGREGATION, "{$ARG_CONGREGATION_ID}"),
+        route = String.format(ROUTE_CONGREGATION, "$ARG_CONGREGATION_ID={$ARG_CONGREGATION_ID}"),
         iconPainterResId = R.drawable.ic_congregation_24,
         titleResId = R.string.nav_item_congregation,
         arguments = listOf(navArgument(ARG_CONGREGATION_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForCongregation(congregationInput: CongregationInput? = null): String {
-            val route = when (congregationInput) {
+            val route = String.format(
+                ROUTE_CONGREGATION,
+                congregationInput?.let { "$ARG_CONGREGATION_ID=${it.congregationId}" } ?: ""
+            )
+            /*    when (congregationInput) {
                 null -> baseRoute()
                 else -> String.format(ROUTE_CONGREGATION, congregationInput.congregationId)
             }
+
+             */
             //val route = String.format(ROUTE_PAYER, payerId)
             Timber.tag(TAG).d("Congregation - routeForCongregation(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): CongregationInput {
-            val congregationInput = CongregationInput(
-                UUID.fromString(entry.arguments?.getString(ARG_CONGREGATION_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): CongregationInput? {
+            val congregationInput = entry.arguments?.getString(ARG_CONGREGATION_ID)
+                ?.let { CongregationInput(UUID.fromString(it)) }
             Timber.tag(TAG).d("Congregation - fromEntry(...): '%s'", congregationInput)
             return congregationInput
         }
@@ -355,7 +360,7 @@ sealed class NavRoutes constructor(
         arguments = listOf(navArgument(ARG_GROUP_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForGroup(groupInput: GroupInput? = null): String {
@@ -368,9 +373,9 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): GroupInput {
+        fun fromEntry(entry: NavBackStackEntry): GroupInput? {
             val groupInput =
-                GroupInput(UUID.fromString(entry.arguments?.getString(ARG_GROUP_ID).orEmpty()))
+                entry.arguments?.getString(ARG_GROUP_ID)?.let { GroupInput(UUID.fromString(it)) }
             Timber.tag(TAG).d("Group - fromEntry(...): '%s'", groupInput)
             return groupInput
         }
@@ -383,7 +388,7 @@ sealed class NavRoutes constructor(
         arguments = listOf(navArgument(ARG_MEMBER_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForMember(memberInput: MemberInput? = null): String {
@@ -396,10 +401,9 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): MemberInput {
-            val memberInput = MemberInput(
-                UUID.fromString(entry.arguments?.getString(ARG_MEMBER_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): MemberInput? {
+            val memberInput =
+                entry.arguments?.getString(ARG_MEMBER_ID)?.let { MemberInput(UUID.fromString(it)) }
             Timber.tag(TAG).d("Member - fromEntry(...): '%s'", memberInput)
             return memberInput
         }

@@ -17,6 +17,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,6 +63,11 @@ fun CongregatingScreen(
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val context = LocalContext.current
+    var addActionOnClick by remember {
+        mutableStateOf({
+            appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation())
+        })
+    }
     /*
         LaunchedEffect(Unit) {
             Timber.tag(TAG).d("CongregatingScreen: LaunchedEffect() BEFORE collect ui state flow")
@@ -75,7 +83,7 @@ fun CongregatingScreen(
             nestedScrollConnection = nestedScrollConnection,
             topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating,
             topBarActions = {
-                IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
+                IconButton(onClick = addActionOnClick) {
                     Icon(Icons.Outlined.Add, null)
                 }
                 IconButton(onClick = { context.toast("Settings button clicked...") }) {
@@ -89,53 +97,59 @@ fun CongregatingScreen(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_congregations),
-                            view = {
-                                CongregationMembersView(
-                                    appState = appState,
-                                    sharedViewModel = sharedViewModel,
-                                    membersListViewModel = membersListViewModel
-                                )
+                            onClick = {
+                                addActionOnClick =
+                                    { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }
                             }
-                        ),
+                        ) {
+                            CongregationMembersView(
+                                appState = appState,
+                                sharedViewModel = sharedViewModel,
+                                membersListViewModel = membersListViewModel
+                            )
+                        },
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_groups),
-                            view = {
-                                GroupMembersView(
-                                    appState = appState,
-                                    sharedViewModel = sharedViewModel,
-                                    membersListViewModel = membersListViewModel
-                                )
+                            onClick = {
+                                addActionOnClick =
+                                    { appState.commonNavController.navigate(NavRoutes.Group.routeForGroup()) }
                             }
-                        ),
+                        ) {
+                            GroupMembersView(
+                                appState = appState,
+                                sharedViewModel = sharedViewModel,
+                                membersListViewModel = membersListViewModel
+                            )
+                        },
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_members),
-                            view = {
-                                MembersView(
-                                    appState = appState,
-                                    sharedViewModel = sharedViewModel,
-                                    membersListViewModel = membersListViewModel
-                                )
+                            onClick = {
+                                addActionOnClick =
+                                    { appState.commonNavController.navigate(NavRoutes.Member.routeForMember()) }
                             }
-                        )
+                        ) {
+                            MembersView(
+                                appState = appState,
+                                sharedViewModel = sharedViewModel,
+                                membersListViewModel = membersListViewModel
+                            )
+                        }
                     )
                 )
             }
         }
     }
-    /*        }
-            LaunchedEffect(Unit) {
-                Timber.tag(TAG).d("CongregatingScreen: LaunchedEffect() AFTER collect ui state flow")
-                viewModel.singleEventFlow.collectLatest {
-                    Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
-                    when (it) {
-                        is CongregatingUiSingleEvent.OpenPayerScreen -> {
-                            appState.commonNavController.navigate(it.navRoute)
-                        }
-                    }
+    // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
+// Page change callback
+    /*    LaunchedEffect(pagerState) {
+            snapshotFlow { pagerState.currentPage }.collect { page ->
+                when (page) {
+                    0 -> viewModel.getAllNotes() // First page
+                    1 -> // Second page
+                    else -> // Other pages
                 }
             }
-
-     */
+        }*/
 }
 
 @Composable
