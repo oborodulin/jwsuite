@@ -103,11 +103,6 @@ private fun HomeNavigationHost(
     Timber.tag(TAG).d("HomeNavigationHost(...) called")
     NavHost(appState.commonNavController, startDestination = NavRoutes.Home.route) {
         // Congregation:
-        /*        composable(route = NavRoutes.Congregation.routeForCongregation()) {
-                    Timber.tag(TAG)
-                        .d("Navigation Graph: to CongregationScreen [route = '%s']", it.destination.route)
-                    CongregationScreen(appState = appState)
-                }*/
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
         ) {

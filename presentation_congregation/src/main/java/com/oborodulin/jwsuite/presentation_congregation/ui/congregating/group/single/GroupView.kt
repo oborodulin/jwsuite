@@ -45,7 +45,7 @@ private const val TAG = "Congregating.GroupView"
 @Composable
 fun GroupView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
-    groupViewModel: GroupViewModelImpl = hiltViewModel()
+    viewModel: GroupViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("GroupView(...) called")
     val context = LocalContext.current
@@ -53,16 +53,16 @@ fun GroupView(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(groupViewModel.events, lifecycleOwner) {
-        groupViewModel.events.flowWithLifecycle(
+    val events = remember(viewModel.events, lifecycleOwner) {
+        viewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
-    val congregation by groupViewModel.congregation.collectAsStateWithLifecycle()
-    val groupNum by groupViewModel.groupNum.collectAsStateWithLifecycle()
+    val congregation by viewModel.congregation.collectAsStateWithLifecycle()
+    val groupNum by viewModel.groupNum.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -96,7 +96,7 @@ fun GroupView(
             modifier = Modifier
                 .focusRequester(focusRequesters[GroupFields.GROUP_CONGREGATION.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    groupViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = GroupFields.GROUP_CONGREGATION,
                         isFocused = focusState.isFocused
                     )
@@ -104,14 +104,14 @@ fun GroupView(
             enabled = false,
             sharedViewModel = sharedViewModel,
             inputWrapper = congregation,
-            onValueChange = { groupViewModel.onTextFieldEntered(GroupInputEvent.Congregation(it)) },
-            onImeKeyAction = groupViewModel::moveFocusImeAction
+            onValueChange = { viewModel.onTextFieldEntered(GroupInputEvent.Congregation(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[GroupFields.GROUP_NUM.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    groupViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = GroupFields.GROUP_NUM,
                         isFocused = focusState.isFocused
                     )
@@ -122,8 +122,8 @@ fun GroupView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = groupNum,
-            onValueChange = { groupViewModel.onTextFieldEntered(GroupInputEvent.GroupNum(it)) },
-            onImeKeyAction = groupViewModel::moveFocusImeAction
+            onValueChange = { viewModel.onTextFieldEntered(GroupInputEvent.GroupNum(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
 }

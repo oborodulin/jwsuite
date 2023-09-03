@@ -1,7 +1,10 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Icon
@@ -9,6 +12,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,6 +27,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -31,17 +37,18 @@ private const val TAG = "Congregating.GroupScreen"
 fun GroupScreen(
     appState: AppState,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
-    groupViewModel: GroupViewModelImpl = hiltViewModel(),
+    viewModel: GroupViewModelImpl = hiltViewModel(),
     groupInput: GroupInput? = null
 ) {
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
-        groupViewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
+        viewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
     }
-    groupViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        groupViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
         JWSuiteTheme { //(darkTheme = true)
@@ -52,31 +59,41 @@ fun GroupScreen(
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
                 }
-            ) { it ->
-                CommonScreen(paddingValues = it, state = state) {
-                    val areInputsValid by groupViewModel.areInputsValid.collectAsStateWithLifecycle()
-                    GroupView(sharedViewModel)
-                    Spacer(Modifier.height(8.dp))
-                    SaveButtonComponent(
-                        enabled = areInputsValid,
-                        onClick = {
-                            groupViewModel.onContinueClick {
-                                Timber.tag(TAG).d("GroupScreen(...): Start viewModelScope.launch")
-                                groupViewModel.viewModelScope().launch {
-                                    groupViewModel.actionsJobFlow.collect {
-                                        Timber.tag(TAG).d(
-                                            "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                            it?.toString()
-                                        )
-                                        it?.join()
-                                        appState.backToBottomBarScreen()
+            ) { paddingValues ->
+                CommonScreen(paddingValues = paddingValues, state = state) {
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        GroupView(sharedViewModel)
+                        Spacer(Modifier.height(8.dp))
+                        SaveButtonComponent(
+                            enabled = areInputsValid,
+                            onClick = {
+                                Timber.tag(TAG).d("GroupScreen(...): Save Button onClick...")
+                                // checks all errors
+                                viewModel.onContinueClick {
+                                    // if success, backToBottomBarScreen
+                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                                    coroutineScope.launch {
+                                        viewModel.actionsJobFlow.collectLatest { job ->
+                                            Timber.tag(TAG).d(
+                                                "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                                job?.toString()
+                                            )
+                                            job?.join()
+                                            appState.backToBottomBarScreen()
+                                        }
                                     }
+                                    // save
+                                    viewModel.submitAction(GroupUiAction.Save)
                                 }
-                                groupViewModel.submitAction(GroupUiAction.Save)
-                                Timber.tag(TAG).d("GroupScreen(...): onSubmit() executed")
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

@@ -206,9 +206,7 @@ class MemberViewModelImpl @Inject constructor(
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
-        uiModel.id?.let {
-            initStateValue(MemberFields.MEMBER_ID, id, it.toString())
-        }
+        uiModel.id?.let { initStateValue(MemberFields.MEMBER_ID, id, it.toString()) }
         initStateValue(
             MemberFields.MEMBER_CONGREGATION, congregation,
             ListItemModel(

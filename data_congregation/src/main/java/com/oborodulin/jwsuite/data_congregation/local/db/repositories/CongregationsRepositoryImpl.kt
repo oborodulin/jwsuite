@@ -6,8 +6,11 @@ import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+
+private const val TAG = "Data.CongregationsRepositoryImpl"
 
 class CongregationsRepositoryImpl @Inject constructor(
     private val localCongregationDataSource: LocalCongregationDataSource,
@@ -17,22 +20,35 @@ class CongregationsRepositoryImpl @Inject constructor(
         .map(mappers.congregationViewListToCongregationsListMapper::map)
 
     override fun get(congregationId: UUID) =
-        localCongregationDataSource.getCongregation(congregationId).map(mappers.congregationViewToCongregationMapper::map)
+        localCongregationDataSource.getCongregation(congregationId)
+            .map(mappers.congregationViewToCongregationMapper::map)
 
     override fun getFavorite() =
-        localCongregationDataSource.getFavoriteCongregation().map(mappers.congregationViewToCongregationMapper::nullableMap)
+        localCongregationDataSource.getFavoriteCongregation()
+            .map(mappers.congregationViewToCongregationMapper::nullableMap)
 
     override fun save(congregation: Congregation) = flow {
         if (congregation.id == null) {
-            localCongregationDataSource.insertCongregation(mappers.congregationToCongregationEntityMapper.map(congregation))
+            localCongregationDataSource.insertCongregation(
+                mappers.congregationToCongregationEntityMapper.map(congregation)
+            )
+            Timber.tag(TAG).d("save(...) called: inserted congregation = %s", congregation)
         } else {
-            localCongregationDataSource.updateCongregation(mappers.congregationToCongregationEntityMapper.map(congregation))
+            localCongregationDataSource.updateCongregation(
+                mappers.congregationToCongregationEntityMapper.map(congregation)
+            )
+            Timber.tag(TAG).d("save(...) called: updated congregation = %s", congregation)
         }
         emit(congregation)
+        Timber.tag(TAG).d("save(...) emit congregation = %s", congregation)
     }
 
     override fun delete(congregation: Congregation) = flow {
-        localCongregationDataSource.deleteCongregation(mappers.congregationToCongregationEntityMapper.map(congregation))
+        localCongregationDataSource.deleteCongregation(
+            mappers.congregationToCongregationEntityMapper.map(
+                congregation
+            )
+        )
         this.emit(congregation)
     }
 

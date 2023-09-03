@@ -11,8 +11,12 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.*
+
+private const val TAG = "Data.CongregationDao"
 
 @Dao
 interface CongregationDao {
@@ -39,7 +43,9 @@ interface CongregationDao {
     fun findByCongregationName(congregationName: String): Flow<List<CongregationView>>
 
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE isFavorite = $DB_TRUE")
-    fun findFavorite(): Flow<CongregationView?>
+    fun findFavoriteCongregation(): CongregationView?
+
+    fun findFavorite() = flow { emit(findFavoriteCongregation()) }
 
     @ExperimentalCoroutinesApi
     fun findDistinctFavorite() = findFavorite().distinctUntilChanged()
@@ -130,18 +136,22 @@ interface CongregationDao {
 
     @Transaction
     suspend fun updateWithFavorite(congregation: CongregationEntity) {
-        var updatedCongregation = congregation
+        Timber.tag(TAG).d("updateWithFavorite(...) called: congregation = %s", congregation)
         if (congregation.isFavorite) {
             clearFavoritesById(congregation.congregationId)
+            update(congregation)
         } else {
-            findFavorite().collect { favorite ->
-                favorite?.let {
-                    if (it.congregation.congregationId == congregation.congregationId) {
-                        updatedCongregation = congregation.copy(isFavorite = true)
-                    }
+            var updatedCongregation = congregation
+            findFavoriteCongregation()?.let { favorite ->
+                Timber.tag(TAG).d("findFavorite() called: favorite = %s", favorite)
+                if (favorite.congregation.congregationId == congregation.congregationId) {
+                    updatedCongregation = congregation.copy(isFavorite = true)
                 }
             }
+            update(updatedCongregation)
+            Timber.tag(TAG)
+                .d("updateWithFavorite(...): updatedCongregation = %s", updatedCongregation)
         }
-        update(updatedCongregation)
+        Timber.tag(TAG).d("updateWithFavorite(...) ending")
     }
 }

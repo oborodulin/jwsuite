@@ -143,7 +143,7 @@ sealed class NavRoutes constructor(
 
     // Geo:
     data object Region : NavRoutes(
-        route = String.format(ROUTE_REGION, "{$ARG_REGION_ID}"),
+        route = String.format(ROUTE_REGION, "$ARG_REGION_ID={$ARG_REGION_ID}"),
         iconPainterResId = R.drawable.ic_region_24,
         titleResId = R.string.nav_item_region,
         arguments = listOf(navArgument(ARG_REGION_ID) {
@@ -153,11 +153,9 @@ sealed class NavRoutes constructor(
         })
     ) {
         fun routeForRegion(regionInput: RegionInput? = null): String {
-            val route = when (regionInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_REGION, regionInput.regionId)
-            }
-            //val route = String.format(ROUTE_PAYER, payerId)
+            val route = String.format(
+                ROUTE_REGION, regionInput?.let { "$ARG_REGION_ID=${it.regionId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Region - routeForRegion(...): '%s'", route)
             return route
         }
@@ -172,147 +170,143 @@ sealed class NavRoutes constructor(
 
     data object RegionDistrict : NavRoutes(
         route =
-        String.format(ROUTE_REGION_DISTRICT, "{$ARG_REGION_DISTRICT_ID}"),
+        String.format(ROUTE_REGION_DISTRICT, "$ARG_REGION_DISTRICT_ID={$ARG_REGION_DISTRICT_ID}"),
         iconPainterResId = R.drawable.ic_district_24,
         titleResId = R.string.nav_item_region_district,
         arguments = listOf(navArgument(ARG_REGION_DISTRICT_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForRegionDistrict(regionDistrictInput: RegionDistrictInput? = null): String {
-            val route = when (regionDistrictInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_REGION_DISTRICT, regionDistrictInput.regionDistrictId)
-            }
-            //val route = String.format(ROUTE_PAYER, payerId)
+            val route = String.format(
+                ROUTE_REGION_DISTRICT,
+                regionDistrictInput?.let { "$ARG_REGION_DISTRICT_ID=${it.regionDistrictId}" }
+                    .orEmpty()
+            )
             Timber.tag(TAG).d("RegionDistrict - routeForRegionDistrict(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): RegionDistrictInput {
-            val regionDistrictInput = RegionDistrictInput(
-                UUID.fromString(entry.arguments?.getString(ARG_REGION_DISTRICT_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): RegionDistrictInput? {
+            val regionDistrictInput =
+                entry.arguments?.getString(ARG_REGION_DISTRICT_ID)?.let {
+                    RegionDistrictInput(UUID.fromString(it))
+                }
             Timber.tag(TAG).d("RegionDistrict - fromEntry(...): '%s'", regionDistrictInput)
             return regionDistrictInput
         }
     }
 
     data object Locality : NavRoutes(
-        route = String.format(ROUTE_LOCALITY, "{$ARG_LOCALITY_ID}"),
+        route = String.format(ROUTE_LOCALITY, "$ARG_LOCALITY_ID={$ARG_LOCALITY_ID}"),
         iconPainterResId = R.drawable.ic_location_city_24,
         titleResId = R.string.nav_item_locality,
         arguments = listOf(navArgument(ARG_LOCALITY_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForLocality(localityInput: LocalityInput? = null): String {
-            val route = when (localityInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_LOCALITY, localityInput.localityId)
-            }
-            //val route = String.format(ROUTE_PAYER, payerId)
+            val route = String.format(
+                ROUTE_LOCALITY, localityInput?.let { "$ARG_LOCALITY_ID=${it.localityId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Locality - routeForLocality(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): LocalityInput {
-            val localityInput = LocalityInput(
-                UUID.fromString(entry.arguments?.getString(ARG_LOCALITY_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): LocalityInput? {
+            val localityInput = entry.arguments?.getString(ARG_LOCALITY_ID)?.let {
+                LocalityInput(UUID.fromString(it))
+            }
             Timber.tag(TAG).d("Locality - fromEntry(...): '%s'", localityInput)
             return localityInput
         }
     }
 
     data object LocalityDistrict : NavRoutes(
-        route = String.format(ROUTE_LOCALITY_DISTRICT, "{$ARG_LOCALITY_DISTRICT_ID}"),
+        route = String.format(
+            ROUTE_LOCALITY_DISTRICT, "$ARG_LOCALITY_DISTRICT_ID={$ARG_LOCALITY_DISTRICT_ID}"
+        ),
         iconPainterResId = R.drawable.ic_locality_district_24,
         titleResId = R.string.nav_item_locality_district,
         arguments = listOf(navArgument(ARG_LOCALITY_DISTRICT_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForLocalityDistrict(localityDistrictInput: LocalityDistrictInput? = null): String {
-            val route = when (localityDistrictInput) {
-                null -> baseRoute()
-                else -> String.format(
-                    ROUTE_LOCALITY_DISTRICT, localityDistrictInput.localityDistrictId
-                )
-            }
-            //val route = String.format(ROUTE_PAYER, payerId)
+            val route = String.format(
+                ROUTE_LOCALITY_DISTRICT,
+                localityDistrictInput?.let { "$ARG_LOCALITY_DISTRICT_ID=${it.localityDistrictId}" }
+                    .orEmpty()
+            )
             Timber.tag(TAG).d("LocalityDistrict - routeForLocalityDistrict(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): LocalityDistrictInput {
-            val localityDistrictInput = LocalityDistrictInput(
-                UUID.fromString(entry.arguments?.getString(ARG_LOCALITY_DISTRICT_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): LocalityDistrictInput? {
+            val localityDistrictInput = entry.arguments?.getString(ARG_LOCALITY_DISTRICT_ID)?.let {
+                LocalityDistrictInput(UUID.fromString(it))
+            }
             Timber.tag(TAG).d("LocalityDistrict - fromEntry(...): '%s'", localityDistrictInput)
             return localityDistrictInput
         }
     }
 
     data object Microdistrict : NavRoutes(
-        route = String.format(ROUTE_MICRODISTRICT, "{$ARG_MICRODISTRICT_ID}"),
+        route = String.format(ROUTE_MICRODISTRICT, "$ARG_MICRODISTRICT_ID={$ARG_MICRODISTRICT_ID}"),
         iconPainterResId = R.drawable.ic_microdistrict_24,
         titleResId = R.string.nav_item_microdistrict,
         arguments = listOf(navArgument(ARG_MICRODISTRICT_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForMicrodistrict(microdistrictInput: MicrodistrictInput? = null): String {
-            val route = when (microdistrictInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_MICRODISTRICT, microdistrictInput.microdistrictId)
-            }
-            //val route = String.format(ROUTE_PAYER, payerId)
+            val route = String.format(
+                ROUTE_MICRODISTRICT,
+                microdistrictInput?.let { "$ARG_MICRODISTRICT_ID=${it.microdistrictId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Microdistrict - routeForMicrodistrict(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): MicrodistrictInput {
-            val microdistrictInput = MicrodistrictInput(
-                UUID.fromString(entry.arguments?.getString(ARG_MICRODISTRICT_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): MicrodistrictInput? {
+            val microdistrictInput = entry.arguments?.getString(ARG_MICRODISTRICT_ID)?.let {
+                MicrodistrictInput(UUID.fromString(it))
+            }
             Timber.tag(TAG).d("Microdistrict - fromEntry(...): '%s'", microdistrictInput)
             return microdistrictInput
         }
     }
 
     data object Street : NavRoutes(
-        route = String.format(ROUTE_STREET, "{$ARG_STREET_ID}"),
+        route = String.format(ROUTE_STREET, "$ARG_STREET_ID={$ARG_STREET_ID}"),
         iconPainterResId = R.drawable.ic_street_sign_24,
         titleResId = R.string.nav_item_street,
         arguments = listOf(navArgument(ARG_STREET_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForStreet(streetInput: StreetInput? = null): String {
-            val route = when (streetInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_STREET, streetInput.streetId)
-            }
-            //val route = String.format(ROUTE_PAYER, payerId)
+            val route = String.format(
+                ROUTE_STREET, streetInput?.let { "$ARG_STREET_ID=${it.streetId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Street - routeForStreet(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): StreetInput {
-            val streetInput = StreetInput(
-                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): StreetInput? {
+            val streetInput = entry.arguments?.getString(ARG_STREET_ID)?.let {
+                StreetInput(UUID.fromString(it))
+            }
             Timber.tag(TAG).d("Street - fromEntry(...): '%s'", streetInput)
             return streetInput
         }
@@ -332,15 +326,8 @@ sealed class NavRoutes constructor(
         fun routeForCongregation(congregationInput: CongregationInput? = null): String {
             val route = String.format(
                 ROUTE_CONGREGATION,
-                congregationInput?.let { "$ARG_CONGREGATION_ID=${it.congregationId}" } ?: ""
+                congregationInput?.let { "$ARG_CONGREGATION_ID=${it.congregationId}" }.orEmpty()
             )
-            /*    when (congregationInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_CONGREGATION, congregationInput.congregationId)
-            }
-
-             */
-            //val route = String.format(ROUTE_PAYER, payerId)
             Timber.tag(TAG).d("Congregation - routeForCongregation(...): '%s'", route)
             return route
         }
@@ -354,7 +341,7 @@ sealed class NavRoutes constructor(
     }
 
     data object Group : NavRoutes(
-        route = String.format(ROUTE_GROUP, "{$ARG_GROUP_ID}"),
+        route = String.format(ROUTE_GROUP, "$ARG_GROUP_ID={$ARG_GROUP_ID}"),
         iconPainterResId = R.drawable.ic_group_24,
         titleResId = R.string.nav_item_group,
         arguments = listOf(navArgument(ARG_GROUP_ID) {
@@ -364,11 +351,9 @@ sealed class NavRoutes constructor(
         })
     ) {
         fun routeForGroup(groupInput: GroupInput? = null): String {
-            val route = when (groupInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_GROUP, groupInput.groupId)
-            }
-            //val route = String.format(ROUTE_SERVICE, payerId)
+            val route = String.format(
+                ROUTE_GROUP, groupInput?.let { "$ARG_GROUP_ID=${it.groupId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Group - routeForGroup(...): '%s'", route)
             return route
         }
@@ -382,7 +367,7 @@ sealed class NavRoutes constructor(
     }
 
     data object Member : NavRoutes(
-        route = String.format(ROUTE_MEMBER, "{$ARG_MEMBER_ID}"),
+        route = String.format(ROUTE_MEMBER, "$ARG_MEMBER_ID={$ARG_MEMBER_ID}"),
         iconImageVector = Icons.Outlined.Person,
         titleResId = R.string.nav_item_member,
         arguments = listOf(navArgument(ARG_MEMBER_ID) {
@@ -392,11 +377,9 @@ sealed class NavRoutes constructor(
         })
     ) {
         fun routeForMember(memberInput: MemberInput? = null): String {
-            val route = when (memberInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_MEMBER, memberInput.memberId)
-            }
-            //val route = String.format(ROUTE_PAYER_SERVICE, payerId)
+            val route = String.format(
+                ROUTE_MEMBER, memberInput?.let { "$ARG_MEMBER_ID=${it.memberId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Member - routeForMember(...): '%s'", route)
             return route
         }
@@ -410,61 +393,60 @@ sealed class NavRoutes constructor(
     }
 
     data object TerritoryCategory : NavRoutes(
-        route = String.format(ROUTE_TERRITORY_CATEGORY, "{$ARG_TERRITORY_CATEGORY_ID}"),
+        route = String.format(
+            ROUTE_TERRITORY_CATEGORY, "$ARG_TERRITORY_CATEGORY_ID={$ARG_TERRITORY_CATEGORY_ID}"
+        ),
         iconPainterResId = R.drawable.ic_territory_category_24,
         titleResId = R.string.nav_item_territory_category,
         arguments = listOf(navArgument(ARG_TERRITORY_CATEGORY_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForTerritoryCategory(territoryCategoryInput: TerritoryCategoryInput? = null): String {
-            val route = when (territoryCategoryInput) {
-                null -> baseRoute()
-                else -> String.format(
-                    ROUTE_TERRITORY_CATEGORY,
-                    territoryCategoryInput.territoryCategoryId
-                )
-            }
-            //val route = String.format(ROUTE_RATE, payerId)
+            val route = String.format(
+                ROUTE_TERRITORY_CATEGORY,
+                territoryCategoryInput?.let { "$ARG_TERRITORY_CATEGORY_ID=${it.territoryCategoryId}" }
+                    .orEmpty()
+            )
             Timber.tag(TAG).d("TerritoryCategory - routeForTerritoryCategory(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): TerritoryCategoryInput {
-            val territoryCategoryInput = TerritoryCategoryInput(
-                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_CATEGORY_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): TerritoryCategoryInput? {
+            val territoryCategoryInput =
+                entry.arguments?.getString(ARG_TERRITORY_CATEGORY_ID)?.let {
+                    TerritoryCategoryInput(UUID.fromString(it))
+                }
             Timber.tag(TAG).d("TerritoryCategory - fromEntry(...): '%s'", territoryCategoryInput)
             return territoryCategoryInput
         }
     }
 
     data object Territory : NavRoutes(
-        route = String.format(ROUTE_TERRITORY, "{$ARG_TERRITORY_ID}"),
+        route = String.format(ROUTE_TERRITORY, "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}"),
         iconPainterResId = R.drawable.ic_territory_map_24,
         titleResId = R.string.nav_item_territory,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForTerritory(territoryInput: TerritoryInput? = null): String {
-            val route = when (territoryInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_TERRITORY, territoryInput.territoryId)
-            }
-            //val route = String.format(ROUTE_RATE, payerId)
+            val route = String.format(
+                ROUTE_TERRITORY,
+                territoryInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("Territory - routeForTerritory(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
-            val territoryInput = TerritoryInput(
-                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput? {
+            val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
+                TerritoryInput(UUID.fromString(it))
+            }
             Timber.tag(TAG).d("Territory - fromEntry(...): '%s'", territoryInput)
             return territoryInput
         }
@@ -485,7 +467,6 @@ sealed class NavRoutes constructor(
                 null -> baseRoute()
                 else -> String.format(ROUTE_TERRITORY_DETAILS, territoryInput.territoryId)
             }
-            //val route = String.format(ROUTE_RATE, payerId)
             Timber.tag(TAG).d("TerritoryDetails - routeForTerritoryDetails(...): '%s'", route)
             return route
         }
@@ -502,8 +483,8 @@ sealed class NavRoutes constructor(
     data object TerritoryStreet : NavRoutes(
         route = String.format(
             ROUTE_TERRITORY_STREET,
-            "{$ARG_TERRITORY_ID}",
-            "{$ARG_TERRITORY_STREET_ID}"
+            "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}",
+            "$ARG_TERRITORY_STREET_ID={$ARG_TERRITORY_STREET_ID}"
         ),
         iconPainterResId = R.drawable.ic_territory_street_24,
         titleResId = R.string.nav_item_territory_street,
@@ -514,17 +495,16 @@ sealed class NavRoutes constructor(
         }, navArgument(ARG_TERRITORY_STREET_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForTerritoryStreet(territoryStreetInput: TerritoryStreetInput? = null): String {
-            val route = territoryStreetInput?.let {
-                String.format(
-                    ROUTE_TERRITORY_STREET,
-                    territoryStreetInput.territoryId, territoryStreetInput.territoryStreetId
-                )
-            } ?: baseRoute()
-            //val route = String.format(ROUTE_RATE, payerId)
+            val route = String.format(
+                ROUTE_TERRITORY_STREET,
+                territoryStreetInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty(),
+                territoryStreetInput?.let { "$ARG_TERRITORY_STREET_ID=${it.territoryStreetId}" }
+                    .orEmpty()
+            )
             Timber.tag(TAG).d("TerritoryStreet - routeForTerritoryStreet(...): '%s'", route)
             return route
         }
@@ -540,42 +520,40 @@ sealed class NavRoutes constructor(
     }
 
     data object House : NavRoutes(
-        route = String.format(ROUTE_HOUSE, "{$ARG_HOUSE_ID}"),
+        route = String.format(ROUTE_HOUSE, "$ARG_HOUSE_ID={$ARG_HOUSE_ID}"),
         iconImageVector = Icons.Outlined.Home,
         titleResId = R.string.nav_item_house,
         arguments = listOf(navArgument(ARG_HOUSE_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForHouse(houseInput: HouseInput? = null): String {
-            val route = when (houseInput) {
-                null -> baseRoute()
-                else -> String.format(ROUTE_HOUSE, houseInput.houseId)
-            }
-            //val route = String.format(ROUTE_RATE, payerId)
+            val route = String.format(
+                ROUTE_HOUSE, houseInput?.let { "$ARG_HOUSE_ID=${it.houseId}" }.orEmpty()
+            )
             Timber.tag(TAG).d("House - routeForHouse(...): '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): HouseInput {
-            val houseInput = HouseInput(
-                UUID.fromString(entry.arguments?.getString(ARG_HOUSE_ID).orEmpty())
-            )
+        fun fromEntry(entry: NavBackStackEntry): HouseInput? {
+            val houseInput = entry.arguments?.getString(ARG_HOUSE_ID)?.let {
+                HouseInput(UUID.fromString(it))
+            }
             Timber.tag(TAG).d("House - fromEntry(...): '%s'", houseInput)
             return houseInput
         }
     }
 
     data object Entrance : NavRoutes(
-        route = String.format(ROUTE_ENTRANCE, "{$ARG_ENTRANCE_ID}"),
+        route = String.format(ROUTE_ENTRANCE, "$ARG_ENTRANCE_ID={$ARG_ENTRANCE_ID}"),
         iconPainterResId = R.drawable.ic_entrance_24,
         titleResId = R.string.nav_item_entrance,
         arguments = listOf(navArgument(ARG_ENTRANCE_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForEntrance(entranceInput: EntranceInput? = null): String {
@@ -598,13 +576,13 @@ sealed class NavRoutes constructor(
     }
 
     data object Floor : NavRoutes(
-        route = String.format(ROUTE_FLOOR, "{$ARG_FLOOR_ID}"),
+        route = String.format(ROUTE_FLOOR, "$ARG_FLOOR_ID={$ARG_FLOOR_ID}"),
         iconPainterResId = R.drawable.ic_floors_24,
         titleResId = R.string.nav_item_floor,
         arguments = listOf(navArgument(ARG_FLOOR_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForFloor(floorInput: FloorInput? = null): String {
@@ -627,13 +605,13 @@ sealed class NavRoutes constructor(
     }
 
     data object Room : NavRoutes(
-        route = String.format(ROUTE_ROOM, "{$ARG_ROOM_ID}"),
+        route = String.format(ROUTE_ROOM, "$ARG_ROOM_ID={$ARG_ROOM_ID}"),
         iconPainterResId = R.drawable.ic_room_24,
         titleResId = R.string.nav_item_room,
         arguments = listOf(navArgument(ARG_ROOM_ID) {
             type = NavType.StringType
             nullable = true
-            //defaultValue = null
+            defaultValue = null
         })
     ) {
         fun routeForRoom(roomInput: RoomInput? = null): String {
@@ -669,7 +647,7 @@ sealed class NavRoutes constructor(
         }
     }
 
-    fun baseRoute() = this.route.substringBefore('/')
+    fun baseRoute() = this.route.substringBefore('/').substringBefore('?')
 
     companion object {
         fun bottomNavBarRoutes() = listOf(Dashboarding, Congregating, Territoring, Ministring)

@@ -122,9 +122,7 @@ class GroupViewModelImpl @Inject constructor(
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", uiModel)
-        uiModel.id?.let {
-            initStateValue(GroupFields.GROUP_ID, id, it.toString())
-        }
+        uiModel.id?.let { initStateValue(GroupFields.GROUP_ID, id, it.toString()) }
         initStateValue(
             GroupFields.GROUP_CONGREGATION, congregation,
             ListItemModel(uiModel.congregation.id, uiModel.congregation.congregationName)
@@ -138,6 +136,11 @@ class GroupViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is GroupInputEvent.Congregation ->
+                        setStateValue(
+                            GroupFields.GROUP_CONGREGATION, congregation, event.input, true
+                        )
+
                     is GroupInputEvent.GroupNum ->
                         when (GroupInputValidator.GroupNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(

@@ -1,7 +1,12 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Icon
@@ -10,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,6 +29,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInpu
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -57,26 +64,41 @@ fun MemberScreen(
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-                    MemberView(sharedViewModel)
-                    Spacer(Modifier.height(8.dp))
-                    SaveButtonComponent(
-                        enabled = areInputsValid,
-                        onClick = {
-                            viewModel.onContinueClick {
-                                Timber.tag(TAG).d("MemberScreen(...): Start viewModelScope.launch")
-                                // checks all errors
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        MemberView(sharedViewModel)
+                        Spacer(Modifier.height(8.dp))
+                        SaveButtonComponent(
+                            enabled = areInputsValid,
+                            onClick = {
                                 viewModel.onContinueClick {
-                                    // if success, then save and backToBottomBarScreen
-                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                    coroutineScope.launch {
+                                    Timber.tag(TAG).d("MemberScreen(...): Save Button onClick...")
+                                    // checks all errors
+                                    viewModel.onContinueClick {
+                                        // if success, backToBottomBarScreen
+                                        // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                                        coroutineScope.launch {
+                                            viewModel.actionsJobFlow.collectLatest { job ->
+                                                Timber.tag(TAG).d(
+                                                    "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                                    job?.toString()
+                                                )
+                                                job?.join()
+                                                appState.backToBottomBarScreen()
+                                            }
+                                        }
+                                        // save
                                         viewModel.submitAction(MemberUiAction.Save)
-                                            .join()
-                                        appState.backToBottomBarScreen()
                                     }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

@@ -80,9 +80,7 @@ class CongregationViewModelImpl @Inject constructor(
                 }
             }
 
-            is CongregationUiAction.Save -> {
-                saveCongregation()
-            }
+            is CongregationUiAction.Save -> saveCongregation()
         }
         return job
     }
@@ -123,7 +121,11 @@ class CongregationViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveCongregationUseCase.execute(
                 SaveCongregationUseCase.Request(mapper.map(congregationUi))
-            ).collect {}
+            ).catch {
+                Timber.tag(TAG).d("saveCongregation() error: %s", it.message)
+            }.collect {
+                Timber.tag(TAG).d("saveCongregation() result: %s", it::class.java)
+            }
         }
         return job
     }

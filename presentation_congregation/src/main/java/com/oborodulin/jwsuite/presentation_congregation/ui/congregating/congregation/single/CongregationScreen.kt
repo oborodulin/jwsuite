@@ -76,17 +76,17 @@ fun CongregationScreen(
                                     // if success, backToBottomBarScreen
                                     // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                                     coroutineScope.launch {
-/*                                        viewModel.actionsJobFlow.collectLatest { job ->
+                                        viewModel.actionsJobFlow.collectLatest { job ->
                                             Timber.tag(TAG).d(
                                                 "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
                                                 job?.toString()
                                             )
                                             job?.join()
-                                        }*/
-                                        // save
-                                        viewModel.submitAction(CongregationUiAction.Save).join()
-                                        appState.backToBottomBarScreen()
+                                            appState.backToBottomBarScreen()
+                                        }
                                     }
+                                    // save
+                                    viewModel.submitAction(CongregationUiAction.Save)
                                 }
                             }
                         )
