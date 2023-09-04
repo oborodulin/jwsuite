@@ -27,6 +27,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -112,8 +113,8 @@ fun OptionSelectDialog(
 fun PreviewOptionSelectDialog() {
     val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
     val currentSelectedItem by remember { mutableStateOf(items[0]) }
-    val isShowDialog = remember { mutableStateOf(true) }
-    var isShowFullScreenDialog by remember { mutableStateOf(false) }
+    val isShowDialog = rememberSaveable { mutableStateOf(true) }
+    var isShowFullScreenDialog by rememberSaveable { mutableStateOf(false) }
 
     if (isShowFullScreenDialog) {
         LocalContext.current.toast("another Full-screen Dialog")

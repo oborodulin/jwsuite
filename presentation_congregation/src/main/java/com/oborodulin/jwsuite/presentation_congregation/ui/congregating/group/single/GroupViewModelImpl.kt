@@ -18,10 +18,12 @@ import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases
 import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.GroupToGroupsListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.GroupUiToGroupMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -44,7 +46,7 @@ class GroupViewModelImpl @Inject constructor(
     DialogSingleViewModel<GroupUi, UiState<GroupUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
         state, GroupFields.GROUP_ID.name, GroupFields.GROUP_NUM
     ) {
-    override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
         state.getStateFlow(GroupFields.GROUP_CONGREGATION.name, InputListItemWrapper())
     }
 
@@ -125,7 +127,7 @@ class GroupViewModelImpl @Inject constructor(
         uiModel.id?.let { initStateValue(GroupFields.GROUP_ID, id, it.toString()) }
         initStateValue(
             GroupFields.GROUP_CONGREGATION, congregation,
-            ListItemModel(uiModel.congregation.id, uiModel.congregation.congregationName)
+            uiModel.congregation.toCongregationsListItem()
         )
         initStateValue(GroupFields.GROUP_NUM, groupNum, uiModel.groupNum.toString())
         return null
@@ -203,12 +205,13 @@ class GroupViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val congregation =
+                    MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val groupNum = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                //override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: GroupUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

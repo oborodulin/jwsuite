@@ -8,6 +8,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,7 @@ interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingle
 
     val memberTypes: StateFlow<MutableMap<MemberType, String>>
 
-    val congregation: StateFlow<InputListItemWrapper<ListItemModel>>
+    val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>>
     val group: StateFlow<InputListItemWrapper<ListItemModel>>
     val memberNum: StateFlow<InputWrapper>
     val memberName: StateFlow<InputWrapper>

@@ -146,7 +146,7 @@ fun TerritoringScreen(
                     CommonScreen(state = state) { territoringUi ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
-                                modifier = Modifier.weight(2f)
+                                modifier = Modifier.weight(2.5f)
                             ) {
                                 SwitchComponent(
                                     componentModifier = Modifier.padding(end = 36.dp)

@@ -22,7 +22,7 @@ private const val TAG = "Presentation.BottomNavBarComponent"
 fun BottomNavigationComponent(modifier: Modifier, appState: AppState) {
     Timber.tag(TAG).d("BottomNavigationBar(...) called")
     NavigationBar(
-        modifier = Modifier.navigationBarsPadding()
+        modifier = Modifier.navigationBarsPadding().then(modifier)
         /*modifier
             .graphicsLayer {
                 shape = RoundedCornerShape(

@@ -20,6 +20,8 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
@@ -58,7 +60,7 @@ class TerritoryViewModelImpl @Inject constructor(
     DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
         state, TerritoryFields.TERRITORY_ID.name, TerritoryFields.TERRITORY_NUM
     ) {
-    override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
         state.getStateFlow(TerritoryFields.TERRITORY_CONGREGATION.name, InputListItemWrapper())
     }
     override val category: StateFlow<InputListItemWrapper<TerritoryCategoriesListItem>> by lazy {
@@ -215,7 +217,7 @@ class TerritoryViewModelImpl @Inject constructor(
         uiModel.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,
-            ListItemModel(uiModel.congregation.id, uiModel.congregation.congregationName)
+            uiModel.congregation.toCongregationsListItem()
         )
         initStateValue(
             TerritoryFields.TERRITORY_CATEGORY, category,
@@ -263,6 +265,11 @@ class TerritoryViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is TerritoryInputEvent.Congregation ->
+                        setStateValue(
+                            TerritoryFields.TERRITORY_CONGREGATION, congregation, event.input, true
+                        )
+
                     is TerritoryInputEvent.Category ->
                         when (TerritoryInputValidator.Category.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
@@ -435,7 +442,8 @@ class TerritoryViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override val id = MutableStateFlow(InputWrapper())
-                override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val congregation =
+                    MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val category =
                     MutableStateFlow(InputListItemWrapper<TerritoryCategoriesListItem>())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())

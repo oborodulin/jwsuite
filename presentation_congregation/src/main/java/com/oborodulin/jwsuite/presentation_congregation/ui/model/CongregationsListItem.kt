@@ -17,3 +17,17 @@ data class CongregationsListItem(
     headline = congregationName,
     supportingText = "№$congregationNum ${locality.localityName} [$territoryMark]"
 )
+
+fun ListItemModel.toCongregationsListItem() = CongregationsListItem(
+    id = this.itemId ?: UUID.randomUUID(),
+    congregationName = this.headline,
+    congregationNum = this.supportingText?.substringAfter("№")?.substringBefore(" ")
+        .orEmpty(),
+    territoryMark = this.supportingText?.substringAfter("[")?.substringBeforeLast("]")
+        .orEmpty(),
+    isFavorite = false,
+    locality = LocalityUi(
+        localityName = this.supportingText?.substringAfter(" ")?.substringBeforeLast(" ")
+            .orEmpty()
+    )
+)

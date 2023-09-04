@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,17 +38,23 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
 import com.oborodulin.home.common.util.toast
+import timber.log.Timber
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 private const val TAG = "Common.ui.DatePickerComponent"
+
+// https://medium.com/@renaud.mathieu/discovering-material3-for-android-datepicker-78efa3ce98cf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,15 +68,18 @@ fun DatePickerComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    var isShowDialog by remember { mutableStateOf(false) }
-    val onShowDialog = { isShowDialog = true }
-    val onDismissRequest = { isShowDialog = false }
+    Timber.tag(TAG).d("DatePickerComponent(...) called")
+    var isShowDatePickerDialog by rememberSaveable { mutableStateOf(false) }
+    val onShowDialog = { isShowDatePickerDialog = true }
+    val onDismissRequest = { isShowDatePickerDialog = false }
 
     var fieldValue by remember {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
 
-    if (isShowDialog) {
+    Timber.tag(TAG).d("DatePickerComponent: isShowDialog = %s", isShowDatePickerDialog)
+    if (isShowDatePickerDialog) {
+        Timber.tag(TAG).d("DatePickerComponent: isShowDialog = %s", isShowDatePickerDialog)
         val datePickerTitlePadding = PaddingValues(
             start = 24.dp,
             end = 12.dp,
@@ -81,20 +92,26 @@ fun DatePickerComponent(
             shape = RoundedCornerShape(6.dp),
             onDismissRequest = onDismissRequest,
             confirmButton = {
-                onDismissRequest()
-                // Seems broken at the moment with DateRangePicker
-                // Works fine with DatePicker
-                val selectedDate = datePickerState.selectedDateMillis?.let {
-                    Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC)
-                }
-                selectedDate?.let {
-                    val dateValue =
-                        it.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                    fieldValue = TextFieldValue(dateValue, TextRange(dateValue.length))
-                    onValueChange(dateValue)
-                }
+                // https://medium.com/@rahulchaurasia3592/material3-datepicker-and-datepickerdialog-in-compose-in-android-54ec28be42c3
+                Button(onClick = {
+                    // Seems broken at the moment with DateRangePicker
+                    // Works fine with DatePicker
+                    val selectedDate = datePickerState.selectedDateMillis?.let {
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    }
+                    selectedDate?.let {
+                        val dateValue =
+                            it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+                        //.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+                        fieldValue = TextFieldValue(dateValue, TextRange(dateValue.length))
+                        onValueChange(dateValue)
+                        onDismissRequest()
+                    }
+                }) { Text(text = stringResource(R.string.btn_ok_lbl)) }
             },
+            dismissButton = { Button(onClick = onDismissRequest) { Text(stringResource(R.string.btn_cancel_lbl)) } }
         ) {
+            Timber.tag(TAG).d("DatePicker() calling")
             DatePicker(
                 state = datePickerState,
                 dateValidator = { timestamp -> timestamp > Instant.now().toEpochMilli() },
@@ -123,11 +140,17 @@ fun DatePickerComponent(
             trailingIcon = {
                 Icon(imageVector = Icons.Outlined.ArrowDropDown, null, modifier = Modifier
                     .offset(x = 10.dp)
-                    .clickable { onShowDialog() })
+                    .clickable {
+                        Timber
+                            .tag(TAG)
+                            .d("DatePickerComponent: OutlinedTextField() clickable")
+                        onShowDialog()
+                    }
+                )
             },
             isError = inputWrapper.errorId != null,
             keyboardOptions = keyboardOptions,
-            keyboardActions = remember {KeyboardActions(onAny = { onImeKeyAction() })},
+            keyboardActions = remember { KeyboardActions(onAny = { onImeKeyAction() }) },
             colors = colors
         )
         inputWrapper.errorMessage(LocalContext.current)?.let {
@@ -146,8 +169,8 @@ fun DatePickerComponent(
 @Composable
 fun PreviewSearchSingleSelectDialog() {
     val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
-    val isShowDialog = remember { mutableStateOf(true) }
-    var isShowFullScreenDialog by remember { mutableStateOf(false) }
+    val isShowDialog = rememberSaveable { mutableStateOf(true) }
+    var isShowFullScreenDialog by rememberSaveable { mutableStateOf(false) }
 
     if (isShowFullScreenDialog) {
         LocalContext.current.toast("another Full-screen Dialog")

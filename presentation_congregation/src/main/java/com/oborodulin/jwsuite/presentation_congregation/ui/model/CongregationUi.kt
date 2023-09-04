@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import java.util.UUID
 
 data class CongregationUi(
     val congregationNum: String = "",
@@ -12,7 +13,7 @@ data class CongregationUi(
 ) : ModelUi()
 
 fun CongregationUi.toCongregationsListItem() = CongregationsListItem(
-    id = this.id!!,
+    id = this.id ?: UUID.randomUUID(),
     congregationName = this.congregationName,
     congregationNum = this.congregationNum,
     territoryMark = this.territoryMark,

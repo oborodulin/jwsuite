@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -39,6 +40,26 @@ fun CongregationScreen(
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
     val coroutineScope = rememberCoroutineScope()
+    val saveButtonOnClick = {
+        Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
+        // checks all errors
+        viewModel.onContinueClick {
+            // if success, backToBottomBarScreen
+            // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+            coroutineScope.launch {
+                viewModel.actionsJobFlow.collectLatest { job ->
+                    Timber.tag(TAG).d(
+                        "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        job?.toString()
+                    )
+                    job?.join()
+                    appState.backToBottomBarScreen()
+                }
+            }
+            // save
+            viewModel.submitAction(CongregationUiAction.Save)
+        }
+    }
     LaunchedEffect(congregationInput?.congregationId) {
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(CongregationUiAction.Load(congregationInput?.congregationId))
@@ -48,17 +69,22 @@ fun CongregationScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
+        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme {
             ScaffoldComponent(
                 appState = appState,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.Close, null)
+                        Icon(Icons.Outlined.ArrowBack, null)
+                    }
+                },
+                topBarActions = {
+                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                        Icon(Icons.Outlined.Done, null)
                     }
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -69,26 +95,7 @@ fun CongregationScreen(
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,
-                            onClick = {
-                                Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
-                                // checks all errors
-                                viewModel.onContinueClick {
-                                    // if success, backToBottomBarScreen
-                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                    coroutineScope.launch {
-                                        viewModel.actionsJobFlow.collectLatest { job ->
-                                            Timber.tag(TAG).d(
-                                                "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                                job?.toString()
-                                            )
-                                            job?.join()
-                                            appState.backToBottomBarScreen()
-                                        }
-                                    }
-                                    // save
-                                    viewModel.submitAction(CongregationUiAction.Save)
-                                }
-                            }
+                            onClick = saveButtonOnClick
                         )
                     }
                 }

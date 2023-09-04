@@ -13,6 +13,7 @@
     <string name="btn_ok_lbl">ОК</string>
     <string name="btn_add_lbl">Добавить</string>
     <string name="btn_next_lbl">Далее</string>
+    <string name="btn_continue_lbl">Продолжить</string>
     <string name="btn_close_lbl">Закрыть</string>
     <!--диалог-->
     <string name="dlg_confirm_title">Подтверждение</string>

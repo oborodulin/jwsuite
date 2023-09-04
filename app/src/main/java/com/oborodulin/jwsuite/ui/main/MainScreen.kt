@@ -59,7 +59,7 @@ fun MainScreen() {
     Timber.tag(TAG).d("MainScreen() called")
     val appState = rememberAppState(appName = stringResource(R.string.app_name))
 
-    val bottomBarHeight = 56.dp
+    val bottomBarHeight = 72.dp
     val bottomBarHeightPx = with(LocalDensity.current) {
         bottomBarHeight.roundToPx().toFloat()
     }

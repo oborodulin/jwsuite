@@ -81,6 +81,7 @@ class AppState(
     private val bottomNavBarRoutes = bottomNavBarTabs.map { it.route }
 
     // Атрибут отображения навигационного меню bottomBar
+    // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
     val shouldShowBottomNavBar: Boolean
         @Composable get() = commonNavController
             .currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes

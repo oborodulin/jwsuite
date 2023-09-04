@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -161,7 +162,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewBarComboBoxComponent() {
-    val isShowNewRegionDialog = remember { mutableStateOf(false) }
+    val isShowNewRegionDialog = rememberSaveable { mutableStateOf(false) }
     HomeComposableTheme {
         Surface {
             /* BarComboBoxComponent(modifier = Modifier

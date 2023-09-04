@@ -5,7 +5,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,15 +14,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
-import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import timber.log.Timber
 
 private const val TAG = "Congregating.CongregationComboBox"
@@ -34,12 +33,12 @@ fun CongregationComboBox(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     listViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     singleViewModel: CongregationViewModelImpl = hiltViewModel(),
-    inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent,
+    inputWrapper: InputListItemWrapper<CongregationsListItem>,
+    onValueChange: (CongregationsListItem) -> Unit,
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("CongregationComboBox(...) called")
-    var isShowListDialog by remember { mutableStateOf(false) }
+    var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
     val isShowNewSingleDialog by singleViewModel.showDialog.collectAsStateWithLifecycle()
@@ -49,12 +48,12 @@ fun CongregationComboBox(
         loadUiAction = CongregationUiAction.Load(),
         confirmUiAction = CongregationUiAction.Save,
         dialogView = { CongregationView() },
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toCongregationsListItem()) },
         //onShowListDialog = onShowListDialog
     )
     val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
-    currentCongregation?.let { onValueChange(ListItemModel(it.id, it.headline)) }
+    currentCongregation?.let { onValueChange(it) }
     ComboBoxComponent(
         modifier = modifier,
         enabled = enabled,
@@ -68,7 +67,7 @@ fun CongregationComboBox(
         listTitleResId = R.string.dlg_title_select_congregation,
         leadingPainterResId = R.drawable.ic_congregation_36,
         inputWrapper = inputWrapper,
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toCongregationsListItem()) },
         onImeKeyAction = onImeKeyAction
     )
 }

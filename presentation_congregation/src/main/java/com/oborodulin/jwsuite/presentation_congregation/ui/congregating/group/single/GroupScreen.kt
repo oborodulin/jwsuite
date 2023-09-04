@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -42,6 +43,26 @@ fun GroupScreen(
 ) {
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
     val coroutineScope = rememberCoroutineScope()
+    val saveButtonOnClick = {
+        Timber.tag(TAG).d("GroupScreen(...): Save Button onClick...")
+        // checks all errors
+        viewModel.onContinueClick {
+            // if success, backToBottomBarScreen
+            // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+            coroutineScope.launch {
+                viewModel.actionsJobFlow.collectLatest { job ->
+                    Timber.tag(TAG).d(
+                        "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        job?.toString()
+                    )
+                    job?.join()
+                    appState.backToBottomBarScreen()
+                }
+            }
+            // save
+            viewModel.submitAction(GroupUiAction.Save)
+        }
+    }
     LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
@@ -51,6 +72,7 @@ fun GroupScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
+        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
@@ -58,10 +80,14 @@ fun GroupScreen(
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
+                },
+                topBarActions = {
+                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                        Icon(Icons.Outlined.Done, null)
+                    }
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -70,29 +96,7 @@ fun GroupScreen(
                     ) {
                         GroupView(sharedViewModel)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(
-                            enabled = areInputsValid,
-                            onClick = {
-                                Timber.tag(TAG).d("GroupScreen(...): Save Button onClick...")
-                                // checks all errors
-                                viewModel.onContinueClick {
-                                    // if success, backToBottomBarScreen
-                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                    coroutineScope.launch {
-                                        viewModel.actionsJobFlow.collectLatest { job ->
-                                            Timber.tag(TAG).d(
-                                                "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                                job?.toString()
-                                            )
-                                            job?.join()
-                                            appState.backToBottomBarScreen()
-                                        }
-                                    }
-                                    // save
-                                    viewModel.submitAction(GroupUiAction.Save)
-                                }
-                            }
-                        )
+                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }
                 }
             }

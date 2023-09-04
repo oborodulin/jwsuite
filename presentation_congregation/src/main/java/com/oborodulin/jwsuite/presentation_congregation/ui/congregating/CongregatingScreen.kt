@@ -18,7 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,10 +63,15 @@ fun CongregatingScreen(
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val context = LocalContext.current
-    var addActionOnClick by remember {
-        mutableStateOf({
-            appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation())
-        })
+    var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
+    val addActionOnClick = {
+        appState.commonNavController.navigate(
+            when (CongregatingTabType.valueOf(tabType)) {
+                CongregatingTabType.CONGREGATIONS -> NavRoutes.Congregation.routeForCongregation()
+                CongregatingTabType.GROUPS -> NavRoutes.Group.routeForGroup()
+                CongregatingTabType.MEMBERS -> NavRoutes.Member.routeForMember()
+            }
+        )
     }
     /*
         LaunchedEffect(Unit) {
@@ -97,10 +102,7 @@ fun CongregatingScreen(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_congregations),
-                            onClick = {
-                                addActionOnClick =
-                                    { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }
-                            }
+                            onClick = { tabType = CongregatingTabType.CONGREGATIONS.name }
                         ) {
                             CongregationMembersView(
                                 appState = appState,
@@ -110,10 +112,7 @@ fun CongregatingScreen(
                         },
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_groups),
-                            onClick = {
-                                addActionOnClick =
-                                    { appState.commonNavController.navigate(NavRoutes.Group.routeForGroup()) }
-                            }
+                            onClick = { tabType = CongregatingTabType.GROUPS.name }
                         ) {
                             GroupMembersView(
                                 appState = appState,
@@ -123,10 +122,7 @@ fun CongregatingScreen(
                         },
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_members),
-                            onClick = {
-                                addActionOnClick =
-                                    { appState.commonNavController.navigate(NavRoutes.Member.routeForMember()) }
-                            }
+                            onClick = { tabType = CongregatingTabType.MEMBERS.name }
                         ) {
                             MembersView(
                                 appState = appState,
@@ -139,7 +135,7 @@ fun CongregatingScreen(
             }
         }
     }
-    // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
+// https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback
     /*    LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.currentPage }.collect { page ->

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +43,7 @@ fun MemberComboBox(
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("MemberComboBox(...) called")
-    var isShowListDialog by remember { mutableStateOf(false) }
+    var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
     val isShowNewSingleDialog by singleViewModel.showDialog.collectAsStateWithLifecycle()

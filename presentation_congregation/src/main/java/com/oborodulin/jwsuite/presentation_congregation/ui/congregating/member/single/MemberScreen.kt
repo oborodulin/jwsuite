@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -44,6 +45,28 @@ fun MemberScreen(
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: groupInput = %s", memberInput)
     val coroutineScope = rememberCoroutineScope()
+    val saveButtonOnClick = {
+        viewModel.onContinueClick {
+            Timber.tag(TAG).d("MemberScreen(...): Save Button onClick...")
+            // checks all errors
+            viewModel.onContinueClick {
+                // if success, backToBottomBarScreen
+                // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+                coroutineScope.launch {
+                    viewModel.actionsJobFlow.collectLatest { job ->
+                        Timber.tag(TAG).d(
+                            "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
+                            job?.toString()
+                        )
+                        job?.join()
+                        appState.backToBottomBarScreen()
+                    }
+                }
+                // save
+                viewModel.submitAction(MemberUiAction.Save)
+            }
+        }
+    }
     LaunchedEffect(memberInput?.memberId) {
         Timber.tag(TAG).d("MemberScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(MemberUiAction.Load(memberInput?.memberId))
@@ -53,6 +76,7 @@ fun MemberScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
+        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
@@ -60,10 +84,14 @@ fun MemberScreen(
                     IconButton(onClick = { appState.backToBottomBarScreen() }) {
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
+                },
+                topBarActions = {
+                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                        Icon(Icons.Outlined.Done, null)
+                    }
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -73,31 +101,7 @@ fun MemberScreen(
                     ) {
                         MemberView(sharedViewModel)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(
-                            enabled = areInputsValid,
-                            onClick = {
-                                viewModel.onContinueClick {
-                                    Timber.tag(TAG).d("MemberScreen(...): Save Button onClick...")
-                                    // checks all errors
-                                    viewModel.onContinueClick {
-                                        // if success, backToBottomBarScreen
-                                        // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                        coroutineScope.launch {
-                                            viewModel.actionsJobFlow.collectLatest { job ->
-                                                Timber.tag(TAG).d(
-                                                    "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                                    job?.toString()
-                                                )
-                                                job?.join()
-                                                appState.backToBottomBarScreen()
-                                            }
-                                        }
-                                        // save
-                                        viewModel.submitAction(MemberUiAction.Save)
-                                    }
-                                }
-                            }
-                        )
+                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }
                 }
             }

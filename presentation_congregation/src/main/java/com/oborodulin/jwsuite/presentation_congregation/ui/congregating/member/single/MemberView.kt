@@ -137,7 +137,12 @@ fun MemberView(
                 },
             inputWrapper = group,
             sharedViewModel = sharedViewModel,
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.Group(it)) },
+            onValueChange = { groupNum ->
+                viewModel.onTextFieldEntered(MemberInputEvent.Group(groupNum))
+                viewModel.onInsert {
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${groupNum.headline.firstOrNull() ?: ""}${memberNum.value.firstOrNull() ?: ""}"))
+                }
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -155,7 +160,12 @@ fun MemberView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = memberNum,
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MemberNum(it)) },
+            onValueChange = { numInGroup ->
+                viewModel.onTextFieldEntered(MemberInputEvent.MemberNum(numInGroup))
+                viewModel.onInsert {
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: ""}${numInGroup.firstOrNull() ?: ""}"))
+                }
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -176,7 +186,12 @@ fun MemberView(
                 )
             },
             inputWrapper = surname,
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.Surname(it)) },
+            onValueChange = { value ->
+                viewModel.onTextFieldEntered(MemberInputEvent.Surname(value))
+                viewModel.onInsert {
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: ""}${memberNum.value.firstOrNull() ?: ""}"))
+                }
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -196,7 +211,12 @@ fun MemberView(
                 )
             },
             inputWrapper = memberName,
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MemberName(it)) },
+            onValueChange = { name ->
+                viewModel.onTextFieldEntered(MemberInputEvent.MemberName(name))
+                viewModel.onInsert {
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${name.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: ""}${memberNum.value.firstOrNull() ?: ""}"))
+                }
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(

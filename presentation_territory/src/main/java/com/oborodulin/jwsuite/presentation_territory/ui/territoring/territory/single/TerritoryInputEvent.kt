@@ -2,10 +2,11 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.s
 
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoriesListItem
 
 sealed class TerritoryInputEvent(val value: String) : Inputable {
-    data class Congregation(val input: ListItemModel) : TerritoryInputEvent(input.headline)
+    data class Congregation(val input: CongregationsListItem) : TerritoryInputEvent(input.headline)
     data class Category(val input: TerritoryCategoriesListItem) :
         TerritoryInputEvent(input.headline)
 

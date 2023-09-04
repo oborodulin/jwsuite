@@ -58,9 +58,7 @@ fun ExposedDropdownMenuBoxComponent(
     // the box
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        }
+        onExpandedChange = { expanded = !expanded }
     ) {
         // text field
         Column {

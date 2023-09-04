@@ -23,18 +23,22 @@ import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberUiToMemberMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
-import java.time.OffsetDateTime
+import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 import javax.inject.Inject
 
@@ -57,7 +61,7 @@ class MemberViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val memberTypes = _memberTypes.asStateFlow()
 
-    override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
         state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
     }
 
@@ -176,15 +180,27 @@ class MemberViewModelImpl @Inject constructor(
             pseudonym = pseudonym.value.value,
             phoneNumber = phoneNumber.value.value,
             memberType = MemberType.valueOf(memberType.value.value),
-            dateOfBirth = if (dateOfBirth.value.value.isNotEmpty()) offsetFormatter.parse(
-                dateOfBirth.value.value, OffsetDateTime::from
-            ) else null,
-            dateOfBaptism = if (dateOfBaptism.value.value.isNotEmpty()) offsetFormatter.parse(
-                dateOfBaptism.value.value, OffsetDateTime::from
-            ) else null,
-            inactiveDate = if (inactiveDate.value.value.isNotEmpty()) offsetFormatter.parse(
-                inactiveDate.value.value, OffsetDateTime::from
-            ) else null
+            dateOfBirth = if (dateOfBirth.value.value.isNotEmpty())
+                LocalDate.parse(
+                    dateOfBirth.value.value,
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+            else null,
+            dateOfBaptism = if (dateOfBaptism.value.value.isNotEmpty())
+                LocalDate.parse(
+                    dateOfBaptism.value.value,
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+            else null,
+            inactiveDate = if (inactiveDate.value.value.isNotEmpty())
+                LocalDate.parse(
+                    dateOfBaptism.value.value,
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+            else null
+//                offsetFormatter.parse(
+//                inactiveDate.value.value, OffsetDateTime::from
+//            ) else null
         )
         memberUi.id = if (id.value.value.isNotEmpty()) {
             UUID.fromString(id.value.value)
@@ -194,7 +210,9 @@ class MemberViewModelImpl @Inject constructor(
             useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))
                 .collect {
                     Timber.tag(TAG).d("saveMember() collect: %s", it)
-                    if (it is Result.Success) setSavedListItem(memberMapper.map(it.data.member))
+                    if (it is Result.Success) {
+                        setSavedListItem(memberMapper.map(it.data.member))
+                    }
                 }
         }
         return job
@@ -209,9 +227,7 @@ class MemberViewModelImpl @Inject constructor(
         uiModel.id?.let { initStateValue(MemberFields.MEMBER_ID, id, it.toString()) }
         initStateValue(
             MemberFields.MEMBER_CONGREGATION, congregation,
-            ListItemModel(
-                uiModel.group.congregation.id, uiModel.group.congregation.congregationName
-            )
+            uiModel.group.congregation.toCongregationsListItem()
         )
         initStateValue(
             MemberFields.MEMBER_GROUP, group,
@@ -228,17 +244,17 @@ class MemberViewModelImpl @Inject constructor(
         initStateValue(MemberFields.MEMBER_TYPE, memberType, uiModel.memberType.name)
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-            uiModel.dateOfBirth?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+            uiModel.dateOfBirth?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))// .ofPattern(Constants.APP_OFFSET_DATE_TIME))
                 .orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-            uiModel.dateOfBaptism?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+            uiModel.dateOfBaptism?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
                 .orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
-            uiModel.inactiveDate?.format(DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME))
+            uiModel.inactiveDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
                 .orEmpty()
         )
         return null
@@ -275,6 +291,15 @@ class MemberViewModelImpl @Inject constructor(
                                 MemberFields.MEMBER_NUM, memberNum, event.input
                             )
                         }
+
+                    is MemberInputEvent.Surname ->
+                        setStateValue(MemberFields.MEMBER_SURNAME, surname, event.input, true)
+
+                    is MemberInputEvent.MemberName ->
+                        setStateValue(MemberFields.MEMBER_NAME, memberName, event.input, true)
+
+                    is MemberInputEvent.Patronymic ->
+                        setStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, event.input, true)
 
                     is MemberInputEvent.Pseudonym ->
                         when (MemberInputValidator.Pseudonym.errorIdOrNull(event.input)) {
@@ -358,6 +383,15 @@ class MemberViewModelImpl @Inject constructor(
                             MemberFields.MEMBER_NUM, memberNum,
                             MemberInputValidator.MemberNum.errorIdOrNull(event.input)
                         )
+
+                    is MemberInputEvent.Surname ->
+                        setStateValue(MemberFields.MEMBER_SURNAME, surname, null)
+
+                    is MemberInputEvent.MemberName ->
+                        setStateValue(MemberFields.MEMBER_NAME, memberName, null)
+
+                    is MemberInputEvent.Patronymic ->
+                        setStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, null)
 
                     is MemberInputEvent.Pseudonym ->
                         setStateValue(
@@ -446,15 +480,15 @@ class MemberViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                MemberFields.MEMBER_GROUP.name -> group.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_NUM.name -> memberNum.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_PSEUDONYM.name -> pseudonym.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_PHONE_NUMBER.name -> phoneNumber.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_TYPE.name -> memberType.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_DATE_OF_BIRTH.name -> dateOfBirth.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_DATE_OF_BAPTISM.name -> dateOfBaptism.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_INACTIVE_DATE.name -> inactiveDate.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (MemberFields.valueOf(error.fieldName)) {
+                MemberFields.MEMBER_GROUP -> group.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_NUM -> memberNum.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_PSEUDONYM -> pseudonym.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_PHONE_NUMBER -> phoneNumber.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_TYPE -> memberType.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_DATE_OF_BIRTH -> dateOfBirth.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_DATE_OF_BAPTISM -> dateOfBaptism.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_INACTIVE_DATE -> inactiveDate.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -479,7 +513,8 @@ class MemberViewModelImpl @Inject constructor(
 
                 override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 
-                override val congregation = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val congregation =
+                    MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val group = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val memberNum = MutableStateFlow(InputWrapper())
                 override val memberName = MutableStateFlow(InputWrapper())
