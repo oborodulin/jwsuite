@@ -8,6 +8,7 @@ import java.util.UUID
 interface LocalGroupDataSource {
     fun getCongregationGroups(congregationId: UUID): Flow<List<GroupView>>
     fun getFavoriteCongregationGroups(): Flow<List<GroupView>>
+    fun getNextGroupNum(congregationId: UUID): Int
     fun getGroup(groupId: UUID): Flow<GroupView>
     suspend fun insertGroup(group: GroupEntity)
     suspend fun updateGroup(group: GroupEntity)

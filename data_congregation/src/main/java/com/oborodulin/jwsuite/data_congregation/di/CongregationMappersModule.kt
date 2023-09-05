@@ -16,6 +16,9 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberTo
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewListToMembersListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MembersListToMemberEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -30,8 +33,15 @@ object CongregationMappersModule {
     // Congregations:
     @Singleton
     @Provides
-    fun provideCongregationViewToCongregationMapper(): CongregationViewToCongregationMapper =
-        CongregationViewToCongregationMapper()
+    fun provideCongregationViewToCongregationMapper(
+        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: LocalityViewToGeoLocalityMapper
+    ): CongregationViewToCongregationMapper = CongregationViewToCongregationMapper(
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper
+    )
 
     @Singleton
     @Provides

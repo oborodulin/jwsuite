@@ -52,7 +52,7 @@ fun GroupScreen(
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "GroupScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "GroupScreen(...): Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
                         job?.toString()
                     )
                     job?.join()
@@ -63,9 +63,13 @@ fun GroupScreen(
             viewModel.submitAction(GroupUiAction.Save)
         }
     }
+    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
     LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
+        viewModel.onInsert {
+            viewModel.submitAction(GroupUiAction.GetNextGroupNum(currentCongregation?.id!!))
+        }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)

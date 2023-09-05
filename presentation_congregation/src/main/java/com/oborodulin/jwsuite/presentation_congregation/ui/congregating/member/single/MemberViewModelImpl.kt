@@ -166,7 +166,7 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     private fun saveMember(): Job {
-        val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
+        //val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
         val congregationUi = CongregationUi()
         congregationUi.id = congregation.value.item?.itemId
         val groupUi = GroupUi(congregation = congregationUi)

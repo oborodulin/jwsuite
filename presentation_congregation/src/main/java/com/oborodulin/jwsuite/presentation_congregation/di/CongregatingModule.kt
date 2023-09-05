@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCa
 import com.oborodulin.jwsuite.domain.usecases.group.DeleteGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupsUseCase
+import com.oborodulin.jwsuite.domain.usecases.group.GetNextGroupNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases
 import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
@@ -169,11 +170,13 @@ object CongregatingModule {
     fun provideGroupUseCases(
         getGroupsUseCase: GetGroupsUseCase,
         getGroupUseCase: GetGroupUseCase,
+        getNextGroupNumUseCase: GetNextGroupNumUseCase,
         saveGroupUseCase: SaveGroupUseCase,
         deleteGroupUseCase: DeleteGroupUseCase
     ): GroupUseCases = GroupUseCases(
         getGroupsUseCase,
         getGroupUseCase,
+        getNextGroupNumUseCase,
         saveGroupUseCase,
         deleteGroupUseCase
     )

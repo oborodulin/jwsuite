@@ -70,4 +70,26 @@ interface GroupDao {
 
     @Query("DELETE FROM ${GroupEntity.TABLE_NAME}")
     suspend fun deleteAll()
+
+    // API:
+    @Query("SELECT ifnull(MAX(groupNum), 0) FROM ${GroupEntity.TABLE_NAME} WHERE gCongregationsId = :congregationId")
+    fun maxGroupNum(congregationId: UUID): Int
+
+    @Query("SELECT ifnull(MAX(groupNum), 0) + 1 FROM ${GroupEntity.TABLE_NAME} WHERE gCongregationsId = :congregationId")
+    fun nextGroupNum(congregationId: UUID): Int
+
+    @Query("UPDATE ${GroupEntity.TABLE_NAME} SET groupNum = groupNum + 1 WHERE groupNum >= :groupNum AND gCongregationsId = :congregationId")
+    suspend fun updateGroupNum(congregationId: UUID, groupNum: Int)
+
+    @Transaction
+    suspend fun insertWithGroupNum(group: GroupEntity) {
+        updateGroupNum(group.gCongregationsId, group.groupNum)
+        insert(group)
+    }
+
+    @Transaction
+    suspend fun updateWithGroupNum(group: GroupEntity) {
+        updateGroupNum(group.gCongregationsId, group.groupNum)
+        update(group)
+    }
 }

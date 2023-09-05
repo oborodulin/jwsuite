@@ -21,6 +21,9 @@ class GroupsRepositoryImpl @Inject constructor(
         localGroupDataSource.getFavoriteCongregationGroups()
             .map(mappers.groupViewListToGroupsListMapper::map)
 
+    override fun getNextGroupNum(congregationId: UUID) = flow {
+        emit(localGroupDataSource.getNextGroupNum(congregationId))
+    }
     override fun get(groupId: UUID) = localGroupDataSource.getGroup(groupId)
         .map(mappers.groupViewToGroupMapper::map)
 

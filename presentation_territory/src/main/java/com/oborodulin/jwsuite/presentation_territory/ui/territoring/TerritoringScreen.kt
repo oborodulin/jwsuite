@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -88,6 +87,7 @@ fun TerritoringScreen(
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
+    val ctx = LocalContext.current
     val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
@@ -97,18 +97,63 @@ fun TerritoringScreen(
     val areHandOutInputsValid by territoriesGridViewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
     val areTerritoriesChecked by territoriesGridViewModel.areTerritoriesChecked.collectAsStateWithLifecycle()
 
+    var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
+    var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
-    val fab: MutableState<@Composable () -> Unit> = remember {
-        mutableStateOf({
-            HandOutFabComponent(
+    var tabType by remember { mutableStateOf(TerritoringTabType.HAND_OUT) }
+    val fab = @Composable {
+        when (tabType) {
+            TerritoringTabType.HAND_OUT -> HandOutFabComponent(
                 enabled = areHandOutInputsValid,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoringViewModel = territoringViewModel
             )
-        })
+
+            TerritoringTabType.AT_WORK -> MultiFabComponent(
+                multiFloatingState = multiFloatingProcessState,
+                onMultiFabStateChange = { multiFloatingProcessState = it },
+                enabled = areTerritoriesChecked,
+                collapsedImageVector = Icons.Outlined.Done,
+                collapsedTextResId = R.string.fab_territory_at_work_text,
+                expandedImageVector = Icons.Default.Close,
+                items = listOf(
+                    MinFabItem(
+                        labelResId = R.string.fab_territory_process_room_text,
+                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24
+                    ) {
+                        ctx.toast("Room process")
+                    },
+                    MinFabItem(
+                        labelResId = R.string.fab_territory_process_entrance_text,
+                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_entrance_24
+                    ) {
+                        ctx.toast("Entrance process")
+                    },
+                    MinFabItem(
+                        labelResId = R.string.fab_territory_process_house_text,
+                        imageVector = Icons.Outlined.Home
+                    ) {
+                        ctx.toast("House process")
+                    },
+                    MinFabItem(
+                        labelResId = R.string.fab_territory_process_street_text,
+                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_street_sign_24
+                    ) {
+                        ctx.toast("Street process")
+                    },
+                    MinFabItem(
+                        labelResId = R.string.fab_territory_process_text,
+                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24
+                    ) {
+                        ctx.toast("Territory process")
+                    }
+                )
+            )
+
+            TerritoringTabType.IDLE -> {}
+            TerritoringTabType.ALL -> {}
+        }
     }
-    var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
-    var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
 
     Timber.tag(TAG).d("Init Focus Requesters for all territoring fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -126,6 +171,7 @@ fun TerritoringScreen(
             )
         )
     }
+
     /*LaunchedEffect(Unit) {
         Timber.tag(TAG)
             .d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow: events.collect")
@@ -134,7 +180,6 @@ fun TerritoringScreen(
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }*/
-    val ctx = LocalContext.current
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         JWSuiteTheme { //(darkTheme = true)
@@ -208,7 +253,7 @@ fun TerritoringScreen(
                         Icon(Icons.Outlined.Settings, null)
                     }*/
                 },
-                floatingActionButton = { fab.value },
+                floatingActionButton = { fab() },
                 bottomBar = bottomBar
             ) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
@@ -216,15 +261,7 @@ fun TerritoringScreen(
                         listOf(
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_hand_out),
-                                onClick = {
-                                    fab.value = {
-                                        HandOutFabComponent(
-                                            enabled = areHandOutInputsValid,
-                                            territoriesGridViewModel = territoriesGridViewModel,
-                                            territoringViewModel = territoringViewModel
-                                        )
-                                    }
-                                },
+                                onClick = { tabType = TerritoringTabType.HAND_OUT }
                             ) {
                                 location.item?.let {
                                     HandOutTerritoriesView(
@@ -241,52 +278,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_at_work),
-                                onClick = {
-                                    fab.value = {
-                                        MultiFabComponent(
-                                            multiFloatingState = multiFloatingProcessState,
-                                            onMultiFabStateChange = {
-                                                multiFloatingProcessState = it
-                                            },
-                                            enabled = areTerritoriesChecked,
-                                            collapsedImageVector = Icons.Outlined.Done,
-                                            collapsedTextResId = R.string.fab_territory_at_work_text,
-                                            expandedImageVector = Icons.Default.Close,
-                                            items = listOf(
-                                                MinFabItem(
-                                                    labelResId = R.string.fab_territory_process_room_text,
-                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24
-                                                ) {
-                                                    ctx.toast("Room process")
-                                                },
-                                                MinFabItem(
-                                                    labelResId = R.string.fab_territory_process_entrance_text,
-                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_entrance_24
-                                                ) {
-                                                    ctx.toast("Entrance process")
-                                                },
-                                                MinFabItem(
-                                                    labelResId = R.string.fab_territory_process_house_text,
-                                                    imageVector = Icons.Outlined.Home
-                                                ) {
-                                                    ctx.toast("House process")
-                                                },
-                                                MinFabItem(
-                                                    labelResId = R.string.fab_territory_process_street_text,
-                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_street_sign_24
-                                                ) {
-                                                    ctx.toast("Street process")
-                                                },
-                                                MinFabItem(
-                                                    labelResId = R.string.fab_territory_process_text,
-                                                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24
-                                                ) {
-                                                    ctx.toast("Territory process")
-                                                }
-                                            )
-                                        )
-                                    }
-                                }
+                                onClick = { tabType = TerritoringTabType.AT_WORK }
                             ) {
                                 location.item?.let {
                                     AtWorkTerritoriesView(
@@ -301,7 +293,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_idle),
-                                onClick = { fab.value = {} }
+                                onClick = { tabType = TerritoringTabType.IDLE }
                             ) {
                                 location.item?.let {
                                     IdleTerritoriesView(
@@ -316,7 +308,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_all),
-                                onClick = { fab.value = {} }
+                                onClick = { tabType = TerritoringTabType.ALL }
                             ) {
                                 location.item?.let {
                                     AllTerritoriesView(

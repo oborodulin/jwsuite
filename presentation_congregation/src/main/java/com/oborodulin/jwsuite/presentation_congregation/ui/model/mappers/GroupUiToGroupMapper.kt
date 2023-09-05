@@ -9,7 +9,7 @@ class GroupUiToGroupMapper(private val congregationUiMapper: CongregationUiToCon
     override fun map(input: GroupUi): Group {
         val group = Group(
             congregation = congregationUiMapper.map(input.congregation),
-            groupNum = input.groupNum
+            groupNum = input.groupNum!!
         )
         group.id = input.id
         return group

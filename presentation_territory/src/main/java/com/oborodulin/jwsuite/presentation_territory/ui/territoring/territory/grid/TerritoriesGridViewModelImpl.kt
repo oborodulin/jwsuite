@@ -50,6 +50,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.UUID
 import javax.inject.Inject
 
@@ -87,12 +88,12 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(TerritoriesFields.TERRITORY_MEMBER.name, InputListItemWrapper())
     }
+
+    //.ofPattern(Constants.APP_OFFSET_DATE_TIME)
     override val receivingDate: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
             TerritoriesFields.TERRITORY_RECEIVING_DATE.name, InputWrapper(
-                OffsetDateTime.now().format(
-                    DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
-                )
+                OffsetDateTime.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
             )
         )
     }

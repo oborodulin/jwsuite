@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupUseCase
+import com.oborodulin.jwsuite.domain.usecases.group.GetNextGroupNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases
 import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
@@ -76,13 +77,15 @@ class GroupViewModelImpl @Inject constructor(
                 }
             }
 
+            is GroupUiAction.GetNextGroupNum -> getNextGroupNum(action.congregationId)
+
             is GroupUiAction.Save -> saveGroup()
         }
         return job
     }
 
     private fun loadGroup(groupId: UUID): Job {
-        Timber.tag(TAG).d("loadGroup(UUID) called: %s", groupId.toString())
+        Timber.tag(TAG).d("loadGroup(UUID) called: %s", groupId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getGroupUseCase.execute(GetGroupUseCase.Request(groupId))
                 .map {
@@ -90,6 +93,19 @@ class GroupViewModelImpl @Inject constructor(
                 }
                 .collect {
                     submitState(it)
+                }
+        }
+        return job
+    }
+
+    private fun getNextGroupNum(congregationId: UUID): Job {
+        Timber.tag(TAG).d("getNextGroupNum(UUID) called: %s", congregationId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getNextGroupNumUseCase.execute(GetNextGroupNumUseCase.Request(congregationId))
+                .collect {
+                    if (it is Result.Success) {
+                        onTextFieldEntered(GroupInputEvent.GroupNum(it.data.groupNum.toString()))
+                    }
                 }
         }
         return job

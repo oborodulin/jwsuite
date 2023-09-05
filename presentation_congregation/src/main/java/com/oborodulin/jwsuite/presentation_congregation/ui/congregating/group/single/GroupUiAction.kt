@@ -5,5 +5,6 @@ import java.util.UUID
 
 sealed class GroupUiAction : UiAction {
     data class Load(val groupId: UUID? = null) : GroupUiAction()
+    data class GetNextGroupNum(val congregationId: UUID) : GroupUiAction()
     data object Save : GroupUiAction()
 }

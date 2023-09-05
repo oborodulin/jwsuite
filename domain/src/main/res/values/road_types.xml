@@ -1,9 +1,9 @@
 <resources>
     <string-array name="road_types">
-        <item>ул</item>
+        <item>ул.</item>
         <item>пр-кт</item>
-        <item>пер</item>
+        <item>пер.</item>
         <item>б-р</item>
-        <item>пл</item>
+        <item>пл.</item>
     </string-array>
 </resources>

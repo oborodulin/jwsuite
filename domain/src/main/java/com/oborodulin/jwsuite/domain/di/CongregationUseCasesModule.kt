@@ -14,6 +14,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCa
 import com.oborodulin.jwsuite.domain.usecases.group.DeleteGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupsUseCase
+import com.oborodulin.jwsuite.domain.usecases.group.GetNextGroupNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
@@ -79,6 +80,12 @@ object CongregationUseCasesModule {
     fun provideGetGroupsUseCase(
         configuration: UseCase.Configuration, groupsRepository: GroupsRepository
     ): GetGroupsUseCase = GetGroupsUseCase(configuration, groupsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextGroupNumUseCase(
+        configuration: UseCase.Configuration, groupsRepository: GroupsRepository
+    ): GetNextGroupNumUseCase = GetNextGroupNumUseCase(configuration, groupsRepository)
 
     @Singleton
     @Provides

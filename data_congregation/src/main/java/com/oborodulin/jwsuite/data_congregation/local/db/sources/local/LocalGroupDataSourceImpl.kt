@@ -23,6 +23,8 @@ class LocalGroupDataSourceImpl @Inject constructor(
 
     override fun getFavoriteCongregationGroups() = groupDao.findByFavoriteCongregation()
 
+    override fun getNextGroupNum(congregationId: UUID) = groupDao.nextGroupNum(congregationId)
+
     override fun getGroup(groupId: UUID) = groupDao.findDistinctById(groupId)
 
     override suspend fun insertGroup(group: GroupEntity) = withContext(dispatcher) {

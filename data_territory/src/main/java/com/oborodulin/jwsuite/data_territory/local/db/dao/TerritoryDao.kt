@@ -81,6 +81,11 @@ interface TerritoryDao {
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId ORDER BY territoryNum")
     fun findTerritoryWithMembers(congregationId: UUID): Flow<List<TerritoryWithMembers>>
 
+    @Query("SELECT EXISTS(SELECT territoryId FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1)")
+    fun existsWithTerritoryNum(
+        congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int
+    ): Boolean
+
     //-----------------------------
     @Query(
         """
@@ -240,7 +245,7 @@ interface TerritoryDao {
         territory: TerritoryEntity,
         startUsingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
-        com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity(
+        CongregationTerritoryCrossRefEntity(
             ctCongregationsId = congregation.congregationId,
             ctTerritoriesId = territory.territoryId,
             startUsingDate = startUsingDate
@@ -255,7 +260,7 @@ interface TerritoryDao {
         member: MemberEntity,
         receivingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
-        com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity(
+        TerritoryMemberCrossRefEntity(
             tmcTerritoriesId = territory.territoryId,
             tmcMembersId = member.memberId,
             receivingDate = receivingDate
@@ -267,7 +272,7 @@ interface TerritoryDao {
         memberId: UUID,
         receivingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
-        com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity(
+        TerritoryMemberCrossRefEntity(
             tmcTerritoriesId = territory.territoryId,
             tmcMembersId = memberId,
             receivingDate = receivingDate
@@ -277,7 +282,7 @@ interface TerritoryDao {
     suspend fun insert(
         territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
-        com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity(
+        TerritoryMemberCrossRefEntity(
             tmcTerritoriesId = territoryId,
             tmcMembersId = memberId,
             receivingDate = receivingDate
@@ -294,7 +299,7 @@ interface TerritoryDao {
         isPrivateSector: Boolean? = null,
         estimatedHouses: Int? = null
     ) = insert(
-        com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity(
+        TerritoryStreetEntity(
             tsTerritoriesId = territory.territoryId,
             tsStreetsId = street.streetId,
             isEvenSide = isEvenSide,
@@ -307,7 +312,7 @@ interface TerritoryDao {
         territoryId: UUID, streetId: UUID, isEvenSide: Boolean? = null,
         isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
     ) = insert(
-        com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity(
+        TerritoryStreetEntity(
             tsTerritoriesId = territoryId,
             tsStreetsId = streetId,
             isEvenSide = isEvenSide,
@@ -378,7 +383,6 @@ interface TerritoryDao {
     @Query("DELETE FROM ${TerritoryEntity.TABLE_NAME}")
     suspend fun deleteAll()
 
-
     // API:
     @Query("SELECT ifnull(MAX(territoryNum), 0) FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId")
     fun maxTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
@@ -397,11 +401,10 @@ interface TerritoryDao {
     )
 
     suspend fun changeWithTerritoryNum(territory: TerritoryEntity) {
-        var territories = emptyList<TerritoryView>()
-        findByTerritoryNum(
-            territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
-        ).collect { territories = it }
-        if (territories.isNotEmpty()) {
+        if (existsWithTerritoryNum(
+                territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
+            )
+        ) {
             updateTerritoryNum(
                 territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
             )
@@ -425,7 +428,7 @@ interface TerritoryDao {
         territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime = OffsetDateTime.now()
     ) {
         insert(
-            com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity(
+            TerritoryMemberCrossRefEntity(
                 tmcTerritoriesId = territoryId,
                 tmcMembersId = memberId,
                 receivingDate = receivingDate

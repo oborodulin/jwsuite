@@ -63,7 +63,6 @@ fun GroupsListView(
     //    )
     //}
     val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
-    //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
     Timber.tag(TAG)
         .d(

@@ -4,5 +4,5 @@ import com.oborodulin.home.common.ui.model.ModelUi
 
 data class GroupUi(
     val congregation: CongregationUi = CongregationUi(),
-    val groupNum: Int = 1
+    val groupNum: Int? = null
 ) : ModelUi()
