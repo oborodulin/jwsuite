@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid
+package com.oborodulin.jwsuite.presentation_territory.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
@@ -14,6 +14,8 @@ import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "Territoring.HandOutFabComponent"
@@ -40,9 +42,7 @@ fun HandOutFabComponent(
             // if success, then go to Hand Out Confirmation
             Timber.tag(TAG)
                 .d("HandOutFabComponent: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
-            territoringViewModel.submitAction(
-                TerritoringUiAction.HandOutTerritoriesConfirmation
-            )
+            territoringViewModel.submitAction(TerritoringUiAction.HandOutTerritoriesConfirmation)
         }
     }
 }

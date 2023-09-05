@@ -7,6 +7,7 @@
     <string name="fab_territory_idle_text">В работу</string>
     <string name="fab_territory_all_text">Добавить</string>
     <string name="fab_territory_process_room_text">Квартиру</string>
+    <string name="fab_territory_process_floor_text">Этаж</string>
     <string name="fab_territory_process_entrance_text">Подъезд</string>
     <string name="fab_territory_process_house_text">Дом</string>
     <string name="fab_territory_process_street_text">Улицу</string>
@@ -62,6 +63,8 @@
     <!--Выдача участка-->
     <string name="territory_hand_out_subheader">Выдача участков</string>
     <string name="territory_receiving_date_hint">Дата выдачи</string>
+    <!--Обработка участка-->
+    <string name="territory_at_work_process_subheader">Обработка участка</string>
     <!--Детали участка-->
     <string name="territory_street_hint">Улица участка</string>
     <string name="territory_house_hint">Дом участка</string>

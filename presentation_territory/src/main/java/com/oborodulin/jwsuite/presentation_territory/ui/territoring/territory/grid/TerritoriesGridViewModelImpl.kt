@@ -63,7 +63,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     private val listConverter: TerritoriesGridConverter
 ) : TerritoriesGridViewModel,
     DialogSingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
-        state, TerritoriesFields.TERRITORY_GRID_ID.name
+        state//, TerritoriesFields.TERRITORY_GRID_ID.name
         //TerritoriesFields.TERRITORY_MEMBER
     ) {
     private val _handOutSearchText = MutableStateFlow(TextFieldValue(""))
@@ -113,9 +113,9 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         combine(
             member,
             receivingDate,
-            areTerritoriesChecked
-        ) { member, receivingDate, areTerritoriesChecked ->
-            member.errorId == null && receivingDate.errorId == null && areTerritoriesChecked
+            checkedTerritories
+        ) { member, receivingDate, checkedTerritories ->
+            member.errorId == null && receivingDate.errorId == null && checkedTerritories.isNotEmpty()
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun observeCheckedTerritories() {
@@ -165,6 +165,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
             is TerritoriesGridUiAction.HandOut -> {
                 handOutTerritories()
+            }
+
+            is TerritoriesGridUiAction.ProcessConfirmation -> {
+                setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_at_work_process_subheader)
+                null
             }
 
             is TerritoriesGridUiAction.Process -> {

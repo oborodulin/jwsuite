@@ -6,9 +6,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -57,25 +55,23 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationV
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Territoring.HandOutTerritoriesConfirmationScreen"
+private const val TAG = "Territoring.AtWorkTerritoriesConfirmationScreen"
 
 @Composable
-fun HandOutTerritoriesConfirmationScreen(
+fun AtWorkTerritoriesConfirmationScreen(
     appState: AppState,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("HandOutTerritoriesConfirmationScreen(...) called")
+    Timber.tag(TAG).d("AtWorkTerritoriesConfirmationScreen(...) called")
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("HandOutTerritoriesConfirmationScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(TerritoriesGridUiAction.HandOutConfirmation)
+            .d("AtWorkTerritoriesConfirmationScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(TerritoriesGridUiAction.ProcessConfirmation)
     }
     viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { dialogTitleResId ->
         Timber.tag(TAG).d("Collect ui state flow")
@@ -89,34 +85,14 @@ fun HandOutTerritoriesConfirmationScreen(
                     }
                 }
             ) { paddingValues ->
-                val areInputsValid by viewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
+                val areInputsValid by viewModel.areAtWorkInputsValid.collectAsStateWithLifecycle()
                 Column(
                     modifier = Modifier.padding(paddingValues),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    HandOutTerritoriesConfirmationView(
+                    AtWorkTerritoriesConfirmationView(
                         sharedViewModel = sharedViewModel,
                         viewModel = viewModel
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    HandOutButtonComponent(
-                        enabled = areInputsValid,
-                        onClick = {
-                            viewModel.onContinueClick {
-                                Timber.tag(TAG)
-                                    .d("HandOutTerritoriesConfirmationScreen(...): Hand Out Territory Button onClick...")
-                                // checks all errors
-                                viewModel.onContinueClick {
-                                    // if success, then HandOut and backToBottomBarScreen
-                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                    coroutineScope.launch {
-                                        viewModel.submitAction(TerritoriesGridUiAction.HandOut)
-                                            ?.join()
-                                        appState.backToBottomBarScreen()
-                                    }
-                                }
-                            }
-                        }
                     )
                 }
             }
@@ -126,12 +102,12 @@ fun HandOutTerritoriesConfirmationScreen(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HandOutTerritoriesConfirmationView(
+fun AtWorkTerritoriesConfirmationView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     paddingValues: PaddingValues? = null,
     viewModel: TerritoriesGridViewModel
 ) {
-    Timber.tag(TAG).d("HandOutTerritoriesConfirmationView(...) called")
+    Timber.tag(TAG).d("AtWorkTerritoriesConfirmationView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -156,7 +132,7 @@ fun HandOutTerritoriesConfirmationView(
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("HandOutTerritoriesConfirmationView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("AtWorkTerritoriesConfirmationView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -239,11 +215,11 @@ fun HandOutTerritoriesConfirmationView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewHandOutTerritoriesConfirmationView() {
+fun PreviewAtWorkTerritoriesConfirmationView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            HandOutTerritoriesConfirmationView(
+            AtWorkTerritoriesConfirmationView(
                 //appState = rememberAppState(),
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 viewModel = TerritoriesGridViewModelImpl.previewModel(ctx)

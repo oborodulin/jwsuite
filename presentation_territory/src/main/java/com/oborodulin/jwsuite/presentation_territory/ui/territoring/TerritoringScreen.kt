@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Icon
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -61,8 +59,9 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationV
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.BarMemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.components.AtWorkProcessMultiFabComponent
+import com.oborodulin.jwsuite.presentation_territory.components.HandOutFabComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListView
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.HandOutFabComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
@@ -87,13 +86,15 @@ fun TerritoringScreen(
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
-    val ctx = LocalContext.current
     val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
+
+    val checkedTerritories by territoriesGridViewModel.checkedTerritories.collectAsStateWithLifecycle()
+
     val areHandOutInputsValid by territoriesGridViewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
     val areTerritoriesChecked by territoriesGridViewModel.areTerritoriesChecked.collectAsStateWithLifecycle()
 
@@ -109,49 +110,55 @@ fun TerritoringScreen(
                 territoringViewModel = territoringViewModel
             )
 
-            TerritoringTabType.AT_WORK -> MultiFabComponent(
+            TerritoringTabType.AT_WORK -> AtWorkProcessMultiFabComponent(
+                enabled = areTerritoriesChecked,
+                multiFloatingState = multiFloatingProcessState,
+                onMultiFabStateChange = { multiFloatingProcessState = it },
+                checkedTerritories = checkedTerritories,
+                territoriesGridViewModel = territoriesGridViewModel
+            )
+
+            TerritoringTabType.IDLE -> {}
+            TerritoringTabType.ALL -> MultiFabComponent(
                 multiFloatingState = multiFloatingProcessState,
                 onMultiFabStateChange = { multiFloatingProcessState = it },
                 enabled = areTerritoriesChecked,
-                collapsedImageVector = Icons.Outlined.Done,
-                collapsedTextResId = R.string.fab_territory_at_work_text,
+                collapsedImageVector = Icons.Outlined.Add,
+                collapsedTextResId = R.string.fab_territory_all_text,
                 expandedImageVector = Icons.Default.Close,
                 items = listOf(
                     MinFabItem(
                         labelResId = R.string.fab_territory_process_room_text,
                         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24
                     ) {
-                        ctx.toast("Room process")
+                        ctx.toast("Add Room")
                     },
                     MinFabItem(
                         labelResId = R.string.fab_territory_process_entrance_text,
                         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_entrance_24
                     ) {
-                        ctx.toast("Entrance process")
+                        ctx.toast("Add Entrance")
                     },
                     MinFabItem(
                         labelResId = R.string.fab_territory_process_house_text,
                         imageVector = Icons.Outlined.Home
                     ) {
-                        ctx.toast("House process")
+                        ctx.toast("Add House")
                     },
                     MinFabItem(
                         labelResId = R.string.fab_territory_process_street_text,
                         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_street_sign_24
                     ) {
-                        ctx.toast("Street process")
+                        ctx.toast("Add Street")
                     },
                     MinFabItem(
                         labelResId = R.string.fab_territory_process_text,
                         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24
                     ) {
-                        ctx.toast("Territory process")
+                        ctx.toast("Add Territory")
                     }
                 )
             )
-
-            TerritoringTabType.IDLE -> {}
-            TerritoringTabType.ALL -> {}
         }
     }
 

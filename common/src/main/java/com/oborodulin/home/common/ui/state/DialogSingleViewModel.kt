@@ -14,7 +14,7 @@ private const val TAG = "Common.DialogSingleViewModel"
 
 // https://blog.logrocket.com/adding-alertdialog-jetpack-compose-android-apps/
 abstract class DialogSingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent, F : Focusable, W : InputWrapped>(
-    state: SavedStateHandle, idFieldName: String, initFocusedTextField: Focusable? = null
+    state: SavedStateHandle, idFieldName: String? = null, initFocusedTextField: Focusable? = null
 ) :
     DialogViewModeled<T, A, E>,
     SingleViewModel<T, S, A, E, F, W>(state, idFieldName, initFocusedTextField) {

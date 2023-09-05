@@ -58,7 +58,8 @@ fun MultiFabComponent(
     @DrawableRes expandedPainterResId: Int? = null,
     @StringRes expandedTextResId: Int? = null,
     @StringRes expandedCtxDescResId: Int? = null,
-    items: List<MinFabItem> = emptyList()
+    items: List<MinFabItem> = emptyList(),
+    onClick: (() -> Unit)? = null
 ) {
     val transition = updateTransition(targetState = multiFloatingState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
@@ -146,7 +147,11 @@ fun MultiFabComponent(
                         ) { iconCrossfade() }
                 },
                 text = { textResId?.let { Text(stringResource(it)) } },
-                onClick = { if (enabled) onMultiFabStateChange(multiFloatingState) },
+                onClick = {
+                    if (enabled) {
+                        onClick?.let { it() } ?: onMultiFabStateChange(multiFloatingState)
+                    }
+                },
                 elevation = FloatingActionButtonDefaults.elevation(8.dp)
             )
         }

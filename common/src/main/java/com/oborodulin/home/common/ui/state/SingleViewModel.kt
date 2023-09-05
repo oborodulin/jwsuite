@@ -27,11 +27,11 @@ private const val FOCUSED_FIELD_KEY = "focusedTextField"
 
 abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent, F : Focusable, W : InputWrapped>(
     private val state: SavedStateHandle,
-    private val idFieldName: String,
+    private val idFieldName: String? = null,
     initFocusedTextField: Focusable? = null
 ) : MviViewModel<T, S, A, E>(), SingleViewModeled<T, A, E> {
     val id: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(idFieldName, InputWrapper())
+        state.getStateFlow(idFieldName.orEmpty(), InputWrapper())
     }
     private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
