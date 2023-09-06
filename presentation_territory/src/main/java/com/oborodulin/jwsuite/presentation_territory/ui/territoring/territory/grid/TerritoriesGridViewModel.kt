@@ -19,16 +19,18 @@ interface TerritoriesGridViewModel :
     val handOutSearchText: StateFlow<TextFieldValue>
     val atWorkSearchText: StateFlow<TextFieldValue>
     val idleSearchText: StateFlow<TextFieldValue>
-     fun onHandOutSearchTextChange(text: TextFieldValue)
+    fun onHandOutSearchTextChange(text: TextFieldValue)
     fun onAtWorkSearchTextChange(text: TextFieldValue)
     fun onIdleSearchTextChange(text: TextFieldValue)
 
     val member: StateFlow<InputListItemWrapper<ListItemModel>>
     val receivingDate: StateFlow<InputWrapper>
+    val deliveryDate: StateFlow<InputWrapper>
     val checkedTerritories: StateFlow<List<TerritoriesListItem>>
 
     val areTerritoriesChecked: StateFlow<Boolean>
     val areHandOutInputsValid: StateFlow<Boolean>
+    val areAtWorkProcessInputsValid: StateFlow<Boolean>
 
     fun observeCheckedTerritories()
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)

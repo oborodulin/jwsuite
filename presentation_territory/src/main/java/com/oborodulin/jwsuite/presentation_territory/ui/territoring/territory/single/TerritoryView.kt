@@ -264,8 +264,7 @@ fun TerritoryView(
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
                 )
             },
             inputWrapper = territoryDesc,

@@ -6,12 +6,14 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_AT_WORK_TERRITORIES_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
@@ -641,6 +643,20 @@ sealed class NavRoutes constructor(
         fun routeForHandOutTerritoriesConfirmation(): String {
             Timber.tag(TAG).d(
                 "HandOutTerritoriesConfirmation - routeForHandOutTerritoriesConfirmation(...): '%s'",
+                this.route
+            )
+            return this.route
+        }
+    }
+
+    data object AtWorkTerritoriesConfirmation : NavRoutes(
+        route = ROUTE_AT_WORK_TERRITORIES_CONFIRMATION,
+        iconImageVector = Icons.Outlined.ThumbUp,
+        titleResId = R.string.nav_item_territory_at_work_confirmation
+    ) {
+        fun routeAtWorkTerritoriesConfirmation(): String {
+            Timber.tag(TAG).d(
+                "AtWorkTerritoriesConfirmation - routeAtWorkTerritoriesConfirmation(...): '%s'",
                 this.route
             )
             return this.route

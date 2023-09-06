@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -14,17 +14,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,58 +41,20 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
 import timber.log.Timber
 
-private const val TAG = "Territoring.AtWorkTerritoriesConfirmationScreen"
-
-@Composable
-fun AtWorkTerritoriesConfirmationScreen(
-    appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
-    viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
-) {
-    Timber.tag(TAG).d("AtWorkTerritoriesConfirmationScreen(...) called")
-    val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        Timber.tag(TAG)
-            .d("AtWorkTerritoriesConfirmationScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(TerritoriesGridUiAction.ProcessConfirmation)
-    }
-    viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { dialogTitleResId ->
-        Timber.tag(TAG).d("Collect ui state flow")
-        appState.actionBarSubtitle.value = stringResource(dialogTitleResId)
-        JWSuiteTheme { //(darkTheme = true)
-            ScaffoldComponent(
-                appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                }
-            ) { paddingValues ->
-                val areInputsValid by viewModel.areAtWorkInputsValid.collectAsStateWithLifecycle()
-                Column(
-                    modifier = Modifier.padding(paddingValues),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AtWorkTerritoriesConfirmationView(
-                        sharedViewModel = sharedViewModel,
-                        viewModel = viewModel
-                    )
-                }
-            }
-        }
-    }
-}
+private const val TAG = "Territoring.AtWorkTerritoriesConfirmationView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -114,15 +70,11 @@ fun AtWorkTerritoriesConfirmationView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all hand out territories fields")
-    val member by viewModel.member.collectAsStateWithLifecycle()
-    val receivingDate by viewModel.receivingDate.collectAsStateWithLifecycle()
+    val deliveryDate by viewModel.deliveryDate.collectAsStateWithLifecycle()
     val checkedTerritories by viewModel.checkedTerritories.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Init Focus Requesters for all region fields")
@@ -158,39 +110,23 @@ fun AtWorkTerritoriesConfirmationView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        member.item?.let { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) }
-        MemberComboBox(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_MEMBER.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoriesFields.TERRITORY_MEMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            //enabled = false,
-            sharedViewModel = sharedViewModel,
-            inputWrapper = member,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_RECEIVING_DATE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_DELIVERY_DATE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoriesFields.TERRITORY_RECEIVING_DATE,
+                        focusedField = TerritoriesFields.TERRITORY_DELIVERY_DATE,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.territory_receiving_date_hint,
-            datePickerTitleResId = R.string.date_dlg_title_set_territory_receiving,
+            labelResId = R.string.territory_delivery_date_hint,
+            datePickerTitleResId = R.string.date_dlg_title_set_territory_delivery,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
-            inputWrapper = receivingDate,
+            inputWrapper = deliveryDate,
             onValueChange = {
-                viewModel.onTextFieldEntered(TerritoriesInputEvent.ReceivingDate(it))
+                viewModel.onTextFieldEntered(TerritoriesInputEvent.DeliveryDate(it))
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )

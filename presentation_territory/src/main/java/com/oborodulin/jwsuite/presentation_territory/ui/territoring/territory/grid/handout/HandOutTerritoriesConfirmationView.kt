@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -6,9 +6,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,17 +14,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -38,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,80 +41,21 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation.AppState
-import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.components.HandOutButtonComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Territoring.HandOutTerritoriesConfirmationScreen"
-
-@Composable
-fun HandOutTerritoriesConfirmationScreen(
-    appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
-    viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
-) {
-    Timber.tag(TAG).d("HandOutTerritoriesConfirmationScreen(...) called")
-    val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        Timber.tag(TAG)
-            .d("HandOutTerritoriesConfirmationScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(TerritoriesGridUiAction.HandOutConfirmation)
-    }
-    viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { dialogTitleResId ->
-        Timber.tag(TAG).d("Collect ui state flow")
-        appState.actionBarSubtitle.value = stringResource(dialogTitleResId)
-        JWSuiteTheme { //(darkTheme = true)
-            ScaffoldComponent(
-                appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                }
-            ) { paddingValues ->
-                val areInputsValid by viewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
-                Column(
-                    modifier = Modifier.padding(paddingValues),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    HandOutTerritoriesConfirmationView(
-                        sharedViewModel = sharedViewModel,
-                        viewModel = viewModel
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    HandOutButtonComponent(
-                        enabled = areInputsValid,
-                        onClick = {
-                            viewModel.onContinueClick {
-                                Timber.tag(TAG)
-                                    .d("HandOutTerritoriesConfirmationScreen(...): Hand Out Territory Button onClick...")
-                                // checks all errors
-                                viewModel.onContinueClick {
-                                    // if success, then HandOut and backToBottomBarScreen
-                                    // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                                    coroutineScope.launch {
-                                        viewModel.submitAction(TerritoriesGridUiAction.HandOut)
-                                            ?.join()
-                                        appState.backToBottomBarScreen()
-                                    }
-                                }
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
+private const val TAG = "Territoring.HandOutTerritoriesConfirmationView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

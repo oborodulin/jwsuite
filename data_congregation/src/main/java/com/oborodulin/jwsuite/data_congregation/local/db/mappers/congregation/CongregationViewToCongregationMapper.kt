@@ -15,7 +15,7 @@ class CongregationViewToCongregationMapper(
 ) : Mapper<CongregationView, Congregation>, NullableMapper<CongregationView, Congregation> {
     override fun map(input: CongregationView): Congregation {
         val region = regionMapper.map(input.region)
-        val regionDistrict = regionDistrictMapper.nullableMap(input.district)
+        val regionDistrict = regionDistrictMapper.nullableMap(input.district, region)
         val congregation = Congregation(
             congregationNum = input.congregation.congregationNum,
             congregationName = input.congregation.congregationName,

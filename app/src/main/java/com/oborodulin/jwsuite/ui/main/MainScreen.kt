@@ -39,8 +39,9 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.HandOutTerritoriesConfirmationScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
@@ -171,6 +172,23 @@ private fun HomeNavigationHost(
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             HandOutTerritoriesConfirmationScreen(
+                appState = appState,
+                sharedViewModel = sharedViewModel,
+                viewModel = territoriesGridViewModel
+            )
+        }
+        composable(route = NavRoutes.AtWorkTerritoriesConfirmation.route) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to AtWorkTerritoriesConfirmationScreen [route = '%s']",
+                    it.destination.route
+                )
+            // https://developer.android.com/jetpack/compose/libraries#hilt
+            val sharedViewModel =
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            AtWorkTerritoriesConfirmationScreen(
                 appState = appState,
                 sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel

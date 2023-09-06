@@ -98,6 +98,14 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         )
     }
 
+    override val deliveryDate: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(
+            TerritoriesFields.TERRITORY_DELIVERY_DATE.name, InputWrapper(
+                OffsetDateTime.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+            )
+        )
+    }
+
     private val _checkedTerritories: MutableStateFlow<List<TerritoriesListItem>> =
         MutableStateFlow(emptyList())
     override val checkedTerritories = _checkedTerritories.asStateFlow()
@@ -109,24 +117,23 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             false
         )
 
-    override val areHandOutInputsValid =
-        combine(
-            member,
-            receivingDate,
-            checkedTerritories
-        ) { member, receivingDate, checkedTerritories ->
-            member.errorId == null && receivingDate.errorId == null && checkedTerritories.isNotEmpty()
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    override val areHandOutInputsValid = combine(member, receivingDate, checkedTerritories)
+    { member, receivingDate, checkedTerritories ->
+        member.errorId == null && receivingDate.errorId == null && checkedTerritories.isNotEmpty()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    override val areAtWorkProcessInputsValid = combine(deliveryDate, checkedTerritories)
+    { deliveryDate, checkedTerritories ->
+        deliveryDate.errorId == null && checkedTerritories.isNotEmpty()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun observeCheckedTerritories() {
         Timber.tag(TAG).d("observeChecked() called")
-        if (uiStateFlow.value is UiState.Success<*>) {
-            val checkedTerritories =
-                (uiStateFlow.value as UiState.Success<List<TerritoriesListItem>>).data.filter { it.checked }
-            _checkedTerritories.value = checkedTerritories
+        uiState()?.let { uiState ->
+            _checkedTerritories.value = uiState.filter { it.checked }
             Timber.tag(TAG).d(
-                "checked %s territories; areInputsValid = %s",
-                checkedTerritories.size,
+                "checked %s territories; areHandOutInputsValid = %s",
+                _checkedTerritories.value.size,
                 areHandOutInputsValid.value
             )
         }
@@ -269,6 +276,18 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                                 event.input
                             )
                         }
+
+                    is TerritoriesInputEvent.DeliveryDate ->
+                        when (TerritoriesInputValidator.DeliveryDate.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate, event.input
+                            )
+                        }
                 }
             }
             .debounce(350)
@@ -282,7 +301,13 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
                     is TerritoriesInputEvent.ReceivingDate ->
                         setStateValue(
-                            TerritoriesFields.TERRITORY_RECEIVING_DATE, member,
+                            TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
+                            TerritoriesInputValidator.Member.errorIdOrNull(event.input)
+                        )
+
+                    is TerritoriesInputEvent.DeliveryDate ->
+                        setStateValue(
+                            TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate,
                             TerritoriesInputValidator.Member.errorIdOrNull(event.input)
                         )
                 }
@@ -307,6 +332,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 )
             )
         }
+        TerritoriesInputValidator.DeliveryDate.errorIdOrNull(deliveryDate.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = TerritoriesFields.TERRITORY_DELIVERY_DATE.name, errorId = it)
+            )
+        }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
 
@@ -314,9 +344,10 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (error.fieldName) {
-                TerritoriesFields.TERRITORY_MEMBER.name -> member.value.copy(errorId = error.errorId)
-                TerritoriesFields.TERRITORY_RECEIVING_DATE.name -> receivingDate.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (TerritoriesFields.valueOf(error.fieldName)) {
+                TerritoriesFields.TERRITORY_MEMBER -> member.value.copy(errorId = error.errorId)
+                TerritoriesFields.TERRITORY_RECEIVING_DATE -> receivingDate.value.copy(errorId = error.errorId)
+                TerritoriesFields.TERRITORY_DELIVERY_DATE -> deliveryDate.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -349,9 +380,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val receivingDate = MutableStateFlow(InputWrapper())
+                override val deliveryDate = MutableStateFlow(InputWrapper())
 
                 override val areTerritoriesChecked = MutableStateFlow(true)
                 override val areHandOutInputsValid = MutableStateFlow(true)
+                override val areAtWorkProcessInputsValid = MutableStateFlow(true)
 
                 override fun observeCheckedTerritories() {}
                 override fun singleSelectItem(selectedItem: ListItemModel) {}

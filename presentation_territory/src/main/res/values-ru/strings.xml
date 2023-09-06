@@ -65,6 +65,7 @@
     <string name="territory_receiving_date_hint">Дата выдачи</string>
     <!--Обработка участка-->
     <string name="territory_at_work_process_subheader">Обработка участка</string>
+    <string name="territory_delivery_date_hint">Дата обработки</string>
     <!--Детали участка-->
     <string name="territory_street_hint">Улица участка</string>
     <string name="territory_house_hint">Дом участка</string>
@@ -99,6 +100,7 @@
     <string name="dlg_title_select_territory">Выберите участок</string>
     <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
     <string name="date_dlg_title_set_territory_receiving">Укажите дату выдачи</string>
+    <string name="date_dlg_title_set_territory_delivery">Укажите дату обработки</string>
     <string name="dlg_title_select_territory_street">Выберите улицу участка</string>
     <string name="dlg_title_select_territory_house">Выберите дом участка</string>
     <string name="dlg_title_select_territory_entrance">Выберите подъезд участка</string>
@@ -123,6 +125,8 @@
     <string name="territory_num_empty_error">Укажите, пожалуйста, номер участка!</string>
     <!--формы подтверждения выдачи участка-->
     <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
+    <!--формы подтверждения обработки участка-->
+    <string name="territory_delivery_date_empty_error">Укажите, пожалуйста, дату обработки участка!</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <!--Участки-->

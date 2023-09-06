@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
-import com.oborodulin.home.common.ui.components.fab.MinFabItem
-import com.oborodulin.home.common.ui.components.fab.MultiFabComponent
 import com.oborodulin.home.common.ui.components.fab.MultiFloatingState
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
@@ -48,7 +44,6 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.AppState
@@ -119,46 +114,7 @@ fun TerritoringScreen(
             )
 
             TerritoringTabType.IDLE -> {}
-            TerritoringTabType.ALL -> MultiFabComponent(
-                multiFloatingState = multiFloatingProcessState,
-                onMultiFabStateChange = { multiFloatingProcessState = it },
-                enabled = areTerritoriesChecked,
-                collapsedImageVector = Icons.Outlined.Add,
-                collapsedTextResId = R.string.fab_territory_all_text,
-                expandedImageVector = Icons.Default.Close,
-                items = listOf(
-                    MinFabItem(
-                        labelResId = R.string.fab_territory_process_room_text,
-                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24
-                    ) {
-                        ctx.toast("Add Room")
-                    },
-                    MinFabItem(
-                        labelResId = R.string.fab_territory_process_entrance_text,
-                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_entrance_24
-                    ) {
-                        ctx.toast("Add Entrance")
-                    },
-                    MinFabItem(
-                        labelResId = R.string.fab_territory_process_house_text,
-                        imageVector = Icons.Outlined.Home
-                    ) {
-                        ctx.toast("Add House")
-                    },
-                    MinFabItem(
-                        labelResId = R.string.fab_territory_process_street_text,
-                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_street_sign_24
-                    ) {
-                        ctx.toast("Add Street")
-                    },
-                    MinFabItem(
-                        labelResId = R.string.fab_territory_process_text,
-                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24
-                    ) {
-                        ctx.toast("Add Territory")
-                    }
-                )
-            )
+            TerritoringTabType.ALL -> {}
         }
     }
 
@@ -198,7 +154,7 @@ fun TerritoringScreen(
                     CommonScreen(state = state) { territoringUi ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
-                                modifier = Modifier.weight(2.5f)
+                                modifier = Modifier.weight(2.8f)
                             ) {
                                 SwitchComponent(
                                     componentModifier = Modifier.padding(end = 36.dp)

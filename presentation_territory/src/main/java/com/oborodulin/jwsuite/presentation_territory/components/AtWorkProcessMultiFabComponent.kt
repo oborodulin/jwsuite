@@ -2,8 +2,8 @@ package com.oborodulin.jwsuite.presentation_territory.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +21,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListIte
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 
-private const val TAG = "Presentation.AtWorkMultiFabComponent"
+private const val TAG = "Presentation.AtWorkProcessMultiFabComponent"
 
 @Composable
 fun AtWorkProcessMultiFabComponent(
@@ -94,7 +94,7 @@ fun AtWorkProcessMultiFabComponent(
         multiFloatingState = multiFloatingState,
         onMultiFabStateChange = onMultiFabStateChange,
         enabled = enabled,
-        collapsedImageVector = Icons.Outlined.Done,
+        collapsedImageVector = Icons.Outlined.ThumbUp,
         collapsedTextResId = R.string.fab_territory_at_work_text,
         expandedImageVector = Icons.Default.Close,
         items = minFabs,
