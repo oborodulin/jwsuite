@@ -93,10 +93,12 @@ class TerritoryViewModelImpl @Inject constructor(
 
     override val areInputsValid =
         combine(category, locality, territoryNum)
-        { stateFlowsArray ->
-            var errorIdResult = true
-            for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
-            errorIdResult
+        { category, locality, territoryNum ->
+            category.errorId == null && locality.errorId == null && territoryNum.errorId == null
+            /*stateFlowsArray ->
+                var errorIdResult = true
+                for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
+                errorIdResult*/
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState(): UiState<TerritoryUi> = UiState.Loading
@@ -300,8 +302,8 @@ class TerritoryViewModelImpl @Inject constructor(
 
                     is TerritoryInputEvent.Microdistrict ->
                         setStateValue(
-                            TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict,
-                            event.input, true
+                            TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict, event.input,
+                            true
                         )
 
                     is TerritoryInputEvent.TerritoryNum ->

@@ -13,7 +13,6 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data_congregation.R
@@ -231,7 +230,7 @@ class MemberViewModelImpl @Inject constructor(
         )
         initStateValue(
             MemberFields.MEMBER_GROUP, group,
-            ListItemModel(uiModel.group.id, uiModel.group.groupNum.toString())
+            ListItemModel(uiModel.group.id, uiModel.group.groupNum?.toString().orEmpty())
         )
         initStateValue(MemberFields.MEMBER_NUM, memberNum, uiModel.memberNum)
         initStateValue(MemberFields.MEMBER_NAME, memberName, uiModel.memberName.orEmpty())

@@ -145,7 +145,7 @@ class GroupViewModelImpl @Inject constructor(
             GroupFields.GROUP_CONGREGATION, congregation,
             uiModel.congregation.toCongregationsListItem()
         )
-        initStateValue(GroupFields.GROUP_NUM, groupNum, uiModel.groupNum.toString())
+        initStateValue(GroupFields.GROUP_NUM, groupNum, uiModel.groupNum?.toString().orEmpty())
         return null
     }
 

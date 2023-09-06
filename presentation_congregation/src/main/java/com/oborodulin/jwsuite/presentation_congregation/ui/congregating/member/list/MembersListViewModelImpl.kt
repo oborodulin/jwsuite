@@ -12,7 +12,7 @@ import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
@@ -55,9 +55,7 @@ class MembersListViewModelImpl @Inject constructor(
             is MembersListUiAction.EditMember -> {
                 submitSingleEvent(
                     MembersListUiSingleEvent.OpenMemberScreen(
-                        NavRoutes.Congregation.routeForCongregation(
-                            CongregationInput(action.memberId)
-                        )
+                        NavRoutes.Member.routeForMember(MemberInput(action.memberId))
                     )
                 )
             }
