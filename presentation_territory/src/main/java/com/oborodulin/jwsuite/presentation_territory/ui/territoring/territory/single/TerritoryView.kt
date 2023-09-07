@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -53,7 +52,7 @@ private const val TAG = "Territoring.TerritoryView"
 @Composable
 fun TerritoryView(
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
-    viewModel: TerritoryViewModelImpl = hiltViewModel()
+    viewModel: TerritoryViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryView(...) called")
     val context = LocalContext.current
@@ -62,10 +61,7 @@ fun TerritoryView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all member fields")
@@ -278,10 +274,13 @@ fun TerritoryView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    //val ctx = LocalContext.current
+    val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            TerritoryView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            TerritoryView(
+                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
+                viewModel = TerritoryViewModelImpl.previewModel(ctx)
+            )
         }
     }
 }

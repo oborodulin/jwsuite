@@ -42,6 +42,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboB
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
 
 private const val TAG = "Territoring.TerritoryStreetView"
@@ -51,6 +52,7 @@ private const val TAG = "Territoring.TerritoryStreetView"
 fun TerritoryStreetView(
     uiModel: TerritoryStreetUiModel,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryStreetViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
@@ -60,10 +62,7 @@ fun TerritoryStreetView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("Territory Street: CollectAsStateWithLifecycle for all fields")
@@ -111,6 +110,7 @@ fun TerritoryStreetView(
                 },
             enabled = false,
             sharedViewModel = sharedViewModel,
+            singleViewModel = territoryViewModel,
             inputWrapper = territory,
             onImeKeyAction = viewModel::moveFocusImeAction
         )

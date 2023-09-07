@@ -132,7 +132,6 @@ class TerritoryViewModelImpl @Inject constructor(
                     )
                 )
             }
-
         }
         return job
     }
@@ -202,7 +201,10 @@ class TerritoryViewModelImpl @Inject constructor(
             ).collect {
                 Timber.tag(TAG).d("saveTerritory() collect: %s", it)
                 if (it is Result.Success) {
-                    submitState(UiState.Success(territoryMapper.map(it.data.territory)))
+                    //submitState(UiState.Success(territoryMapper.map(it.data.territory)))
+                    it.data.territory.id?.let { territoryId ->
+                        initStateValue(TerritoryFields.TERRITORY_ID, id, territoryId.toString())
+                    }
                     setSavedListItem(territoryListItemMapper.map(it.data.territory))
                 }
             }
@@ -232,20 +234,16 @@ class TerritoryViewModelImpl @Inject constructor(
         initStateValue(
             TerritoryFields.TERRITORY_LOCALITY_DISTRICT, localityDistrict,
             ListItemModel(
-                uiModel.localityDistrict?.id,
-                uiModel.localityDistrict?.districtName.orEmpty()
+                uiModel.localityDistrict?.id, uiModel.localityDistrict?.districtName.orEmpty()
             )
         )
         initStateValue(
             TerritoryFields.TERRITORY_MICRODISTRICT, microdistrict,
             ListItemModel(
-                uiModel.microdistrict?.id,
-                uiModel.microdistrict?.microdistrictName.orEmpty()
+                uiModel.microdistrict?.id, uiModel.microdistrict?.microdistrictName.orEmpty()
             )
         )
-        initStateValue(
-            TerritoryFields.TERRITORY_NUM, territoryNum, uiModel.territoryNum.toString()
-        )
+        initStateValue(TerritoryFields.TERRITORY_NUM, territoryNum, uiModel.territoryNum.toString())
         initStateValue(
             TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness, uiModel.isBusiness.toString()
         )
@@ -462,6 +460,7 @@ class TerritoryViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoryUiAction): Job? = null
+                override fun onInsert(block: () -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: TerritoryFields, isFocused: Boolean

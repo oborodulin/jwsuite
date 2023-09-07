@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.ui.main
 
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,6 +23,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.tag(TAG).d("onCreate(Bundle?) called")
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT; // Make to run your application only in portrait mode
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Make to run your application only in LANDSCAPE mode
         setContent {
             JWSuiteTheme {
                 // A surface container using the 'background' color from the theme

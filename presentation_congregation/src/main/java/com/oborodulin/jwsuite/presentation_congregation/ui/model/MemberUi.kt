@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.util.MemberType
 import java.time.OffsetDateTime
+import java.util.UUID
 
 data class MemberUi(
     val group: GroupUi = GroupUi(),
@@ -21,7 +22,7 @@ data class MemberUi(
 ) : ModelUi()
 
 fun MemberUi.toMembersListItem() = MembersListItem(
-    id = this.id!!,
+    id = this.id ?: UUID.randomUUID(),
     group = this.group,
     memberNum = this.memberNum,
     memberFullName = this.memberFullName.orEmpty(),

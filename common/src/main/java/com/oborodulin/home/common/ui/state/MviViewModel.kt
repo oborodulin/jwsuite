@@ -72,8 +72,10 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
             Timber.tag(TAG).d("init: Start actionFlow.collect")
             _actionsFlow.collect {
                 val job = handleAction(it)
-                _actionsJobFlow.emit(job)
-                Timber.tag(TAG).d("actionFlow.collect: emitted job = %s", job)
+                if (it.isEmitJob) {
+                    _actionsJobFlow.emit(job)
+                    Timber.tag(TAG).d("actionFlow.collect: emitted job = %s", job)
+                }
             }
         }
         Timber.tag(TAG).d("init ended")

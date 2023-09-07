@@ -168,8 +168,20 @@ class MemberViewModelImpl @Inject constructor(
         //val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
         val congregationUi = CongregationUi()
         congregationUi.id = congregation.value.item?.itemId
-        val groupUi = GroupUi(congregation = congregationUi)
+        val groupUi =
+            GroupUi(congregation = congregationUi, groupNum = group.value.item?.headline?.toInt())
         groupUi.id = group.value.item?.itemId
+        val dateOfBirthOffsetDateTime = if (dateOfBirth.value.value.isNotEmpty())
+            LocalDate.parse(
+                dateOfBirth.value.value,
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+            ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+        else null
+        Timber.tag(TAG).d(
+            "saveMember(): dateOfBirth.value.value: %s; dateOfBirthOffsetDateTime = %s",
+            dateOfBirth.value.value,
+            dateOfBirthOffsetDateTime
+        )
         val memberUi = MemberUi(
             group = groupUi,
             memberNum = memberNum.value.value,
@@ -179,12 +191,7 @@ class MemberViewModelImpl @Inject constructor(
             pseudonym = pseudonym.value.value,
             phoneNumber = phoneNumber.value.value,
             memberType = MemberType.valueOf(memberType.value.value),
-            dateOfBirth = if (dateOfBirth.value.value.isNotEmpty())
-                LocalDate.parse(
-                    dateOfBirth.value.value,
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-            else null,
+            dateOfBirth = dateOfBirthOffsetDateTime,
             dateOfBaptism = if (dateOfBaptism.value.value.isNotEmpty())
                 LocalDate.parse(
                     dateOfBaptism.value.value,

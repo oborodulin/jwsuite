@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territoryca
 import com.oborodulin.home.common.ui.state.UiAction
 import java.util.UUID
 
-sealed class TerritoryCategoriesListUiAction : UiAction {
+sealed class TerritoryCategoriesListUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data object Load : TerritoryCategoriesListUiAction()
     data class EditTerritoryCategory(val territoryCategoryId: UUID) :
         TerritoryCategoriesListUiAction()

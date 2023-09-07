@@ -5,7 +5,7 @@ import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import java.util.UUID
 
-sealed class TerritoriesGridUiAction : UiAction {
+sealed class TerritoriesGridUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data class Load(
         val congregationId: UUID? = null,
         val territoryProcessType: TerritoryProcessType,

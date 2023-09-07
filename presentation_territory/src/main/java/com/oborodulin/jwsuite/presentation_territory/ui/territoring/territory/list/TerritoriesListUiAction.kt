@@ -3,6 +3,6 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.l
 import com.oborodulin.home.common.ui.state.UiAction
 import java.util.UUID
 
-sealed class TerritoriesListUiAction : UiAction {
+sealed class TerritoriesListUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data class Load(val congregationId: UUID? = null) : TerritoriesListUiAction()
 }

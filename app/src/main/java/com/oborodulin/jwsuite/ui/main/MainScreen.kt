@@ -39,9 +39,9 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
@@ -239,9 +239,12 @@ private fun HomeNavigationHost(
                 )
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             TerritoryStreetScreen(
                 appState = appState,
                 sharedViewModel = sharedViewModel,
+                territoryViewModel = territoryViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }

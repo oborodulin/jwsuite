@@ -484,8 +484,7 @@ sealed class NavRoutes constructor(
 
     data object TerritoryStreet : NavRoutes(
         route = String.format(
-            ROUTE_TERRITORY_STREET,
-            "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}",
+            ROUTE_TERRITORY_STREET, "{$ARG_TERRITORY_ID}",
             "$ARG_TERRITORY_STREET_ID={$ARG_TERRITORY_STREET_ID}"
         ),
         iconPainterResId = R.drawable.ic_territory_street_24,
@@ -503,7 +502,7 @@ sealed class NavRoutes constructor(
         fun routeForTerritoryStreet(territoryStreetInput: TerritoryStreetInput? = null): String {
             val route = String.format(
                 ROUTE_TERRITORY_STREET,
-                territoryStreetInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty(),
+                territoryStreetInput?.let { "${it.territoryId}" }.orEmpty(),
                 territoryStreetInput?.let { "$ARG_TERRITORY_STREET_ID=${it.territoryStreetId}" }
                     .orEmpty()
             )

@@ -21,6 +21,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
 import timber.log.Timber
@@ -33,6 +34,7 @@ fun TerritoryStreetComboBox(
     modifier: Modifier = Modifier,
     territoryId: UUID,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    territoryViewModel: TerritoryViewModel,
     listViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -49,7 +51,7 @@ fun TerritoryStreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryStreetUiAction.Load(),
         confirmUiAction = TerritoryStreetUiAction.Save,
-        dialogView = { TerritoryStreetView(it, sharedViewModel) },
+        dialogView = { TerritoryStreetView(it, sharedViewModel, territoryViewModel) },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(

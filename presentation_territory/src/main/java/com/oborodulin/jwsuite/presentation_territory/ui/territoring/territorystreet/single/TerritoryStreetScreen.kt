@@ -27,6 +27,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryS
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ private const val TAG = "Territoring.TerritoryStreetScreen"
 fun TerritoryStreetScreen(
     appState: AppState,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    territoryViewModel: TerritoryViewModel,
     territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput? = null
@@ -78,7 +80,10 @@ fun TerritoryStreetScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TerritoryStreetView(uiModel = it, sharedViewModel = sharedViewModel)
+                        TerritoryStreetView(
+                            uiModel = it, sharedViewModel = sharedViewModel,
+                            territoryViewModel = territoryViewModel
+                        )
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
                             enabled = areInputsValid,

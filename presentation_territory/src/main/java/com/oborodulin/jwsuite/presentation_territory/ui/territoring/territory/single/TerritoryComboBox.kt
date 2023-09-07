@@ -5,10 +5,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,7 +35,7 @@ fun TerritoryComboBox(
     enabled: Boolean = true,
     sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
     listViewModel: TerritoriesListViewModelImpl = hiltViewModel(),
-    singleViewModel: TerritoryViewModelImpl = hiltViewModel(),
+    singleViewModel: TerritoryViewModel,//Impl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent = {},
     onImeKeyAction: OnImeKeyAction
@@ -50,11 +50,11 @@ fun TerritoryComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryUiAction.Load(),
         confirmUiAction = TerritoryUiAction.Save,
-        dialogView = { TerritoryView(sharedViewModel) },
+        dialogView = { TerritoryView(sharedViewModel, viewModel = singleViewModel) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,
@@ -78,11 +78,12 @@ fun TerritoryComboBox(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewTerritoryComboBox() {
-    //val ctx = LocalContext.current
+    val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
             TerritoryComboBox(
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
+                singleViewModel = TerritoryViewModelImpl.previewModel(ctx),
                 inputWrapper = InputListItemWrapper(),
                 onValueChange = {},
                 onImeKeyAction = {}

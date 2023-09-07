@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list
 import com.oborodulin.home.common.ui.state.UiAction
 import java.util.UUID
 
-sealed class MicrodistrictsListUiAction : UiAction {
+sealed class MicrodistrictsListUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data class Load(val localityId: UUID? = null, val localityDistrictId: UUID? = null) :
         MicrodistrictsListUiAction()
 

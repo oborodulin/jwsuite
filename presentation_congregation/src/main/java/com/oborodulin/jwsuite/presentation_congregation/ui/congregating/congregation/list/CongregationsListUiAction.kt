@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congreg
 import com.oborodulin.home.common.ui.state.UiAction
 import java.util.UUID
 
-sealed class CongregationsListUiAction : UiAction {
+sealed class CongregationsListUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data object Load : CongregationsListUiAction()
     data class EditCongregation(val congregationId: UUID) : CongregationsListUiAction()
     data class DeleteCongregation(val congregationId: UUID) : CongregationsListUiAction()

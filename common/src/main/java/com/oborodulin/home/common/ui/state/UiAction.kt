@@ -1,3 +1,5 @@
 package com.oborodulin.home.common.ui.state
 
-interface UiAction
+interface UiAction {
+    val isEmitJob: Boolean
+}

@@ -106,10 +106,22 @@ fun TerritoryScreen(
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TerritoryView(sharedViewModel)
+                        TerritoryView(sharedViewModel, viewModel = viewModel)
                         Spacer(Modifier.height(8.dp))
                         NextButtonComponent(enabled = areInputsValid, onClick = nextButtonOnClick)
                     }
+                }
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG)
+            .d("TerritoryScreen: LaunchedEffect() AFTER collect ui state flow")
+        viewModel.singleEventFlow.collectLatest {
+            Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
+            when (it) {
+                is TerritoryUiSingleEvent.OpenTerritoryDetailsScreen -> {
+                    appState.commonNavController.navigate(it.navRoute)
                 }
             }
         }
