@@ -86,9 +86,7 @@ fun CongregatingScreen(
             nestedScrollConnection = nestedScrollConnection,
             topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating,
             topBarActions = {
-                IconButton(onClick = addActionOnClick) {
-                    Icon(Icons.Outlined.Add, null)
-                }
+                IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
                 IconButton(onClick = { context.toast("Settings button clicked...") }) {
                     Icon(Icons.Outlined.Settings, null)
                 }

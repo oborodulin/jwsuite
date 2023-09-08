@@ -37,6 +37,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    // https://stackoverflow.com/questions/65182773/what-does-androidconfigchanges-do
+    // https://developer.android.com/guide/topics/manifest/activity-element#config
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Timber.tag(TAG).d("onConfigurationChanged(Configuration) called")
+    }
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

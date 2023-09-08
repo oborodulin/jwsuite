@@ -33,8 +33,7 @@ fun rememberAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     appName: String = "",
     actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") }
-) =
-    remember(
+) = remember(
         //accountingScaffoldState,
         //payerScaffoldState,
         commonNavController,

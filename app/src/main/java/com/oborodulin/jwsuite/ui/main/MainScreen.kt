@@ -32,6 +32,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
+import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
@@ -45,6 +46,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.si
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetScreen
+import com.oborodulin.jwsuite.ui.main.MainViewModelImpl
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -55,7 +57,7 @@ import kotlin.math.roundToInt
 private const val TAG = "App.ui.MainScreen"
 
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: MainViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("MainScreen() called")
     val appState = rememberAppState(appName = stringResource(R.string.app_name))
 

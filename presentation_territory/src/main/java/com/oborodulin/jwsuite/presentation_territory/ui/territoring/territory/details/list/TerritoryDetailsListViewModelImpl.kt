@@ -24,7 +24,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Territoring.TerritoryDetailsViewModelImpl"
+private const val TAG = "Territoring.TerritoryDetailsListViewModelImpl"
 
 @HiltViewModel
 class TerritoryDetailsListViewModelImpl @Inject constructor(
@@ -37,7 +37,7 @@ class TerritoryDetailsListViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: TerritoryDetailsListUiAction): Job {
         Timber.tag(TAG)
-            .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(TerritoryDetailsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryDetailsListUiAction.Load -> {
                 loadTerritoryDetails(territoryId = action.territoryId)

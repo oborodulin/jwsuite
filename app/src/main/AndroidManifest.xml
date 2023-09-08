@@ -24,11 +24,13 @@
 	 -->
         <activity
             android:name=".ui.main.MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.JWSuite"
             android:windowSoftInputMode="adjustResize"
             tools:replace="android:label,android:theme">
+            <!-- android:configChanges - https://stackoverflow.com/questions/76633081/how-to-save-navigation-state-between-configuration-changes-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

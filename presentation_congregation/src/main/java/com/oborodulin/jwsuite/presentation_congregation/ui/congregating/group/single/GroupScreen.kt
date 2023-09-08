@@ -66,8 +66,10 @@ fun GroupScreen(
     LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
-        viewModel.onInsert {
-            viewModel.submitAction(GroupUiAction.GetNextGroupNum(currentCongregation?.itemId!!))
+        currentCongregation?.itemId?.let { congregationId ->
+            viewModel.onInsert {
+                viewModel.submitAction(GroupUiAction.GetNextGroupNum(congregationId))
+            }
         }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
