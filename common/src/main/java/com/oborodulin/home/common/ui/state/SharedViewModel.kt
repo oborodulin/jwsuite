@@ -15,14 +15,14 @@ import timber.log.Timber
  */
 private const val TAG = "Common.SharedViewModel"
 
-abstract class SharedViewModel<T : Any?> : ViewModel() {
+abstract class SharedViewModel<T : Any?> : SharedViewModeled<T>, ViewModel() {
     //: MutableSharedFlow<T> =MutableSharedFlow(replay = 1) //MutableSharedFlow<T>(replay = 2) // , extraBufferCapacity = 1
     private val _sharedFlow: MutableStateFlow<T?> by lazy { MutableStateFlow(null) }
-    val sharedFlow = _sharedFlow.asStateFlow() //.asSharedFlow()//.distinctUntilChanged()
+    override val sharedFlow = _sharedFlow.asStateFlow() //.asSharedFlow()//.distinctUntilChanged()
 
     var fabOnClick = mutableStateOf({})
 
-    fun submitData(data: T): Job {
+    override fun submitData(data: T): Job {
         return viewModelScope.launch {
             Timber.tag(TAG).d("submitData(): data = %s", data)
             //_sharedFlow.emit(data)
@@ -30,7 +30,7 @@ abstract class SharedViewModel<T : Any?> : ViewModel() {
         }
     }
 
-    fun sharedData(): T? {
+    override fun sharedData(): T? {
         var data: T? = null
         viewModelScope.launch {
             sharedFlow.collectLatest { data = it }

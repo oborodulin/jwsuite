@@ -7,8 +7,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.home.common.util.rememberParentEntry
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
@@ -38,10 +38,9 @@ fun NavBarNavigationHost(
                 remember(it) { appState.navBarNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            //appState.sharedViewModel.value = sharedViewModel
+            appState.sharedViewModel.value = sharedViewModel
             DashboardingScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
             ) //setFabOnClick = setFabOnClick
@@ -52,11 +51,9 @@ fun NavBarNavigationHost(
             // congregating: [Congregation, Members]; [Groups (favorite congregation), Members]
             Timber.tag(TAG)
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             CongregatingScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
             )
@@ -67,13 +64,12 @@ fun NavBarNavigationHost(
             // territoring: Territories Grid [hand_out, at_work, idle], Territory Details
             Timber.tag(TAG)
                 .d("Navigation Graph: to TerritoringScreen [route = '%s']", it.destination.route)
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             TerritoringScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar

@@ -46,13 +46,11 @@ import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.BarMemberComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.components.AtWorkProcessMultiFabComponent
 import com.oborodulin.jwsuite.presentation_territory.components.HandOutFabComponent
@@ -73,7 +71,7 @@ private const val TAG = "Territoring.TerritoringScreen"
 @Composable
 fun TerritoringScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
 //    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
@@ -81,7 +79,8 @@ fun TerritoringScreen(
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
@@ -124,12 +123,12 @@ fun TerritoringScreen(
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
-    LaunchedEffect(isPrivateSector.value, currentCongregation?.id) {
+    LaunchedEffect(isPrivateSector.value, currentCongregation?.itemId) {
         Timber.tag(TAG)
             .d("TerritoringScreen: LaunchedEffect() BEFORE collect ui state flow: submitAction")
         territoringViewModel.submitAction(
             TerritoringUiAction.LoadLocations(
-                congregationId = currentCongregation?.id,
+                congregationId = currentCongregation?.itemId,
                 isPrivateSector = isPrivateSector.value.toBoolean()
             )
         )
@@ -229,7 +228,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     HandOutTerritoriesView(
                                         appState = appState,
-                                        sharedViewModel = sharedViewModel,
+                                        //sharedViewModel = sharedViewModel,
                                         enableAction = areHandOutInputsValid,
                                         territoringViewModel = territoringViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
@@ -246,7 +245,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     AtWorkTerritoriesView(
                                         appState = appState,
-                                        sharedViewModel = sharedViewModel,
+                                        //sharedViewModel = sharedViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
                                         locationId = it.locationId,
@@ -261,7 +260,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     IdleTerritoriesView(
                                         appState = appState,
-                                        sharedViewModel = sharedViewModel,
+                                        //sharedViewModel = sharedViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
                                         locationId = it.locationId,
@@ -276,7 +275,7 @@ fun TerritoringScreen(
                                 location.item?.let {
                                     AllTerritoriesView(
                                         appState = appState,
-                                        sharedViewModel = sharedViewModel,
+                                        //sharedViewModel = sharedViewModel,
                                         territoriesGridViewModel = territoriesGridViewModel,
                                         territoryLocationType = it.territoryLocationType,
                                         locationId = it.locationId,
@@ -306,7 +305,7 @@ fun TerritoringScreen(
 @Composable
 fun HandOutTerritoriesView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     enableAction: Boolean,
     territoringViewModel: TerritoringViewModel,
     territoriesGridViewModel: TerritoriesGridViewModel,
@@ -348,7 +347,7 @@ fun HandOutTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.HAND_OUT,
                 territoryLocationType = territoryLocationType,
@@ -376,7 +375,7 @@ fun HandOutTerritoriesView(
         )
         BarMemberComboBox(
             modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-            sharedViewModel = sharedViewModel,
+            sharedViewModel = appState.sharedViewModel.value,
             inputWrapper = member,
             onValueChange = {
                 territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))
@@ -419,7 +418,7 @@ fun HandOutTerritoriesView(
 @Composable
 fun AtWorkTerritoriesView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
@@ -453,7 +452,7 @@ fun AtWorkTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.AT_WORK,
                 territoryLocationType = territoryLocationType,
@@ -485,7 +484,7 @@ fun AtWorkTerritoriesView(
 @Composable
 fun IdleTerritoriesView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
@@ -519,7 +518,7 @@ fun IdleTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.IDLE,
                 territoryLocationType = territoryLocationType,
@@ -551,7 +550,7 @@ fun IdleTerritoriesView(
 @Composable
 fun AllTerritoriesView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryLocationType: TerritoryLocationType,
     locationId: UUID? = null,
@@ -585,7 +584,7 @@ fun AllTerritoriesView(
         ) {
             TerritoriesGridView(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 territoryProcessType = TerritoryProcessType.ALL,
                 territoryLocationType = territoryLocationType,

@@ -17,11 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -33,7 +31,7 @@ private const val TAG = "Territoring.HandOutTerritoriesConfirmationScreen"
 @Composable
 fun HandOutTerritoriesConfirmationScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("HandOutTerritoriesConfirmationScreen(...) called")
@@ -61,7 +59,7 @@ fun HandOutTerritoriesConfirmationScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HandOutTerritoriesConfirmationView(
-                        sharedViewModel = sharedViewModel,
+                        sharedViewModel = appState.sharedViewModel.value,
                         viewModel = viewModel
                     )
                     Spacer(Modifier.height(8.dp))

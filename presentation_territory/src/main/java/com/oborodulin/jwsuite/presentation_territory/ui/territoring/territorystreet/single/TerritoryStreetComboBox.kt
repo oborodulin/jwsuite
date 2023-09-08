@@ -15,11 +15,10 @@ import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
@@ -33,7 +32,7 @@ private const val TAG = "Territoring.TerritoryStreetComboBox"
 fun TerritoryStreetComboBox(
     modifier: Modifier = Modifier,
     territoryId: UUID,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
     listViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),

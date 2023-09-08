@@ -16,12 +16,11 @@ import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.list.TerritoriesListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.list.TerritoriesListViewModelImpl
@@ -33,7 +32,7 @@ private const val TAG = "Territoring.TerritoryComboBox"
 fun TerritoryComboBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: TerritoriesListViewModelImpl = hiltViewModel(),
     singleViewModel: TerritoryViewModel,//Impl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -54,13 +53,13 @@ fun TerritoryComboBox(
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,
         enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = TerritoriesListUiAction.Load(currentCongregation?.id),
+        loadListUiAction = TerritoriesListUiAction.Load(currentCongregation?.itemId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

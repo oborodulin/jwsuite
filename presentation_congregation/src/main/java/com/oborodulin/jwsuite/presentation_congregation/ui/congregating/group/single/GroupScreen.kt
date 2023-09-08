@@ -22,12 +22,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -37,7 +35,7 @@ private const val TAG = "Congregating.GroupScreen"
 @Composable
 fun GroupScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: GroupViewModelImpl = hiltViewModel(),
     groupInput: GroupInput? = null
 ) {
@@ -63,12 +61,13 @@ fun GroupScreen(
             viewModel.submitAction(GroupUiAction.Save)
         }
     }
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
         viewModel.onInsert {
-            viewModel.submitAction(GroupUiAction.GetNextGroupNum(currentCongregation?.id!!))
+            viewModel.submitAction(GroupUiAction.GetNextGroupNum(currentCongregation?.itemId!!))
         }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -98,7 +97,7 @@ fun GroupScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        GroupView(sharedViewModel)
+                        GroupView(appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }

@@ -37,13 +37,13 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import timber.log.Timber
 
 private const val TAG = "Congregating.MemberView"
@@ -51,7 +51,7 @@ private const val TAG = "Congregating.MemberView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemberView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     viewModel: MemberViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("MemberView(...) called")
@@ -61,10 +61,7 @@ fun MemberView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all member fields")
@@ -131,8 +128,7 @@ fun MemberView(
                 .focusRequester(focusRequesters[MemberFields.MEMBER_GROUP.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberFields.MEMBER_GROUP,
-                        isFocused = focusState.isFocused
+                        focusedField = MemberFields.MEMBER_GROUP, isFocused = focusState.isFocused
                     )
                 },
             inputWrapper = group,
@@ -150,8 +146,7 @@ fun MemberView(
                 .focusRequester(focusRequesters[MemberFields.MEMBER_NUM.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberFields.MEMBER_NUM,
-                        isFocused = focusState.isFocused
+                        focusedField = MemberFields.MEMBER_NUM, isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.member_num_hint,
@@ -173,8 +168,7 @@ fun MemberView(
                 .focusRequester(focusRequesters[MemberFields.MEMBER_SURNAME.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberFields.MEMBER_SURNAME,
-                        isFocused = focusState.isFocused
+                        focusedField = MemberFields.MEMBER_SURNAME, isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.member_surname_hint,

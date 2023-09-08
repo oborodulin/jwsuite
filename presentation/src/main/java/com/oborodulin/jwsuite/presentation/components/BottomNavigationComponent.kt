@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.oborodulin.home.common.ui.components.IconComponent
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import timber.log.Timber
 
 private const val TAG = "Presentation.BottomNavBarComponent"
@@ -22,7 +22,9 @@ private const val TAG = "Presentation.BottomNavBarComponent"
 fun BottomNavigationComponent(modifier: Modifier, appState: AppState) {
     Timber.tag(TAG).d("BottomNavigationBar(...) called")
     NavigationBar(
-        modifier = Modifier.navigationBarsPadding().then(modifier)
+        modifier = Modifier
+            .navigationBarsPadding()
+            .then(modifier)
         /*modifier
             .graphicsLayer {
                 shape = RoundedCornerShape(

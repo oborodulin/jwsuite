@@ -34,11 +34,11 @@ import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
@@ -51,7 +51,7 @@ private const val TAG = "Territoring.TerritoryView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoryView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     viewModel: TerritoryViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryView(...) called")

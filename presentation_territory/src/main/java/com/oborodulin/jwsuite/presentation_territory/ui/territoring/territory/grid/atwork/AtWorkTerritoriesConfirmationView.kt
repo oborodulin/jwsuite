@@ -41,10 +41,10 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
@@ -59,7 +59,7 @@ private const val TAG = "Territoring.AtWorkTerritoriesConfirmationView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AtWorkTerritoriesConfirmationView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     paddingValues: PaddingValues? = null,
     viewModel: TerritoriesGridViewModel
 ) {

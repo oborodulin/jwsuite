@@ -24,12 +24,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -39,7 +37,7 @@ private const val TAG = "Congregating.MemberScreen"
 @Composable
 fun MemberScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null
 ) {
@@ -99,7 +97,7 @@ fun MemberScreen(
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        MemberView(sharedViewModel)
+                        MemberView(appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }

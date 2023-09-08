@@ -7,7 +7,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -18,15 +17,14 @@ import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import timber.log.Timber
 
 private const val TAG = "Congregating.MemberComboBox"
@@ -35,7 +33,7 @@ private const val TAG = "Congregating.MemberComboBox"
 fun MemberComboBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: MembersListViewModelImpl = hiltViewModel(),
     singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -62,7 +60,7 @@ fun MemberComboBox(
         modifier = modifier,
         enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.id),
+        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.itemId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

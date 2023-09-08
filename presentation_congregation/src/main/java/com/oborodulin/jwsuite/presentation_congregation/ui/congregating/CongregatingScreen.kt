@@ -34,18 +34,16 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import timber.log.Timber
 
 /**
@@ -56,7 +54,7 @@ private const val TAG = "Congregating.CongregatingScreen"
 @Composable
 fun CongregatingScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
@@ -106,7 +104,7 @@ fun CongregatingScreen(
                         ) {
                             CongregationMembersView(
                                 appState = appState,
-                                sharedViewModel = sharedViewModel,
+                                //sharedViewModel = sharedViewModel,
                                 membersListViewModel = membersListViewModel
                             )
                         },
@@ -116,7 +114,7 @@ fun CongregatingScreen(
                         ) {
                             GroupMembersView(
                                 appState = appState,
-                                sharedViewModel = sharedViewModel,
+                                //sharedViewModel = sharedViewModel,
                                 membersListViewModel = membersListViewModel
                             )
                         },
@@ -126,7 +124,7 @@ fun CongregatingScreen(
                         ) {
                             MembersView(
                                 appState = appState,
-                                sharedViewModel = sharedViewModel,
+                                //sharedViewModel = sharedViewModel,
                                 membersListViewModel = membersListViewModel
                             )
                         }
@@ -151,7 +149,7 @@ fun CongregatingScreen(
 @Composable
 fun CongregationMembersView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
@@ -180,7 +178,7 @@ fun CongregationMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationsListView(appState = appState, sharedViewModel = sharedViewModel)
+            CongregationsListView(appState = appState)//, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier
@@ -194,7 +192,7 @@ fun CongregationMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState, sharedViewModel = sharedViewModel)
+            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
@@ -203,7 +201,7 @@ fun CongregationMembersView(
 @Composable
 fun GroupMembersView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
@@ -232,7 +230,7 @@ fun GroupMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            GroupsListView(appState = appState, sharedViewModel = sharedViewModel)
+            GroupsListView(appState = appState)//, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier
@@ -246,7 +244,7 @@ fun GroupMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState, sharedViewModel = sharedViewModel)
+            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
@@ -255,7 +253,7 @@ fun GroupMembersView(
 @Composable
 fun MembersView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("MembersView(...) called")
@@ -284,7 +282,7 @@ fun MembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState, sharedViewModel = sharedViewModel)
+            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier

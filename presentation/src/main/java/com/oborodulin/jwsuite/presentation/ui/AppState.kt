@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation
+package com.oborodulin.jwsuite.presentation.ui
 
 import android.content.res.Resources
 import androidx.compose.runtime.*
@@ -7,6 +7,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
@@ -22,13 +24,11 @@ fun rememberAppState(
     //payerScaffoldState: ScaffoldState = rememberScaffoldState(),
     commonNavController: NavHostController = rememberNavController(),
     navBarNavController: NavHostController = rememberNavController(),
-    /*
-        sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?> = remember {
-            mutableStateOf(null)
-        },
+    sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
+        mutableStateOf(null)
+    },
 
-    fab: MutableState<@Composable () -> Unit> = remember { mutableStateOf({ }) },
-     */
+//    fab: MutableState<@Composable () -> Unit> = remember { mutableStateOf({ }) },
     resources: Resources = LocalContext.current.resources,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     appName: String = "",
@@ -39,7 +39,7 @@ fun rememberAppState(
         //payerScaffoldState,
         commonNavController,
         navBarNavController,
-//        sharedViewModel,
+        sharedViewModel,
 //        fab,
         resources,
         coroutineScope,
@@ -50,7 +50,7 @@ fun rememberAppState(
             //payerScaffoldState,
             commonNavController,
             navBarNavController,
-//            sharedViewModel,
+            sharedViewModel,
 //            fab,
             appName,
             actionBarSubtitle
@@ -64,7 +64,7 @@ fun rememberAppState(
 class AppState(
     val commonNavController: NavHostController,
     val navBarNavController: NavHostController,
-//    val sharedViewModel: MutableState<FavoriteCongregationViewModel<CongregationsListItem?>?>,
+    val sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
 //    val fab: MutableState<@Composable () -> Unit>,
     val appName: String,
     val actionBarSubtitle: MutableState<String>

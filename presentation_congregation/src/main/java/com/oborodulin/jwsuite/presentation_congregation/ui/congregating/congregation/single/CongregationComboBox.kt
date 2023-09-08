@@ -14,10 +14,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
@@ -30,7 +31,7 @@ private const val TAG = "Congregating.CongregationComboBox"
 fun CongregationComboBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     singleViewModel: CongregationViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<CongregationsListItem>,
@@ -51,9 +52,9 @@ fun CongregationComboBox(
         onValueChange = { onValueChange(it.toCongregationsListItem()) },
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
-    currentCongregation?.let { onValueChange(it) }
+    currentCongregation?.let { onValueChange(it.toCongregationsListItem()) }
     ComboBoxComponent(
         modifier = modifier,
         enabled = enabled,

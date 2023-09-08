@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import timber.log.Timber
 
 private const val TAG = "Presentation.ScaffoldComponent"

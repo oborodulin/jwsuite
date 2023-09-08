@@ -33,12 +33,10 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListViewModelImpl
@@ -53,7 +51,7 @@ private const val TAG = "Territoring.TerritoriesGridView"
 @Composable
 fun TerritoriesGridView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoryDetailsViewModel: TerritoryDetailsListViewModelImpl = hiltViewModel(),
     territoryProcessType: TerritoryProcessType,
@@ -70,9 +68,10 @@ fun TerritoriesGridView(
         isPrivateSector,
         locationId
     )
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
+    val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
     LaunchedEffect(

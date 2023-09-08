@@ -24,12 +24,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.R
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.rememberAppState
+import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
@@ -122,11 +121,10 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Group.arguments
                 )
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             GroupScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 groupInput = NavRoutes.Group.fromEntry(it)
             )
         }
@@ -136,11 +134,10 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Member.arguments
                 )
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             MemberScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 memberInput = NavRoutes.Member.fromEntry(it)
             )
         }
@@ -167,13 +164,12 @@ private fun HomeNavigationHost(
                     it.destination.route
                 )
             // https://developer.android.com/jetpack/compose/libraries#hilt
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             HandOutTerritoriesConfirmationScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel
             )
         }
@@ -184,13 +180,12 @@ private fun HomeNavigationHost(
                     it.destination.route
                 )
             // https://developer.android.com/jetpack/compose/libraries#hilt
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             AtWorkTerritoriesConfirmationScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel
             )
         }
@@ -201,13 +196,12 @@ private fun HomeNavigationHost(
                     it.destination.route, NavRoutes.Territory.arguments
                 )
             // https://developer.android.com/jetpack/compose/libraries#hilt
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
                 hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             TerritoryScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it)
             )
@@ -237,13 +231,12 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to TerritoryStreetScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.TerritoryStreet.arguments
                 )
-            val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
                 hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             TerritoryStreetScreen(
                 appState = appState,
-                sharedViewModel = sharedViewModel,
+                //sharedViewModel = sharedViewModel,
                 territoryViewModel = territoryViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )

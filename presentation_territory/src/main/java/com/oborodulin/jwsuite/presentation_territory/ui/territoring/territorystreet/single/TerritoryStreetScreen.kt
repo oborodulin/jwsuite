@@ -21,11 +21,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
@@ -38,7 +38,7 @@ private const val TAG = "Territoring.TerritoryStreetScreen"
 @Composable
 fun TerritoryStreetScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
     territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
@@ -81,7 +81,7 @@ fun TerritoryStreetScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TerritoryStreetView(
-                            uiModel = it, sharedViewModel = sharedViewModel,
+                            uiModel = it, sharedViewModel = appState.sharedViewModel.value,
                             territoryViewModel = territoryViewModel
                         )
                         Spacer(Modifier.height(8.dp))

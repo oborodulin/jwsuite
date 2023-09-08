@@ -16,14 +16,13 @@ import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import timber.log.Timber
 
 private const val TAG = "Congregating.GroupComboBox"
@@ -31,7 +30,7 @@ private const val TAG = "Congregating.GroupComboBox"
 @Composable
 fun GroupComboBox(
     modifier: Modifier = Modifier,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: GroupsListViewModelImpl = hiltViewModel(),
     singleViewModel: GroupViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
@@ -52,12 +51,12 @@ fun GroupComboBox(
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = GroupsListUiAction.Load(currentCongregation?.id),
+        loadListUiAction = GroupsListUiAction.Load(currentCongregation?.itemId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

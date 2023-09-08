@@ -31,12 +31,12 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import timber.log.Timber
 
 private const val TAG = "Congregating.GroupView"
@@ -44,7 +44,7 @@ private const val TAG = "Congregating.GroupView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GroupView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     viewModel: GroupViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("GroupView(...) called")
@@ -54,10 +54,7 @@ fun GroupView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")

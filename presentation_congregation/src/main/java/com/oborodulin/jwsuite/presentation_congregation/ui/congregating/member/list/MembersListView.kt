@@ -23,13 +23,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -40,7 +38,7 @@ private const val TAG = "Congregating.MembersListView"
 @Composable
 fun MembersListView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null
@@ -50,9 +48,10 @@ fun MembersListView(
         congregationInput,
         groupInput
     )
-    val currentCongregation = sharedViewModel.sharedFlow.collectAsStateWithLifecycle().value
+    val currentCongregation =
+        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
 
-    val congregationId = congregationInput?.congregationId ?: currentCongregation?.id
+    val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
 

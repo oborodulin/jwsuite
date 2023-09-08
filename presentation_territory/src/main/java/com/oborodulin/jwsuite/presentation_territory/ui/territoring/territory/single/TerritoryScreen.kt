@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.NextButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ private const val TAG = "Territoring.TerritoryScreen"
 @Composable
 fun TerritoryScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoryViewModel,
     territoryInput: TerritoryInput? = null
 ) {
@@ -106,7 +106,7 @@ fun TerritoryScreen(
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TerritoryView(sharedViewModel, viewModel = viewModel)
+                        TerritoryView(appState.sharedViewModel.value, viewModel = viewModel)
                         Spacer(Modifier.height(8.dp))
                         NextButtonComponent(enabled = areInputsValid, onClick = nextButtonOnClick)
                     }

@@ -14,11 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 import timber.log.Timber
@@ -28,7 +26,7 @@ private const val TAG = "Territoring.AtWorkTerritoriesConfirmationScreen"
 @Composable
 fun AtWorkTerritoriesConfirmationScreen(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("AtWorkTerritoriesConfirmationScreen(...) called")
@@ -56,7 +54,7 @@ fun AtWorkTerritoriesConfirmationScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AtWorkTerritoriesConfirmationView(
-                        sharedViewModel = sharedViewModel, viewModel = viewModel
+                        sharedViewModel = appState.sharedViewModel.value, viewModel = viewModel
                     )
                 }
             }

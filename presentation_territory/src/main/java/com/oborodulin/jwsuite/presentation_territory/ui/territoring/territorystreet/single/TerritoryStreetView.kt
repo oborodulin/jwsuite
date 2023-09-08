@@ -34,9 +34,9 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -51,7 +51,7 @@ private const val TAG = "Territoring.TerritoryStreetView"
 @Composable
 fun TerritoryStreetView(
     uiModel: TerritoryStreetUiModel,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryStreetViewModelImpl = hiltViewModel()
 ) {

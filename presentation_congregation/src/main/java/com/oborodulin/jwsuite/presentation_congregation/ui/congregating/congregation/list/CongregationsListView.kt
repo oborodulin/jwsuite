@@ -24,10 +24,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.presentation.AppState
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
@@ -39,7 +38,7 @@ private const val TAG = "Congregating.CongregationsListView"
 @Composable
 fun CongregationsListView(
     appState: AppState,
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
 ) {
@@ -72,8 +71,11 @@ fun CongregationsListView(
                     )
                 }
             ) { congregation ->
-                Timber.tag(TAG).d("CongregationsListView: sharedViewModel = %s", sharedViewModel)
-                sharedViewModel.submitData(congregation)
+                Timber.tag(TAG).d(
+                    "CongregationsListView: sharedViewModel = %s",
+                    appState.sharedViewModel.value
+                )
+                appState.sharedViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 with(membersListViewModel) {
                     submitAction(MembersListUiAction.LoadByCongregation(congregation.id))

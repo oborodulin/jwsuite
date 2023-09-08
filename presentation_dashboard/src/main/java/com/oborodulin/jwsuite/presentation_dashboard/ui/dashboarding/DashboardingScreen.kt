@@ -14,7 +14,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -25,13 +24,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.presentation.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -43,9 +40,9 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 
 @Composable
 fun DashboardingScreen(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
-    viewModel: DashboardingViewModelImpl = hiltViewModel(),
     appState: AppState,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+    viewModel: DashboardingViewModelImpl = hiltViewModel(),
     nestedScrollConnection: NestedScrollConnection,
     bottomBar: @Composable () -> Unit
 ) {
@@ -82,12 +79,13 @@ fun DashboardingScreen(
                         Column {
                             CommonScreen(state = state) { dashboardingUi ->
                                 dashboardingUi.favoriteCongregation?.let { favorite ->
-                                    sharedViewModel.submitData(favorite.toCongregationsListItem())
+                                    appState.sharedViewModel.value?.submitData(favorite.toCongregationsListItem())
                                     appState.actionBarSubtitle.value = favorite.congregationName
-                                    val currentCongregation by sharedViewModel.sharedFlow.collectAsStateWithLifecycle()
+                                    val currentCongregation =
+                                        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
                                     Timber.tag(TAG).d(
-                                        "DashboardingScreen: sharedViewModel = %s; currentCongregation = %s",
-                                        sharedViewModel, currentCongregation
+                                        "DashboardingScreen: appState.sharedViewModel.value = %s; currentCongregation = %s",
+                                        appState.sharedViewModel.value, currentCongregation
                                     )
                                 }
                                 CongregationSection(

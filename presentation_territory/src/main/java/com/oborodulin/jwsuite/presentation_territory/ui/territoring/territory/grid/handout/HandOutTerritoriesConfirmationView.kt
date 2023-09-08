@@ -41,11 +41,11 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
@@ -60,7 +60,7 @@ private const val TAG = "Territoring.HandOutTerritoriesConfirmationView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HandOutTerritoriesConfirmationView(
-    sharedViewModel: FavoriteCongregationViewModel<CongregationsListItem?>,
+    sharedViewModel: SharedViewModeled<ListItemModel?>?,
     paddingValues: PaddingValues? = null,
     viewModel: TerritoriesGridViewModel
 ) {
@@ -71,10 +71,7 @@ fun HandOutTerritoriesConfirmationView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("CollectAsStateWithLifecycle for all hand out territories fields")
