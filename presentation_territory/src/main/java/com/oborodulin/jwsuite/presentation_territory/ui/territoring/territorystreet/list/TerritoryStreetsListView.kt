@@ -53,7 +53,7 @@ fun TerritoryStreetsListView(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            TerritoryStreetsList(
+            TerritoryStreetsEditableList(
                 territoryStreets = it,
                 onEdit = { territoryStreet ->
                     viewModel.submitAction(
@@ -85,13 +85,13 @@ fun TerritoryStreetsListView(
 }
 
 @Composable
-fun TerritoryStreetsList(
+fun TerritoryStreetsEditableList(
     territoryStreets: List<TerritoryStreetsListItem>,
     onEdit: (TerritoryStreetsListItem) -> Unit,
     onDelete: (TerritoryStreetsListItem) -> Unit,
     onClick: (TerritoryStreetsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("TerritoryStreetsList(...) called")
+    Timber.tag(TAG).d("TerritoryStreetsEditableList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) }
     if (territoryStreets.isNotEmpty()) {
         LazyColumn(
@@ -132,13 +132,54 @@ fun TerritoryStreetsList(
     }
 }
 
+@Composable
+fun TerritoryStreetsProcessedList(
+    territoryStreets: List<TerritoryStreetsListItem>,
+    onEdit: (TerritoryStreetsListItem) -> Unit,
+    onDelete: (TerritoryStreetsListItem) -> Unit,
+    onClick: (TerritoryStreetsListItem) -> Unit
+) {
+    Timber.tag(TAG).d("TerritoryStreetsProcessedList(...) called")
+    var selectedIndex by remember { mutableStateOf(-1) }
+    if (territoryStreets.isNotEmpty()) {
+        LazyColumn(
+            state = rememberLazyListState(),
+            modifier = Modifier
+                .padding(8.dp)
+                .focusable(enabled = true)
+        ) {
+            items(territoryStreets.size) { index ->
+                territoryStreets[index].let { territoryStreet ->
+                    val isSelected = (selectedIndex == index)
+                    ListItemComponent(
+                        item = territoryStreet,
+                        itemActions = listOf(
+                            ComponentUiAction.EditListItem { onEdit(territoryStreet) },
+                            ComponentUiAction.DeleteListItem(
+                                stringResource(
+                                    R.string.dlg_confirm_del_territory_street,
+                                    territoryStreet.streetFullName
+                                )
+                            ) { onDelete(territoryStreet) }),
+                        selected = isSelected,
+                        background = if (isSelected) Color.LightGray else Color.Transparent,
+                        onClick = {
+                            if (selectedIndex != index) selectedIndex = index
+                            onClick(territoryStreet)
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewTerritoryStreetsList() {
     JWSuiteTheme {
         Surface {
-            TerritoryStreetsList(
+            TerritoryStreetsEditableList(
                 territoryStreets = TerritoryStreetsListViewModelImpl.previewList(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
