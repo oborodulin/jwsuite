@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +41,7 @@ fun TerritoryStreetScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
     territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
-    territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
+    territoryStreetViewModel: HouseViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput? = null
 ) {
     Timber.tag(TAG)
@@ -65,14 +65,14 @@ fun TerritoryStreetScreen(
                     }
                 }
                 // save
-                territoryStreetViewModel.submitAction(TerritoryStreetUiAction.Save)
+                territoryStreetViewModel.submitAction(HouseUiAction.Save)
             }
         }
     }
     LaunchedEffect(territoryStreetInput?.territoryStreetId) {
         Timber.tag(TAG).d("TerritoryStreetScreen: LaunchedEffect() BEFORE collect ui state flow")
         territoryStreetViewModel.submitAction(
-            TerritoryStreetUiAction.Load(
+            HouseUiAction.Load(
                 territoryStreetInput?.territoryId, territoryStreetInput?.territoryStreetId
             )
         )

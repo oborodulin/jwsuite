@@ -13,4 +13,7 @@ interface HousesRepository {
     fun delete(house: House): Flow<House>
     fun deleteById(houseId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    fun getNextHouseNum(streetId: UUID): Flow<Int>
+    fun clearTerritory(houseId: UUID): Flow<UUID>
 }

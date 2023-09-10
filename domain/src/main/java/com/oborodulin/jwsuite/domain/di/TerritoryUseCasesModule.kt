@@ -2,9 +2,16 @@ package com.oborodulin.jwsuite.domain.di
 
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
+import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -150,5 +157,42 @@ object TerritoryUseCasesModule {
     fun provideSaveTerritoryStreetUseCase(
         configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
     ): SaveTerritoryStreetUseCase = SaveTerritoryStreetUseCase(configuration, territoriesRepository)
+
+    // House:
+    @Singleton
+    @Provides
+    fun provideGetHouseUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): GetHouseUseCase = GetHouseUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetHousesUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): GetHousesUseCase = GetHousesUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextHouseNumUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): GetNextHouseNumUseCase = GetNextHouseNumUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteHouseUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): DeleteHouseUseCase = DeleteHouseUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteTerritoryHouseUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): DeleteTerritoryHouseUseCase = DeleteTerritoryHouseUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveHouseUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): SaveHouseUseCase = SaveHouseUseCase(configuration, housesRepository)
 
 }

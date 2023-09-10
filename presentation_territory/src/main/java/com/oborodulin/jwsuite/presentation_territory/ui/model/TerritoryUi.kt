@@ -18,5 +18,6 @@ data class TerritoryUi(
     val isInPerimeter: Boolean = false,
     val isProcessed: Boolean = false,
     val isActive: Boolean = true,
-    val territoryDesc: String? = null
+    val territoryDesc: String? = null,
+    val cardNum: String = ""
 ) : ModelUi()

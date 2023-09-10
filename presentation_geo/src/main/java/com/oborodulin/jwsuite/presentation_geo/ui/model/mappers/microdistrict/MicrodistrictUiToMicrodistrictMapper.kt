@@ -12,8 +12,7 @@ class MicrodistrictUiToMicrodistrictMapper(
     private val ctx: Context,
     private val localityUiMapper: LocalityUiToLocalityMapper,
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper
-) : Mapper<MicrodistrictUi, GeoMicrodistrict>,
-    NullableMapper<MicrodistrictUi, GeoMicrodistrict> {
+) : Mapper<MicrodistrictUi, GeoMicrodistrict>, NullableMapper<MicrodistrictUi, GeoMicrodistrict> {
     override fun map(input: MicrodistrictUi): GeoMicrodistrict {
         val locality = GeoMicrodistrict(
             ctx = ctx,

@@ -50,4 +50,8 @@ class LocalHouseDataSourceImpl @Inject constructor(
         houseDao.deleteAll()
     }
 
+    override suspend fun clearTerritoryById(houseId: UUID) = withContext(dispatcher) {
+        houseDao.clearTerritoryById(houseId)
+    }
+
 }

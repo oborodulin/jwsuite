@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
@@ -15,7 +16,7 @@ class TerritoryToTerritoryUiMapper(
     private val localityMapper: LocalityToLocalityUiMapper,
     private val localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
     private val microdistrictMapper: MicrodistrictToMicrodistrictUiMapper
-) : Mapper<Territory, TerritoryUi> {
+) : Mapper<Territory, TerritoryUi>, NullableMapper<Territory, TerritoryUi> {
     override fun map(input: Territory): TerritoryUi {
         val territoryUi = TerritoryUi(
             congregation = congregationMapper.map(input.congregation),
@@ -30,8 +31,11 @@ class TerritoryToTerritoryUiMapper(
             isProcessed = input.isProcessed,
             isActive = input.isActive,
             territoryDesc = input.territoryDesc,
+            cardNum = input.cardNum
         )
         territoryUi.id = input.id
         return territoryUi
     }
+
+    override fun nullableMap(input: Territory?) = input?.let { map(it) }
 }

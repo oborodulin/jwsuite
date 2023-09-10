@@ -24,12 +24,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.fab.FabComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
+import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListView
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +50,10 @@ fun TerritoryDetailsScreen(
     territoryInput: TerritoryInput
 ) {
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called: territoryInput = %s", territoryInput)
+    LaunchedEffect(territoryInput.territoryId) {
+        Timber.tag(TAG).d("TerritoryDetailsScreen: LaunchedEffect() BEFORE collect ui state flow")
+        territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
+    }
     var tabType by rememberSaveable { mutableStateOf(TerritoryDetailsTabType.STREETS.name) }
     val addActionOnClick: () -> Unit = {
         when (TerritoryDetailsTabType.valueOf(tabType)) {
@@ -99,50 +105,48 @@ fun TerritoryDetailsScreen(
     ) {}
     var tabs by remember { mutableStateOf(emptyList<TabRowItem>()) }
 
-    val congregation by territoryViewModel.congregation.collectAsStateWithLifecycle()
-    val category by territoryViewModel.category.collectAsStateWithLifecycle()
-    val territoryNum by territoryViewModel.territoryNum.collectAsStateWithLifecycle()
-    val isBusiness by territoryViewModel.isBusiness.collectAsStateWithLifecycle()
-    appState.actionBarSubtitle.value =
-        stringResource(
-            com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details,
-            "${congregation.item?.territoryMark}${category.item?.territoryCategoryMark}${territoryNum.value}"
-        )
-    tabs = when (category.item?.territoryCategoryCode) {
-        TerritoryCategoryType.HOUSES -> listOf(tabStreets, tabHouses, tabEntraces)
-        TerritoryCategoryType.FLOORS -> listOf(tabFloors)
-        TerritoryCategoryType.ROOMS -> listOf(tabRooms)
-        else -> emptyList()
-    }
-    JWSuiteTheme { //(darkTheme = true)
-        ScaffoldComponent(
-            appState = appState,
-            topBarNavigationIcon = {
-                IconButton(onClick = { appState.commonNavigateUp() }) {
-                    Icon(Icons.Outlined.ArrowBack, null)
-                }
-            },
-            topBarActions = {
-                IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                    Icon(Icons.Outlined.Done, null)
-                }
-            },
-            floatingActionButton = {
-                FabComponent(
-                    enabled = true,
-                    imageVector = Icons.Outlined.Add,
-                    textResId = com.oborodulin.home.common.R.string.btn_add_lbl,
-                    onClick = addActionOnClick
-                )
+    territoryViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+        CommonScreen(state = state) { territory ->
+            tabs = when (territory.territoryCategory.territoryCategoryCode) {
+                TerritoryCategoryType.HOUSES -> listOf(tabStreets, tabHouses, tabEntraces)
+                TerritoryCategoryType.FLOORS -> listOf(tabFloors)
+                TerritoryCategoryType.ROOMS -> listOf(tabRooms)
+                else -> emptyList()
             }
-        ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)) {
-                CustomScrollableTabRow(tabs)
+            appState.actionBarSubtitle.value = stringResource(
+                com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details, territory.cardNum
+            )
+            JWSuiteTheme { //(darkTheme = true)
+                ScaffoldComponent(
+                    appState = appState,
+                    topBarNavigationIcon = {
+                        IconButton(onClick = { appState.commonNavigateUp() }) {
+                            Icon(Icons.Outlined.ArrowBack, null)
+                        }
+                    },
+                    topBarActions = {
+                        IconButton(onClick = { appState.backToBottomBarScreen() }) {
+                            Icon(Icons.Outlined.Done, null)
+                        }
+                    },
+                    floatingActionButton = {
+                        FabComponent(
+                            enabled = true,
+                            imageVector = Icons.Outlined.Add,
+                            textResId = com.oborodulin.home.common.R.string.btn_add_lbl,
+                            onClick = addActionOnClick
+                        )
+                    }
+                ) { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
+                        CustomScrollableTabRow(tabs)
+                    }
+                }
             }
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryDetailsScreen: LaunchedEffect() AFTER collect ui state flow")
+        Timber.tag(TAG).d("TerritoryDetailsScreen: LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

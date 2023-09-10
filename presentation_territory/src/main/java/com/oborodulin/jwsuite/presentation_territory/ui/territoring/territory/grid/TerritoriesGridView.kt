@@ -151,7 +151,7 @@ fun TerritoriesGridView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoriesGridView: LaunchedEffect() AFTER collect ui state flow")
+        Timber.tag(TAG).d("TerritoriesGridView: LaunchedEffect() AFTER collect single Event Flow")
         territoriesGridViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

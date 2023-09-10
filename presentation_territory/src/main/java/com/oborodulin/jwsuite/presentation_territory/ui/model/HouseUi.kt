@@ -2,16 +2,17 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
-import java.util.UUID
 
 data class HouseUi(
     val street: StreetUi = StreetUi(),
-    val localityDistrictId: UUID? = null,
-    val microdistrictId: UUID? = null,
-    val territoryId: UUID? = null,
+    val localityDistrict: LocalityDistrictUi? = null,
+    val microdistrict: MicrodistrictUi? = null,
+    val territory: TerritoryUi? = null,
     val zipCode: String? = null,
-    val houseNum: Int,
+    val houseNum: Int? = null,
     val houseLetter: String? = null,
     val buildingNum: Int? = null,
     val houseFullNum: String,
@@ -20,16 +21,20 @@ data class HouseUi(
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,
     val isResidential: Boolean = true,
-    val calculatedRooms: Int? = null,
+    val houseEntrancesQty: Int? = null,
+    val floorsByEntrance: Int? = null,
+    val roomsByHouseFloor: Int? = null,
+    val estimatedRooms: Int? = null,
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
     val houseDesc: String? = null,
+    val calculatedRooms: Int? = null
 ) : ModelUi()
 
 fun HouseUi.toHousesListItem() = HousesListItem(
     id = this.id!!,
     zipCode = this.zipCode,
-    houseFullNum = this.houseFullNum,
+    houseInfo = this.houseFullNum,
     buildingType = this.buildingType,
     isBusiness = this.isBusiness,
     isSecurity = this.isSecurity,

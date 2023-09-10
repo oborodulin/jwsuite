@@ -18,4 +18,6 @@ interface LocalHouseDataSource {
     suspend fun deleteHouseById(houseId: UUID)
     suspend fun deleteHouses(houses: List<HouseEntity>)
     suspend fun deleteAllHouses()
+
+    suspend fun clearTerritoryById(houseId: UUID)
 }

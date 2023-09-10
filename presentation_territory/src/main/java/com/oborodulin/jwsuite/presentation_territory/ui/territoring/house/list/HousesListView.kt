@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
@@ -38,7 +38,7 @@ private const val TAG = "Territoring.TerritoryStreetsListView"
 
 @Composable
 fun TerritoryStreetsListView(
-    viewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
+    viewModel: HousesListViewModelImpl = hiltViewModel(),
     navController: NavController,
     territoryInput: TerritoryInput
 ) {
@@ -48,7 +48,7 @@ fun TerritoryStreetsListView(
     LaunchedEffect(territoryInput.territoryId) {
         Timber.tag(TAG)
             .d("TerritoryStreetsListView: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(TerritoryStreetsListUiAction.Load(territoryInput.territoryId))
+        viewModel.submitAction(HousesListUiAction.Load(territoryInput.territoryId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -57,14 +57,14 @@ fun TerritoryStreetsListView(
                 territoryStreets = it,
                 onEdit = { territoryStreet ->
                     viewModel.submitAction(
-                        TerritoryStreetsListUiAction.EditTerritoryStreet(
+                        HousesListUiAction.EditTerritoryHouse(
                             territoryInput.territoryId, territoryStreet.id
                         )
                     )
                 },
                 onDelete = { territoryStreet ->
                     viewModel.submitAction(
-                        TerritoryStreetsListUiAction.DeleteTerritoryStreet(territoryStreet.id)
+                        HousesListUiAction.DeleteTerritoryHouse(territoryStreet.id)
                     )
                 }
             ) {}
@@ -76,7 +76,7 @@ fun TerritoryStreetsListView(
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is TerritoryStreetsListUiSingleEvent.OpenTerritoryStreetScreen -> {
+                is HousesListUiSingleEvent.OpenTerritoryStreetScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -180,7 +180,7 @@ fun PreviewTerritoryStreetsList() {
     JWSuiteTheme {
         Surface {
             TerritoryStreetsEditableList(
-                territoryStreets = TerritoryStreetsListViewModelImpl.previewList(LocalContext.current),
+                territoryStreets = HousesListViewModelImpl.previewList(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
                 onClick = {}

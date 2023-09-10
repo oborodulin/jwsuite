@@ -85,4 +85,8 @@ interface HouseDao {
 
     @Query("DELETE FROM ${HouseEntity.TABLE_NAME}")
     suspend fun deleteAll()
+
+    // API:
+    @Query("UPDATE ${HouseEntity.TABLE_NAME} SET hTerritoriesId = NULL WHERE houseId = :houseId")
+    suspend fun clearTerritoryById(houseId: UUID)
 }

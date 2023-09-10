@@ -2,6 +2,13 @@ package com.oborodulin.jwsuite.presentation_territory.di
 
 import android.content.Context
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
+import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -33,6 +40,8 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.Mi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToStreetUiMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetUiToStreetMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetsListToStreetsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HouseConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryCategoriesListConverter
@@ -54,6 +63,10 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.T
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHouseUiMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHousesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HousesListToHousesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
@@ -201,6 +214,45 @@ object TerritoringModule {
     fun provideTerritoriesListToTerritoriesListItemMapper(mapper: TerritoryToTerritoriesListItemMapper): TerritoriesListToTerritoriesListItemMapper =
         TerritoriesListToTerritoriesListItemMapper(mapper = mapper)
 
+    // House:
+    @Singleton
+    @Provides
+    fun provideHouseToHouseUiMapper(
+        streetMapper: StreetToStreetUiMapper,
+        localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
+        microistrictMapper: MicrodistrictToMicrodistrictUiMapper,
+        territoryMapper: TerritoryToTerritoryUiMapper
+    ): HouseToHouseUiMapper = HouseToHouseUiMapper(
+        streetMapper = streetMapper,
+        localityDistrictMapper = localityDistrictMapper,
+        microistrictMapper = microistrictMapper,
+        territoryMapper = territoryMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideHouseUiToHouseMapper(
+        streetUiMapper: StreetUiToStreetMapper,
+        localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
+        microistrictUiMapper: MicrodistrictUiToMicrodistrictMapper,
+        territoryUiMapper: TerritoryUiToTerritoryMapper
+    ): HouseUiToHouseMapper = HouseUiToHouseMapper(
+        streetUiMapper = streetUiMapper,
+        localityDistrictUiMapper = localityDistrictUiMapper,
+        microistrictUiMapper = microistrictUiMapper,
+        territoryUiMapper = territoryUiMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideHouseToHousesListItemMapper(): HouseToHousesListItemMapper =
+        HouseToHousesListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideHousesListToHousesListItemMapper(mapper: HouseToHousesListItemMapper): HousesListToHousesListItemMapper =
+        HousesListToHousesListItemMapper(mapper = mapper)
+
     // CONVERTERS:
     // Territory Category:
     @Singleton
@@ -251,6 +303,17 @@ object TerritoringModule {
     @Provides
     fun provideTerritoryStreetsListConverter(mapper: TerritoryStreetsListToTerritoryStreetsListItemMapper): TerritoryStreetsListConverter =
         TerritoryStreetsListConverter(mapper = mapper)
+
+    // House:
+    @Singleton
+    @Provides
+    fun provideHouseConverter(mapper: HouseToHouseUiMapper): HouseConverter =
+        HouseConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideHousesListConverter(mapper: HousesListToHousesListItemMapper): HousesListConverter =
+        HousesListConverter(mapper = mapper)
 
     // USE CASES:
     // Territory Category:
@@ -305,5 +368,24 @@ object TerritoringModule {
     fun provideTerritoringUseCases(
         getTerritoryLocationsUseCase: GetTerritoryLocationsUseCase
     ): TerritoringUseCases = TerritoringUseCases(getTerritoryLocationsUseCase)
+
+    // House:
+    @Singleton
+    @Provides
+    fun provideHouseUseCases(
+        getHousesUseCase: GetHousesUseCase,
+        getHouseUseCase: GetHouseUseCase,
+        getNextHouseNumUseCase: GetNextHouseNumUseCase,
+        saveHouseUseCase: SaveHouseUseCase,
+        deleteHouseUseCase: DeleteHouseUseCase,
+        deleteTerritoryHouseUseCase: DeleteTerritoryHouseUseCase
+    ): HouseUseCases = HouseUseCases(
+        getHousesUseCase,
+        getHouseUseCase,
+        getNextHouseNumUseCase,
+        saveHouseUseCase,
+        deleteHouseUseCase,
+        deleteTerritoryHouseUseCase
+    )
 
 }

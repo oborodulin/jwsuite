@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationUiToCongregationMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
@@ -17,7 +18,7 @@ class TerritoryUiToTerritoryMapper(
     private val localityUiMapper: LocalityUiToLocalityMapper,
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
     private val microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper
-) : Mapper<TerritoryUi, Territory> {
+) : Mapper<TerritoryUi, Territory>, NullableMapper<TerritoryUi, Territory> {
     override fun map(input: TerritoryUi): Territory {
         val territory = Territory(
             ctx = ctx,
@@ -37,4 +38,6 @@ class TerritoryUiToTerritoryMapper(
         territory.id = input.id
         return territory
     }
+
+    override fun nullableMap(input: TerritoryUi?) = input?.let { map(it) }
 }
