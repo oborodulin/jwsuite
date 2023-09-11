@@ -8,7 +8,7 @@ import java.util.UUID
 data class HousesListItem(
     val id: UUID,
     val zipCode: String? = null,
-    val houseInfo: String,
+    val houseFullNum: String,
     val buildingType: BuildingType = BuildingType.HOUSE,
     val isBusiness: Boolean = false,
     val isSecurity: Boolean = false,
@@ -16,14 +16,19 @@ data class HousesListItem(
     val isResidential: Boolean = true,
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
-    val houseDesc: String? = null
+    val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = houseInfo,
-    supportingText = (if (zipCode != null) "$zipCode: " else "").plus(houseDesc.orEmpty())
+    headline = houseFullNum,
+    supportingText = (if (zipCode != null) "$zipCode: " else "").plus(
+        if (info.isNotEmpty()) info.joinToString(", ") else ""
+    )
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
-        val matchingCombinations = listOf(houseInfo)
+        val matchingCombinations = listOf(
+            "$houseFullNum${info.joinToString("")}",
+            "$houseFullNum ${info.joinToString(" ")}"
+        )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
 }

@@ -67,6 +67,7 @@
     <string name="locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
     <string name="locality_district_empty_error">Укажите, пожалуйста, район населённого пункта!</string>
     <string name="street_empty_error">Укажите, пожалуйста, улицу!</string>
+    <string name="house_empty_error">Укажите, пожалуйста, дом!</string>
     <!--формы области-->
     <string name="region_code_empty_error">Укажите, пожалуйста, код области!</string>
     <string name="region_name_empty_error">Укажите, пожалуйста, наименование области!</string>

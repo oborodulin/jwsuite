@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -53,7 +53,7 @@ fun TerritoryStreetView(
     uiModel: TerritoryStreetUiModel,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
-    viewModel: HouseViewModelImpl = hiltViewModel()
+    viewModel: TerritoryHouseViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
     val context = LocalContext.current
@@ -67,14 +67,14 @@ fun TerritoryStreetView(
 
     Timber.tag(TAG).d("Territory Street: CollectAsStateWithLifecycle for all fields")
     val territory by viewModel.territory.collectAsStateWithLifecycle()
-    val street by viewModel.street.collectAsStateWithLifecycle()
+    val street by viewModel.house.collectAsStateWithLifecycle()
     val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
     val isEvenSide by viewModel.isEvenSide.collectAsStateWithLifecycle()
     val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
-    enumValues<HouseFields>().forEach {
+    enumValues<TerritoryHouseFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
@@ -101,10 +101,10 @@ fun TerritoryStreetView(
     ) {
         TerritoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_TERRITORY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_TERRITORY,
+                        focusedField = TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -116,10 +116,10 @@ fun TerritoryStreetView(
         )
         StreetComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_STREET.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_HOUSE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_STREET,
+                        focusedField = TerritoryHouseFields.TERRITORY_HOUSE_HOUSE,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -130,15 +130,15 @@ fun TerritoryStreetView(
                 excludes = uiModel.streets.map { it.id }
             ),
             inputWrapper = street,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Street(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.House(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         RadioBooleanComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_PRIVATE_SECTOR.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_IS_PRIVATE_SECTOR,
+                        focusedField = TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -146,29 +146,29 @@ fun TerritoryStreetView(
             painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_private_sector_36,
             inputWrapper = isPrivateSector,
             onValueChange = {
-                viewModel.onTextFieldEntered(HouseInputEvent.IsPrivateSector(it))
+                viewModel.onTextFieldEntered(TerritoryHouseInputEvent.IsPrivateSector(it))
             }
         )
         RadioBooleanComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_BUSINESS.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_IS_BUSINESS,
+                        focusedField = TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE,
                         isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.territory_street_is_even_side_hint,
             painterResId = R.drawable.ic_street_side_36,
             inputWrapper = isEvenSide,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsEvenSide(it)) }
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.IsEvenSide(it)) }
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_ZIP_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_ZIP_CODE,
+                        focusedField = TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -179,7 +179,7 @@ fun TerritoryStreetView(
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = estimatedHouses,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.EstHouses(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.EstHouses(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

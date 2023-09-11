@@ -15,7 +15,6 @@ data class HouseUi(
     val houseNum: Int? = null,
     val houseLetter: String? = null,
     val buildingNum: Int? = null,
-    val houseFullNum: String,
     val buildingType: BuildingType = BuildingType.HOUSE,
     val isBusiness: Boolean = false,
     val isSecurity: Boolean = false,
@@ -28,20 +27,19 @@ data class HouseUi(
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
     val houseDesc: String? = null,
+    val houseFullNum: String,
     val calculatedRooms: Int? = null
 ) : ModelUi()
 
 fun HouseUi.toHousesListItem() = HousesListItem(
     id = this.id!!,
     zipCode = this.zipCode,
-    houseInfo = this.houseFullNum,
+    houseFullNum = this.houseFullNum,
     buildingType = this.buildingType,
     isBusiness = this.isBusiness,
     isSecurity = this.isSecurity,
     isIntercom = this.isIntercom,
     isResidential = this.isResidential,
-    calculatedRooms = this.calculatedRooms,
     isForeignLanguage = this.isForeignLanguage,
-    isPrivateSector = this.isPrivateSector,
-    houseDesc = this.houseDesc
+    isPrivateSector = this.isPrivateSector
 )

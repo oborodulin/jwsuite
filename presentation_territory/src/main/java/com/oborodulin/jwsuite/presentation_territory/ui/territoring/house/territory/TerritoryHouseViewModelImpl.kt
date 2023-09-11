@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
@@ -36,44 +36,28 @@ private const val TAG = "Territoring.TerritoryStreetViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class HouseViewModelImpl @Inject constructor(
+class TerritoryHouseViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: TerritoryUseCases,
     private val converter: TerritoryStreetConverter,
     private val territoryStreetUiMapper: TerritoryStreetUiToTerritoryStreetMapper,
     private val territoryStreetMapper: TerritoryStreetToTerritoryStreetsListItemMapper
-) : HouseViewModel,
-    DialogSingleViewModel<TerritoryStreetUiModel, UiState<TerritoryStreetUiModel>, HouseUiAction, UiSingleEvent, HouseFields, InputWrapper>(
-        state, HouseFields.HOUSE_ID.name,
-        HouseFields.HOUSE_TERRITORY
+) : TerritoryHouseViewModel,
+    DialogSingleViewModel<TerritoryStreetUiModel, UiState<TerritoryStreetUiModel>, TerritoryHouseUiAction, UiSingleEvent, TerritoryHouseFields, InputWrapper>(
+        state, initFocusedTextField = TerritoryHouseFields.TERRITORY_HOUSE_HOUSE
     ) {
-    val localityId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(HouseFields.HOUSE_IS_BUSINESS.name, InputWrapper())
-    }
-
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            HouseFields.HOUSE_TERRITORY.name, InputListItemWrapper()
+            TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY.name, InputListItemWrapper()
         )
     }
-    override val street: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val house: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            HouseFields.HOUSE_STREET.name, InputListItemWrapper()
+            TerritoryHouseFields.TERRITORY_HOUSE_HOUSE.name, InputListItemWrapper()
         )
-    }
-    override val isPrivateSector: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            HouseFields.HOUSE_IS_PRIVATE_SECTOR.name, InputWrapper()
-        )
-    }
-    override val isEvenSide: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(HouseFields.HOUSE_IS_BUSINESS.name, InputWrapper())
-    }
-    override val estimatedHouses: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(HouseFields.HOUSE_ZIP_CODE.name, InputWrapper())
     }
 
-    override val areInputsValid = flow { emit(street.value.errorId == null) }.stateIn(
+    override val areInputsValid = flow { emit(house.value.errorId == null) }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         false
@@ -81,10 +65,10 @@ class HouseViewModelImpl @Inject constructor(
 
     override fun initState(): UiState<TerritoryStreetUiModel> = UiState.Loading
 
-    override suspend fun handleAction(action: HouseUiAction): Job {
+    override suspend fun handleAction(action: TerritoryHouseUiAction): Job {
         Timber.tag(TAG).d("handleAction(TerritoryStreetUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is HouseUiAction.Load -> when (action.territoryStreetId) {
+            is TerritoryHouseUiAction.Load -> when (action.territoryStreetId) {
                 null -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_street_new_subheader)
                     loadTerritoryStreetUiModel(action.territoryId!!)
@@ -96,7 +80,7 @@ class HouseViewModelImpl @Inject constructor(
                 }
             }
 
-            is HouseUiAction.Save -> saveTerritoryStreet()
+            is TerritoryHouseUiAction.Save -> saveTerritoryStreet()
         }
         return job
     }
@@ -122,7 +106,7 @@ class HouseViewModelImpl @Inject constructor(
 
     private fun saveTerritoryStreet(): Job {
         val streetUi = StreetUi()
-        streetUi.id = street.value.item?.itemId
+        streetUi.id = house.value.item?.itemId
 
         val territoryStreetUi = TerritoryStreetUi(
             territoryId = territory.value.item?.itemId!!,
@@ -152,7 +136,7 @@ class HouseViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun stateInputFields() = enumValues<HouseFields>().map { it.name }
+    override fun stateInputFields() = enumValues<TerritoryHouseFields>().map { it.name }
 
     override fun initFieldStatesByUiModel(uiModel: TerritoryStreetUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
@@ -163,33 +147,33 @@ class HouseViewModelImpl @Inject constructor(
             )
         uiModel.id?.let {
             initStateValue(
-                HouseFields.HOUSE_ID, id, it.toString()
+                TerritoryHouseFields.TERRITORY_STREET_ID, id, it.toString()
             )
         }
         initStateValue(
-            HouseFields.HOUSE_TERRITORY, territory,
+            TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY, territory,
             ListItemModel(
                 uiModel.territory.id,
                 uiModel.territory.territoryNum.toString()
             )
         )
         initStateValue(
-            HouseFields.HOUSE_STREET, street,
+            TerritoryHouseFields.TERRITORY_HOUSE_HOUSE, house,
             ListItemModel(
                 uiModel.territoryStreet.street.id,
                 uiModel.territoryStreet.street.streetName
             )
         )
         initStateValue(
-            HouseFields.HOUSE_IS_PRIVATE_SECTOR, isPrivateSector,
+            TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR, isPrivateSector,
             uiModel.territoryStreet.isPrivateSector.toString()
         )
         initStateValue(
-            HouseFields.HOUSE_IS_BUSINESS, isEvenSide,
+            TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide,
             uiModel.territoryStreet.isEvenSide.toString()
         )
         initStateValue(
-            HouseFields.HOUSE_ZIP_CODE, estimatedHouses,
+            TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
             uiModel.territoryStreet.estimatedHouses.toString()
         )
         return null
@@ -200,33 +184,33 @@ class HouseViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is HouseInputEvent.Street ->
-                        when (HouseInputValidator.Street.errorIdOrNull(event.input.headline)) {
+                    is TerritoryHouseInputEvent.House ->
+                        when (TerritoryHouseInputValidator.House.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                HouseFields.HOUSE_STREET, street, event.input,
+                                TerritoryHouseFields.TERRITORY_HOUSE_HOUSE, house, event.input,
                                 true
                             )
 
                             else -> setStateValue(
-                                HouseFields.HOUSE_STREET, street, event.input
+                                TerritoryHouseFields.TERRITORY_HOUSE_HOUSE, house, event.input
                             )
                         }
 
-                    is HouseInputEvent.IsPrivateSector ->
+                    is TerritoryHouseInputEvent.IsPrivateSector ->
                         setStateValue(
-                            HouseFields.HOUSE_IS_PRIVATE_SECTOR,
+                            TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
                             isPrivateSector, event.input.toString(), true
                         )
 
-                    is HouseInputEvent.IsEvenSide ->
+                    is TerritoryHouseInputEvent.IsEvenSide ->
                         setStateValue(
-                            HouseFields.HOUSE_IS_BUSINESS, isEvenSide,
+                            TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide,
                             event.input.toString(), true
                         )
 
-                    is HouseInputEvent.EstHouses ->
+                    is TerritoryHouseInputEvent.EstHouses ->
                         setStateValue(
-                            HouseFields.HOUSE_ZIP_CODE, estimatedHouses,
+                            TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
                             event.input.toString(), true
                         )
                 }
@@ -234,26 +218,26 @@ class HouseViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is HouseInputEvent.Street ->
+                    is TerritoryHouseInputEvent.House ->
                         setStateValue(
-                            HouseFields.HOUSE_STREET, street,
-                            HouseInputValidator.Street.errorIdOrNull(event.input.headline)
+                            TerritoryHouseFields.TERRITORY_HOUSE_HOUSE, house,
+                            TerritoryHouseInputValidator.House.errorIdOrNull(event.input.headline)
                         )
 
-                    is HouseInputEvent.IsPrivateSector ->
+                    is TerritoryHouseInputEvent.IsPrivateSector ->
                         setStateValue(
-                            HouseFields.HOUSE_IS_PRIVATE_SECTOR,
+                            TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
                             isPrivateSector, null
                         )
 
-                    is HouseInputEvent.IsEvenSide ->
+                    is TerritoryHouseInputEvent.IsEvenSide ->
                         setStateValue(
-                            HouseFields.HOUSE_IS_BUSINESS, isEvenSide, null
+                            TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide, null
                         )
 
-                    is HouseInputEvent.EstHouses ->
+                    is TerritoryHouseInputEvent.EstHouses ->
                         setStateValue(
-                            HouseFields.HOUSE_ZIP_CODE, estimatedHouses, null
+                            TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses, null
                         )
 
                 }
@@ -264,10 +248,10 @@ class HouseViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        HouseInputValidator.Street.errorIdOrNull(street.value.item?.headline)?.let {
+        TerritoryHouseInputValidator.House.errorIdOrNull(house.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = HouseFields.HOUSE_STREET.name, errorId = it
+                    fieldName = TerritoryHouseFields.TERRITORY_HOUSE_HOUSE.name, errorId = it
                 )
             )
         }
@@ -278,8 +262,8 @@ class HouseViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (HouseFields.valueOf(error.fieldName)) {
-                HouseFields.HOUSE_STREET -> street.value.copy(
+            state[error.fieldName] = when (TerritoryHouseFields.valueOf(error.fieldName)) {
+                TerritoryHouseFields.TERRITORY_HOUSE_HOUSE -> house.value.copy(
                     errorId = error.errorId
                 )
 
@@ -290,7 +274,7 @@ class HouseViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : HouseViewModel {
+            object : TerritoryHouseViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
@@ -306,7 +290,7 @@ class HouseViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val street =
+                override val house =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val isEvenSide = MutableStateFlow(InputWrapper())
@@ -315,10 +299,10 @@ class HouseViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun submitAction(action: HouseUiAction): Job? = null
+                override fun submitAction(action: TerritoryHouseUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
-                    focusedField: HouseFields, isFocused: Boolean
+                    focusedField: TerritoryHouseFields, isFocused: Boolean
                 ) {
                 }
 

@@ -7,11 +7,11 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteHouseUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.street.GetHousesUseCase
-import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
+import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
@@ -33,7 +33,7 @@ private const val TAG = "Territoring.HousesListViewModelImpl"
 
 @HiltViewModel
 class HousesListViewModelImpl @Inject constructor(
-    private val useCases: TerritoryUseCases,
+    private val useCases: HouseUseCases,
     private val converter: HousesListConverter
 ) : HousesListViewModel,
     MviViewModel<List<HousesListItem>, UiState<List<HousesListItem>>, HousesListUiAction, UiSingleEvent>() {
@@ -44,32 +44,36 @@ class HousesListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(HousesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is HousesListUiAction.Load -> loadHouses(action.territoryId)
+            is HousesListUiAction.Load -> loadHouses(action.streetId, action.territoryId)
             is HousesListUiAction.EditHouse -> {
                 submitSingleEvent(
                     HousesListUiSingleEvent.OpenHouseScreen(
-                        NavRoutes.House.routeForHouse(
-                            NavigationInput.HouseInput(
-                                action.territoryId, action.territoryStreetId
-                            )
+                        NavRoutes.House.routeForHouse(NavigationInput.HouseInput(action.houseId))
+                    )
+                )
+            }
+
+            is HousesListUiAction.DeleteHouse -> deleteHouse(action.houseId)
+            is HousesListUiAction.EditTerritoryHouse -> {
+                submitSingleEvent(
+                    HousesListUiSingleEvent.OpenTerritoryHouseScreen(
+                        NavRoutes.TerritoryHouse.routeForTerritoryHouse(
+                            NavigationInput.TerritoryHouseInput(action.territoryId, action.houseId)
                         )
                     )
                 )
             }
 
-            is HousesListUiAction.DeleteHouse -> deleteHouse(
-                action.territoryStreetId
-            )
+            is HousesListUiAction.DeleteTerritoryHouse -> deleteTerritoryHouse(action.houseId)
         }
         return job
     }
 
-    private fun loadHouses(territoryId: UUID): Job {
-        Timber.tag(TAG).d("loadHouses() called: territoryId = %s", territoryId)
+    private fun loadHouses(streetId: UUID? = null, territoryId: UUID? = null): Job {
+        Timber.tag(TAG)
+            .d("loadHouses(...) called: streetId = %s; territoryId = %s", streetId, territoryId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getHousesUseCase.execute(
-                GetHousesUseCase.Request(territoryId)
-            ).map {
+            useCases.getHousesUseCase.execute(GetHousesUseCase.Request(streetId, territoryId)).map {
                 converter.convert(it)
             }.collect {
                 submitState(it)
@@ -78,13 +82,21 @@ class HousesListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deleteHouse(territoryStreetId: UUID): Job {
+    private fun deleteHouse(houseId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteHouse() called: territoryStreetId = %s", territoryStreetId)
+            .d("deleteHouse(...) called: houseId = %s", houseId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteHouseUseCase.execute(
-                DeleteHouseUseCase.Request(territoryStreetId)
-            ).collect {}
+            useCases.deleteHouseUseCase.execute(DeleteHouseUseCase.Request(houseId)).collect {}
+        }
+        return job
+    }
+
+    private fun deleteTerritoryHouse(houseId: UUID): Job {
+        Timber.tag(TAG)
+            .d("deleteTerritoryHouse(...) called: houseId = %s", houseId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.deleteTerritoryHouseUseCase.execute(DeleteTerritoryHouseUseCase.Request(houseId))
+                .collect {}
         }
         return job
     }
@@ -110,26 +122,28 @@ class HousesListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             HousesListItem(
                 id = UUID.randomUUID(),
-                streetId = UUID.randomUUID(),
-                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
-                    ctx.resources.getString(R.string.def_baratynskogo_name)
-                }",
-                info = listOfNotNull(
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.private_sector_expr),
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.even_expr)
-                )
+                zipCode = "830004",
+                houseFullNum = "1Б",
+                buildingType = BuildingType.HOSTEL,
+                isBusiness = true,
+                isSecurity = true,
+                isIntercom = true,
+                isResidential = true,
+                isForeignLanguage = true,
+                isPrivateSector = true,
+                info = listOf("общежитие, 76 кв., маг. \"Базилик\"")
             ),
             HousesListItem(
                 id = UUID.randomUUID(),
-                streetId = UUID.randomUUID(),
-                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
-                    ctx.resources.getString(R.string.def_patorgynskogo_name)
-                }",
-                info = listOfNotNull(
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.private_sector_expr),
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.even_expr),
-                    "38 ${ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.house_expr)}"
-                )
+                houseFullNum = "145",
+                buildingType = BuildingType.HOUSE,
+                isBusiness = false,
+                isSecurity = true,
+                isIntercom = true,
+                isResidential = true,
+                isForeignLanguage = true,
+                isPrivateSector = false,
+                info = listOf("96 кв., маг. \"Базилик\"")
             )
         )
     }

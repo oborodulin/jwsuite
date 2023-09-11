@@ -87,6 +87,9 @@ interface HouseDao {
     suspend fun deleteAll()
 
     // API:
+    @Query("SELECT ifnull(MAX(houseNum), 0) + 1 FROM ${HouseEntity.TABLE_NAME} WHERE hStreetsId = :streetId")
+    fun getNextHouseNum(streetId: UUID): Int
+
     @Query("UPDATE ${HouseEntity.TABLE_NAME} SET hTerritoriesId = NULL WHERE houseId = :houseId")
     suspend fun clearTerritoryById(houseId: UUID)
 }

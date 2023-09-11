@@ -114,6 +114,7 @@
     <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
     <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
     <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
+    <string name="dlg_confirm_del_territory_house">Удалить дом участка %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->

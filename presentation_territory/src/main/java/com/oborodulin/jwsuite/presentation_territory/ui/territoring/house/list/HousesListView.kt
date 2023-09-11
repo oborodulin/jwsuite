@@ -27,56 +27,58 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Territoring.TerritoryStreetsListView"
+private const val TAG = "Territoring.HousesListView"
 
 @Composable
-fun TerritoryStreetsListView(
+fun HousesListView(
     viewModel: HousesListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    territoryInput: TerritoryInput
+    streetInput: StreetInput? = null,
+    territoryInput: TerritoryInput? = null
 ) {
     Timber.tag(TAG).d(
-        "TerritoryStreetsListView(...) called: territoryInput = %s", territoryInput
+        "HousesListView(...) called: territoryInput = %s", territoryInput
     )
-    LaunchedEffect(territoryInput.territoryId) {
+    LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(HousesListUiAction.Load(territoryInput.territoryId))
+            .d("HousesListView: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(
+            HousesListUiAction.Load(streetInput?.streetId, territoryInput?.territoryId)
+        )
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            TerritoryStreetsEditableList(
-                territoryStreets = it,
-                onEdit = { territoryStreet ->
-                    viewModel.submitAction(
-                        HousesListUiAction.EditTerritoryHouse(
-                            territoryInput.territoryId, territoryStreet.id
-                        )
-                    )
+            HousesEditableList(
+                houses = it,
+                onEdit = { house ->
+                    viewModel.submitAction(HousesListUiAction.EditHouse(house.id))
                 },
-                onDelete = { territoryStreet ->
-                    viewModel.submitAction(
-                        HousesListUiAction.DeleteTerritoryHouse(territoryStreet.id)
-                    )
+                onDelete = { house ->
+                    viewModel.submitAction(HousesListUiAction.DeleteHouse(house.id))
                 }
             ) {}
         }
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView: LaunchedEffect() AFTER collect single Event Flow")
+            .d("HousesListView: LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is HousesListUiSingleEvent.OpenTerritoryStreetScreen -> {
+                is HousesListUiSingleEvent.OpenHouseScreen -> {
+                    navController.navigate(it.navRoute)
+                }
+
+                is HousesListUiSingleEvent.OpenTerritoryHouseScreen -> {
                     navController.navigate(it.navRoute)
                 }
             }
@@ -85,39 +87,36 @@ fun TerritoryStreetsListView(
 }
 
 @Composable
-fun TerritoryStreetsEditableList(
-    territoryStreets: List<TerritoryStreetsListItem>,
-    onEdit: (TerritoryStreetsListItem) -> Unit,
-    onDelete: (TerritoryStreetsListItem) -> Unit,
-    onClick: (TerritoryStreetsListItem) -> Unit
+fun HousesEditableList(
+    houses: List<HousesListItem>,
+    onEdit: (HousesListItem) -> Unit,
+    onDelete: (HousesListItem) -> Unit,
+    onClick: (HousesListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("TerritoryStreetsEditableList(...) called")
+    Timber.tag(TAG).d("HousesEditableList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) }
-    if (territoryStreets.isNotEmpty()) {
+    if (houses.isNotEmpty()) {
         LazyColumn(
             state = rememberLazyListState(),
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(territoryStreets.size) { index ->
-                territoryStreets[index].let { territoryStreet ->
+            items(houses.size) { index ->
+                houses[index].let { house ->
                     val isSelected = (selectedIndex == index)
                     ListItemComponent(
-                        item = territoryStreet,
+                        item = house,
                         itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(territoryStreet) },
+                            ComponentUiAction.EditListItem { onEdit(house) },
                             ComponentUiAction.DeleteListItem(
-                                stringResource(
-                                    R.string.dlg_confirm_del_territory_street,
-                                    territoryStreet.streetFullName
-                                )
-                            ) { onDelete(territoryStreet) }),
+                                stringResource(R.string.dlg_confirm_del_house, house.houseFullNum)
+                            ) { onDelete(house) }),
                         selected = isSelected,
                         background = if (isSelected) Color.LightGray else Color.Transparent,
                         onClick = {
                             if (selectedIndex != index) selectedIndex = index
-                            onClick(territoryStreet)
+                            onClick(house)
                         }
                     )
                 }
@@ -125,7 +124,7 @@ fun TerritoryStreetsEditableList(
         }
     } else {
         Text(
-            text = stringResource(R.string.territory_streets_list_empty_text),
+            text = stringResource(R.string.houses_list_empty_text),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
@@ -133,13 +132,13 @@ fun TerritoryStreetsEditableList(
 }
 
 @Composable
-fun TerritoryStreetsProcessedList(
-    territoryStreets: List<TerritoryStreetsListItem>,
-    onEdit: (TerritoryStreetsListItem) -> Unit,
-    onDelete: (TerritoryStreetsListItem) -> Unit,
-    onClick: (TerritoryStreetsListItem) -> Unit
+fun HousesProcessedList(
+    territoryStreets: List<HousesListItem>,
+    onEdit: (HousesListItem) -> Unit,
+    onDelete: (HousesListItem) -> Unit,
+    onClick: (HousesListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("TerritoryStreetsProcessedList(...) called")
+    Timber.tag(TAG).d("HousesProcessedList(...) called")
     var selectedIndex by remember { mutableStateOf(-1) }
     if (territoryStreets.isNotEmpty()) {
         LazyColumn(
@@ -149,23 +148,23 @@ fun TerritoryStreetsProcessedList(
                 .focusable(enabled = true)
         ) {
             items(territoryStreets.size) { index ->
-                territoryStreets[index].let { territoryStreet ->
+                territoryStreets[index].let { house ->
                     val isSelected = (selectedIndex == index)
                     ListItemComponent(
-                        item = territoryStreet,
+                        item = house,
                         itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(territoryStreet) },
+                            ComponentUiAction.EditListItem { onEdit(house) },
                             ComponentUiAction.DeleteListItem(
                                 stringResource(
-                                    R.string.dlg_confirm_del_territory_street,
-                                    territoryStreet.streetFullName
+                                    R.string.dlg_confirm_del_territory_house,
+                                    house.houseFullNum
                                 )
-                            ) { onDelete(territoryStreet) }),
+                            ) { onDelete(house) }),
                         selected = isSelected,
                         background = if (isSelected) Color.LightGray else Color.Transparent,
                         onClick = {
                             if (selectedIndex != index) selectedIndex = index
-                            onClick(territoryStreet)
+                            onClick(house)
                         }
                     )
                 }
@@ -173,14 +172,15 @@ fun TerritoryStreetsProcessedList(
         }
     }
 }
+
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewTerritoryStreetsList() {
+fun PreviewHousesList() {
     JWSuiteTheme {
         Surface {
-            TerritoryStreetsEditableList(
-                territoryStreets = HousesListViewModelImpl.previewList(LocalContext.current),
+            HousesEditableList(
+                houses = HousesListViewModelImpl.previewList(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
                 onClick = {}

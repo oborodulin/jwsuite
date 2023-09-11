@@ -111,7 +111,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to CongregationScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Congregation.arguments
+                    it.destination.route, NavRoutes.Congregation.arguments.firstOrNull()
                 )
             CongregationScreen(
                 appState = appState, congregationInput = NavRoutes.Congregation.fromEntry(it)
@@ -121,7 +121,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Group.arguments
+                    it.destination.route, NavRoutes.Group.arguments.firstOrNull()
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             GroupScreen(
@@ -134,7 +134,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Member.arguments
+                    it.destination.route, NavRoutes.Member.arguments.firstOrNull()
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             MemberScreen(
@@ -152,7 +152,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to TerritoryCategoryScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.TerritoryCategory.arguments
+                    it.destination.route, NavRoutes.TerritoryCategory.arguments.firstOrNull()
                 )
             TerritoryCategoryScreen(
                 appState = appState,
@@ -195,7 +195,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to TerritoryScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Territory.arguments
+                    it.destination.route, NavRoutes.Territory.arguments.firstOrNull()
                 )
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
@@ -215,7 +215,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to TerritoryDetailsScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.TerritoryDetails.arguments
+                    it.destination.route, NavRoutes.TerritoryDetails.arguments.firstOrNull()
                 )
             val territoryViewModel =
                 hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
@@ -231,7 +231,7 @@ private fun HomeNavigationHost(
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to TerritoryStreetScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.TerritoryStreet.arguments
+                    it.destination.route, NavRoutes.TerritoryStreet.arguments.firstOrNull()
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
@@ -243,7 +243,25 @@ private fun HomeNavigationHost(
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }
-
+        composable(
+            route = NavRoutes.House.route, arguments = NavRoutes.House.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to HouseScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.House.arguments.firstOrNull()
+                )
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            HouseScreen(
+                appState = appState,
+                //sharedViewModel = sharedViewModel,
+                territoryViewModel = territoryViewModel,
+                houseInput = NavRoutes.House.fromEntry(it)
+            )
+        }
+        
         // Geo:
         composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
             Timber.tag(TAG)
