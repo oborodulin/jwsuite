@@ -7,9 +7,10 @@ sealed class HousesListUiAction(override val isEmitJob: Boolean = true) : UiActi
     data class Load(val streetId: UUID? = null, val territoryId: UUID? = null) :
         HousesListUiAction()
 
+    data class LoadForTerritory(val territoryId: UUID) : HousesListUiAction()
     data class EditHouse(val houseId: UUID) : HousesListUiAction()
     data class DeleteHouse(val houseId: UUID) : HousesListUiAction()
-    data class EditTerritoryHouse(val territoryId: UUID, val houseId: UUID) :
+    data class EditTerritoryHouse(val territoryId: UUID, val houseId: UUID? = null) :
         HousesListUiAction()
 
     data class DeleteTerritoryHouse(val houseId: UUID) : HousesListUiAction()

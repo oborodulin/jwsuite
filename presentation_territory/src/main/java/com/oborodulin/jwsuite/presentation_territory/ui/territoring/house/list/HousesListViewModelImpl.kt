@@ -9,12 +9,14 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -34,7 +36,8 @@ private const val TAG = "Territoring.HousesListViewModelImpl"
 @HiltViewModel
 class HousesListViewModelImpl @Inject constructor(
     private val useCases: HouseUseCases,
-    private val converter: HousesListConverter
+    private val housesListConverter: HousesListConverter,
+    private val housesForTerritoryListConverter: HousesForTerritoryListConverter
 ) : HousesListViewModel,
     MviViewModel<List<HousesListItem>, UiState<List<HousesListItem>>, HousesListUiAction, UiSingleEvent>() {
 
@@ -45,6 +48,7 @@ class HousesListViewModelImpl @Inject constructor(
             .d("handleAction(HousesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is HousesListUiAction.Load -> loadHouses(action.streetId, action.territoryId)
+            is HousesListUiAction.LoadForTerritory -> loadHousesForTerritory(action.territoryId)
             is HousesListUiAction.EditHouse -> {
                 submitSingleEvent(
                     HousesListUiSingleEvent.OpenHouseScreen(
@@ -74,7 +78,22 @@ class HousesListViewModelImpl @Inject constructor(
             .d("loadHouses(...) called: streetId = %s; territoryId = %s", streetId, territoryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getHousesUseCase.execute(GetHousesUseCase.Request(streetId, territoryId)).map {
-                converter.convert(it)
+                housesListConverter.convert(it)
+            }.collect {
+                submitState(it)
+            }
+        }
+        return job
+    }
+
+    private fun loadHousesForTerritory(territoryId: UUID): Job {
+        Timber.tag(TAG)
+            .d("loadHousesForTerritory(...) called: territoryId = %s", territoryId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getHousesForTerritoryUseCase.execute(
+                GetHousesForTerritoryUseCase.Request(territoryId)
+            ).map {
+                housesForTerritoryListConverter.convert(it)
             }.collect {
                 submitState(it)
             }

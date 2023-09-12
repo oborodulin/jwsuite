@@ -4,18 +4,14 @@ import android.content.res.Configuration
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,15 +53,29 @@ fun HousesListView(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            HousesEditableList(
-                houses = it,
-                onEdit = { house ->
-                    viewModel.submitAction(HousesListUiAction.EditHouse(house.id))
-                },
-                onDelete = { house ->
-                    viewModel.submitAction(HousesListUiAction.DeleteHouse(house.id))
-                }
-            ) {}
+            when (territoryInput?.territoryId) {
+                null -> HousesEditableList(
+                    houses = it,
+                    viewModel = viewModel,
+                    onEdit = { house ->
+                        viewModel.submitAction(HousesListUiAction.EditHouse(house.id))
+                    },
+                    onDelete = { house ->
+                        viewModel.submitAction(HousesListUiAction.DeleteHouse(house.id))
+                    }
+                ) {}
+
+                else -> HousesProcessedList(
+                    houses = it,
+                    viewModel = viewModel,
+                    onProcess = { house ->
+                        viewModel.submitAction(HousesListUiAction.EditHouse(house.id))
+                    },
+                    onDelete = { house ->
+                        viewModel.submitAction(HousesListUiAction.DeleteTerritoryHouse(house.id))
+                    }
+                ) {}
+            }
         }
     }
     LaunchedEffect(Unit) {
@@ -89,37 +99,36 @@ fun HousesListView(
 @Composable
 fun HousesEditableList(
     houses: List<HousesListItem>,
+    viewModel: HousesListViewModel,
     onEdit: (HousesListItem) -> Unit,
     onDelete: (HousesListItem) -> Unit,
     onClick: (HousesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("HousesEditableList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) }
     if (houses.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
+                .getOrNull(0)?.let { houses.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(houses.size) { index ->
-                houses[index].let { house ->
-                    val isSelected = (selectedIndex == index)
-                    ListItemComponent(
-                        item = house,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(house) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(R.string.dlg_confirm_del_house, house.houseFullNum)
-                            ) { onDelete(house) }),
-                        selected = isSelected,
-                        background = if (isSelected) Color.LightGray else Color.Transparent,
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                            onClick(house)
-                        }
-                    )
-                }
+            itemsIndexed(houses, key = { _, item -> item.id }) { _, house ->
+                ListItemComponent(
+                    item = house,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onEdit(house) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(R.string.dlg_confirm_del_house, house.houseFullNum)
+                        ) { onDelete(house) }),
+                    selected = house.selected,
+                    onClick = {
+                        viewModel.singleSelectItem(house)
+                        onClick(house)
+                    }
+                )
             }
         }
     } else {
@@ -133,41 +142,40 @@ fun HousesEditableList(
 
 @Composable
 fun HousesProcessedList(
-    territoryStreets: List<HousesListItem>,
-    onEdit: (HousesListItem) -> Unit,
+    houses: List<HousesListItem>,
+    viewModel: HousesListViewModel,
+    onProcess: (HousesListItem) -> Unit,
     onDelete: (HousesListItem) -> Unit,
     onClick: (HousesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("HousesProcessedList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) }
-    if (territoryStreets.isNotEmpty()) {
+    if (houses.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
+                .getOrNull(0)?.let { houses.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(territoryStreets.size) { index ->
-                territoryStreets[index].let { house ->
-                    val isSelected = (selectedIndex == index)
-                    ListItemComponent(
-                        item = house,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(house) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(
-                                    R.string.dlg_confirm_del_territory_house,
-                                    house.houseFullNum
-                                )
-                            ) { onDelete(house) }),
-                        selected = isSelected,
-                        background = if (isSelected) Color.LightGray else Color.Transparent,
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                            onClick(house)
-                        }
-                    )
-                }
+            itemsIndexed(houses, key = { _, item -> item.id }) { _, house ->
+                ListItemComponent(
+                    item = house,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onProcess(house) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(
+                                R.string.dlg_confirm_del_territory_house,
+                                house.houseFullNum
+                            )
+                        ) { onDelete(house) }),
+                    selected = house.selected,
+                    onClick = {
+                        viewModel.singleSelectItem(house)
+                        onClick(house)
+                    }
+                )
             }
         }
     }
@@ -176,11 +184,12 @@ fun HousesProcessedList(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewHousesList() {
+fun PreviewHousesEditableList() {
     JWSuiteTheme {
         Surface {
             HousesEditableList(
                 houses = HousesListViewModelImpl.previewList(LocalContext.current),
+                viewModel = HousesListViewModelImpl.previewModel(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
                 onClick = {}

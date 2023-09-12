@@ -31,6 +31,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryI
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListView
@@ -90,7 +91,12 @@ fun TerritoryDetailsScreen(
     val tabHouses = TabRowItem(
         title = stringResource(R.string.territory_details_tab_houses),
         onClick = { tabType = TerritoryDetailsTabType.HOUSES.name }
-    ) {}
+    ) {
+        HousesListView(
+            navController = appState.commonNavController,
+            territoryInput = territoryInput
+        )
+    }
     val tabEntraces = TabRowItem(
         title = stringResource(R.string.territory_details_tab_entrances),
         onClick = { tabType = TerritoryDetailsTabType.ENTRANCES.name }
@@ -114,7 +120,8 @@ fun TerritoryDetailsScreen(
                 else -> emptyList()
             }
             appState.actionBarSubtitle.value = stringResource(
-                com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details, territory.cardNum
+                com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details,
+                territory.cardNum
             )
             JWSuiteTheme { //(darkTheme = true)
                 ScaffoldComponent(
@@ -146,7 +153,8 @@ fun TerritoryDetailsScreen(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryDetailsScreen: LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG)
+            .d("TerritoryDetailsScreen: LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
@@ -120,19 +121,17 @@ fun MembersList(
             } else {
                 members.filter { it.doesMatchSearchQuery(searchedText) }
             }
-            items(filteredItems.size) { index ->
-                filteredItems[index].let { member ->
-                    ListItemComponent(
-                        item = member,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(member) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(R.string.dlg_confirm_del_member, member.headline)
-                            ) { onDelete(member) }),
-                        selected = member.selected,
-                        onClick = { viewModel.singleSelectItem(member) }
-                    )
-                }
+            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, member ->
+                ListItemComponent(
+                    item = member,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onEdit(member) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(R.string.dlg_confirm_del_member, member.headline)
+                        ) { onDelete(member) }),
+                    selected = member.selected,
+                    onClick = { viewModel.singleSelectItem(member) }
+                )
             }
         }
     } else {

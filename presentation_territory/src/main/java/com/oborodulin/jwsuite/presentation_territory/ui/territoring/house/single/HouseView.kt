@@ -69,8 +69,8 @@ fun TerritoryStreetView(
     val territory by viewModel.territory.collectAsStateWithLifecycle()
     val street by viewModel.street.collectAsStateWithLifecycle()
     val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
-    val isEvenSide by viewModel.isEvenSide.collectAsStateWithLifecycle()
-    val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
+    val isEvenSide by viewModel.isBusiness.collectAsStateWithLifecycle()
+    val estimatedHouses by viewModel.zipCode.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
@@ -161,7 +161,7 @@ fun TerritoryStreetView(
             labelResId = R.string.territory_street_is_even_side_hint,
             painterResId = R.drawable.ic_street_side_36,
             inputWrapper = isEvenSide,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsEvenSide(it)) }
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsBusiness(it)) }
         )
         TextFieldComponent(
             modifier = Modifier
@@ -179,7 +179,7 @@ fun TerritoryStreetView(
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = estimatedHouses,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.EstHouses(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.ZipCode(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

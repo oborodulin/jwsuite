@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
@@ -176,6 +177,12 @@ object TerritoryUseCasesModule {
     fun provideGetNextHouseNumUseCase(
         configuration: UseCase.Configuration, housesRepository: HousesRepository
     ): GetNextHouseNumUseCase = GetNextHouseNumUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetHousesForTerritoryUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): GetHousesForTerritoryUseCase = GetHousesForTerritoryUseCase(configuration, housesRepository)
 
     @Singleton
     @Provides

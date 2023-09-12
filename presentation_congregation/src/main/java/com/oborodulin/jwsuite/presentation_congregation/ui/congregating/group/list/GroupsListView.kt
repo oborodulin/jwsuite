@@ -116,7 +116,7 @@ fun GroupsList(
     onEdit: (GroupsListItem) -> Unit,
     onDelete: (GroupsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("GroupsList(...) called")
+    Timber.tag(TAG).d("GroupsList(...) called: groups.size = %d", groups.size)
     // https://stackoverflow.com/questions/72531840/how-to-select-only-one-item-in-a-list-lazycolumn
     //var selectedIndex by remember { mutableStateOf(-1) }
     if (groups.isNotEmpty()) {

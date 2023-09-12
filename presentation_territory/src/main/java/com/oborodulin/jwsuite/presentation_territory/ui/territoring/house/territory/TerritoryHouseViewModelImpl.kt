@@ -19,7 +19,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListVie
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHouseUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryStreetConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
@@ -32,7 +32,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Territoring.TerritoryStreetViewModelImpl"
+private const val TAG = "Territoring.TerritoryHouseViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -43,7 +43,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     private val territoryStreetUiMapper: TerritoryStreetUiToTerritoryStreetMapper,
     private val territoryStreetMapper: TerritoryStreetToTerritoryStreetsListItemMapper
 ) : TerritoryHouseViewModel,
-    DialogSingleViewModel<TerritoryStreetUiModel, UiState<TerritoryStreetUiModel>, TerritoryHouseUiAction, UiSingleEvent, TerritoryHouseFields, InputWrapper>(
+    DialogSingleViewModel<TerritoryHouseUiModel, UiState<TerritoryHouseUiModel>, TerritoryHouseUiAction, UiSingleEvent, TerritoryHouseFields, InputWrapper>(
         state, initFocusedTextField = TerritoryHouseFields.TERRITORY_HOUSE_HOUSE
     ) {
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -57,26 +57,23 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         )
     }
 
-    override val areInputsValid = flow { emit(house.value.errorId == null) }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        false
-    )
+    override val areInputsValid = flow { emit(house.value.errorId == null) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<TerritoryStreetUiModel> = UiState.Loading
+    override fun initState(): UiState<TerritoryHouseUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryHouseUiAction): Job {
-        Timber.tag(TAG).d("handleAction(TerritoryStreetUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryHouseUiAction.Load -> when (action.territoryStreetId) {
                 null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_street_new_subheader)
-                    loadTerritoryStreetUiModel(action.territoryId!!)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_house_new_subheader)
+                    loadTerritoryHouseUiModel(action.territoryId!!)
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_street_subheader)
-                    loadTerritoryStreetUiModel(action.territoryId!!, action.territoryStreetId)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_house_subheader)
+                    loadTerritoryHouseUiModel(action.territoryId!!, action.territoryStreetId)
                 }
             }
 
@@ -85,11 +82,11 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadTerritoryStreetUiModel(
+    private fun loadTerritoryHouseUiModel(
         territoryId: UUID,
         territoryStreetId: UUID? = null
     ): Job {
-        Timber.tag(TAG).d("loadTerritoryStreet(UUID) called: %s", territoryStreetId)
+        Timber.tag(TAG).d("loadTerritoryHouseUiModel(UUID) called: %s", territoryStreetId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoryStreetUseCase.execute(
                 GetTerritoryStreetUseCase.Request(territoryId, territoryStreetId)
@@ -138,7 +135,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoryHouseFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: TerritoryStreetUiModel): Job? {
+    override fun initFieldStatesByUiModel(uiModel: TerritoryHouseUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
@@ -315,7 +312,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): TerritoryStreetUiModel {
+        fun previewUiModel(ctx: Context): TerritoryHouseUiModel {
             val territoryStreetUi = TerritoryStreetUi(
                 territoryId = UUID.randomUUID(),
                 street = StreetViewModelImpl.previewUiModel(ctx),
@@ -324,7 +321,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
                 estimatedHouses = 38
             )
             territoryStreetUi.id = UUID.randomUUID()
-            val territoryStreetUiModel = TerritoryStreetUiModel(
+            val territoryStreetUiModel = TerritoryHouseUiModel(
                 territoryStreet = territoryStreetUi,
                 territory = TerritoryViewModelImpl.previewUiModel(ctx),
                 streets = StreetsListViewModelImpl.previewList(ctx)

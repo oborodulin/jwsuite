@@ -27,7 +27,7 @@ data class HouseUi(
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
     val houseDesc: String? = null,
-    val houseFullNum: String,
+    val houseFullNum: String = "",
     val calculatedRooms: Int? = null
 ) : ModelUi()
 

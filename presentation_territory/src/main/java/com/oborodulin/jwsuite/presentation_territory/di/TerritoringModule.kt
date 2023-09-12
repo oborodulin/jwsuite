@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
@@ -41,6 +42,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToS
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetUiToStreetMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetsListToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HouseConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesListConverter
@@ -315,6 +317,11 @@ object TerritoringModule {
     fun provideHousesListConverter(mapper: HousesListToHousesListItemMapper): HousesListConverter =
         HousesListConverter(mapper = mapper)
 
+    @Singleton
+    @Provides
+    fun provideHousesForTerritoryListConverter(mapper: HousesListToHousesListItemMapper): HousesForTerritoryListConverter =
+        HousesForTerritoryListConverter(mapper = mapper)
+
     // USE CASES:
     // Territory Category:
     @Singleton
@@ -376,6 +383,7 @@ object TerritoringModule {
         getHousesUseCase: GetHousesUseCase,
         getHouseUseCase: GetHouseUseCase,
         getNextHouseNumUseCase: GetNextHouseNumUseCase,
+        getHousesForTerritoryUseCase: GetHousesForTerritoryUseCase,
         saveHouseUseCase: SaveHouseUseCase,
         deleteHouseUseCase: DeleteHouseUseCase,
         deleteTerritoryHouseUseCase: DeleteTerritoryHouseUseCase
@@ -383,6 +391,7 @@ object TerritoringModule {
         getHousesUseCase,
         getHouseUseCase,
         getNextHouseNumUseCase,
+        getHousesForTerritoryUseCase,
         saveHouseUseCase,
         deleteHouseUseCase,
         deleteTerritoryHouseUseCase

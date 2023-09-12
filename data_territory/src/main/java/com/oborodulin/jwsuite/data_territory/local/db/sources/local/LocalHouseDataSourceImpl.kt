@@ -24,6 +24,11 @@ class LocalHouseDataSourceImpl @Inject constructor(
     override fun getTerritoryStreetHouses(territoryId: UUID) =
         houseDao.findOnTerritoryStreetsByTerritoryId(territoryId)
 
+    override fun getHousesForTerritory(territoryId: UUID) =
+        houseDao.findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+            territoryId
+        )
+
     override fun getHouse(houseId: UUID) = houseDao.findDistinctById(houseId)
 
     override suspend fun insertHouse(house: HouseEntity) = withContext(dispatcher) {

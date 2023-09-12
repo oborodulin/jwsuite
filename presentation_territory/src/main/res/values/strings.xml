@@ -72,11 +72,14 @@
     <string name="territory_entrance_hint">Подъезд участка</string>
     <string name="territory_floor_hint">Этаж участка</string>
     <string name="territory_room_hint">Квартира участка</string>
-    <!--Улицы участка-->
+    <!--Улица участка-->
     <string name="territory_street_subheader">Улица участка</string>
     <string name="territory_street_new_subheader">Новая улица участка</string>
     <string name="territory_street_is_even_side_hint">Чётная сторона?</string>
     <string name="territory_street_estimated_houses_hint">Кол-во домов</string>
+    <!--Дом участка-->
+    <string name="territory_house_subheader">Дом участка</string>
+    <string name="territory_house_new_subheader">Новый дом участка</string>
     <!--Дом-->
     <string name="house_subheader">Дом</string>
     <string name="house_new_subheader">Новый дом</string>
@@ -128,6 +131,9 @@
     <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
     <!--формы подтверждения обработки участка-->
     <string name="territory_delivery_date_empty_error">Укажите, пожалуйста, дату обработки участка!</string>
+    <!--формы дома-->
+    <string name="house_num_empty_error">Укажите, пожалуйста, № дома!</string>
+    <string name="building_type_empty_error">Укажите, пожалуйста, тип строения!</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <!--Участки-->

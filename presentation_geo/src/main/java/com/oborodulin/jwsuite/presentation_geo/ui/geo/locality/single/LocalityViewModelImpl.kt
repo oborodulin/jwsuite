@@ -72,8 +72,7 @@ class LocalityViewModelImpl @Inject constructor(
         state.getStateFlow(LocalityFields.LOCALITY_NAME.name, InputWrapper())
     }
 
-    override val areInputsValid =
-        combine(region, localityCode, localityShortName, localityName)
+    override val areInputsValid = combine(region, localityCode, localityShortName, localityName)
         { region, localityCode, localityShortName, localityName ->
             region.errorId == null && localityCode.errorId == null && localityShortName.errorId == null && localityName.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)

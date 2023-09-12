@@ -5,6 +5,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
@@ -117,26 +118,24 @@ fun CongregationsList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(congregations.size) { index ->
-                congregations[index].let { congregation ->
-                    CongregationsListItemComponent(
-                        item = congregation,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(congregation) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(
-                                    R.string.dlg_confirm_del_congregation,
-                                    congregation.congregationName
-                                )
-                            ) { onDelete(congregation) }),
-                        selected = congregation.selected,
-                        onFavorite = onFavorite,
-                        onClick = {
-                            congregationsListViewModel.singleSelectItem(congregation)
-                            onClick(congregation)
-                        }
-                    )
-                }
+            itemsIndexed(congregations, key = { _, item -> item.id }) { _, congregation ->
+                CongregationsListItemComponent(
+                    item = congregation,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onEdit(congregation) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(
+                                R.string.dlg_confirm_del_congregation,
+                                congregation.congregationName
+                            )
+                        ) { onDelete(congregation) }),
+                    selected = congregation.selected,
+                    onFavorite = onFavorite,
+                    onClick = {
+                        congregationsListViewModel.singleSelectItem(congregation)
+                        onClick(congregation)
+                    }
+                )
             }
         }
     } else {

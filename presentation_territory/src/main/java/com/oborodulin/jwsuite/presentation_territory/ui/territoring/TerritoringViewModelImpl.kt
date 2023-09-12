@@ -36,8 +36,7 @@ class TerritoringViewModelImpl @Inject constructor(
     private val converter: TerritoryLocationsListConverter
 ) : TerritoringViewModel,
     SingleViewModel<TerritoringUi, UiState<TerritoringUi>, TerritoringUiAction, TerritoringUiSingleEvent, TerritoringFields, InputWrapper>(
-        state, TerritoringFields.TERRITORING_ID.name,
-        TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR
+        state, initFocusedTextField = TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR
     ) {
     override val isPrivateSector: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name, InputWrapper())

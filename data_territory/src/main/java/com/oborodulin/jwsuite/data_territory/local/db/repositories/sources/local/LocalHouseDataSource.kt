@@ -11,6 +11,7 @@ interface LocalHouseDataSource {
     fun getStreetHouses(streetId: UUID): Flow<List<HouseView>>
     fun getTerritoryHouses(territoryId: UUID): Flow<List<HouseView>>
     fun getTerritoryStreetHouses(territoryId: UUID): Flow<List<TerritoryStreetHouseView>>
+    fun getHousesForTerritory(territoryId: UUID): Flow<List<HouseView>>
     fun getHouse(houseId: UUID): Flow<HouseView>
     suspend fun insertHouse(house: HouseEntity)
     suspend fun updateHouse(house: HouseEntity)
