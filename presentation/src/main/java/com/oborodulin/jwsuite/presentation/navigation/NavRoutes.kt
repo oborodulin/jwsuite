@@ -92,6 +92,8 @@ import java.util.UUID
 // ic_territory_room.png - https://www.flaticon.com/authors/catkuro
 // ic_intercom.png - https://www.freepik.com/
 // ic_residential.png - https://www.flaticon.com/search/4?type=icon&search-group=all&word=human+house&color=black&shape=outline&type=icon
+// ic_floor_rooms.png - https://www.flaticon.com/authors/andrejs-kirma
+// ic_language.png - https://www.freepik.com/
 
 private const val TAG = "Presentation.NavRoutes"
 

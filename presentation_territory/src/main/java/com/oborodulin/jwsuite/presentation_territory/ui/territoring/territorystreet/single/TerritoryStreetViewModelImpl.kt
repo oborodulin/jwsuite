@@ -18,6 +18,8 @@ import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStre
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryStreetConverter
@@ -56,7 +58,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name, InputListItemWrapper()
         )
     }
-    override val street: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
         state.getStateFlow(
             TerritoryStreetFields.TERRITORY_STREET_STREET.name, InputListItemWrapper()
         )
@@ -175,10 +177,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_STREET, street,
-            ListItemModel(
-                uiModel.territoryStreet.street.id,
-                uiModel.territoryStreet.street.streetName
-            )
+            uiModel.territoryStreet.street.toStreetsListItem()
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR, isPrivateSector,
@@ -307,7 +306,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
 
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                    MutableStateFlow(InputListItemWrapper<StreetsListItem>())
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val isEvenSide = MutableStateFlow(InputWrapper())
                 override val estimatedHouses = MutableStateFlow(InputWrapper())

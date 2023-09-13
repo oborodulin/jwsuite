@@ -24,6 +24,8 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewMo
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HouseConverter
@@ -57,7 +59,7 @@ class HouseViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val buildingTypes = _buildingTypes.asStateFlow()
 
-    override val street: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
         state.getStateFlow(HouseFields.HOUSE_STREET.name, InputListItemWrapper())
     }
     override val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -211,6 +213,7 @@ class HouseViewModelImpl @Inject constructor(
                 .collect {
                     Timber.tag(TAG).d("saveHouse() collect: %s", it)
                     if (it is Result.Success) {
+                        setStateValue(HouseFields.HOUSE_ID, id, it.data.house.id.toString(), true)
                         setSavedListItem(houseMapper.map(it.data.house))
                     }
                 }
@@ -228,10 +231,7 @@ class HouseViewModelImpl @Inject constructor(
                 uiModel
             )
         uiModel.id?.let { initStateValue(HouseFields.HOUSE_ID, id, it.toString()) }
-        initStateValue(
-            HouseFields.HOUSE_STREET, street,
-            ListItemModel(uiModel.street.id, uiModel.street.streetName)
-        )
+        initStateValue(HouseFields.HOUSE_STREET, street, uiModel.street.toStreetsListItem())
         initStateValue(
             HouseFields.HOUSE_LOCALITY_DISTRICT, localityDistrict,
             ListItemModel(
@@ -546,7 +546,7 @@ class HouseViewModelImpl @Inject constructor(
                 override val buildingTypes = MutableStateFlow(mutableMapOf<BuildingType, String>())
 
                 override val street =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                    MutableStateFlow(InputListItemWrapper<StreetsListItem>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val microdistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())

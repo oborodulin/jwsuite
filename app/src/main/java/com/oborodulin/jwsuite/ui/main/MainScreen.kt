@@ -32,12 +32,12 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
-import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
@@ -252,16 +252,10 @@ private fun HomeNavigationHost(
                     it.destination.route, NavRoutes.House.arguments.firstOrNull()
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
-            HouseScreen(
-                appState = appState,
-                //sharedViewModel = sharedViewModel,
-                territoryViewModel = territoryViewModel,
-                houseInput = NavRoutes.House.fromEntry(it)
-            )
+            //val territoryViewModel = hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            HouseScreen(appState = appState, houseInput = NavRoutes.House.fromEntry(it))
         }
-        
+
         // Geo:
         composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
             Timber.tag(TAG)

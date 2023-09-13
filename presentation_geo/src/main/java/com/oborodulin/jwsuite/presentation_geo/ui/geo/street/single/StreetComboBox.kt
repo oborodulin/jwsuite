@@ -14,13 +14,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
-import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import timber.log.Timber
 import java.util.UUID
 
@@ -40,8 +40,8 @@ fun StreetComboBox(
         localityDistrictId = localityDistrictId,
         microdistrictId = microdistrictId
     ),
-    inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent = {},
+    inputWrapper: InputListItemWrapper<StreetsListItem>,
+    onValueChange: (StreetsListItem) -> Unit = {},
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("StreetComboBox(...) called")
@@ -55,7 +55,7 @@ fun StreetComboBox(
         loadUiAction = StreetUiAction.Load(),
         confirmUiAction = StreetUiAction.Save,
         dialogView = { StreetView() },
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toStreetsListItem()) }
     )
     ComboBoxComponent(
         modifier = modifier,
@@ -70,7 +70,7 @@ fun StreetComboBox(
         listTitleResId = R.string.dlg_title_select_street,
         leadingPainterResId = R.drawable.ic_street_sign_36,
         inputWrapper = inputWrapper,
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toStreetsListItem()) },
         onImeKeyAction = onImeKeyAction
     )
 }

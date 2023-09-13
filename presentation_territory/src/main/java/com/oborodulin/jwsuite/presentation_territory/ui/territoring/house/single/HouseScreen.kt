@@ -23,41 +23,36 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Territoring.TerritoryStreetScreen"
+private const val TAG = "Territoring.HouseScreen"
 
 @Composable
-fun TerritoryStreetScreen(
+fun HouseScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    territoryViewModel: TerritoryViewModel,
-    territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
-    territoryStreetViewModel: HouseViewModelImpl = hiltViewModel(),
-    territoryStreetInput: TerritoryStreetInput? = null
+    viewModel: HouseViewModelImpl = hiltViewModel(),
+    houseInput: HouseInput? = null
 ) {
     Timber.tag(TAG)
-        .d("TerritoryStreetScreen(...) called: territoryStreetInput = %s", territoryStreetInput)
+        .d("HouseScreen(...) called: houseInput = %s", houseInput)
     val coroutineScope = rememberCoroutineScope()
     val saveButtonOnClick = {
-        territoryStreetViewModel.onContinueClick {
-            Timber.tag(TAG).d("TerritoryStreetScreen(...): Save Button onClick...")
+        viewModel.onContinueClick {
+            Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
             // checks all errors
-            territoryStreetViewModel.onContinueClick {
+            viewModel.onContinueClick {
                 // if success, backToBottomBarScreen
                 // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
                 coroutineScope.launch {
-                    territoryStreetViewModel.actionsJobFlow.collectLatest { job ->
+                    viewModel.actionsJobFlow.collectLatest { job ->
                         Timber.tag(TAG).d(
-                            "TerritoryStreetScreen(...): Start actionsJobFlow.collect [job = %s]",
+                            "HouseScreen(...): Start actionsJobFlow.collect [job = %s]",
                             job?.toString()
                         )
                         job?.join()
@@ -65,32 +60,25 @@ fun TerritoryStreetScreen(
                     }
                 }
                 // save
-                territoryStreetViewModel.submitAction(HouseUiAction.Save)
+                viewModel.submitAction(HouseUiAction.Save)
             }
         }
     }
-    LaunchedEffect(territoryStreetInput?.territoryStreetId) {
-        Timber.tag(TAG).d("TerritoryStreetScreen: LaunchedEffect() BEFORE collect ui state flow")
-        territoryStreetViewModel.submitAction(
-            HouseUiAction.Load(
-                territoryStreetInput?.territoryId, territoryStreetInput?.territoryStreetId
-            )
-        )
-        territoryStreetInput?.territoryId?.let {
-            territoryStreetsListViewModel.submitAction(TerritoryStreetsListUiAction.Load(it))
-        }
+    LaunchedEffect(houseInput?.houseId) {
+        Timber.tag(TAG).d("HouseScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(HouseUiAction.Load(houseInput?.houseId))
     }
-    territoryStreetViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        territoryStreetViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
-        val areInputsValid by territoryStreetViewModel.areInputsValid.collectAsStateWithLifecycle()
+        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 topBarNavigationIcon = {
-                    IconButton(onClick = { appState.commonNavigateUp() }) {
+                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
                 },
@@ -107,10 +95,7 @@ fun TerritoryStreetScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TerritoryStreetView(
-                            uiModel = it, sharedViewModel = appState.sharedViewModel.value,
-                            territoryViewModel = territoryViewModel
-                        )
+                        HouseView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }

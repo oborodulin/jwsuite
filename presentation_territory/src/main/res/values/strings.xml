@@ -45,6 +45,8 @@
     <string name="territory_details_tab_rooms">КВАРТИРЫ</string>
 
     <!--ФОРМЫ:-->
+    <!--общие-->
+    <string name="house_hint">Дом</string>
     <!--Панель поиска (ч/с, локация)-->
     <string name="territoring_is_private_sector_hint">ч/с?</string>
     <!--Категория участка-->

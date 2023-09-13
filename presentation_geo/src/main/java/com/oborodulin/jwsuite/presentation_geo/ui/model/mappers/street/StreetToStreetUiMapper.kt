@@ -20,7 +20,8 @@ class StreetToStreetUiMapper(
             roadType = input.roadType,
             isPrivateSector = input.isPrivateSector,
             estimatedHouses = input.estimatedHouses,
-            streetName = input.streetName
+            streetName = input.streetName,
+            streetFullName = input.streetFullName
         )
         streetUi.id = input.id
         return streetUi

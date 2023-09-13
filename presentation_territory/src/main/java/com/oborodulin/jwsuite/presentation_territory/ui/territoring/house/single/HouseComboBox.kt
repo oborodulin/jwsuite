@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single
 
 import android.content.res.Configuration
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,27 +22,25 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListUiAction
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListUiAction
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListViewModelImpl
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Territoring.TerritoryStreetComboBox"
+private const val TAG = "Territoring.HouseComboBox"
 
 @Composable
-fun TerritoryStreetComboBox(
+fun HouseComboBox(
     modifier: Modifier = Modifier,
-    territoryId: UUID,
+    streetId: UUID,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    territoryViewModel: TerritoryViewModel,
-    listViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
+    listViewModel: HousesListViewModelImpl = hiltViewModel(),
     singleViewModel: HouseViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("TerritoryStreetComboBox(...) called")
+    Timber.tag(TAG).d("HouseComboBox(...) called")
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -50,20 +50,20 @@ fun TerritoryStreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = HouseUiAction.Load(),
         confirmUiAction = HouseUiAction.Save,
-        dialogView = { TerritoryStreetView(it, sharedViewModel, territoryViewModel) },
+        dialogView = { HouseView(sharedViewModel) },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = TerritoryStreetsListUiAction.Load(territoryId),
+        loadListUiAction = HousesListUiAction.Load(streetId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.territory_street_hint,
-        listTitleResId = R.string.dlg_title_select_territory_street,
-        leadingPainterResId = R.drawable.ic_territory_street_36,
+        labelResId = R.string.house_hint,
+        listTitleResId = R.string.dlg_title_select_house,
+        leadingImageVector = Icons.Outlined.Home,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -73,12 +73,12 @@ fun TerritoryStreetComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewTerritoryStreetComboBox() {
+fun PreviewHouseComboBox() {
     JWSuiteTheme {
         Surface {
-            /*TerritoryStreetComboBox(
-                listViewModel = TerritoryStreetsListViewModelImpl.previewModel(LocalContext.current),
-                singleViewModel = TerritoryStreetViewModelImpl.previewModel(LocalContext.current),
+            /*HouseComboBox(
+                listViewModel = HousesListViewModelImpl.previewModel(LocalContext.current),
+                singleViewModel = HouseViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(

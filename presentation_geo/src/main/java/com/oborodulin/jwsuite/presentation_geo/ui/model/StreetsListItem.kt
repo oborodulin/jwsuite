@@ -18,3 +18,9 @@ data class StreetsListItem(
         isPrivateSectorInfo?.let { "$it: " }.orEmpty()
     } ${estHousesInfo.orEmpty()}".trim()
 )
+
+fun ListItemModel.toStreetsListItem() = StreetsListItem(
+    id = this.itemId ?: UUID.randomUUID(),
+    isPrivateSector = false,
+    streetFullName = this.headline
+)

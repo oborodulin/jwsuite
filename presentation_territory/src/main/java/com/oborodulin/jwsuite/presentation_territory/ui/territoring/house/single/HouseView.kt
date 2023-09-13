@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -205,7 +206,7 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = houseNum,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseNum(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseNum(it.toInt())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -370,7 +371,7 @@ fun HouseView(
                     )
                 },
             labelResId = R.string.house_rooms_by_floor_hint,
-            leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24,
+            leadingPainterResId = R.drawable.ic_floor_rooms_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
@@ -387,14 +388,29 @@ fun HouseView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.house_rooms_by_floor_hint,
-            leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24,
+            labelResId = R.string.house_estimated_rooms_hint,
+            leadingPainterResId = R.drawable.ic_room_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = estimatedRooms,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.EstimatedRooms(it.toInt())) },
             onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_FOREIGN_LANGUAGE.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_IS_FOREIGN_LANGUAGE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_is_foreign_language_hint,
+            painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_language_36,
+            inputWrapper = isForeignLanguage,
+            onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsForeignLanguage(it)) }
         )
         SwitchComponent(
             switchModifier = Modifier
@@ -410,6 +426,26 @@ fun HouseView(
             painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_private_sector_36,
             inputWrapper = isPrivateSector,
             onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsPrivateSector(it)) }
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_DESC.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_DESC, isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_desc_hint,
+            leadingPainterResId = R.drawable.ic_text_snippet_36,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                )
+            },
+            inputWrapper = houseDesc,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseDesc(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
 }
