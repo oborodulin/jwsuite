@@ -83,6 +83,21 @@
     <!--Дом-->
     <string name="house_subheader">Дом</string>
     <string name="house_new_subheader">Новый дом</string>
+    <string name="house_zip_code_hint">Почтовый индекс</string>
+    <string name="house_num_hint">№ дома</string>
+    <string name="house_letter_hint">Буквенный индекс</string>
+    <string name="house_building_num_hint">№ строения</string>
+    <string name="house_building_type_hint">Тип строения</string>
+    <string name="house_is_security_hint">Охраняемая территория?</string>
+    <string name="house_is_security_helper">Охраняемая территория?</string>
+    <string name="house_is_intercom_hint">Домофон?</string>
+    <string name="house_is_residential_hint">Жилой?</string>
+    <string name="house_entrances_qty_hint">Кол-во подъездов</string>
+    <string name="house_floors_by_entrance_hint">Кол-во этажей</string>
+    <string name="house_rooms_by_floor_hint">Кол-во квартир на этаже</string>
+    <string name="house_estimated_rooms_hint">Общее кол-во квартир в доме</string>
+    <string name="house_is_foreign_language_hint">Языковая территория?</string>
+    <string name="house_desc_hint">Описание</string>
     <!--Подъезд-->
     <string name="entrance_subheader">Подъезд</string>
     <string name="entrance_new_subheader">Новый подъезд</string>

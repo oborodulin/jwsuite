@@ -8,7 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,32 +31,34 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
+import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
 
-private const val TAG = "Territoring.TerritoryStreetView"
+private const val TAG = "Territoring.HouseView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TerritoryStreetView(
-    uiModel: TerritoryStreetUiModel,
+fun HouseView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    territoryViewModel: TerritoryViewModel,
+    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: HouseViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("TerritoryStreetView(...) called")
+    Timber.tag(TAG).d("HouseView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -65,20 +68,37 @@ fun TerritoryStreetView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Territory Street: CollectAsStateWithLifecycle for all fields")
-    val territory by viewModel.territory.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("House: CollectAsStateWithLifecycle for all fields")
     val street by viewModel.street.collectAsStateWithLifecycle()
+    val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
+    val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
+    val territory by viewModel.territory.collectAsStateWithLifecycle()
+    val zipCode by viewModel.zipCode.collectAsStateWithLifecycle()
+    val houseNum by viewModel.houseNum.collectAsStateWithLifecycle()
+    val houseLetter by viewModel.houseLetter.collectAsStateWithLifecycle()
+    val buildingNum by viewModel.buildingNum.collectAsStateWithLifecycle()
+    val buildingType by viewModel.buildingType.collectAsStateWithLifecycle()
+    val isBusiness by viewModel.isBusiness.collectAsStateWithLifecycle()
+    val isSecurity by viewModel.isSecurity.collectAsStateWithLifecycle()
+    val isIntercom by viewModel.isIntercom.collectAsStateWithLifecycle()
+    val isResidential by viewModel.isResidential.collectAsStateWithLifecycle()
+    val houseEntrancesQty by viewModel.houseEntrancesQty.collectAsStateWithLifecycle()
+    val floorsByEntrance by viewModel.floorsByEntrance.collectAsStateWithLifecycle()
+    val roomsByHouseFloor by viewModel.roomsByHouseFloor.collectAsStateWithLifecycle()
+    val estimatedRooms by viewModel.estimatedRooms.collectAsStateWithLifecycle()
+    val isForeignLanguage by viewModel.isForeignLanguage.collectAsStateWithLifecycle()
     val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
-    val isEvenSide by viewModel.isBusiness.collectAsStateWithLifecycle()
-    val estimatedHouses by viewModel.zipCode.collectAsStateWithLifecycle()
+    val houseDesc by viewModel.houseDesc.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
+    val buildingTypes by viewModel.buildingTypes.collectAsStateWithLifecycle()
+
+    Timber.tag(TAG).d("House: Init Focus Requesters for all fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
     enumValues<HouseFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryStreetView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("HouseView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -99,42 +119,286 @@ fun TerritoryStreetView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TerritoryComboBox(
-            modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_TERRITORY.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_TERRITORY,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            enabled = false,
-            sharedViewModel = sharedViewModel,
-            singleViewModel = territoryViewModel,
-            inputWrapper = territory,
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
         StreetComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[HouseFields.HOUSE_STREET.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_STREET,
+                        focusedField = HouseFields.HOUSE_STREET, isFocused = focusState.isFocused
+                    )
+                },
+            enabled = false,
+            inputWrapper = street,
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        LocalityDistrictComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_LOCALITY_DISTRICT.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_LOCALITY_DISTRICT,
                         isFocused = focusState.isFocused
                     )
                 },
-            loadListUiAction = StreetsListUiAction.LoadForTerritory(
-                localityId = uiModel.territory.locality.id!!,
-                localityDistrictId = uiModel.territory.localityDistrict?.id,
-                microdistrictId = uiModel.territory.microdistrict?.id,
-                excludes = uiModel.streets.map { it.id }
-            ),
-            inputWrapper = street,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Street(it)) },
+            localityId = street.item?.itemId,
+            inputWrapper = localityDistrict,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.LocalityDistrict(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        MicrodistrictComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_MICRODISTRICT.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_MICRODISTRICT,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            localityId = street.item?.itemId,
+            localityDistrictId = localityDistrict.item?.itemId,
+            inputWrapper = microdistrict,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Microdistrict(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TerritoryComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_TERRITORY.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_TERRITORY, isFocused = focusState.isFocused
+                    )
+                },
+            sharedViewModel = sharedViewModel,
+            singleViewModel = territoryViewModel,
+            inputWrapper = territory,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Territory(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ZIP_CODE.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_ZIP_CODE, isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_zip_code_hint,
+            leadingImageVector = Icons.Outlined.Email,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = zipCode,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.ZipCode(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_NUM.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_NUM, isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_num_hint,
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = houseNum,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseNum(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_LETTER.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_LETTER, isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_letter_hint,
+            leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_ab_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+            },
+            inputWrapper = houseLetter,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseLetter(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_NUM.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_BUILDING_NUM,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_building_num_hint,
+            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = buildingNum,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.BuildingNum(it.toInt())) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        ExposedDropdownMenuBoxComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_TYPE.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_BUILDING_TYPE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_building_type_hint,
+            leadingPainterResId = com.oborodulin.jwsuite.presentation_geo.R.drawable.ic_signpost_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+            },
+            inputWrapper = buildingType,
+            values = buildingTypes.values.toList(), // resolve Enums to Resource
+            keys = buildingTypes.keys.map { it.name }, // Enums
+            onValueChange = {
+                viewModel.onTextFieldEntered(HouseInputEvent.BuildingType(BuildingType.valueOf(it)))
+            },
+            onImeKeyAction = viewModel::moveFocusImeAction,
+        )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_BUSINESS.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_IS_BUSINESS,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            painterResId = R.drawable.ic_business_center_36,
+            labelResId = R.string.territory_is_business_hint,
+            inputWrapper = isBusiness,
+            onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsBusiness(it)) }
+        )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_SECURITY.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_IS_SECURITY,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            imageVector = Icons.Outlined.Lock,
+            labelResId = R.string.house_is_security_hint,
+            inputWrapper = isSecurity,
+            onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsSecurity(it)) }
         )
         RadioBooleanComponent(
             modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_INTERCOM.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_IS_PRIVATE_SECTOR,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_is_intercom_hint,
+            painterResId = R.drawable.ic_intercom_36,
+            inputWrapper = isIntercom,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsIntercom(it)) }
+        )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_RESIDENTIAL.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_IS_RESIDENTIAL,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_is_residential_hint,
+            painterResId = R.drawable.ic_residential_36,
+            inputWrapper = isResidential,
+            onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsResidential(it)) }
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ENTRANCES_QTY.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_ENTRANCES_QTY,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_entrances_qty_hint,
+            leadingPainterResId = R.drawable.ic_entrance_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = houseEntrancesQty,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseEntrancesQty(it.toInt())) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_FLOORS_BY_ENTRANCE.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_FLOORS_BY_ENTRANCE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_floors_by_entrance_hint,
+            leadingPainterResId = R.drawable.ic_floors_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = floorsByEntrance,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.FloorsByEntrance(it.toInt())) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ROOMS_BY_FLOOR.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_ROOMS_BY_FLOOR,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_rooms_by_floor_hint,
+            leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = roomsByHouseFloor,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.RoomsByHouseFloor(it.toInt())) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ESTIMATED_ROOMS.name]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_ESTIMATED_ROOMS,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.house_rooms_by_floor_hint,
+            leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            },
+            inputWrapper = estimatedRooms,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.EstimatedRooms(it.toInt())) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
                 .focusRequester(focusRequesters[HouseFields.HOUSE_IS_PRIVATE_SECTOR.name]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
@@ -145,42 +409,7 @@ fun TerritoryStreetView(
             labelResId = com.oborodulin.jwsuite.presentation.R.string.is_private_sector_hint,
             painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_private_sector_36,
             inputWrapper = isPrivateSector,
-            onValueChange = {
-                viewModel.onTextFieldEntered(HouseInputEvent.IsPrivateSector(it))
-            }
-        )
-        RadioBooleanComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_BUSINESS.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_IS_BUSINESS,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.territory_street_is_even_side_hint,
-            painterResId = R.drawable.ic_street_side_36,
-            inputWrapper = isEvenSide,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsBusiness(it)) }
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_ZIP_CODE.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_ZIP_CODE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.territory_street_estimated_houses_hint,
-            leadingImageVector = Icons.Outlined.Home,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
-            },
-            //  visualTransformation = ::creditCardFilter,
-            inputWrapper = estimatedHouses,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.ZipCode(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsPrivateSector(it)) }
         )
     }
 }
@@ -188,11 +417,11 @@ fun TerritoryStreetView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewTerritoryStreetView() {
+fun PreviewHouseView() {
     JWSuiteTheme {
         Surface {
-            /*TerritoryStreetView(
-                localityViewModel = TerritoryStreetViewModelImpl.previewModel(LocalContext.current),
+            /*HouseView(
+                localityViewModel = HouseViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(

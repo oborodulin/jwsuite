@@ -52,8 +52,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
 
     val events = remember(localityViewModel.events, lifecycleOwner) {
         localityViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
 

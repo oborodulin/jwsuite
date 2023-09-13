@@ -29,6 +29,7 @@ private const val TAG = "Geo.StreetComboBox"
 @Composable
 fun StreetComboBox(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     listViewModel: StreetsListViewModelImpl = hiltViewModel(),
     singleViewModel: StreetViewModelImpl = hiltViewModel(),
     localityId: UUID? = null,
@@ -40,7 +41,7 @@ fun StreetComboBox(
         microdistrictId = microdistrictId
     ),
     inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent,
+    onValueChange: OnListItemEvent = {},
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("StreetComboBox(...) called")
@@ -58,6 +59,7 @@ fun StreetComboBox(
     )
     ComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
         loadListUiAction = loadListUiAction,
         isShowListDialog = isShowListDialog,
