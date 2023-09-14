@@ -54,12 +54,14 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.s
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.components.AtWorkProcessMultiFabComponent
 import com.oborodulin.jwsuite.presentation_territory.components.HandOutFabComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.util.EnumMap
 import java.util.UUID
 
 /**
@@ -83,7 +85,7 @@ fun TerritoringScreen(
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all territoring fields")
+    Timber.tag(TAG).d("Territoring: CollectAsStateWithLifecycle for all fields")
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
 
@@ -117,10 +119,10 @@ fun TerritoringScreen(
         }
     }
 
-    Timber.tag(TAG).d("Init Focus Requesters for all territoring fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Territoring: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<TerritoringFields, InputFocusRequester>(TerritoringFields::class.java)
     enumValues<TerritoringFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(isPrivateSector.value, currentCongregation?.itemId) {

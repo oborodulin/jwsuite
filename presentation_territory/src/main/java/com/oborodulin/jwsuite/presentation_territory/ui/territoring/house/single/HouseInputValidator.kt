@@ -6,6 +6,13 @@ import com.oborodulin.jwsuite.presentation_geo.R
 private const val TAG = "Territoring.TerritoryStreetInputValidator"
 
 sealed class HouseInputValidator : Validatable {
+    data object Locality : HouseInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
+            when {
+                inputs[0].isNullOrEmpty() -> R.string.locality_empty_error
+                else -> null
+            }
+    }
     data object Street : HouseInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {

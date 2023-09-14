@@ -18,6 +18,7 @@ interface HouseViewModel :
     val events: Flow<ScreenEvent>
     val buildingTypes: StateFlow<MutableMap<BuildingType, String>>
 
+    val locality: StateFlow<InputListItemWrapper<ListItemModel>>
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>
     val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>>

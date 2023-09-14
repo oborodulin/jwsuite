@@ -34,6 +34,7 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Territoring.TerritoryCategoryView"
 
@@ -47,21 +48,19 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
+    Timber.tag(TAG).d("Territory Category: CollectAsStateWithLifecycle for all fields")
     val territoryCategoryCode by viewModel.territoryCategoryCode.collectAsStateWithLifecycle()
     val territoryCategoryMark by viewModel.territoryCategoryMark.collectAsStateWithLifecycle()
     val territoryCategoryName by viewModel.territoryCategoryName.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Territory Category: Init Focus Requesters for all fields")
+    val focusRequesters =
+        EnumMap<TerritoryCategoryFields, InputFocusRequester>(TerritoryCategoryFields::class.java)
     enumValues<TerritoryCategoryFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -88,7 +87,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
     ) {
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_CODE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryCategoryFields.TERRITORY_CATEGORY_CODE,
@@ -108,7 +107,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_MARK.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_MARK]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryCategoryFields.TERRITORY_CATEGORY_MARK,
@@ -131,7 +130,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryCategoryFields.TERRITORY_CATEGORY_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryCategoryFields.TERRITORY_CATEGORY_NAME,

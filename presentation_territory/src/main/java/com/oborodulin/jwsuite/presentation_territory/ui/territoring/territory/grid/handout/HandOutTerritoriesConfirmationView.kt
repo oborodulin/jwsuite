@@ -47,6 +47,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -54,6 +55,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.gr
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Territoring.HandOutTerritoriesConfirmationView"
 
@@ -74,15 +76,15 @@ fun HandOutTerritoriesConfirmationView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all hand out territories fields")
+    Timber.tag(TAG).d("Hand Out Territories Confirmation: CollectAsStateWithLifecycle for all fields")
     val member by viewModel.member.collectAsStateWithLifecycle()
     val receivingDate by viewModel.receivingDate.collectAsStateWithLifecycle()
     val checkedTerritories by viewModel.checkedTerritories.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Hand Out Territories Confirmation: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
     enumValues<TerritoriesFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -115,7 +117,7 @@ fun HandOutTerritoriesConfirmationView(
         member.item?.let { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) }
         MemberComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_MEMBER.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_MEMBER]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoriesFields.TERRITORY_MEMBER,
@@ -130,7 +132,7 @@ fun HandOutTerritoriesConfirmationView(
         )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_RECEIVING_DATE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_RECEIVING_DATE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoriesFields.TERRITORY_RECEIVING_DATE,

@@ -36,6 +36,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Geo.RegionDistrictView"
 
@@ -49,21 +50,18 @@ fun RegionDistrictView(viewModel: RegionDistrictViewModelImpl = hiltViewModel())
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all regionDistrict fields")
+    Timber.tag(TAG).d("Region District: CollectAsStateWithLifecycle for all fields")
     val region by viewModel.region.collectAsStateWithLifecycle()
     val districtShortName by viewModel.districtShortName.collectAsStateWithLifecycle()
     val districtName by viewModel.districtName.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all regionDistrict fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Region District: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<RegionDistrictFields, InputFocusRequester>(RegionDistrictFields::class.java)
     enumValues<RegionDistrictFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -90,7 +88,7 @@ fun RegionDistrictView(viewModel: RegionDistrictViewModelImpl = hiltViewModel())
     ) {
         RegionComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_REGION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_REGION]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = RegionDistrictFields.REGION_DISTRICT_REGION,
@@ -105,7 +103,7 @@ fun RegionDistrictView(viewModel: RegionDistrictViewModelImpl = hiltViewModel())
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_SHORT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_SHORT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = RegionDistrictFields.DISTRICT_SHORT_NAME,
@@ -121,6 +119,7 @@ fun RegionDistrictView(viewModel: RegionDistrictViewModelImpl = hiltViewModel())
                 )
             },
             inputWrapper = districtShortName,
+            maxLength = 4,
             onValueChange = {
                 viewModel.onTextFieldEntered(RegionDistrictInputEvent.DistrictShortName(it))
             },
@@ -129,7 +128,7 @@ fun RegionDistrictView(viewModel: RegionDistrictViewModelImpl = hiltViewModel())
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionDistrictFields.DISTRICT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = RegionDistrictFields.DISTRICT_NAME,

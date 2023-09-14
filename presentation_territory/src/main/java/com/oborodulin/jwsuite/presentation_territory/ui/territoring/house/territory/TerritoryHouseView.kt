@@ -72,7 +72,7 @@ fun TerritoryStreetView(
     val isEvenSide by viewModel.isEvenSide.collectAsStateWithLifecycle()
     val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
+    Timber.tag(TAG).d("Territory House: Init Focus Requesters for all fields")
     val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
     enumValues<TerritoryHouseFields>().forEach {
         focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })

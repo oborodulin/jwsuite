@@ -44,7 +44,9 @@ import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupComboBox
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupFields
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Congregating.MemberView"
 
@@ -64,7 +66,7 @@ fun MemberView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all member fields")
+    Timber.tag(TAG).d("Member: CollectAsStateWithLifecycle for all fields")
     val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val group by viewModel.group.collectAsStateWithLifecycle()
     val memberNum by viewModel.memberNum.collectAsStateWithLifecycle()
@@ -80,10 +82,10 @@ fun MemberView(
 
     val memberTypes by viewModel.memberTypes.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Member: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<MemberFields, InputFocusRequester>(MemberFields::class.java)
     enumValues<MemberFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -110,7 +112,7 @@ fun MemberView(
     ) {
         CongregationComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_CONGREGATION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_CONGREGATION]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_CONGREGATION,
@@ -125,7 +127,7 @@ fun MemberView(
         )
         GroupComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_GROUP.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_GROUP]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_GROUP, isFocused = focusState.isFocused
@@ -143,7 +145,7 @@ fun MemberView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_NUM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_NUM, isFocused = focusState.isFocused
@@ -165,7 +167,7 @@ fun MemberView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_SURNAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_SURNAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_SURNAME, isFocused = focusState.isFocused
@@ -190,7 +192,7 @@ fun MemberView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_NAME,
@@ -215,7 +217,7 @@ fun MemberView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_PATRONYMIC.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PATRONYMIC]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_PATRONYMIC,
@@ -235,7 +237,7 @@ fun MemberView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_PSEUDONYM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PSEUDONYM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_PSEUDONYM,
@@ -255,7 +257,7 @@ fun MemberView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_PHONE_NUMBER,
@@ -273,7 +275,7 @@ fun MemberView(
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_PHONE_NUMBER,
@@ -293,7 +295,7 @@ fun MemberView(
         )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_DATE_OF_BIRTH.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_DATE_OF_BIRTH]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_DATE_OF_BIRTH,
@@ -310,7 +312,7 @@ fun MemberView(
         )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_DATE_OF_BAPTISM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_DATE_OF_BAPTISM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_DATE_OF_BAPTISM,
@@ -327,7 +329,7 @@ fun MemberView(
         )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_INACTIVE_DATE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_INACTIVE_DATE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MemberFields.MEMBER_INACTIVE_DATE,

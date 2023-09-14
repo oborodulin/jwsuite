@@ -1,8 +1,12 @@
 package com.oborodulin.jwsuite.data.local.db
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
@@ -84,9 +88,12 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import kotlinx.coroutines.*
 import net.sqlcipher.database.SupportFactory
 import timber.log.Timber
+import java.io.File
+import java.io.FileWriter
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.Executors
+
 
 private const val TAG = "JwSuiteDatabase"
 
@@ -242,6 +249,30 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             INSTANCE?.close()
             INSTANCE = null
         }
+        fun export(fileName: String){
+            val exportDir = File(Environment.getExternalStorageDirectory(), "")
+            if (!exportDir.exists()) {
+                exportDir.mkdirs()
+            }
+
+            val file = File(exportDir, fileName + ".csv")
+            try {
+                file.createNewFile()
+                val csvWrite = CSVWriter(FileWriter(file))
+                val curCSV: Cursor = db.query("SELECT * FROM $TableName", null)
+                csvWrite.writeNext(curCSV.getColumnNames())
+                while (curCSV.moveToNext()) {
+                    //Which column you want to exprort
+                    val arrStr = arrayOfNulls<String>(curCSV.getColumnCount())
+                    for (i in 0 until curCSV.getColumnCount() - 1) arrStr[i] = curCSV.getString(i)
+                    csvWrite.writeNext(arrStr)
+                }
+                csvWrite.close()
+                curCSV.close()
+                ToastHelper.showToast(this, "Exported", Toast.LENGTH_SHORT)
+            } catch (sqlEx: Exception) {
+                Log.e("MainActivity", sqlEx.message, sqlEx)
+            }        }
     }
 
     /**

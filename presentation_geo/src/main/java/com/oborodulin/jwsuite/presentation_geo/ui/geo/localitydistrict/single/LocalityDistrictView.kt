@@ -36,6 +36,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Geo.LocalityDistrictView"
 
@@ -50,20 +51,19 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
 
     val events = remember(localityDistrictViewModel.events, lifecycleOwner) {
         localityDistrictViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all LocalityDistrict fields")
+    Timber.tag(TAG).d("Locality District: CollectAsStateWithLifecycle for all fields")
     val locality by localityDistrictViewModel.locality.collectAsStateWithLifecycle()
     val districtShortName by localityDistrictViewModel.districtShortName.collectAsStateWithLifecycle()
     val districtName by localityDistrictViewModel.districtName.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all localityDistrict fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Locality District: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<LocalityDistrictFields, InputFocusRequester>(LocalityDistrictFields::class.java)
     enumValues<LocalityDistrictFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -90,7 +90,7 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
     ) {
         LocalityComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityDistrictViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY,
@@ -105,7 +105,7 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityDistrictViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME,
@@ -117,11 +117,11 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
             inputWrapper = districtShortName,
+            maxLength = 3,
             onValueChange = {
                 localityDistrictViewModel.onTextFieldEntered(
                     LocalityDistrictInputEvent.DistrictShortName(it)
@@ -132,7 +132,7 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityDistrictFields.LOCALITY_DISTRICT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityDistrictFields.LOCALITY_DISTRICT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityDistrictViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityDistrictFields.LOCALITY_DISTRICT_NAME,

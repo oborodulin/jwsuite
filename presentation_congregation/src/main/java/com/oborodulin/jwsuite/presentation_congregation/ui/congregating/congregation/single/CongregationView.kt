@@ -39,6 +39,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Congregating.CongregationView"
 
@@ -52,23 +53,21 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all congregation fields")
+    Timber.tag(TAG).d("Congregation: CollectAsStateWithLifecycle for all fields")
     val locality by viewModel.locality.collectAsStateWithLifecycle()
     val congregationNum by viewModel.congregationNum.collectAsStateWithLifecycle()
     val congregationName by viewModel.congregationName.collectAsStateWithLifecycle()
     val territoryMark by viewModel.territoryMark.collectAsStateWithLifecycle()
     val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all congregation fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Congregation: Init Focus Requesters for all fields")
+    val focusRequesters =
+        EnumMap<CongregationFields, InputFocusRequester>(CongregationFields::class.java)
     enumValues<CongregationFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -92,7 +91,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
     ) {
         LocalityComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_LOCALITY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_LOCALITY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_LOCALITY,
@@ -107,7 +106,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NUM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_NUM,
@@ -127,7 +126,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.CONGREGATION_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.CONGREGATION_NAME,
@@ -139,8 +138,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
             //  visualTransformation = ::creditCardFilter,
@@ -162,7 +160,7 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
         TextFieldComponent(
             modifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[CongregationFields.TERRITORY_MARK.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.TERRITORY_MARK]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.TERRITORY_MARK,
@@ -179,18 +177,14 @@ fun CongregationView(viewModel: CongregationViewModelImpl = hiltViewModel()) {
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = territoryMark,
-            onValueChange = {
-                // https://stackoverflow.com/questions/67136058/textfield-maxlength-android-jetpack-compose
-                if (it.length <= 1) {
-                    viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it))
-                }
-            },
+            maxLength = 1,
+            onValueChange = { viewModel.onTextFieldEntered(CongregationInputEvent.TerritoryMark(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[CongregationFields.IS_FAVORITE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[CongregationFields.IS_FAVORITE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = CongregationFields.IS_FAVORITE,

@@ -46,6 +46,7 @@ import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -53,6 +54,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.gr
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesInputEvent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Territoring.AtWorkTerritoriesConfirmationView"
 
@@ -73,14 +75,14 @@ fun AtWorkTerritoriesConfirmationView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all hand out territories fields")
+    Timber.tag(TAG).d("At Work Territories Confirmation: CollectAsStateWithLifecycle for all fields")
     val deliveryDate by viewModel.deliveryDate.collectAsStateWithLifecycle()
     val checkedTerritories by viewModel.checkedTerritories.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("At Work Territories Confirmation: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
     enumValues<TerritoriesFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -112,7 +114,7 @@ fun AtWorkTerritoriesConfirmationView(
     ) {
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_DELIVERY_DATE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_DELIVERY_DATE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoriesFields.TERRITORY_DELIVERY_DATE,

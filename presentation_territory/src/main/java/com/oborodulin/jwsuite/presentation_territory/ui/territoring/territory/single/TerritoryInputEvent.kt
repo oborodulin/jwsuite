@@ -13,7 +13,7 @@ sealed class TerritoryInputEvent(val value: String) : Inputable {
     data class Locality(val input: ListItemModel) : TerritoryInputEvent(input.headline)
     data class LocalityDistrict(val input: ListItemModel) : TerritoryInputEvent(input.headline)
     data class Microdistrict(val input: ListItemModel) : TerritoryInputEvent(input.headline)
-    data class TerritoryNum(val input: Int) : TerritoryInputEvent(input.toString())
+    data class TerritoryNum(val input: Int?) : TerritoryInputEvent(input?.toString().orEmpty())
     data class IsBusiness(val input: Boolean) : TerritoryInputEvent(input.toString())
     data class IsGroupMinistry(val input: Boolean) : TerritoryInputEvent(input.toString())
     data class IsActive(val input: Boolean) : TerritoryInputEvent(input.toString())

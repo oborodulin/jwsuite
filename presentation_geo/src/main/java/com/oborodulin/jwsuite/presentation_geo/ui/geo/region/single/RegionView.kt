@@ -34,6 +34,7 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Geo.RegionView"
 
@@ -47,20 +48,17 @@ fun RegionView(viewModel: RegionViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
+    Timber.tag(TAG).d("Region: CollectAsStateWithLifecycle for all fields")
     val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
     val regionName by viewModel.regionName.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Region: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<RegionFields, InputFocusRequester>(RegionFields::class.java)
     enumValues<RegionFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -87,7 +85,7 @@ fun RegionView(viewModel: RegionViewModel) {
     ) {
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionFields.REGION_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionFields.REGION_CODE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = RegionFields.REGION_CODE,
@@ -105,7 +103,7 @@ fun RegionView(viewModel: RegionViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegionFields.REGION_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[RegionFields.REGION_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = RegionFields.REGION_NAME,

@@ -38,6 +38,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Congregating.GroupView"
 
@@ -57,14 +58,14 @@ fun GroupView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all region fields")
+    Timber.tag(TAG).d("Group: CollectAsStateWithLifecycle for all fields")
     val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val groupNum by viewModel.groupNum.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Group: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<GroupFields, InputFocusRequester>(GroupFields::class.java)
     enumValues<GroupFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -91,7 +92,7 @@ fun GroupView(
     ) {
         CongregationComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[GroupFields.GROUP_CONGREGATION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[GroupFields.GROUP_CONGREGATION]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = GroupFields.GROUP_CONGREGATION,
@@ -106,7 +107,7 @@ fun GroupView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[GroupFields.GROUP_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[GroupFields.GROUP_NUM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = GroupFields.GROUP_NUM,

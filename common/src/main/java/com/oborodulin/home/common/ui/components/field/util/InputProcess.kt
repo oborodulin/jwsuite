@@ -10,12 +10,12 @@ import timber.log.Timber
 private const val TAG = "Common.ui.inputProcess"
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun inputProcess(
+fun <F : Focusable> inputProcess(
     context: Context,
     focusManager: FocusManager,
     keyboardController: SoftwareKeyboardController?,
     event: ScreenEvent,
-    focusRequesters: Map<String, InputFocusRequester>
+    focusRequesters: Map<F, InputFocusRequester>
 ) {
     Timber.tag(TAG).d("inputProcess(...) called")
     when (event) {
@@ -23,8 +23,9 @@ fun inputProcess(
         is ScreenEvent.UpdateKeyboard -> {
             if (event.show) keyboardController?.show() else keyboardController?.hide()
         }
+
         is ScreenEvent.ClearFocus -> focusManager.clearFocus()
-        is ScreenEvent.RequestFocus -> focusRequesters[event.textField.key()]?.focusRequester?.requestFocus()
+        is ScreenEvent.RequestFocus -> focusRequesters[event.textField]?.focusRequester?.requestFocus()
         is ScreenEvent.MoveFocus -> focusManager.moveFocus(event.direction)
     }
 }

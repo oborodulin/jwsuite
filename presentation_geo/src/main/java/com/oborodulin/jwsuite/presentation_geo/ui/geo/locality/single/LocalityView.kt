@@ -38,6 +38,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Geo.LocalityView"
 
@@ -56,7 +57,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
         )
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all Locality fields")
+    Timber.tag(TAG).d("Locality: CollectAsStateWithLifecycle for all fields")
     val region by localityViewModel.region.collectAsStateWithLifecycle()
     val regionDistrict by localityViewModel.regionDistrict.collectAsStateWithLifecycle()
     val localityCode by localityViewModel.localityCode.collectAsStateWithLifecycle()
@@ -66,10 +67,10 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
 
     val localityTypes by localityViewModel.localityTypes.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all Locality fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Locality: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<LocalityFields, InputFocusRequester>(LocalityFields::class.java)
     enumValues<LocalityFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -96,7 +97,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
     ) {
         RegionComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_REGION,
@@ -109,7 +110,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
         )
         RegionDistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION_DISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION_DISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_REGION_DISTRICT,
@@ -125,7 +126,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_CODE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_CODE,
@@ -147,7 +148,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_SHORT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_SHORT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_SHORT_NAME,
@@ -159,11 +160,11 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
             inputWrapper = localityShortName,
+            maxLength = 4,
             onValueChange = {
                 localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityShortName(it))
             },
@@ -172,7 +173,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_TYPE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_TYPE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_TYPE,
@@ -194,7 +195,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[LocalityFields.LOCALITY_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[LocalityFields.LOCALITY_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     localityViewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_NAME,

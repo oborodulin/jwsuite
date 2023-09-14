@@ -4,6 +4,7 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class HouseFields : Focusable {
     HOUSE_ID,
+    HOUSE_LOCALITY,
     HOUSE_STREET,
     HOUSE_LOCALITY_DISTRICT,
     HOUSE_MICRODISTRICT,

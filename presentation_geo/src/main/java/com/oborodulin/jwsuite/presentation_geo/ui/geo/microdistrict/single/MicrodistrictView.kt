@@ -39,6 +39,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Geo.MicrodistrictView"
 
@@ -52,13 +53,10 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all Microdistrict fields")
+    Timber.tag(TAG).d("Microdistrict: CollectAsStateWithLifecycle for all fields")
     val locality by viewModel.locality.collectAsStateWithLifecycle()
     val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
     val microdistrictShortName by viewModel.microdistrictShortName.collectAsStateWithLifecycle()
@@ -67,10 +65,10 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
 
     val microdistrictTypes by viewModel.microdistrictTypes.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all Microdistrict fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Microdistrict: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<MicrodistrictFields, InputFocusRequester>(MicrodistrictFields::class.java)
     enumValues<MicrodistrictFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -97,7 +95,7 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
     ) {
         LocalityComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_LOCALITY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_LOCALITY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MicrodistrictFields.MICRODISTRICT_LOCALITY,
@@ -110,7 +108,7 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
         )
         LocalityDistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT,
@@ -126,7 +124,7 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_SHORT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_SHORT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MicrodistrictFields.MICRODISTRICT_SHORT_NAME,
@@ -138,11 +136,11 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
             inputWrapper = microdistrictShortName,
+            maxLength = 3,
             onValueChange = {
                 viewModel.onTextFieldEntered(MicrodistrictInputEvent.MicrodistrictShortName(it))
             },
@@ -151,7 +149,7 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_TYPE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_TYPE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MicrodistrictFields.MICRODISTRICT_TYPE,
@@ -173,7 +171,7 @@ fun MicrodistrictView(viewModel: MicrodistrictViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[MicrodistrictFields.MICRODISTRICT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = MicrodistrictFields.MICRODISTRICT_NAME,

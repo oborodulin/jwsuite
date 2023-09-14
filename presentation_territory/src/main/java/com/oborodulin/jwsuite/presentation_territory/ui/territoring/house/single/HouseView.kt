@@ -42,6 +42,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
@@ -49,6 +50,7 @@ import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Territoring.HouseView"
 
@@ -70,6 +72,7 @@ fun HouseView(
     }
 
     Timber.tag(TAG).d("House: CollectAsStateWithLifecycle for all fields")
+    val locality by viewModel.locality.collectAsStateWithLifecycle()
     val street by viewModel.street.collectAsStateWithLifecycle()
     val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
     val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
@@ -94,9 +97,9 @@ fun HouseView(
     val buildingTypes by viewModel.buildingTypes.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("House: Init Focus Requesters for all fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    val focusRequesters = EnumMap<HouseFields, InputFocusRequester>(HouseFields::class.java)
     enumValues<HouseFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("HouseView(...): LaunchedEffect()")
@@ -120,42 +123,56 @@ fun HouseView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        LocalityComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[HouseFields.HOUSE_LOCALITY]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = HouseFields.HOUSE_LOCALITY,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            inputWrapper = locality,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Locality(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
         StreetComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_STREET.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_STREET]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_STREET, isFocused = focusState.isFocused
                     )
                 },
-            enabled = false,
+            localityId = locality.item?.itemId,
             inputWrapper = street,
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Street(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         LocalityDistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_LOCALITY_DISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_LOCALITY_DISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_LOCALITY_DISTRICT,
                         isFocused = focusState.isFocused
                     )
                 },
-            localityId = street.item?.itemId,
+            localityId = locality.item?.itemId,
             inputWrapper = localityDistrict,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.LocalityDistrict(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         MicrodistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_MICRODISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_MICRODISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_MICRODISTRICT,
                         isFocused = focusState.isFocused
                     )
                 },
-            localityId = street.item?.itemId,
+            localityId = locality.item?.itemId,
             localityDistrictId = localityDistrict.item?.itemId,
             inputWrapper = microdistrict,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Microdistrict(it)) },
@@ -163,7 +180,7 @@ fun HouseView(
         )
         TerritoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_TERRITORY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_TERRITORY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_TERRITORY, isFocused = focusState.isFocused
@@ -177,7 +194,7 @@ fun HouseView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_ZIP_CODE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ZIP_CODE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_ZIP_CODE, isFocused = focusState.isFocused
@@ -194,7 +211,7 @@ fun HouseView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_NUM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_NUM, isFocused = focusState.isFocused
@@ -206,12 +223,12 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = houseNum,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseNum(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseNum(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_LETTER.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_LETTER]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_LETTER, isFocused = focusState.isFocused
@@ -228,7 +245,7 @@ fun HouseView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_NUM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_BUILDING_NUM,
@@ -241,12 +258,12 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = buildingNum,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.BuildingNum(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.BuildingNum(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_TYPE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_TYPE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_BUILDING_TYPE,
@@ -269,7 +286,7 @@ fun HouseView(
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_BUSINESS.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_BUSINESS]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_IS_BUSINESS,
@@ -284,7 +301,7 @@ fun HouseView(
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_SECURITY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_SECURITY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_IS_SECURITY,
@@ -298,7 +315,7 @@ fun HouseView(
         )
         RadioBooleanComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_INTERCOM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_INTERCOM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_IS_PRIVATE_SECTOR,
@@ -313,7 +330,7 @@ fun HouseView(
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_RESIDENTIAL.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_RESIDENTIAL]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_IS_RESIDENTIAL,
@@ -327,7 +344,7 @@ fun HouseView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_ENTRANCES_QTY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ENTRANCES_QTY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_ENTRANCES_QTY,
@@ -340,12 +357,12 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = houseEntrancesQty,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseEntrancesQty(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseEntrancesQty(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_FLOORS_BY_ENTRANCE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_FLOORS_BY_ENTRANCE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_FLOORS_BY_ENTRANCE,
@@ -358,12 +375,12 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = floorsByEntrance,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.FloorsByEntrance(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.FloorsByEntrance(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_ROOMS_BY_FLOOR.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ROOMS_BY_FLOOR]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_ROOMS_BY_FLOOR,
@@ -376,12 +393,12 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = roomsByHouseFloor,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.RoomsByHouseFloor(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.RoomsByHouseFloor(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_ESTIMATED_ROOMS.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_ESTIMATED_ROOMS]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_ESTIMATED_ROOMS,
@@ -394,13 +411,13 @@ fun HouseView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = estimatedRooms,
-            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.EstimatedRooms(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.EstimatedRooms(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_FOREIGN_LANGUAGE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_FOREIGN_LANGUAGE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_IS_FOREIGN_LANGUAGE,
@@ -415,7 +432,7 @@ fun HouseView(
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_PRIVATE_SECTOR.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_IS_PRIVATE_SECTOR]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_IS_PRIVATE_SECTOR,
@@ -429,7 +446,7 @@ fun HouseView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[HouseFields.HOUSE_DESC.name]!!.focusRequester)
+                .focusRequester(focusRequesters[HouseFields.HOUSE_DESC]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = HouseFields.HOUSE_DESC, isFocused = focusState.isFocused

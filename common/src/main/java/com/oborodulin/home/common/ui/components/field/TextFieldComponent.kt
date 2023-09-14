@@ -4,7 +4,9 @@ import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +57,7 @@ fun TextFieldComponent(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     inputWrapper: InputWrapper,
+    maxLength: Int = Int.MAX_VALUE,
     @StringRes placeholderResId: Int? = null,
     @StringRes labelResId: Int? = null,
     @StringRes helperResId: Int? = null,
@@ -104,7 +108,12 @@ fun TextFieldComponent(
             enabled = enabled,
             readOnly = readOnly,
             value = fieldValue,
-            onValueChange = { fieldValue = it; onValueChange(it.text) },
+            onValueChange = {
+                // https://stackoverflow.com/questions/67136058/textfield-maxlength-android-jetpack-compose
+                if (it.text.length <= maxLength) {
+                    fieldValue = it; onValueChange(it.text)
+                }
+            },
             label = labelResId?.let { { Text(stringResource(it)) } },
             placeholder = placeholderResId?.let {
                 { Text(text = stringResource(it), maxLines = 1, overflow = TextOverflow.Ellipsis) }
@@ -126,8 +135,28 @@ fun TextFieldComponent(
                     contentDescriptionResId = trailingCntDescResId
                 )
             },
-            supportingText = helperResId?.let {
-                { Text(text = stringResource(it), maxLines = 1, overflow = TextOverflow.Ellipsis) }
+            supportingText = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    helperResId?.let {
+                        Text(
+                            modifier = Modifier.weight(8f),
+                            text = stringResource(it),
+                            textAlign = TextAlign.Start,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    if (maxLength != Int.MAX_VALUE) {
+                        Text(
+                            modifier = Modifier.weight(2f),
+                            text = "${fieldValue.text.length} / $maxLength",
+                            textAlign = TextAlign.End
+                        )
+                    }
+                }
             },
             maxLines = maxLines,
             isError = inputWrapper.errorId != null,

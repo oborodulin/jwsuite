@@ -41,9 +41,11 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiA
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Territoring.TerritoryStreetView"
 
@@ -73,9 +75,9 @@ fun TerritoryStreetView(
     val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    val focusRequesters = EnumMap<TerritoryStreetFields, InputFocusRequester>(TerritoryStreetFields::class.java)
     enumValues<TerritoryStreetFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("TerritoryStreetView(...): LaunchedEffect()")
@@ -101,7 +103,7 @@ fun TerritoryStreetView(
     ) {
         TerritoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_TERRITORY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryStreetFields.TERRITORY_STREET_TERRITORY,
@@ -116,7 +118,7 @@ fun TerritoryStreetView(
         )
         StreetComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_STREET.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_STREET]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryStreetFields.TERRITORY_STREET_STREET,
@@ -135,7 +137,7 @@ fun TerritoryStreetView(
         )
         RadioBooleanComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
@@ -151,7 +153,7 @@ fun TerritoryStreetView(
         )
         RadioBooleanComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE,
@@ -165,7 +167,7 @@ fun TerritoryStreetView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES,

@@ -42,6 +42,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityCo
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Geo.StreetView"
 
@@ -61,7 +62,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
         )
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all Street fields")
+    Timber.tag(TAG).d("Street: CollectAsStateWithLifecycle for all fields")
     val locality by viewModel.locality.collectAsStateWithLifecycle()
     val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
     val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
@@ -72,10 +73,10 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
 
     val roadTypes by viewModel.roadTypes.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all Street fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Street: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<StreetFields, InputFocusRequester>(StreetFields::class.java)
     enumValues<StreetFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
@@ -102,7 +103,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
     ) {
         LocalityComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_LOCALITY,
@@ -115,7 +116,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
         )
         LocalityDistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY_DISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY_DISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_LOCALITY_DISTRICT,
@@ -131,7 +132,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
         )
         MicrodistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_MICRODISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_MICRODISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_MICRODISTRICT,
@@ -148,7 +149,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_NAME.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_NAME,
@@ -170,7 +171,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_ROAD_TYPE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_ROAD_TYPE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_ROAD_TYPE,
@@ -193,7 +194,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[StreetFields.STREET_IS_PRIVATE_SECTOR.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_IS_PRIVATE_SECTOR]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_IS_PRIVATE_SECTOR,
@@ -202,13 +203,11 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
                 },
             labelResId = R.string.is_private_sector_hint,
             inputWrapper = isPrivateSector,
-            onCheckedChange = {
-                viewModel.onTextFieldEntered(StreetInputEvent.IsPrivateSector(it))
-            }
+            onCheckedChange = { viewModel.onTextFieldEntered(StreetInputEvent.IsPrivateSector(it)) }
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetFields.STREET_EST_HOUSES.name]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetFields.STREET_EST_HOUSES]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = StreetFields.STREET_EST_HOUSES,

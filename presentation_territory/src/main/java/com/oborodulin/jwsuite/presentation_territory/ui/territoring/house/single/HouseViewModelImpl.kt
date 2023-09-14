@@ -59,6 +59,9 @@ class HouseViewModelImpl @Inject constructor(
         MutableStateFlow(mutableMapOf())
     override val buildingTypes = _buildingTypes.asStateFlow()
 
+    override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(HouseFields.HOUSE_LOCALITY.name, InputListItemWrapper())
+    }
     override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
         state.getStateFlow(HouseFields.HOUSE_STREET.name, InputListItemWrapper())
     }
@@ -297,6 +300,15 @@ class HouseViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is HouseInputEvent.Locality ->
+                        when (HouseInputValidator.Locality.errorIdOrNull(event.input.headline)) {
+                            null -> setStateValue(
+                                HouseFields.HOUSE_LOCALITY, locality, event.input, true
+                            )
+
+                            else -> setStateValue(HouseFields.HOUSE_LOCALITY, locality, event.input)
+                        }
+
                     is HouseInputEvent.Street ->
                         when (HouseInputValidator.Street.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
@@ -306,16 +318,14 @@ class HouseViewModelImpl @Inject constructor(
                             else -> setStateValue(HouseFields.HOUSE_STREET, street, event.input)
                         }
 
-                    is HouseInputEvent.LocalityDistrict ->
-                        setStateValue(
-                            HouseFields.HOUSE_LOCALITY_DISTRICT, localityDistrict, event.input,
-                            true
-                        )
+                    is HouseInputEvent.LocalityDistrict -> setStateValue(
+                        HouseFields.HOUSE_LOCALITY_DISTRICT, localityDistrict, event.input,
+                        true
+                    )
 
-                    is HouseInputEvent.Microdistrict ->
-                        setStateValue(
-                            HouseFields.HOUSE_MICRODISTRICT, microdistrict, event.input, true
-                        )
+                    is HouseInputEvent.Microdistrict -> setStateValue(
+                        HouseFields.HOUSE_MICRODISTRICT, microdistrict, event.input, true
+                    )
 
                     is HouseInputEvent.Territory ->
                         setStateValue(HouseFields.HOUSE_TERRITORY, territory, event.input, true)
@@ -335,11 +345,10 @@ class HouseViewModelImpl @Inject constructor(
                     is HouseInputEvent.HouseLetter ->
                         setStateValue(HouseFields.HOUSE_LETTER, houseLetter, event.input, true)
 
-                    is HouseInputEvent.BuildingNum ->
-                        setStateValue(
-                            HouseFields.HOUSE_BUILDING_NUM, buildingNum,
-                            event.input?.toString().orEmpty(), true
-                        )
+                    is HouseInputEvent.BuildingNum -> setStateValue(
+                        HouseFields.HOUSE_BUILDING_NUM, buildingNum,
+                        event.input?.toString().orEmpty(), true
+                    )
 
                     is HouseInputEvent.BuildingType ->
                         when (HouseInputValidator.BuildingType.errorIdOrNull(event.input.name)) {
@@ -353,78 +362,71 @@ class HouseViewModelImpl @Inject constructor(
                             )
                         }
 
-                    is HouseInputEvent.IsBusiness ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_BUSINESS, isBusiness, event.input.toString(), true
-                        )
+                    is HouseInputEvent.IsBusiness -> setStateValue(
+                        HouseFields.HOUSE_IS_BUSINESS, isBusiness, event.input.toString(), true
+                    )
 
-                    is HouseInputEvent.IsSecurity ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_SECURITY, isSecurity, event.input.toString(), true
-                        )
+                    is HouseInputEvent.IsSecurity -> setStateValue(
+                        HouseFields.HOUSE_IS_SECURITY, isSecurity, event.input.toString(), true
+                    )
 
-                    is HouseInputEvent.IsIntercom ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_INTERCOM, isIntercom,
-                            event.input?.toString().orEmpty(), true
-                        )
+                    is HouseInputEvent.IsIntercom -> setStateValue(
+                        HouseFields.HOUSE_IS_INTERCOM, isIntercom,
+                        event.input?.toString().orEmpty(), true
+                    )
 
-                    is HouseInputEvent.IsResidential ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_RESIDENTIAL, isResidential, event.input.toString(),
-                            true
-                        )
+                    is HouseInputEvent.IsResidential -> setStateValue(
+                        HouseFields.HOUSE_IS_RESIDENTIAL, isResidential, event.input.toString(),
+                        true
+                    )
 
-                    is HouseInputEvent.HouseEntrancesQty ->
-                        setStateValue(
-                            HouseFields.HOUSE_ENTRANCES_QTY, houseEntrancesQty,
-                            event.input?.toString().orEmpty(), true
-                        )
+                    is HouseInputEvent.HouseEntrancesQty -> setStateValue(
+                        HouseFields.HOUSE_ENTRANCES_QTY, houseEntrancesQty,
+                        event.input?.toString().orEmpty(), true
+                    )
 
-                    is HouseInputEvent.FloorsByEntrance ->
-                        setStateValue(
-                            HouseFields.HOUSE_FLOORS_BY_ENTRANCE, floorsByEntrance,
-                            event.input?.toString().orEmpty(), true
-                        )
+                    is HouseInputEvent.FloorsByEntrance -> setStateValue(
+                        HouseFields.HOUSE_FLOORS_BY_ENTRANCE, floorsByEntrance,
+                        event.input?.toString().orEmpty(), true
+                    )
 
-                    is HouseInputEvent.RoomsByHouseFloor ->
-                        setStateValue(
-                            HouseFields.HOUSE_ROOMS_BY_FLOOR, roomsByHouseFloor,
-                            event.input?.toString().orEmpty(), true
-                        )
+                    is HouseInputEvent.RoomsByHouseFloor -> setStateValue(
+                        HouseFields.HOUSE_ROOMS_BY_FLOOR, roomsByHouseFloor,
+                        event.input?.toString().orEmpty(), true
+                    )
 
-                    is HouseInputEvent.EstimatedRooms ->
-                        setStateValue(
-                            HouseFields.HOUSE_ESTIMATED_ROOMS, estimatedRooms,
-                            event.input?.toString().orEmpty(), true
-                        )
+                    is HouseInputEvent.EstimatedRooms -> setStateValue(
+                        HouseFields.HOUSE_ESTIMATED_ROOMS, estimatedRooms,
+                        event.input?.toString().orEmpty(), true
+                    )
 
-                    is HouseInputEvent.IsForeignLanguage ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_FOREIGN_LANGUAGE, isForeignLanguage,
-                            event.input.toString(), true
-                        )
+                    is HouseInputEvent.IsForeignLanguage -> setStateValue(
+                        HouseFields.HOUSE_IS_FOREIGN_LANGUAGE, isForeignLanguage,
+                        event.input.toString(), true
+                    )
 
-                    is HouseInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_PRIVATE_SECTOR,
-                            isPrivateSector, event.input.toString(), true
-                        )
+                    is HouseInputEvent.IsPrivateSector -> setStateValue(
+                        HouseFields.HOUSE_IS_PRIVATE_SECTOR,
+                        isPrivateSector, event.input.toString(), true
+                    )
 
-                    is HouseInputEvent.HouseDesc ->
-                        setStateValue(
-                            HouseFields.HOUSE_DESC, houseDesc, event.input.orEmpty(), true
-                        )
+                    is HouseInputEvent.HouseDesc -> setStateValue(
+                        HouseFields.HOUSE_DESC, houseDesc, event.input.orEmpty(), true
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is HouseInputEvent.Street ->
-                        setStateValue(
-                            HouseFields.HOUSE_STREET, street,
-                            HouseInputValidator.Street.errorIdOrNull(event.input.headline)
-                        )
+                    is HouseInputEvent.Locality -> setStateValue(
+                        HouseFields.HOUSE_LOCALITY, locality,
+                        HouseInputValidator.Locality.errorIdOrNull(event.input.headline)
+                    )
+
+                    is HouseInputEvent.Street -> setStateValue(
+                        HouseFields.HOUSE_STREET, street,
+                        HouseInputValidator.Street.errorIdOrNull(event.input.headline)
+                    )
 
                     is HouseInputEvent.LocalityDistrict ->
                         setStateValue(HouseFields.HOUSE_LOCALITY_DISTRICT, localityDistrict, null)
@@ -438,11 +440,12 @@ class HouseViewModelImpl @Inject constructor(
                     is HouseInputEvent.ZipCode ->
                         setStateValue(HouseFields.HOUSE_ZIP_CODE, zipCode, null)
 
-                    is HouseInputEvent.HouseNum ->
-                        setStateValue(
-                            HouseFields.HOUSE_NUM, houseNum,
-                            HouseInputValidator.HouseNum.errorIdOrNull(event.input.toString())
+                    is HouseInputEvent.HouseNum -> setStateValue(
+                        HouseFields.HOUSE_NUM, houseNum,
+                        HouseInputValidator.HouseNum.errorIdOrNull(
+                            event.input?.toString().orEmpty()
                         )
+                    )
 
                     is HouseInputEvent.HouseLetter ->
                         setStateValue(HouseFields.HOUSE_LETTER, houseLetter, null)
@@ -450,11 +453,10 @@ class HouseViewModelImpl @Inject constructor(
                     is HouseInputEvent.BuildingNum ->
                         setStateValue(HouseFields.HOUSE_BUILDING_NUM, buildingNum, null)
 
-                    is HouseInputEvent.BuildingType ->
-                        setStateValue(
-                            HouseFields.HOUSE_BUILDING_TYPE, buildingType,
-                            HouseInputValidator.BuildingType.errorIdOrNull(event.input.name)
-                        )
+                    is HouseInputEvent.BuildingType -> setStateValue(
+                        HouseFields.HOUSE_BUILDING_TYPE, buildingType,
+                        HouseInputValidator.BuildingType.errorIdOrNull(event.input.name)
+                    )
 
                     is HouseInputEvent.IsBusiness ->
                         setStateValue(HouseFields.HOUSE_IS_BUSINESS, isBusiness, null)
@@ -480,10 +482,9 @@ class HouseViewModelImpl @Inject constructor(
                     is HouseInputEvent.EstimatedRooms ->
                         setStateValue(HouseFields.HOUSE_ESTIMATED_ROOMS, estimatedRooms, null)
 
-                    is HouseInputEvent.IsForeignLanguage ->
-                        setStateValue(
-                            HouseFields.HOUSE_IS_FOREIGN_LANGUAGE, isForeignLanguage, null
-                        )
+                    is HouseInputEvent.IsForeignLanguage -> setStateValue(
+                        HouseFields.HOUSE_IS_FOREIGN_LANGUAGE, isForeignLanguage, null
+                    )
 
                     is HouseInputEvent.IsPrivateSector ->
                         setStateValue(HouseFields.HOUSE_IS_PRIVATE_SECTOR, isPrivateSector, null)
@@ -498,6 +499,9 @@ class HouseViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
+        HouseInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
+            inputErrors.add(InputError(fieldName = HouseFields.HOUSE_LOCALITY.name, errorId = it))
+        }
         HouseInputValidator.Street.errorIdOrNull(street.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = HouseFields.HOUSE_STREET.name, errorId = it))
         }
@@ -517,6 +521,7 @@ class HouseViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (HouseFields.valueOf(error.fieldName)) {
+                HouseFields.HOUSE_LOCALITY -> locality.value.copy(errorId = error.errorId)
                 HouseFields.HOUSE_STREET -> street.value.copy(errorId = error.errorId)
                 HouseFields.HOUSE_NUM -> houseNum.value.copy(errorId = error.errorId)
                 HouseFields.HOUSE_BUILDING_TYPE -> buildingType.value.copy(errorId = error.errorId)
@@ -544,7 +549,7 @@ class HouseViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val buildingTypes = MutableStateFlow(mutableMapOf<BuildingType, String>())
-
+                override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street =
                     MutableStateFlow(InputListItemWrapper<StreetsListItem>())
                 override val localityDistrict =

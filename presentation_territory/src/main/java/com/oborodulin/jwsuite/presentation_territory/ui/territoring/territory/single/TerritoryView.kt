@@ -45,6 +45,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.Micro
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryComboBox
 import timber.log.Timber
+import java.util.EnumMap
 
 private const val TAG = "Territoring.TerritoryView"
 
@@ -64,7 +65,7 @@ fun TerritoryView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("CollectAsStateWithLifecycle for all member fields")
+    Timber.tag(TAG).d("Territory: CollectAsStateWithLifecycle for all fields")
     val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val category by viewModel.category.collectAsStateWithLifecycle()
     val locality by viewModel.locality.collectAsStateWithLifecycle()
@@ -76,10 +77,10 @@ fun TerritoryView(
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
     val territoryDesc by viewModel.territoryDesc.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Init Focus Requesters for all region fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    Timber.tag(TAG).d("Territory: Init Focus Requesters for all fields")
+    val focusRequesters = EnumMap<TerritoryFields, InputFocusRequester>(TerritoryFields::class.java)
     enumValues<TerritoryFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("TerritoryView(...): LaunchedEffect()")
@@ -105,7 +106,7 @@ fun TerritoryView(
     ) {
         CongregationComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_CONGREGATION.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_CONGREGATION]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_CONGREGATION,
@@ -120,7 +121,7 @@ fun TerritoryView(
         )
         TerritoryCategoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_CATEGORY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_CATEGORY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_CATEGORY,
@@ -143,7 +144,7 @@ fun TerritoryView(
         )
         LocalityComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_LOCALITY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_LOCALITY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_LOCALITY,
@@ -156,7 +157,7 @@ fun TerritoryView(
         )
         LocalityDistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_LOCALITY_DISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_LOCALITY_DISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_LOCALITY_DISTRICT,
@@ -170,7 +171,7 @@ fun TerritoryView(
         )
         MicrodistrictComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_MICRODISTRICT.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_MICRODISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_MICRODISTRICT,
@@ -185,7 +186,7 @@ fun TerritoryView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_NUM.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_NUM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_NUM,
@@ -198,13 +199,13 @@ fun TerritoryView(
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = territoryNum,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it.toInt())) },
+            onValueChange = { viewModel.onTextFieldEntered(TerritoryInputEvent.TerritoryNum(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_BUSINESS.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_BUSINESS]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_IS_BUSINESS,
@@ -219,7 +220,7 @@ fun TerritoryView(
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_GROUP_MINISTRY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_GROUP_MINISTRY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_IS_GROUP_MINISTRY,
@@ -234,7 +235,7 @@ fun TerritoryView(
         SwitchComponent(
             switchModifier = Modifier
                 .height(90.dp)
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_ACTIVE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_IS_ACTIVE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_IS_ACTIVE,
@@ -248,7 +249,7 @@ fun TerritoryView(
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_DESC.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryFields.TERRITORY_DESC]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryFields.TERRITORY_DESC,
