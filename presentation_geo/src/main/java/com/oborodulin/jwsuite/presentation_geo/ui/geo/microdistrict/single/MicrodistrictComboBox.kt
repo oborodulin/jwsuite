@@ -29,6 +29,7 @@ private const val TAG = "Geo.MicrodistrictComboBox"
 @Composable
 fun MicrodistrictComboBox(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     localityId: UUID?,
     localityDistrictId: UUID?,
     listViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
@@ -37,7 +38,11 @@ fun MicrodistrictComboBox(
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("MicrodistrictComboBox(...) called")
+    Timber.tag(TAG).d(
+        "MicrodistrictComboBox(...) called: localityId = %s; localityDistrictId = %s",
+        localityId,
+        localityDistrictId
+    )
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -52,6 +57,7 @@ fun MicrodistrictComboBox(
     )
     ComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
         loadListUiAction = MicrodistrictsListUiAction.Load(localityId, localityDistrictId),
         isShowListDialog = isShowListDialog,

@@ -31,7 +31,8 @@ class TerritoryToTerritoryUiMapper(
             isProcessed = input.isProcessed,
             isActive = input.isActive,
             territoryDesc = input.territoryDesc,
-            cardNum = input.cardNum
+            cardNum = input.cardNum,
+            cardLocation = input.cardLocation
         )
         territoryUi.id = input.id
         return territoryUi

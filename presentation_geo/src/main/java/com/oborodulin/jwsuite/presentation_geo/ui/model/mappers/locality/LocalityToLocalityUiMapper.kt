@@ -17,7 +17,8 @@ class LocalityToLocalityUiMapper(
             localityCode = input.localityCode,
             localityType = input.localityType,
             localityShortName = input.localityShortName,
-            localityName = input.localityName
+            localityName = input.localityName,
+            localityFullName = input.localityFullName
         )
         localityUi.id = input.id
         return localityUi

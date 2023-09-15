@@ -18,7 +18,8 @@ class MicrodistrictToMicrodistrictUiMapper(
             localityDistrict = localityDistrictMapper.map(input.localityDistrict),
             microdistrictType = input.microdistrictType,
             microdistrictShortName = input.microdistrictShortName,
-            microdistrictName = input.microdistrictName
+            microdistrictName = input.microdistrictName,
+            microdistrictFullName = input.microdistrictFullName
         )
         microdistrictUi.id = input.id
         return microdistrictUi

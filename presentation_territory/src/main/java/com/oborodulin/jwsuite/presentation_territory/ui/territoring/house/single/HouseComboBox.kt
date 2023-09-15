@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -24,6 +25,8 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
 import java.util.UUID
 
@@ -33,14 +36,20 @@ private const val TAG = "Territoring.HouseComboBox"
 fun HouseComboBox(
     modifier: Modifier = Modifier,
     streetId: UUID,
+    territoryId: UUID? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
+    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     listViewModel: HousesListViewModelImpl = hiltViewModel(),
     singleViewModel: HouseViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("HouseComboBox(...) called")
+    Timber.tag(TAG).d("HouseComboBox(...) called: streetId = %s; territoryId = %s", streetId, territoryId)
+    LaunchedEffect(territoryId) {
+        Timber.tag(TAG).d("HouseComboBox -> LaunchedEffect(): territoryId = %s", territoryId)
+        territoryId?.let { territoryViewModel.submitAction(TerritoryUiAction.Load(territoryId)) }
+    }
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -50,7 +59,12 @@ fun HouseComboBox(
         viewModel = singleViewModel,
         loadUiAction = HouseUiAction.Load(),
         confirmUiAction = HouseUiAction.Save,
-        dialogView = { HouseView(sharedViewModel) },
+        dialogView = {
+            HouseView(
+                sharedViewModel = sharedViewModel,
+                territoryViewModel = territoryViewModel
+            )
+        },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(

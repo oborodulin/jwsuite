@@ -37,7 +37,7 @@ fun RegionDistrictComboBox(
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("RegionComboBox(...) called")
+    Timber.tag(TAG).d("RegionComboBox(...) called: regionId = %s", regionId)
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }

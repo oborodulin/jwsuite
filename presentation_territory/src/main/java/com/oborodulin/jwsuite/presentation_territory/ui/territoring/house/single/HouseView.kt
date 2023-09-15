@@ -40,15 +40,21 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityDistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toMicrodistrictsListItem
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -58,7 +64,7 @@ private const val TAG = "Territoring.HouseView"
 @Composable
 fun HouseView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
+    territoryViewModel: TerritoryViewModel,
     viewModel: HouseViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("HouseView(...) called")
@@ -70,7 +76,22 @@ fun HouseView(
     val events = remember(viewModel.events, lifecycleOwner) {
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-
+    var territoryUiModel: TerritoryUi? = null
+    territoryViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let {
+        if (it is UiState.Success) {
+            territoryUiModel = it.data
+            viewModel.onTextFieldEntered(HouseInputEvent.Territory(it.data.toTerritoriesListItem()))
+            with(it.data) {
+                viewModel.onTextFieldEntered(HouseInputEvent.Locality(this.locality.toListItemModel()))
+                this.localityDistrict?.let { ld ->
+                    viewModel.onTextFieldEntered(HouseInputEvent.LocalityDistrict(ld.toLocalityDistrictsListItem()))
+                }
+                this.microdistrict?.let { md ->
+                    viewModel.onTextFieldEntered(HouseInputEvent.Microdistrict(md.toMicrodistrictsListItem()))
+                }
+            }
+        }
+    }
     Timber.tag(TAG).d("House: CollectAsStateWithLifecycle for all fields")
     val locality by viewModel.locality.collectAsStateWithLifecycle()
     val street by viewModel.street.collectAsStateWithLifecycle()
@@ -132,6 +153,7 @@ fun HouseView(
                         isFocused = focusState.isFocused
                     )
                 },
+            enabled = territoryUiModel == null,
             inputWrapper = locality,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Locality(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -144,7 +166,9 @@ fun HouseView(
                         focusedField = HouseFields.HOUSE_STREET, isFocused = focusState.isFocused
                     )
                 },
-            localityId = locality.item?.itemId,
+            localityId = territoryUiModel?.locality?.id ?: locality.item?.itemId,
+            localityDistrictId = territoryUiModel?.localityDistrict?.id,
+            microdistrictId = territoryUiModel?.microdistrict?.id,
             inputWrapper = street,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Street(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -158,7 +182,8 @@ fun HouseView(
                         isFocused = focusState.isFocused
                     )
                 },
-            localityId = locality.item?.itemId,
+            enabled = territoryUiModel == null,
+            localityId = territoryUiModel?.locality?.id ?: locality.item?.itemId,
             inputWrapper = localityDistrict,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.LocalityDistrict(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -172,8 +197,10 @@ fun HouseView(
                         isFocused = focusState.isFocused
                     )
                 },
-            localityId = locality.item?.itemId,
-            localityDistrictId = localityDistrict.item?.itemId,
+            enabled = territoryUiModel == null,
+            localityId = territoryUiModel?.locality?.id ?: locality.item?.itemId,
+            localityDistrictId = territoryUiModel?.localityDistrict?.id
+                ?: localityDistrict.item?.itemId,
             inputWrapper = microdistrict,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.Microdistrict(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -186,6 +213,7 @@ fun HouseView(
                         focusedField = HouseFields.HOUSE_TERRITORY, isFocused = focusState.isFocused
                     )
                 },
+            enabled = territoryUiModel == null,
             sharedViewModel = sharedViewModel,
             singleViewModel = territoryViewModel,
             inputWrapper = territory,

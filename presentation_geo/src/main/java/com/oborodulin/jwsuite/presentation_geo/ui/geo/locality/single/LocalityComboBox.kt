@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single
 
 import android.content.res.Configuration
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,23 +17,32 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import timber.log.Timber
+import java.util.UUID
 
 private const val TAG = "Geo.LocalityComboBox"
 
 @Composable
 fun LocalityComboBox(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    regionId: UUID? = null,
+    regionDistrictId: UUID? = null,
     listViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     singleViewModel: LocalityViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("LocalityComboBox(...) called")
+    Timber.tag(TAG).d(
+        "LocalityComboBox(...) called: regionId = %s; regionDistrictId = %s",
+        regionId,
+        regionDistrictId
+    )
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -50,8 +57,9 @@ fun LocalityComboBox(
     )
     ComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.Load(),
+        loadListUiAction = LocalitiesListUiAction.Load(regionId, regionDistrictId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

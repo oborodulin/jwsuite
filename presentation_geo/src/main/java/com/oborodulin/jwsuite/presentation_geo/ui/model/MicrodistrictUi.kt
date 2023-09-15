@@ -8,5 +8,13 @@ data class MicrodistrictUi(
     val localityDistrict: LocalityDistrictUi = LocalityDistrictUi(),
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
     val microdistrictShortName: String = "",
-    val microdistrictName: String = ""
+    val microdistrictName: String = "",
+
+    val microdistrictFullName: String = ""
 ) : ModelUi()
+
+fun MicrodistrictUi.toMicrodistrictsListItem() = MicrodistrictsListItem(
+    id = this.id!!,
+    microdistrictShortName = this.microdistrictShortName,
+    microdistrictFullName = this.microdistrictFullName
+)

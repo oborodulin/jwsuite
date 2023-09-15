@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -122,20 +122,20 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     fun viewModelScope() = viewModelScope
 
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {
-        viewModelScope.launch(Dispatchers.Main) {
-            _actionsJobFlow.collect { actionJob ->
-                actionJob?.let { job ->
-                    Timber.tag(TAG).d(
-                        "handleActionJob(...): Start actionsJobFlow.collect [job = %s]",
-                        job.toString()
-                    )
-                    if (job.isActive) job.join()
-                    afterAction()
-                }
+        Timber.tag(TAG).d("handleActionJob(...) called")
+        //viewModelScope.launch(Dispatchers.Main) {
+        // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
+        viewModelScope.launch(errorHandler) {
+            _actionsJobFlow.collectLatest { job ->
+                Timber.tag(TAG).d(
+                    "handleActionJob(...): Start actionsJobFlow.collectLatest [job = %s]",
+                    job?.toString()
+                )
+                job?.join()
+                afterAction()
             }
         }
         action()
-        afterAction()
         Timber.tag(TAG).d("handleActionJob(...) ended")
     }
 

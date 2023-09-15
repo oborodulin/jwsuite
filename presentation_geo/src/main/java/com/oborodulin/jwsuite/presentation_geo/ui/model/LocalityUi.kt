@@ -1,7 +1,9 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.util.LocalityType
+import java.util.UUID
 
 data class LocalityUi(
     val region: RegionUi = RegionUi(),
@@ -9,5 +11,13 @@ data class LocalityUi(
     val localityCode: String = "",
     val localityType: LocalityType = LocalityType.CITY,
     val localityShortName: String = "",
-    val localityName: String = ""
+    val localityName: String = "",
+
+    val localityFullName: String = ""
 ) : ModelUi()
+
+fun LocalityUi.toListItemModel() = ListItemModel(
+    itemId = this.id ?: UUID.randomUUID(),
+    headline = this.localityFullName,
+    supportingText = "${this.localityCode}: ${this.localityShortName}"
+)

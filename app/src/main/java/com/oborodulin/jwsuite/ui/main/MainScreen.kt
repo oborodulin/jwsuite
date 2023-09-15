@@ -253,7 +253,11 @@ private fun HomeNavigationHost(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             //val territoryViewModel = hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
-            HouseScreen(appState = appState, houseInput = NavRoutes.House.fromEntry(it))
+            HouseScreen(
+                appState = appState,
+                //territoryViewModel = territoryViewModel,
+                houseInput = NavRoutes.House.fromEntry(it)
+            )
         }
 
         // Geo:

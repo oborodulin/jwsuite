@@ -26,8 +26,7 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "Territoring.HouseScreen"
@@ -36,31 +35,21 @@ private const val TAG = "Territoring.HouseScreen"
 fun HouseScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: HouseViewModelImpl = hiltViewModel(),
     houseInput: HouseInput? = null
 ) {
-    Timber.tag(TAG)
-        .d("HouseScreen(...) called: houseInput = %s", houseInput)
+    Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
     val coroutineScope = rememberCoroutineScope()
     val saveButtonOnClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
             // checks all errors
             viewModel.onContinueClick {
-                // if success, backToBottomBarScreen
-                // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                coroutineScope.launch {
-                    viewModel.actionsJobFlow.collectLatest { job ->
-                        Timber.tag(TAG).d(
-                            "HouseScreen(...): Start actionsJobFlow.collect [job = %s]",
-                            job?.toString()
-                        )
-                        job?.join()
-                        appState.backToBottomBarScreen()
-                    }
-                }
-                // save
-                viewModel.submitAction(HouseUiAction.Save)
+                // if success, save then backToBottomBarScreen
+                viewModel.handleActionJob(
+                    { viewModel.submitAction(HouseUiAction.Save) },
+                    { appState.backToBottomBarScreen() })
             }
         }
     }
@@ -95,7 +84,10 @@ fun HouseScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        HouseView(sharedViewModel = appState.sharedViewModel.value)
+                        HouseView(
+                            sharedViewModel = appState.sharedViewModel.value,
+                            territoryViewModel = territoryViewModel
+                        )
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }

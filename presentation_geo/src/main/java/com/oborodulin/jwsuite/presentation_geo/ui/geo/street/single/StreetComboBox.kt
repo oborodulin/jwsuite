@@ -44,7 +44,12 @@ fun StreetComboBox(
     onValueChange: (StreetsListItem) -> Unit = {},
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("StreetComboBox(...) called")
+    Timber.tag(TAG).d(
+        "StreetComboBox(...) called: localityId = %s; localityDistrictId = %s; microdistrictId = %s",
+        localityId,
+        localityDistrictId,
+        microdistrictId
+    )
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
