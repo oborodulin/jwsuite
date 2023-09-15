@@ -55,6 +55,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -63,8 +64,9 @@ private const val TAG = "Territoring.HouseView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HouseView(
+    territoryUiModel: TerritoryUi? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    territoryViewModel: TerritoryViewModel,
+    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: HouseViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("HouseView(...) called")
@@ -76,19 +78,15 @@ fun HouseView(
     val events = remember(viewModel.events, lifecycleOwner) {
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-    var territoryUiModel: TerritoryUi? = null
-    territoryViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let {
-        if (it is UiState.Success) {
-            territoryUiModel = it.data
-            viewModel.onTextFieldEntered(HouseInputEvent.Territory(it.data.toTerritoriesListItem()))
-            with(it.data) {
-                viewModel.onTextFieldEntered(HouseInputEvent.Locality(this.locality.toListItemModel()))
-                this.localityDistrict?.let { ld ->
-                    viewModel.onTextFieldEntered(HouseInputEvent.LocalityDistrict(ld.toLocalityDistrictsListItem()))
-                }
-                this.microdistrict?.let { md ->
-                    viewModel.onTextFieldEntered(HouseInputEvent.Microdistrict(md.toMicrodistrictsListItem()))
-                }
+    territoryUiModel?.let {
+        viewModel.onTextFieldEntered(HouseInputEvent.Territory(it.toTerritoriesListItem()))
+        with(it) {
+            viewModel.onTextFieldEntered(HouseInputEvent.Locality(this.locality.toListItemModel()))
+            this.localityDistrict?.let { ld ->
+                viewModel.onTextFieldEntered(HouseInputEvent.LocalityDistrict(ld.toLocalityDistrictsListItem()))
+            }
+            this.microdistrict?.let { md ->
+                viewModel.onTextFieldEntered(HouseInputEvent.Microdistrict(md.toMicrodistrictsListItem()))
             }
         }
     }

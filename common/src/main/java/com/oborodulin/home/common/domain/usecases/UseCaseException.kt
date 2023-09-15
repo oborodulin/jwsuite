@@ -19,6 +19,7 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class TerritoryCategorySaveException(cause: Throwable) : UseCaseException(cause)
     class TerritorySaveException(cause: Throwable) : UseCaseException(cause)
     class TerritoryStreetSaveException(cause: Throwable) : UseCaseException(cause)
+    class TerritoryHouseSaveException(cause: Throwable) : UseCaseException(cause)
     class HandOutTerritoryException(cause: Throwable) : UseCaseException(cause)
     class HouseSaveException(cause: Throwable) : UseCaseException(cause)
 

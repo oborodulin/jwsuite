@@ -26,7 +26,6 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
 
 private const val TAG = "Territoring.HouseScreen"
@@ -35,7 +34,7 @@ private const val TAG = "Territoring.HouseScreen"
 fun HouseScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
+    //territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: HouseViewModelImpl = hiltViewModel(),
     houseInput: HouseInput? = null
 ) {
@@ -84,10 +83,7 @@ fun HouseScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        HouseView(
-                            sharedViewModel = appState.sharedViewModel.value,
-                            territoryViewModel = territoryViewModel
-                        )
+                        HouseView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }

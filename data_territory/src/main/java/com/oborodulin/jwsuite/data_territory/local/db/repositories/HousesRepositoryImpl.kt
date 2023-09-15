@@ -4,7 +4,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalHouseDataSource
 import com.oborodulin.jwsuite.domain.model.House
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -61,5 +60,12 @@ class HousesRepositoryImpl @Inject constructor(
     override fun clearTerritory(houseId: UUID) = flow {
         localHouseDataSource.clearTerritoryById(houseId)
         this.emit(houseId)
+    }
+
+    override fun setTerritory(houseId: UUID, territoryId: UUID) = flow {
+        localHouseDataSource.setTerritoryById(houseId, territoryId)
+        localHouseDataSource.getHouse(houseId).map(mappers.houseViewToHouseMapper::map).collect {
+            this.emit(it)
+        }
     }
 }

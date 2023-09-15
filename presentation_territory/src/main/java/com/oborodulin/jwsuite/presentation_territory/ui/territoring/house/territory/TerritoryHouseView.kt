@@ -5,10 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,40 +19,34 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
-import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHouseUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
+import java.util.EnumMap
 
-private const val TAG = "Territoring.TerritoryStreetView"
+private const val TAG = "Territoring.TerritoryHouseView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TerritoryStreetView(
-    uiModel: TerritoryStreetUiModel,
+fun TerritoryHouseView(
+    uiModel: TerritoryHouseUiModel,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryHouseViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("TerritoryStreetView(...) called")
+    Timber.tag(TAG).d("TerritoryHouseView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -65,20 +56,18 @@ fun TerritoryStreetView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Territory Street: CollectAsStateWithLifecycle for all fields")
+    Timber.tag(TAG).d("Territory House: CollectAsStateWithLifecycle for all fields")
     val territory by viewModel.territory.collectAsStateWithLifecycle()
-    val street by viewModel.house.collectAsStateWithLifecycle()
-    val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
-    val isEvenSide by viewModel.isEvenSide.collectAsStateWithLifecycle()
-    val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
+    val house by viewModel.house.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory House: Init Focus Requesters for all fields")
-    val focusRequesters: MutableMap<String, InputFocusRequester> = HashMap()
+    val focusRequesters =
+        EnumMap<TerritoryHouseFields, InputFocusRequester>(TerritoryHouseFields::class.java)
     enumValues<TerritoryHouseFields>().forEach {
-        focusRequesters[it.name] = InputFocusRequester(it, remember { FocusRequester() })
+        focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryStreetView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("TerritoryHouseView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -101,7 +90,7 @@ fun TerritoryStreetView(
     ) {
         TerritoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY,
@@ -114,72 +103,19 @@ fun TerritoryStreetView(
             inputWrapper = territory,
             onImeKeyAction = viewModel::moveFocusImeAction
         )
-        StreetComboBox(
+        TerritoryHouseComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_HOUSE.name]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_HOUSE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryHouseFields.TERRITORY_HOUSE_HOUSE,
                         isFocused = focusState.isFocused
                     )
                 },
-            loadListUiAction = StreetsListUiAction.LoadForTerritory(
-                localityId = uiModel.territory.locality.id!!,
-                localityDistrictId = uiModel.territory.localityDistrict?.id,
-                microdistrictId = uiModel.territory.microdistrict?.id,
-                excludes = uiModel.streets.map { it.id }
-            ),
-            inputWrapper = street,
+            territoryId = territory.item?.itemId!!,
+            sharedViewModel = sharedViewModel,
+            inputWrapper = house,
             onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.House(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        RadioBooleanComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryHouseFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = com.oborodulin.jwsuite.presentation.R.string.is_private_sector_hint,
-            painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_private_sector_36,
-            inputWrapper = isPrivateSector,
-            onValueChange = {
-                viewModel.onTextFieldEntered(TerritoryHouseInputEvent.IsPrivateSector(it))
-            }
-        )
-        RadioBooleanComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryHouseFields.TERRITORY_STREET_IS_EVEN_SIDE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.territory_street_is_even_side_hint,
-            painterResId = R.drawable.ic_street_side_36,
-            inputWrapper = isEvenSide,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.IsEvenSide(it)) }
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES.name]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoryHouseFields.TERRITORY_STREET_EST_HOUSES,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.territory_street_estimated_houses_hint,
-            leadingImageVector = Icons.Outlined.Home,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
-            },
-            //  visualTransformation = ::creditCardFilter,
-            inputWrapper = estimatedHouses,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.EstHouses(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
@@ -188,11 +124,11 @@ fun TerritoryStreetView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewTerritoryStreetView() {
+fun PreviewTerritoryHouseView() {
     JWSuiteTheme {
         Surface {
-            /*TerritoryStreetView(
-                localityViewModel = TerritoryStreetViewModelImpl.previewModel(LocalContext.current),
+            /*TerritoryHouseView(
+                localityViewModel = TerritoryHouseViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(

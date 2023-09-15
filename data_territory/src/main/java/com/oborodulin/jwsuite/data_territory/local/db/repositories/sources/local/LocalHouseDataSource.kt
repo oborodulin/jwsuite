@@ -22,4 +22,5 @@ interface LocalHouseDataSource {
 
     fun getNextHouseNum(streetId: UUID): Int
     suspend fun clearTerritoryById(houseId: UUID)
+    suspend fun setTerritoryById(houseId: UUID, territoryId: UUID)
 }

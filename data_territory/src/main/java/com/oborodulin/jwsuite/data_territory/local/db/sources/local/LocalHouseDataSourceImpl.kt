@@ -62,4 +62,8 @@ class LocalHouseDataSourceImpl @Inject constructor(
         houseDao.clearTerritoryById(houseId)
     }
 
+    override suspend fun setTerritoryById(houseId: UUID, territoryId: UUID) =
+        withContext(dispatcher) {
+            houseDao.updateTerritoryIdById(houseId, territoryId)
+        }
 }

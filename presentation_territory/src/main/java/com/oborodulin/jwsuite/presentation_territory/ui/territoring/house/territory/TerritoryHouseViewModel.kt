@@ -6,12 +6,12 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHouseUiModel
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface TerritoryHouseViewModel :
-    DialogViewModeled<TerritoryHouseUiModel, TerritoryHouseUiAction, UiSingleEvent> {
+    DialogViewModeled<TerritoryUi, TerritoryHouseUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
 
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>

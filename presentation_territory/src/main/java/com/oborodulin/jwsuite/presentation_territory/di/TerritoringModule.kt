@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -385,6 +386,7 @@ object TerritoringModule {
         getNextHouseNumUseCase: GetNextHouseNumUseCase,
         getHousesForTerritoryUseCase: GetHousesForTerritoryUseCase,
         saveHouseUseCase: SaveHouseUseCase,
+        saveTerritoryHouseUseCase: SaveTerritoryHouseUseCase,
         deleteHouseUseCase: DeleteHouseUseCase,
         deleteTerritoryHouseUseCase: DeleteTerritoryHouseUseCase
     ): HouseUseCases = HouseUseCases(
@@ -393,6 +395,7 @@ object TerritoringModule {
         getNextHouseNumUseCase,
         getHousesForTerritoryUseCase,
         saveHouseUseCase,
+        saveTerritoryHouseUseCase,
         deleteHouseUseCase,
         deleteTerritoryHouseUseCase
     )

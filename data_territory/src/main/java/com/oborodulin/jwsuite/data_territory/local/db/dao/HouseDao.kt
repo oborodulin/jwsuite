@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.data_territory.local.db.dao
 
 import androidx.room.*
-import com.oborodulin.jwsuite.data_geo.util.Constants
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
@@ -122,4 +121,7 @@ interface HouseDao {
 
     @Query("UPDATE ${HouseEntity.TABLE_NAME} SET hTerritoriesId = NULL WHERE houseId = :houseId")
     suspend fun clearTerritoryById(houseId: UUID)
+
+    @Query("UPDATE ${HouseEntity.TABLE_NAME} SET hTerritoriesId = :territoryId WHERE houseId = :houseId")
+    suspend fun updateTerritoryIdById(houseId: UUID, territoryId: UUID)
 }
