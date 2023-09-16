@@ -136,14 +136,14 @@ fun HouseView(
             // you applied Modifier.wrapContentSize(unbounded = true) or wrote a custom layout.
             // Please try to remove the source of infinite constraints in the hierarchy above the scrolling container.
             //.height(IntrinsicSize.Min)
-            .wrapContentHeight(unbounded = true)
+            //.wrapContentSize(unbounded = true)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
+            //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -292,6 +292,7 @@ fun HouseView(
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.BuildingNum(it.toIntOrNull())) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
+
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[HouseFields.HOUSE_BUILDING_TYPE]!!.focusRequester)
