@@ -13,7 +13,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,12 +21,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Congregating.CongregationScreen"
@@ -39,25 +36,17 @@ fun CongregationScreen(
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
-    val coroutineScope = rememberCoroutineScope()
     val saveButtonOnClick = {
         Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
-            // if success, backToBottomBarScreen
-            // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-            coroutineScope.launch {
-                viewModel.actionsJobFlow.collectLatest { job ->
-                    Timber.tag(TAG).d(
-                        "CongregationScreen(...): Start actionsJobFlow.collect [job = %s]",
-                        job?.toString()
-                    )
-                    job?.join()
-                    appState.backToBottomBarScreen()
-                }
+            // checks all errors
+            viewModel.onContinueClick {
+                // if success, save then backToBottomBarScreen
+                viewModel.handleActionJob(
+                    { viewModel.submitAction(CongregationUiAction.Save) },
+                    { appState.backToBottomBarScreen() })
             }
-            // save
-            viewModel.submitAction(CongregationUiAction.Save)
         }
     }
     LaunchedEffect(congregationInput?.congregationId) {

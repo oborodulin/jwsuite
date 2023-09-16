@@ -257,32 +257,32 @@ class HouseViewModelImpl @Inject constructor(
         initStateValue(HouseFields.HOUSE_NUM, houseNum, uiModel.houseNum.toString())
         initStateValue(HouseFields.HOUSE_LETTER, houseLetter, uiModel.houseLetter.orEmpty())
         initStateValue(
-            HouseFields.HOUSE_BUILDING_NUM, buildingNum, uiModel.buildingNum?.toString() ?: ""
+            HouseFields.HOUSE_BUILDING_NUM, buildingNum, uiModel.buildingNum?.toString().orEmpty()
         )
-        initStateValue(HouseFields.HOUSE_BUILDING_TYPE, zipCode, uiModel.zipCode.orEmpty())
+        initStateValue(HouseFields.HOUSE_BUILDING_TYPE, buildingType, uiModel.buildingType.name)
         initStateValue(HouseFields.HOUSE_IS_BUSINESS, isBusiness, uiModel.isBusiness.toString())
         initStateValue(HouseFields.HOUSE_IS_SECURITY, isSecurity, uiModel.isSecurity.toString())
         initStateValue(
-            HouseFields.HOUSE_IS_INTERCOM, isIntercom, uiModel.isIntercom?.toString() ?: ""
+            HouseFields.HOUSE_IS_INTERCOM, isIntercom, uiModel.isIntercom?.toString().orEmpty()
         )
         initStateValue(
             HouseFields.HOUSE_IS_RESIDENTIAL, isResidential, uiModel.isResidential.toString()
         )
         initStateValue(
             HouseFields.HOUSE_ENTRANCES_QTY, houseEntrancesQty,
-            uiModel.houseEntrancesQty?.toString() ?: ""
+            uiModel.houseEntrancesQty?.toString().orEmpty()
         )
         initStateValue(
             HouseFields.HOUSE_FLOORS_BY_ENTRANCE, floorsByEntrance,
-            uiModel.floorsByEntrance?.toString() ?: ""
+            uiModel.floorsByEntrance?.toString().orEmpty()
         )
         initStateValue(
             HouseFields.HOUSE_ROOMS_BY_FLOOR, roomsByHouseFloor,
-            uiModel.roomsByHouseFloor?.toString() ?: ""
+            uiModel.roomsByHouseFloor?.toString().orEmpty()
         )
         initStateValue(
             HouseFields.HOUSE_ESTIMATED_ROOMS, estimatedRooms,
-            uiModel.estimatedRooms?.toString() ?: ""
+            uiModel.estimatedRooms?.toString().orEmpty()
         )
         initStateValue(
             HouseFields.HOUSE_IS_FOREIGN_LANGUAGE, isForeignLanguage,

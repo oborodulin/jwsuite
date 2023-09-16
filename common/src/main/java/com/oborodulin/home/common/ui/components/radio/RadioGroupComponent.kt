@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.selection.selectableGroup
@@ -48,7 +49,7 @@ fun <T : Any, M : Map<String, T>> RadioGroupComponent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
-            //.height(IntrinsicSize.Min)
+            .requiredHeight(74.dp)// height(IntrinsicSize.Min)
             .selectableGroup()
             .then(modifier)
     ) {

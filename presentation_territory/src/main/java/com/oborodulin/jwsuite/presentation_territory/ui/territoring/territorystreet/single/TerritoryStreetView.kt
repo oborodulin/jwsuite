@@ -90,7 +90,7 @@ fun TerritoryStreetView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .height(IntrinsicSize.Min)
+            //.height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,

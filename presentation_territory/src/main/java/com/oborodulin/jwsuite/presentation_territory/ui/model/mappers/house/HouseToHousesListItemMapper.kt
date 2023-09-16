@@ -17,6 +17,8 @@ class HouseToHousesListItemMapper : Mapper<House, HousesListItem> {
         isResidential = input.isResidential,
         isForeignLanguage = input.isForeignLanguage,
         isPrivateSector = input.isPrivateSector,
+        houseExpr = input.houseExpr,
+        streetFullName = input.street.streetFullName,
         info = input.info
     )
 }

@@ -34,8 +34,8 @@ data class House(
         null -> (houseEntrancesQty ?: 0) * (floorsByEntrance ?: 0) * (roomsByHouseFloor ?: 0)
         else -> estimatedRooms
     }
-    val houseFullNum =
-        "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
+    val houseExpr = ctx?.resources?.getString(R.string.house_expr)
+    val houseFullNum = "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
     val buildingTypeInfo =
         if (buildingType != BuildingType.HOUSE) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
     val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${

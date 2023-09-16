@@ -40,7 +40,6 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
-import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
@@ -54,7 +53,6 @@ import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import timber.log.Timber
 import java.util.EnumMap
@@ -131,7 +129,14 @@ fun HouseView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .height(IntrinsicSize.Min)
+            //java.lang.IllegalStateException: Vertically scrollable component was measured with an infinity maximum height constraints,
+            // which is disallowed. One of the common reasons is nesting layouts like LazyColumn and Column(Modifier.verticalScroll()).
+            // If you want to add a header before the list of items please add a header as a separate item() before the main items() inside the LazyColumn scope.
+            // There are could be other reasons for this to happen: your ComposeView was added into a LinearLayout with some weight,
+            // you applied Modifier.wrapContentSize(unbounded = true) or wrote a custom layout.
+            // Please try to remove the source of infinite constraints in the hierarchy above the scrolling container.
+            //.height(IntrinsicSize.Min)
+            .wrapContentHeight(unbounded = true)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,

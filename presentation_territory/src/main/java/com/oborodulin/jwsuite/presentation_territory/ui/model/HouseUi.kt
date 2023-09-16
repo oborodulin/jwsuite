@@ -41,5 +41,6 @@ fun HouseUi.toHousesListItem() = HousesListItem(
     isIntercom = this.isIntercom,
     isResidential = this.isResidential,
     isForeignLanguage = this.isForeignLanguage,
-    isPrivateSector = this.isPrivateSector
+    isPrivateSector = this.isPrivateSector,
+    streetFullName = this.street.streetFullName
 )

@@ -54,7 +54,7 @@ fun HousesListView(
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             when (territoryInput?.territoryId) {
-                null -> HousesEditableList(
+                null -> StreetHousesList(
                     houses = it,
                     viewModel = viewModel,
                     onEdit = { house ->
@@ -65,7 +65,7 @@ fun HousesListView(
                     }
                 ) {}
 
-                else -> HousesProcessedList(
+                else -> TerritoryHousesList(
                     houses = it,
                     viewModel = viewModel,
                     onProcess = { house ->
@@ -97,14 +97,14 @@ fun HousesListView(
 }
 
 @Composable
-fun HousesEditableList(
+fun StreetHousesList(
     houses: List<HousesListItem>,
     viewModel: HousesListViewModel,
     onEdit: (HousesListItem) -> Unit,
     onDelete: (HousesListItem) -> Unit,
     onClick: (HousesListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("HousesEditableList(...) called")
+    Timber.tag(TAG).d("StreetHousesList(...) called")
     if (houses.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
@@ -141,14 +141,14 @@ fun HousesEditableList(
 }
 
 @Composable
-fun HousesProcessedList(
+fun TerritoryHousesList(
     houses: List<HousesListItem>,
     viewModel: HousesListViewModel,
     onProcess: (HousesListItem) -> Unit,
     onDelete: (HousesListItem) -> Unit,
     onClick: (HousesListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("HousesProcessedList(...) called")
+    Timber.tag(TAG).d("TerritoryHousesList(...) called")
     if (houses.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
@@ -178,6 +178,12 @@ fun HousesProcessedList(
                 )
             }
         }
+    } else {
+        Text(
+            text = stringResource(R.string.territory_houses_list_empty_text),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -187,7 +193,7 @@ fun HousesProcessedList(
 fun PreviewHousesEditableList() {
     JWSuiteTheme {
         Surface {
-            HousesEditableList(
+            StreetHousesList(
                 houses = HousesListViewModelImpl.previewList(LocalContext.current),
                 viewModel = HousesListViewModelImpl.previewModel(LocalContext.current),
                 onEdit = {},

@@ -16,10 +16,12 @@ data class HousesListItem(
     val isResidential: Boolean = true,
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
+    val houseExpr: String? = null,
+    val streetFullName: String,
     val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = houseFullNum,
+    headline = "$streetFullName $houseExpr $houseFullNum",
     supportingText = (if (zipCode != null) "$zipCode: " else "").plus(
         if (info.isNotEmpty()) info.joinToString(", ") else ""
     )

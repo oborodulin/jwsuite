@@ -26,7 +26,7 @@
     <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="houses_list_empty_text">Домов пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="houses_list_empty_text">Домов на улице пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="entrances_list_empty_text">Подъездов пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="floors_list_empty_text">Этажей пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="room_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
@@ -127,14 +127,14 @@
     <string name="dlg_title_select_territory_floor">Выберите этаж участка</string>
     <string name="dlg_title_select_territory_room">Выберите квартиру участка</string>
     <!--подтверждения-->
-    <string name="dlg_confirm_del_house">Удалить дом №%1$s?</string>
+    <string name="dlg_confirm_del_house">Удалить дом на улице №%1$s?</string>
     <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
     <string name="dlg_confirm_del_floor">Удалить этаж №%1$s?</string>
     <string name="dlg_confirm_del_room">Удалить квартиру №%1$s?</string>
     <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
     <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
     <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
-    <string name="dlg_confirm_del_territory_house">Удалить дом участка %1$s?</string>
+    <string name="dlg_confirm_del_territory_house">Удалить дом участка №%1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->

@@ -7,6 +7,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
@@ -150,6 +151,8 @@ class HousesListViewModelImpl @Inject constructor(
                 isResidential = true,
                 isForeignLanguage = true,
                 isPrivateSector = true,
+                houseExpr = ctx.resources?.getString(R.string.house_expr),
+                streetFullName = "ул. Независимости",
                 info = listOf("общежитие, 76 кв., маг. \"Базилик\"")
             ),
             HousesListItem(
@@ -162,6 +165,8 @@ class HousesListViewModelImpl @Inject constructor(
                 isResidential = true,
                 isForeignLanguage = true,
                 isPrivateSector = false,
+                houseExpr = ctx.resources?.getString(R.string.house_expr),
+                streetFullName = "ул. Независимости",
                 info = listOf("96 кв., маг. \"Базилик\"")
             )
         )

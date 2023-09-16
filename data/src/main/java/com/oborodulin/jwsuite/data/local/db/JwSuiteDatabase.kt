@@ -249,7 +249,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             INSTANCE?.close()
             INSTANCE = null
         }
-        fun export(fileName: String){
+        /*fun export(fileName: String){
             val exportDir = File(Environment.getExternalStorageDirectory(), "")
             if (!exportDir.exists()) {
                 exportDir.mkdirs()
@@ -272,7 +272,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 ToastHelper.showToast(this, "Exported", Toast.LENGTH_SHORT)
             } catch (sqlEx: Exception) {
                 Log.e("MainActivity", sqlEx.message, sqlEx)
-            }        }
+            }        }*/
     }
 
     /**

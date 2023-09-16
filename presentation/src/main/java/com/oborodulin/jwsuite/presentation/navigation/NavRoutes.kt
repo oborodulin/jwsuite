@@ -519,7 +519,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_TERRITORY_STREET,
                 territoryStreetInput?.let { "${it.territoryId}" }.orEmpty(),
-                territoryStreetInput?.let { "$ARG_TERRITORY_STREET_ID=${it.territoryStreetId}" }
+                territoryStreetInput?.territoryStreetId?.let { "$ARG_TERRITORY_STREET_ID=${it}" }
                     .orEmpty()
             )
             Timber.tag(TAG).d("TerritoryStreet - routeForTerritoryStreet(...): '%s'", route)
@@ -556,8 +556,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_TERRITORY_HOUSE,
                 territoryHouseInput?.let { "${it.territoryId}" }.orEmpty(),
-                territoryHouseInput?.let { "$ARG_HOUSE_ID=${it.houseId}" }
-                    .orEmpty()
+                territoryHouseInput?.houseId?.let { "$ARG_HOUSE_ID=${it}" }.orEmpty()
             )
             Timber.tag(TAG).d("TerritoryHouse - routeForTerritoryHouse(...): '%s'", route)
             return route

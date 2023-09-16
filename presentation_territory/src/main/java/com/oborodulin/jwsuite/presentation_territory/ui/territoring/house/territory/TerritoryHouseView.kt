@@ -30,7 +30,8 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHouseUiModel
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
@@ -41,7 +42,7 @@ private const val TAG = "Territoring.TerritoryHouseView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoryHouseView(
-    uiModel: TerritoryHouseUiModel,
+    territoryUi: TerritoryUi? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryHouseViewModelImpl = hiltViewModel()
@@ -56,6 +57,9 @@ fun TerritoryHouseView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
+    territoryUi?.let {
+        viewModel.onTextFieldEntered(TerritoryHouseInputEvent.Territory(it.toTerritoriesListItem()))
+    }
     Timber.tag(TAG).d("Territory House: CollectAsStateWithLifecycle for all fields")
     val territory by viewModel.territory.collectAsStateWithLifecycle()
     val house by viewModel.house.collectAsStateWithLifecycle()

@@ -56,10 +56,11 @@ interface HouseDao {
     @Query(
         """
         SELECT * FROM ${HouseView.VIEW_NAME} hv JOIN ${TerritoryEntity.TABLE_NAME} t 
-            ON t.territoryId = territoryId AND hv.territoryId IS NULL 
+            ON t.territoryId = :territoryId AND hv.territoryId IS NULL 
                 AND hv.${PX_LOCALITY}localityId = t.tLocalitiesId 
                 AND ifnull(hv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '') 
                 AND ifnull(hv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '')
+                AND hv.streetLocCode = :locale
         ORDER BY streetName, houseNum, houseLetter, buildingNum
         """
     )

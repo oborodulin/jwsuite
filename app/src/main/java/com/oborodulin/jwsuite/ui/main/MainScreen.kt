@@ -38,6 +38,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
@@ -225,6 +226,8 @@ private fun HomeNavigationHost(
                 territoryInput = NavRoutes.TerritoryDetails.fromEntry(it)
             )
         }
+
+        // Territory: Street, House, Entrace, Floor, Room:
         composable(
             route = NavRoutes.TerritoryStreet.route, arguments = NavRoutes.TerritoryStreet.arguments
         ) {
@@ -243,6 +246,25 @@ private fun HomeNavigationHost(
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
             )
         }
+        composable(
+            route = NavRoutes.TerritoryHouse.route, arguments = NavRoutes.TerritoryHouse.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to TerritoryHouseScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.TerritoryHouse.arguments.firstOrNull()
+                )
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            TerritoryHouseScreen(
+                appState = appState,
+                territoryViewModel = territoryViewModel,
+                territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it)
+            )
+        }
+
+        // House, Entrace, Floor, Room:
         composable(
             route = NavRoutes.House.route, arguments = NavRoutes.House.arguments
         ) {
