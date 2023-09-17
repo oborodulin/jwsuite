@@ -170,10 +170,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         }
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY, territory,
-            ListItemModel(
-                uiModel.territory.id,
-                uiModel.territory.territoryNum.toString()
-            )
+            ListItemModel(uiModel.territory.id, uiModel.territory.fullCardNum)
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_STREET, street,
@@ -189,7 +186,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         )
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
-            uiModel.territoryStreet.estimatedHouses.toString()
+            uiModel.territoryStreet.estimatedHouses?.toString().orEmpty()
         )
         return null
     }

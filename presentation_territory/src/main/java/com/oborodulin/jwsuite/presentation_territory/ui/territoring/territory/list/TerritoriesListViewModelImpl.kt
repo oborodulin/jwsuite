@@ -93,6 +93,9 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
                 cardNum = ctx.resources.getString(R.string.def_territory1_card_num),
                 cardLocation = ctx.resources.getString(R.string.def_territory1_card_location),
+                fullCardNum = "${ctx.resources.getString(R.string.def_territory1_card_num)} ${
+                    ctx.resources.getString(R.string.def_territory1_card_location)
+                }",
                 territoryNum = 1,
                 isPrivateSector = false,
                 isBusiness = false,
@@ -127,6 +130,9 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
                 cardNum = ctx.resources.getString(R.string.def_territory2_card_num),
                 cardLocation = ctx.resources.getString(R.string.def_territory2_card_location),
+                fullCardNum = "${ctx.resources.getString(R.string.def_territory2_card_num)} ${
+                    ctx.resources.getString(R.string.def_territory2_card_location)
+                }",
                 territoryNum = 2,
                 isPrivateSector = false,
                 isBusiness = false,
@@ -143,6 +149,9 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
                 cardNum = ctx.resources.getString(R.string.def_territory3_card_num),
                 cardLocation = ctx.resources.getString(R.string.def_territory3_card_location),
+                fullCardNum = "${ctx.resources.getString(R.string.def_territory3_card_num)} ${
+                    ctx.resources.getString(R.string.def_territory3_card_location)
+                }",
                 territoryNum = 3,
                 isPrivateSector = false,
                 isBusiness = true,
@@ -159,6 +168,9 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
                 cardNum = ctx.resources.getString(R.string.def_territory4_card_num),
                 cardLocation = ctx.resources.getString(R.string.def_territory4_card_location),
+                fullCardNum = "${ctx.resources.getString(R.string.def_territory4_card_num)} ${
+                    ctx.resources.getString(R.string.def_territory4_card_location)
+                }",
                 territoryNum = 4,
                 isPrivateSector = true,
                 isBusiness = true,

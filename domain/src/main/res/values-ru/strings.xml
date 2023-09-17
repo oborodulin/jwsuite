@@ -8,6 +8,8 @@
     <string name="entrance_expr">подъезд</string>
     <string name="floor_expr">этаж</string>
     <string name="house_expr">д.</string>
+    <!--Признаки -->
+    <string name="territory_business_mark">д</string>
 
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>

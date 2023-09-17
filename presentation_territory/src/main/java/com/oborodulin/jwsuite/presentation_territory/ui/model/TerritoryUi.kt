@@ -20,7 +20,8 @@ data class TerritoryUi(
     val isActive: Boolean = true,
     val territoryDesc: String? = null,
     val cardNum: String = "",
-    val cardLocation: String = ""
+    val cardLocation: String = "",
+    val fullCardNum: String = ""
 ) : ModelUi()
 
 fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
@@ -30,6 +31,7 @@ fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
     locality = this.locality,
     cardNum = this.cardNum,
     cardLocation = this.cardLocation,
+    fullCardNum = this.fullCardNum,
     territoryNum = this.territoryNum,
     isBusiness = this.isBusiness,
     isGroupMinistry = this.isGroupMinistry,

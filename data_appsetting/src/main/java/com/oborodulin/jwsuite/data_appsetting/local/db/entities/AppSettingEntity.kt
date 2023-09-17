@@ -63,7 +63,7 @@ data class AppSettingEntity(
 
         fun territoryBusinessMarkParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.TERRITORY_BUSINESS_MARK,
-            paramValue = ctx.resources.getString(com.oborodulin.jwsuite.data_appsetting.R.string.territory_business_mark)
+            paramValue = ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.territory_business_mark)
         )
 
         fun territoryProcessingPeriodParam(ctx: Context) = defaultParam(

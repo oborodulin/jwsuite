@@ -38,6 +38,7 @@ data class Territory(
             .plus(microdistrict?.let { "${it.microdistrictShortName}]" } ?: "]")
             .replace("[]", "")
             .replace(":]", "]")
+    val fullCardNum = "$cardNum $cardLocation".trim()
 
     // https://www.sanfoundry.com/java-program-convert-given-number-days-terms-years-weeks-days/
     // https://stackoverflow.com/questions/29791881/how-to-convert-number-days-to-years-months-days

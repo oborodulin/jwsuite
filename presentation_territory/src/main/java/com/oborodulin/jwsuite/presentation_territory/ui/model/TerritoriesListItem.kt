@@ -12,8 +12,6 @@ data class TerritoriesListItem(
     val congregation: CongregationUi,
     val territoryCategory: TerritoryCategoryUi,
     val locality: LocalityUi,
-    val cardNum: String,
-    val cardLocation: String,
     val territoryNum: Int,
     val isBusiness: Boolean,
     val isGroupMinistry: Boolean,
@@ -26,6 +24,9 @@ data class TerritoriesListItem(
     val member: MemberUi? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
+    val cardNum: String,
+    val cardLocation: String,
+    val fullCardNum: String,
     val handOutDaysPeriod: String? = null,
     val expiredDaysPeriod: String? = null
 ) : Parcelable, ListItemModel(

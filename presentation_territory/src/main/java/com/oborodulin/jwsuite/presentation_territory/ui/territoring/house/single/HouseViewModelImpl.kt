@@ -249,12 +249,10 @@ class HouseViewModelImpl @Inject constructor(
         )
         initStateValue(
             HouseFields.HOUSE_TERRITORY, territory,
-            ListItemModel(
-                uiModel.territory?.id, uiModel.territory?.territoryNum?.toString().orEmpty()
-            )
+            ListItemModel(uiModel.territory?.id, uiModel.territory?.fullCardNum.orEmpty())
         )
         initStateValue(HouseFields.HOUSE_ZIP_CODE, zipCode, uiModel.zipCode.orEmpty())
-        initStateValue(HouseFields.HOUSE_NUM, houseNum, uiModel.houseNum.toString())
+        initStateValue(HouseFields.HOUSE_NUM, houseNum, uiModel.houseNum?.toString().orEmpty())
         initStateValue(HouseFields.HOUSE_LETTER, houseLetter, uiModel.houseLetter.orEmpty())
         initStateValue(
             HouseFields.HOUSE_BUILDING_NUM, buildingNum, uiModel.buildingNum?.toString().orEmpty()
