@@ -75,6 +75,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberRe
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
+import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
@@ -122,7 +123,7 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
-        HouseView::class, EntranceView::class,
+        HouseView::class, EntranceView::class, RoomView::class,
         //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true

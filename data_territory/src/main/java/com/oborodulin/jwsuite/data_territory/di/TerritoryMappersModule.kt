@@ -283,8 +283,10 @@ object TerritoryMappersModule {
     // TerritoryStreets:
     @Singleton
     @Provides
-    fun provideTerritoryStreetViewToTerritoryStreetMapper(mapper: GeoStreetViewToGeoStreetMapper): TerritoryStreetViewToTerritoryStreetMapper =
-        TerritoryStreetViewToTerritoryStreetMapper(mapper = mapper)
+    fun provideTerritoryStreetViewToTerritoryStreetMapper(
+        @ApplicationContext ctx: Context, mapper: GeoStreetViewToGeoStreetMapper
+    ): TerritoryStreetViewToTerritoryStreetMapper =
+        TerritoryStreetViewToTerritoryStreetMapper(ctx = ctx, mapper = mapper)
 
     @Singleton
     @Provides

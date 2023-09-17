@@ -39,6 +39,7 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.list.TerritoriesListItemComponent
 import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
@@ -70,7 +71,6 @@ fun TerritoriesGridView(
     )
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    //appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
@@ -110,9 +110,7 @@ fun TerritoriesGridView(
                 ) { territory ->
                     with(territoryDetailsViewModel) {
                         submitAction(
-                            com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(
-                                territory.id
-                            )
+                            TerritoryDetailsListUiAction.Load(territory.id)
                         )
                     }
                 }
@@ -141,9 +139,7 @@ fun TerritoriesGridView(
                 ) { territory ->
                     with(territoryDetailsViewModel) {
                         submitAction(
-                            com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListUiAction.Load(
-                                territory.id
-                            )
+                            TerritoryDetailsListUiAction.Load(territory.id)
                         )
                     }
                 }
