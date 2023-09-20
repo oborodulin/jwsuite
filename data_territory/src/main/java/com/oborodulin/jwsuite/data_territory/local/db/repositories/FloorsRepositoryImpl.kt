@@ -14,18 +14,18 @@ class FloorsRepositoryImpl @Inject constructor(
     private val mappers: FloorMappers
 ) : FloorsRepository {
     override fun getAll() = localFloorDataSource.getAllFloors()
-        .map(mappers.floorEntityListToFloorsListMapper::map)
+        .map(mappers.floorViewListToFloorsListMapper::map)
 
     override fun getAllByHouse(houseId: UUID) = localFloorDataSource.getHouseFloors(houseId)
-        .map(mappers.floorEntityListToFloorsListMapper::map)
+        .map(mappers.floorViewListToFloorsListMapper::map)
 
     override fun getAllByEntrance(entranceId: UUID) =
         localFloorDataSource.getEntranceFloors(entranceId)
-            .map(mappers.floorEntityListToFloorsListMapper::map)
+            .map(mappers.floorViewListToFloorsListMapper::map)
 
     override fun getAllByTerritory(territoryId: UUID) =
         localFloorDataSource.getTerritoryFloors(territoryId)
-            .map(mappers.floorEntityListToFloorsListMapper::map)
+            .map(mappers.floorViewListToFloorsListMapper::map)
 
     override fun get(floorId: UUID) = localFloorDataSource.getFloor(floorId)
         .map(mappers.floorEntityToFloorMapper::map)

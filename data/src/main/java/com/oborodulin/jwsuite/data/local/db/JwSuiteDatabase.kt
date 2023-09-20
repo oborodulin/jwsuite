@@ -1,12 +1,8 @@
 package com.oborodulin.jwsuite.data.local.db
 
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
-import android.os.Environment
-import android.util.Log
-import android.widget.Toast
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
@@ -74,6 +70,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCr
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
+import com.oborodulin.jwsuite.data_territory.local.db.views.FloorView
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
@@ -89,8 +86,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import kotlinx.coroutines.*
 import net.sqlcipher.database.SupportFactory
 import timber.log.Timber
-import java.io.File
-import java.io.FileWriter
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.Executors
@@ -123,7 +118,7 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
-        HouseView::class, EntranceView::class, RoomView::class,
+        HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
         //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true

@@ -14,21 +14,21 @@ class RoomsRepositoryImpl @Inject constructor(
     private val mappers: RoomMappers
 ) : RoomsRepository {
     override fun getAll() = localRoomDataSource.getAllRooms()
-        .map(mappers.roomEntityListToRoomsListMapper::map)
+        .map(mappers.roomViewListToRoomsListMapper::map)
 
     override fun getAllByHouse(houseId: UUID) = localRoomDataSource.getHouseRooms(houseId)
-        .map(mappers.roomEntityListToRoomsListMapper::map)
+        .map(mappers.roomViewListToRoomsListMapper::map)
 
     override fun getAllByEntrance(entranceId: UUID) =
         localRoomDataSource.getEntranceRooms(entranceId)
-            .map(mappers.roomEntityListToRoomsListMapper::map)
+            .map(mappers.roomViewListToRoomsListMapper::map)
 
     override fun getAllByFloor(floorId: UUID) = localRoomDataSource.getFloorRooms(floorId)
-        .map(mappers.roomEntityListToRoomsListMapper::map)
+        .map(mappers.roomViewListToRoomsListMapper::map)
 
     override fun getAllByTerritory(territoryId: UUID) =
         localRoomDataSource.getTerritoryRooms(territoryId)
-            .map(mappers.roomEntityListToRoomsListMapper::map)
+            .map(mappers.roomViewListToRoomsListMapper::map)
 
     override fun get(roomId: UUID) = localRoomDataSource.getRoom(roomId)
         .map(mappers.roomEntityToRoomMapper::map)

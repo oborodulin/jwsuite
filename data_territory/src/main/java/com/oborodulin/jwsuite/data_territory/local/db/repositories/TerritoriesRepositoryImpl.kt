@@ -113,10 +113,10 @@ class TerritoriesRepositoryImpl @Inject constructor(
             .map(mappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getFloors(territoryId: UUID) = localFloorDataSource.getTerritoryFloors(territoryId)
-        .map(mappers.floorEntityListToFloorsListMapper::map)
+        .map(mappers.floorViewListToFloorsListMapper::map)
 
     override fun getRooms(territoryId: UUID) = localRoomDataSource.getTerritoryRooms(territoryId)
-        .map(mappers.roomEntityListToRoomsListMapper::map)
+        .map(mappers.roomViewListToRoomsListMapper::map)
 
     override fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID?) =
         localTerritoryDataSource.getTerritoryStreetNamesAndHouseNums(congregationId)

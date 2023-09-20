@@ -35,12 +35,14 @@ data class House(
         else -> estimatedRooms
     }
     val houseExpr = ctx?.resources?.getString(R.string.house_expr)
-    val houseFullNum = "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
+    val houseFullNum =
+        "$houseNum${houseLetter?.uppercase().orEmpty()}${buildingNum?.let { "-$it" }.orEmpty()}"
     val buildingTypeInfo =
         if (buildingType != BuildingType.HOUSE) ctx?.let { it.resources.getStringArray(R.array.building_types)[buildingType.ordinal] } else null
     val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${
         ctx?.resources?.getString(R.string.room_expr).orEmpty()
     }" else null
+    val territoryDesc = territory?.let { "${it.fullCardNum}: " }.orEmpty().plus(houseDesc.orEmpty())
     val info = listOfNotNull(buildingTypeInfo, calcRoomsInfo, houseDesc)
     val houseInfo =
         houseFullNum.plus(if (info.isNotEmpty()) " (${info.joinToString(", ")})" else "")

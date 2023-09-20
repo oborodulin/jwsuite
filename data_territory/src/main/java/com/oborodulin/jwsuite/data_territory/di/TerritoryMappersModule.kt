@@ -11,15 +11,17 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewT
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceEntityToEntranceMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceToEntranceEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceViewListToEntrancesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceViewToEntranceMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntrancesListToEntranceEntityListMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorEntityListToFloorsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorEntityToFloorMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorToFloorEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorViewListToFloorsListMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorViewToFloorMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorsListToFloorEntityListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseEntityToHouseMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
@@ -27,10 +29,11 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseToHouse
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseViewListToHousesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseViewToHouseMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HousesListToHouseEntityListMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomEntityListToRoomsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomEntityToRoomMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomToRoomEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomViewListToRoomsListMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomViewToRoomMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomsListToRoomEntityListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoriesAtWorkViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoriesAtWorkViewToTerritoryMapper
@@ -164,6 +167,11 @@ object TerritoryMappersModule {
     // Entrances:
     @Singleton
     @Provides
+    fun provideEntranceEntityToEntranceMapper(@ApplicationContext ctx: Context): EntranceEntityToEntranceMapper =
+        EntranceEntityToEntranceMapper(ctx = ctx)
+
+    @Singleton
+    @Provides
     fun provideEntranceEntityToEntranceMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
         regionMapper: GeoRegionViewToGeoRegionMapper,
@@ -172,7 +180,8 @@ object TerritoryMappersModule {
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
         microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
         houseMapper: HouseEntityToHouseMapper,
-        territoryMapper: TerritoryViewToTerritoryMapper
+        territoryMapper: TerritoryViewToTerritoryMapper,
+        entranceEntityMapper: EntranceEntityToEntranceMapper
     ): EntranceViewToEntranceMapper =
         EntranceViewToEntranceMapper(
             streetMapper = streetMapper,
@@ -182,7 +191,8 @@ object TerritoryMappersModule {
             localityDistrictMapper = localityDistrictMapper,
             microdistrictMapper = microdistrictMapper,
             houseMapper = houseMapper,
-            territoryMapper = territoryMapper
+            territoryMapper = territoryMapper,
+            entranceEntityMapper = entranceEntityMapper
         )
 
     @Singleton
@@ -221,8 +231,34 @@ object TerritoryMappersModule {
 
     @Singleton
     @Provides
-    fun provideFloorEntityListToFloorsListMapper(mapper: FloorEntityToFloorMapper): FloorEntityListToFloorsListMapper =
-        FloorEntityListToFloorsListMapper(mapper = mapper)
+    fun provideFloorViewToFloorMapper(
+        streetMapper: GeoStreetViewToGeoStreetMapper,
+        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: LocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        houseMapper: HouseEntityToHouseMapper,
+        territoryMapper: TerritoryViewToTerritoryMapper,
+        entranceEntityMapper: EntranceEntityToEntranceMapper,
+        floorEntityMapper: FloorEntityToFloorMapper
+    ): FloorViewToFloorMapper = FloorViewToFloorMapper(
+        streetMapper = streetMapper,
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper,
+        localityDistrictMapper = localityDistrictMapper,
+        microdistrictMapper = microdistrictMapper,
+        houseMapper = houseMapper,
+        territoryMapper = territoryMapper,
+        entranceEntityMapper = entranceEntityMapper,
+        floorEntityMapper = floorEntityMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideFloorViewListToFloorsListMapper(mapper: FloorViewToFloorMapper): FloorViewListToFloorsListMapper =
+        FloorViewListToFloorsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -236,12 +272,12 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideFloorMappers(
-        floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
+        floorViewListToFloorsListMapper: FloorViewListToFloorsListMapper,
         floorEntityToFloorMapper: FloorEntityToFloorMapper,
         floorsListToFloorEntityListMapper: FloorsListToFloorEntityListMapper,
         floorToFloorEntityMapper: FloorToFloorEntityMapper
     ): FloorMappers = FloorMappers(
-        floorEntityListToFloorsListMapper,
+        floorViewListToFloorsListMapper,
         floorEntityToFloorMapper,
         floorsListToFloorEntityListMapper,
         floorToFloorEntityMapper
@@ -250,12 +286,41 @@ object TerritoryMappersModule {
     // Rooms:
     @Singleton
     @Provides
-    fun provideRoomEntityToRoomMapper(): RoomEntityToRoomMapper = RoomEntityToRoomMapper()
+    fun provideRoomEntityToRoomMapper(@ApplicationContext ctx: Context): RoomEntityToRoomMapper =
+        RoomEntityToRoomMapper(ctx = ctx)
 
     @Singleton
     @Provides
-    fun provideRoomEntityListToRoomsListMapper(mapper: RoomEntityToRoomMapper): RoomEntityListToRoomsListMapper =
-        RoomEntityListToRoomsListMapper(mapper = mapper)
+    fun provideRoomViewToRoomMapper(
+        streetMapper: GeoStreetViewToGeoStreetMapper,
+        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: LocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        houseMapper: HouseEntityToHouseMapper,
+        territoryMapper: TerritoryViewToTerritoryMapper,
+        entranceEntityMapper: EntranceEntityToEntranceMapper,
+        floorEntityMapper: FloorEntityToFloorMapper,
+        roomEntityMapper: RoomEntityToRoomMapper
+    ): RoomViewToRoomMapper = RoomViewToRoomMapper(
+        streetMapper = streetMapper,
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper,
+        localityDistrictMapper = localityDistrictMapper,
+        microdistrictMapper = microdistrictMapper,
+        houseMapper = houseMapper,
+        territoryMapper = territoryMapper,
+        entranceEntityMapper = entranceEntityMapper,
+        floorEntityMapper = floorEntityMapper,
+        roomEntityMapper = roomEntityMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideRoomViewListToRoomsListMapper(mapper: RoomViewToRoomMapper): RoomViewListToRoomsListMapper =
+        RoomViewListToRoomsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -269,12 +334,12 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideRoomMappers(
-        roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
+        roomViewListToRoomsListMapper: RoomViewListToRoomsListMapper,
         roomEntityToRoomMapper: RoomEntityToRoomMapper,
         roomsListToRoomEntityListMapper: RoomsListToRoomEntityListMapper,
         roomToRoomEntityMapper: RoomToRoomEntityMapper
     ): RoomMappers = RoomMappers(
-        roomEntityListToRoomsListMapper,
+        roomViewListToRoomsListMapper,
         roomEntityToRoomMapper,
         roomsListToRoomEntityListMapper,
         roomToRoomEntityMapper
@@ -485,8 +550,8 @@ object TerritoryMappersModule {
         geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
         entranceViewListToEntrancesListMapper: EntranceViewListToEntrancesListMapper,
-        floorEntityListToFloorsListMapper: FloorEntityListToFloorsListMapper,
-        roomEntityListToRoomsListMapper: RoomEntityListToRoomsListMapper,
+        floorViewListToFloorsListMapper: FloorViewListToFloorsListMapper,
+        roomViewListToRoomsListMapper: RoomViewListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
@@ -506,8 +571,8 @@ object TerritoryMappersModule {
         geoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper,
         entranceViewListToEntrancesListMapper,
-        floorEntityListToFloorsListMapper,
-        roomEntityListToRoomsListMapper,
+        floorViewListToFloorsListMapper,
+        roomViewListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper,

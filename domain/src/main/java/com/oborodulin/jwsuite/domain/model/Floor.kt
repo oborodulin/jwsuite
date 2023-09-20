@@ -1,12 +1,11 @@
 package com.oborodulin.jwsuite.domain.model
 
 import com.oborodulin.home.common.domain.model.DomainModel
-import java.util.UUID
 
 data class Floor(
-    val houseId: UUID,
-    val entranceId: UUID? = null,
-    val territoryId: UUID? = null,
+    val house: House,
+    val entrance: Entrance?,
+    val territory: Territory?,
     val floorNum: Int,
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,
@@ -16,6 +15,9 @@ data class Floor(
     val territoryDesc: String? = null,
     val rooms: List<Room> = emptyList()
 ) : DomainModel() {
+    val floorFullNum =
+        "${house.street.streetFullName}, ${house.houseExpr} ${house.houseFullNum}, $floorNum"
+
     var calculatedRooms = when (estimatedRooms) {
         null -> roomsByFloor ?: 0
         else -> estimatedRooms

@@ -1,16 +1,22 @@
 package com.oborodulin.jwsuite.domain.model
 
+import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
-import java.util.UUID
+import com.oborodulin.jwsuite.domain.R
 
 data class Room(
+    val ctx: Context? = null,
     val house: House,
-    val entranceId: UUID? = null,
-    val floorId: UUID? = null,
-    val territory: Territory? = null,
+    val entrance: Entrance?,
+    val floor: Floor?,
+    val territory: Territory?,
     val roomNum: Int,
     val isIntercom: Boolean? = null,
     val isResidential: Boolean = true,
     val isForeignLanguage: Boolean = false,
     val territoryDesc: String? = null
-) : DomainModel()
+) : DomainModel() {
+    var fullRoomNum = "${house.street.streetFullName}, ${house.houseExpr} ${house.houseFullNum}, ${
+        ctx?.resources?.getString(R.string.room_expr).orEmpty()
+    } $roomNum"
+}

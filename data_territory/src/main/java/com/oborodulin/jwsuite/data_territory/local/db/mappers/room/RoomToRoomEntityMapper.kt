@@ -13,9 +13,9 @@ class RoomToRoomEntityMapper : Mapper<Room, RoomEntity> {
         isResidentialRoom = input.isResidential,
         isForeignLangRoom = input.isForeignLanguage,
         roomDesc = input.territoryDesc,
-        rTerritoriesId = input.territoryId,
-        rFloorsId = input.floorId,
-        rEntrancesId = input.entranceId,
-        rHousesId = input.houseId
+        rTerritoriesId = input.territory?.id,
+        rFloorsId = input.floor?.id,
+        rEntrancesId = input.entrance?.id,
+        rHousesId = input.house.id!!
     )
 }
