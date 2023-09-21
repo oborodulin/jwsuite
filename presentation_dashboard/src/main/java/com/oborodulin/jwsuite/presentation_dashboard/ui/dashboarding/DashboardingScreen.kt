@@ -18,12 +18,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.toast
+import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
@@ -64,9 +66,9 @@ fun DashboardingScreen(
                     IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                         Icon(Icons.Outlined.Add, null)
                     }
-                    /*IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Geo.route) }) {
-                        Icon(R.drawable., null)
-                    }*/
+                    IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Geo.route) }) {
+                        Icon(painterResource(R.drawable.ic_geo_24), null)
+                    }
                     IconButton(onClick = { context.toast("Settings button clicked...") }) {
                         Icon(Icons.Outlined.Settings, null)
                     }
