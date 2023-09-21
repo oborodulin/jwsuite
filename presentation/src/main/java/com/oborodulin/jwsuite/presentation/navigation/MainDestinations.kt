@@ -8,6 +8,9 @@ object MainDestinations {
     const val ROUTE_TERRITORING = "territoring"
     const val ROUTE_MINISTRING = "ministring"
 
+    const val ROUTE_GEO = "geo"
+    const val ROUTE_HOUSES = "houses"
+
     //GEO:
     const val ROUTE_REGION = "region?%s"
     const val ROUTE_REGION_DISTRICT = "regionDistrict?%s"

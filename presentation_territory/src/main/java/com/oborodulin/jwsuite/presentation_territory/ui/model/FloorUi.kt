@@ -6,15 +6,13 @@ data class FloorUi(
     val house: HouseUi = HouseUi(),
     val entrance: EntranceUi? = null,
     val territory: TerritoryUi? = null,
-    val floorNum: Int,
+    val floorNum: Int? = null,
     val isSecurity: Boolean = false,
     val isIntercom: Boolean? = null,
     val isResidential: Boolean = true,
     val roomsByFloor: Int? = null,
     val estimatedRooms: Int? = null,
-    val territoryDesc: String? = null,
-    val floorFullNum: String = "",
-    val calculatedRooms: Int? = null
+    val floorDesc: String? = null
 ) : ModelUi()
 /*
 fun EntranceUi.toHousesListItem() = HousesListItem(

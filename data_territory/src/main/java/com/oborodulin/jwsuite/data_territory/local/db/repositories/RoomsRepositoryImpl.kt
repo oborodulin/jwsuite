@@ -30,8 +30,12 @@ class RoomsRepositoryImpl @Inject constructor(
         localRoomDataSource.getTerritoryRooms(territoryId)
             .map(mappers.roomViewListToRoomsListMapper::map)
 
+    override fun getAllForTerritory(territoryId: UUID) =
+        localRoomDataSource.getTerritoryRooms(territoryId)
+            .map(mappers.roomViewListToRoomsListMapper::map)
+
     override fun get(roomId: UUID) = localRoomDataSource.getRoom(roomId)
-        .map(mappers.roomEntityToRoomMapper::map)
+        .map(mappers.roomViewToRoomMapper::map)
 
     override fun save(room: Room) = flow {
         if (room.id == null) {
@@ -53,4 +57,20 @@ class RoomsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localRoomDataSource.deleteAllRooms()
+
+    override fun getNextRoomNum(houseId: UUID) = flow {
+        emit(localRoomDataSource.getNextRoomNum(houseId))
+    }
+
+    override fun clearTerritory(roomId: UUID) = flow {
+        localRoomDataSource.clearTerritoryById(roomId)
+        this.emit(roomId)
+    }
+
+    override fun setTerritory(roomId: UUID, territoryId: UUID) = flow {
+        localRoomDataSource.setTerritoryById(roomId, territoryId)
+        localRoomDataSource.getRoom(roomId).map(mappers.roomViewToRoomMapper::map).collect {
+            this.emit(it)
+        }
+    }
 }

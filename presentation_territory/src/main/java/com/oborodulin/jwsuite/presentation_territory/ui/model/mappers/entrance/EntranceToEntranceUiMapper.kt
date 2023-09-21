@@ -22,9 +22,7 @@ class EntranceToEntranceUiMapper(
             floorsQty = input.floorsQty,
             roomsByFloor = input.roomsByFloor,
             estimatedRooms = input.estimatedRooms,
-            territoryDesc = input.territoryDesc,
-            entranceFullNum = input.entranceFullNum,
-            calculatedRooms = input.calculatedRooms
+            entranceDesc = input.entranceDesc
         )
         houseUi.id = input.id
         return houseUi

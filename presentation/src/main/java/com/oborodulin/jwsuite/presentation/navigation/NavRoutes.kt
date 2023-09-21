@@ -19,10 +19,12 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CON
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ENTRANCE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_FLOOR
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GEO
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GROUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSE
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSES
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
@@ -157,6 +159,18 @@ sealed class NavRoutes constructor(
         route = ROUTE_MINISTRING,
         iconPainterResId = R.drawable.ic_maps_home_work_24,
         titleResId = R.string.nav_item_ministring
+    )
+
+    data object Geo : NavRoutes(
+        route = ROUTE_GEO,
+        iconPainterResId = R.drawable.ic_maps_home_work_24,
+        titleResId = R.string.nav_item_geo
+    )
+
+    data object Houses : NavRoutes(
+        route = ROUTE_HOUSES,
+        iconImageVector = Icons.Outlined.Home,
+        titleResId = R.string.nav_item_houses
     )
 
     // Geo:

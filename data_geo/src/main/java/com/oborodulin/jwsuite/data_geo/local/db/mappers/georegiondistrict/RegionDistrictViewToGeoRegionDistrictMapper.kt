@@ -18,8 +18,8 @@ class RegionDistrictViewToGeoRegionDistrictMapper :
                 }
          */
         if (properties.isEmpty() || properties[0] !is GeoRegion) throw IllegalArgumentException(
-            "RegionDistrictViewToGeoRegionDistrictMapper properties empty or properties[0] is not GeoRegion class: input.id = %s; properties.isEmpty() = %s".format(
-                input.data.regionDistrictId, properties.isEmpty()
+            "RegionDistrictViewToGeoRegionDistrictMapper: properties empty or properties[0] is not GeoRegion class: properties.isEmpty() = %s; input.data.regionDistrictId = %s".format(
+                properties.isEmpty(), input.data.regionDistrictId
             )
         )
         val regionDistrict = GeoRegionDistrict(

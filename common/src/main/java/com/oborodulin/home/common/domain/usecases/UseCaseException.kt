@@ -2,6 +2,7 @@ package com.oborodulin.home.common.domain.usecases
 
 sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class AppSettingSaveException(cause: Throwable) : UseCaseException(cause)
+
     // GEO:
     class GeoRegionSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoRegionDistrictSaveException(cause: Throwable) : UseCaseException(cause)
@@ -20,8 +21,10 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class TerritorySaveException(cause: Throwable) : UseCaseException(cause)
     class TerritoryStreetSaveException(cause: Throwable) : UseCaseException(cause)
     class TerritoryHouseSaveException(cause: Throwable) : UseCaseException(cause)
+    class TerritoryRoomSaveException(cause: Throwable) : UseCaseException(cause)
     class HandOutTerritoryException(cause: Throwable) : UseCaseException(cause)
     class HouseSaveException(cause: Throwable) : UseCaseException(cause)
+    class RoomSaveException(cause: Throwable) : UseCaseException(cause)
 
     class UnknownException(cause: Throwable) : UseCaseException(cause)
 

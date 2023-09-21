@@ -41,7 +41,8 @@ fun HousesListView(
     territoryInput: TerritoryInput? = null
 ) {
     Timber.tag(TAG).d(
-        "HousesListView(...) called: territoryInput = %s", territoryInput
+        "HousesListView(...) called: streetInput = %s; territoryInput = %s",
+        streetInput, territoryInput
     )
     LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId) {
         Timber.tag(TAG)

@@ -312,13 +312,9 @@ object GeoMappersModule {
     @Provides
     fun provideGeoStreetViewToGeoStreetMapper(
         @ApplicationContext ctx: Context,
-        localityMapper: GeoLocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
+        localityMapper: GeoLocalityViewToGeoLocalityMapper
     ): GeoStreetViewToGeoStreetMapper = GeoStreetViewToGeoStreetMapper(
-        ctx = ctx,
-        localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper,
-        microdistrictMapper = microdistrictMapper
+        ctx = ctx, localityMapper = localityMapper
     )
 
     @Singleton

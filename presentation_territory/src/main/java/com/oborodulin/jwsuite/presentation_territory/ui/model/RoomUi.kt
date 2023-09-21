@@ -1,8 +1,16 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 
 data class RoomUi(
+    val locality: LocalityUi = LocalityUi(),
+    val localityDistrict: LocalityDistrictUi? = null,
+    val microdistrict: MicrodistrictUi? = null,
+    val street: StreetUi = StreetUi(),
     val house: HouseUi = HouseUi(),
     val entrance: EntranceUi? = null,
     val floor: FloorUi? = null,
@@ -11,8 +19,7 @@ data class RoomUi(
     val isIntercom: Boolean? = null,
     val isResidential: Boolean = true,
     val isForeignLanguage: Boolean = false,
-    val territoryDesc: String? = null,
-    var fullRoomNum: String = ""
+    val roomDesc: String? = null
 ) : ModelUi()
 /*
 fun EntranceUi.toHousesListItem() = HousesListItem(

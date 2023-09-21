@@ -15,12 +15,14 @@ data class Entrance(
     val floorsQty: Int? = null,
     val roomsByFloor: Int? = null,
     val estimatedRooms: Int? = null,
-    val territoryDesc: String? = null,
+    val entranceDesc: String? = null,
     val floors: List<Floor> = emptyList(),
     val rooms: List<Room> = emptyList()
 ) : DomainModel() {
     val entranceFullNum =
-        "${house.street.streetFullName}, ${house.houseExpr} ${house.houseFullNum}, $entranceNum"
+        "${house.street.streetFullName}, ${house.houseExpr} ${house.houseFullNum}, ${
+            ctx?.resources?.getString(R.string.entrance_expr).orEmpty()
+        } $entranceNum"
     var calculatedRooms = when (estimatedRooms) {
         null -> (floorsQty ?: 0) * (roomsByFloor ?: 0)
         else -> estimatedRooms
@@ -32,5 +34,8 @@ data class Entrance(
     val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${
         ctx?.resources?.getString(R.string.room_expr).orEmpty()
     }" else null
-    val desc = territory?.let { "${it.fullCardNum}: " }.orEmpty().plus(houseDesc.orEmpty())
+    val territoryFullCardNum = territory?.let { "${it.fullCardNum}: " }
+    val info = listOfNotNull(calcRoomsInfo, entranceDesc)
+    val entranceInfo =
+        entranceFullNum.plus(if (info.isNotEmpty()) " (${info.joinToString(", ")})" else "")
 }

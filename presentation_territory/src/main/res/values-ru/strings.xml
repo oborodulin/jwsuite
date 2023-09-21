@@ -25,11 +25,11 @@
     <string name="territory_houses_list_empty_text">Домов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавте, пожалуйста, хотя бы один</string>
+    <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавте, пожалуйста, хотя бы одну</string>
     <string name="houses_list_empty_text">Домов на улице пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="entrances_list_empty_text">Подъездов пока нет. Добавте, пожалуйста, хотя бы один</string>
     <string name="floors_list_empty_text">Этажей пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="room_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
+    <string name="rooms_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <!--Участки-->
@@ -135,6 +135,7 @@
     <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
     <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
     <string name="dlg_confirm_del_territory_house">Удалить дом участка №%1$s?</string>
+    <string name="dlg_confirm_del_territory_room">Удалить квартиру участка %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->
@@ -151,6 +152,8 @@
     <!--формы дома-->
     <string name="house_num_empty_error">Укажите, пожалуйста, № дома!</string>
     <string name="building_type_empty_error">Укажите, пожалуйста, тип строения!</string>
+    <!--формы квартиры-->
+    <string name="room_num_empty_error">Укажите, пожалуйста, № квартиры!</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <!--Участки-->

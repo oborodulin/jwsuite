@@ -19,6 +19,7 @@ class HouseToHousesListItemMapper : Mapper<House, HousesListItem> {
         isPrivateSector = input.isPrivateSector,
         houseExpr = input.houseExpr,
         streetFullName = input.street.streetFullName,
+        territoryFullCardNum = input.territoryFullCardNum,
         info = input.info
     )
 }

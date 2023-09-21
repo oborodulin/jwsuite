@@ -1,9 +1,8 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.Entrance
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.EntranceUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.TerritoryUiToTerritoryMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
@@ -11,7 +10,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.Hous
 class EntranceUiToEntranceMapper(
     private val houseUiMapper: HouseUiToHouseMapper,
     private val territoryUiMapper: TerritoryUiToTerritoryMapper
-) : Mapper<EntranceUi, Entrance> {
+) : Mapper<EntranceUi, Entrance>, NullableMapper<EntranceUi, Entrance> {
     override fun map(input: EntranceUi): Entrance {
         val house = Entrance(
             house = houseUiMapper.map(input.house),
@@ -23,9 +22,11 @@ class EntranceUiToEntranceMapper(
             floorsQty = input.floorsQty,
             roomsByFloor = input.roomsByFloor,
             estimatedRooms = input.estimatedRooms,
-            territoryDesc = input.territoryDesc
+            entranceDesc = input.entranceDesc
         )
         house.id = input.id
         return house
     }
+
+    override fun nullableMap(input: EntranceUi?) = input?.let { map(it) }
 }

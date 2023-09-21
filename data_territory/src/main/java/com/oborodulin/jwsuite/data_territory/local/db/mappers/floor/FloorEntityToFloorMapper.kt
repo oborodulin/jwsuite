@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.floor
 
+import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.home.common.mapping.NullableConstructedMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
@@ -8,7 +9,7 @@ import com.oborodulin.jwsuite.domain.model.Floor
 import com.oborodulin.jwsuite.domain.model.House
 import com.oborodulin.jwsuite.domain.model.Territory
 
-class FloorEntityToFloorMapper : ConstructedMapper<FloorEntity, Floor>,
+class FloorEntityToFloorMapper(private val ctx: Context) : ConstructedMapper<FloorEntity, Floor>,
     NullableConstructedMapper<FloorEntity, Floor> {
     override fun map(input: FloorEntity, vararg properties: Any?): Floor {
         if (properties.isEmpty() || properties.size < 3 || properties[0] !is House || (properties[1] != null && properties[1] !is Entrance) ||
@@ -20,6 +21,7 @@ class FloorEntityToFloorMapper : ConstructedMapper<FloorEntity, Floor>,
                     )
         )
         val floor = Floor(
+            ctx = ctx,
             house = properties[0] as House,
             entrance = properties[1] as? Entrance,
             territory = properties[2] as? Territory,
@@ -29,7 +31,7 @@ class FloorEntityToFloorMapper : ConstructedMapper<FloorEntity, Floor>,
             isResidential = input.isResidentialFloor,
             roomsByFloor = input.roomsByFloor,
             estimatedRooms = input.estFloorRooms,
-            territoryDesc = input.floorDesc
+            floorDesc = input.floorDesc
         )
         floor.id = input.floorId
         return floor

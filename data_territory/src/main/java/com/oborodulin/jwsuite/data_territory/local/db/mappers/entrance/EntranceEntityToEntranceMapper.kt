@@ -28,7 +28,7 @@ class EntranceEntityToEntranceMapper(private val ctx: Context) :
             floorsQty = input.entranceFloorsQty,
             roomsByFloor = input.roomsByEntranceFloor,
             estimatedRooms = input.estEntranceRooms,
-            territoryDesc = input.entranceDesc,
+            entranceDesc = input.entranceDesc,
         )
         entrance.id = input.entranceId
         return entrance

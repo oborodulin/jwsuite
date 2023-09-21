@@ -25,6 +25,11 @@ class LocalRoomDataSourceImpl @Inject constructor(
 
     override fun getTerritoryRooms(territoryId: UUID) = roomDao.findByTerritoryId(territoryId)
 
+    override fun getRoomsForTerritory(territoryId: UUID) =
+        roomDao.findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+            territoryId
+        )
+
     override fun getRoom(roomId: UUID) = roomDao.findDistinctById(roomId)
 
     override suspend fun insertRoom(room: RoomEntity) = withContext(dispatcher) {
@@ -43,13 +48,21 @@ class LocalRoomDataSourceImpl @Inject constructor(
         roomDao.deleteById(roomId)
     }
 
-    override suspend fun deleteRooms(rooms: List<RoomEntity>) =
-        withContext(dispatcher) {
-            roomDao.delete(rooms)
-        }
+    override suspend fun deleteRooms(rooms: List<RoomEntity>) = withContext(dispatcher) {
+        roomDao.delete(rooms)
+    }
 
     override suspend fun deleteAllRooms() = withContext(dispatcher) {
         roomDao.deleteAll()
     }
 
+    override fun getNextRoomNum(houseId: UUID) = roomDao.getNextRoomNum(houseId)
+    override suspend fun clearTerritoryById(roomId: UUID) = withContext(dispatcher) {
+        roomDao.clearTerritoryById(roomId)
+    }
+
+    override suspend fun setTerritoryById(roomId: UUID, territoryId: UUID) =
+        withContext(dispatcher) {
+            roomDao.updateTerritoryIdById(roomId, territoryId)
+        }
 }

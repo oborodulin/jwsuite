@@ -11,6 +11,15 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
+import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -45,6 +54,9 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetsLi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HouseConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HousesListConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomsForTerritoryListConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomsListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryCategoriesListConverter
@@ -66,10 +78,22 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.T
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryToTerritoryCategoryUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryUiToTerritoryCategoryMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntranceToEntranceUiMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntranceToEntrancesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntranceUiToEntranceMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntrancesListToEntrancesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor.FloorToFloorUiMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor.FloorToFloorsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor.FloorUiToFloorMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor.FloorsListToFloorsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHouseUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHousesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HousesListToHousesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomUiMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomsListToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
@@ -256,6 +280,109 @@ object TerritoringModule {
     fun provideHousesListToHousesListItemMapper(mapper: HouseToHousesListItemMapper): HousesListToHousesListItemMapper =
         HousesListToHousesListItemMapper(mapper = mapper)
 
+    // Entrance:
+    @Singleton
+    @Provides
+    fun provideEntranceToEntranceUiMapper(
+        houseMapper: HouseToHouseUiMapper,
+        territoryMapper: TerritoryToTerritoryUiMapper
+    ): EntranceToEntranceUiMapper = EntranceToEntranceUiMapper(
+        houseMapper = houseMapper, territoryMapper = territoryMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideEntranceUiToEntranceMapper(
+        houseUiMapper: HouseUiToHouseMapper,
+        territoryUiMapper: TerritoryUiToTerritoryMapper
+    ): EntranceUiToEntranceMapper = EntranceUiToEntranceMapper(
+        houseUiMapper = houseUiMapper, territoryUiMapper = territoryUiMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideEntranceToEntrancesListItemMapper(): EntranceToEntrancesListItemMapper =
+        EntranceToEntrancesListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideEntrancesListToEntrancesListItemMapper(mapper: EntranceToEntrancesListItemMapper): EntrancesListToEntrancesListItemMapper =
+        EntrancesListToEntrancesListItemMapper(mapper = mapper)
+
+    // Floor:
+    @Singleton
+    @Provides
+    fun provideFloorToFloorUiMapper(
+        houseMapper: HouseToHouseUiMapper,
+        entranceMapper: EntranceToEntranceUiMapper,
+        territoryMapper: TerritoryToTerritoryUiMapper
+    ): FloorToFloorUiMapper = FloorToFloorUiMapper(
+        houseMapper = houseMapper, entranceMapper = entranceMapper,
+        territoryMapper = territoryMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideFloorUiToFloorMapper(
+        houseUiMapper: HouseUiToHouseMapper,
+        entranceUiMapper: EntranceUiToEntranceMapper,
+        territoryUiMapper: TerritoryUiToTerritoryMapper
+    ): FloorUiToFloorMapper = FloorUiToFloorMapper(
+        houseUiMapper = houseUiMapper, entranceUiMapper = entranceUiMapper,
+        territoryUiMapper = territoryUiMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideFloorToFloorsListItemMapper(): FloorToFloorsListItemMapper =
+        FloorToFloorsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideFloorsListToFloorsListItemMapper(mapper: FloorToFloorsListItemMapper): FloorsListToFloorsListItemMapper =
+        FloorsListToFloorsListItemMapper(mapper = mapper)
+
+    // Room:
+    @Singleton
+    @Provides
+    fun provideRoomToRoomUiMapper(
+        localityMapper: LocalityToLocalityUiMapper,
+        localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
+        microistrictMapper: MicrodistrictToMicrodistrictUiMapper,
+        streetMapper: StreetToStreetUiMapper,
+        houseMapper: HouseToHouseUiMapper,
+        entranceMapper: EntranceToEntranceUiMapper,
+        floorMapper: FloorToFloorUiMapper,
+        territoryMapper: TerritoryToTerritoryUiMapper
+    ): RoomToRoomUiMapper = RoomToRoomUiMapper(
+        localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper,
+        microistrictMapper = microistrictMapper, streetMapper = streetMapper,
+        houseMapper = houseMapper, entranceMapper = entranceMapper, floorMapper = floorMapper,
+        territoryMapper = territoryMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideRoomUiToRoomMapper(
+        houseUiMapper: HouseUiToHouseMapper,
+        entranceUiMapper: EntranceUiToEntranceMapper,
+        floorUiMapper: FloorUiToFloorMapper,
+        territoryUiMapper: TerritoryUiToTerritoryMapper
+    ): RoomUiToRoomMapper = RoomUiToRoomMapper(
+        houseUiMapper = houseUiMapper, entranceUiMapper = entranceUiMapper,
+        floorUiMapper = floorUiMapper, territoryUiMapper = territoryUiMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideRoomToRoomsListItemMapper(): RoomToRoomsListItemMapper =
+        RoomToRoomsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoomsListToRoomsListItemMapper(mapper: RoomToRoomsListItemMapper): RoomsListToRoomsListItemMapper =
+        RoomsListToRoomsListItemMapper(mapper = mapper)
+
     // CONVERTERS:
     // Territory Category:
     @Singleton
@@ -322,6 +449,22 @@ object TerritoringModule {
     @Provides
     fun provideHousesForTerritoryListConverter(mapper: HousesListToHousesListItemMapper): HousesForTerritoryListConverter =
         HousesForTerritoryListConverter(mapper = mapper)
+
+    // Room:
+    @Singleton
+    @Provides
+    fun provideRoomConverter(mapper: RoomToRoomUiMapper): RoomConverter =
+        RoomConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoomsListConverter(mapper: RoomsListToRoomsListItemMapper): RoomsListConverter =
+        RoomsListConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoomsForTerritoryListConverter(mapper: RoomsListToRoomsListItemMapper): RoomsForTerritoryListConverter =
+        RoomsForTerritoryListConverter(mapper = mapper)
 
     // USE CASES:
     // Territory Category:
@@ -400,4 +543,26 @@ object TerritoringModule {
         deleteTerritoryHouseUseCase
     )
 
+    // Room:
+    @Singleton
+    @Provides
+    fun provideRoomUseCases(
+        getRoomsUseCase: GetRoomsUseCase,
+        getRoomUseCase: GetRoomUseCase,
+        getNextRoomNumUseCase: GetNextRoomNumUseCase,
+        getRoomsForTerritoryUseCase: GetRoomsForTerritoryUseCase,
+        saveRoomUseCase: SaveRoomUseCase,
+        saveTerritoryRoomUseCase: SaveTerritoryRoomUseCase,
+        deleteRoomUseCase: DeleteRoomUseCase,
+        deleteTerritoryRoomUseCase: DeleteTerritoryRoomUseCase
+    ): RoomUseCases = RoomUseCases(
+        getRoomsUseCase,
+        getRoomUseCase,
+        getNextRoomNumUseCase,
+        getRoomsForTerritoryUseCase,
+        saveRoomUseCase,
+        saveTerritoryRoomUseCase,
+        deleteRoomUseCase,
+        deleteTerritoryRoomUseCase
+    )
 }

@@ -64,6 +64,9 @@ fun DashboardingScreen(
                     IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                         Icon(Icons.Outlined.Add, null)
                     }
+                    /*IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Geo.route) }) {
+                        Icon(R.drawable., null)
+                    }*/
                     IconButton(onClick = { context.toast("Settings button clicked...") }) {
                         Icon(Icons.Outlined.Settings, null)
                     }
@@ -99,7 +102,8 @@ fun DashboardingScreen(
             }
         }
         LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("DashboardingScreen: LaunchedEffect() AFTER collect single Event Flow")
+            Timber.tag(TAG)
+                .d("DashboardingScreen: LaunchedEffect() AFTER collect single Event Flow")
             viewModel.singleEventFlow.collectLatest {
                 Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
                 when (it) {

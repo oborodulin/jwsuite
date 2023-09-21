@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.di
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
+import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
@@ -14,6 +15,14 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -208,4 +217,53 @@ object TerritoryUseCasesModule {
     fun provideSaveTerritoryHouseUseCase(
         configuration: UseCase.Configuration, housesRepository: HousesRepository
     ): SaveTerritoryHouseUseCase = SaveTerritoryHouseUseCase(configuration, housesRepository)
+
+    // Room:
+    @Singleton
+    @Provides
+    fun provideGetRoomUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): GetRoomUseCase = GetRoomUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetRoomsUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): GetRoomsUseCase = GetRoomsUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextRoomNumUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): GetNextRoomNumUseCase = GetNextRoomNumUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetRoomsForTerritoryUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): GetRoomsForTerritoryUseCase = GetRoomsForTerritoryUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteRoomUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): DeleteRoomUseCase = DeleteRoomUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteTerritoryRoomUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): DeleteTerritoryRoomUseCase = DeleteTerritoryRoomUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveRoomUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): SaveRoomUseCase = SaveRoomUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveTerritoryRoomUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): SaveTerritoryRoomUseCase = SaveTerritoryRoomUseCase(configuration, roomsRepository)
 }

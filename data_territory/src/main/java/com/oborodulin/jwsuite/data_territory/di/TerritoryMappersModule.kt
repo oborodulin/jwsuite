@@ -4,6 +4,7 @@ import android.content.Context
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
@@ -227,7 +228,8 @@ object TerritoryMappersModule {
     // Floors:
     @Singleton
     @Provides
-    fun provideFloorEntityToFloorMapper(): FloorEntityToFloorMapper = FloorEntityToFloorMapper()
+    fun provideFloorEntityToFloorMapper(@ApplicationContext ctx: Context): FloorEntityToFloorMapper =
+        FloorEntityToFloorMapper(ctx = ctx)
 
     @Singleton
     @Provides
@@ -298,6 +300,7 @@ object TerritoryMappersModule {
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
         microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        geoLocalityMapper: GeoLocalityViewToGeoLocalityMapper,
         houseMapper: HouseEntityToHouseMapper,
         territoryMapper: TerritoryViewToTerritoryMapper,
         entranceEntityMapper: EntranceEntityToEntranceMapper,
@@ -310,6 +313,7 @@ object TerritoryMappersModule {
         localityMapper = localityMapper,
         localityDistrictMapper = localityDistrictMapper,
         microdistrictMapper = microdistrictMapper,
+        geoLocalityMapper = geoLocalityMapper,
         houseMapper = houseMapper,
         territoryMapper = territoryMapper,
         entranceEntityMapper = entranceEntityMapper,
@@ -335,11 +339,13 @@ object TerritoryMappersModule {
     @Provides
     fun provideRoomMappers(
         roomViewListToRoomsListMapper: RoomViewListToRoomsListMapper,
+        roomViewToRoomMapper: RoomViewToRoomMapper,
         roomEntityToRoomMapper: RoomEntityToRoomMapper,
         roomsListToRoomEntityListMapper: RoomsListToRoomEntityListMapper,
         roomToRoomEntityMapper: RoomToRoomEntityMapper
     ): RoomMappers = RoomMappers(
         roomViewListToRoomsListMapper,
+        roomViewToRoomMapper,
         roomEntityToRoomMapper,
         roomsListToRoomEntityListMapper,
         roomToRoomEntityMapper

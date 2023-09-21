@@ -5,9 +5,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
-import com.oborodulin.jwsuite.data_geo.util.Constants
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_DISTRICT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -47,10 +45,10 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd 
-            ON sd.dsStreetsId = sw.streetId AND sd.dsLocalityDistrictsId = :localityDistrictId 
-                AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) AND sw.streetLocCode = :locale
-        ORDER BY sw.streetName                
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds 
+            ON ds.dsStreetsId = sv.streetId AND ds.dsLocalityDistrictsId = :localityDistrictId 
+                AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
+        ORDER BY sv.streetName                
         """
     )
     fun findByLocalityDistrictIdAndPrivateSectorMark(
@@ -68,10 +66,10 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd 
-            ON sd.dsStreetsId = sw.streetId AND sd.dsMicrodistrictsId = :microdistrictId 
-                AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) AND sw.streetLocCode = :locale
-        ORDER BY sw.streetName                
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds 
+            ON ds.dsStreetsId = sv.streetId AND ds.dsMicrodistrictsId = :microdistrictId 
+                AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
+        ORDER BY sv.streetName                
         """
     )
     fun findByMicrodistrictIdAndPrivateSectorMark(
@@ -86,15 +84,17 @@ interface GeoStreetDao {
         .distinctUntilChanged()
 
     //-----------------------------
+    //LEFT JOIN ${GeoLocalityDistrictView.VIEW_NAME} ldv ON ldv.${PX_LOCALITY_DISTRICT}localityDistrictId = ds.dsLocalityDistrictsId AND ldv.${PX_LOCALITY_DISTRICT}locDistrictLocCode = sv.streetLocCode
+    //LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} mdv ON mdv.microdistrictId = ds.dsMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode
     @Query(
         """
-        SELECT * FROM ${GeoStreetView.VIEW_NAME} 
-        WHERE streetLocCode = :locale
-            AND ifnull(microdistrictId, '') = ifnull(:microdistrictId, '') 
-            AND ifnull(${PX_LOCALITY_DISTRICT}localityDistrictId , '') = ifnull(:localityDistrictId, '')
-            AND ${PX_LOCALITY}localityId = :localityId
-            AND streetId NOT IN (:excludes)
-        ORDER BY streetName
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv LEFT JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId
+        WHERE sv.streetLocCode = :locale
+            AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(ds.dsMicrodistrictsId, '')) 
+            AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId , ''))
+            AND sv.${PX_LOCALITY}localityId = :localityId
+            AND sv.streetId NOT IN (:excludes)
+        ORDER BY sv.streetName
         """
     )
     fun findByLocalityIdAndLocalityDistrictIdAndMicrodistrictIdWithExcludes(
@@ -113,12 +113,12 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sw.* FROM ${GeoStreetView.VIEW_NAME} sw JOIN ${GeoDistrictStreetEntity.TABLE_NAME} sd ON sd.dsStreetsId = sw.streetId 
-        WHERE sw.sLocalitiesId = :localityId
-            AND sw.isStreetPrivateSector = ifnull(:isPrivateSector, sw.isStreetPrivateSector) 
-            AND ifnull(sd.dsLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(sd.dsLocalityDistrictsId, '')) 
-            AND ifnull(sd.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(sd.dsMicrodistrictsId, '')) 
-            AND sw.streetName LIKE '%' || :streetName || '%'
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
+        WHERE sv.sLocalitiesId = :localityId
+            AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) 
+            AND ifnull(ds.dsLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId, '')) 
+            AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(ds.dsMicrodistrictsId, '')) 
+            AND sv.streetName LIKE '%' || :streetName || '%'
     """
     )
     fun findByStreetName(

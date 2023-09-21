@@ -8,8 +8,8 @@ import com.oborodulin.jwsuite.domain.util.RoadType
 data class GeoStreet(
     val ctx: Context? = null,
     val locality: GeoLocality,
-    val localityDistrict: GeoLocalityDistrict?,
-    val microdistrict: GeoMicrodistrict?,
+    //val localityDistrict: GeoLocalityDistrict?,
+    //val microdistrict: GeoMicrodistrict?,
     val streetHashCode: Int,
     val roadType: RoadType = RoadType.STREET,
     val isPrivateSector: Boolean = false,

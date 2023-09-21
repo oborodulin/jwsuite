@@ -13,6 +13,11 @@
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <string name="geo_tab_regions">ОБЛАСТИ</string>
+    <string name="geo_tab_region_districts">РАЙОНЫ ОБЛ.</string>
+    <string name="geo_tab_localities">НП</string>
+    <string name="geo_tab_locality_districts">РАЙОНЫ НП</string>
+    <string name="geo_tab_microdistricts">МИКРОРАЙОНЫ</string>
+    <string name="geo_tab_streets">УЛИЦЫ</string>
 
     <!--ФОРМЫ:-->
     <!--география-->

@@ -18,13 +18,13 @@ data class HousesListItem(
     val isPrivateSector: Boolean = false,
     val houseExpr: String? = null,
     val streetFullName: String,
+    val territoryFullCardNum: String? = null,
     val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = "$streetFullName $houseExpr $houseFullNum",
-    supportingText = (if (zipCode != null) "$zipCode: " else "").plus(
-        if (info.isNotEmpty()) info.joinToString(", ") else ""
-    )
+    headline = "$streetFullName, $houseExpr $houseFullNum",
+    supportingText = territoryFullCardNum.orEmpty().plus(zipCode?.let { "($it) " }.orEmpty())
+        .plus(if (info.isNotEmpty()) info.joinToString(", ") else "")
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(

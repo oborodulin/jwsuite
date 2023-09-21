@@ -13,7 +13,7 @@ class MicrodistrictViewToGeoMicrodistrictMapper(private val ctx: Context) :
     NullableConstructedMapper<MicrodistrictView, GeoMicrodistrict> {
     override fun map(input: MicrodistrictView, vararg properties: Any?): GeoMicrodistrict {
         if (properties.size != 2 || properties[0] !is GeoLocality || properties[1] !is GeoLocalityDistrict) throw IllegalArgumentException(
-            "Constructed Mapper properties size not equal 2 or properties[0] is not GeoLocality class or properties[1] is not GeoLocalityDistrict class: size = %d; input.id = %s".format(
+            "MicrodistrictViewToGeoMicrodistrictMapper: properties size not equal 2 or properties[0] is not GeoLocality class or properties[1] is not GeoLocalityDistrict class: size = %d; input.data.microdistrictId = %s".format(
                 properties.size, input.data.microdistrictId
             )
         )

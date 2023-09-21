@@ -11,8 +11,8 @@ class LocalityDistrictViewToGeoLocalityDistrictMapper :
     NullableConstructedMapper<LocalityDistrictView, GeoLocalityDistrict> {
     override fun map(input: LocalityDistrictView, vararg properties: Any?): GeoLocalityDistrict {
         if (properties.isEmpty() || properties[0] !is GeoLocality) throw IllegalArgumentException(
-            "LocalityDistrictViewToGeoLocalityDistrictMapper properties is empty or properties[0] is not GeoLocality class: input.id = %s".format(
-                input.data.localityDistrictId
+            "LocalityDistrictViewToGeoLocalityDistrictMapper: properties is empty or properties[0] is not GeoLocality class: size = %d; input.data.localityDistrictId = %s".format(
+                properties.size, input.data.localityDistrictId
             )
         )
         val localityDistrict = GeoLocalityDistrict(

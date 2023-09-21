@@ -2,7 +2,10 @@ package com.oborodulin.jwsuite.data_territory.local.db.dao
 
 import androidx.room.*
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
+import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
@@ -55,13 +58,16 @@ interface HouseDao {
     //-----------------------------
     @Query(
         """
-        SELECT * FROM ${HouseView.VIEW_NAME} hv JOIN ${TerritoryEntity.TABLE_NAME} t 
-            ON t.territoryId = :territoryId AND hv.territoryId IS NULL 
+        SELECT hv.* FROM ${HouseView.VIEW_NAME} hv JOIN ${TerritoryEntity.TABLE_NAME} t 
+            ON t.territoryId = :territoryId AND hv.hTerritoriesId IS NULL 
                 AND hv.${PX_LOCALITY}localityId = t.tLocalitiesId 
                 AND ifnull(hv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '') 
                 AND ifnull(hv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '')
                 AND hv.streetLocCode = :locale
-        ORDER BY streetName, houseNum, houseLetter, buildingNum
+        WHERE NOT EXISTS (SELECT e.entranceId FROM ${EntranceEntity.TABLE_NAME} e WHERE e.eHousesId = hv.houseId AND e.eTerritoriesId IS NOT NULL)
+            AND NOT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fHousesId = hv.houseId AND f.fTerritoriesId IS NOT NULL)
+            AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = hv.houseId AND r.rTerritoriesId IS NOT NULL)
+        ORDER BY houseNum, houseLetter, buildingNum, streetName
         """
     )
     fun findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(

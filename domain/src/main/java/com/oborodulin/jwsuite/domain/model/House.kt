@@ -42,7 +42,7 @@ data class House(
     val calcRoomsInfo = if (calculatedRooms > 0) "$calculatedRooms ${
         ctx?.resources?.getString(R.string.room_expr).orEmpty()
     }" else null
-    val territoryDesc = territory?.let { "${it.fullCardNum}: " }.orEmpty().plus(houseDesc.orEmpty())
+    val territoryFullCardNum = territory?.let { "${it.fullCardNum}: " }
     val info = listOfNotNull(buildingTypeInfo, calcRoomsInfo, houseDesc)
     val houseInfo =
         houseFullNum.plus(if (info.isNotEmpty()) " (${info.joinToString(", ")})" else "")

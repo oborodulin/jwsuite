@@ -1,7 +1,10 @@
 package com.oborodulin.jwsuite.data_territory.local.db.dao
 
 import androidx.room.*
+import com.oborodulin.jwsuite.data_geo.util.Constants
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -10,43 +13,72 @@ import java.util.*
 @Dao
 interface RoomDao {
     // READS:
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} ORDER BY rHousesId, roomNum")
-    fun findAll(): Flow<List<RoomEntity>>
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} ORDER BY rHousesId, roomNum")
+    fun findAll(): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE roomId = :roomId")
-    fun findById(roomId: UUID): Flow<RoomEntity>
+    //-----------------------------
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE roomId = :roomId")
+    fun findById(roomId: UUID): Flow<RoomView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rHousesId = :houseId")
-    fun findByHouseId(houseId: UUID): Flow<List<RoomEntity>>
+    //-----------------------------
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rHousesId = :houseId ORDER BY roomNum")
+    fun findByHouseId(houseId: UUID): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rEntrancesId = :entranceId")
-    fun findByEntranceId(entranceId: UUID): Flow<List<RoomEntity>>
+    //-----------------------------
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rEntrancesId = :entranceId ORDER BY roomNum")
+    fun findByEntranceId(entranceId: UUID): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByEntranceId(entranceId: UUID) =
         findByEntranceId(entranceId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rFloorsId = :floorId")
-    fun findByFloorId(floorId: UUID): Flow<List<RoomEntity>>
+    //-----------------------------
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rFloorsId = :floorId ORDER BY roomNum")
+    fun findByFloorId(floorId: UUID): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFloorId(floorId: UUID) = findByFloorId(floorId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME} WHERE rTerritoriesId = :territoryId")
-    fun findByTerritoryId(territoryId: UUID): Flow<List<RoomEntity>>
+    //-----------------------------
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rTerritoriesId = :territoryId ORDER BY roomNum")
+    fun findByTerritoryId(territoryId: UUID): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
         findByTerritoryId(territoryId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query(
+        """
+        SELECT rv.* FROM ${RoomView.VIEW_NAME} rv JOIN ${TerritoryEntity.TABLE_NAME} t 
+            ON t.territoryId = :territoryId 
+                AND rv.hTerritoriesId IS NULL AND rv.eTerritoriesId IS NULL AND rv.fTerritoriesId IS NULL AND rv.rTerritoriesId IS NULL
+                AND rv.${Constants.PX_LOCALITY}localityId = t.tLocalitiesId 
+                AND ifnull(rv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '') 
+                AND ifnull(rv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '')
+                AND rv.streetLocCode = :locale
+        ORDER BY roomNum, houseNum, houseLetter, buildingNum, streetName
+        """
+    )
+    fun findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+        territoryId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<RoomView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+        territoryId: UUID
+    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+        territoryId
+    ).distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -80,4 +112,14 @@ interface RoomDao {
 
     @Query("DELETE FROM ${RoomEntity.TABLE_NAME}")
     suspend fun deleteAll()
+
+    // API:
+    @Query("SELECT ifnull(MAX(roomNum), 0) + 1 FROM ${RoomEntity.TABLE_NAME} WHERE rHousesId = :houseId")
+    fun getNextRoomNum(houseId: UUID): Int
+
+    @Query("UPDATE ${RoomEntity.TABLE_NAME} SET rTerritoriesId = NULL WHERE roomId = :roomId")
+    suspend fun clearTerritoryById(roomId: UUID)
+
+    @Query("UPDATE ${RoomEntity.TABLE_NAME} SET rTerritoriesId = :territoryId WHERE roomId = :roomId")
+    suspend fun updateTerritoryIdById(roomId: UUID, territoryId: UUID)
 }

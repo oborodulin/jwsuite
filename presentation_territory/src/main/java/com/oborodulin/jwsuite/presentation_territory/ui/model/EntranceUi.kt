@@ -12,9 +12,7 @@ data class EntranceUi(
     val floorsQty: Int? = null,
     val roomsByFloor: Int? = null,
     val estimatedRooms: Int? = null,
-    val territoryDesc: String? = null,
-    val entranceFullNum: String = "",
-    val calculatedRooms: Int? = null
+    val entranceDesc: String? = null
 ) : ModelUi()
 /*
 fun EntranceUi.toHousesListItem() = HousesListItem(
