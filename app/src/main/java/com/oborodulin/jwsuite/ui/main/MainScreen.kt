@@ -32,6 +32,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
@@ -283,6 +284,26 @@ private fun HomeNavigationHost(
         }
 
         // Geo:
+        composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Geo.arguments
+                )
+            GeoScreen(appState = appState)
+        }
+        composable(
+            route = NavRoutes.RegionDistrict.route, arguments = NavRoutes.RegionDistrict.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to RegionDistrictScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.RegionDistrict.arguments
+                )
+            RegionDistrictScreen(
+                appState = appState, regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it)
+            )
+        }
         composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
             Timber.tag(TAG)
                 .d(
