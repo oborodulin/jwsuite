@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,7 +55,6 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.s
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.components.AtWorkProcessMultiFabComponent
 import com.oborodulin.jwsuite.presentation_territory.components.HandOutFabComponent
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -98,6 +98,7 @@ fun TerritoringScreen(
     var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
     var tabType by remember { mutableStateOf(TerritoringTabType.HAND_OUT) }
+    val onChangeTab: (TerritoringTabType) -> Unit = { tabType = it }
     val fab = @Composable {
         when (tabType) {
             TerritoringTabType.HAND_OUT -> HandOutFabComponent(
@@ -120,7 +121,8 @@ fun TerritoringScreen(
     }
 
     Timber.tag(TAG).d("Territoring: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<TerritoringFields, InputFocusRequester>(TerritoringFields::class.java)
+    val focusRequesters =
+        EnumMap<TerritoringFields, InputFocusRequester>(TerritoringFields::class.java)
     enumValues<TerritoringFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
@@ -213,6 +215,9 @@ fun TerritoringScreen(
                     IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                         Icon(Icons.Outlined.Add, null)
                     }
+                    IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Houses.route) }) {
+                        Icon(Icons.Outlined.Home, null)
+                    }
                     /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
                         Icon(Icons.Outlined.Settings, null)
                     }*/
@@ -225,7 +230,7 @@ fun TerritoringScreen(
                         listOf(
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_hand_out),
-                                onClick = { tabType = TerritoringTabType.HAND_OUT }
+                                onClick = { onChangeTab(TerritoringTabType.HAND_OUT) }
                             ) {
                                 location.item?.let {
                                     HandOutTerritoriesView(
@@ -242,7 +247,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_at_work),
-                                onClick = { tabType = TerritoringTabType.AT_WORK }
+                                onClick = { onChangeTab(TerritoringTabType.AT_WORK) }
                             ) {
                                 location.item?.let {
                                     AtWorkTerritoriesView(
@@ -257,7 +262,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_idle),
-                                onClick = { tabType = TerritoringTabType.IDLE }
+                                onClick = { onChangeTab(TerritoringTabType.IDLE) }
                             ) {
                                 location.item?.let {
                                     IdleTerritoriesView(
@@ -272,7 +277,7 @@ fun TerritoringScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.territory_tab_all),
-                                onClick = { tabType = TerritoringTabType.ALL }
+                                onClick = { onChangeTab(TerritoringTabType.ALL) }
                             ) {
                                 location.item?.let {
                                     AllTerritoriesView(

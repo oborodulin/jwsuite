@@ -19,17 +19,17 @@
     <!--участки-->
 
     <!--СПИСОК:-->
-    <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="territories_list_empty_text">Участков пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_streets_list_empty_text">Улиц участка пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="territory_houses_list_empty_text">Домов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="houses_list_empty_text">Домов на улице пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="entrances_list_empty_text">Подъездов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="floors_list_empty_text">Этажей пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="rooms_list_empty_text">Квартир пока нет. Добавте, пожалуйста, хотя бы одну</string>
+    <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="territories_list_empty_text">Участков пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_streets_list_empty_text">Улиц участка пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="territory_houses_list_empty_text">Домов участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="houses_list_empty_text">Домов на улице пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="entrances_list_empty_text">Подъездов дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="floors_list_empty_text">Этажей дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="rooms_list_empty_text">Квартир дома пока нет. Добавьте, пожалуйста, хотя бы одну</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <!--Участки-->
@@ -43,10 +43,19 @@
     <string name="territory_details_tab_entrances">ПОДЪЕЗДЫ</string>
     <string name="territory_details_tab_floors">ЭТАЖИ</string>
     <string name="territory_details_tab_rooms">КВАРТИРЫ</string>
+    <!--Дома-->
+    <string name="houses_tab_houses">ДОМА</string>
+    <string name="houses_tab_entrances">ПОДЪЕЗДЫ</string>
+    <string name="houses_tab_floors">ЭТАЖИ</string>
+    <string name="houses_tab_rooms">КВАРТИРЫ</string>
 
     <!--ФОРМЫ:-->
     <!--общие-->
     <string name="house_hint">Дом</string>
+    <string name="room_hint">Квартира</string>
+    <string name="is_intercom_hint">Домофон?</string>
+    <string name="is_residential_hint">Жилой?</string>
+    <string name="is_foreign_language_hint">Языковая территория?</string>
     <!--Панель поиска (ч/с, локация)-->
     <string name="territoring_is_private_sector_hint">ч/с?</string>
     <!--Категория участка-->
@@ -92,13 +101,10 @@
     <string name="house_building_type_hint">Тип строения</string>
     <string name="house_is_security_hint">Охраняемая территория?</string>
     <string name="house_is_security_helper">Охраняемая территория?</string>
-    <string name="house_is_intercom_hint">Домофон?</string>
-    <string name="house_is_residential_hint">Жилой?</string>
     <string name="house_entrances_qty_hint">Кол-во подъездов</string>
     <string name="house_floors_by_entrance_hint">Кол-во этажей</string>
     <string name="house_rooms_by_floor_hint">Кол-во квартир на этаже</string>
     <string name="house_estimated_rooms_hint">Общее кол-во квартир в доме</string>
-    <string name="house_is_foreign_language_hint">Языковая территория?</string>
     <string name="house_desc_hint">Описание</string>
     <!--Подъезд-->
     <string name="entrance_subheader">Подъезд</string>
@@ -109,6 +115,7 @@
     <!--Квартира-->
     <string name="room_subheader">Квартира</string>
     <string name="room_new_subheader">Новая квартира</string>
+    <string name="room_num_hint">№ квартиры</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

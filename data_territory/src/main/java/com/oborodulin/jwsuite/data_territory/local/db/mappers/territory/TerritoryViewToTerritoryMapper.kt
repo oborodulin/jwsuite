@@ -52,7 +52,7 @@ class TerritoryViewToTerritoryMapper(
             territoryNum = input.territory.territoryNum,
             isBusiness = input.territory.isBusinessTerritory,
             isGroupMinistry = input.territory.isGroupMinistry,
-            isInPerimeter = input.territory.isInPerimeter,
+            //isInPerimeter = input.territory.isInPerimeter,
             isProcessed = input.territory.isProcessed,
             isActive = input.territory.isActive,
             territoryDesc = input.territory.territoryDesc,

@@ -46,15 +46,15 @@ class StreetsListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(StreetsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is StreetsListUiAction.Load -> {
-                loadStreets(action.localityId, action.localityDistrictId, action.microdistrictId)
-            }
+            is StreetsListUiAction.Load -> loadStreets(
+                action.localityId, action.localityDistrictId, action.microdistrictId,
+                action.isPrivateSector
+            )
 
-            is StreetsListUiAction.LoadForTerritory ->
-                loadStreetsForTerritory(
-                    action.localityId, action.localityDistrictId, action.microdistrictId,
-                    action.excludes
-                )
+            is StreetsListUiAction.LoadForTerritory -> loadStreetsForTerritory(
+                action.localityId, action.localityDistrictId, action.microdistrictId,
+                action.excludes
+            )
             /*          is StreetsListUiAction.FilteredLoad -> {
                           loadFilteredStreets(action.search)
                       }*/

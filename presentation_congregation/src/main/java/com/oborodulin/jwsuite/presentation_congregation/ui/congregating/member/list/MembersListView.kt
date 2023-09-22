@@ -7,21 +7,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
@@ -72,12 +70,11 @@ fun MembersListView(
                 groupId = groupInput?.groupId,
                 searchedText = searchText.text,
                 members = it,
-                viewModel = viewModel,
                 onEdit = { member -> viewModel.submitAction(MembersListUiAction.EditMember(member.id)) },
                 onDelete = { member ->
                     viewModel.submitAction(MembersListUiAction.DeleteMember(member.id))
                 }
-            )
+            ) { member -> viewModel.singleSelectItem(member) }
         }
     }
     LaunchedEffect(Unit) {
@@ -99,11 +96,11 @@ fun MembersList(
     groupId: UUID?,
     searchedText: String = "",
     members: List<MembersListItem>,
-    viewModel: MembersListViewModel,
     onEdit: (MembersListItem) -> Unit,
-    onDelete: (MembersListItem) -> Unit
+    onDelete: (MembersListItem) -> Unit,
+    onClick: (MembersListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("MembersList(...) called")
+    Timber.tag(TAG).d("MembersList(...) called: size = %d", members.size)
     if (members.isNotEmpty()) {
         var filteredItems: List<MembersListItem>
         val listState =
@@ -130,17 +127,13 @@ fun MembersList(
                             stringResource(R.string.dlg_confirm_del_member, member.headline)
                         ) { onDelete(member) }),
                     selected = member.selected,
-                    onClick = { viewModel.singleSelectItem(member) }
+                    onClick = { onClick(member) }
                 )
             }
         }
     } else {
         if (congregationId != null || groupId != null) {
-            Text(
-                text = stringResource(R.string.members_list_empty_text),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
+            EmptyListTextComponent(R.string.members_list_empty_text)
         }
     }
 }
@@ -155,10 +148,9 @@ fun PreviewMembersList() {
                 congregationId = UUID.randomUUID(),
                 groupId = UUID.randomUUID(),
                 members = MembersListViewModelImpl.previewList(LocalContext.current),
-                viewModel = MembersListViewModelImpl.previewModel(LocalContext.current),
                 onEdit = {},
                 onDelete = {}
-            )
+            ) {}
         }
     }
 }

@@ -32,7 +32,7 @@ private const val TAG = "Territoring.HouseComboBox"
 @Composable
 fun HouseComboBox(
     modifier: Modifier = Modifier,
-    streetId: UUID,
+    streetId: UUID? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: HousesListViewModelImpl = hiltViewModel(),
     singleViewModel: HouseViewModelImpl = hiltViewModel(),
@@ -56,7 +56,7 @@ fun HouseComboBox(
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = HousesListUiAction.Load(streetId),
+        loadListUiAction = HousesListUiAction.Load(streetId = streetId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

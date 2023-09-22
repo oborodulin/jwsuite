@@ -40,6 +40,8 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.Regi
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.houses.HousesScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single.RoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
@@ -266,6 +268,14 @@ private fun HomeNavigationHost(
         }
 
         // House, Entrace, Floor, Room:
+        composable(route = NavRoutes.Houses.route, arguments = NavRoutes.Houses.arguments) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to HousesScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Houses.arguments
+                )
+            HousesScreen(appState = appState)
+        }
         composable(
             route = NavRoutes.House.route, arguments = NavRoutes.House.arguments
         ) {
@@ -280,6 +290,22 @@ private fun HomeNavigationHost(
                 appState = appState,
                 //territoryViewModel = territoryViewModel,
                 houseInput = NavRoutes.House.fromEntry(it)
+            )
+        }
+        composable(
+            route = NavRoutes.Room.route, arguments = NavRoutes.Room.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to RoomScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.Room.arguments.firstOrNull()
+                )
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            //val territoryViewModel = hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            RoomScreen(
+                appState = appState,
+                //territoryViewModel = territoryViewModel,
+                roomInput = NavRoutes.Room.fromEntry(it)
             )
         }
 

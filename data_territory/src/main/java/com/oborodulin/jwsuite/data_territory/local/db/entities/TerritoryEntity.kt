@@ -52,7 +52,7 @@ data class TerritoryEntity(
     val isActive: Boolean = true,
     val isBusinessTerritory: Boolean = false,
     val isGroupMinistry: Boolean = false,
-    val isInPerimeter: Boolean = false, // need ones table perimeter_streets
+    //val isInPerimeter: Boolean = false, // need ones table perimeter_streets
     val isProcessed: Boolean = true, // for isGroupMinistry
     val territoryDesc: String? = null,
     @ColumnInfo(index = true) val tMicrodistrictsId: UUID? = null,
@@ -71,7 +71,7 @@ data class TerritoryEntity(
             localityId: UUID = UUID.randomUUID(), localityDistrictId: UUID? = null,
             microdistrictId: UUID? = null,
             territoryNum: Int,
-            isBusiness: Boolean = false, isInPerimeter: Boolean = false,
+            isBusiness: Boolean = false, //isInPerimeter: Boolean = false,
             isGroupMinistry: Boolean = false,
             isProcessed: Boolean = true, isActive: Boolean = true, territoryDesc: String? = null
         ) = TerritoryEntity(
@@ -80,7 +80,7 @@ data class TerritoryEntity(
             tMicrodistrictsId = microdistrictId,
             territoryId = territoryId,
             territoryNum = territoryNum, isBusinessTerritory = isBusiness,
-            isGroupMinistry = isGroupMinistry, isInPerimeter = isInPerimeter,
+            isGroupMinistry = isGroupMinistry, //isInPerimeter = isInPerimeter,
             isProcessed = isProcessed, isActive = isActive, territoryDesc = territoryDesc
         )
 
@@ -118,7 +118,7 @@ data class TerritoryEntity(
             .append("; isActive = ").append(isActive)
             .append("; isBusinessTerritory = ").append(isBusinessTerritory)
             .append("; isGroupMinistry = ").append(isGroupMinistry)
-            .append("; isInPerimeter = ").append(isInPerimeter)
+            //.append("; isInPerimeter = ").append(isInPerimeter)
             .append("; isProcessed = ").append(isProcessed)
         tLocalityDistrictsId?.let { str.append("; tLocalityDistrictsId = ").append(it) }
         tMicrodistrictsId?.let { str.append("; tMicrodistrictsId = ").append(it) }

@@ -62,6 +62,7 @@ fun CongregatingScreen(
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val context = LocalContext.current
     var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
+    val onChangeTab: (CongregatingTabType) -> Unit = { tabType = it.name }
     val addActionOnClick = {
         appState.commonNavController.navigate(
             when (CongregatingTabType.valueOf(tabType)) {
@@ -98,7 +99,7 @@ fun CongregatingScreen(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_congregations),
-                            onClick = { tabType = CongregatingTabType.CONGREGATIONS.name }
+                            onClick = { onChangeTab(CongregatingTabType.CONGREGATIONS) }
                         ) {
                             CongregationMembersView(
                                 appState = appState,
@@ -108,7 +109,7 @@ fun CongregatingScreen(
                         },
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_groups),
-                            onClick = { tabType = CongregatingTabType.GROUPS.name }
+                            onClick = { onChangeTab(CongregatingTabType.GROUPS) }
                         ) {
                             GroupMembersView(
                                 appState = appState,
@@ -118,7 +119,7 @@ fun CongregatingScreen(
                         },
                         TabRowItem(
                             title = stringResource(R.string.congregation_tab_members),
-                            onClick = { tabType = CongregatingTabType.MEMBERS.name }
+                            onClick = { onChangeTab(CongregatingTabType.MEMBERS) }
                         ) {
                             MembersView(
                                 appState = appState,
@@ -169,7 +170,7 @@ fun CongregationMembersView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3.3f)
+                .weight(3.82f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -183,7 +184,7 @@ fun CongregationMembersView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(6.7f)
+                .weight(6.18f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -221,7 +222,7 @@ fun GroupMembersView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3.3f)
+                .weight(3.82f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -235,7 +236,7 @@ fun GroupMembersView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(6.7f)
+                .weight(6.18f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -273,7 +274,7 @@ fun MembersView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(6.7f)
+                .weight(6.18f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -287,7 +288,7 @@ fun MembersView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(3.3f)
+                .weight(3.82f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,

@@ -4,12 +4,12 @@
     <!--МЕНЮ географии-->
 
     <!--СПИСОК:-->
-    <string name="regions_list_empty_text">Областей пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="region_districts_list_empty_text">Районов областей пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="locality_districts_list_empty_text">Районов населённых пунктов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="microdistricts_list_empty_text">Микрорайонов пока нет. Добавте, пожалуйста, хотя бы один</string>
-    <string name="streets_list_empty_text">Улиц пока нет. Добавте, пожалуйста, хотя бы одну</string>
+    <string name="regions_list_empty_text">Областей пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="region_districts_list_empty_text">Районов областей пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="locality_districts_list_empty_text">Районов населённых пунктов пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="microdistricts_list_empty_text">Микрорайонов пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="streets_list_empty_text">Улиц пока нет. Добавьте, пожалуйста, хотя бы одну</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <string name="geo_tab_regions">ОБЛАСТИ</string>
@@ -39,6 +39,7 @@
     <string name="locality_new_subheader">Новый населённый пункт</string>
     <string name="locality_code_placeholder">7856</string>
     <string name="locality_code_helper">Уникальный (например, телефонный) код</string>
+    <string name="locality_placeholder">Населённый пункт…</string>
     <!--Район населённого пункта-->
     <string name="locality_district_subheader">Район</string>
     <string name="locality_district_new_subheader">Новый район</string>
@@ -49,6 +50,7 @@
     <string name="street_subheader">Улица</string>
     <string name="street_new_subheader">Новая улица</string>
     <string name="estimated_houses_hint">Кол-во домов</string>
+    <string name="street_placeholder">Улица…</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

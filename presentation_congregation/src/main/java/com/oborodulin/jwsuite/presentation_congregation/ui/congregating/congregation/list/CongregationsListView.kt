@@ -2,27 +2,23 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congreg
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.AppState
@@ -53,7 +49,6 @@ fun CongregationsListView(
         CommonScreen(state = state) {
             CongregationsList(
                 congregations = it,
-                congregationsListViewModel = congregationsListViewModel,
                 onFavorite = { listItem ->
                     listItem.itemId?.let { id ->
                         congregationsListViewModel.submitAction(
@@ -78,9 +73,10 @@ fun CongregationsListView(
                 )
                 appState.sharedViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
-                with(membersListViewModel) {
-                    submitAction(MembersListUiAction.LoadByCongregation(congregation.id))
-                }
+                congregationsListViewModel.singleSelectItem(congregation)
+                membersListViewModel.submitAction(
+                    MembersListUiAction.LoadByCongregation(congregation.id)
+                )
             }
         }
     }
@@ -100,13 +96,12 @@ fun CongregationsListView(
 @Composable
 fun CongregationsList(
     congregations: List<CongregationsListItem>,
-    congregationsListViewModel: CongregationsListViewModel,
     onFavorite: OnListItemEvent,
     onEdit: (CongregationsListItem) -> Unit,
     onDelete: (CongregationsListItem) -> Unit,
     onClick: (CongregationsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("CongregationsList(...) called")
+    Timber.tag(TAG).d("CongregationsList(...) called: size = %d", congregations.size)
     if (congregations.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = congregations.filter { it.selected }
@@ -131,21 +126,12 @@ fun CongregationsList(
                         ) { onDelete(congregation) }),
                     selected = congregation.selected,
                     onFavorite = onFavorite,
-                    onClick = {
-                        congregationsListViewModel.singleSelectItem(congregation)
-                        onClick(congregation)
-                    }
+                    onClick = { onClick(congregation) }
                 )
             }
         }
     } else {
-        Text(
-            modifier = Modifier.fillMaxSize(),
-            textAlign = TextAlign.Center,
-            text = stringResource(R.string.congregations_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        EmptyListTextComponent(R.string.congregations_list_empty_text)
     }
 }
 
@@ -157,9 +143,6 @@ fun PreviewCongregationsList() {
         Surface {
             CongregationsList(
                 congregations = CongregationsListViewModelImpl.previewList(LocalContext.current),
-                congregationsListViewModel = CongregationsListViewModelImpl.previewModel(
-                    LocalContext.current
-                ),
                 onFavorite = {},
                 onEdit = {},
                 onDelete = {},

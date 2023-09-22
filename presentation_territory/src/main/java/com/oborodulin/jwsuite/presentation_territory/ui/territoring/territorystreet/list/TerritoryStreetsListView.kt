@@ -4,10 +4,9 @@ import android.content.res.Configuration
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,19 +17,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -67,7 +66,7 @@ fun TerritoryStreetsListView(
                         TerritoryStreetsListUiAction.DeleteTerritoryStreet(territoryStreet.id)
                     )
                 }
-            ) {}
+            ) { territoryStreet -> viewModel.singleSelectItem(territoryStreet) }
         }
     }
     LaunchedEffect(Unit) {
@@ -91,44 +90,35 @@ fun TerritoryStreetsEditableList(
     onDelete: (TerritoryStreetsListItem) -> Unit,
     onClick: (TerritoryStreetsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("TerritoryStreetsEditableList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) }
+    Timber.tag(TAG).d("TerritoryStreetsEditableList(...) called: size = %d", territoryStreets.size)
     if (territoryStreets.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = territoryStreets.filter { it.selected }
+                .getOrNull(0)?.let { territoryStreets.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(territoryStreets.size) { index ->
-                territoryStreets[index].let { territoryStreet ->
-                    val isSelected = (selectedIndex == index)
-                    ListItemComponent(
-                        item = territoryStreet,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(territoryStreet) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(
-                                    R.string.dlg_confirm_del_territory_street,
-                                    territoryStreet.streetFullName
-                                )
-                            ) { onDelete(territoryStreet) }),
-                        selected = isSelected,
-                        background = if (isSelected) Color.LightGray else Color.Transparent,
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                            onClick(territoryStreet)
-                        }
-                    )
-                }
+            itemsIndexed(territoryStreets, key = { _, item -> item.id }) { _, territoryStreet ->
+                ListItemComponent(
+                    item = territoryStreet,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onEdit(territoryStreet) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(
+                                R.string.dlg_confirm_del_territory_street,
+                                territoryStreet.streetFullName
+                            )
+                        ) { onDelete(territoryStreet) }),
+                    selected = territoryStreet.selected,
+                    onClick = { onClick(territoryStreet) }
+                )
             }
         }
     } else {
-        Text(
-            text = stringResource(R.string.territory_streets_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        EmptyListTextComponent(R.string.territory_streets_list_empty_text)
     }
 }
 
@@ -139,7 +129,7 @@ fun TerritoryStreetsProcessedList(
     onDelete: (TerritoryStreetsListItem) -> Unit,
     onClick: (TerritoryStreetsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("TerritoryStreetsProcessedList(...) called")
+    Timber.tag(TAG).d("TerritoryStreetsProcessedList(...) called: size = %d", territoryStreets.size)
     var selectedIndex by remember { mutableStateOf(-1) }
     if (territoryStreets.isNotEmpty()) {
         LazyColumn(
@@ -173,6 +163,7 @@ fun TerritoryStreetsProcessedList(
         }
     }
 }
+
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable

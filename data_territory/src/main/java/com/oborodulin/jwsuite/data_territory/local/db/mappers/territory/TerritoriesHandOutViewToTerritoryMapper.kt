@@ -65,7 +65,7 @@ class TerritoriesHandOutViewToTerritoryMapper(
                 territoryNum = this.territory.territoryNum,
                 isBusiness = this.territory.isBusinessTerritory,
                 isGroupMinistry = this.territory.isGroupMinistry,
-                isInPerimeter = this.territory.isInPerimeter,
+                //isInPerimeter = this.territory.isInPerimeter,
                 isProcessed = this.territory.isProcessed,
                 isActive = this.territory.isActive,
                 territoryDesc = this.territory.territoryDesc,

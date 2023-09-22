@@ -2,27 +2,23 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.l
 
 import android.content.res.Configuration
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
@@ -80,17 +76,17 @@ fun GroupsListView(
             GroupsList(
                 congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId,
                 groups = it,
-                groupsListViewModel = groupsListViewModel,
-                onClick = { group ->
-                    with(membersListViewModel) {
-                        submitAction(MembersListUiAction.LoadByGroup(groupId = group.id))
-                    }
-                },
                 onEdit = { group ->
                     groupsListViewModel.submitAction(GroupsListUiAction.EditGroup(group.id))
+                },
+                onDelete = { group ->
+                    groupsListViewModel.submitAction(GroupsListUiAction.DeleteGroup(group.id))
                 }
             ) { group ->
-                groupsListViewModel.submitAction(GroupsListUiAction.DeleteGroup(group.id))
+                groupsListViewModel.singleSelectItem(group)
+                with(membersListViewModel) {
+                    submitAction(MembersListUiAction.LoadByGroup(groupId = group.id))
+                }
             }
         }
     }
@@ -111,12 +107,11 @@ fun GroupsListView(
 fun GroupsList(
     congregationId: UUID?,
     groups: List<GroupsListItem>,
-    groupsListViewModel: GroupsListViewModel,
-    onClick: (GroupsListItem) -> Unit,
     onEdit: (GroupsListItem) -> Unit,
-    onDelete: (GroupsListItem) -> Unit
+    onDelete: (GroupsListItem) -> Unit,
+    onClick: (GroupsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("GroupsList(...) called: groups.size = %d", groups.size)
+    Timber.tag(TAG).d("GroupsList(...) called: size = %d", groups.size)
     // https://stackoverflow.com/questions/72531840/how-to-select-only-one-item-in-a-list-lazycolumn
     //var selectedIndex by remember { mutableStateOf(-1) }
     if (groups.isNotEmpty()) {
@@ -141,7 +136,6 @@ fun GroupsList(
                     selected = group.selected, //((selectedIndex == -1) && group.selected) || selectedIndex == index,
                     onClick = {
                         //if (selectedIndex != index) selectedIndex = index
-                        groupsListViewModel.singleSelectItem(group)
                         // allow deselection: selectedIndex = if (selectedIndex == index) -1 else index
                         onClick(group)
                     }
@@ -150,13 +144,7 @@ fun GroupsList(
         }
     } else {
         congregationId?.let {
-            Text(
-                modifier = Modifier.fillMaxSize(),
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.groups_list_empty_text),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
+            EmptyListTextComponent(R.string.groups_list_empty_text)
         }
     }
 }
@@ -170,7 +158,6 @@ fun PreviewGroupsCongregating() {
             GroupsList(
                 congregationId = UUID.randomUUID(),
                 groups = GroupsListViewModelImpl.previewList(LocalContext.current),
-                groupsListViewModel = GroupsListViewModelImpl.previewModel(LocalContext.current),
                 onClick = {},
                 onEdit = {},
                 onDelete = {}

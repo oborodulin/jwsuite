@@ -4,33 +4,33 @@ import android.content.res.Configuration
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalitiesListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -39,9 +39,12 @@ private const val TAG = "Geo.LocalitiesListView"
 
 @Composable
 fun LocalitiesListView(
-    viewModel: LocalitiesListViewModelImpl = hiltViewModel(),
+    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
+    localityDistrictsListViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
+    microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
+    streetsListViewModel: StreetsListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    regionInput: RegionInput,
+    regionInput: RegionInput? = null,
     regionDistrictInput: RegionDistrictInput? = null
 ) {
     Timber.tag(TAG).d(
@@ -49,32 +52,42 @@ fun LocalitiesListView(
         regionInput,
         regionDistrictInput
     )
-    LaunchedEffect(Unit) {
+    LaunchedEffect(regionInput?.regionId, regionDistrictInput?.regionDistrictId) {
         Timber.tag(TAG).d("LocalitiesListView: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(
-            com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction.Load(
-                regionInput.regionId,
-                regionDistrictInput?.regionDistrictId
+        localitiesListViewModel.submitAction(
+            LocalitiesListUiAction.Load(
+                regionInput?.regionId, regionDistrictInput?.regionDistrictId
             )
         )
     }
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    localitiesListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             LocalitiesList(
                 localities = it,
                 onEdit = { locality ->
-                    viewModel.submitAction(LocalitiesListUiAction.EditLocality(locality.id))
+                    localitiesListViewModel.submitAction(
+                        LocalitiesListUiAction.EditLocality(locality.id)
+                    )
                 },
                 onDelete = { locality ->
-                    viewModel.submitAction(LocalitiesListUiAction.DeleteLocality(locality.id))
+                    localitiesListViewModel.submitAction(
+                        LocalitiesListUiAction.DeleteLocality(locality.id)
+                    )
                 }
-            ) {}
+            ) { locality ->
+                localitiesListViewModel.singleSelectItem(locality)
+                localityDistrictsListViewModel.submitAction(
+                    LocalityDistrictsListUiAction.Load(localityId = locality.id)
+                )
+                microdistrictsListViewModel.submitAction(MicrodistrictsListUiAction.Load(localityId = locality.id))
+                streetsListViewModel.submitAction(StreetsListUiAction.Load(localityId = locality.id))
+            }
         }
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LocalitiesListView: LaunchedEffect() AFTER collect single Event Flow")
-        viewModel.singleEventFlow.collectLatest {
+        localitiesListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is LocalitiesListUiSingleEvent.OpenLocalityScreen -> {
@@ -92,44 +105,35 @@ fun LocalitiesList(
     onDelete: (LocalitiesListItem) -> Unit,
     onClick: (LocalitiesListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("LocalitiesList(...) called")
-    var selectedIndex by remember { mutableStateOf(-1) } // by
+    Timber.tag(TAG).d("LocalitiesList(...) called: size = %d", localities.size)
     if (localities.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = localities.filter { it.selected }
+                .getOrNull(0)?.let { localities.indexOf(it) } ?: 0)
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            items(localities.size) { index ->
-                localities[index].let { locality ->
-                    val isSelected = (selectedIndex == index)
-                    ListItemComponent(
-                        item = locality,
-                        itemActions = listOf(
-                            ComponentUiAction.EditListItem { onEdit(locality) },
-                            ComponentUiAction.DeleteListItem(
-                                stringResource(
-                                    R.string.dlg_confirm_del_locality,
-                                    locality.localityFullName
-                                )
-                            ) { onDelete(locality) }),
-                        selected = isSelected,
-                        background = (if (isSelected) Color.LightGray else Color.Transparent),
-                        onClick = {
-                            if (selectedIndex != index) selectedIndex = index
-                            onClick(locality)
-                        }
-                    )
-                }
+            itemsIndexed(localities, key = { _, item -> item.id }) { _, locality ->
+                ListItemComponent(
+                    item = locality,
+                    itemActions = listOf(
+                        ComponentUiAction.EditListItem { onEdit(locality) },
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(
+                                R.string.dlg_confirm_del_locality,
+                                locality.localityFullName
+                            )
+                        ) { onDelete(locality) }),
+                    selected = locality.selected,
+                    onClick = { onClick(locality) }
+                )
             }
         }
     } else {
-        Text(
-            text = stringResource(R.string.localities_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        EmptyListTextComponent(R.string.localities_list_empty_text)
     }
 }
 

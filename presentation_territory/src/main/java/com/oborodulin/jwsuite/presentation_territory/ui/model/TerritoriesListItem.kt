@@ -15,7 +15,7 @@ data class TerritoriesListItem(
     val territoryNum: Int,
     val isBusiness: Boolean,
     val isGroupMinistry: Boolean,
-    val isInPerimeter: Boolean,
+    val isInPerimeter: Boolean = false,
     val isProcessed: Boolean,
     val isActive: Boolean,
     val territoryDesc: String? = null,

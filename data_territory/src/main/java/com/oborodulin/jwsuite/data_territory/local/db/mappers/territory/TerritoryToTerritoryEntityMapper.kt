@@ -13,7 +13,7 @@ class TerritoryToTerritoryEntityMapper : Mapper<Territory, TerritoryEntity> {
             isActive = input.isActive,
             isBusinessTerritory = input.isBusiness,
             isGroupMinistry = input.isGroupMinistry,
-            isInPerimeter = input.isInPerimeter,
+            //isInPerimeter = input.isInPerimeter,
             isProcessed = input.isProcessed,
             territoryDesc = input.territoryDesc,
             tMicrodistrictsId = input.microdistrict?.id,

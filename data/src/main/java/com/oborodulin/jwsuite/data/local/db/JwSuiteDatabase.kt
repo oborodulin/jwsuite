@@ -995,7 +995,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         else -> null
                     },
                     isBusiness = num % 8 == 0,
-                    isInPerimeter = num % 10 == 0,
+                    //isInPerimeter = num % 10 == 0,
                     isGroupMinistry = num % 20 == 0,
                     territoryNum = num
                 )

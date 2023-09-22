@@ -6,21 +6,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
@@ -56,25 +54,23 @@ fun RoomsListView(
             when (territoryInput?.territoryId) {
                 null -> HouseRoomsList(
                     rooms = it,
-                    viewModel = viewModel,
                     onEdit = { room ->
                         viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
                     },
                     onDelete = { room ->
                         viewModel.submitAction(RoomsListUiAction.DeleteRoom(room.id))
                     }
-                ) {}
+                ) { room -> viewModel.singleSelectItem(room) }
 
                 else -> TerritoryRoomsList(
                     rooms = it,
-                    viewModel = viewModel,
                     onProcess = { room ->
                         viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
                     },
                     onDelete = { room ->
                         viewModel.submitAction(RoomsListUiAction.DeleteTerritoryRoom(room.id))
                     }
-                ) {}
+                ) { room -> viewModel.singleSelectItem(room) }
             }
         }
     }
@@ -99,12 +95,11 @@ fun RoomsListView(
 @Composable
 fun HouseRoomsList(
     rooms: List<RoomsListItem>,
-    viewModel: RoomsListViewModel,
     onEdit: (RoomsListItem) -> Unit,
     onDelete: (RoomsListItem) -> Unit,
     onClick: (RoomsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("HouseRoomsList(...) called")
+    Timber.tag(TAG).d("HouseRoomsList(...) called: size = %d", rooms.size)
     if (rooms.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = rooms.filter { it.selected }
@@ -124,31 +119,23 @@ fun HouseRoomsList(
                             stringResource(R.string.dlg_confirm_del_room, room.roomFullNum)
                         ) { onDelete(room) }),
                     selected = room.selected,
-                    onClick = {
-                        viewModel.singleSelectItem(room)
-                        onClick(room)
-                    }
+                    onClick = { onClick(room) }
                 )
             }
         }
     } else {
-        Text(
-            text = stringResource(R.string.rooms_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        EmptyListTextComponent(R.string.rooms_list_empty_text)
     }
 }
 
 @Composable
 fun TerritoryRoomsList(
     rooms: List<RoomsListItem>,
-    viewModel: RoomsListViewModel,
     onProcess: (RoomsListItem) -> Unit,
     onDelete: (RoomsListItem) -> Unit,
     onClick: (RoomsListItem) -> Unit
 ) {
-    Timber.tag(TAG).d("TerritoryRoomsList(...) called")
+    Timber.tag(TAG).d("TerritoryRoomsList(...) called: size = %d", rooms.size)
     if (rooms.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = rooms.filter { it.selected }
@@ -171,19 +158,12 @@ fun TerritoryRoomsList(
                             )
                         ) { onDelete(room) }),
                     selected = room.selected,
-                    onClick = {
-                        viewModel.singleSelectItem(room)
-                        onClick(room)
-                    }
+                    onClick = { onClick(room) }
                 )
             }
         }
     } else {
-        Text(
-            text = stringResource(R.string.territory_rooms_list_empty_text),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        EmptyListTextComponent(R.string.territory_rooms_list_empty_text)
     }
 }
 
@@ -195,7 +175,6 @@ fun PreviewRoomsEditableList() {
         Surface {
             HouseRoomsList(
                 rooms = RoomsListViewModelImpl.previewList(LocalContext.current),
-                viewModel = RoomsListViewModelImpl.previewModel(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
                 onClick = {}

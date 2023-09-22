@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,13 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
@@ -37,11 +35,13 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListView
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListView
 import timber.log.Timber
 
 /**
@@ -54,12 +54,13 @@ fun GeoScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     //membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    nestedScrollConnection: NestedScrollConnection,
-    bottomBar: @Composable () -> Unit
+    //nestedScrollConnection: NestedScrollConnection,
+    //bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
     val context = LocalContext.current
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.LOCALITY_DISTRICTS.name) }
+    val onChangeTab: (GeoTabType) -> Unit = { tabType = it.name }
     val addActionOnClick = {
         appState.commonNavController.navigate(
             when (GeoTabType.valueOf(tabType)) {
@@ -84,47 +85,60 @@ fun GeoScreen(
     JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
             appState = appState,
-            nestedScrollConnection = nestedScrollConnection,
-            topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating,
+            topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_geo,
+            topBarNavigationIcon = {
+                IconButton(onClick = { appState.commonNavigateUp() }) {
+                    Icon(Icons.Outlined.ArrowBack, null)
+                }
+            },
             topBarActions = {
                 IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
                 IconButton(onClick = { context.toast("Settings button clicked...") }) {
                     Icon(Icons.Outlined.Settings, null)
                 }
             },
-            bottomBar = bottomBar
+            //bottomBar = bottomBar
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(
+                            title = stringResource(R.string.geo_tab_regions),
+                            onClick = { onChangeTab(GeoTabType.REGIONS) }
+                        ) { RegionRegionDistrictsLocalitiesView(appState = appState) },
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_region_districts),
+                            onClick = { onChangeTab(GeoTabType.REGION_DISTRICTS) }
+                        ) { RegionDistrictsLocalitiesView(appState = appState) },
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_localities),
+                            onClick = { onChangeTab(GeoTabType.LOCALITIES) }
+                        ) {},
+                        TabRowItem(
                             title = stringResource(R.string.geo_tab_locality_districts),
-                            onClick = { tabType = GeoTabType.LOCALITY_DISTRICTS.name }
+                            onClick = { onChangeTab(GeoTabType.LOCALITY_DISTRICTS) }
                         ) {
                             LocalitiesDistrictsMicrodistrictsStreetsView(
                                 appState = appState,
                                 //sharedViewModel = sharedViewModel,
-                                membersListViewModel = membersListViewModel
                             )
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_microdistricts),
-                            onClick = { tabType = GeoTabType.MICRODISTRICTS.name }
+                            onClick = { onChangeTab(GeoTabType.MICRODISTRICTS) }
                         ) {
                             MicrodistrictsStreetsView(
                                 appState = appState,
                                 //sharedViewModel = sharedViewModel,
-                                membersListViewModel = membersListViewModel
                             )
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_streets),
-                            onClick = { tabType = GeoTabType.STREETS.name }
+                            onClick = { onChangeTab(GeoTabType.STREETS) }
                         ) {
                             StreetsView(
                                 appState = appState,
                                 //sharedViewModel = sharedViewModel,
-                                membersListViewModel = membersListViewModel
                             )
                         }
                     )
@@ -145,17 +159,63 @@ fun GeoScreen(
         }*/
 }
 
-//fun RegionRegionDistrictsLocalitiesView(
-//fun RegionDistrictsLocalitiesView(
-//fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
 @Composable
-fun LocalitiesDistrictsMicrodistrictsStreetsView(
-    appState: AppState,
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel
-) {
-    Timber.tag(TAG).d("CongregationMembersView(...) called")
-    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
+    Timber.tag(TAG).d("RegionRegionDistrictsLocalitiesView(...) called")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(3.82f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            RegionsListView(navController = appState.commonNavController)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(6.18f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
+                        RegionDistrictsListView(navController = appState.commonNavController)
+                    },
+                    TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
+                        LocalitiesListView(navController = appState.commonNavController)
+                    }
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun RegionDistrictsLocalitiesView(appState: AppState) {
+    Timber.tag(TAG).d("RegionDistrictsLocalitiesView(...) called")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -173,30 +233,145 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3.3f)
+                .weight(3.82f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationsListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            RegionDistrictsListView(navController = appState.commonNavController)
         }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(6.7f)
+                .weight(6.18f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            LocalitiesListView(navController = appState.commonNavController)
         }
-        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
+    }
+}
+
+@Composable
+fun LocalitiesLocalitiesDistrictsMicrodistrictsView(appState: AppState) {
+    Timber.tag(TAG).d("LocalitiesLocalitiesDistrictsMicrodistrictsView(...) called")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(3.82f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            LocalitiesListView(navController = appState.commonNavController)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(6.18f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(title = stringResource(R.string.geo_tab_locality_districts)) {
+                        LocalityDistrictsListView(navController = appState.commonNavController)
+                    },
+                    TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
+                        MicrodistrictsListView(navController = appState.commonNavController)
+                    },
+                    TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
+                        StreetsListView(navController = appState.commonNavController)
+                    }
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun LocalitiesDistrictsMicrodistrictsStreetsView(
+    appState: AppState,
+    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+    //membersListViewModel: MembersListViewModel
+) {
+    Timber.tag(TAG).d("LocalitiesDistrictsMicrodistrictsStreetsView(...) called")
+    //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(3.82f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            LocalityDistrictsListView(navController = appState.commonNavController)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(6.18f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
+                        MicrodistrictsListView(navController = appState.commonNavController)
+                    },
+                    TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
+                        StreetsListView(navController = appState.commonNavController)
+                    }
+                )
+            )
+        }
     }
 }
 
@@ -204,10 +379,9 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
 fun MicrodistrictsStreetsView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel
+    //membersListViewModel: MembersListViewModel
 ) {
-    Timber.tag(TAG).d("GroupMembersView(...) called")
-    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("MicrodistrictsStreetsView(...) called")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -225,30 +399,29 @@ fun MicrodistrictsStreetsView(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(3.3f)
+                .weight(3.82f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            GroupsListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            MicrodistrictsListView(navController = appState.commonNavController)
         }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .weight(6.7f)
+                .weight(6.18f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            StreetsListView(navController = appState.commonNavController)
         }
-        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 
@@ -256,10 +429,9 @@ fun MicrodistrictsStreetsView(
 fun StreetsView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel
+    //membersListViewModel: MembersListViewModel
 ) {
-    Timber.tag(TAG).d("MembersView(...) called")
-    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("StreetsView(...) called")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -276,31 +448,14 @@ fun StreetsView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
-                //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
-                .weight(6.7f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            StreetsListView(navController = appState.commonNavController)
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .weight(3.3f)
-                .border(
-                    2.dp,
-                    MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(16.dp)
-                )
-        ) {
-
-        }
-        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 

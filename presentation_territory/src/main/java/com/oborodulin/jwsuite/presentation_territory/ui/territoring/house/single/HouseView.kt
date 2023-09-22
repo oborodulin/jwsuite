@@ -3,10 +3,8 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.singl
 import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
@@ -350,11 +348,11 @@ fun HouseView(
                 .focusRequester(focusRequesters[HouseFields.HOUSE_IS_INTERCOM]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = HouseFields.HOUSE_IS_PRIVATE_SECTOR,
+                        focusedField = HouseFields.HOUSE_IS_INTERCOM,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.house_is_intercom_hint,
+            labelResId = R.string.is_intercom_hint,
             painterResId = R.drawable.ic_intercom_36,
             inputWrapper = isIntercom,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsIntercom(it)) }
@@ -369,7 +367,7 @@ fun HouseView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.house_is_residential_hint,
+            labelResId = R.string.is_residential_hint,
             painterResId = R.drawable.ic_residential_36,
             inputWrapper = isResidential,
             onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsResidential(it)) }
@@ -456,7 +454,7 @@ fun HouseView(
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.house_is_foreign_language_hint,
+            labelResId = R.string.is_foreign_language_hint,
             painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_language_36,
             inputWrapper = isForeignLanguage,
             onCheckedChange = { viewModel.onTextFieldEntered(HouseInputEvent.IsForeignLanguage(it)) }

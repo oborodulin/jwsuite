@@ -14,9 +14,9 @@
 
     <!--СПИСОК:-->
     <!--собрания-->
-    <string name="congregations_list_empty_text">Собраний пока нет. Добавте, пожалуйста, хотя бы одно</string>
-    <string name="groups_list_empty_text">Групп пока нет. Добавте, пожалуйста, хотя бы одну</string>
-    <string name="members_list_empty_text">Возвещателей пока нет. Добавте, пожалуйста, хотя бы одного</string>
+    <string name="congregations_list_empty_text">Собраний пока нет. Добавьте, пожалуйста, хотя бы одно</string>
+    <string name="groups_list_empty_text">Групп пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="members_list_empty_text">Возвещателей пока нет. Добавьте, пожалуйста, хотя бы одного</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <!--Собрание-->

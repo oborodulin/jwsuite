@@ -23,26 +23,26 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RoomInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Territoring.HouseScreen"
+private const val TAG = "Territoring.RoomScreen"
 
 @Composable
-fun HouseScreen(
+fun RoomScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     //territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: RoomViewModelImpl = hiltViewModel(),
-    houseInput: HouseInput? = null
+    roomInput: RoomInput? = null
 ) {
-    Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
+    Timber.tag(TAG).d("RoomScreen(...) called: houseInput = %s", roomInput)
     val coroutineScope = rememberCoroutineScope()
     val saveButtonOnClick = {
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("RoomScreen(...): Save Button onClick...")
             // checks all errors
             viewModel.onContinueClick {
                 // if success, save then backToBottomBarScreen
@@ -52,9 +52,9 @@ fun HouseScreen(
             }
         }
     }
-    LaunchedEffect(houseInput?.houseId) {
-        Timber.tag(TAG).d("HouseScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(RoomUiAction.Load(houseInput?.houseId))
+    LaunchedEffect(roomInput?.roomId) {
+        Timber.tag(TAG).d("RoomScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(RoomUiAction.Load(roomInput?.roomId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -83,7 +83,7 @@ fun HouseScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        HouseView(sharedViewModel = appState.sharedViewModel.value)
+                        RoomView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }

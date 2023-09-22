@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single
+package com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single
 
 import android.content.res.Configuration
 import androidx.compose.material3.Surface
@@ -11,34 +11,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.bar.BarComboBoxComponent
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
-import com.oborodulin.home.common.ui.components.field.ComboBoxComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.list.RoomsListUiAction
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.list.RoomsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Territoring.RoomComboBox"
+private const val TAG = "Geo.BarLocalityComboBox"
 
 @Composable
-fun RoomComboBox(
+fun BarLocalityComboBox(
     modifier: Modifier = Modifier,
-    houseId: UUID,
-    sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    listViewModel: RoomsListViewModelImpl = hiltViewModel(),
-    singleViewModel: RoomViewModelImpl = hiltViewModel(),
+    enabled: Boolean = true,
+    regionId: UUID? = null,
+    regionDistrictId: UUID? = null,
+    listViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
+    singleViewModel: LocalityViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
-    onImeKeyAction: OnImeKeyAction
+    onImeKeyAction: OnImeKeyAction = {}
 ) {
-    Timber.tag(TAG).d("RoomComboBox(...) called: houseId = %s", houseId)
+    Timber.tag(TAG).d(
+        "BarLocalityComboBox(...) called: regionId = %s; regionDistrictId = %s",
+        regionId,
+        regionDistrictId
+    )
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -46,22 +50,23 @@ fun RoomComboBox(
     FullScreenDialog(
         isShow = isShowNewSingleDialog,
         viewModel = singleViewModel,
-        loadUiAction = RoomUiAction.Load(),
-        confirmUiAction = RoomUiAction.Save,
-        dialogView = { RoomView(sharedViewModel = sharedViewModel) },
+        loadUiAction = LocalityUiAction.Load(),
+        confirmUiAction = LocalityUiAction.Save,
+        dialogView = { LocalityView() },
         onValueChange = onValueChange,
     )
-    ComboBoxComponent(
+    BarComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = RoomsListUiAction.Load(houseId),
+        loadListUiAction = LocalitiesListUiAction.Load(regionId, regionDistrictId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,
         onShowSingleDialog = { singleViewModel.onOpenDialogClicked() },
-        labelResId = R.string.room_hint,
-        listTitleResId = R.string.dlg_title_select_room,
-        leadingPainterResId = R.drawable.ic_room_36,
+        placeholderResId = R.string.locality_placeholder,
+        listTitleResId = R.string.dlg_title_select_locality,
+        leadingPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_location_city_24,
         inputWrapper = inputWrapper,
         onValueChange = onValueChange,
         onImeKeyAction = onImeKeyAction
@@ -71,12 +76,12 @@ fun RoomComboBox(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewRoomComboBox() {
+fun PreviewBarLocalityComboBox() {
     JWSuiteTheme {
         Surface {
-            /*RoomComboBox(
-                listViewModel = RoomsListViewModelImpl.previewModel(LocalContext.current),
-                singleViewModel = RoomViewModelImpl.previewModel(LocalContext.current),
+            /*BarLocalityComboBox(
+                listViewModel = LocalitiesListViewModelImpl.previewModel(LocalContext.current),
+                singleViewModel = LocalityViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(
