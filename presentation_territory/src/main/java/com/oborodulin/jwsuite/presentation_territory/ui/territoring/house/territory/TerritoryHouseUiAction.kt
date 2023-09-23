@@ -5,6 +5,5 @@ import java.util.UUID
 
 sealed class TerritoryHouseUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data class Load(val territoryId: UUID) : TerritoryHouseUiAction()
-
-    data object Save : TerritoryHouseUiAction()
+    data class Save(val houseIds: List<UUID>) : TerritoryHouseUiAction()
 }

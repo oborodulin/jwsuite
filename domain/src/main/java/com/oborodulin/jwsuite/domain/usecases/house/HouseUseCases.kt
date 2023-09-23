@@ -6,7 +6,7 @@ data class HouseUseCases(
     val getNextHouseNumUseCase: GetNextHouseNumUseCase,
     val getHousesForTerritoryUseCase: GetHousesForTerritoryUseCase,
     val saveHouseUseCase: SaveHouseUseCase,
-    val saveTerritoryHouseUseCase: SaveTerritoryHouseUseCase,
+    val saveTerritoryHousesUseCase: SaveTerritoryHousesUseCase,
     val deleteHouseUseCase: DeleteHouseUseCase,
     val deleteTerritoryHouseUseCase: DeleteTerritoryHouseUseCase
 )

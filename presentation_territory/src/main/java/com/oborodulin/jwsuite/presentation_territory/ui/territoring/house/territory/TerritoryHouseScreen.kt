@@ -13,7 +13,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,9 +25,8 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryHouseInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Territoring.TerritoryHouseScreen"
@@ -38,32 +36,29 @@ fun TerritoryHouseScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
+    housesListViewModel: HousesListViewModelImpl = hiltViewModel(),
     territoryHouseViewModel: TerritoryHouseViewModelImpl = hiltViewModel(),
     territoryHouseInput: TerritoryHouseInput? = null
 ) {
     Timber.tag(TAG)
         .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
-    val coroutineScope = rememberCoroutineScope()
+
+    val house by territoryHouseViewModel.house.collectAsStateWithLifecycle()
+    val checkedHouses by housesListViewModel.checkedListItems.collectAsStateWithLifecycle()
+    val areListItemsChecked by housesListViewModel.areListItemsChecked.collectAsStateWithLifecycle()
+
     val saveButtonOnClick = {
-        territoryHouseViewModel.onContinueClick {
+        // checks all errors
+        territoryHouseViewModel.onContinueClick(areListItemsChecked) {
             Timber.tag(TAG).d("TerritoryHouseScreen(...): Save Button onClick...")
-            // checks all errors
-            territoryHouseViewModel.onContinueClick {
-                // if success, backToBottomBarScreen
-                // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-                coroutineScope.launch {
-                    territoryHouseViewModel.actionsJobFlow.collectLatest { job ->
-                        Timber.tag(TAG).d(
-                            "TerritoryHouseScreen(...): Start actionsJobFlow.collect [job = %s]",
-                            job?.toString()
-                        )
-                        job?.join()
-                        appState.backToBottomBarScreen()
-                    }
-                }
-                // save
-                territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Save)
-            }
+            // if success, save then backToBottomBarScreen
+            territoryHouseViewModel.handleActionJob(
+                {
+                    val houses = checkedHouses.map { it.id }.toMutableSet()
+                    house.item?.itemId?.let { houses.add(it) }
+                    territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Save(houses.toList()))
+                },
+                { appState.commonNavigateUp() })
         }
     }
     LaunchedEffect(territoryHouseInput?.territoryId) {
@@ -87,9 +82,9 @@ fun TerritoryHouseScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
-                        Icon(Icons.Outlined.Done, null)
-                    }
+                    IconButton(
+                        enabled = areInputsValid || areListItemsChecked, onClick = saveButtonOnClick
+                    ) { Icon(Icons.Outlined.Done, null) }
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
@@ -100,12 +95,17 @@ fun TerritoryHouseScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TerritoryHouseView(
+                            appState = appState,
                             territoryUi = it,
                             sharedViewModel = appState.sharedViewModel.value,
+                            housesListViewModel = housesListViewModel,
                             territoryViewModel = territoryViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(
+                            enabled = areInputsValid || areListItemsChecked,
+                            onClick = saveButtonOnClick
+                        )
                     }
                 }
             }

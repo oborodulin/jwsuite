@@ -12,13 +12,13 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
-import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
+import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHousesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,45 +29,45 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Territoring.TerritoryHouseViewModelImpl"
+private const val TAG = "Territoring.TerritoryRoomViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class TerritoryRoomViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val territoryUseCases: TerritoryUseCases,
-    private val houseUseCases: HouseUseCases,
+    private val houseUseCases: RoomUseCases,
     private val converter: TerritoryConverter,
-    private val houseMapper: HouseToHousesListItemMapper
+    private val houseMapper: RoomToRoomsListItemMapper
 ) : TerritoryRoomViewModel,
     DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryRoomUiAction, UiSingleEvent, TerritoryRoomFields, InputWrapper>(
-        state, initFocusedTextField = TerritoryRoomFields.TERRITORY_HOUSE_HOUSE
+        state, initFocusedTextField = TerritoryRoomFields.TERRITORY_ROOM_ROOM
     ) {
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            TerritoryRoomFields.TERRITORY_HOUSE_TERRITORY.name, InputListItemWrapper()
+            TerritoryRoomFields.TERRITORY_ROOM_TERRITORY.name, InputListItemWrapper()
         )
     }
-    override val house: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val room: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            TerritoryRoomFields.TERRITORY_HOUSE_HOUSE.name, InputListItemWrapper()
+            TerritoryRoomFields.TERRITORY_ROOM_ROOM.name, InputListItemWrapper()
         )
     }
 
-    override val areInputsValid = flow { emit(house.value.errorId == null) }
+    override val areInputsValid = flow { emit(room.value.errorId == null) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState(): UiState<TerritoryUi> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryRoomUiAction): Job {
-        Timber.tag(TAG).d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(TerritoryRoomUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryRoomUiAction.Load -> {
-                setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_house_new_subheader)
+                setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_room_new_subheader)
                 loadTerritory(action.territoryId)
             }
 
-            is TerritoryRoomUiAction.Save -> saveTerritoryHouse()
+            is TerritoryRoomUiAction.Save -> saveTerritoryRooms(action.roomIds)
         }
         return job
     }
@@ -86,22 +86,22 @@ class TerritoryRoomViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveTerritoryHouse(): Job {
+    private fun saveTerritoryRooms(roomIds: List<UUID> = emptyList()): Job {
         Timber.tag(TAG).d(
-            "saveTerritoryHouse() called: houseId = %s; territoryId = %s",
-            house.value.item?.itemId,
-            territory.value.item?.itemId
+            "saveTerritoryRooms() called: houseId = %s; territoryId = %s; roomIds.size = %d",
+            room.value.item?.itemId,
+            territory.value.item?.itemId,
+            roomIds.size
         )
         val job = viewModelScope.launch(errorHandler) {
-            houseUseCases.saveTerritoryHouseUseCase.execute(
-                SaveTerritoryHouseUseCase.Request(
-                    house.value.item?.itemId!!,
-                    territory.value.item?.itemId!!
-                )
+            houseUseCases.saveTerritoryRoomsUseCase.execute(
+                SaveTerritoryRoomsUseCase.Request(roomIds, territory.value.item?.itemId!!)
             ).collect {
-                Timber.tag(TAG).d("saveTerritoryHouse() collect: %s", it)
+                Timber.tag(TAG).d("saveTerritoryRoom() collect: %s", it)
                 if (it is Result.Success) {
-                    setSavedListItem(houseMapper.map(it.data.house))
+                    room.value.item?.itemId?.let { roomId ->
+                        setSavedListItem(ListItemModel(roomId, room.value.item?.headline.orEmpty()))
+                    }
                 }
             }
         }
@@ -118,10 +118,10 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 uiModel
             )
         initStateValue(
-            TerritoryRoomFields.TERRITORY_HOUSE_TERRITORY, territory,
+            TerritoryRoomFields.TERRITORY_ROOM_TERRITORY, territory,
             uiModel.toTerritoriesListItem()
         )
-        initStateValue(TerritoryRoomFields.TERRITORY_HOUSE_HOUSE, house, ListItemModel())
+        initStateValue(TerritoryRoomFields.TERRITORY_ROOM_ROOM, room, ListItemModel())
         return null
     }
 
@@ -131,19 +131,19 @@ class TerritoryRoomViewModelImpl @Inject constructor(
             .onEach { event ->
                 when (event) {
                     is TerritoryRoomInputEvent.Territory -> setStateValue(
-                        TerritoryRoomFields.TERRITORY_HOUSE_TERRITORY, territory, event.input,
+                        TerritoryRoomFields.TERRITORY_ROOM_TERRITORY, territory, event.input,
                         true
                     )
 
                     is TerritoryRoomInputEvent.Room ->
                         when (TerritoryRoomInputValidator.Room.errorIdOrNull(event.input.headline)) {
                             null -> setStateValue(
-                                TerritoryRoomFields.TERRITORY_HOUSE_HOUSE, house, event.input,
+                                TerritoryRoomFields.TERRITORY_ROOM_ROOM, room, event.input,
                                 true
                             )
 
                             else -> setStateValue(
-                                TerritoryRoomFields.TERRITORY_HOUSE_HOUSE, house, event.input
+                                TerritoryRoomFields.TERRITORY_ROOM_ROOM, room, event.input
                             )
                         }
                 }
@@ -152,12 +152,12 @@ class TerritoryRoomViewModelImpl @Inject constructor(
             .collect { event ->
                 when (event) {
                     is TerritoryRoomInputEvent.Territory -> setStateValue(
-                        TerritoryRoomFields.TERRITORY_HOUSE_TERRITORY, territory, null
+                        TerritoryRoomFields.TERRITORY_ROOM_TERRITORY, territory, null
                     )
 
                     is TerritoryRoomInputEvent.Room ->
                         setStateValue(
-                            TerritoryRoomFields.TERRITORY_HOUSE_HOUSE, house,
+                            TerritoryRoomFields.TERRITORY_ROOM_ROOM, room,
                             TerritoryRoomInputValidator.Room.errorIdOrNull(event.input.headline)
                         )
 
@@ -170,10 +170,10 @@ class TerritoryRoomViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        TerritoryRoomInputValidator.Room.errorIdOrNull(house.value.item?.headline)?.let {
+        TerritoryRoomInputValidator.Room.errorIdOrNull(room.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = TerritoryRoomFields.TERRITORY_HOUSE_HOUSE.name, errorId = it
+                    fieldName = TerritoryRoomFields.TERRITORY_ROOM_ROOM.name, errorId = it
                 )
             )
         }
@@ -185,7 +185,7 @@ class TerritoryRoomViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoryRoomFields.valueOf(error.fieldName)) {
-                TerritoryRoomFields.TERRITORY_HOUSE_HOUSE -> house.value.copy(
+                TerritoryRoomFields.TERRITORY_ROOM_ROOM -> room.value.copy(
                     errorId = error.errorId
                 )
 
@@ -212,7 +212,7 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val house =
+                override val room =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 override val areInputsValid = MutableStateFlow(true)
@@ -226,7 +226,12 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

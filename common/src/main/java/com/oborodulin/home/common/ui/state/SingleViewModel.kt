@@ -220,11 +220,11 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         _events.trySend(ScreenEvent.MoveFocus())
     }
 
-    override fun onContinueClick(onSuccess: () -> Unit) {
+    override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
         Timber.tag(TAG).d("onContinueClick(onSuccess) called")
         viewModelScope.launch(Dispatchers.Default) {
             performValidation()
-            when (val inputErrors = getInputErrorsOrNull()) {
+            when (val inputErrors = if (!isPartialInputsValid) getInputErrorsOrNull() else null) {
                 null -> {
                     Timber.tag(TAG).d("onContinueClick: no errors")
                     clearFocusAndHideKeyboard()

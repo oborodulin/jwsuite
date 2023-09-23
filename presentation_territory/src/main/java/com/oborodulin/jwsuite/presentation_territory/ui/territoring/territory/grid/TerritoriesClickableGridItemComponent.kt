@@ -108,10 +108,7 @@ fun TerritoriesClickableGridItemComponent(
                         //.align(Alignment.CenterVertically),
                         .alignByBaseline(),
                     checked = territory.checked,
-                    onCheckedChange = {
-                        territory.checked = it
-                        onChecked(it)
-                    }
+                    onCheckedChange = { territory.checked = it; onChecked(it) }
                 )
             }
             Divider(Modifier.width(cellSize.times(0.9f)), thickness = 2.dp)

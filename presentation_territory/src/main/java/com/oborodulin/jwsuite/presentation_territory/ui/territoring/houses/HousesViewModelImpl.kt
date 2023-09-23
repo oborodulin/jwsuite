@@ -160,7 +160,7 @@ class HousesViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
             }
     }
 }

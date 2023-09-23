@@ -36,41 +36,54 @@ fun RoomsListView(
     viewModel: RoomsListViewModelImpl = hiltViewModel(),
     navController: NavController,
     houseInput: HouseInput? = null,
-    territoryInput: TerritoryInput? = null
+    territoryInput: TerritoryInput? = null,
+    isForTerritory: Boolean = false
 ) {
     Timber.tag(TAG).d(
-        "RoomsListView(...) called: territoryInput = %s", territoryInput
+        "RoomsListView(...) called: isForTerritory = %s; territoryInput = %s",
+        isForTerritory, territoryInput
     )
-    LaunchedEffect(houseInput?.houseId, territoryInput?.territoryId) {
+    LaunchedEffect(houseInput?.houseId, territoryInput?.territoryId, isForTerritory) {
         Timber.tag(TAG)
             .d("RoomsListView: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(
-            RoomsListUiAction.Load(houseInput?.houseId, territoryInput?.territoryId)
-        )
+        if (isForTerritory && territoryInput != null) {
+            viewModel.submitAction(RoomsListUiAction.LoadForTerritory(territoryInput.territoryId))
+        } else {
+            viewModel.submitAction(
+                RoomsListUiAction.Load(houseInput?.houseId, territoryInput?.territoryId)
+            )
+        }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            when (territoryInput?.territoryId) {
-                null -> HouseRoomsList(
+            if (isForTerritory && territoryInput != null) {
+                ForTerritoryRoomsList(
                     rooms = it,
-                    onEdit = { room ->
-                        viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
-                    },
-                    onDelete = { room ->
-                        viewModel.submitAction(RoomsListUiAction.DeleteRoom(room.id))
-                    }
-                ) { room -> viewModel.singleSelectItem(room) }
+                    onChecked = { viewModel.observeCheckedListItems() }
+                )
+            } else {
+                when (territoryInput?.territoryId) {
+                    null -> HouseRoomsList(
+                        rooms = it,
+                        onEdit = { room ->
+                            viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
+                        },
+                        onDelete = { room ->
+                            viewModel.submitAction(RoomsListUiAction.DeleteRoom(room.id))
+                        }
+                    ) { room -> viewModel.singleSelectItem(room) }
 
-                else -> TerritoryRoomsList(
-                    rooms = it,
-                    onProcess = { room ->
-                        viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
-                    },
-                    onDelete = { room ->
-                        viewModel.submitAction(RoomsListUiAction.DeleteTerritoryRoom(room.id))
-                    }
-                ) { room -> viewModel.singleSelectItem(room) }
+                    else -> TerritoryRoomsList(
+                        rooms = it,
+                        onProcess = { room ->
+                            viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
+                        },
+                        onDelete = { room ->
+                            viewModel.submitAction(RoomsListUiAction.DeleteTerritoryRoom(room.id))
+                        }
+                    ) { room -> viewModel.singleSelectItem(room) }
+                }
             }
         }
     }
@@ -164,6 +177,44 @@ fun TerritoryRoomsList(
         }
     } else {
         EmptyListTextComponent(R.string.territory_rooms_list_empty_text)
+    }
+}
+
+@Composable
+fun ForTerritoryRoomsList(
+    searchedText: String = "",
+    rooms: List<RoomsListItem>,
+    onChecked: (Boolean) -> Unit,
+    onClick: (RoomsListItem) -> Unit = {}
+) {
+    Timber.tag(TAG).d("ForTerritoryRoomsList(...) called: size = %d", rooms.size)
+    if (rooms.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = rooms.filter { it.selected }
+                .getOrNull(0)?.let { rooms.indexOf(it) } ?: 0)
+        var filteredItems: List<RoomsListItem>
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .padding(8.dp)
+                .focusable(enabled = true)
+        ) {
+            filteredItems = if (searchedText.isEmpty()) {
+                rooms
+            } else {
+                rooms.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, room ->
+                ForTerritoryRoomsListItemComponent(
+                    item = room,
+                    //selected = room.selected,
+                    onChecked = onChecked,
+                    onClick = { onClick(room) }
+                )
+            }
+        }
+    } else {
+        EmptyListTextComponent(R.string.for_territory_rooms_list_empty_text)
     }
 }
 

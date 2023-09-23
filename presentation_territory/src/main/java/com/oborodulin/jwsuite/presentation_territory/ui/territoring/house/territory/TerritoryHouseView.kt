@@ -27,11 +27,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
+import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListUiAction
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListView
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
@@ -42,10 +48,12 @@ private const val TAG = "Territoring.TerritoryHouseView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoryHouseView(
+    appState: AppState,
     territoryUi: TerritoryUi? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
-    viewModel: TerritoryHouseViewModelImpl = hiltViewModel()
+    housesListViewModel: HousesListViewModel,
+    territoryHouseViewModel: TerritoryHouseViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("TerritoryHouseView(...) called")
     val context = LocalContext.current
@@ -53,16 +61,19 @@ fun TerritoryHouseView(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+    val events = remember(territoryHouseViewModel.events, lifecycleOwner) {
+        territoryHouseViewModel.events.flowWithLifecycle(
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
+        )
     }
 
     territoryUi?.let {
-        viewModel.onTextFieldEntered(TerritoryHouseInputEvent.Territory(it.toTerritoriesListItem()))
+        territoryHouseViewModel.onTextFieldEntered(TerritoryHouseInputEvent.Territory(it.toTerritoriesListItem()))
     }
     Timber.tag(TAG).d("Territory House: CollectAsStateWithLifecycle for all fields")
-    val territory by viewModel.territory.collectAsStateWithLifecycle()
-    val house by viewModel.house.collectAsStateWithLifecycle()
+    val territory by territoryHouseViewModel.territory.collectAsStateWithLifecycle()
+    val house by territoryHouseViewModel.house.collectAsStateWithLifecycle()
+    val searchText by housesListViewModel.searchText.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory House: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -96,7 +107,7 @@ fun TerritoryHouseView(
             modifier = Modifier
                 .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    territoryHouseViewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY,
                         isFocused = focusState.isFocused
                     )
@@ -105,13 +116,13 @@ fun TerritoryHouseView(
             sharedViewModel = sharedViewModel,
             singleViewModel = territoryViewModel,
             inputWrapper = territory,
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = territoryHouseViewModel::moveFocusImeAction
         )
         TerritoryHouseComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[TerritoryHouseFields.TERRITORY_HOUSE_HOUSE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    territoryHouseViewModel.onTextFieldFocusChanged(
                         focusedField = TerritoryHouseFields.TERRITORY_HOUSE_HOUSE,
                         isFocused = focusState.isFocused
                     )
@@ -119,9 +130,22 @@ fun TerritoryHouseView(
             territoryId = territory.item?.itemId!!,
             sharedViewModel = sharedViewModel,
             inputWrapper = house,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryHouseInputEvent.House(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onValueChange = {
+                territoryHouseViewModel.onTextFieldEntered(TerritoryHouseInputEvent.House(it))
+                territoryUi?.id?.let { territoryId ->
+                    housesListViewModel.submitAction(HousesListUiAction.LoadForTerritory(territoryId))
+                }
+            },
+            onImeKeyAction = territoryHouseViewModel::moveFocusImeAction
         )
+        territoryUi?.id?.let { territoryId ->
+            SearchComponent(searchText, onValueChange = housesListViewModel::onSearchTextChange)
+            HousesListView(
+                navController = appState.commonNavController,
+                territoryInput = NavigationInput.TerritoryInput(territoryId),
+                isForTerritory = true
+            )
+        }
     }
 }
 

@@ -15,7 +15,7 @@ interface TerritoryRoomViewModel :
     val events: Flow<ScreenEvent>
 
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>
-    val house: StateFlow<InputListItemWrapper<ListItemModel>>
+    val room: StateFlow<InputListItemWrapper<ListItemModel>>
 
     val areInputsValid: StateFlow<Boolean>
 

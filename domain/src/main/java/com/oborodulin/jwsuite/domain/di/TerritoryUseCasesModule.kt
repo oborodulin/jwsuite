@@ -14,7 +14,7 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
-import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomNumUseCase
@@ -22,7 +22,7 @@ import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
-import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -214,9 +214,9 @@ object TerritoryUseCasesModule {
 
     @Singleton
     @Provides
-    fun provideSaveTerritoryHouseUseCase(
+    fun provideSaveTerritoryHousesUseCase(
         configuration: UseCase.Configuration, housesRepository: HousesRepository
-    ): SaveTerritoryHouseUseCase = SaveTerritoryHouseUseCase(configuration, housesRepository)
+    ): SaveTerritoryHousesUseCase = SaveTerritoryHousesUseCase(configuration, housesRepository)
 
     // Room:
     @Singleton
@@ -263,7 +263,7 @@ object TerritoryUseCasesModule {
 
     @Singleton
     @Provides
-    fun provideSaveTerritoryRoomUseCase(
+    fun provideSaveTerritoryRoomsUseCase(
         configuration: UseCase.Configuration, roomsRepository: RoomsRepository
-    ): SaveTerritoryRoomUseCase = SaveTerritoryRoomUseCase(configuration, roomsRepository)
+    ): SaveTerritoryRoomsUseCase = SaveTerritoryRoomsUseCase(configuration, roomsRepository)
 }

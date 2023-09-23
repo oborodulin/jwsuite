@@ -23,9 +23,11 @@
     <string name="territories_list_empty_text">Участков пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="territory_streets_list_empty_text">Улиц участка пока нет. Добавьте, пожалуйста, хотя бы одну</string>
     <string name="territory_houses_list_empty_text">Домов участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="for_territory_houses_list_empty_text">На территории участка домов пока нет, или они все распределены между другими участками. Добавьте, пожалуйста, хотя бы один новый дом или перераспределите существующие дома других участков</string>
     <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="for_territory_rooms_list_empty_text">На территории участка квартир пока нет, или они все распределены между другими участками. Добавьте, пожалуйста, хотя бы одну новую квартиру или перераспределите существующие квартиры других участков</string>
     <string name="houses_list_empty_text">Домов на улице пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="entrances_list_empty_text">Подъездов дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="floors_list_empty_text">Этажей дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
@@ -91,6 +93,9 @@
     <!--Дом участка-->
     <string name="territory_house_subheader">Дом участка</string>
     <string name="territory_house_new_subheader">Новый дом участка</string>
+    <!--Квартира участка-->
+    <string name="territory_room_subheader">Квартира участка</string>
+    <string name="territory_room_new_subheader">Новая квартира участка</string>
     <!--Дом-->
     <string name="house_subheader">Дом</string>
     <string name="house_new_subheader">Новый дом</string>

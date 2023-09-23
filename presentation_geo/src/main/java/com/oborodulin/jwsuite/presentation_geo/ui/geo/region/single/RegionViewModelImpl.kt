@@ -241,7 +241,7 @@ class RegionViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

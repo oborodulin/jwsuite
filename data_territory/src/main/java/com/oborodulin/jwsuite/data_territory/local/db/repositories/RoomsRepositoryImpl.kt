@@ -67,10 +67,10 @@ class RoomsRepositoryImpl @Inject constructor(
         this.emit(roomId)
     }
 
-    override fun setTerritory(roomId: UUID, territoryId: UUID) = flow {
-        localRoomDataSource.setTerritoryById(roomId, territoryId)
-        localRoomDataSource.getRoom(roomId).map(mappers.roomViewToRoomMapper::map).collect {
-            this.emit(it)
-        }
+    override fun setTerritory(roomIds: List<UUID>, territoryId: UUID) = flow {
+        roomIds.forEach { localRoomDataSource.setTerritoryById(it, territoryId) }
+        //localRoomDataSource.getRoom(roomIds).map(mappers.roomViewToRoomMapper::map).collect {
+        this.emit(roomIds)
+        //}
     }
 }

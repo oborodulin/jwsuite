@@ -46,7 +46,6 @@ import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -77,7 +76,7 @@ fun AtWorkTerritoriesConfirmationView(
 
     Timber.tag(TAG).d("At Work Territories Confirmation: CollectAsStateWithLifecycle for all fields")
     val deliveryDate by viewModel.deliveryDate.collectAsStateWithLifecycle()
-    val checkedTerritories by viewModel.checkedTerritories.collectAsStateWithLifecycle()
+    val checkedTerritories by viewModel.checkedListItems.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("At Work Territories Confirmation: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)

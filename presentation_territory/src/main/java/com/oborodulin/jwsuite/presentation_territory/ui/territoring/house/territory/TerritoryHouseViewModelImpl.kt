@@ -13,7 +13,7 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
-import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
@@ -67,7 +67,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
                 loadTerritory(action.territoryId)
             }
 
-            is TerritoryHouseUiAction.Save -> saveTerritoryHouse()
+            is TerritoryHouseUiAction.Save -> saveTerritoryHouses(action.houseIds)
         }
         return job
     }
@@ -86,22 +86,24 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveTerritoryHouse(): Job {
+    private fun saveTerritoryHouses(houseIds: List<UUID> = emptyList()): Job {
         Timber.tag(TAG).d(
-            "saveTerritoryHouse() called: houseId = %s; territoryId = %s",
+            "saveTerritoryHouses() called: houseId = %s; territoryId = %s; houseIds.size = %d",
             house.value.item?.itemId,
-            territory.value.item?.itemId
+            territory.value.item?.itemId,
+            houseIds.size
         )
         val job = viewModelScope.launch(errorHandler) {
-            houseUseCases.saveTerritoryHouseUseCase.execute(
-                SaveTerritoryHouseUseCase.Request(
-                    house.value.item?.itemId!!,
-                    territory.value.item?.itemId!!
-                )
+            houseUseCases.saveTerritoryHousesUseCase.execute(
+                SaveTerritoryHousesUseCase.Request(houseIds, territory.value.item?.itemId!!)
             ).collect {
                 Timber.tag(TAG).d("saveTerritoryHouse() collect: %s", it)
                 if (it is Result.Success) {
-                    setSavedListItem(houseMapper.map(it.data.house))
+                    house.value.item?.itemId?.let { houseId ->
+                        setSavedListItem(
+                            ListItemModel(houseId, house.value.item?.headline.orEmpty())
+                        )
+                    }
                 }
             }
         }
@@ -226,7 +228,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

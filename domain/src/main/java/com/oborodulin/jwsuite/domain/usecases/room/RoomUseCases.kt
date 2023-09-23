@@ -6,7 +6,7 @@ data class RoomUseCases(
     val getNextRoomNumUseCase: GetNextRoomNumUseCase,
     val getRoomsForTerritoryUseCase: GetRoomsForTerritoryUseCase,
     val saveRoomUseCase: SaveRoomUseCase,
-    val saveTerritoryRoomUseCase: SaveTerritoryRoomUseCase,
+    val saveTerritoryRoomsUseCase: SaveTerritoryRoomsUseCase,
     val deleteRoomUseCase: DeleteRoomUseCase,
     val deleteTerritoryRoomUseCase: DeleteTerritoryRoomUseCase
 )

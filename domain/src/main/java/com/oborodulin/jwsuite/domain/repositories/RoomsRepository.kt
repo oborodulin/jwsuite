@@ -19,5 +19,5 @@ interface RoomsRepository {
 
     fun getNextRoomNum(houseId: UUID): Flow<Int>
     fun clearTerritory(roomId: UUID): Flow<UUID>
-    fun setTerritory(roomId: UUID, territoryId: UUID): Flow<Room>
+    fun setTerritory(roomIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 }

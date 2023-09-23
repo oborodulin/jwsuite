@@ -39,7 +39,6 @@ fun HouseScreen(
     houseInput: HouseInput? = null
 ) {
     Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
-    val coroutineScope = rememberCoroutineScope()
     val saveButtonOnClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")

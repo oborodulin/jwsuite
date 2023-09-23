@@ -62,10 +62,8 @@ class HousesRepositoryImpl @Inject constructor(
         this.emit(houseId)
     }
 
-    override fun setTerritory(houseId: UUID, territoryId: UUID) = flow {
-        localHouseDataSource.setTerritoryById(houseId, territoryId)
-        localHouseDataSource.getHouse(houseId).map(mappers.houseViewToHouseMapper::map).collect {
-            this.emit(it)
-        }
+    override fun setTerritory(houseIds: List<UUID>, territoryId: UUID) = flow {
+        houseIds.forEach { localHouseDataSource.setTerritoryById(it, territoryId) }
+        this.emit(houseIds)
     }
 }

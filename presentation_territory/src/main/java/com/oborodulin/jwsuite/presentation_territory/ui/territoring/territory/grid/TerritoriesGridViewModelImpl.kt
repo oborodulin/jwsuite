@@ -106,34 +106,34 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         )
     }
 
-    private val _checkedTerritories: MutableStateFlow<List<TerritoriesListItem>> =
+    private val _checkedListItems: MutableStateFlow<List<TerritoriesListItem>> =
         MutableStateFlow(emptyList())
-    override val checkedTerritories = _checkedTerritories.asStateFlow()
+    override val checkedListItems = _checkedListItems.asStateFlow()
 
-    override val areTerritoriesChecked =
-        flow { emit(checkedTerritories.value.isNotEmpty()) }.stateIn(
+    override val areListItemsChecked =
+        flow { emit(checkedListItems.value.isNotEmpty()) }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             false
         )
 
-    override val areHandOutInputsValid = combine(member, receivingDate, checkedTerritories)
+    override val areHandOutInputsValid = combine(member, receivingDate, checkedListItems)
     { member, receivingDate, checkedTerritories ->
         member.errorId == null && receivingDate.errorId == null && checkedTerritories.isNotEmpty()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override val areAtWorkProcessInputsValid = combine(deliveryDate, checkedTerritories)
+    override val areAtWorkProcessInputsValid = combine(deliveryDate, checkedListItems)
     { deliveryDate, checkedTerritories ->
         deliveryDate.errorId == null && checkedTerritories.isNotEmpty()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun observeCheckedTerritories() {
-        Timber.tag(TAG).d("observeChecked() called")
+    override fun observeCheckedListItems() {
+        Timber.tag(TAG).d("observeCheckedListItems() called")
         uiState()?.let { uiState ->
-            _checkedTerritories.value = uiState.filter { it.checked }
+            _checkedListItems.value = uiState.filter { it.checked }
             Timber.tag(TAG).d(
                 "checked %s territories; areHandOutInputsValid = %s",
-                _checkedTerritories.value.size,
+                _checkedListItems.value.size,
                 areHandOutInputsValid.value
             )
         }
@@ -225,7 +225,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 useCases.handOutTerritoriesUseCase.execute(
                     HandOutTerritoriesUseCase.Request(
                         memberId,
-                        checkedTerritories.value.map { it.id },
+                        checkedListItems.value.map { it.id },
                         DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
                             .parse(receivingDate.value.value, OffsetDateTime::from)
                     )
@@ -366,7 +366,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
-                override val checkedTerritories = MutableStateFlow(previewList(ctx))
+                override val checkedListItems = MutableStateFlow(previewList(ctx))
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
@@ -382,11 +382,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val receivingDate = MutableStateFlow(InputWrapper())
                 override val deliveryDate = MutableStateFlow(InputWrapper())
 
-                override val areTerritoriesChecked = MutableStateFlow(true)
+                override val areListItemsChecked = MutableStateFlow(true)
                 override val areHandOutInputsValid = MutableStateFlow(true)
                 override val areAtWorkProcessInputsValid = MutableStateFlow(true)
 
-                override fun observeCheckedTerritories() {}
+                override fun observeCheckedListItems() {}
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
@@ -398,7 +398,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(onSuccess: () -> Unit) {}
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}

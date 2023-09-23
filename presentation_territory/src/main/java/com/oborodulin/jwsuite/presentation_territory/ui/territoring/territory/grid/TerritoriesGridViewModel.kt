@@ -26,13 +26,13 @@ interface TerritoriesGridViewModel :
     val member: StateFlow<InputListItemWrapper<ListItemModel>>
     val receivingDate: StateFlow<InputWrapper>
     val deliveryDate: StateFlow<InputWrapper>
-    val checkedTerritories: StateFlow<List<TerritoriesListItem>>
+    val checkedListItems: StateFlow<List<TerritoriesListItem>>
 
-    val areTerritoriesChecked: StateFlow<Boolean>
+    val areListItemsChecked: StateFlow<Boolean>
     val areHandOutInputsValid: StateFlow<Boolean>
     val areAtWorkProcessInputsValid: StateFlow<Boolean>
 
-    fun observeCheckedTerritories()
+    fun observeCheckedListItems()
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoriesFields, isFocused: Boolean)

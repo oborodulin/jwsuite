@@ -10,7 +10,7 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
-import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomNumUseCase
@@ -19,7 +19,7 @@ import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
 import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
-import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -529,7 +529,7 @@ object TerritoringModule {
         getNextHouseNumUseCase: GetNextHouseNumUseCase,
         getHousesForTerritoryUseCase: GetHousesForTerritoryUseCase,
         saveHouseUseCase: SaveHouseUseCase,
-        saveTerritoryHouseUseCase: SaveTerritoryHouseUseCase,
+        saveTerritoryHousesUseCase: SaveTerritoryHousesUseCase,
         deleteHouseUseCase: DeleteHouseUseCase,
         deleteTerritoryHouseUseCase: DeleteTerritoryHouseUseCase
     ): HouseUseCases = HouseUseCases(
@@ -538,7 +538,7 @@ object TerritoringModule {
         getNextHouseNumUseCase,
         getHousesForTerritoryUseCase,
         saveHouseUseCase,
-        saveTerritoryHouseUseCase,
+        saveTerritoryHousesUseCase,
         deleteHouseUseCase,
         deleteTerritoryHouseUseCase
     )
@@ -552,7 +552,7 @@ object TerritoringModule {
         getNextRoomNumUseCase: GetNextRoomNumUseCase,
         getRoomsForTerritoryUseCase: GetRoomsForTerritoryUseCase,
         saveRoomUseCase: SaveRoomUseCase,
-        saveTerritoryRoomUseCase: SaveTerritoryRoomUseCase,
+        saveTerritoryRoomsUseCase: SaveTerritoryRoomsUseCase,
         deleteRoomUseCase: DeleteRoomUseCase,
         deleteTerritoryRoomUseCase: DeleteTerritoryRoomUseCase
     ): RoomUseCases = RoomUseCases(
@@ -561,7 +561,7 @@ object TerritoringModule {
         getNextRoomNumUseCase,
         getRoomsForTerritoryUseCase,
         saveRoomUseCase,
-        saveTerritoryRoomUseCase,
+        saveTerritoryRoomsUseCase,
         deleteRoomUseCase,
         deleteTerritoryRoomUseCase
     )

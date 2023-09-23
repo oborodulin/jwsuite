@@ -89,10 +89,10 @@ fun TerritoringScreen(
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
     val location by territoringViewModel.location.collectAsStateWithLifecycle()
 
-    val checkedTerritories by territoriesGridViewModel.checkedTerritories.collectAsStateWithLifecycle()
+    val checkedTerritories by territoriesGridViewModel.checkedListItems.collectAsStateWithLifecycle()
 
     val areHandOutInputsValid by territoriesGridViewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
-    val areTerritoriesChecked by territoriesGridViewModel.areTerritoriesChecked.collectAsStateWithLifecycle()
+    val areTerritoriesChecked by territoriesGridViewModel.areListItemsChecked.collectAsStateWithLifecycle()
 
     var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }

@@ -80,7 +80,7 @@ fun TerritoryHouseComboBox(
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = HousesListUiAction.Load(territoryId = territoryId),
+        loadListUiAction = HousesListUiAction.LoadForTerritory(territoryId = territoryId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

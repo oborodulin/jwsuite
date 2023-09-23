@@ -39,48 +39,62 @@ fun HousesListView(
     roomsListViewModel: RoomsListViewModelImpl = hiltViewModel(),
     navController: NavController,
     streetInput: StreetInput? = null,
-    territoryInput: TerritoryInput? = null
+    territoryInput: TerritoryInput? = null,
+    isForTerritory: Boolean = false
 ) {
     Timber.tag(TAG).d(
-        "HousesListView(...) called: streetInput = %s; territoryInput = %s",
-        streetInput, territoryInput
+        "HousesListView(...) called: isForTerritory = %s; streetInput = %s; territoryInput = %s",
+        isForTerritory, streetInput, territoryInput
     )
-    LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId) {
+    LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId, isForTerritory) {
         Timber.tag(TAG)
             .d("HousesListView: LaunchedEffect() BEFORE collect ui state flow")
-        housesListViewModel.submitAction(
-            HousesListUiAction.Load(streetInput?.streetId, territoryInput?.territoryId)
-        )
+        if (isForTerritory && territoryInput != null) {
+            housesListViewModel.submitAction(
+                HousesListUiAction.LoadForTerritory(territoryInput.territoryId)
+            )
+        } else {
+            housesListViewModel.submitAction(
+                HousesListUiAction.Load(streetInput?.streetId, territoryInput?.territoryId)
+            )
+        }
     }
     housesListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            when (territoryInput?.territoryId) {
-                null -> StreetHousesList(
+            if (isForTerritory && territoryInput != null) {
+                ForTerritoryHousesList(
                     houses = it,
-                    onEdit = { house ->
-                        housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.id))
-                    },
-                    onDelete = { house ->
-                        housesListViewModel.submitAction(HousesListUiAction.DeleteHouse(house.id))
+                    onChecked = { housesListViewModel.observeCheckedListItems() }
+                )
+            } else {
+                when (territoryInput?.territoryId) {
+                    null -> StreetHousesList(
+                        houses = it,
+                        onEdit = { house ->
+                            housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.id))
+                        },
+                        onDelete = { house ->
+                            housesListViewModel.submitAction(HousesListUiAction.DeleteHouse(house.id))
+                        }
+                    ) { house ->
+                        housesListViewModel.singleSelectItem(house)
+                        roomsListViewModel.submitAction(RoomsListUiAction.Load(houseId = house.id))
                     }
-                ) { house ->
-                    housesListViewModel.singleSelectItem(house)
-                    roomsListViewModel.submitAction(RoomsListUiAction.Load(houseId = house.id))
-                }
 
-                else -> TerritoryHousesList(
-                    houses = it,
-                    onProcess = { house ->
-                        housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.id))
-                    },
-                    onDelete = { house ->
-                        housesListViewModel.submitAction(
-                            HousesListUiAction.DeleteTerritoryHouse(house.id)
-                        )
+                    else -> TerritoryHousesList(
+                        houses = it,
+                        onProcess = { house ->
+                            housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.id))
+                        },
+                        onDelete = { house ->
+                            housesListViewModel.submitAction(
+                                HousesListUiAction.DeleteTerritoryHouse(house.id)
+                            )
+                        }
+                    ) { house ->
+                        housesListViewModel.singleSelectItem(house)
                     }
-                ) { house ->
-                    housesListViewModel.singleSelectItem(house)
                 }
             }
         }
@@ -175,6 +189,44 @@ fun TerritoryHousesList(
         }
     } else {
         EmptyListTextComponent(R.string.territory_houses_list_empty_text)
+    }
+}
+
+@Composable
+fun ForTerritoryHousesList(
+    searchedText: String = "",
+    houses: List<HousesListItem>,
+    onChecked: (Boolean) -> Unit,
+    onClick: (HousesListItem) -> Unit = {}
+) {
+    Timber.tag(TAG).d("ForTerritoryHousesList(...) called: size = %d", houses.size)
+    if (houses.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
+                .getOrNull(0)?.let { houses.indexOf(it) } ?: 0)
+        var filteredItems: List<HousesListItem>
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .padding(8.dp)
+                .focusable(enabled = true)
+        ) {
+            filteredItems = if (searchedText.isEmpty()) {
+                houses
+            } else {
+                houses.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, house ->
+                ForTerritoryHousesListItemComponent(
+                    item = house,
+                    //selected = house.selected,
+                    onChecked = onChecked,
+                    onClick = { onClick(house) }
+                )
+            }
+        }
+    } else {
+        EmptyListTextComponent(R.string.for_territory_houses_list_empty_text)
     }
 }
 

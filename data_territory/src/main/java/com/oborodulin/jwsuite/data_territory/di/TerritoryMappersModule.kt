@@ -173,7 +173,7 @@ object TerritoryMappersModule {
 
     @Singleton
     @Provides
-    fun provideEntranceEntityToEntranceMapper(
+    fun provideEntranceViewToEntranceMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
         regionMapper: GeoRegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
@@ -183,18 +183,17 @@ object TerritoryMappersModule {
         houseMapper: HouseEntityToHouseMapper,
         territoryMapper: TerritoryViewToTerritoryMapper,
         entranceEntityMapper: EntranceEntityToEntranceMapper
-    ): EntranceViewToEntranceMapper =
-        EntranceViewToEntranceMapper(
-            streetMapper = streetMapper,
-            regionMapper = regionMapper,
-            regionDistrictMapper = regionDistrictMapper,
-            localityMapper = localityMapper,
-            localityDistrictMapper = localityDistrictMapper,
-            microdistrictMapper = microdistrictMapper,
-            houseMapper = houseMapper,
-            territoryMapper = territoryMapper,
-            entranceEntityMapper = entranceEntityMapper
-        )
+    ): EntranceViewToEntranceMapper = EntranceViewToEntranceMapper(
+        streetMapper = streetMapper,
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper,
+        localityDistrictMapper = localityDistrictMapper,
+        microdistrictMapper = microdistrictMapper,
+        houseMapper = houseMapper,
+        territoryMapper = territoryMapper,
+        entranceEntityMapper = entranceEntityMapper
+    )
 
     @Singleton
     @Provides
