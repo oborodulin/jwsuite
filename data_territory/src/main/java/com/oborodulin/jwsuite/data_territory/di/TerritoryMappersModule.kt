@@ -274,11 +274,13 @@ object TerritoryMappersModule {
     @Provides
     fun provideFloorMappers(
         floorViewListToFloorsListMapper: FloorViewListToFloorsListMapper,
+        floorViewToFloorMapper: FloorViewToFloorMapper,
         floorEntityToFloorMapper: FloorEntityToFloorMapper,
         floorsListToFloorEntityListMapper: FloorsListToFloorEntityListMapper,
         floorToFloorEntityMapper: FloorToFloorEntityMapper
     ): FloorMappers = FloorMappers(
         floorViewListToFloorsListMapper,
+        floorViewToFloorMapper,
         floorEntityToFloorMapper,
         floorsListToFloorEntityListMapper,
         floorToFloorEntityMapper

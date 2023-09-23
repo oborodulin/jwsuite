@@ -14,7 +14,7 @@ class FloorToFloorEntityMapper : Mapper<Floor, FloorEntity> {
         isResidentialFloor = input.isResidential,
         roomsByFloor = input.roomsByFloor,
         estFloorRooms = input.estimatedRooms,
-        floorDesc = input.territoryDesc,
+        floorDesc = input.floorDesc,
         fTerritoriesId = input.territory?.id,
         fEntrancesId = input.entrance?.id,
         fHousesId = input.house.id!!

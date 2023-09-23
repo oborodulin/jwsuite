@@ -28,7 +28,7 @@ class FloorsRepositoryImpl @Inject constructor(
             .map(mappers.floorViewListToFloorsListMapper::map)
 
     override fun get(floorId: UUID) = localFloorDataSource.getFloor(floorId)
-        .map(mappers.floorEntityToFloorMapper::map)
+        .map(mappers.floorViewToFloorMapper::map)
 
     override fun save(floor: Floor) = flow {
         if (floor.id == null) {

@@ -12,7 +12,7 @@ class RoomToRoomEntityMapper : Mapper<Room, RoomEntity> {
         isIntercomRoom = input.isIntercom,
         isResidentialRoom = input.isResidential,
         isForeignLangRoom = input.isForeignLanguage,
-        roomDesc = input.territoryDesc,
+        roomDesc = input.roomDesc,
         rTerritoriesId = input.territory?.id,
         rFloorsId = input.floor?.id,
         rEntrancesId = input.entrance?.id,
