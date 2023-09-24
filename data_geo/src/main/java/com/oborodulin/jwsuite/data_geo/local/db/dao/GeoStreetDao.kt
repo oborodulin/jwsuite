@@ -1,7 +1,9 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
 import androidx.room.*
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
@@ -45,7 +47,7 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds 
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds 
             ON ds.dsStreetsId = sv.streetId AND ds.dsLocalityDistrictsId = :localityDistrictId 
                 AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
         ORDER BY sv.streetName                
@@ -66,7 +68,7 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds 
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds 
             ON ds.dsStreetsId = sv.streetId AND ds.dsMicrodistrictsId = :microdistrictId 
                 AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
         ORDER BY sv.streetName                
@@ -88,7 +90,7 @@ interface GeoStreetDao {
     //LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} mdv ON mdv.microdistrictId = ds.dsMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv LEFT JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv LEFT JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId
         WHERE sv.streetLocCode = :locale
             AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(ds.dsMicrodistrictsId, '')) 
             AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId , ''))
@@ -113,7 +115,7 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
         WHERE sv.sLocalitiesId = :localityId
             AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) 
             AND ifnull(ds.dsLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId, '')) 
@@ -145,6 +147,46 @@ interface GeoStreetDao {
         insert(textContent)
     }
 
+    //-----------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg streetDistrict: GeoStreetDistrictEntity)
+
+    suspend fun insert(street: GeoStreetEntity, localityDistrict: GeoLocalityDistrictEntity) =
+        insert(
+            GeoStreetDistrictEntity(
+                dsLocalityDistrictsId = localityDistrict.localityDistrictId,
+                dsStreetsId = street.streetId
+            )
+        )
+
+    suspend fun insertStreetLocalityDistrict(streetId: UUID, localityDistrictId: UUID) =
+        insert(
+            GeoStreetDistrictEntity(
+                dsStreetsId = streetId,
+                dsLocalityDistrictsId = localityDistrictId
+            )
+        )
+
+    //-----------------------------
+    suspend fun insert(street: GeoStreetEntity, microdistrict: GeoMicrodistrictEntity) =
+        insert(
+            GeoStreetDistrictEntity(
+                dsStreetsId = street.streetId,
+                dsLocalityDistrictsId = microdistrict.mLocalityDistrictsId,
+                dsMicrodistrictsId = microdistrict.microdistrictId
+            )
+        )
+
+    suspend fun insertStreetMicrodistrict(
+        streetId: UUID, localityDistrictId: UUID, microdistrictId: UUID
+    ) = insert(
+        GeoStreetDistrictEntity(
+            dsStreetsId = streetId,
+            dsLocalityDistrictsId = localityDistrictId,
+            dsMicrodistrictsId = microdistrictId
+        )
+    )
+
     // UPDATES:
     @Update
     suspend fun update(street: GeoStreetEntity)
@@ -161,6 +203,9 @@ interface GeoStreetDao {
         update(textContent)
     }
 
+    @Update
+    suspend fun update(vararg streetDistrict: GeoStreetDistrictEntity)
+
     // DELETES:
     @Delete
     suspend fun delete(street: GeoStreetEntity)
@@ -176,4 +221,16 @@ interface GeoStreetDao {
 
     @Query("DELETE FROM ${GeoStreetEntity.TABLE_NAME}")
     suspend fun deleteAll()
+
+    @Delete
+    suspend fun deleteStreetDistrict(vararg streetDistrict: GeoStreetDistrictEntity)
+
+    @Query("DELETE FROM ${GeoStreetDistrictEntity.TABLE_NAME} WHERE streetDistrictId = :streetDistrictId")
+    suspend fun deleteStreetDistrictById(streetDistrictId: UUID)
+
+    @Query("DELETE FROM ${GeoStreetDistrictEntity.TABLE_NAME} WHERE dsStreetsId = :streetId AND dsLocalityDistrictsId = :localityDistrictId")
+    suspend fun deleteStreetDistrictByLocalityDistrictId(streetId: UUID, localityDistrictId: UUID)
+
+    @Query("DELETE FROM ${GeoStreetDistrictEntity.TABLE_NAME} WHERE dsStreetsId = :streetId AND dsMicrodistrictsId = :microdistrictId")
+    suspend fun deleteStreetDistrictByMicrodistrictId(streetId: UUID, microdistrictId: UUID)
 }

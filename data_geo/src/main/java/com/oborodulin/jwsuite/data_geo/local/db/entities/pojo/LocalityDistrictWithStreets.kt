@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 
 data class LocalityDistrictWithStreets(
@@ -14,7 +14,7 @@ data class LocalityDistrictWithStreets(
         parentColumn = "localityDistrictId",
         entityColumn = "streetId",
         associateBy = Junction(
-            GeoDistrictStreetEntity::class,
+            GeoStreetDistrictEntity::class,
             parentColumn = "dsLocalityDistrictsId",
             entityColumn = "dsStreetsId"
         )

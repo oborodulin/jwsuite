@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
@@ -58,31 +58,4 @@ class LocalGeoLocalityDistrictDataSourceImpl @Inject constructor(
     override suspend fun deleteAllLocalityDistricts() = withContext(dispatcher) {
         localityDistrictDao.deleteAll()
     }
-
-    // LD Streets:
-    override suspend fun insertLocalityDistrictStreet(
-        localityDistrict: GeoLocalityDistrictEntity, street: GeoStreetEntity
-    ) = withContext(dispatcher) {
-        localityDistrictDao.insert(localityDistrict, street)
-    }
-
-    override suspend fun updateLocalityDistrictStreet(districtStreet: GeoDistrictStreetEntity) =
-        withContext(dispatcher) {
-            localityDistrictDao.update(districtStreet)
-        }
-
-    override suspend fun deleteLocalityDistrictStreet(districtStreet: GeoDistrictStreetEntity) =
-        withContext(dispatcher) {
-            localityDistrictDao.deleteStreet(districtStreet)
-        }
-
-    override suspend fun deleteLocalityDistrictStreet(districtStreetId: UUID) =
-        withContext(dispatcher) {
-            localityDistrictDao.deleteStreetById(districtStreetId)
-        }
-
-    override suspend fun deleteLocalityDistrictStreets(localityDistrictId: UUID) =
-        withContext(dispatcher) {
-            localityDistrictDao.deleteStreetsByLocalityDistrictId(localityDistrictId)
-        }
 }

@@ -1,5 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local
 
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
@@ -29,4 +32,28 @@ interface LocalGeoStreetDataSource {
     suspend fun deleteStreetById(streetId: UUID)
     suspend fun deleteStreets(streets: List<GeoStreetEntity>)
     suspend fun deleteAllStreets()
+
+    // Districts:
+    suspend fun updateStreetDistrict(streetDistrict: GeoStreetDistrictEntity)
+    suspend fun deleteStreetDistrict(streetDistrict: GeoStreetDistrictEntity)
+    suspend fun deleteStreetDistrict(streetDistrictId: UUID)
+
+    // Locality Districts:
+    suspend fun insertStreetLocalityDistrict(
+        street: GeoStreetEntity, localityDistrict: GeoLocalityDistrictEntity
+    )
+
+    suspend fun insertStreetLocalityDistrict(streetId: UUID, localityDistrictId: UUID)
+    suspend fun deleteStreetLocalityDistrict(streetId: UUID, localityDistrictId: UUID)
+
+    // Microdistricts:
+    suspend fun insertStreetMicrodistrict(
+        street: GeoStreetEntity, microdistrict: GeoMicrodistrictEntity
+    )
+
+    suspend fun insertStreetMicrodistrict(
+        streetId: UUID, localityDistrictId: UUID, microdistrictId: UUID
+    )
+
+    suspend fun deleteStreetMicrodistrict(streetId: UUID, microdistrictId: UUID)
 }

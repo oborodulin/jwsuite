@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.GeoStreet
-import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -24,4 +23,19 @@ interface GeoStreetsRepository {
     fun delete(street: GeoStreet): Flow<GeoStreet>
     fun deleteById(streetId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    // Districts:
+    suspend fun deleteStreetDistrict(streetDistrictId: UUID)
+
+    // Locality Districts:
+    suspend fun insertStreetLocalityDistricts(streetId: UUID, localityDistrictIds: List<UUID>):
+            Flow<List<UUID>>
+
+    suspend fun deleteLocalityDistrict(streetId: UUID, localityDistrictId: UUID)
+
+    // Microdistricts:
+    suspend fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, UUID> = mapOf()):
+            Flow<List<UUID>>
+
+    suspend fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID)
 }

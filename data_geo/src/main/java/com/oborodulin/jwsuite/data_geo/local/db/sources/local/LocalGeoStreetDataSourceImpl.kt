@@ -2,6 +2,9 @@ package com.oborodulin.jwsuite.data_geo.local.db.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoStreetDao
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoStreetDataSource
@@ -62,4 +65,50 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
     override suspend fun deleteAllStreets() = withContext(dispatcher) {
         streetDao.deleteAll()
     }
+
+    // Districts:
+
+    override suspend fun updateStreetDistrict(streetDistrict: GeoStreetDistrictEntity) =
+        withContext(dispatcher) {
+            streetDao.update(streetDistrict)
+        }
+
+    override suspend fun deleteStreetDistrict(streetDistrict: GeoStreetDistrictEntity) =
+        withContext(dispatcher) {
+            streetDao.deleteStreetDistrict(streetDistrict)
+        }
+
+    override suspend fun deleteStreetDistrict(streetDistrictId: UUID) =
+        withContext(dispatcher) { streetDao.deleteStreetDistrictById(streetDistrictId) }
+
+    // Locality Districts:
+    override suspend fun insertStreetLocalityDistrict(
+        street: GeoStreetEntity, localityDistrict: GeoLocalityDistrictEntity
+    ) = withContext(dispatcher) { streetDao.insert(street, localityDistrict) }
+
+    override suspend fun insertStreetLocalityDistrict(streetId: UUID, localityDistrictId: UUID) =
+        withContext(dispatcher) {
+            streetDao.insertStreetLocalityDistrict(streetId, localityDistrictId)
+        }
+
+    override suspend fun deleteStreetLocalityDistrict(streetId: UUID, localityDistrictId: UUID) =
+        withContext(dispatcher) {
+            streetDao.deleteStreetDistrictByLocalityDistrictId(streetId, localityDistrictId)
+        }
+
+    // Microdistricts:
+    override suspend fun insertStreetMicrodistrict(
+        street: GeoStreetEntity, microdistrict: GeoMicrodistrictEntity
+    ) = withContext(dispatcher) { streetDao.insert(street, microdistrict) }
+
+    override suspend fun insertStreetMicrodistrict(
+        streetId: UUID, localityDistrictId: UUID, microdistrictId: UUID
+    ) = withContext(dispatcher) {
+        streetDao.insertStreetMicrodistrict(streetId, localityDistrictId, microdistrictId)
+    }
+
+    override suspend fun deleteStreetMicrodistrict(streetId: UUID, microdistrictId: UUID) =
+        withContext(dispatcher) {
+            streetDao.deleteStreetDistrictByMicrodistrictId(streetId, microdistrictId)
+        }
 }

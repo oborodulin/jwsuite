@@ -29,7 +29,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoStreetDao
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
@@ -100,7 +100,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoLocalityEntity::class, GeoLocalityTlEntity::class,
         GeoLocalityDistrictEntity::class, GeoLocalityDistrictTlEntity::class,
         GeoMicrodistrictEntity::class, GeoMicrodistrictTlEntity::class,
-        GeoStreetEntity::class, GeoStreetTlEntity::class, GeoDistrictStreetEntity::class,
+        GeoStreetEntity::class, GeoStreetTlEntity::class, GeoStreetDistrictEntity::class,
         CongregationEntity::class, GroupEntity::class, MemberEntity::class,
         CongregationMemberCrossRefEntity::class, MemberMinistryEntity::class,
         TerritoryCategoryEntity::class, TerritoryEntity::class, TerritoryStreetEntity::class,
@@ -936,13 +936,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             localityDistrict: GeoLocalityDistrictEntity,
             microdistrict: GeoMicrodistrictEntity? = null
         ) {
-            val streetDistrict = GeoDistrictStreetEntity.defaultDistrictStreet(
+            val streetDistrict = GeoStreetDistrictEntity.defaultDistrictStreet(
                 streetId = street.streetId,
                 localityDistrictId = localityDistrict.localityDistrictId,
                 microdistrictId = microdistrict?.microdistrictId
             )
             db.insert(
-                GeoDistrictStreetEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                GeoStreetDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(streetDistrict)
             )
             Timber.tag(TAG).i("GEO: Default street district imported")

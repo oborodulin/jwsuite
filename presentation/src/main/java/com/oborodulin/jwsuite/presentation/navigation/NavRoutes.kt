@@ -34,6 +34,8 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REG
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ROOM
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET_LOCALITY_DISTRICT
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_CATEGORY
@@ -56,6 +58,8 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDist
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RoomInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetLocalityDistrictInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetMicrodistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryEntranceInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryFloorInput
@@ -342,6 +346,85 @@ sealed class NavRoutes constructor(
             }
             Timber.tag(TAG).d("Street - fromEntry(...): '%s'", streetInput)
             return streetInput
+        }
+    }
+
+    data object StreetLocalityDistrict : NavRoutes(
+        route = String.format(
+            ROUTE_STREET_LOCALITY_DISTRICT,
+            "{$ARG_STREET_ID}", "$ARG_LOCALITY_DISTRICT_ID={$ARG_LOCALITY_DISTRICT_ID}"
+        ),
+        iconPainterResId = R.drawable.ic_locality_district_24,
+        titleResId = R.string.nav_item_street_locality_district,
+        arguments = listOf(navArgument(ARG_STREET_ID) {
+            type = NavType.StringType
+            nullable = false
+            //defaultValue = null
+        }, navArgument(ARG_LOCALITY_DISTRICT_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForStreetLocalityDistrict(streetLocalityDistrictInput: StreetLocalityDistrictInput? = null): String {
+            val route = String.format(
+                ROUTE_STREET_LOCALITY_DISTRICT,
+                streetLocalityDistrictInput?.let { "${it.streetId}" }.orEmpty(),
+                streetLocalityDistrictInput?.localityDistrictId?.let { "$ARG_LOCALITY_DISTRICT_ID=${it}" }
+                    .orEmpty()
+            )
+            Timber.tag(TAG)
+                .d("StreetLocalityDistrict - routeForStreetLocalityDistrict(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): StreetLocalityDistrictInput {
+            val streetLocalityDistrictInput = StreetLocalityDistrictInput(
+                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty()),
+                entry.arguments?.getString(ARG_LOCALITY_DISTRICT_ID)?.let { UUID.fromString(it) }
+            )
+            Timber.tag(TAG)
+                .d("StreetLocalityDistrict - fromEntry(...): '%s'", streetLocalityDistrictInput)
+            return streetLocalityDistrictInput
+        }
+    }
+
+    data object StreetMicrodistrict : NavRoutes(
+        route = String.format(
+            ROUTE_STREET_MICRODISTRICT,
+            "{$ARG_STREET_ID}", "$ARG_MICRODISTRICT_ID={$ARG_MICRODISTRICT_ID}"
+        ),
+        iconPainterResId = R.drawable.ic_microdistrict_24,
+        titleResId = R.string.nav_item_street_microdistrict,
+        arguments = listOf(navArgument(ARG_STREET_ID) {
+            type = NavType.StringType
+            nullable = false
+            //defaultValue = null
+        }, navArgument(ARG_MICRODISTRICT_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForStreetMicrodistrict(streetMicrodistrictInput: StreetMicrodistrictInput? = null): String {
+            val route = String.format(
+                ROUTE_STREET_MICRODISTRICT,
+                streetMicrodistrictInput?.let { "${it.streetId}" }.orEmpty(),
+                streetMicrodistrictInput?.microdistrictId?.let { "$ARG_MICRODISTRICT_ID=${it}" }
+                    .orEmpty()
+            )
+            Timber.tag(TAG).d("StreetMicrodistrict - routeForStreetMicrodistrict(...): '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): StreetMicrodistrictInput {
+            val streetMicrodistrictInput = StreetMicrodistrictInput(
+                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty()),
+                entry.arguments?.getString(ARG_MICRODISTRICT_ID)?.let { UUID.fromString(it) }
+            )
+            Timber.tag(TAG)
+                .d("StreetMicrodistrict - fromEntry(...): '%s'", streetMicrodistrictInput)
+            return streetMicrodistrictInput
         }
     }
 

@@ -58,10 +58,11 @@ SELECT sv.*,
             mdv.microdistrictLocCode AS ${Constants.PX_HOUSE_MICRODISTRICT}microdistrictLocCode, mdv.microdistrictName AS ${Constants.PX_HOUSE_MICRODISTRICT}microdistrictName, 
             mdv.microdistrictsId AS ${Constants.PX_HOUSE_MICRODISTRICT}microdistrictsId,
         tv.*, h.*, e.*, f.*, r.*
-FROM ${RoomEntity.TABLE_NAME} r JOIN ${HouseView.VIEW_NAME} h ON h.houseId = r.rHousesId
+FROM ${RoomEntity.TABLE_NAME} r JOIN ${HouseEntity.TABLE_NAME} h ON h.houseId = r.rHousesId
     JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId
     LEFT JOIN ${EntranceEntity.TABLE_NAME} e ON e.eHousesId = h.houseId AND e.entranceId = r.rEntrancesId  
     LEFT JOIN ${FloorEntity.TABLE_NAME} f ON f.fHousesId = h.houseId AND f.fEntrancesId = e.entranceId AND f.floorId = r.rFloorsId  
+    
     LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvl ON ldvl.localityDistrictId = h.hLocalityDistrictsId AND ldvl.locDistrictLocCode = sv.streetLocCode
     LEFT JOIN ${LocalityView.VIEW_NAME} lvl ON lvl.localityId = ldvl.ldLocalitiesId AND lvl.localityLocCode = sv.streetLocCode 
     LEFT JOIN ${GeoRegionView.VIEW_NAME} rvl ON rvl.regionId = lvl.lRegionsId AND rvl.regionLocCode = sv.streetLocCode
@@ -73,7 +74,7 @@ FROM ${RoomEntity.TABLE_NAME} r JOIN ${HouseView.VIEW_NAME} h ON h.houseId = r.r
     LEFT JOIN ${GeoRegionView.VIEW_NAME} rvm ON rvm.regionId = lvm.lRegionsId AND rvm.regionLocCode = sv.streetLocCode
     LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvm ON rdvm.regionDistrictId = lvm.lRegionDistrictsId AND rdvm.regDistrictLocCode = sv.streetLocCode
 
-    LEFT JOIN ${TerritoryView.VIEW_NAME} tv ON tv.territoryId = r.rTerritoriesId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode  = h.streetLocCode
+    LEFT JOIN ${TerritoryView.VIEW_NAME} tv ON tv.territoryId = r.rTerritoriesId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode  = sv.streetLocCode
 """
 )
 class RoomView(

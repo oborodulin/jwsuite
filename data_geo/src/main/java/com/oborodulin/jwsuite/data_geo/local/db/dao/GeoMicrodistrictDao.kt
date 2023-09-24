@@ -1,10 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
 import androidx.room.*
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.MicrodistrictWithStreets
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoMicrodistrictView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -79,18 +77,6 @@ interface GeoMicrodistrictDao {
         insert(textContent)
     }
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg districtStreet: GeoDistrictStreetEntity)
-
-    suspend fun insert(microdistrict: GeoMicrodistrictEntity, street: GeoStreetEntity) =
-        insert(
-            GeoDistrictStreetEntity(
-                dsLocalityDistrictsId = microdistrict.mLocalityDistrictsId,
-                dsMicrodistrictsId = microdistrict.microdistrictId,
-                dsStreetsId = street.streetId
-            )
-        )
-
     // UPDATES:
     @Update
     suspend fun update(microdistrict: GeoMicrodistrictEntity)
@@ -109,9 +95,6 @@ interface GeoMicrodistrictDao {
         update(textContent)
     }
 
-    @Update
-    suspend fun update(vararg districtStreet: GeoDistrictStreetEntity)
-
     // DELETES:
     @Delete
     suspend fun delete(microdistrict: GeoMicrodistrictEntity)
@@ -124,15 +107,6 @@ interface GeoMicrodistrictDao {
 
     @Query("DELETE FROM ${GeoMicrodistrictEntity.TABLE_NAME} WHERE microdistrictId = :microdistrictId")
     suspend fun deleteById(microdistrictId: UUID)
-
-    @Delete
-    suspend fun deleteStreet(vararg districtStreet: GeoDistrictStreetEntity)
-
-    @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE districtStreetId = :districtStreetId")
-    suspend fun deleteStreetById(districtStreetId: UUID)
-
-    @Query("DELETE FROM ${GeoDistrictStreetEntity.TABLE_NAME} WHERE dsMicrodistrictsId = :microdistrictId")
-    suspend fun deleteStreetsByMicrodistrictId(microdistrictId: UUID)
 
     @Query("DELETE FROM ${GeoMicrodistrictEntity.TABLE_NAME}")
     suspend fun deleteAll()

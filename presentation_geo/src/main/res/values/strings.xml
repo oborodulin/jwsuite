@@ -1,6 +1,9 @@
 <resources>
     <!--BUTTONS:-->
     <!--FAB:-->
+    <string name="fab_street_locality_district_text">Добавить район</string>
+    <string name="fab_street_microdistrict_text">Добавить микрорайон</string>
+
     <!--МЕНЮ географии-->
 
     <!--СПИСОК:-->

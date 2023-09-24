@@ -28,6 +28,8 @@
     <string name="nav_item_locality_district">Район</string>
     <string name="nav_item_microdistrict">Микрорайон</string>
     <string name="nav_item_street">Улица</string>
+    <string name="nav_item_street_locality_district">Район улицы</string>
+    <string name="nav_item_street_microdistrict">Микрорайон улицы</string>
     <string name="nav_item_house">Дом</string>
     <string name="nav_item_entrance">Подъезд</string>
     <string name="nav_item_floor">Этаж</string>

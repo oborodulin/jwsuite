@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -97,10 +98,10 @@ fun TerritoringScreen(
     var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
-    var tabType by remember { mutableStateOf(TerritoringTabType.HAND_OUT) }
-    val onChangeTab: (TerritoringTabType) -> Unit = { tabType = it }
+    var tabType by rememberSaveable { mutableStateOf(TerritoringTabType.HAND_OUT.name) }
+    val onChangeTab: (TerritoringTabType) -> Unit = { tabType = it.name }
     val fab = @Composable {
-        when (tabType) {
+        when (TerritoringTabType.valueOf(tabType)) {
             TerritoringTabType.HAND_OUT -> HandOutFabComponent(
                 enabled = areHandOutInputsValid,
                 territoriesGridViewModel = territoriesGridViewModel,

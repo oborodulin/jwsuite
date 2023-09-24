@@ -2,9 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.views
 
 import androidx.room.DatabaseView
 import androidx.room.Embedded
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_DISTRICT
 
 @DatabaseView(
     viewName = GeoStreetView.VIEW_NAME,

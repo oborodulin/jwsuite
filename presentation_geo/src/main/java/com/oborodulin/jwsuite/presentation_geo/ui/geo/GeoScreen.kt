@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.ui.components.fab.FabComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
@@ -59,7 +60,7 @@ fun GeoScreen(
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
     val context = LocalContext.current
-    var tabType by rememberSaveable { mutableStateOf(GeoTabType.LOCALITY_DISTRICTS.name) }
+    var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
     val onChangeTab: (GeoTabType) -> Unit = { tabType = it.name }
     val addActionOnClick = {
         appState.commonNavController.navigate(
@@ -72,6 +73,37 @@ fun GeoScreen(
                 GeoTabType.STREETS -> NavRoutes.Street.routeForStreet()
             }
         )
+    }
+    var streetTabType by rememberSaveable { mutableStateOf(GeoStreetDistrictTabType.LOCALITY_DISTRICTS.name) }
+    val onChangeStreetTab: (GeoStreetDistrictTabType) -> Unit = { streetTabType = it.name }
+    val fab: @Composable () -> Unit
+    when (GeoTabType.valueOf(tabType)) {
+        GeoTabType.STREETS ->
+            fab = @Composable {
+                when (GeoStreetDistrictTabType.valueOf(streetTabType)) {
+                    GeoStreetDistrictTabType.LOCALITY_DISTRICTS -> FabComponent(
+                        enabled = true,
+                        imageVector = Icons.Outlined.Add,
+                        textResId = R.string.fab_street_locality_district_text
+                    ) {
+                        appState.commonNavController.navigate(
+                            NavRoutes.StreetLocalityDistrict.routeForStreetLocalityDistrict()
+                        )
+                    }
+
+                    GeoStreetDistrictTabType.MICRODISTRICTS -> FabComponent(
+                        enabled = true,
+                        imageVector = Icons.Outlined.Add,
+                        textResId = R.string.fab_street_microdistrict_text
+                    ) {
+                        appState.commonNavController.navigate(
+                            NavRoutes.StreetMicrodistrict.routeForStreetMicrodistrict()
+                        )
+                    }
+                }
+            }
+
+        else -> fab = @Composable {}
     }
     /*
         LaunchedEffect(Unit) {
@@ -87,7 +119,7 @@ fun GeoScreen(
             appState = appState,
             topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_geo,
             topBarNavigationIcon = {
-                IconButton(onClick = { appState.commonNavigateUp() }) {
+                IconButton(onClick = { appState.backToBottomBarScreen() }) {
                     Icon(Icons.Outlined.ArrowBack, null)
                 }
             },
@@ -97,6 +129,7 @@ fun GeoScreen(
                     Icon(Icons.Outlined.Settings, null)
                 }
             },
+            floatingActionButton = { fab() },
             //bottomBar = bottomBar
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
@@ -138,6 +171,7 @@ fun GeoScreen(
                         ) {
                             StreetsView(
                                 appState = appState,
+                                onChangeStreetTab = onChangeStreetTab
                                 //sharedViewModel = sharedViewModel,
                             )
                         }
@@ -428,6 +462,7 @@ fun MicrodistrictsStreetsView(
 @Composable
 fun StreetsView(
     appState: AppState,
+    onChangeStreetTab: (GeoStreetDistrictTabType) -> Unit
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     //membersListViewModel: MembersListViewModel
 ) {
@@ -448,6 +483,7 @@ fun StreetsView(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
+                .weight(3.82f)
                 .border(
                     2.dp,
                     MaterialTheme.colorScheme.primary,
@@ -455,6 +491,33 @@ fun StreetsView(
                 )
         ) {
             StreetsListView(navController = appState.commonNavController)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(6.18f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_locality_districts),
+                        onClick = { onChangeStreetTab(GeoStreetDistrictTabType.LOCALITY_DISTRICTS) }) {
+                        LocalityDistrictsListView(navController = appState.commonNavController)
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_microdistricts),
+                        onClick = { onChangeStreetTab(GeoStreetDistrictTabType.MICRODISTRICTS) }) {
+                        MicrodistrictsListView(navController = appState.commonNavController)
+                    }
+                )
+            )
         }
     }
 }

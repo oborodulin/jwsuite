@@ -66,6 +66,7 @@ SELECT sv.*,
         tv.*, h.*, e.* 
 FROM ${EntranceEntity.TABLE_NAME} e JOIN ${HouseEntity.TABLE_NAME} h ON h.houseId = e.eHousesId 
     JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId
+    
     LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvl ON ldvl.localityDistrictId = h.hLocalityDistrictsId AND ldvl.locDistrictLocCode = sv.streetLocCode
     LEFT JOIN ${LocalityView.VIEW_NAME} lvl ON lvl.localityId = ldvl.ldLocalitiesId AND lvl.localityLocCode = sv.streetLocCode 
     LEFT JOIN ${GeoRegionView.VIEW_NAME} rvl ON rvl.regionId = lvl.lRegionsId AND rvl.regionLocCode = sv.streetLocCode

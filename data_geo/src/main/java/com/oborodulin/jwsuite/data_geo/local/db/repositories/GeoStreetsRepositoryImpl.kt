@@ -34,9 +34,8 @@ class GeoStreetsRepositoryImpl @Inject constructor(
         localityId, localityDistrictId, microdistrictId, excludes
     ).map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
 
-    override fun get(streetId: UUID) =
-        localStreetDataSource.getStreet(streetId)
-            .map(mappers.geoStreetViewToGeoStreetMapper::map)
+    override fun get(streetId: UUID) = localStreetDataSource.getStreet(streetId)
+        .map(mappers.geoStreetViewToGeoStreetMapper::map)
 
     override fun save(street: GeoStreet) = flow {
         if (street.id == null) {
@@ -66,4 +65,39 @@ class GeoStreetsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localStreetDataSource.deleteAllStreets()
+
+    // Districts:
+    override suspend fun deleteStreetDistrict(streetDistrictId: UUID) =
+        localStreetDataSource.deleteStreetDistrict(streetDistrictId)
+
+    // Locality Districts:
+    override suspend fun insertStreetLocalityDistricts(
+        streetId: UUID, localityDistrictIds: List<UUID>
+    ) = flow {
+        localityDistrictIds.forEach {
+            localStreetDataSource.insertStreetLocalityDistrict(streetId, it)
+        }
+        this.emit(localityDistrictIds)
+    }
+
+    override suspend fun deleteLocalityDistrict(streetId: UUID, localityDistrictId: UUID) =
+        localStreetDataSource.deleteStreetLocalityDistrict(streetId, localityDistrictId)
+
+    // Microdistricts:
+    override suspend fun insertStreetMicrodistricts(
+        streetId: UUID, districtIds: Map<UUID, UUID>
+    ) = flow {
+        val microdistrictIds = mutableListOf<UUID>()
+        districtIds.forEach { (localityDistrictId, microdistrictId) ->
+            localStreetDataSource.insertStreetMicrodistrict(
+                streetId, localityDistrictId, microdistrictId
+            )
+            microdistrictIds.add(microdistrictId)
+        }
+        this.emit(microdistrictIds)
+    }
+
+    override suspend fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID) =
+        localStreetDataSource.deleteStreetLocalityDistrict(streetId, microdistrictId)
+
 }

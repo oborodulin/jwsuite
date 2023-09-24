@@ -4,11 +4,10 @@ import androidx.room.*
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoDistrictStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.data_territory.local.db.entities.*
 import com.oborodulin.jwsuite.data_territory.local.db.entities.pojo.TerritoryWithMembers
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
@@ -189,12 +188,12 @@ interface TerritoryDao {
         """
     SELECT sv.* FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${GeoStreetView.VIEW_NAME} sv 
         ON t.territoryId = :territoryId AND sv.streetLocCode = :locale AND sv.${PX_LOCALITY}localityId = t.tLocalitiesId
-        LEFT JOIN ${GeoDistrictStreetEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
+        LEFT JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
                                                             AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '')
                                                             AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '') 
     WHERE NOT EXISTS (SELECT ts.territoryStreetId FROM ${TerritoryStreetEntity.TABLE_NAME} ts WHERE ts.tsTerritoriesId = :territoryId AND ts.tsStreetsId = sv.streetId)
-        AND (t.tMicrodistrictsId IS NULL OR (t.tMicrodistrictsId IS NOT NULL AND ds.districtStreetId IS NOT NULL))
-        AND (t.tLocalityDistrictsId IS NULL OR (t.tLocalityDistrictsId IS NOT NULL AND ds.districtStreetId IS NOT NULL))
+        AND (t.tMicrodistrictsId IS NULL OR (t.tMicrodistrictsId IS NOT NULL AND ds.streetDistrictId IS NOT NULL))
+        AND (t.tLocalityDistrictsId IS NULL OR (t.tLocalityDistrictsId IS NOT NULL AND ds.streetDistrictId IS NOT NULL))
     ORDER BY sv.streetName
     """
     )
