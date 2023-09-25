@@ -378,6 +378,34 @@ private fun HomeNavigationHost(
                 )
             StreetScreen(appState = appState, streetInput = NavRoutes.Street.fromEntry(it))
         }
+        composable(
+            route = NavRoutes.StreetLocalityDistrict.route,
+            arguments = NavRoutes.StreetLocalityDistrict.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to StreetLocalityDistrictScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.StreetLocalityDistrict.arguments
+                )
+            StreetLocalityDistrictScreen(
+                appState = appState,
+                streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it)
+            )
+        }
+        composable(
+            route = NavRoutes.StreetMicrodistrict.route,
+            arguments = NavRoutes.StreetMicrodistrict.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to StreetMicrodistrictScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.StreetMicrodistrict.arguments
+                )
+            StreetMicrodistrictScreen(
+                appState = appState,
+                streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it)
+            )
+        }
 
         // Nav Bar Navigation:
         composable(NavRoutes.Home.route) {

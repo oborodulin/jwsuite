@@ -12,19 +12,26 @@ class GetMicrodistrictsUseCase(
     private val microdistrictsRepository: GeoMicrodistrictsRepository
 ) : UseCase<GetMicrodistrictsUseCase.Request, GetMicrodistrictsUseCase.Response>(configuration) {
 
-    override fun process(request: Request): Flow<Response> = when (request.localityDistrictId) {
-        null -> when (request.localityId) {
-            null -> microdistrictsRepository.getAll()
-            else -> microdistrictsRepository.getAllByLocality(request.localityId)
+    override fun process(request: Request): Flow<Response> = when (request.streetId) {
+        null -> when (request.localityDistrictId) {
+            null -> when (request.localityId) {
+                null -> microdistrictsRepository.getAll()
+                else -> microdistrictsRepository.getAllByLocality(request.localityId)
+            }
+
+            else -> microdistrictsRepository.getAllByLocalityDistrict(request.localityDistrictId)
         }
 
-        else -> microdistrictsRepository.getAllByLocalityDistrict(request.localityDistrictId)
+        else -> microdistrictsRepository.getAllByStreet(request.streetId)
     }.map {
         Response(it)
     }
 
-    data class Request(val localityId: UUID? = null, val localityDistrictId: UUID? = null) :
-        UseCase.Request
+    data class Request(
+        val localityId: UUID? = null,
+        val localityDistrictId: UUID? = null,
+        val streetId: UUID? = null
+    ) : UseCase.Request
 
     data class Response(val microdistricts: List<GeoMicrodistrict>) : UseCase.Response
 }

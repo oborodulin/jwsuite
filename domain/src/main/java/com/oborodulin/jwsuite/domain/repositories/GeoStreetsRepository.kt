@@ -28,14 +28,14 @@ interface GeoStreetsRepository {
     suspend fun deleteStreetDistrict(streetDistrictId: UUID)
 
     // Locality Districts:
-    suspend fun insertStreetLocalityDistricts(streetId: UUID, localityDistrictIds: List<UUID>):
+    fun insertStreetLocalityDistricts(streetId: UUID, localityDistrictIds: List<UUID>):
             Flow<List<UUID>>
 
-    suspend fun deleteLocalityDistrict(streetId: UUID, localityDistrictId: UUID)
+    fun deleteLocalityDistrict(streetId: UUID, localityDistrictId: UUID): Flow<UUID>
 
     // Microdistricts:
-    suspend fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, UUID> = mapOf()):
+    fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, UUID> = mapOf()):
             Flow<List<UUID>>
 
-    suspend fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID)
+    fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID): Flow<UUID>
 }

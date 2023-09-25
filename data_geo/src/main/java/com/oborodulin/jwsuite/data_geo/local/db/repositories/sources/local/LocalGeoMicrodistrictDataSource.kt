@@ -10,6 +10,8 @@ interface LocalGeoMicrodistrictDataSource {
     fun getAllMicrodistricts(): Flow<List<GeoMicrodistrictView>>
     fun getLocalityMicrodistricts(localityId: UUID): Flow<List<GeoMicrodistrictView>>
     fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID): Flow<List<GeoMicrodistrictView>>
+    fun getStreetMicrodistricts(streetId: UUID): Flow<List<GeoMicrodistrictView>>
+    fun getMicrodistrictsForStreet(streetId: UUID): Flow<List<GeoMicrodistrictView>>
     fun getMicrodistrict(microdistrictId: UUID): Flow<GeoMicrodistrictView>
     suspend fun insertMicrodistrict(
         microdistrict: GeoMicrodistrictEntity, textContent: GeoMicrodistrictTlEntity

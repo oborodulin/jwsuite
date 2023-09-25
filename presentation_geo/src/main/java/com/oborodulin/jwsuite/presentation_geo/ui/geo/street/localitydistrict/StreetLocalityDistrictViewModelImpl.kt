@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -12,15 +11,16 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
-import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHousesListItemMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetLocalityDistrictsUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
+import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetLocalityDistrictConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -29,82 +29,83 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Territoring.TerritoryHouseViewModelImpl"
+private const val TAG = "Territoring.StreetLocalityDistrictViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class StreetLocalityDistrictViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val territoryUseCases: TerritoryUseCases,
-    private val houseUseCases: HouseUseCases,
-    private val converter: TerritoryConverter,
-    private val houseMapper: HouseToHousesListItemMapper
+    private val streetUseCases: StreetUseCases,
+    private val converter: StreetLocalityDistrictConverter
 ) : StreetLocalityDistrictViewModel,
-    DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
-        state, initFocusedTextField = StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE
+    DialogSingleViewModel<StreetLocalityDistrictUiModel, UiState<StreetLocalityDistrictUiModel>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
+        state, initFocusedTextField = StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET
     ) {
-    override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val street: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            StreetLocalityDistrictFields.TERRITORY_HOUSE_TERRITORY.name, InputListItemWrapper()
-        )
-    }
-    override val house: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(
-            StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE.name, InputListItemWrapper()
+            StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET.name,
+            InputListItemWrapper()
         )
     }
 
-    override val areInputsValid = flow { emit(house.value.errorId == null) }
+    private val _checkedListItems: MutableStateFlow<List<LocalityDistrictsListItem>> =
+        MutableStateFlow(emptyList())
+    override val checkedListItems = _checkedListItems.asStateFlow()
+
+    override val areInputsValid = flow { emit(checkedListItems.value.isNotEmpty()) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<TerritoryUi> = UiState.Loading
+    override fun observeCheckedListItems() {
+        Timber.tag(TAG).d("observeCheckedListItems() called")
+        uiState()?.let { uiState ->
+            _checkedListItems.value = uiState.localityDistricts.filter { it.checked }
+            Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
+        }
+    }
+
+    override fun initState(): UiState<StreetLocalityDistrictUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: StreetLocalityDistrictUiAction): Job {
-        Timber.tag(TAG).d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG)
+            .d("handleAction(StreetLocalityDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is StreetLocalityDistrictUiAction.Load -> {
-                setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_house_new_subheader)
-                loadTerritory(action.territoryId)
+                setDialogTitleResId(R.string.street_locality_district_new_subheader)
+                loadLocalityDistrictsForStreet(action.streetId)
             }
 
-            is StreetLocalityDistrictUiAction.Save -> saveTerritoryHouses(action.houseIds)
+            is StreetLocalityDistrictUiAction.Save -> saveStreetLocalityDistricts(action.localityDistrictIds)
         }
         return job
     }
 
-    private fun loadTerritory(territoryId: UUID): Job {
-        Timber.tag(TAG).d("loadTerritory(UUID) called: %s", territoryId)
+    private fun loadLocalityDistrictsForStreet(streetId: UUID): Job {
+        Timber.tag(TAG).d("loadLocalityDistrictsForStreet(UUID) called: %s", streetId)
         val job = viewModelScope.launch(errorHandler) {
-            territoryUseCases.getTerritoryUseCase.execute(GetTerritoryUseCase.Request(territoryId))
-                .map {
-                    converter.convert(it)
-                }
-                .collect {
-                    submitState(it)
-                }
+            streetUseCases.getLocalityDistrictsForStreetUseCase.execute(
+                GetLocalityDistrictsForStreetUseCase.Request(streetId)
+            ).map {
+                converter.convert(it)
+            }.collect {
+                submitState(it)
+            }
         }
         return job
     }
 
-    private fun saveTerritoryHouses(houseIds: List<UUID> = emptyList()): Job {
+    private fun saveStreetLocalityDistricts(localityDistrictIds: List<UUID> = emptyList()): Job {
         Timber.tag(TAG).d(
-            "saveTerritoryHouses() called: houseId = %s; territoryId = %s; houseIds.size = %d",
-            house.value.item?.itemId,
-            territory.value.item?.itemId,
-            houseIds.size
+            "saveStreetLocalityDistricts() called: streetId = %s; localityDistrictIds.size = %d",
+            street.value.item?.itemId,
+            localityDistrictIds.size
         )
         val job = viewModelScope.launch(errorHandler) {
-            houseUseCases.saveTerritoryHousesUseCase.execute(
-                SaveTerritoryHousesUseCase.Request(houseIds, territory.value.item?.itemId!!)
+            streetUseCases.saveStreetLocalityDistrictsUseCase.execute(
+                SaveStreetLocalityDistrictsUseCase.Request(
+                    street.value.item?.itemId!!, localityDistrictIds
+                )
             ).collect {
-                Timber.tag(TAG).d("saveTerritoryHouse() collect: %s", it)
-                if (it is Result.Success) {
-                    house.value.item?.itemId?.let { houseId ->
-                        setSavedListItem(
-                            ListItemModel(houseId, house.value.item?.headline.orEmpty())
-                        )
-                    }
-                }
+                Timber.tag(TAG).d("saveStreetLocalityDistricts() collect: %s", it)
             }
         }
         return job
@@ -112,18 +113,17 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<StreetLocalityDistrictFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: TerritoryUi): Job? {
+    override fun initFieldStatesByUiModel(uiModel: StreetLocalityDistrictUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(TerritoryStreetModel) called: territoryStreetUi = %s",
+                "initFieldStatesByUiModel(StreetLocalityDistrictUiModel) called: uiModel = %s",
                 uiModel
             )
         initStateValue(
-            StreetLocalityDistrictFields.TERRITORY_HOUSE_TERRITORY, territory,
-            uiModel.toTerritoriesListItem()
+            StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET, street,
+            uiModel.street.toStreetsListItem()
         )
-        initStateValue(StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE, house, ListItemModel())
         return null
     }
 
@@ -132,69 +132,27 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is StreetLocalityDistrictInputEvent.Territory -> setStateValue(
-                        StreetLocalityDistrictFields.TERRITORY_HOUSE_TERRITORY, territory, event.input,
-                        true
+                    is StreetLocalityDistrictInputEvent.Street -> setStateValue(
+                        StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET, street,
+                        event.input, true
                     )
-
-                    is StreetLocalityDistrictInputEvent.House ->
-                        when (StreetLocalityDistrictInputValidator.House.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE, house, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE, house, event.input
-                            )
-                        }
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is StreetLocalityDistrictInputEvent.Territory -> setStateValue(
-                        StreetLocalityDistrictFields.TERRITORY_HOUSE_TERRITORY, territory, null
+                    is StreetLocalityDistrictInputEvent.Street -> setStateValue(
+                        StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET, street, null
                     )
-
-                    is StreetLocalityDistrictInputEvent.House ->
-                        setStateValue(
-                            StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE, house,
-                            StreetLocalityDistrictInputValidator.House.errorIdOrNull(event.input.headline)
-                        )
-
                 }
             }
     }
 
     override fun performValidation() {}
 
-    override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
-        val inputErrors: MutableList<InputError> = mutableListOf()
-        StreetLocalityDistrictInputValidator.House.errorIdOrNull(house.value.item?.headline)?.let {
-            inputErrors.add(
-                InputError(
-                    fieldName = StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE.name, errorId = it
-                )
-            )
-        }
-        return if (inputErrors.isEmpty()) null else inputErrors
-    }
+    override fun getInputErrorsOrNull() = null
 
-    override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
-        for (error in inputErrors) {
-            state[error.fieldName] = when (StreetLocalityDistrictFields.valueOf(error.fieldName)) {
-                StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE -> house.value.copy(
-                    errorId = error.errorId
-                )
-
-                else -> null
-            }
-        }
-    }
+    override fun displayInputErrors(inputErrors: List<InputError>) {}
 
     companion object {
         fun previewModel(ctx: Context) =
@@ -213,10 +171,12 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val house =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val checkedListItems =
+                    MutableStateFlow(LocalityDistrictsListViewModelImpl.previewList(ctx))
 
+                override fun observeCheckedListItems() {}
+
+                override val street = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
@@ -228,7 +188,9 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}
@@ -236,6 +198,9 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context) = TerritoryViewModelImpl.previewUiModel(ctx)
+        fun previewUiModel(ctx: Context) = StreetLocalityDistrictUiModel(
+            street = StreetViewModelImpl.previewUiModel(ctx),
+            localityDistricts = LocalityDistrictsListViewModelImpl.previewList(ctx)
+        )
     }
 }

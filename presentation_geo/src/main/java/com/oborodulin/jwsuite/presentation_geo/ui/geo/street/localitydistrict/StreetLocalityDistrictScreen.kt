@@ -22,26 +22,26 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryHouseInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetLocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
 
-private const val TAG = "Territoring.TerritoryHouseScreen"
+private const val TAG = "Territoring.StreetLocalityDistrictScreen"
 
 @Composable
-fun TerritoryHouseScreen(
+fun StreetLocalityDistrictScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
     housesListViewModel: HousesListViewModelImpl = hiltViewModel(),
     territoryHouseViewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
-    territoryHouseInput: TerritoryHouseInput? = null
+    territoryHouseInput: StreetLocalityDistrictInput? = null
 ) {
     Timber.tag(TAG)
-        .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
+        .d("StreetLocalityDistrictScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
 
     val house by territoryHouseViewModel.house.collectAsStateWithLifecycle()
     val checkedHouses by housesListViewModel.checkedListItems.collectAsStateWithLifecycle()
@@ -50,7 +50,7 @@ fun TerritoryHouseScreen(
     val saveButtonOnClick = {
         // checks all errors
         territoryHouseViewModel.onContinueClick(areListItemsChecked) {
-            Timber.tag(TAG).d("TerritoryHouseScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("StreetLocalityDistrictScreen(...): Save Button onClick...")
             // if success, save then backToBottomBarScreen
             territoryHouseViewModel.handleActionJob(
                 {
@@ -62,7 +62,7 @@ fun TerritoryHouseScreen(
         }
     }
     LaunchedEffect(territoryHouseInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryHouseScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("StreetLocalityDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
         territoryHouseInput?.let {
             territoryHouseViewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.territoryId))
         }
@@ -94,7 +94,7 @@ fun TerritoryHouseScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TerritoryHouseView(
+                        StreetLocalityDistrictView(
                             appState = appState,
                             territoryUi = it,
                             sharedViewModel = appState.sharedViewModel.value,

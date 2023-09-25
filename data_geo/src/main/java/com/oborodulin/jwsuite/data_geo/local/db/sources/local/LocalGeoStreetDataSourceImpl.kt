@@ -67,7 +67,6 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
     }
 
     // Districts:
-
     override suspend fun updateStreetDistrict(streetDistrict: GeoStreetDistrictEntity) =
         withContext(dispatcher) {
             streetDao.update(streetDistrict)

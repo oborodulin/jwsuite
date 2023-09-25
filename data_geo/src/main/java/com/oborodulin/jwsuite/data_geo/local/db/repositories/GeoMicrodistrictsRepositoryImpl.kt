@@ -24,6 +24,13 @@ class GeoMicrodistrictsRepositoryImpl @Inject constructor(
         localMicrodistrictDataSource.getLocalityDistrictMicrodistricts(localityDistrictId)
             .map(mappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
 
+    override fun getAllByStreet(streetId: UUID) =
+        localMicrodistrictDataSource.getStreetMicrodistricts(streetId)
+            .map(mappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+    override fun getAllForStreet(streetId: UUID) =
+        localMicrodistrictDataSource.getMicrodistrictsForStreet(streetId)
+            .map(mappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+
     override fun get(microdistrictId: UUID) =
         localMicrodistrictDataSource.getMicrodistrict(microdistrictId)
             .map(mappers.geoMicrodistrictViewToGeoMicrodistrictMapper::map)

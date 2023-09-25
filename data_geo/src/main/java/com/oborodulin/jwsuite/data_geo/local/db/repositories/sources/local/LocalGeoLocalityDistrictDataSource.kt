@@ -9,6 +9,8 @@ import java.util.UUID
 interface LocalGeoLocalityDistrictDataSource {
     fun getAllLocalityDistricts(): Flow<List<GeoLocalityDistrictView>>
     fun getLocalityDistricts(localityId: UUID): Flow<List<GeoLocalityDistrictView>>
+    fun getStreetLocalityDistricts(streetId: UUID): Flow<List<GeoLocalityDistrictView>>
+    fun getLocalityDistrictsForStreet(streetId: UUID): Flow<List<GeoLocalityDistrictView>>
     fun getLocalityDistrict(localityDistrictId: UUID): Flow<GeoLocalityDistrictView>
     suspend fun insertLocalityDistrict(
         localityDistrict: GeoLocalityDistrictEntity, textContent: GeoLocalityDistrictTlEntity

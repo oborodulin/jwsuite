@@ -8,6 +8,8 @@ interface GeoMicrodistrictsRepository {
     fun getAll(): Flow<List<GeoMicrodistrict>>
     fun getAllByLocality(localityId: UUID): Flow<List<GeoMicrodistrict>>
     fun getAllByLocalityDistrict(localityDistrictId: UUID): Flow<List<GeoMicrodistrict>>
+    fun getAllByStreet(streetId: UUID): Flow<List<GeoMicrodistrict>>
+    fun getAllForStreet(streetId: UUID): Flow<List<GeoMicrodistrict>>
     fun get(microdistrictId: UUID): Flow<GeoMicrodistrict>
     fun save(microdistrict: GeoMicrodistrict): Flow<GeoMicrodistrict>
     fun delete(microdistrict: GeoMicrodistrict): Flow<GeoMicrodistrict>

@@ -6,19 +6,21 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface StreetLocalityDistrictViewModel :
-    DialogViewModeled<TerritoryUi, StreetLocalityDistrictUiAction, UiSingleEvent> {
+    DialogViewModeled<StreetLocalityDistrictUiModel, StreetLocalityDistrictUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
 
-    val territory: StateFlow<InputListItemWrapper<ListItemModel>>
-    val house: StateFlow<InputListItemWrapper<ListItemModel>>
+    val street: StateFlow<InputListItemWrapper<ListItemModel>>
+    val checkedListItems: StateFlow<List<LocalityDistrictsListItem>>
 
     val areInputsValid: StateFlow<Boolean>
 
+    fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: StreetLocalityDistrictFields, isFocused: Boolean)
     fun moveFocusImeAction()

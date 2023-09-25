@@ -7,6 +7,8 @@ import java.util.UUID
 interface GeoLocalityDistrictsRepository {
     fun getAll(): Flow<List<GeoLocalityDistrict>>
     fun getAllByLocality(localityId: UUID): Flow<List<GeoLocalityDistrict>>
+    fun getAllByStreet(streetId: UUID): Flow<List<GeoLocalityDistrict>>
+    fun getAllForStreet(streetId: UUID): Flow<List<GeoLocalityDistrict>>
     fun get(localityDistrictId: UUID): Flow<GeoLocalityDistrict>
     fun save(localityDistrict: GeoLocalityDistrict): Flow<GeoLocalityDistrict>
     fun delete(localityDistrict: GeoLocalityDistrict): Flow<GeoLocalityDistrict>

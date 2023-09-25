@@ -43,11 +43,11 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.si
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Territoring.TerritoryHouseView"
+private const val TAG = "Territoring.StreetLocalityDistrictView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TerritoryHouseView(
+fun StreetLocalityDistrictView(
     appState: AppState,
     territoryUi: TerritoryUi? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
@@ -55,7 +55,7 @@ fun TerritoryHouseView(
     housesListViewModel: HousesListViewModel,
     territoryHouseViewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("TerritoryHouseView(...) called")
+    Timber.tag(TAG).d("StreetLocalityDistrictView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -68,10 +68,10 @@ fun TerritoryHouseView(
     }
 
     territoryUi?.let {
-        territoryHouseViewModel.onTextFieldEntered(StreetLocalityDistrictInputEvent.Territory(it.toTerritoriesListItem()))
+        territoryHouseViewModel.onTextFieldEntered(StreetLocalityDistrictInputEvent.Street(it.toTerritoriesListItem()))
     }
     Timber.tag(TAG).d("Territory House: CollectAsStateWithLifecycle for all fields")
-    val territory by territoryHouseViewModel.territory.collectAsStateWithLifecycle()
+    val territory by territoryHouseViewModel.street.collectAsStateWithLifecycle()
     val house by territoryHouseViewModel.house.collectAsStateWithLifecycle()
     val searchText by housesListViewModel.searchText.collectAsStateWithLifecycle()
 
@@ -82,7 +82,7 @@ fun TerritoryHouseView(
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryHouseView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("StreetLocalityDistrictView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -105,10 +105,10 @@ fun TerritoryHouseView(
     ) {
         TerritoryComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetLocalityDistrictFields.TERRITORY_HOUSE_TERRITORY]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     territoryHouseViewModel.onTextFieldFocusChanged(
-                        focusedField = StreetLocalityDistrictFields.TERRITORY_HOUSE_TERRITORY,
+                        focusedField = StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -118,7 +118,7 @@ fun TerritoryHouseView(
             inputWrapper = territory,
             onImeKeyAction = territoryHouseViewModel::moveFocusImeAction
         )
-        TerritoryHouseComboBox(
+        StreetLocalityDistrictComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[StreetLocalityDistrictFields.TERRITORY_HOUSE_HOUSE]!!.focusRequester)
                 .onFocusChanged { focusState ->
@@ -152,11 +152,11 @@ fun TerritoryHouseView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewTerritoryHouseView() {
+fun PreviewStreetLocalityDistrictView() {
     JWSuiteTheme {
         Surface {
-            /*TerritoryHouseView(
-                localityViewModel = TerritoryHouseViewModelImpl.previewModel(LocalContext.current),
+            /*StreetLocalityDistrictView(
+                localityViewModel = StreetLocalityDistrictViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(

@@ -2,22 +2,26 @@ package com.oborodulin.jwsuite.domain.usecases.geostreet
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
-import com.oborodulin.jwsuite.domain.model.GeoStreet
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.util.UUID
 
-class SaveStreetUseCase(
+class SaveStreetMicrodistrictsUseCase(
     configuration: Configuration, private val streetsRepository: GeoStreetsRepository
-) : UseCase<SaveStreetUseCase.Request, SaveStreetUseCase.Response>(configuration) {
+) : UseCase<SaveStreetMicrodistrictsUseCase.Request, SaveStreetMicrodistrictsUseCase.Response>(
+    configuration
+) {
     override fun process(request: Request): Flow<Response> {
-        return streetsRepository.save(request.street)
+        return streetsRepository.insertStreetMicrodistricts(request.streetId, request.districtIds)
             .map {
                 Response(it)
-            }.catch { throw UseCaseException.GeoStreetSaveException(it) }
+            }.catch { throw UseCaseException.GeoStreetMicrodistrictsSaveException(it) }
     }
 
-    data class Request(val street: GeoStreet) : UseCase.Request
-    data class Response(val street: GeoStreet) : UseCase.Response
+    data class Request(val streetId: UUID, val districtIds: Map<UUID, UUID> = mapOf()) :
+        UseCase.Request
+
+    data class Response(val microdistrictIds: List<UUID>) : UseCase.Response
 }

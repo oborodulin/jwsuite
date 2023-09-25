@@ -65,7 +65,7 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("loadLocalityDistricts() called: localityId = %s", localityId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getLocalityDistrictsUseCase.execute(
-                GetLocalityDistrictsUseCase.Request(localityId)
+                GetLocalityDistrictsUseCase.Request(localityId = localityId)
             )
                 .map {
                     converter.convert(it)

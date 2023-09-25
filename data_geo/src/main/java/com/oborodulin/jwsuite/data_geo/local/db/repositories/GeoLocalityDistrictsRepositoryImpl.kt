@@ -20,6 +20,14 @@ class GeoLocalityDistrictsRepositoryImpl @Inject constructor(
         localLocalityDistrictDataSource.getLocalityDistricts(localityId)
             .map(mappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
 
+    override fun getAllByStreet(streetId: UUID) =
+        localLocalityDistrictDataSource.getStreetLocalityDistricts(streetId)
+            .map(mappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
+
+    override fun getAllForStreet(streetId: UUID) =
+        localLocalityDistrictDataSource.getLocalityDistrictsForStreet(streetId)
+            .map(mappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
+
     override fun get(localityDistrictId: UUID) =
         localLocalityDistrictDataSource.getLocalityDistrict(localityDistrictId)
             .map(mappers.geoLocalityDistrictViewToGeoLocalityDistrictMapper::map)

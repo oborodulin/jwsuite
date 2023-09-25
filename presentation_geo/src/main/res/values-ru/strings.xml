@@ -54,6 +54,12 @@
     <string name="street_new_subheader">Новая улица</string>
     <string name="estimated_houses_hint">Кол-во домов</string>
     <string name="street_placeholder">Улица…</string>
+    <!--Район улицы-->
+    <string name="street_locality_district_subheader">Район улицы</string>
+    <string name="street_locality_district_new_subheader">Новый район улицы</string>
+    <!--Микрорайон улицы-->
+    <string name="street_microdistrict_subheader">Микрорайон улицы</string>
+    <string name="street_microdistrict_new_subheader">Новый микрорайон улицы</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

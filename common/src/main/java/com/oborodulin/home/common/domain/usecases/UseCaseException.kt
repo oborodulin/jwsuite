@@ -10,6 +10,8 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class GeoLocalityDistrictSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoMicrodistrictSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoStreetSaveException(cause: Throwable) : UseCaseException(cause)
+    class GeoStreetLocalityDistrictsSaveException(cause: Throwable) : UseCaseException(cause)
+    class GeoStreetMicrodistrictsSaveException(cause: Throwable) : UseCaseException(cause)
 
     // Congregation:
     class CongregationSaveException(cause: Throwable) : UseCaseException(cause)

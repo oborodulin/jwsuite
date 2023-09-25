@@ -28,9 +28,13 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistric
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetLocalityDistrictsUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalitiesListConverter
@@ -44,6 +48,8 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistric
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictsListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetLocalityDistrictConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetMicrodistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetsForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetsListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalitiesListToLocalityListItemMapper
@@ -307,6 +313,24 @@ object GeoModule {
 
     @Singleton
     @Provides
+    fun provideStreetLocalityDistrictConverter(
+        streetMapper: StreetToStreetUiMapper,
+        localityDistrictsListMapper: LocalityDistrictsListToLocalityDistrictsListItemMapper
+    ): StreetLocalityDistrictConverter = StreetLocalityDistrictConverter(
+        streetMapper = streetMapper, localityDistrictsListMapper = localityDistrictsListMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideStreetMicrodistrictConverter(
+        streetMapper: StreetToStreetUiMapper,
+        microdistrictsListMapper: MicrodistrictsListToMicrodistrictsListItemMapper
+    ): StreetMicrodistrictConverter = StreetMicrodistrictConverter(
+        streetMapper = streetMapper, microdistrictsListMapper = microdistrictsListMapper
+    )
+
+    @Singleton
+    @Provides
     fun provideStreetConverter(mapper: StreetToStreetUiMapper): StreetConverter =
         StreetConverter(mapper = mapper)
 
@@ -390,12 +414,20 @@ object GeoModule {
         getStreetUseCase: GetStreetUseCase,
         saveStreetUseCase: SaveStreetUseCase,
         deleteStreetUseCase: DeleteStreetUseCase,
-        getStreetsForTerritoryUseCase: GetStreetsForTerritoryUseCase
+        getStreetsForTerritoryUseCase: GetStreetsForTerritoryUseCase,
+        getLocalityDistrictsForStreetUseCase: GetLocalityDistrictsForStreetUseCase,
+        getMicrodistrictsForStreetUseCase: GetMicrodistrictsForStreetUseCase,
+        saveStreetLocalityDistrictsUseCase: SaveStreetLocalityDistrictsUseCase,
+        saveStreetMicrodistrictsUseCase: SaveStreetMicrodistrictsUseCase
     ): StreetUseCases = StreetUseCases(
         getStreetsUseCase,
         getStreetUseCase,
         saveStreetUseCase,
         deleteStreetUseCase,
-        getStreetsForTerritoryUseCase
+        getStreetsForTerritoryUseCase,
+        getLocalityDistrictsForStreetUseCase,
+        getMicrodistrictsForStreetUseCase,
+        saveStreetLocalityDistrictsUseCase,
+        saveStreetMicrodistrictsUseCase
     )
 }

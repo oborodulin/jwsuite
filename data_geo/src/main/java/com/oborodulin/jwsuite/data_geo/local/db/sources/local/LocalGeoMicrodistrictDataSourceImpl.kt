@@ -2,10 +2,8 @@ package com.oborodulin.jwsuite.data_geo.local.db.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoMicrodistrictDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +25,10 @@ class LocalGeoMicrodistrictDataSourceImpl @Inject constructor(
 
     override fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID) =
         microdistrictDao.findByLocalityDistrictId(localityDistrictId)
+
+    override fun getStreetMicrodistricts(streetId: UUID) = microdistrictDao.findByStreetId(streetId)
+    override fun getMicrodistrictsForStreet(streetId: UUID) =
+        microdistrictDao.findForStreetByStreetId(streetId)
 
     override fun getMicrodistrict(microdistrictId: UUID) =
         microdistrictDao.findDistinctById(microdistrictId)

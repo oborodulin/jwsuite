@@ -69,7 +69,9 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("loadMicrodistricts() called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMicrodistrictsUseCase.execute(
-                GetMicrodistrictsUseCase.Request(localityId, localityDistrictId)
+                GetMicrodistrictsUseCase.Request(
+                    localityId = localityId, localityDistrictId = localityDistrictId
+                )
             ).map {
                 converter.convert(it)
             }.collect {

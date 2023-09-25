@@ -30,9 +30,12 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistric
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
-import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetLocalityDistrictsUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import dagger.Module
 import dagger.Provides
@@ -205,13 +208,6 @@ object GeoUseCasesModule {
 
     @Singleton
     @Provides
-    fun provideGetStreetsForTerritoryUseCase(
-        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
-    ): GetStreetsForTerritoryUseCase =
-        GetStreetsForTerritoryUseCase(configuration, streetsRepository)
-
-    @Singleton
-    @Provides
     fun provideDeleteStreetUseCase(
         configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
     ): DeleteStreetUseCase = DeleteStreetUseCase(configuration, streetsRepository)
@@ -222,4 +218,39 @@ object GeoUseCasesModule {
         configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
     ): SaveStreetUseCase = SaveStreetUseCase(configuration, streetsRepository)
 
+    @Singleton
+    @Provides
+    fun provideSaveStreetLocalityDistrictsUseCase(
+        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
+    ): SaveStreetLocalityDistrictsUseCase = SaveStreetLocalityDistrictsUseCase(
+        configuration, streetsRepository
+    )
+
+    @Singleton
+    @Provides
+    fun provideSaveStreetMicrodistrictsUseCase(
+        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
+    ): SaveStreetMicrodistrictsUseCase = SaveStreetMicrodistrictsUseCase(
+        configuration, streetsRepository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetLocalityDistrictsForStreetUseCase(
+        configuration: UseCase.Configuration,
+        streetsRepository: GeoStreetsRepository,
+        localityDistrictsRepository: GeoLocalityDistrictsRepository
+    ): GetLocalityDistrictsForStreetUseCase = GetLocalityDistrictsForStreetUseCase(
+        configuration, streetsRepository, localityDistrictsRepository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetMicrodistrictsForStreetUseCase(
+        configuration: UseCase.Configuration,
+        streetsRepository: GeoStreetsRepository,
+        microdistrictsRepository: GeoMicrodistrictsRepository
+    ): GetMicrodistrictsForStreetUseCase = GetMicrodistrictsForStreetUseCase(
+        configuration, streetsRepository, microdistrictsRepository
+    )
 }
