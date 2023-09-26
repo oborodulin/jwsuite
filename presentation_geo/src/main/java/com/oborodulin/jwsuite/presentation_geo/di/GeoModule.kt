@@ -27,6 +27,8 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistric
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetLocalityDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetMicrodistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
@@ -414,6 +416,8 @@ object GeoModule {
         getStreetUseCase: GetStreetUseCase,
         saveStreetUseCase: SaveStreetUseCase,
         deleteStreetUseCase: DeleteStreetUseCase,
+        deleteStreetLocalityDistrictUseCase: DeleteStreetLocalityDistrictUseCase,
+        deleteStreetMicrodistrictUseCase: DeleteStreetMicrodistrictUseCase,
         getStreetsForTerritoryUseCase: GetStreetsForTerritoryUseCase,
         getLocalityDistrictsForStreetUseCase: GetLocalityDistrictsForStreetUseCase,
         getMicrodistrictsForStreetUseCase: GetMicrodistrictsForStreetUseCase,
@@ -424,6 +428,8 @@ object GeoModule {
         getStreetUseCase,
         saveStreetUseCase,
         deleteStreetUseCase,
+        deleteStreetLocalityDistrictUseCase,
+        deleteStreetMicrodistrictUseCase,
         getStreetsForTerritoryUseCase,
         getLocalityDistrictsForStreetUseCase,
         getMicrodistrictsForStreetUseCase,

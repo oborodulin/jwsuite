@@ -37,6 +37,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalitySc
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict.StreetLocalityDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen

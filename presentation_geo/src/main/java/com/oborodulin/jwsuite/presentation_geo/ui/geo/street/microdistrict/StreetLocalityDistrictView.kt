@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict
+package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border

@@ -13,7 +13,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -40,15 +39,13 @@ fun HouseScreen(
 ) {
     Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
     val saveButtonOnClick = {
+        Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
+        // checks all errors
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
-            // checks all errors
-            viewModel.onContinueClick {
-                // if success, save then backToBottomBarScreen
-                viewModel.handleActionJob(
-                    { viewModel.submitAction(HouseUiAction.Save) },
-                    { appState.backToBottomBarScreen() })
-            }
+            // if success, save then backToBottomBarScreen
+            viewModel.handleActionJob(
+                { viewModel.submitAction(HouseUiAction.Save) },
+                { appState.backToBottomBarScreen() })
         }
     }
     LaunchedEffect(houseInput?.houseId) {

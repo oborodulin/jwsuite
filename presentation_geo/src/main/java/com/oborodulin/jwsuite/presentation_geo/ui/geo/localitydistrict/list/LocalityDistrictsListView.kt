@@ -22,6 +22,7 @@ import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListUiAction
@@ -40,35 +41,55 @@ fun LocalityDistrictsListView(
     microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
     streetsListViewModel: StreetsListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    localityInput: LocalityInput? = null
+    localityInput: LocalityInput? = null,
+    streetInput: StreetInput? = null
 ) {
-    Timber.tag(TAG).d("LocalityDistrictsListView(...) called: localityInput = %s", localityInput)
-    LaunchedEffect(localityInput?.localityId) {
+    Timber.tag(TAG).d(
+        "LocalityDistrictsListView(...) called: localityInput = %s; streetInput = %s",
+        localityInput,
+        streetInput
+    )
+    LaunchedEffect(localityInput?.localityId, streetInput?.streetId) {
         Timber.tag(TAG)
             .d("LocalityDistrictsListView: LaunchedEffect() BEFORE collect ui state flow")
-        localityDistrictsListViewModel.submitAction(LocalityDistrictsListUiAction.Load(localityInput?.localityId))
+        localityDistrictsListViewModel.submitAction(
+            LocalityDistrictsListUiAction.Load(localityInput?.localityId, streetInput?.streetId)
+        )
     }
     localityDistrictsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            LocalityDistrictsList(
-                localityDistricts = it,
-                onEdit = { localityDistrict ->
-                    localityDistrictsListViewModel.submitAction(
-                        LocalityDistrictsListUiAction.EditLocalityDistrict(localityDistrict.id)
+            when (streetInput?.streetId) {
+                null -> LocalityDistrictsList(
+                    localityDistricts = it,
+                    onEdit = { localityDistrict ->
+                        localityDistrictsListViewModel.submitAction(
+                            LocalityDistrictsListUiAction.EditLocalityDistrict(localityDistrict.id)
+                        )
+                    },
+                    onDelete = { localityDistrict ->
+                        localityDistrictsListViewModel.submitAction(
+                            LocalityDistrictsListUiAction.DeleteLocalityDistrict(localityDistrict.id)
+                        )
+                    }
+                ) { localityDistrict ->
+                    localityDistrictsListViewModel.singleSelectItem(localityDistrict)
+                    microdistrictsListViewModel.submitAction(
+                        MicrodistrictsListUiAction.Load(localityDistrictId = localityDistrict.id)
                     )
-                },
-                onDelete = { localityDistrict ->
-                    localityDistrictsListViewModel.submitAction(
-                        LocalityDistrictsListUiAction.DeleteLocalityDistrict(localityDistrict.id)
-                    )
+                    streetsListViewModel.submitAction(StreetsListUiAction.Load(localityDistrictId = localityDistrict.id))
                 }
-            ) { localityDistrict ->
-                localityDistrictsListViewModel.singleSelectItem(localityDistrict)
-                microdistrictsListViewModel.submitAction(
-                    MicrodistrictsListUiAction.Load(localityDistrictId = localityDistrict.id)
+
+                else -> StreetLocalityDistrictsList(
+                    localityDistricts = it,
+                    onDelete = { localityDistrict ->
+                        localityDistrictsListViewModel.submitAction(
+                            LocalityDistrictsListUiAction.DeleteStreetLocalityDistrict(
+                                streetInput.streetId, localityDistrict.id
+                            )
+                        )
+                    }
                 )
-                streetsListViewModel.submitAction(StreetsListUiAction.Load(localityDistrictId = localityDistrict.id))
             }
         }
     }
@@ -122,6 +143,42 @@ fun LocalityDistrictsList(
         }
     } else {
         EmptyListTextComponent(R.string.locality_districts_list_empty_text)
+    }
+}
+
+@Composable
+fun StreetLocalityDistrictsList(
+    localityDistricts: List<LocalityDistrictsListItem>,
+    onDelete: (LocalityDistrictsListItem) -> Unit
+) {
+    Timber.tag(TAG).d("StreetLocalityDistrictsList(...) called")
+    if (localityDistricts.isNotEmpty()) {
+        val listState =
+            rememberLazyListState(initialFirstVisibleItemIndex = localityDistricts.filter { it.selected }
+                .getOrNull(0)?.let { localityDistricts.indexOf(it) } ?: 0)
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .padding(8.dp)
+                .focusable(enabled = true)
+        ) {
+            itemsIndexed(localityDistricts, key = { _, item -> item.id }) { _, localityDistrict ->
+                ListItemComponent(
+                    item = localityDistrict,
+                    itemActions = listOf(
+                        ComponentUiAction.DeleteListItem(
+                            stringResource(
+                                R.string.dlg_confirm_del_street_locality_district,
+                                localityDistrict.districtName
+                            )
+                        ) { onDelete(localityDistrict) }),
+                    selected = localityDistrict.selected,
+                    //onClick = { onClick(localityDistrict) }
+                )
+            }
+        }
+    } else {
+        EmptyListTextComponent(R.string.street_locality_districts_list_empty_text)
     }
 }
 

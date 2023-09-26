@@ -56,6 +56,7 @@ fun TerritoryDetailsScreen(
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
     }
     var tabType by rememberSaveable { mutableStateOf(TerritoryDetailsTabType.STREETS.name) }
+    val onChangeTab: (TerritoryDetailsTabType) -> Unit = { tabType = it.name }
     val addActionOnClick: () -> Unit = {
         when (TerritoryDetailsTabType.valueOf(tabType)) {
             TerritoryDetailsTabType.STREETS -> viewModel.submitAction(
@@ -81,7 +82,7 @@ fun TerritoryDetailsScreen(
     }
     val tabStreets = TabRowItem(
         title = stringResource(R.string.territory_details_tab_streets),
-        onClick = { tabType = TerritoryDetailsTabType.STREETS.name }
+        onClick = { onChangeTab(TerritoryDetailsTabType.STREETS) }
     ) {
         TerritoryStreetsListView(
             navController = appState.commonNavController,
@@ -90,7 +91,7 @@ fun TerritoryDetailsScreen(
     }
     val tabHouses = TabRowItem(
         title = stringResource(R.string.territory_details_tab_houses),
-        onClick = { tabType = TerritoryDetailsTabType.HOUSES.name }
+        onClick = { onChangeTab(TerritoryDetailsTabType.HOUSES) }
     ) {
         HousesListView(
             navController = appState.commonNavController,
@@ -99,15 +100,15 @@ fun TerritoryDetailsScreen(
     }
     val tabEntraces = TabRowItem(
         title = stringResource(R.string.territory_details_tab_entrances),
-        onClick = { tabType = TerritoryDetailsTabType.ENTRANCES.name }
+        onClick = { onChangeTab(TerritoryDetailsTabType.ENTRANCES) }
     ) {}
     val tabFloors = TabRowItem(
         title = stringResource(R.string.territory_details_tab_floors),
-        onClick = { tabType = TerritoryDetailsTabType.FLOORS.name }
+        onClick = { onChangeTab(TerritoryDetailsTabType.FLOORS) }
     ) {}
     val tabRooms = TabRowItem(
         title = stringResource(R.string.territory_details_tab_rooms),
-        onClick = { tabType = TerritoryDetailsTabType.ROOMS.name }
+        onClick = { onChangeTab(TerritoryDetailsTabType.ROOMS) }
     ) {}
     var tabs by remember { mutableStateOf(emptyList<TabRowItem>()) }
 

@@ -13,6 +13,10 @@
     <string name="locality_districts_list_empty_text">Районов населённых пунктов пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="microdistricts_list_empty_text">Микрорайонов пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="streets_list_empty_text">Улиц пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="street_locality_districts_list_empty_text">Районов улиц пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="street_microdistricts_list_empty_text">Микрорайонов улиц пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="for_streets_locality_districts_list_empty_text">Районы, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие районы</string>
+    <string name="for_streets_microdistricts_list_empty_text">Микрорайоны, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие микрорайоны</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <string name="geo_tab_regions">ОБЛАСТИ</string>
@@ -76,6 +80,8 @@
     <string name="dlg_confirm_del_locality_district">Удалить район населённого пункта %1$s?</string>
     <string name="dlg_confirm_del_microdistrict">Удалить микрорайон %1$s?</string>
     <string name="dlg_confirm_del_street">Удалить улицу %1$s?</string>
+    <string name="dlg_confirm_del_street_locality_district">Удалить район улицы %1$s?</string>
+    <string name="dlg_confirm_del_street_microdistrict">Удалить микрорайон улицы %1$s?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->

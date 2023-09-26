@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -89,11 +90,11 @@ fun HousesScreen(
     val street by housesViewModel.street.collectAsStateWithLifecycle()
 
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
-    var tabType by remember { mutableStateOf(HousesTabType.HOUSES) }
-    val onChangeTab: (HousesTabType) -> Unit = { tabType = it }
+    var tabType by rememberSaveable { mutableStateOf(HousesTabType.HOUSES.name) }
+    val onChangeTab: (HousesTabType) -> Unit = { tabType = it.name }
     val addActionOnClick = {
         appState.commonNavController.navigate(
-            when (tabType) {
+            when (HousesTabType.valueOf(tabType)) {
                 HousesTabType.HOUSES -> NavRoutes.House.routeForHouse()
                 HousesTabType.ENTRANCES -> NavRoutes.Entrance.routeForEntrance()
                 HousesTabType.FLOORS -> NavRoutes.Floor.routeForFloor()

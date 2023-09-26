@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict
+package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict
 
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable

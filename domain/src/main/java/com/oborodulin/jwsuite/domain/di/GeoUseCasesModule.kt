@@ -29,6 +29,8 @@ import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.DeleteRegionDist
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetLocalityDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetMicrodistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
@@ -211,6 +213,20 @@ object GeoUseCasesModule {
     fun provideDeleteStreetUseCase(
         configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
     ): DeleteStreetUseCase = DeleteStreetUseCase(configuration, streetsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteStreetLocalityDistrictUseCase(
+        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
+    ): DeleteStreetLocalityDistrictUseCase =
+        DeleteStreetLocalityDistrictUseCase(configuration, streetsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteStreetMicrodistrictUseCase(
+        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
+    ): DeleteStreetMicrodistrictUseCase =
+        DeleteStreetMicrodistrictUseCase(configuration, streetsRepository)
 
     @Singleton
     @Provides

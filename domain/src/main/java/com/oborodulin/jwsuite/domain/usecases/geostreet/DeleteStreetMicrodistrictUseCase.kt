@@ -6,16 +6,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
-class DeleteStreetUseCase(
+class DeleteStreetMicrodistrictUseCase(
     configuration: Configuration, private val streetsRepository: GeoStreetsRepository
-) : UseCase<DeleteStreetUseCase.Request, DeleteStreetUseCase.Response>(configuration) {
+) : UseCase<DeleteStreetMicrodistrictUseCase.Request, DeleteStreetMicrodistrictUseCase.Response>(
+    configuration
+) {
     override fun process(request: Request): Flow<Response> {
-        return streetsRepository.deleteById(request.streetId)
-            .map {
-                Response
-            }
+        return streetsRepository.deleteLocalityDistrict(
+            request.streetId, request.microdistrictId
+        ).map { Response }
     }
 
-    data class Request(val streetId: UUID) : UseCase.Request
+    data class Request(val streetId: UUID, val microdistrictId: UUID) : UseCase.Request
     object Response : UseCase.Response
 }

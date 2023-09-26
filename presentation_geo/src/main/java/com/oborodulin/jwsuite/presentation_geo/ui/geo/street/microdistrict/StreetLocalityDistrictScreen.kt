@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict
+package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

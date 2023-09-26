@@ -42,7 +42,7 @@ fun StreetComboBox(
     ),
     inputWrapper: InputListItemWrapper<StreetsListItem>,
     onValueChange: (StreetsListItem) -> Unit = {},
-    onImeKeyAction: OnImeKeyAction
+    onImeKeyAction: OnImeKeyAction = {}
 ) {
     Timber.tag(TAG).d(
         "StreetComboBox(...) called: localityId = %s; localityDistrictId = %s; microdistrictId = %s",

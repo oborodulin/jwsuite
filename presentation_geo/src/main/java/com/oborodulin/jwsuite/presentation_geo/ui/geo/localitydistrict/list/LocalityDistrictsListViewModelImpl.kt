@@ -10,6 +10,8 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.DeleteLocalityDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
+import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetLocalityDistrictUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
@@ -31,7 +33,8 @@ private const val TAG = "Geo.LocalityDistrictsListViewModelImpl"
 
 @HiltViewModel
 class LocalityDistrictsListViewModelImpl @Inject constructor(
-    private val useCases: LocalityDistrictUseCases,
+    private val localityDistrictUseCases: LocalityDistrictUseCases,
+    private val streetUseCases: StreetUseCases,
     private val converter: LocalityDistrictsListConverter
 ) : LocalityDistrictsListViewModel,
     MviViewModel<List<LocalityDistrictsListItem>, UiState<List<LocalityDistrictsListItem>>, LocalityDistrictsListUiAction, LocalityDistrictsListUiSingleEvent>() {
@@ -42,7 +45,9 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(LocalityDistrictsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalityDistrictsListUiAction.Load -> loadLocalityDistricts(action.localityId)
+            is LocalityDistrictsListUiAction.Load -> loadLocalityDistricts(
+                action.localityId, action.streetId
+            )
 
             is LocalityDistrictsListUiAction.EditLocalityDistrict -> {
                 submitSingleEvent(
@@ -57,15 +62,22 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
             is LocalityDistrictsListUiAction.DeleteLocalityDistrict -> {
                 deleteLocalityDistrict(action.localityDistrictId)
             }
+
+            is LocalityDistrictsListUiAction.DeleteStreetLocalityDistrict -> {
+                deleteStreetLocalityDistrict(action.streetId, action.localityDistrictId)
+            }
         }
         return job
     }
 
-    private fun loadLocalityDistricts(localityId: UUID? = null): Job {
-        Timber.tag(TAG).d("loadLocalityDistricts() called: localityId = %s", localityId)
+    private fun loadLocalityDistricts(localityId: UUID? = null, streetId: UUID? = null): Job {
+        Timber.tag(TAG).d(
+            "loadLocalityDistricts() called: localityId = %s; streetId = %s",
+            localityId, streetId
+        )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getLocalityDistrictsUseCase.execute(
-                GetLocalityDistrictsUseCase.Request(localityId = localityId)
+            localityDistrictUseCases.getLocalityDistrictsUseCase.execute(
+                GetLocalityDistrictsUseCase.Request(localityId = localityId, streetId = streetId)
             )
                 .map {
                     converter.convert(it)
@@ -81,8 +93,22 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("deleteLocalityDistrict() called: localityDistrictId = %s", localityDistrictId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteLocalityDistrictUseCase.execute(
+            localityDistrictUseCases.deleteLocalityDistrictUseCase.execute(
                 DeleteLocalityDistrictUseCase.Request(localityDistrictId)
+            ).collect {}
+        }
+        return job
+    }
+
+    private fun deleteStreetLocalityDistrict(streetId: UUID, localityDistrictId: UUID): Job {
+        Timber.tag(TAG)
+            .d(
+                "deleteStreetLocalityDistrict(...) called: streetId = %s; localityDistrictId = %s",
+                streetId, localityDistrictId
+            )
+        val job = viewModelScope.launch(errorHandler) {
+            streetUseCases.deleteStreetLocalityDistrictUseCase.execute(
+                DeleteStreetLocalityDistrictUseCase.Request(streetId, localityDistrictId)
             ).collect {}
         }
         return job
