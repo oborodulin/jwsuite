@@ -3,8 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
-    // id 'com.google.devtools.ksp'
-    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -60,7 +59,7 @@ dependencies {
 
     // Hilt
     implementation deps.dagger.hilt
-    kapt deps.dagger.compiler
+    ksp deps.dagger.compiler
     implementation deps.hilt.navigationCompose
 
     implementation deps.coroutines.core

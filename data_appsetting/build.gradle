@@ -3,7 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
     id 'com.google.devtools.ksp'
-    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
 }
 
 android {
@@ -62,7 +61,7 @@ dependencies {
 
     // Hilt
     implementation deps.dagger.hilt
-    kapt deps.dagger.compiler
+    ksp deps.dagger.compiler
     implementation deps.hilt.navigationCompose
 
     implementation deps.jvm.inject
@@ -97,7 +96,7 @@ dependencies {
     testImplementation deps.test.truth
     testImplementation deps.dagger.testing
     testImplementation deps.test.turbine
-    kaptTest deps.dagger.hiltCompiler
+    kspTest deps.dagger.hiltCompiler
 
     // Testing: Instrumentation
     androidTestImplementation deps.test.extJunit

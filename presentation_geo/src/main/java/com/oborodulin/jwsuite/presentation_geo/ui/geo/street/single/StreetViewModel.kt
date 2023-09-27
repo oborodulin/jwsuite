@@ -19,8 +19,8 @@ interface StreetViewModel : DialogViewModeled<StreetUi, StreetUiAction, UiSingle
     val roadTypes: StateFlow<MutableMap<RoadType, String>>
 
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
-    val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
-    val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>>
+    //val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
+    //val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val roadType: StateFlow<InputWrapper>
     val isPrivateSector: StateFlow<InputWrapper>
     val estimatedHouses: StateFlow<InputWrapper>

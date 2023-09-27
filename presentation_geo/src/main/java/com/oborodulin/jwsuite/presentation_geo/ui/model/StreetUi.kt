@@ -6,8 +6,8 @@ import java.util.UUID
 
 data class StreetUi(
     val locality: LocalityUi = LocalityUi(),
-    val localityDistrict: LocalityDistrictUi? = null,
-    val microdistrict: MicrodistrictUi? = null,
+//    val localityDistrict: LocalityDistrictUi? = null,
+//    val microdistrict: MicrodistrictUi? = null,
     val roadType: RoadType = RoadType.STREET,
     val isPrivateSector: Boolean = false,
     val estimatedHouses: Int? = null,

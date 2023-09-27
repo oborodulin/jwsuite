@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
     id 'com.google.devtools.ksp'
-    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
 }
 
 android {
@@ -14,11 +13,11 @@ android {
     defaultConfig {
         minSdk cfg.sdk.minVersion
         targetSdk cfg.sdk.targetVersion
-        kapt {
+        /*kapt {
             //ERROR : error.NonExistentClass Kotlin In multi module Dagger project
             //https://kotlinlang.org/docs/reference/kapt.html#non-existent-type-correction
             correctErrorTypes = true
-        }
+        }*/
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -92,7 +91,7 @@ dependencies {
 
     // Hilt
     implementation deps.dagger.hilt
-    kapt deps.dagger.compiler
+    ksp deps.dagger.compiler
     implementation deps.hilt.navigationCompose
 
     // Navigation

@@ -20,9 +20,7 @@ import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.domain.util.RoadType
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToStreetsListItemMapper
@@ -57,12 +55,14 @@ class StreetViewModelImpl @Inject constructor(
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(StreetFields.STREET_LOCALITY.name, InputListItemWrapper())
     }
+
+    /*
     override val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(StreetFields.STREET_LOCALITY_DISTRICT.name, InputListItemWrapper())
     }
     override val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(StreetFields.STREET_MICRODISTRICT.name, InputListItemWrapper())
-    }
+    }*/
     override val roadType: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(StreetFields.STREET_ROAD_TYPE.name, InputWrapper())
     }
@@ -128,15 +128,15 @@ class StreetViewModelImpl @Inject constructor(
     private fun saveStreet(): Job {
         val localityUi = LocalityUi()
         localityUi.id = locality.value.item?.itemId
-        val localityDistrictUi = LocalityDistrictUi()
-        localityDistrictUi.id = localityDistrict.value.item?.itemId
-        val microdistrictUi = MicrodistrictUi()
-        microdistrictUi.id = microdistrict.value.item?.itemId
+        //val localityDistrictUi = LocalityDistrictUi()
+        //localityDistrictUi.id = localityDistrict.value.item?.itemId
+        //val microdistrictUi = MicrodistrictUi()
+        //microdistrictUi.id = microdistrict.value.item?.itemId
 
         val streetUi = StreetUi(
             locality = localityUi,
-            localityDistrict = localityDistrictUi,
-            microdistrict = microdistrictUi,
+            //localityDistrict = localityDistrictUi,
+            //microdistrict = microdistrictUi,
             roadType = RoadType.valueOf(roadType.value.value),
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             estimatedHouses = estimatedHouses.value.value.toIntOrNull(),
@@ -146,10 +146,8 @@ class StreetViewModelImpl @Inject constructor(
             UUID.fromString(id.value.value)
         } else null
         Timber.tag(TAG).d(
-            "saveStreet() called: UI model %s; regionUi.id = %s; regionDistrictUi.id = %s",
-            streetUi,
-            localityUi.id,
-            localityDistrictUi.id
+            "saveStreet() called: UI model %s; localityUi.id = %s",
+            streetUi, localityUi.id//, localityDistrictUi.id
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveStreetUseCase.execute(
@@ -174,7 +172,7 @@ class StreetViewModelImpl @Inject constructor(
         initStateValue(
             StreetFields.STREET_LOCALITY, locality,
             ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
-        )
+        )/*
         initStateValue(
             StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict,
             ListItemModel(
@@ -186,7 +184,7 @@ class StreetViewModelImpl @Inject constructor(
             ListItemModel(
                 uiModel.microdistrict?.id, uiModel.microdistrict?.microdistrictName.orEmpty()
             )
-        )
+        )*/
         initStateValue(StreetFields.STREET_ROAD_TYPE, roadType, uiModel.roadType.name)
         initStateValue(
             StreetFields.STREET_IS_PRIVATE_SECTOR,
@@ -215,18 +213,18 @@ class StreetViewModelImpl @Inject constructor(
                                 StreetFields.STREET_LOCALITY, locality, event.input
                             )
                         }
+                    /*
+                                        is StreetInputEvent.LocalityDistrict ->
+                                            setStateValue(
+                                                StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict,
+                                                event.input, true
+                                            )
 
-                    is StreetInputEvent.LocalityDistrict ->
-                        setStateValue(
-                            StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict,
-                            event.input, true
-                        )
-
-                    is StreetInputEvent.Microdistrict ->
-                        setStateValue(
-                            StreetFields.STREET_MICRODISTRICT, microdistrict, event.input, true
-                        )
-
+                                        is StreetInputEvent.Microdistrict ->
+                                            setStateValue(
+                                                StreetFields.STREET_MICRODISTRICT, microdistrict, event.input, true
+                                            )
+                    */
                     is StreetInputEvent.RoadType ->
                         setStateValue(
                             StreetFields.STREET_ROAD_TYPE, roadType, event.input, true
@@ -264,13 +262,13 @@ class StreetViewModelImpl @Inject constructor(
                             StreetFields.STREET_LOCALITY, locality,
                             StreetInputValidator.Locality.errorIdOrNull(event.input.headline)
                         )
+                    /*
+                                        is StreetInputEvent.LocalityDistrict ->
+                                            setStateValue(StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict, null)
 
-                    is StreetInputEvent.LocalityDistrict ->
-                        setStateValue(StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict, null)
-
-                    is StreetInputEvent.Microdistrict ->
-                        setStateValue(StreetFields.STREET_MICRODISTRICT, microdistrict, null)
-
+                                        is StreetInputEvent.Microdistrict ->
+                                            setStateValue(StreetFields.STREET_MICRODISTRICT, microdistrict, null)
+                    */
                     is StreetInputEvent.RoadType ->
                         setStateValue(StreetFields.STREET_ROAD_TYPE, roadType, null)
 
@@ -337,9 +335,9 @@ class StreetViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val localityDistrict =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val microdistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+
+                //override val localityDistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                //override val microdistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val roadType = MutableStateFlow(InputWrapper())
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val estimatedHouses = MutableStateFlow(InputWrapper())
@@ -357,7 +355,12 @@ class StreetViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

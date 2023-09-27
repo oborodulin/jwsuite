@@ -39,8 +39,6 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictComboBox
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -64,8 +62,8 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
 
     Timber.tag(TAG).d("Street: CollectAsStateWithLifecycle for all fields")
     val locality by viewModel.locality.collectAsStateWithLifecycle()
-    val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
-    val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
+    //val localityDistrict by viewModel.localityDistrict.collectAsStateWithLifecycle()
+    //val microdistrict by viewModel.microdistrict.collectAsStateWithLifecycle()
     val roadType by viewModel.roadType.collectAsStateWithLifecycle()
     val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
     val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
@@ -114,6 +112,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
             onValueChange = { viewModel.onTextFieldEntered(StreetInputEvent.Locality(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
+        /*
         LocalityDistrictComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[StreetFields.STREET_LOCALITY_DISTRICT]!!.focusRequester)
@@ -146,7 +145,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
                 viewModel.onTextFieldEntered(StreetInputEvent.Microdistrict(it))
             },
             onImeKeyAction = viewModel::moveFocusImeAction
-        )
+        )*/
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[StreetFields.STREET_NAME]!!.focusRequester)

@@ -18,8 +18,8 @@ object MainDestinations {
     const val ROUTE_LOCALITY_DISTRICT = "localityDistrict?%s"
     const val ROUTE_MICRODISTRICT = "microdistrict?%s"
     const val ROUTE_STREET = "street?%s"
-    const val ROUTE_STREET_LOCALITY_DISTRICT = "streetLocalityDistrict/%s?%s"
-    const val ROUTE_STREET_MICRODISTRICT = "streetMicrodistrict/%s?%s"
+    const val ROUTE_STREET_LOCALITY_DISTRICT = "streetLocalityDistrict/%s"
+    const val ROUTE_STREET_MICRODISTRICT = "streetMicrodistrict/%s"
 
     //Congregates:
     const val ROUTE_CONGREGATION = "congregation?%s"

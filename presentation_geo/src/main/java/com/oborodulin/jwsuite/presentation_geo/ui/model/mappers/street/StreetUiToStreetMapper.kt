@@ -17,8 +17,8 @@ class StreetUiToStreetMapper(
         val street = GeoStreet(
             ctx = ctx,
             locality = localityUiMapper.map(input.locality),
-            localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
-            microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
+            //localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
+            //microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
             streetHashCode = 0,
             roadType = input.roadType,
             isPrivateSector = input.isPrivateSector,
