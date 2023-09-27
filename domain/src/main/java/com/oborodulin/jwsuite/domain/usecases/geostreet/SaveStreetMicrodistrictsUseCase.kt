@@ -20,7 +20,7 @@ class SaveStreetMicrodistrictsUseCase(
             }.catch { throw UseCaseException.GeoStreetMicrodistrictsSaveException(it) }
     }
 
-    data class Request(val streetId: UUID, val districtIds: Map<UUID, UUID> = mapOf()) :
+    data class Request(val streetId: UUID, val districtIds: Map<UUID, List<UUID>> = mapOf()) :
         UseCase.Request
 
     data class Response(val microdistrictIds: List<UUID>) : UseCase.Response

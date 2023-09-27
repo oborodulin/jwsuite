@@ -5,23 +5,23 @@ import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-interface StreetLocalityDistrictViewModel :
-    DialogViewModeled<StreetLocalityDistrictUiModel, StreetLocalityDistrictUiAction, UiSingleEvent> {
+interface StreetMicrodistrictViewModel :
+    DialogViewModeled<StreetMicrodistrictUiModel, StreetMicrodistrictUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
 
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>
-    val checkedListItems: StateFlow<List<LocalityDistrictsListItem>>
+    val checkedListItems: StateFlow<List<MicrodistrictsListItem>>
 
     val areInputsValid: StateFlow<Boolean>
 
     fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)
-    fun onTextFieldFocusChanged(focusedField: StreetLocalityDistrictFields, isFocused: Boolean)
+    fun onTextFieldFocusChanged(focusedField: StreetMicrodistrictFields, isFocused: Boolean)
     fun moveFocusImeAction()
 }

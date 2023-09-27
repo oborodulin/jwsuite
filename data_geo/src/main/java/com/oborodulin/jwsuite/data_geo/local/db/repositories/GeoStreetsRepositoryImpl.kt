@@ -85,16 +85,17 @@ class GeoStreetsRepositoryImpl @Inject constructor(
     }
 
     // Microdistricts:
-    override fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, UUID>) = flow {
-        val microdistrictIds = mutableListOf<UUID>()
-        districtIds.forEach { (localityDistrictId, microdistrictId) ->
-            localStreetDataSource.insertStreetMicrodistrict(
-                streetId, localityDistrictId, microdistrictId
-            )
-            microdistrictIds.add(microdistrictId)
+    override fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, List<UUID>>) =
+        flow {
+            districtIds.forEach { (localityDistrictId, microdistrictIds) ->
+                microdistrictIds.forEach { microdistrictId ->
+                    localStreetDataSource.insertStreetMicrodistrict(
+                        streetId, localityDistrictId, microdistrictId
+                    )
+                }
+                this.emit(microdistrictIds)
+            }
         }
-        this.emit(microdistrictIds)
-    }
 
     override fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID) = flow {
         localStreetDataSource.deleteStreetLocalityDistrict(streetId, microdistrictId)

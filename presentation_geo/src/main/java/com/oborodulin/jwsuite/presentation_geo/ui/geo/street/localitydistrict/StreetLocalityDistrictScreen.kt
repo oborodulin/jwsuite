@@ -32,7 +32,7 @@ private const val TAG = "Territoring.StreetLocalityDistrictScreen"
 @Composable
 fun StreetLocalityDistrictScreen(
     appState: AppState,
-    streetLocalityDistrictViewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
+    viewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
     streetLocalityDistrictInput: NavigationInput.StreetLocalityDistrictInput? = null
 ) {
     Timber.tag(TAG)
@@ -42,11 +42,11 @@ fun StreetLocalityDistrictScreen(
         )
     val saveButtonOnClick = {
         // checks all errors
-        streetLocalityDistrictViewModel.onContinueClick {
+        viewModel.onContinueClick {
             Timber.tag(TAG).d("StreetLocalityDistrictScreen(...): Save Button onClick...")
-            // if success, save then backToBottomBarScreen
-            streetLocalityDistrictViewModel.handleActionJob(
-                { streetLocalityDistrictViewModel.submitAction(StreetLocalityDistrictUiAction.Save) },
+            // if success, save then commonNavigateUp
+            viewModel.handleActionJob(
+                { viewModel.submitAction(StreetLocalityDistrictUiAction.Save) },
                 { appState.commonNavigateUp() })
         }
     }
@@ -54,15 +54,15 @@ fun StreetLocalityDistrictScreen(
         Timber.tag(TAG)
             .d("StreetLocalityDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
         streetLocalityDistrictInput?.let {
-            streetLocalityDistrictViewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.streetId))
+            viewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.streetId))
         }
     }
-    streetLocalityDistrictViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        streetLocalityDistrictViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
-        val areInputsValid by streetLocalityDistrictViewModel.areInputsValid.collectAsStateWithLifecycle()
+        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
@@ -86,7 +86,7 @@ fun StreetLocalityDistrictScreen(
                     ) {
                         StreetLocalityDistrictView(
                             streetLocalityDistrictUiModel = it,
-                            streetLocalityDistrictViewModel = streetLocalityDistrictViewModel
+                            streetLocalityDistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)

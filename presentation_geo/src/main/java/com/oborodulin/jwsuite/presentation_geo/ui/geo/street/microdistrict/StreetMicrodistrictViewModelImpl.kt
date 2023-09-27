@@ -11,16 +11,16 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
-import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetLocalityDistrictsUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetLocalityDistrictConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetMicrodistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -30,26 +30,26 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Territoring.StreetLocalityDistrictViewModelImpl"
+private const val TAG = "Territoring.StreetMicrodistrictViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class StreetLocalityDistrictViewModelImpl @Inject constructor(
+class StreetMicrodistrictViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val streetUseCases: StreetUseCases,
-    private val converter: StreetLocalityDistrictConverter
-) : StreetLocalityDistrictViewModel,
-    DialogSingleViewModel<StreetLocalityDistrictUiModel, UiState<StreetLocalityDistrictUiModel>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
-        state, initFocusedTextField = StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET
+    private val converter: StreetMicrodistrictConverter
+) : StreetMicrodistrictViewModel,
+    DialogSingleViewModel<StreetMicrodistrictUiModel, UiState<StreetMicrodistrictUiModel>, StreetMicrodistrictUiAction, UiSingleEvent, StreetMicrodistrictFields, InputWrapper>(
+        state, initFocusedTextField = StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET
     ) {
     override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
         state.getStateFlow(
-            StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET.name,
+            StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET.name,
             InputListItemWrapper()
         )
     }
 
-    private val _checkedListItems: MutableStateFlow<List<LocalityDistrictsListItem>> =
+    private val _checkedListItems: MutableStateFlow<List<MicrodistrictsListItem>> =
         MutableStateFlow(emptyList())
     override val checkedListItems = _checkedListItems.asStateFlow()
 
@@ -59,32 +59,32 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
     override fun observeCheckedListItems() {
         Timber.tag(TAG).d("observeCheckedListItems() called")
         uiState()?.let { uiState ->
-            _checkedListItems.value = uiState.localityDistricts.filter { it.checked }
+            _checkedListItems.value = uiState.microdistricts.filter { it.checked }
             Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
         }
     }
 
-    override fun initState(): UiState<StreetLocalityDistrictUiModel> = UiState.Loading
+    override fun initState(): UiState<StreetMicrodistrictUiModel> = UiState.Loading
 
-    override suspend fun handleAction(action: StreetLocalityDistrictUiAction): Job {
+    override suspend fun handleAction(action: StreetMicrodistrictUiAction): Job {
         Timber.tag(TAG)
-            .d("handleAction(StreetLocalityDistrictUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(StreetMicrodistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is StreetLocalityDistrictUiAction.Load -> {
-                setDialogTitleResId(R.string.street_locality_district_new_subheader)
-                loadLocalityDistrictsForStreet(action.streetId)
+            is StreetMicrodistrictUiAction.Load -> {
+                setDialogTitleResId(R.string.street_microdistrict_new_subheader)
+                loadMicrodistrictsForStreet(action.streetId)
             }
 
-            is StreetLocalityDistrictUiAction.Save -> saveStreetLocalityDistricts()
+            is StreetMicrodistrictUiAction.Save -> saveStreetMicrodistricts()
         }
         return job
     }
 
-    private fun loadLocalityDistrictsForStreet(streetId: UUID): Job {
-        Timber.tag(TAG).d("loadLocalityDistrictsForStreet(UUID) called: %s", streetId)
+    private fun loadMicrodistrictsForStreet(streetId: UUID): Job {
+        Timber.tag(TAG).d("loadMicrodistrictsForStreet(UUID) called: %s", streetId)
         val job = viewModelScope.launch(errorHandler) {
-            streetUseCases.getLocalityDistrictsForStreetUseCase.execute(
-                GetLocalityDistrictsForStreetUseCase.Request(streetId)
+            streetUseCases.getMicrodistrictsForStreetUseCase.execute(
+                GetMicrodistrictsForStreetUseCase.Request(streetId)
             ).map {
                 converter.convert(it)
             }.collect {
@@ -94,36 +94,35 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveStreetLocalityDistricts(): Job {
-        val localityDistrictIds = _checkedListItems.value.map { it.id }
+    private fun saveStreetMicrodistricts(): Job {
+        val districtIds: Map<UUID, List<UUID>> =
+            _checkedListItems.value.groupBy({ it.localityDistrictId!! }) { it.id }
         Timber.tag(TAG).d(
-            "saveStreetLocalityDistricts() called: streetId = %s; localityDistrictIds.size = %d",
+            "saveStreetMicrodistricts() called: streetId = %s; districtIds.size = %d",
             street.value.item?.itemId,
-            localityDistrictIds.size
+            districtIds.size
         )
         val job = viewModelScope.launch(errorHandler) {
-            streetUseCases.saveStreetLocalityDistrictsUseCase.execute(
-                SaveStreetLocalityDistrictsUseCase.Request(
-                    street.value.item?.itemId!!, localityDistrictIds
-                )
+            streetUseCases.saveStreetMicrodistrictsUseCase.execute(
+                SaveStreetMicrodistrictsUseCase.Request(street.value.item?.itemId!!, districtIds)
             ).collect {
-                Timber.tag(TAG).d("saveStreetLocalityDistricts() collect: %s", it)
+                Timber.tag(TAG).d("saveStreetMicrodistricts() collect: %s", it)
             }
         }
         return job
     }
 
-    override fun stateInputFields() = enumValues<StreetLocalityDistrictFields>().map { it.name }
+    override fun stateInputFields() = enumValues<StreetMicrodistrictFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: StreetLocalityDistrictUiModel): Job? {
+    override fun initFieldStatesByUiModel(uiModel: StreetMicrodistrictUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(StreetLocalityDistrictUiModel) called: uiModel = %s",
+                "initFieldStatesByUiModel(StreetMicrodistrictUiModel) called: uiModel = %s",
                 uiModel
             )
         initStateValue(
-            StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET, street,
+            StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET, street,
             uiModel.street.toStreetsListItem()
         )
         return null
@@ -134,8 +133,8 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is StreetLocalityDistrictInputEvent.Street -> setStateValue(
-                        StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET, street,
+                    is StreetMicrodistrictInputEvent.Street -> setStateValue(
+                        StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET, street,
                         event.input, true
                     )
                 }
@@ -143,8 +142,8 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is StreetLocalityDistrictInputEvent.Street -> setStateValue(
-                        StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET, street, null
+                    is StreetMicrodistrictInputEvent.Street -> setStateValue(
+                        StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET, street, null
                     )
                 }
             }
@@ -158,7 +157,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : StreetLocalityDistrictViewModel {
+            object : StreetMicrodistrictViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
@@ -174,7 +173,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val checkedListItems =
-                    MutableStateFlow(LocalityDistrictsListViewModelImpl.previewList(ctx))
+                    MutableStateFlow(MicrodistrictsListViewModelImpl.previewList(ctx))
 
                 override fun observeCheckedListItems() {}
 
@@ -182,10 +181,10 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun submitAction(action: StreetLocalityDistrictUiAction): Job? = null
+                override fun submitAction(action: StreetMicrodistrictUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
-                    focusedField: StreetLocalityDistrictFields, isFocused: Boolean
+                    focusedField: StreetMicrodistrictFields, isFocused: Boolean
                 ) {
                 }
 
@@ -200,9 +199,9 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context) = StreetLocalityDistrictUiModel(
+        fun previewUiModel(ctx: Context) = StreetMicrodistrictUiModel(
             street = StreetViewModelImpl.previewUiModel(ctx),
-            localityDistricts = LocalityDistrictsListViewModelImpl.previewList(ctx)
+            microdistricts = MicrodistrictsListViewModelImpl.previewList(ctx)
         )
     }
 }

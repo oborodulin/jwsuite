@@ -26,19 +26,19 @@ import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnCheckedChange
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
 
 /**
  * Created by tfakioglu on 12.December.2021
  */
-private const val TAG = "Geo.ForStreetLocalityDistrictsListItemComponent"
+private const val TAG = "Geo.ForStreetMicrodistrictsListItemComponent"
 private val _EMPTY: OnListItemEvent = {}
 
 @Composable
-fun ForStreetLocalityDistrictsListItemComponent(
+fun ForStreetMicrodistrictsListItemComponent(
     @DrawableRes iconResId: Int? = null,
-    item: LocalityDistrictsListItem,
+    item: MicrodistrictsListItem,
     selected: Boolean = false,
     itemActions: List<ComponentUiAction> = emptyList(),
     onChecked: OnCheckedChange = {},
@@ -90,12 +90,12 @@ fun ForStreetLocalityDistrictsListItemComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewForStreetLocalityDistrictsListItemComponent() {
+fun PreviewForStreetMicrodistrictsListItemComponent() {
     JWSuiteTheme {
         Surface {
-            ForStreetLocalityDistrictsListItemComponent(
+            ForStreetMicrodistrictsListItemComponent(
                 //iconResId = R.drawable.outline_photo_24,
-                item = LocalityDistrictsListViewModelImpl.previewList(LocalContext.current).first(),
+                item = MicrodistrictsListViewModelImpl.previewList(LocalContext.current).first(),
                 itemActions = listOf(
                     ComponentUiAction.EditListItem { println() },
                     ComponentUiAction.DeleteListItem { println() }),

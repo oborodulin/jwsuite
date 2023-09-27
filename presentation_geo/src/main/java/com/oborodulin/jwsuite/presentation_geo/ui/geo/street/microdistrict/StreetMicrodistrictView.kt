@@ -37,69 +37,69 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictUiAction
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictView
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Territoring.StreetLocalityDistrictView"
+private const val TAG = "Territoring.StreetMicrodistrictView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun StreetLocalityDistrictView(
-    streetLocalityDistrictUiModel: StreetLocalityDistrictUiModel? = null,
-    streetLocalityDistrictViewModel: StreetLocalityDistrictViewModel,
-    localityDistrictViewModel: LocalityDistrictViewModelImpl = hiltViewModel()
+fun StreetMicrodistrictView(
+    streetMicrodistrictUiModel: StreetMicrodistrictUiModel? = null,
+    streetMicrodistrictViewModel: StreetMicrodistrictViewModel,
+    microdistrictViewModel: MicrodistrictViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("StreetLocalityDistrictView(...) called")
+    Timber.tag(TAG).d("StreetMicrodistrictView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(streetLocalityDistrictViewModel.events, lifecycleOwner) {
-        streetLocalityDistrictViewModel.events.flowWithLifecycle(
+    val events = remember(streetMicrodistrictViewModel.events, lifecycleOwner) {
+        streetMicrodistrictViewModel.events.flowWithLifecycle(
             lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
 
-    streetLocalityDistrictUiModel?.let {
-        streetLocalityDistrictViewModel.onTextFieldEntered(
-            StreetLocalityDistrictInputEvent.Street(it.street.toStreetsListItem())
+    streetMicrodistrictUiModel?.let {
+        streetMicrodistrictViewModel.onTextFieldEntered(
+            StreetMicrodistrictInputEvent.Street(it.street.toStreetsListItem())
         )
     }
-    Timber.tag(TAG).d("Street Locality District: CollectAsStateWithLifecycle for all fields")
-    val street by streetLocalityDistrictViewModel.street.collectAsStateWithLifecycle()
-    val searchText by streetLocalityDistrictViewModel.searchText.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("Street Microdistrict: CollectAsStateWithLifecycle for all fields")
+    val street by streetMicrodistrictViewModel.street.collectAsStateWithLifecycle()
+    val searchText by streetMicrodistrictViewModel.searchText.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Street Locality District: Init Focus Requesters for all fields")
+    Timber.tag(TAG).d("Street Microdistrict: Init Focus Requesters for all fields")
     val focusRequesters =
-        EnumMap<StreetLocalityDistrictFields, InputFocusRequester>(StreetLocalityDistrictFields::class.java)
-    enumValues<StreetLocalityDistrictFields>().forEach {
+        EnumMap<StreetMicrodistrictFields, InputFocusRequester>(StreetMicrodistrictFields::class.java)
+    enumValues<StreetMicrodistrictFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("StreetLocalityDistrictView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("StreetMicrodistrictView(...): LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
-    val isShowNewSingleDialog by localityDistrictViewModel.showDialog.collectAsStateWithLifecycle()
+    val isShowNewSingleDialog by microdistrictViewModel.showDialog.collectAsStateWithLifecycle()
     FullScreenDialog(
         isShow = isShowNewSingleDialog,
-        viewModel = localityDistrictViewModel,
-        loadUiAction = LocalityDistrictUiAction.Load(),
-        confirmUiAction = LocalityDistrictUiAction.Save,
-        dialogView = { LocalityDistrictView() },
+        viewModel = microdistrictViewModel,
+        loadUiAction = MicrodistrictUiAction.Load(),
+        confirmUiAction = MicrodistrictUiAction.Save,
+        dialogView = { MicrodistrictView() },
         onValueChange = {
-            streetLocalityDistrictUiModel?.let {
-                streetLocalityDistrictViewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.street.id!!))
+            streetMicrodistrictUiModel?.let {
+                streetMicrodistrictViewModel.submitAction(StreetMicrodistrictUiAction.Load(it.street.id!!))
             }
         },
         //onShowListDialog = onShowListDialog
@@ -121,10 +121,10 @@ fun StreetLocalityDistrictView(
     ) {
         StreetComboBox(
             modifier = Modifier
-                .focusRequester(focusRequesters[StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET]!!.focusRequester)
+                .focusRequester(focusRequesters[StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    streetLocalityDistrictViewModel.onTextFieldFocusChanged(
-                        focusedField = StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET,
+                    streetMicrodistrictViewModel.onTextFieldFocusChanged(
+                        focusedField = StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -135,35 +135,35 @@ fun StreetLocalityDistrictView(
             SearchComponent(
                 searchText,
                 modifier = Modifier.weight(2.8f),
-                onValueChange = streetLocalityDistrictViewModel::onSearchTextChange
+                onValueChange = streetMicrodistrictViewModel::onSearchTextChange
             )
-            AddIconButtonComponent { localityDistrictViewModel.onOpenDialogClicked() }
+            AddIconButtonComponent { microdistrictViewModel.onOpenDialogClicked() }
         }
         Spacer(modifier = Modifier.width(width = 8.dp))
-        streetLocalityDistrictUiModel?.let {
-            ForStreetLocalityDistrictsList(
+        streetMicrodistrictUiModel?.let {
+            ForStreetMicrodistrictsList(
                 searchedText = searchText.text,
-                localityDistricts = it.localityDistricts,
-                onChecked = { streetLocalityDistrictViewModel.observeCheckedListItems() }
+                microdistricts = it.microdistricts,
+                onChecked = { streetMicrodistrictViewModel.observeCheckedListItems() }
             )
         }
     }
 }
 
 @Composable
-fun ForStreetLocalityDistrictsList(
+fun ForStreetMicrodistrictsList(
     searchedText: String = "",
-    localityDistricts: List<LocalityDistrictsListItem>,
+    microdistricts: List<MicrodistrictsListItem>,
     onChecked: (Boolean) -> Unit,
-    onClick: (LocalityDistrictsListItem) -> Unit = {}
+    onClick: (MicrodistrictsListItem) -> Unit = {}
 ) {
     Timber.tag(TAG)
-        .d("ForStreetLocalityDistrictsList(...) called: size = %d", localityDistricts.size)
-    if (localityDistricts.isNotEmpty()) {
+        .d("ForStreetMicrodistrictsList(...) called: size = %d", microdistricts.size)
+    if (microdistricts.isNotEmpty()) {
         val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = localityDistricts.filter { it.selected }
-                .getOrNull(0)?.let { localityDistricts.indexOf(it) } ?: 0)
-        var filteredItems: List<LocalityDistrictsListItem>
+            rememberLazyListState(initialFirstVisibleItemIndex = microdistricts.filter { it.selected }
+                .getOrNull(0)?.let { microdistricts.indexOf(it) } ?: 0)
+        var filteredItems: List<MicrodistrictsListItem>
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -171,32 +171,32 @@ fun ForStreetLocalityDistrictsList(
                 .focusable(enabled = true)
         ) {
             filteredItems = if (searchedText.isEmpty()) {
-                localityDistricts
+                microdistricts
             } else {
-                localityDistricts.filter { it.doesMatchSearchQuery(searchedText) }
+                microdistricts.filter { it.doesMatchSearchQuery(searchedText) }
             }
-            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, localityDistrict ->
-                ForStreetLocalityDistrictsListItemComponent(
-                    item = localityDistrict,
-                    //selected = localityDistrict.selected,
+            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, microdistrict ->
+                ForStreetMicrodistrictsListItemComponent(
+                    item = microdistrict,
+                    //selected = microdistrict.selected,
                     onChecked = onChecked,
-                    onClick = { onClick(localityDistrict) }
+                    onClick = { onClick(microdistrict) }
                 )
             }
         }
     } else {
-        EmptyListTextComponent(R.string.for_streets_locality_districts_list_empty_text)
+        EmptyListTextComponent(R.string.for_streets_microdistricts_list_empty_text)
     }
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewStreetLocalityDistrictView() {
+fun PreviewStreetMicrodistrictView() {
     JWSuiteTheme {
         Surface {
-            /*StreetLocalityDistrictView(
-                localityViewModel = StreetLocalityDistrictViewModelImpl.previewModel(LocalContext.current),
+            /*StreetMicrodistrictView(
+                localityViewModel = StreetMicrodistrictViewModelImpl.previewModel(LocalContext.current),
                 regionsListViewModel = RegionsListViewModelImpl.previewModel(LocalContext.current),
                 regionViewModel = RegionViewModelImpl.previewModel(LocalContext.current),
                 regionDistrictsListViewModel = RegionDistrictsListViewModelImpl.previewModel(

@@ -34,7 +34,7 @@ interface GeoStreetsRepository {
     fun deleteLocalityDistrict(streetId: UUID, localityDistrictId: UUID): Flow<UUID>
 
     // Microdistricts:
-    fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, UUID> = mapOf()):
+    fun insertStreetMicrodistricts(streetId: UUID, districtIds: Map<UUID, List<UUID>> = mapOf()):
             Flow<List<UUID>>
 
     fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID): Flow<UUID>

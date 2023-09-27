@@ -27,42 +27,42 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
-private const val TAG = "Territoring.StreetLocalityDistrictScreen"
+private const val TAG = "Territoring.StreetMicrodistrictScreen"
 
 @Composable
-fun StreetLocalityDistrictScreen(
+fun StreetMicrodistrictScreen(
     appState: AppState,
-    streetLocalityDistrictViewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
-    streetLocalityDistrictInput: NavigationInput.StreetLocalityDistrictInput? = null
+    viewModel: StreetMicrodistrictViewModelImpl = hiltViewModel(),
+    streetMicrodistrictInput: NavigationInput.StreetMicrodistrictInput? = null
 ) {
     Timber.tag(TAG)
         .d(
-            "StreetLocalityDistrictScreen(...) called: streetLocalityDistrictInput = %s",
-            streetLocalityDistrictInput
+            "StreetMicrodistrictScreen(...) called: streetMicrodistrictInput = %s",
+            streetMicrodistrictInput
         )
     val saveButtonOnClick = {
         // checks all errors
-        streetLocalityDistrictViewModel.onContinueClick {
-            Timber.tag(TAG).d("StreetLocalityDistrictScreen(...): Save Button onClick...")
-            // if success, save then backToBottomBarScreen
-            streetLocalityDistrictViewModel.handleActionJob(
-                { streetLocalityDistrictViewModel.submitAction(StreetLocalityDistrictUiAction.Save) },
+        viewModel.onContinueClick {
+            Timber.tag(TAG).d("StreetMicrodistrictScreen(...): Save Button onClick...")
+            // if success, save then commonNavigateUp
+            viewModel.handleActionJob(
+                { viewModel.submitAction(StreetMicrodistrictUiAction.Save) },
                 { appState.commonNavigateUp() })
         }
     }
-    LaunchedEffect(streetLocalityDistrictInput?.streetId) {
+    LaunchedEffect(streetMicrodistrictInput?.streetId) {
         Timber.tag(TAG)
-            .d("StreetLocalityDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
-        streetLocalityDistrictInput?.let {
-            streetLocalityDistrictViewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.streetId))
+            .d("StreetMicrodistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
+        streetMicrodistrictInput?.let {
+            viewModel.submitAction(StreetMicrodistrictUiAction.Load(it.streetId))
         }
     }
-    streetLocalityDistrictViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        streetLocalityDistrictViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
-        val areInputsValid by streetLocalityDistrictViewModel.areInputsValid.collectAsStateWithLifecycle()
+        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
@@ -84,9 +84,9 @@ fun StreetLocalityDistrictScreen(
                             .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        StreetLocalityDistrictView(
-                            streetLocalityDistrictUiModel = it,
-                            streetLocalityDistrictViewModel = streetLocalityDistrictViewModel
+                        StreetMicrodistrictView(
+                            streetMicrodistrictUiModel = it,
+                            streetMicrodistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
