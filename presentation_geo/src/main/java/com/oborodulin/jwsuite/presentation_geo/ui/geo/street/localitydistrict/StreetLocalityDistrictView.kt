@@ -42,7 +42,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.Lo
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictsUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import timber.log.Timber
 import java.util.EnumMap
@@ -52,7 +52,7 @@ private const val TAG = "Territoring.StreetLocalityDistrictView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun StreetLocalityDistrictView(
-    streetLocalityDistrictUiModel: StreetLocalityDistrictUiModel? = null,
+    streetLocalityDistrictsUiModel: StreetLocalityDistrictsUiModel? = null,
     streetLocalityDistrictViewModel: StreetLocalityDistrictViewModel,
     localityDistrictViewModel: LocalityDistrictViewModelImpl = hiltViewModel()
 ) {
@@ -68,7 +68,7 @@ fun StreetLocalityDistrictView(
         )
     }
 
-    streetLocalityDistrictUiModel?.let {
+    streetLocalityDistrictsUiModel?.let {
         streetLocalityDistrictViewModel.onTextFieldEntered(
             StreetLocalityDistrictInputEvent.Street(it.street.toStreetsListItem())
         )
@@ -98,7 +98,7 @@ fun StreetLocalityDistrictView(
         confirmUiAction = LocalityDistrictUiAction.Save,
         dialogView = { LocalityDistrictView() },
         onValueChange = {
-            streetLocalityDistrictUiModel?.let {
+            streetLocalityDistrictsUiModel?.let {
                 streetLocalityDistrictViewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.street.id!!))
             }
         },
@@ -140,7 +140,7 @@ fun StreetLocalityDistrictView(
             AddIconButtonComponent { localityDistrictViewModel.onOpenDialogClicked() }
         }
         Spacer(modifier = Modifier.width(width = 8.dp))
-        streetLocalityDistrictUiModel?.let {
+        streetLocalityDistrictsUiModel?.let {
             ForStreetLocalityDistrictsList(
                 searchedText = searchText.text,
                 localityDistricts = it.localityDistricts,

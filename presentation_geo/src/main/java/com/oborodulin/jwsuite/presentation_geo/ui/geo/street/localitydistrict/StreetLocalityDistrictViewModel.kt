@@ -6,13 +6,13 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictsUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface StreetLocalityDistrictViewModel :
-    DialogViewModeled<StreetLocalityDistrictUiModel, StreetLocalityDistrictUiAction, UiSingleEvent> {
+    DialogViewModeled<StreetLocalityDistrictsUiModel, StreetLocalityDistrictUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
 
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>

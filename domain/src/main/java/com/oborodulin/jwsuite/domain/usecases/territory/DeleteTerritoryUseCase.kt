@@ -7,10 +7,8 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class DeleteTerritoryUseCase(
-    configuration: Configuration,
-    private val territoriesRepository: TerritoriesRepository
+    configuration: Configuration, private val territoriesRepository: TerritoriesRepository
 ) : UseCase<DeleteTerritoryUseCase.Request, DeleteTerritoryUseCase.Response>(configuration) {
-
     override fun process(request: Request): Flow<Response> {
         return territoriesRepository.deleteById(request.territoryId)
             .map {

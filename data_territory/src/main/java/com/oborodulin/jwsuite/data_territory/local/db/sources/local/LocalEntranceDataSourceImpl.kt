@@ -24,6 +24,11 @@ class LocalEntranceDataSourceImpl @Inject constructor(
     override fun getTerritoryEntrances(territoryId: UUID) =
         entranceDao.findByTerritoryId(territoryId)
 
+    override fun getEntrancesForTerritory(territoryId: UUID) =
+        entranceDao.findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+            territoryId
+        )
+
     override fun getEntrance(entranceId: UUID) = entranceDao.findDistinctById(entranceId)
 
     override suspend fun insertEntrance(entrance: EntranceEntity) = withContext(dispatcher) {
@@ -51,4 +56,14 @@ class LocalEntranceDataSourceImpl @Inject constructor(
         entranceDao.deleteAll()
     }
 
+    override fun getNextEntranceNum(houseId: UUID) = entranceDao.getNextHouseNum(houseId)
+
+    override suspend fun clearTerritoryById(entranceId: UUID) = withContext(dispatcher) {
+        entranceDao.clearTerritoryById(entranceId)
+    }
+
+    override suspend fun setTerritoryById(entranceId: UUID, territoryId: UUID) =
+        withContext(dispatcher) {
+            entranceDao.updateTerritoryIdById(entranceId, territoryId)
+        }
 }

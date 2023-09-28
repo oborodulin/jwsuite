@@ -9,6 +9,7 @@ interface LocalEntranceDataSource {
     fun getAllEntrances(): Flow<List<EntranceView>>
     fun getHouseEntrances(houseId: UUID): Flow<List<EntranceView>>
     fun getTerritoryEntrances(territoryId: UUID): Flow<List<EntranceView>>
+    fun getEntrancesForTerritory(territoryId: UUID): Flow<List<EntranceView>>
     fun getEntrance(entranceId: UUID): Flow<EntranceView>
     suspend fun insertEntrance(entrance: EntranceEntity)
     suspend fun updateEntrance(entrance: EntranceEntity)
@@ -16,4 +17,8 @@ interface LocalEntranceDataSource {
     suspend fun deleteEntranceById(entranceId: UUID)
     suspend fun deleteEntrances(entrances: List<EntranceEntity>)
     suspend fun deleteAllEntrances()
+
+    fun getNextEntranceNum(houseId: UUID): Int
+    suspend fun clearTerritoryById(entranceId: UUID)
+    suspend fun setTerritoryById(entranceId: UUID, territoryId: UUID)
 }

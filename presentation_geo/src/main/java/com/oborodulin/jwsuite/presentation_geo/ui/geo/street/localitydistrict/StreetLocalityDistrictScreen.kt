@@ -85,7 +85,7 @@ fun StreetLocalityDistrictScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         StreetLocalityDistrictView(
-                            streetLocalityDistrictUiModel = it,
+                            streetLocalityDistrictsUiModel = it,
                             streetLocalityDistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))

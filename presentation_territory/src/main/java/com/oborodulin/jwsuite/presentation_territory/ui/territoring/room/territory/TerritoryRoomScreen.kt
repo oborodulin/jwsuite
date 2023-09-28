@@ -25,7 +25,6 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryRoomInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.list.RoomsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
 
@@ -36,28 +35,19 @@ fun TerritoryRoomScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
-    roomsListViewModel: RoomsListViewModelImpl = hiltViewModel(),
     territoryRoomViewModel: TerritoryRoomViewModelImpl = hiltViewModel(),
     territoryRoomInput: TerritoryRoomInput? = null
 ) {
     Timber.tag(TAG)
         .d("TerritoryRoomScreen(...) called: territoryRoomInput = %s", territoryRoomInput)
 
-    val house by territoryRoomViewModel.room.collectAsStateWithLifecycle()
-    val checkedRooms by roomsListViewModel.checkedListItems.collectAsStateWithLifecycle()
-    val areListItemsChecked by roomsListViewModel.areListItemsChecked.collectAsStateWithLifecycle()
-
     val saveButtonOnClick = {
         // checks all errors
-        territoryRoomViewModel.onContinueClick(areListItemsChecked) {
+        territoryRoomViewModel.onContinueClick {
             Timber.tag(TAG).d("TerritoryRoomScreen(...): Save Button onClick...")
             // if success, save then backToBottomBarScreen
             territoryRoomViewModel.handleActionJob(
-                {
-                    val rooms = checkedRooms.map { it.id }.toMutableSet()
-                    house.item?.itemId?.let { rooms.add(it) }
-                    territoryRoomViewModel.submitAction(TerritoryRoomUiAction.Save(rooms.toList()))
-                },
+                { territoryRoomViewModel.submitAction(TerritoryRoomUiAction.Save) },
                 { appState.commonNavigateUp() })
         }
     }
@@ -82,9 +72,7 @@ fun TerritoryRoomScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(
-                        enabled = areInputsValid || areListItemsChecked, onClick = saveButtonOnClick
-                    ) {
+                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -97,17 +85,13 @@ fun TerritoryRoomScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TerritoryRoomView(
-                            appState = appState,
-                            territoryUi = it,
+                            territoryRoomsUiModel = it,
                             sharedViewModel = appState.sharedViewModel.value,
                             territoryViewModel = territoryViewModel,
-                            roomsListViewModel = roomsListViewModel
+                            territoryRoomViewModel = territoryRoomViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(
-                            enabled = areInputsValid || areListItemsChecked,
-                            onClick = saveButtonOnClick
-                        )
+                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }
                 }
             }

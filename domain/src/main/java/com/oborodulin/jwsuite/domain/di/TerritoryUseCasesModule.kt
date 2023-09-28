@@ -2,11 +2,29 @@ package com.oborodulin.jwsuite.domain.di
 
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
+import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
+import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.domain.usecases.entrance.DeleteEntranceUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.DeleteTerritoryEntranceUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntranceUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntrancesForTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntrancesUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.GetNextEntranceNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.SaveEntranceUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.SaveTerritoryEntrancesUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.DeleteFloorUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.DeleteTerritoryFloorUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorsForTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorsUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.GetNextFloorNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.SaveFloorUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.SaveTerritoryFloorsUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
@@ -191,8 +209,11 @@ object TerritoryUseCasesModule {
     @Singleton
     @Provides
     fun provideGetHousesForTerritoryUseCase(
-        configuration: UseCase.Configuration, housesRepository: HousesRepository
-    ): GetHousesForTerritoryUseCase = GetHousesForTerritoryUseCase(configuration, housesRepository)
+        configuration: UseCase.Configuration,
+        territoriesRepository: TerritoriesRepository,
+        housesRepository: HousesRepository
+    ): GetHousesForTerritoryUseCase =
+        GetHousesForTerritoryUseCase(configuration, territoriesRepository, housesRepository)
 
     @Singleton
     @Provides
@@ -218,6 +239,112 @@ object TerritoryUseCasesModule {
         configuration: UseCase.Configuration, housesRepository: HousesRepository
     ): SaveTerritoryHousesUseCase = SaveTerritoryHousesUseCase(configuration, housesRepository)
 
+    // Entrance:
+    @Singleton
+    @Provides
+    fun provideGetEntranceUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): GetEntranceUseCase = GetEntranceUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetEntrancesUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): GetEntrancesUseCase = GetEntrancesUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextEntranceNumUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): GetNextEntranceNumUseCase = GetNextEntranceNumUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetEntrancesForTerritoryUseCase(
+        configuration: UseCase.Configuration,
+        territoriesRepository: TerritoriesRepository,
+        entrancesRepository: EntrancesRepository
+    ): GetEntrancesForTerritoryUseCase =
+        GetEntrancesForTerritoryUseCase(configuration, territoriesRepository, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteEntranceUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): DeleteEntranceUseCase = DeleteEntranceUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteTerritoryEntranceUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): DeleteTerritoryEntranceUseCase =
+        DeleteTerritoryEntranceUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveEntranceUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): SaveEntranceUseCase = SaveEntranceUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveTerritoryEntrancesUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): SaveTerritoryEntrancesUseCase =
+        SaveTerritoryEntrancesUseCase(configuration, entrancesRepository)
+
+    // Floor:
+    @Singleton
+    @Provides
+    fun provideGetFloorUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): GetFloorUseCase = GetFloorUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetFloorsUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): GetFloorsUseCase = GetFloorsUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextFloorNumUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): GetNextFloorNumUseCase = GetNextFloorNumUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetFloorsForTerritoryUseCase(
+        configuration: UseCase.Configuration,
+        territoriesRepository: TerritoriesRepository,
+        floorsRepository: FloorsRepository
+    ): GetFloorsForTerritoryUseCase =
+        GetFloorsForTerritoryUseCase(configuration, territoriesRepository, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteFloorUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): DeleteFloorUseCase = DeleteFloorUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteTerritoryFloorUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): DeleteTerritoryFloorUseCase = DeleteTerritoryFloorUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveFloorUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): SaveFloorUseCase = SaveFloorUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveTerritoryFloorsUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): SaveTerritoryFloorsUseCase = SaveTerritoryFloorsUseCase(configuration, floorsRepository)
+
     // Room:
     @Singleton
     @Provides
@@ -240,8 +367,11 @@ object TerritoryUseCasesModule {
     @Singleton
     @Provides
     fun provideGetRoomsForTerritoryUseCase(
-        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
-    ): GetRoomsForTerritoryUseCase = GetRoomsForTerritoryUseCase(configuration, roomsRepository)
+        configuration: UseCase.Configuration,
+        territoriesRepository: TerritoriesRepository,
+        roomsRepository: RoomsRepository
+    ): GetRoomsForTerritoryUseCase =
+        GetRoomsForTerritoryUseCase(configuration, territoriesRepository, roomsRepository)
 
     @Singleton
     @Provides

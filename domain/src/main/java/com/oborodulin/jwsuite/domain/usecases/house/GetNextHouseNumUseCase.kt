@@ -12,7 +12,7 @@ class GetNextHouseNumUseCase(
 ) : UseCase<GetNextHouseNumUseCase.Request, GetNextHouseNumUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> =
-        housesRepository.getNextHouseNum(request.streetId).map { Response(it) }
+        housesRepository.getNextNum(request.streetId).map { Response(it) }
 
     data class Request(val streetId: UUID) : UseCase.Request
     data class Response(val houseNum: Int) : UseCase.Response

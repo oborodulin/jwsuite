@@ -6,19 +6,21 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
+import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryRoomsUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface TerritoryRoomViewModel :
-    DialogViewModeled<TerritoryUi, TerritoryRoomUiAction, UiSingleEvent> {
+    DialogViewModeled<TerritoryRoomsUiModel, TerritoryRoomUiAction, UiSingleEvent> {
     val events: Flow<ScreenEvent>
 
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>
-    val room: StateFlow<InputListItemWrapper<ListItemModel>>
+    val checkedListItems: StateFlow<List<RoomsListItem>>
 
     val areInputsValid: StateFlow<Boolean>
 
+    fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoryRoomFields, isFocused: Boolean)
     fun moveFocusImeAction()

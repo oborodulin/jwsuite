@@ -58,7 +58,7 @@ class RoomsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localRoomDataSource.deleteAllRooms()
 
-    override fun getNextRoomNum(houseId: UUID) = flow {
+    override fun getNextNum(houseId: UUID) = flow {
         emit(localRoomDataSource.getNextRoomNum(houseId))
     }
 

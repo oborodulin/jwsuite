@@ -24,6 +24,11 @@ class LocalFloorDataSourceImpl @Inject constructor(
 
     override fun getTerritoryFloors(territoryId: UUID) = floorDao.findByTerritoryId(territoryId)
 
+    override fun getFloorsForTerritory(territoryId: UUID) =
+        floorDao.findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
+            territoryId
+        )
+
     override fun getFloor(floorId: UUID) = floorDao.findDistinctById(floorId)
 
     override suspend fun insertFloor(floor: FloorEntity) = withContext(dispatcher) {
@@ -51,4 +56,14 @@ class LocalFloorDataSourceImpl @Inject constructor(
         floorDao.deleteAll()
     }
 
+    override fun getNextEntranceNum(houseId: UUID) = floorDao.getNextHouseNum(houseId)
+
+    override suspend fun clearTerritoryById(floorId: UUID) = withContext(dispatcher) {
+        floorDao.clearTerritoryById(floorId)
+    }
+
+    override suspend fun setTerritoryById(floorId: UUID, territoryId: UUID) =
+        withContext(dispatcher) {
+            floorDao.updateTerritoryIdById(floorId, territoryId)
+        }
 }

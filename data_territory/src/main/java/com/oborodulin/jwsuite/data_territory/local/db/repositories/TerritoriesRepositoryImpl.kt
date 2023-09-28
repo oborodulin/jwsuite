@@ -62,7 +62,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
         }.map(mappers.territoryViewListToTerritoriesListMapper::map)
     }
 
-    override fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID) = flow {
+    override fun getNextNum(congregationId: UUID, territoryCategoryId: UUID) = flow {
         emit(localTerritoryDataSource.getNextTerritoryNum(congregationId, territoryCategoryId))
     }
 

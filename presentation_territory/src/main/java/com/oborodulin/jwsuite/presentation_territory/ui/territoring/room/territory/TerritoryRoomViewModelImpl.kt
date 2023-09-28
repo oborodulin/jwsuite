@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -12,14 +11,14 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
 import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomsUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryRoomsUiModel
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryRoomsListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.list.RoomsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -35,47 +34,53 @@ private const val TAG = "Territoring.TerritoryRoomViewModelImpl"
 @HiltViewModel
 class TerritoryRoomViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val territoryUseCases: TerritoryUseCases,
-    private val houseUseCases: RoomUseCases,
-    private val converter: TerritoryConverter,
-    private val houseMapper: RoomToRoomsListItemMapper
+    private val useCases: RoomUseCases,
+    private val converter: TerritoryRoomsListConverter
 ) : TerritoryRoomViewModel,
-    DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryRoomUiAction, UiSingleEvent, TerritoryRoomFields, InputWrapper>(
-        state, initFocusedTextField = TerritoryRoomFields.TERRITORY_ROOM_ROOM
+    DialogSingleViewModel<TerritoryRoomsUiModel, UiState<TerritoryRoomsUiModel>, TerritoryRoomUiAction, UiSingleEvent, TerritoryRoomFields, InputWrapper>(
+        state, initFocusedTextField = TerritoryRoomFields.TERRITORY_ROOM_TERRITORY
     ) {
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
             TerritoryRoomFields.TERRITORY_ROOM_TERRITORY.name, InputListItemWrapper()
         )
     }
-    override val room: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(
-            TerritoryRoomFields.TERRITORY_ROOM_ROOM.name, InputListItemWrapper()
-        )
-    }
+    private val _checkedListItems: MutableStateFlow<List<RoomsListItem>> =
+        MutableStateFlow(emptyList())
+    override val checkedListItems = _checkedListItems.asStateFlow()
 
-    override val areInputsValid = flow { emit(room.value.errorId == null) }
+    override val areInputsValid = flow { emit(checkedListItems.value.isNotEmpty()) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<TerritoryUi> = UiState.Loading
+    override fun observeCheckedListItems() {
+        Timber.tag(TAG).d("observeCheckedListItems() called")
+        uiState()?.let { uiState ->
+            _checkedListItems.value = uiState.rooms.filter { it.checked }
+            Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
+        }
+    }
+
+    override fun initState(): UiState<TerritoryRoomsUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryRoomUiAction): Job {
         Timber.tag(TAG).d("handleAction(TerritoryRoomUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryRoomUiAction.Load -> {
                 setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_room_new_subheader)
-                loadTerritory(action.territoryId)
+                loadRoomsForTerritory(action.territoryId)
             }
 
-            is TerritoryRoomUiAction.Save -> saveTerritoryRooms(action.roomIds)
+            is TerritoryRoomUiAction.Save -> saveTerritoryRooms()
         }
         return job
     }
 
-    private fun loadTerritory(territoryId: UUID): Job {
-        Timber.tag(TAG).d("loadTerritory(UUID) called: %s", territoryId)
+    private fun loadRoomsForTerritory(territoryId: UUID): Job {
+        Timber.tag(TAG).d("loadRoomsForTerritory(UUID) called: territoryId = %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
-            territoryUseCases.getTerritoryUseCase.execute(GetTerritoryUseCase.Request(territoryId))
+            useCases.getRoomsForTerritoryUseCase.execute(
+                GetRoomsForTerritoryUseCase.Request(territoryId)
+            )
                 .map {
                     converter.convert(it)
                 }
@@ -87,22 +92,16 @@ class TerritoryRoomViewModelImpl @Inject constructor(
     }
 
     private fun saveTerritoryRooms(roomIds: List<UUID> = emptyList()): Job {
+        val roomIds = _checkedListItems.value.map { it.id }
         Timber.tag(TAG).d(
-            "saveTerritoryRooms() called: houseId = %s; territoryId = %s; roomIds.size = %d",
-            room.value.item?.itemId,
-            territory.value.item?.itemId,
-            roomIds.size
+            "saveTerritoryRooms() called: territoryId = %s; roomIds.size = %d",
+            territory.value.item?.itemId, roomIds.size
         )
         val job = viewModelScope.launch(errorHandler) {
-            houseUseCases.saveTerritoryRoomsUseCase.execute(
+            useCases.saveTerritoryRoomsUseCase.execute(
                 SaveTerritoryRoomsUseCase.Request(roomIds, territory.value.item?.itemId!!)
             ).collect {
                 Timber.tag(TAG).d("saveTerritoryRoom() collect: %s", it)
-                if (it is Result.Success) {
-                    room.value.item?.itemId?.let { roomId ->
-                        setSavedListItem(ListItemModel(roomId, room.value.item?.headline.orEmpty()))
-                    }
-                }
             }
         }
         return job
@@ -110,18 +109,17 @@ class TerritoryRoomViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritoryRoomFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: TerritoryUi): Job? {
+    override fun initFieldStatesByUiModel(uiModel: TerritoryRoomsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(TerritoryStreetModel) called: territoryStreetUi = %s",
+                "initFieldStatesByUiModel(TerritoryRoomsUiModel) called: uiModel = %s",
                 uiModel
             )
         initStateValue(
             TerritoryRoomFields.TERRITORY_ROOM_TERRITORY, territory,
-            uiModel.toTerritoriesListItem()
+            uiModel.territory.toTerritoriesListItem()
         )
-        initStateValue(TerritoryRoomFields.TERRITORY_ROOM_ROOM, room, ListItemModel())
         return null
     }
 
@@ -134,18 +132,6 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                         TerritoryRoomFields.TERRITORY_ROOM_TERRITORY, territory, event.input,
                         true
                     )
-
-                    is TerritoryRoomInputEvent.Room ->
-                        when (TerritoryRoomInputValidator.Room.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                TerritoryRoomFields.TERRITORY_ROOM_ROOM, room, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryRoomFields.TERRITORY_ROOM_ROOM, room, event.input
-                            )
-                        }
                 }
             }
             .debounce(350)
@@ -154,45 +140,15 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                     is TerritoryRoomInputEvent.Territory -> setStateValue(
                         TerritoryRoomFields.TERRITORY_ROOM_TERRITORY, territory, null
                     )
-
-                    is TerritoryRoomInputEvent.Room ->
-                        setStateValue(
-                            TerritoryRoomFields.TERRITORY_ROOM_ROOM, room,
-                            TerritoryRoomInputValidator.Room.errorIdOrNull(event.input.headline)
-                        )
-
                 }
             }
     }
 
     override fun performValidation() {}
 
-    override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
-        val inputErrors: MutableList<InputError> = mutableListOf()
-        TerritoryRoomInputValidator.Room.errorIdOrNull(room.value.item?.headline)?.let {
-            inputErrors.add(
-                InputError(
-                    fieldName = TerritoryRoomFields.TERRITORY_ROOM_ROOM.name, errorId = it
-                )
-            )
-        }
-        return if (inputErrors.isEmpty()) null else inputErrors
-    }
+    override fun getInputErrorsOrNull() = null
 
-    override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
-        for (error in inputErrors) {
-            state[error.fieldName] = when (TerritoryRoomFields.valueOf(error.fieldName)) {
-                TerritoryRoomFields.TERRITORY_ROOM_ROOM -> room.value.copy(
-                    errorId = error.errorId
-                )
-
-                else -> null
-            }
-        }
-    }
+    override fun displayInputErrors(inputErrors: List<InputError>) {}
 
     companion object {
         fun previewModel(ctx: Context) =
@@ -211,9 +167,12 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
+                override val checkedListItems =
+                    MutableStateFlow(RoomsListViewModelImpl.previewList(ctx))
+
+                override fun observeCheckedListItems() {}
+
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val room =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 override val areInputsValid = MutableStateFlow(true)
 
@@ -226,10 +185,7 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean,
-                    onSuccess: () -> Unit
-                ) {
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
                 }
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
@@ -239,6 +195,9 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context) = TerritoryViewModelImpl.previewUiModel(ctx)
+        fun previewUiModel(ctx: Context) = TerritoryRoomsUiModel(
+            territory = TerritoryViewModelImpl.previewUiModel(ctx),
+            rooms = RoomsListViewModelImpl.previewList(ctx)
+        )
     }
 }

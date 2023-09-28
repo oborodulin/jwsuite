@@ -38,11 +38,13 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.Micro
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict.StreetLocalityDistrictScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict.StreetMicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.houses.HousesScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single.RoomScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territory.TerritoryRoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
@@ -265,6 +267,24 @@ private fun HomeNavigationHost(
                 appState = appState,
                 territoryViewModel = territoryViewModel,
                 territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it)
+            )
+        }
+
+        composable(
+            route = NavRoutes.TerritoryRoom.route, arguments = NavRoutes.TerritoryRoom.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to TerritoryRoomScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.TerritoryRoom.arguments.firstOrNull()
+                )
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoryViewModel =
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+            TerritoryRoomScreen(
+                appState = appState,
+                territoryViewModel = territoryViewModel,
+                territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it)
             )
         }
 

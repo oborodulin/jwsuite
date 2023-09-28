@@ -9,13 +9,11 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
-import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomsListItem
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomsForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -23,12 +21,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -39,26 +33,9 @@ private const val TAG = "Territoring.RoomsListViewModelImpl"
 @HiltViewModel
 class RoomsListViewModelImpl @Inject constructor(
     private val useCases: RoomUseCases,
-    private val roomsListConverter: RoomsListConverter,
-    private val roomsForTerritoryListConverter: RoomsForTerritoryListConverter
+    private val converter: RoomsListConverter
 ) : RoomsListViewModel,
     MviViewModel<List<RoomsListItem>, UiState<List<RoomsListItem>>, RoomsListUiAction, UiSingleEvent>() {
-
-    private val _checkedListItems: MutableStateFlow<List<RoomsListItem>> =
-        MutableStateFlow(emptyList())
-    override val checkedListItems = _checkedListItems.asStateFlow()
-
-    override val areListItemsChecked =
-        flow { emit(checkedListItems.value.isNotEmpty()) }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
-
-    override fun observeCheckedListItems() {
-        Timber.tag(TAG).d("observeCheckedListItems() called")
-        uiState()?.let { uiState ->
-            _checkedListItems.value = uiState.filter { it.checked }
-            Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
-        }
-    }
 
     override fun initState() = UiState.Loading
 
@@ -67,7 +44,6 @@ class RoomsListViewModelImpl @Inject constructor(
             .d("handleAction(RoomsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RoomsListUiAction.Load -> loadRooms(action.houseId, action.territoryId)
-            is RoomsListUiAction.LoadForTerritory -> loadRoomsForTerritory(action.territoryId)
             is RoomsListUiAction.EditRoom -> {
                 submitSingleEvent(
                     RoomsListUiSingleEvent.OpenRoomScreen(
@@ -77,16 +53,6 @@ class RoomsListViewModelImpl @Inject constructor(
             }
 
             is RoomsListUiAction.DeleteRoom -> deleteRoom(action.roomId)
-            is RoomsListUiAction.EditTerritoryRoom -> {
-                submitSingleEvent(
-                    RoomsListUiSingleEvent.OpenTerritoryRoomScreen(
-                        NavRoutes.TerritoryRoom.routeForTerritoryRoom(
-                            NavigationInput.TerritoryRoomInput(action.territoryId, action.roomId)
-                        )
-                    )
-                )
-            }
-
             is RoomsListUiAction.DeleteTerritoryRoom -> deleteTerritoryRoom(action.roomId)
         }
         return job
@@ -97,22 +63,7 @@ class RoomsListViewModelImpl @Inject constructor(
             .d("loadRooms(...) called: houseId = %s; territoryId = %s", houseId, territoryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRoomsUseCase.execute(GetRoomsUseCase.Request(houseId, territoryId)).map {
-                roomsListConverter.convert(it)
-            }.collect {
-                submitState(it)
-            }
-        }
-        return job
-    }
-
-    private fun loadRoomsForTerritory(territoryId: UUID): Job {
-        Timber.tag(TAG)
-            .d("loadRoomsForTerritory(...) called: territoryId = %s", territoryId)
-        val job = viewModelScope.launch(errorHandler) {
-            useCases.getRoomsForTerritoryUseCase.execute(
-                GetRoomsForTerritoryUseCase.Request(territoryId)
-            ).map {
-                roomsForTerritoryListConverter.convert(it)
+                converter.convert(it)
             }.collect {
                 submitState(it)
             }
@@ -147,10 +98,6 @@ class RoomsListViewModelImpl @Inject constructor(
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
-
-                override val checkedListItems = MutableStateFlow(previewList(ctx))
-                override val areListItemsChecked = MutableStateFlow(true)
-                override fun observeCheckedListItems() {}
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)

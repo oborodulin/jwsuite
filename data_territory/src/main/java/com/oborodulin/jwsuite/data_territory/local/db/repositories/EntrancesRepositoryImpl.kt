@@ -23,6 +23,10 @@ class EntrancesRepositoryImpl @Inject constructor(
         localEntranceDataSource.getTerritoryEntrances(territoryId)
             .map(mappers.entranceViewListToEntrancesListMapper::map)
 
+    override fun getAllForTerritory(territoryId: UUID) =
+        localEntranceDataSource.getEntrancesForTerritory(territoryId)
+            .map(mappers.entranceViewListToEntrancesListMapper::map)
+
     override fun get(entranceId: UUID) = localEntranceDataSource.getEntrance(entranceId)
         .map(mappers.entranceViewToEntranceMapper::map)
 
@@ -50,4 +54,18 @@ class EntrancesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localEntranceDataSource.deleteAllEntrances()
+
+    override fun getNextNum(houseId: UUID) = flow {
+        emit(localEntranceDataSource.getNextEntranceNum(houseId))
+    }
+
+    override fun clearTerritory(entranceId: UUID) = flow {
+        localEntranceDataSource.clearTerritoryById(entranceId)
+        this.emit(entranceId)
+    }
+
+    override fun setTerritory(entranceIds: List<UUID>, territoryId: UUID) = flow {
+        entranceIds.forEach { localEntranceDataSource.setTerritoryById(it, territoryId) }
+        this.emit(entranceIds)
+    }
 }

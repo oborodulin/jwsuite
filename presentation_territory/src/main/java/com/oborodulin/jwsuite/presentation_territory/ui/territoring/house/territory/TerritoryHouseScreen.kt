@@ -25,7 +25,6 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryHouseInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
 
@@ -36,28 +35,19 @@ fun TerritoryHouseScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
-    housesListViewModel: HousesListViewModelImpl = hiltViewModel(),
     territoryHouseViewModel: TerritoryHouseViewModelImpl = hiltViewModel(),
     territoryHouseInput: TerritoryHouseInput? = null
 ) {
     Timber.tag(TAG)
         .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
 
-    val house by territoryHouseViewModel.house.collectAsStateWithLifecycle()
-    val checkedHouses by housesListViewModel.checkedListItems.collectAsStateWithLifecycle()
-    val areListItemsChecked by housesListViewModel.areListItemsChecked.collectAsStateWithLifecycle()
-
     val saveButtonOnClick = {
         // checks all errors
-        territoryHouseViewModel.onContinueClick(areListItemsChecked) {
+        territoryHouseViewModel.onContinueClick {
             Timber.tag(TAG).d("TerritoryHouseScreen(...): Save Button onClick...")
             // if success, save then backToBottomBarScreen
             territoryHouseViewModel.handleActionJob(
-                {
-                    val houses = checkedHouses.map { it.id }.toMutableSet()
-                    house.item?.itemId?.let { houses.add(it) }
-                    territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Save(houses.toList()))
-                },
+                { territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Save) },
                 { appState.commonNavigateUp() })
         }
     }
@@ -82,9 +72,9 @@ fun TerritoryHouseScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(
-                        enabled = areInputsValid || areListItemsChecked, onClick = saveButtonOnClick
-                    ) { Icon(Icons.Outlined.Done, null) }
+                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                        Icon(Icons.Outlined.Done, null)
+                    }
                 }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
@@ -95,17 +85,13 @@ fun TerritoryHouseScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TerritoryHouseView(
-                            appState = appState,
-                            territoryUi = it,
+                            territoryHousesUiModel = it,
                             sharedViewModel = appState.sharedViewModel.value,
-                            housesListViewModel = housesListViewModel,
-                            territoryViewModel = territoryViewModel
+                            territoryViewModel = territoryViewModel,
+                            territoryHouseViewModel = territoryHouseViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(
-                            enabled = areInputsValid || areListItemsChecked,
-                            onClick = saveButtonOnClick
-                        )
+                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
                     }
                 }
             }

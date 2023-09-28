@@ -3,8 +3,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territ
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class TerritoryRoomFields : Focusable {
-    TERRITORY_ROOM_TERRITORY,
-    TERRITORY_ROOM_ROOM;
+    TERRITORY_ROOM_TERRITORY;
 
     override fun key(): String {
         return this.name

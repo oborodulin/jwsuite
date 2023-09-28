@@ -27,6 +27,10 @@ class FloorsRepositoryImpl @Inject constructor(
         localFloorDataSource.getTerritoryFloors(territoryId)
             .map(mappers.floorViewListToFloorsListMapper::map)
 
+    override fun getAllForTerritory(territoryId: UUID) =
+        localFloorDataSource.getFloorsForTerritory(territoryId)
+            .map(mappers.floorViewListToFloorsListMapper::map)
+
     override fun get(floorId: UUID) = localFloorDataSource.getFloor(floorId)
         .map(mappers.floorViewToFloorMapper::map)
 
@@ -50,4 +54,18 @@ class FloorsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localFloorDataSource.deleteAllFloors()
+
+    override fun getNextNum(houseId: UUID) = flow {
+        emit(localFloorDataSource.getNextEntranceNum(houseId))
+    }
+
+    override fun clearTerritory(floorId: UUID) = flow {
+        localFloorDataSource.clearTerritoryById(floorId)
+        this.emit(floorId)
+    }
+
+    override fun setTerritory(floorIds: List<UUID>, territoryId: UUID) = flow {
+        floorIds.forEach { localFloorDataSource.setTerritoryById(it, territoryId) }
+        this.emit(floorIds)
+    }
 }

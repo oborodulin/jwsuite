@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territory
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
@@ -25,18 +25,19 @@ import com.oborodulin.home.common.ui.components.items.ListItemComponent
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.list.RoomsListViewModelImpl
 
 /**
  * Created by tfakioglu on 12.December.2021
  */
-private const val TAG = "Territoring.ForTerritoryHousesListItemComponent"
+private const val TAG = "Territoring.ForTerritoryRoomsListItemComponent"
 private val _EMPTY: OnListItemEvent = {}
 
 @Composable
-fun ForTerritoryHousesListItemComponent(
+fun ForTerritoryRoomsListItemComponent(
     @DrawableRes iconResId: Int? = null,
-    item: HousesListItem,
+    item: RoomsListItem,
     selected: Boolean = false,
     itemActions: List<ComponentUiAction> = emptyList(),
     onChecked: (Boolean) -> Unit = {},
@@ -88,12 +89,12 @@ fun ForTerritoryHousesListItemComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewForTerritoryHousesListItemComponent() {
+fun PreviewForTerritoryRoomsListItemComponent() {
     JWSuiteTheme {
         Surface {
-            ForTerritoryHousesListItemComponent(
+            ForTerritoryRoomsListItemComponent(
                 //iconResId = R.drawable.outline_photo_24,
-                item = HousesListViewModelImpl.previewList(LocalContext.current).first(),
+                item = RoomsListViewModelImpl.previewList(LocalContext.current).first(),
                 itemActions = listOf(
                     ComponentUiAction.EditListItem { println() },
                     ComponentUiAction.DeleteListItem { println() }),

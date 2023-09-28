@@ -42,7 +42,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.Micro
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictsUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import timber.log.Timber
 import java.util.EnumMap
@@ -52,7 +52,7 @@ private const val TAG = "Territoring.StreetMicrodistrictView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun StreetMicrodistrictView(
-    streetMicrodistrictUiModel: StreetMicrodistrictUiModel? = null,
+    streetMicrodistrictsUiModel: StreetMicrodistrictsUiModel? = null,
     streetMicrodistrictViewModel: StreetMicrodistrictViewModel,
     microdistrictViewModel: MicrodistrictViewModelImpl = hiltViewModel()
 ) {
@@ -68,7 +68,7 @@ fun StreetMicrodistrictView(
         )
     }
 
-    streetMicrodistrictUiModel?.let {
+    streetMicrodistrictsUiModel?.let {
         streetMicrodistrictViewModel.onTextFieldEntered(
             StreetMicrodistrictInputEvent.Street(it.street.toStreetsListItem())
         )
@@ -98,7 +98,7 @@ fun StreetMicrodistrictView(
         confirmUiAction = MicrodistrictUiAction.Save,
         dialogView = { MicrodistrictView() },
         onValueChange = {
-            streetMicrodistrictUiModel?.let {
+            streetMicrodistrictsUiModel?.let {
                 streetMicrodistrictViewModel.submitAction(StreetMicrodistrictUiAction.Load(it.street.id!!))
             }
         },
@@ -140,7 +140,7 @@ fun StreetMicrodistrictView(
             AddIconButtonComponent { microdistrictViewModel.onOpenDialogClicked() }
         }
         Spacer(modifier = Modifier.width(width = 8.dp))
-        streetMicrodistrictUiModel?.let {
+        streetMicrodistrictsUiModel?.let {
             ForStreetMicrodistrictsList(
                 searchedText = searchText.text,
                 microdistricts = it.microdistricts,

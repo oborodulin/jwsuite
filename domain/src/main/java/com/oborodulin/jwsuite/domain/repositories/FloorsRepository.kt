@@ -9,9 +9,14 @@ interface FloorsRepository {
     fun getAllByHouse(houseId: UUID): Flow<List<Floor>>
     fun getAllByEntrance(entranceId: UUID): Flow<List<Floor>>
     fun getAllByTerritory(territoryId: UUID): Flow<List<Floor>>
+    fun getAllForTerritory(territoryId: UUID): Flow<List<Floor>>
     fun get(floorId: UUID): Flow<Floor>
     fun save(floor: Floor): Flow<Floor>
     fun delete(floor: Floor): Flow<Floor>
     fun deleteById(floorId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    fun getNextNum(houseId: UUID): Flow<Int>
+    fun clearTerritory(floorId: UUID): Flow<UUID>
+    fun setTerritory(floorIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 }

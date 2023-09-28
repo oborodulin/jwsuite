@@ -25,7 +25,7 @@ interface TerritoriesRepository {
         locationId: UUID? = null, isPrivateSector: Boolean, congregationId: UUID? = null
     ): Flow<List<Territory>>
 
-    fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Flow<Int>
+    fun getNextNum(congregationId: UUID, territoryCategoryId: UUID): Flow<Int>
 
     // Territory Streets:
     fun getTerritoryStreet(territoryStreetId: UUID? = null): Flow<TerritoryStreet?>
@@ -40,6 +40,7 @@ interface TerritoriesRepository {
     fun getEntrances(territoryId: UUID): Flow<List<Entrance>>
     fun getFloors(territoryId: UUID): Flow<List<Floor>>
     fun getRooms(territoryId: UUID): Flow<List<Room>>
+
     fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNums>>
     fun get(territoryId: UUID): Flow<Territory>
     fun save(territory: Territory): Flow<Territory>

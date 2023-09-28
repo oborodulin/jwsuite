@@ -12,7 +12,7 @@ class GetNextTerritoryNumUseCase(
 ) : UseCase<GetNextTerritoryNumUseCase.Request, GetNextTerritoryNumUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> =
-        territoriesRepository.getNextTerritoryNum(
+        territoriesRepository.getNextNum(
             request.congregationId, request.territoryCategoryId
         ).map {
             Response(it)

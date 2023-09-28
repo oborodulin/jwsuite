@@ -4,5 +4,5 @@ import com.oborodulin.home.common.domain.model.DomainModel
 
 data class GeoStreetWithLocalityDistricts(
     val street: GeoStreet,
-    var localityDistricts: List<GeoLocalityDistrict>
+    val localityDistricts: List<GeoLocalityDistrict> = emptyList()
 ) : DomainModel()

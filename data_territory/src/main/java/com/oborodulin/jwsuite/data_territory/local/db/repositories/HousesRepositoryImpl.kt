@@ -53,7 +53,7 @@ class HousesRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localHouseDataSource.deleteAllHouses()
 
-    override fun getNextHouseNum(streetId: UUID) = flow {
+    override fun getNextNum(streetId: UUID) = flow {
         emit(localHouseDataSource.getNextHouseNum(streetId))
     }
 

@@ -85,7 +85,7 @@ fun StreetMicrodistrictScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         StreetMicrodistrictView(
-                            streetMicrodistrictUiModel = it,
+                            streetMicrodistrictsUiModel = it,
                             streetMicrodistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))

@@ -23,9 +23,13 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class TerritorySaveException(cause: Throwable) : UseCaseException(cause)
     class TerritoryStreetSaveException(cause: Throwable) : UseCaseException(cause)
     class TerritoryHouseSaveException(cause: Throwable) : UseCaseException(cause)
+    class TerritoryEntranceSaveException(cause: Throwable) : UseCaseException(cause)
+    class TerritoryFloorSaveException(cause: Throwable) : UseCaseException(cause)
     class TerritoryRoomSaveException(cause: Throwable) : UseCaseException(cause)
     class HandOutTerritoryException(cause: Throwable) : UseCaseException(cause)
     class HouseSaveException(cause: Throwable) : UseCaseException(cause)
+    class EntranceSaveException(cause: Throwable) : UseCaseException(cause)
+    class FloorSaveException(cause: Throwable) : UseCaseException(cause)
     class RoomSaveException(cause: Throwable) : UseCaseException(cause)
 
     class UnknownException(cause: Throwable) : UseCaseException(cause)

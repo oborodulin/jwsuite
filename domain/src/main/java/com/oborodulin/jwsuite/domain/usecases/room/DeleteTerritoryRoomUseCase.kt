@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class DeleteTerritoryRoomUseCase(
-    configuration: Configuration,
-    private val roomsRepository: RoomsRepository
+    configuration: Configuration, private val roomsRepository: RoomsRepository
 ) : UseCase<DeleteTerritoryRoomUseCase.Request, DeleteTerritoryRoomUseCase.Response>(
     configuration
 ) {

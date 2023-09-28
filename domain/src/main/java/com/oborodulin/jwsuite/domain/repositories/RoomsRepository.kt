@@ -17,7 +17,7 @@ interface RoomsRepository {
     fun deleteById(roomId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
-    fun getNextRoomNum(houseId: UUID): Flow<Int>
+    fun getNextNum(houseId: UUID): Flow<Int>
     fun clearTerritory(roomId: UUID): Flow<UUID>
     fun setTerritory(roomIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 }

@@ -10,6 +10,7 @@ interface LocalFloorDataSource {
     fun getHouseFloors(houseId: UUID): Flow<List<FloorView>>
     fun getEntranceFloors(entranceId: UUID): Flow<List<FloorView>>
     fun getTerritoryFloors(territoryId: UUID): Flow<List<FloorView>>
+    fun getFloorsForTerritory(territoryId: UUID): Flow<List<FloorView>>
     fun getFloor(floorId: UUID): Flow<FloorView>
     suspend fun insertFloor(floor: FloorEntity)
     suspend fun updateFloor(floor: FloorEntity)
@@ -17,4 +18,8 @@ interface LocalFloorDataSource {
     suspend fun deleteFloorById(floorId: UUID)
     suspend fun deleteFloors(floors: List<FloorEntity>)
     suspend fun deleteAllFloors()
+
+    fun getNextEntranceNum(houseId: UUID): Int
+    suspend fun clearTerritoryById(floorId: UUID)
+    suspend fun setTerritoryById(floorId: UUID, territoryId: UUID)
 }

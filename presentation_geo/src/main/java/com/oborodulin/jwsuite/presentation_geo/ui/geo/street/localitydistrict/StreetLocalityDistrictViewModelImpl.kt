@@ -18,7 +18,7 @@ import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetLocalityDistrictsUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetLocalityDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
@@ -39,7 +39,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
     private val streetUseCases: StreetUseCases,
     private val converter: StreetLocalityDistrictConverter
 ) : StreetLocalityDistrictViewModel,
-    DialogSingleViewModel<StreetLocalityDistrictUiModel, UiState<StreetLocalityDistrictUiModel>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
+    DialogSingleViewModel<StreetLocalityDistrictsUiModel, UiState<StreetLocalityDistrictsUiModel>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
         state, initFocusedTextField = StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET
     ) {
     override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
@@ -64,7 +64,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
         }
     }
 
-    override fun initState(): UiState<StreetLocalityDistrictUiModel> = UiState.Loading
+    override fun initState(): UiState<StreetLocalityDistrictsUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: StreetLocalityDistrictUiAction): Job {
         Timber.tag(TAG)
@@ -115,7 +115,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<StreetLocalityDistrictFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: StreetLocalityDistrictUiModel): Job? {
+    override fun initFieldStatesByUiModel(uiModel: StreetLocalityDistrictsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
@@ -200,7 +200,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context) = StreetLocalityDistrictUiModel(
+        fun previewUiModel(ctx: Context) = StreetLocalityDistrictsUiModel(
             street = StreetViewModelImpl.previewUiModel(ctx),
             localityDistricts = LocalityDistrictsListViewModelImpl.previewList(ctx)
         )

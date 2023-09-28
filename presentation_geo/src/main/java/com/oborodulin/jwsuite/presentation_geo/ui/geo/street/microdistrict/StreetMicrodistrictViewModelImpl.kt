@@ -18,7 +18,7 @@ import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictUiModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictsUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetMicrodistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
@@ -39,7 +39,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
     private val streetUseCases: StreetUseCases,
     private val converter: StreetMicrodistrictConverter
 ) : StreetMicrodistrictViewModel,
-    DialogSingleViewModel<StreetMicrodistrictUiModel, UiState<StreetMicrodistrictUiModel>, StreetMicrodistrictUiAction, UiSingleEvent, StreetMicrodistrictFields, InputWrapper>(
+    DialogSingleViewModel<StreetMicrodistrictsUiModel, UiState<StreetMicrodistrictsUiModel>, StreetMicrodistrictUiAction, UiSingleEvent, StreetMicrodistrictFields, InputWrapper>(
         state, initFocusedTextField = StreetMicrodistrictFields.STREET_MICRODISTRICT_STREET
     ) {
     override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
@@ -64,7 +64,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
         }
     }
 
-    override fun initState(): UiState<StreetMicrodistrictUiModel> = UiState.Loading
+    override fun initState(): UiState<StreetMicrodistrictsUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: StreetMicrodistrictUiAction): Job {
         Timber.tag(TAG)
@@ -114,7 +114,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<StreetMicrodistrictFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: StreetMicrodistrictUiModel): Job? {
+    override fun initFieldStatesByUiModel(uiModel: StreetMicrodistrictsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
@@ -199,7 +199,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context) = StreetMicrodistrictUiModel(
+        fun previewUiModel(ctx: Context) = StreetMicrodistrictsUiModel(
             street = StreetViewModelImpl.previewUiModel(ctx),
             microdistricts = MicrodistrictsListViewModelImpl.previewList(ctx)
         )

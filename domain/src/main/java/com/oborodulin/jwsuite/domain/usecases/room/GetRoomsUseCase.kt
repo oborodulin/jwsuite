@@ -13,7 +13,7 @@ class GetRoomsUseCase(
     override fun process(request: Request) = when (request.territoryId) {
         null -> when (request.houseId) {
             null -> roomsRepository.getAll()
-            else -> roomsRepository.getAllByTerritory(request.houseId)
+            else -> roomsRepository.getAllByHouse(request.houseId)
         }
 
         else -> roomsRepository.getAllByTerritory(request.territoryId)
