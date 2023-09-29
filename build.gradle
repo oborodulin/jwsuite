@@ -18,6 +18,7 @@ buildscript {
                 coreTesting            : '2.2.0',
                 coroutines             : '1.7.1',
                 dagger                 : '2.44.2',
+                datastore              : '1.0.0',
                 desugar                : '1.2.2', // для 2.0.0 нужен AGP 7.4.0-alpha10
                 espresso               : '3.5.1',
                 fragment               : '1.5.7',
@@ -140,6 +141,7 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                                        testing         : "com.google.dagger:hilt-android-testing:$versions.hilt",
                                        hiltGradlePlugin: "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt",
                                        hilt            : "com.google.dagger:hilt-android:$versions.hilt"],
+                datastore           : [preferences: "androidx.datastore:datastore-preferences:${versions.datastore}"],
                 devtools            : [ksp: "com.google.devtools.ksp:symbol-processing-api:$versions.ksp"],
                 i18n                : [nv: "com.neovisionaries:nv-i18n:$versions.nvi18n"],
                 glide               : [compiler: "com.github.bumptech.glide:compiler:$versions.glide",

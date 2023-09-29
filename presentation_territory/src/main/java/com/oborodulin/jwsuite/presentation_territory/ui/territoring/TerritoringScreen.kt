@@ -216,7 +216,7 @@ fun TerritoringScreen(
                     IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                         Icon(Icons.Outlined.Add, null)
                     }
-                    IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Houses.route) }) {
+                    IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Housing.route) }) {
                         Icon(Icons.Outlined.Home, null)
                     }
                     /*IconButton(onClick = { context.toast("Settings button clicked...") }) {

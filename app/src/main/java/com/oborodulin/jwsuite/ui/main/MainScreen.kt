@@ -42,7 +42,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict.Stree
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.houses.HousesScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single.RoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territory.TerritoryRoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
@@ -289,13 +289,13 @@ private fun HomeNavigationHost(
         }
 
         // House, Entrace, Floor, Room:
-        composable(route = NavRoutes.Houses.route, arguments = NavRoutes.Houses.arguments) {
+        composable(route = NavRoutes.Housing.route, arguments = NavRoutes.Housing.arguments) {
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to HousesScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Houses.arguments
+                    it.destination.route, NavRoutes.Housing.arguments
                 )
-            HousesScreen(appState = appState)
+            HousingScreen(appState = appState)
         }
         composable(
             route = NavRoutes.House.route, arguments = NavRoutes.House.arguments

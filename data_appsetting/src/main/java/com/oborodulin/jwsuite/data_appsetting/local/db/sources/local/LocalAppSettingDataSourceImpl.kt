@@ -4,7 +4,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
-import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.local.LocalAppSettingDataSource
+import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*

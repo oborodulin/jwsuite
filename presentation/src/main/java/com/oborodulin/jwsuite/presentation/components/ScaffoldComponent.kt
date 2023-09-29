@@ -62,10 +62,9 @@ fun ScaffoldComponent(
                             ) {
                                 if (actionBar == null) {
                                     Text(
-                                        text = appState.appName + when (topBarTitleResId) {
-                                            null -> ""
-                                            else -> " - " + stringResource(topBarTitleResId)
-                                        },
+                                        text = appState.appName.plus(topBarTitleResId?.let {
+                                            " - ${stringResource(it)}"
+                                        } ?: ""),
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }

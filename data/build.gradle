@@ -82,6 +82,8 @@ dependencies {
     implementation deps.sql.sqlcipher
     implementation deps.sql.sqlite
 
+    implementation deps.datastore.preferences
+
     // Hilt
     implementation deps.dagger.hilt
     ksp deps.dagger.compiler

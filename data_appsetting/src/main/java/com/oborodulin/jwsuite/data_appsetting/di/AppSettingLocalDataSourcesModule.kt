@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_appsetting.di
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
-import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.local.LocalAppSettingDataSource
+import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
 import com.oborodulin.jwsuite.data_appsetting.local.db.sources.local.LocalAppSettingDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module

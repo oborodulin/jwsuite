@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -24,9 +25,10 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GRO
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSE
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSES
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOGIN
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
@@ -166,16 +168,22 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_ministring
     )
 
+    data object Login : NavRoutes(
+        route = ROUTE_LOGIN,
+        iconImageVector = Icons.Outlined.Lock,
+        titleResId = R.string.nav_item_login
+    )
+
     data object Geo : NavRoutes(
         route = ROUTE_GEO,
         iconPainterResId = R.drawable.ic_geo_24,
         titleResId = R.string.nav_item_geo
     )
 
-    data object Houses : NavRoutes(
-        route = ROUTE_HOUSES,
+    data object Housing : NavRoutes(
+        route = ROUTE_HOUSING,
         iconImageVector = Icons.Outlined.Home,
-        titleResId = R.string.nav_item_houses
+        titleResId = R.string.nav_item_housing
     )
 
     // Geo:

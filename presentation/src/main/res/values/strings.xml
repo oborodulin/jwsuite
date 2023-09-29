@@ -6,8 +6,9 @@
     <string name="nav_item_territoring">Участки</string>
     <string name="nav_item_ministring">Служение</string>
     <!--промежуточная-->
+    <string name="nav_item_login">Вход</string>
     <string name="nav_item_geo">География</string>
-    <string name="nav_item_houses">Дома</string>
+    <string name="nav_item_housing">Дома</string>
     <!--дополнительная-->
     <string name="nav_item_congregation">Собрание</string>
     <string name="nav_item_group">Группа</string>

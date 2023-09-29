@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.houses
+package com.oborodulin.jwsuite.presentation_territory.ui.housing
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
@@ -18,39 +18,39 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Territoring.HousesViewModelImpl"
+private const val TAG = "Housing.HousingViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class HousesViewModelImpl @Inject constructor(
+class HousingViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     //private val useCases: TerritoringUseCases,
     //private val converter: TerritoryLocationsListConverter
-) : HousesViewModel,
-    SingleViewModel<Any, UiState<Any>, HousesUiAction, HousesUiSingleEvent, HousesFields, InputWrapper>(
-        state//, initFocusedTextField = HousesFields.HOUSES_LOCALITY
+) : HousingViewModel,
+    SingleViewModel<Any, UiState<Any>, HousingUiAction, HousingUiSingleEvent, HousingFields, InputWrapper>(
+        state//, initFocusedTextField = HousingFields.HOUSES_LOCALITY
     ) {
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(HousesFields.HOUSES_LOCALITY.name, InputListItemWrapper())
+        state.getStateFlow(HousingFields.HOUSES_LOCALITY.name, InputListItemWrapper())
     }
     override val street: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
-        state.getStateFlow(HousesFields.HOUSES_STREET.name, InputListItemWrapper())
+        state.getStateFlow(HousingFields.HOUSES_STREET.name, InputListItemWrapper())
     }
 
     override fun initState(): UiState<TerritoringUi> = UiState.Loading
 
-    override suspend fun handleAction(action: HousesUiAction) = null
+    override suspend fun handleAction(action: HousingUiAction) = null
 
     /*        Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
             val job = when (action) {
-                is HousesUiAction.LoadLocations -> loadTerritoryLocations(
+                is HousingUiAction.LoadLocations -> loadTerritoryLocations(
                     action.congregationId,
                     action.isPrivateSector
                 )
 
-                is HousesUiAction.HandOutTerritoriesConfirmation -> {
+                is HousingUiAction.HandOutTerritoriesConfirmation -> {
                     submitSingleEvent(
-                        HousesUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
+                        HousingUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
                             NavRoutes.HandOutTerritoriesConfirmation.routeForHandOutTerritoriesConfirmation()
                         )
                     )
@@ -81,7 +81,7 @@ class HousesViewModelImpl @Inject constructor(
         }
 
     */
-    override fun stateInputFields() = enumValues<HousesFields>().map { it.name }
+    override fun stateInputFields() = enumValues<HousingFields>().map { it.name }
 
     /*override fun initFieldStatesByUiModel(uiModel: TerritoringUi): Job? {
             super.initFieldStatesByUiModel(uiModel)
@@ -91,12 +91,12 @@ class HousesViewModelImpl @Inject constructor(
                     uiModel
                 )
             initStateValue(
-                HousesFields.HOUSES_LOCALITY, locality,
+                HousingFields.HOUSES_LOCALITY, locality,
                 uiModel.isPrivateSector.toString()
             )
             val territoryLocation = uiModel.territoryLocations.first()
             initStateValue(
-                HousesFields.HOUSES_STREET, street,
+                HousingFields.HOUSES_STREET, street,
                 TerritoryLocationsListItem(
                     locationId = territoryLocation.locationId,
                     locationShortName = territoryLocation.locationShortName,
@@ -112,21 +112,21 @@ class HousesViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is HousesInputEvent.Locality ->
-                        setStateValue(HousesFields.HOUSES_LOCALITY, locality, event.input, true)
+                    is HousingInputEvent.Locality ->
+                        setStateValue(HousingFields.HOUSES_LOCALITY, locality, event.input, true)
 
-                    is HousesInputEvent.Street ->
-                        setStateValue(HousesFields.HOUSES_STREET, street, event.input, true)
+                    is HousingInputEvent.Street ->
+                        setStateValue(HousingFields.HOUSES_STREET, street, event.input, true)
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is HousesInputEvent.Locality ->
-                        setStateValue(HousesFields.HOUSES_LOCALITY, locality, null)
+                    is HousingInputEvent.Locality ->
+                        setStateValue(HousingFields.HOUSES_LOCALITY, locality, null)
 
-                    is HousesInputEvent.Street ->
-                        setStateValue(HousesFields.HOUSES_STREET, street, null)
+                    is HousingInputEvent.Street ->
+                        setStateValue(HousingFields.HOUSES_STREET, street, null)
                 }
             }
     }
@@ -138,9 +138,9 @@ class HousesViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : HousesViewModel {
+            object : HousingViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(1)) // Any
-                override val singleEventFlow = Channel<HousesUiSingleEvent>().receiveAsFlow()
+                override val singleEventFlow = Channel<HousingUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
@@ -152,10 +152,10 @@ class HousesViewModelImpl @Inject constructor(
                 override val street = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun submitAction(action: HousesUiAction): Job? = null
+                override fun submitAction(action: HousingUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
-                    focusedField: HousesFields, isFocused: Boolean
+                    focusedField: HousingFields, isFocused: Boolean
                 ) {
                 }
 

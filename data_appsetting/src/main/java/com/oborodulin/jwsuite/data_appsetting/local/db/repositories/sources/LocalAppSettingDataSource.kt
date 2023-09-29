@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.local
+package com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources
 
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import kotlinx.coroutines.flow.Flow

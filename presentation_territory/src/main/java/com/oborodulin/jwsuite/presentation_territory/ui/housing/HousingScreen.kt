@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.houses
+package com.oborodulin.jwsuite.presentation_territory.ui.housing
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -62,16 +62,16 @@ import java.util.EnumMap
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Territoring.HousesScreen"
+private const val TAG = "Housing.HousingScreen"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HousesScreen(
+fun HousingScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    housesViewModel: HousesViewModelImpl = hiltViewModel()
+    housesViewModel: HousingViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("HousesScreen(...) called")
+    Timber.tag(TAG).d("HousingScreen(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -83,34 +83,34 @@ fun HousesScreen(
 
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    Timber.tag(TAG).d("HousesScreen: currentCongregation = %s", currentCongregation)
+    Timber.tag(TAG).d("HousingScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("Houses: CollectAsStateWithLifecycle for all fields")
     val locality by housesViewModel.locality.collectAsStateWithLifecycle()
     val street by housesViewModel.street.collectAsStateWithLifecycle()
 
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
-    var tabType by rememberSaveable { mutableStateOf(HousesTabType.HOUSES.name) }
-    val onChangeTab: (HousesTabType) -> Unit = { tabType = it.name }
+    var tabType by rememberSaveable { mutableStateOf(HousingTabType.HOUSES.name) }
+    val onChangeTab: (HousingTabType) -> Unit = { tabType = it.name }
     val addActionOnClick = {
         appState.commonNavController.navigate(
-            when (HousesTabType.valueOf(tabType)) {
-                HousesTabType.HOUSES -> NavRoutes.House.routeForHouse()
-                HousesTabType.ENTRANCES -> NavRoutes.Entrance.routeForEntrance()
-                HousesTabType.FLOORS -> NavRoutes.Floor.routeForFloor()
-                HousesTabType.ROOMS -> NavRoutes.Room.routeForRoom()
+            when (HousingTabType.valueOf(tabType)) {
+                HousingTabType.HOUSES -> NavRoutes.House.routeForHouse()
+                HousingTabType.ENTRANCES -> NavRoutes.Entrance.routeForEntrance()
+                HousingTabType.FLOORS -> NavRoutes.Floor.routeForFloor()
+                HousingTabType.ROOMS -> NavRoutes.Room.routeForRoom()
             }
         )
     }
     Timber.tag(TAG).d("Houses: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<HousesFields, InputFocusRequester>(HousesFields::class.java)
-    enumValues<HousesFields>().forEach {
+    val focusRequesters = EnumMap<HousingFields, InputFocusRequester>(HousingFields::class.java)
+    enumValues<HousingFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("HousesScreen: LaunchedEffect() BEFORE collect ui state flow: events.collect")
+            .d("HousingScreen: LaunchedEffect() BEFORE collect ui state flow: events.collect")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -121,7 +121,7 @@ fun HousesScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_houses,
+                topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_housing,
                 topBarNavigationIcon = {
                     IconButton(onClick = { appState.commonNavigateUp() }) {
                         Icon(Icons.Outlined.ArrowBack, null)
@@ -134,17 +134,17 @@ fun HousesScreen(
                         ) {
                             BarLocalityComboBox(
                                 modifier = Modifier
-                                    .focusRequester(focusRequesters[HousesFields.HOUSES_LOCALITY]!!.focusRequester)
+                                    .focusRequester(focusRequesters[HousingFields.HOUSES_LOCALITY]!!.focusRequester)
                                     .onFocusChanged { focusState ->
                                         housesViewModel.onTextFieldFocusChanged(
-                                            focusedField = HousesFields.HOUSES_LOCALITY,
+                                            focusedField = HousingFields.HOUSES_LOCALITY,
                                             isFocused = focusState.isFocused
                                         )
                                     },
                                 inputWrapper = locality,
                                 onValueChange = {
                                     housesViewModel.onTextFieldEntered(
-                                        HousesInputEvent.Locality(it)
+                                        HousingInputEvent.Locality(it)
                                     )
                                 }
                             )
@@ -156,17 +156,17 @@ fun HousesScreen(
                         ) {
                             BarStreetComboBox(
                                 modifier = Modifier
-                                    .focusRequester(focusRequesters[HousesFields.HOUSES_STREET]!!.focusRequester)
+                                    .focusRequester(focusRequesters[HousingFields.HOUSES_STREET]!!.focusRequester)
                                     .onFocusChanged { focusState ->
                                         housesViewModel.onTextFieldFocusChanged(
-                                            focusedField = HousesFields.HOUSES_STREET,
+                                            focusedField = HousingFields.HOUSES_STREET,
                                             isFocused = focusState.isFocused
                                         )
                                     },
                                 localityId = locality.item?.itemId,
                                 inputWrapper = street,
                                 onValueChange = {
-                                    housesViewModel.onTextFieldEntered(HousesInputEvent.Street(it))
+                                    housesViewModel.onTextFieldEntered(HousingInputEvent.Street(it))
                                 }
                             )
                         }
@@ -184,7 +184,7 @@ fun HousesScreen(
                         listOf(
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_houses),
-                                onClick = { onChangeTab(HousesTabType.HOUSES) }
+                                onClick = { onChangeTab(HousingTabType.HOUSES) }
                             ) {
                                 street.item?.itemId?.let {
                                     HousesEntrancesFloorsRoomsView(
@@ -195,15 +195,15 @@ fun HousesScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_entrances),
-                                onClick = { onChangeTab(HousesTabType.ENTRANCES) }
+                                onClick = { onChangeTab(HousingTabType.ENTRANCES) }
                             ) {},
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_floors),
-                                onClick = { onChangeTab(HousesTabType.FLOORS) }
+                                onClick = { onChangeTab(HousingTabType.FLOORS) }
                             ) {},
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_rooms),
-                                onClick = { onChangeTab(HousesTabType.ROOMS) }
+                                onClick = { onChangeTab(HousingTabType.ROOMS) }
                             ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
                         )
                     )
@@ -212,11 +212,11 @@ fun HousesScreen(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("HousesScreen: LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("HousingScreen: LaunchedEffect() AFTER collect single Event Flow")
         housesViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is HousesUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
+                is HousingUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
                     appState.commonNavController.navigate(it.navRoute)
                 }
             }
@@ -316,8 +316,8 @@ fun RoomsView(appState: AppState) {
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewHousesScreen() {
-    /*HousesScreen(
+fun PreviewHousingScreen() {
+    /*HousingScreen(
         appState = rememberAppState(),
         congregationInput = CongregationInput(UUID.randomUUID()),
         onClick = {},
