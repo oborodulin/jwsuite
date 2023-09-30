@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalRoomDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalRoomDataSource
 import com.oborodulin.jwsuite.domain.model.Room
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import kotlinx.coroutines.flow.flow

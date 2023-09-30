@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupMappers
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.local.LocalGroupDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalGroupDataSource
 import com.oborodulin.jwsuite.domain.model.Group
 import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import kotlinx.coroutines.flow.flow

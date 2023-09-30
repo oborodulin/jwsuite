@@ -7,8 +7,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.domain.model.Member
 
 class MemberViewToMemberMapper(private val groupMapper: GroupViewToGroupMapper) :
-    NullableMapper<MemberView, Member>,
-    Mapper<MemberView, Member> {
+    NullableMapper<MemberView, Member>, Mapper<MemberView, Member> {
     override fun map(input: MemberView): Member {
         val member = Member(
             group = groupMapper.map(input.group),
@@ -18,10 +17,11 @@ class MemberViewToMemberMapper(private val groupMapper: GroupViewToGroupMapper) 
             patronymic = input.member.patronymic,
             pseudonym = input.member.pseudonym,
             phoneNumber = input.member.phoneNumber,
-            memberType = input.member.memberType,
             dateOfBirth = input.member.dateOfBirth,
             dateOfBaptism = input.member.dateOfBaptism,
-            inactiveDate = input.member.inactiveDate
+            memberMovementId = input.movement.memberMovementId,
+            memberType = input.movement.memberType,
+            movementDate = input.movement.movementDate
         )
         member.id = input.member.memberId
         return member

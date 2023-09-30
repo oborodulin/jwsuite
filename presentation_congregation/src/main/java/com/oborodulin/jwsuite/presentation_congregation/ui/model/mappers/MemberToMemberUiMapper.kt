@@ -6,8 +6,7 @@ import com.oborodulin.jwsuite.domain.model.Member
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 
 class MemberToMemberUiMapper(private val groupMapper: GroupToGroupUiMapper) :
-    NullableMapper<Member, MemberUi>,
-    Mapper<Member, MemberUi> {
+    NullableMapper<Member, MemberUi>, Mapper<Member, MemberUi> {
     override fun map(input: Member): MemberUi {
         val memberUi = MemberUi(
             group = groupMapper.map(input.group),
@@ -19,10 +18,11 @@ class MemberToMemberUiMapper(private val groupMapper: GroupToGroupUiMapper) :
             memberFullName = input.fullName,
             memberShortName = input.shortName,
             phoneNumber = input.phoneNumber,
-            memberType = input.memberType,
             dateOfBirth = input.dateOfBirth,
             dateOfBaptism = input.dateOfBaptism,
-            inactiveDate = input.inactiveDate
+            memberMovementId = input.memberMovementId,
+            memberType = input.memberType,
+            movementDate = input.movementDate
         )
         memberUi.id = input.id
         return memberUi

@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEn
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.pojo.CongregationWithGroupMembers
+import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
@@ -27,12 +28,14 @@ interface CongregationDao {
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE congregationId = :congregationId")
     fun findById(congregationId: UUID): Flow<CongregationView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${CongregationEntity.TABLE_NAME} WHERE congregationNum = :congregationNum LIMIT 1")
     fun findByCongregationNum(congregationNum: String): Flow<CongregationEntity?>
 
@@ -50,9 +53,17 @@ interface CongregationDao {
     @ExperimentalCoroutinesApi
     fun findDistinctFavorite() = findFavorite().distinctUntilChanged()
 
+    //-----------------------------
     @Transaction
     @Query("SELECT * FROM ${CongregationEntity.TABLE_NAME} ORDER BY isFavorite DESC")
     fun findCongregationWithGroupMembers(): Flow<List<CongregationWithGroupMembers>>
+
+    //-----------------------------
+    @Query("SELECT * FROM ${CongregationTotalView.VIEW_NAME}")
+    fun findTotals(): Flow<CongregationTotalView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctfindTotals() = findTotals().distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

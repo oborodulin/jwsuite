@@ -19,9 +19,12 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEn
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberMovementView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
@@ -101,7 +104,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoLocalityDistrictEntity::class, GeoLocalityDistrictTlEntity::class,
         GeoMicrodistrictEntity::class, GeoMicrodistrictTlEntity::class,
         GeoStreetEntity::class, GeoStreetTlEntity::class, GeoStreetDistrictEntity::class,
-        CongregationEntity::class, GroupEntity::class, MemberEntity::class,
+        CongregationEntity::class, GroupEntity::class, MemberEntity::class, MemberMovementEntity::class,
         CongregationMemberCrossRefEntity::class, MemberMinistryEntity::class,
         TerritoryCategoryEntity::class, TerritoryEntity::class, TerritoryStreetEntity::class,
         TerritoryMemberCrossRefEntity::class,
@@ -114,6 +117,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
+        MemberMovementView::class, CongregationTotalView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,

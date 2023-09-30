@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationTotalsUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
@@ -153,6 +154,7 @@ object CongregatingModule {
         getCongregationsUseCase: GetCongregationsUseCase,
         getCongregationUseCase: GetCongregationUseCase,
         getFavoriteCongregationUseCase: GetFavoriteCongregationUseCase,
+        getFavoriteCongregationTotalsUseCase: GetFavoriteCongregationTotalsUseCase,
         saveCongregationUseCase: SaveCongregationUseCase,
         deleteCongregationUseCase: DeleteCongregationUseCase,
         makeFavoriteCongregationUseCase: MakeFavoriteCongregationUseCase
@@ -160,6 +162,7 @@ object CongregatingModule {
         getCongregationsUseCase,
         getCongregationUseCase,
         getFavoriteCongregationUseCase,
+        getFavoriteCongregationTotalsUseCase,
         saveCongregationUseCase,
         deleteCongregationUseCase,
         makeFavoriteCongregationUseCase

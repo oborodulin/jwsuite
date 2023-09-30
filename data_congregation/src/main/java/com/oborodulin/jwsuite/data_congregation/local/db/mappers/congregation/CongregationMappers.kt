@@ -5,5 +5,6 @@ data class CongregationMappers(
     val congregationViewToCongregationMapper: CongregationViewToCongregationMapper,
     val congregationsListToCongregationEntityListMapper: CongregationsListToCongregationEntityListMapper,
     val congregationToCongregationEntityMapper: CongregationToCongregationEntityMapper,
-    val favoriteCongregationViewToCongregationMapper: FavoriteCongregationViewToCongregationMapper
+    val favoriteCongregationViewToCongregationMapper: FavoriteCongregationViewToCongregationMapper,
+    val congregationTotalViewToCongregationTotalsMapper: CongregationTotalViewToCongregationTotalsMapper
 )

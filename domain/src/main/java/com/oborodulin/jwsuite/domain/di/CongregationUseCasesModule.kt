@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationsUseCase
+import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationTotalsUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.MakeFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
@@ -55,6 +56,13 @@ object CongregationUseCasesModule {
         configuration: UseCase.Configuration, congregationsRepository: CongregationsRepository
     ): MakeFavoriteCongregationUseCase =
         MakeFavoriteCongregationUseCase(configuration, congregationsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetFavoriteCongregationTotalsUseCase(
+        configuration: UseCase.Configuration, congregationsRepository: CongregationsRepository
+    ): GetFavoriteCongregationTotalsUseCase =
+        GetFavoriteCongregationTotalsUseCase(configuration, congregationsRepository)
 
     @Singleton
     @Provides

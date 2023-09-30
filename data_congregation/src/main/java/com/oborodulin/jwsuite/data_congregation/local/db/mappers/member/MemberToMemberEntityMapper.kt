@@ -15,9 +15,7 @@ class MemberToMemberEntityMapper : Mapper<Member, MemberEntity> {
         patronymic = input.patronymic,
         pseudonym = input.pseudonym,
         phoneNumber = input.phoneNumber,
-        memberType = input.memberType,
         dateOfBirth = input.dateOfBirth,
-        dateOfBaptism = input.dateOfBaptism,
-        inactiveDate = input.inactiveDate
+        dateOfBaptism = input.dateOfBaptism
     )
 }

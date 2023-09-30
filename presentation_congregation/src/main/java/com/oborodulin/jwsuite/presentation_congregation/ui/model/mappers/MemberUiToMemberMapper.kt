@@ -15,10 +15,10 @@ class MemberUiToMemberMapper(private val groupUiMapper: GroupUiToGroupMapper) :
             patronymic = input.patronymic,
             pseudonym = input.pseudonym,
             phoneNumber = input.phoneNumber,
-            memberType = input.memberType,
             dateOfBirth = input.dateOfBirth,
             dateOfBaptism = input.dateOfBaptism,
-            inactiveDate = input.inactiveDate
+            memberType = input.memberType,
+            movementDate = input.movementDate
         )
         member.id = input.id
         return member

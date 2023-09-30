@@ -34,4 +34,9 @@ object Constants {
     const val PRM_TERRITORY_ROOMS_LIMIT_VAL = "'TERRITORY_ROOMS_LIMIT'"
     const val PRM_TERRITORY_MAX_ROOMS_VAL = "'TERRITORY_MAX_ROOMS'"
     const val PRM_TERRITORY_IDLE_PERIOD_VAL = "'TERRITORY_IDLE_PERIOD'"
+
+    // MemberType:
+    const val MT_PREACHER_VAL = "'PREACHER'"
+    const val MT_FULL_TIME_VAL = "'FULL_TIME'"
+    const val MT_IN_ACTIVE_VAL = "'IN_ACTIVE'"
 }

@@ -14,4 +14,7 @@ interface MembersRepository {
     fun delete(member: Member): Flow<Member>
     fun deleteById(memberId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    // Movements:
+    fun deleteMovementById(memberMovementId: UUID): Flow<UUID>
 }

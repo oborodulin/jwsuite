@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.local.LocalCongregationDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
 import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import kotlinx.coroutines.flow.flow
@@ -26,6 +26,10 @@ class CongregationsRepositoryImpl @Inject constructor(
     override fun getFavorite() =
         localCongregationDataSource.getFavoriteCongregation()
             .map(mappers.congregationViewToCongregationMapper::nullableMap)
+
+    override fun getFavoriteTotals() =
+        localCongregationDataSource.getFavoriteCongregationTotals()
+            .map(mappers.congregationTotalViewToCongregationTotalsMapper::nullableMap)
 
     override fun save(congregation: Congregation) = flow {
         if (congregation.id == null) {

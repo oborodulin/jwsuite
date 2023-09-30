@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalTerritoryCategoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.domain.model.TerritoryCategory
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import kotlinx.coroutines.flow.flow

@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalEntranceDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.domain.model.Entrance
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import kotlinx.coroutines.flow.flow

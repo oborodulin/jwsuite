@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Entity(
@@ -28,6 +29,7 @@ data class CongregationEntity(
     val congregationName: String,
     val territoryMark: String,
     val isFavorite: Boolean = false,
+    val lastVisitDate: OffsetDateTime? = null,
     @ColumnInfo(index = true) val cLocalitiesId: UUID
 ) : BaseEntity() {
 

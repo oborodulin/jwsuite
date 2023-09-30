@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_congregation.di
 
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationToCongregationEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationTotalViewToCongregationTotalsMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewListToCongregationsListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationsListToCongregationEntityListMapper
@@ -13,6 +14,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupsListToGroupEntityListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberMovementEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewListToMembersListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MembersListToMemberEntityListMapper
@@ -65,18 +67,25 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
+    fun provideCongregationTotalViewToCongregationTotalsMapper(mapper: FavoriteCongregationViewToCongregationMapper): CongregationTotalViewToCongregationTotalsMapper =
+        CongregationTotalViewToCongregationTotalsMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideCongregationMappers(
         congregationViewListToCongregationsListMapper: CongregationViewListToCongregationsListMapper,
         congregationViewToCongregationMapper: CongregationViewToCongregationMapper,
         congregationsListToCongregationEntityListMapper: CongregationsListToCongregationEntityListMapper,
         congregationToCongregationEntityMapper: CongregationToCongregationEntityMapper,
-        favoriteCongregationViewToCongregationMapper: FavoriteCongregationViewToCongregationMapper
+        favoriteCongregationViewToCongregationMapper: FavoriteCongregationViewToCongregationMapper,
+        congregationTotalViewToCongregationTotalsMapper: CongregationTotalViewToCongregationTotalsMapper
     ): CongregationMappers = CongregationMappers(
         congregationViewListToCongregationsListMapper,
         congregationViewToCongregationMapper,
         congregationsListToCongregationEntityListMapper,
         congregationToCongregationEntityMapper,
-        favoriteCongregationViewToCongregationMapper
+        favoriteCongregationViewToCongregationMapper,
+        congregationTotalViewToCongregationTotalsMapper
     )
 
     // Groups:
@@ -131,6 +140,11 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
+    fun provideMemberToMemberMovementEntityMapper(): MemberToMemberMovementEntityMapper =
+        MemberToMemberMovementEntityMapper()
+
+    @Singleton
+    @Provides
     fun provideMembersListToMemberEntityListMapper(mapper: MemberToMemberEntityMapper): MembersListToMemberEntityListMapper =
         MembersListToMemberEntityListMapper(mapper = mapper)
 
@@ -140,11 +154,13 @@ object CongregationMappersModule {
         memberViewListToMembersListMapper: MemberViewListToMembersListMapper,
         memberViewToMemberMapper: MemberViewToMemberMapper,
         membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
-        memberToMemberEntityMapper: MemberToMemberEntityMapper
+        memberToMemberEntityMapper: MemberToMemberEntityMapper,
+        memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper
     ): MemberMappers = MemberMappers(
         memberViewListToMembersListMapper,
         memberViewToMemberMapper,
         membersListToMemberEntityListMapper,
-        memberToMemberEntityMapper
+        memberToMemberEntityMapper,
+        memberToMemberMovementEntityMapper
     )
 }

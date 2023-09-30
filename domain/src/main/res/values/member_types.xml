@@ -2,5 +2,9 @@
     <string-array name="member_types">
         <!--PREACHER -->
         <item>возвещатель</item>
+        <!--FULL_TIME -->
+        <item>полновременный</item>
+        <!--IN_ACTIVE -->
+        <item>неактивный</item>
     </string-array>
 </resources>

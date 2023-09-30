@@ -1,11 +1,11 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryMappers
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalEntranceDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalFloorDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalHouseDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalRoomDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.local.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalRoomDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.model.Territory
 import com.oborodulin.jwsuite.domain.model.TerritoryStreet
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository

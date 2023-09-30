@@ -6,9 +6,9 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMa
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.CongregationsRepositoryImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.GroupsRepositoryImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.MembersRepositoryImpl
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.local.LocalCongregationDataSource
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.local.LocalGroupDataSource
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.local.LocalMemberDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalGroupDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository

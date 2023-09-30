@@ -15,10 +15,11 @@ data class MemberUi(
     val memberFullName: String? = null,
     val memberShortName: String? = null,
     val phoneNumber: String? = null,
-    val memberType: MemberType = MemberType.PREACHER,
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
-    val inactiveDate: OffsetDateTime? = null
+    val memberMovementId: UUID? = null,
+    val memberType: MemberType = MemberType.PREACHER,
+    val movementDate: OffsetDateTime = OffsetDateTime.now()
 ) : ModelUi()
 
 fun MemberUi.toMembersListItem() = MembersListItem(
@@ -31,5 +32,5 @@ fun MemberUi.toMembersListItem() = MembersListItem(
     memberType = this.memberType,
     dateOfBirth = this.dateOfBirth,
     dateOfBaptism = this.dateOfBaptism,
-    inactiveDate = this.inactiveDate
+    movementDate = this.movementDate
 )

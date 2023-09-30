@@ -8,7 +8,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.R
-import com.oborodulin.jwsuite.domain.util.MemberType
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -35,10 +34,8 @@ data class MemberEntity(
     val patronymic: String? = null,
     val pseudonym: String,
     val phoneNumber: String? = null,
-    val memberType: MemberType = MemberType.PREACHER,
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
-    val inactiveDate: OffsetDateTime? = null,
     @ColumnInfo(index = true) val mGroupsId: UUID
 ) : BaseEntity() {
 
@@ -49,15 +46,12 @@ data class MemberEntity(
             memberId: UUID = UUID.randomUUID(), groupId: UUID = UUID.randomUUID(),
             memberNum: String, memberName: String? = null, surname: String? = null,
             patronymic: String? = null, pseudonym: String, phoneNumber: String? = null,
-            memberType: MemberType = MemberType.PREACHER,
-            dateOfBirth: OffsetDateTime? = null, dateOfBaptism: OffsetDateTime? = null,
-            inactiveDate: OffsetDateTime? = null
+            dateOfBirth: OffsetDateTime? = null, dateOfBaptism: OffsetDateTime? = null
         ) = MemberEntity(
             memberId = memberId, mGroupsId = groupId,
             memberNum = memberNum, memberName = memberName, surname = surname,
             patronymic = patronymic, pseudonym = pseudonym,
-            phoneNumber = phoneNumber, memberType = memberType,
-            dateOfBirth = dateOfBirth, dateOfBaptism = dateOfBaptism, inactiveDate = inactiveDate
+            phoneNumber = phoneNumber, dateOfBirth = dateOfBirth, dateOfBaptism = dateOfBaptism
         )
 
         fun ivanovMember11(ctx: Context, groupId: UUID) = MemberEntity(
@@ -121,7 +115,6 @@ data class MemberEntity(
         var result = mGroupsId.hashCode()
         result = result * 31 + memberNum.hashCode()
         result = result * 31 + pseudonym.hashCode()
-        result = result * 31 + memberType.hashCode()
         result = result * 31 + memberName.hashCode()
         result = result * 31 + surname.hashCode()
         result = result * 31 + patronymic.hashCode()

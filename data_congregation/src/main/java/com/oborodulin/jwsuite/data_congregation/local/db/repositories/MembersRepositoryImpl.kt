@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.local.LocalMemberDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.model.Member
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import kotlinx.coroutines.flow.flow
@@ -33,9 +33,15 @@ class MembersRepositoryImpl @Inject constructor(
 
     override fun save(member: Member) = flow {
         if (member.id == null) {
-            localMemberDataSource.insertMember(mappers.memberToMemberEntityMapper.map(member))
+            localMemberDataSource.insertMember(
+                mappers.memberToMemberEntityMapper.map(member),
+                mappers.memberToMemberMovementEntityMapper.map(member)
+            )
         } else {
-            localMemberDataSource.updateMember(mappers.memberToMemberEntityMapper.map(member))
+            localMemberDataSource.updateMember(
+                mappers.memberToMemberEntityMapper.map(member),
+                mappers.memberToMemberMovementEntityMapper.map(member)
+            )
         }
         emit(member)
     }
@@ -51,4 +57,9 @@ class MembersRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localMemberDataSource.deleteAllMembers()
+
+    override fun deleteMovementById(memberMovementId: UUID) = flow {
+        localMemberDataSource.deleteMovementById(memberMovementId)
+        this.emit(memberMovementId)
+    }
 }

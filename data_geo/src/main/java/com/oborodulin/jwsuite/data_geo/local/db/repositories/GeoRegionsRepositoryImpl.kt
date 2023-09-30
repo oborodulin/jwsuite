@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_geo.local.db.repositories
 
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.local.LocalGeoRegionDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.model.GeoRegion
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import kotlinx.coroutines.flow.flow
