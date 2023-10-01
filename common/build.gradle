@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
 }
 
@@ -68,7 +69,9 @@ dependencies {
 
     // XML-parser
     implementation deps.xml.xmlpull
-    implementation deps.google.gson
+    implementation deps.json.kotlinx
+    // deps.json.kotlinx
+    // implementation deps.google.gson
 
     // Compose
     def composeBom = platform(deps.compose.bom)

@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 /**
  * Created by o.borodulin 10.June.2023
  */
+// https://medium.com/@jurajkunier/kotlinx-json-vs-gson-4ba24a21bd73
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

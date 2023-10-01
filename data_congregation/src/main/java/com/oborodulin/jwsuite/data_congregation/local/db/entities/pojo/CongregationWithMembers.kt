@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 
 data class CongregationWithMembers(
@@ -14,7 +14,7 @@ data class CongregationWithMembers(
         parentColumn = "congregationId",
         entityColumn = "memberId",
         associateBy = Junction(
-            CongregationMemberCrossRefEntity::class,
+            MemberCongregationCrossRefEntity::class,
             parentColumn = "cmCongregationsId",
             entityColumn = "cmMembersId"
         )

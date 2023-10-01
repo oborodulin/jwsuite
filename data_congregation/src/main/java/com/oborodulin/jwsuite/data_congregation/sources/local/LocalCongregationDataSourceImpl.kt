@@ -3,13 +3,10 @@ package com.oborodulin.jwsuite.data_congregation.sources.local
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.time.OffsetDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -21,7 +18,6 @@ class LocalCongregationDataSourceImpl @Inject constructor(
     private val congregationDao: CongregationDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalCongregationDataSource {
-    // Congregations:
     override fun getCongregations() = congregationDao.findDistinctAll()
 
     override fun getCongregation(congregationId: UUID) =
@@ -61,29 +57,4 @@ class LocalCongregationDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             congregationDao.makeFavoriteById(congregationId)
         }
-
-    // Members:
-    override suspend fun insertMember(
-        congregation: CongregationEntity, member: MemberEntity, activityDate: OffsetDateTime
-    ) = withContext(dispatcher) {
-        congregationDao.insert(congregation, member, activityDate)
-    }
-
-    override suspend fun updateMember(congregationMember: CongregationMemberCrossRefEntity) =
-        withContext(dispatcher) {
-            congregationDao.update(congregationMember)
-        }
-
-    override suspend fun deleteMember(congregationMember: CongregationMemberCrossRefEntity) =
-        withContext(dispatcher) {
-            congregationDao.deleteMember(congregationMember)
-        }
-
-    override suspend fun deleteMember(congregationMemberId: UUID) = withContext(dispatcher) {
-        congregationDao.deleteMemberById(congregationMemberId)
-    }
-
-    override suspend fun deleteMembers(congregationId: UUID) = withContext(dispatcher) {
-        congregationDao.deleteMembersByCongregationId(congregationId)
-    }
 }

@@ -35,11 +35,13 @@ class MembersRepositoryImpl @Inject constructor(
         if (member.id == null) {
             localMemberDataSource.insertMember(
                 mappers.memberToMemberEntityMapper.map(member),
+                mappers.memberToMemberCongregationCrossRefEntityMapper.map(member),
                 mappers.memberToMemberMovementEntityMapper.map(member)
             )
         } else {
             localMemberDataSource.updateMember(
                 mappers.memberToMemberEntityMapper.map(member),
+                mappers.memberToMemberCongregationCrossRefEntityMapper.map(member),
                 mappers.memberToMemberMovementEntityMapper.map(member)
             )
         }

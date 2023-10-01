@@ -4,8 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.OffsetDateTimeSerializer
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.domain.util.MemberType
+import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -20,10 +23,14 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class MemberMovementEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val memberMovementId: UUID = UUID.randomUUID(),
     val memberType: MemberType = MemberType.PREACHER,
+    @Serializable(with = OffsetDateTimeSerializer::class)
     val movementDate: OffsetDateTime = OffsetDateTime.now(),
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val mMembersId: UUID
 ) : BaseEntity() {
 

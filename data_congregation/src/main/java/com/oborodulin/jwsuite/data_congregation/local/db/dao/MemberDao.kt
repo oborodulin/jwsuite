@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.dao
 
 import androidx.room.*
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
@@ -39,7 +39,13 @@ interface MemberDao {
     fun findDistinctByGroupId(groupId: UUID) = findByGroupId(groupId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId WHERE cm.cmCongregationsId = :congregationId ORDER BY groupNum, surname, memberName, patronymic, pseudonym")
+    @Query(
+        """
+    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mrMembersId = m.memberId 
+    WHERE cm.mcCongregationsId = :congregationId
+    ORDER BY groupNum, surname, memberName, patronymic, pseudonym
+        """
+    )
     fun findByCongregationId(congregationId: UUID): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
@@ -49,8 +55,8 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId 
-        JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.cmCongregationsId
+    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mrMembersId = m.memberId 
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
     """
     )
@@ -62,8 +68,8 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${CongregationMemberCrossRefEntity.TABLE_NAME} cm ON cm.cmMembersId = m.memberId 
-        JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.cmCongregationsId
+    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mrMembersId = m.memberId 
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
         JOIN (SELECT g.gCongregationsId, MIN(g.groupNum) minGroupNum FROM ${GroupEntity.TABLE_NAME} g) mg ON mg.gCongregationsId = fc.congregationId AND mg.minGroupNum = m.groupNum
     ORDER BY surname, memberName, patronymic, pseudonym
     """
@@ -100,6 +106,9 @@ interface MemberDao {
     suspend fun insert(members: List<MemberEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg memberCongregation: MemberCongregationCrossRefEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberMovement: MemberMovementEntity)
 
     suspend fun insert(
@@ -112,8 +121,13 @@ interface MemberDao {
     )
 
     @Transaction
-    suspend fun insert(member: MemberEntity, memberMovement: MemberMovementEntity) {
+    suspend fun insert(
+        member: MemberEntity,
+        memberCongregation: MemberCongregationCrossRefEntity,
+        memberMovement: MemberMovementEntity
+    ) {
         insert(member)
+        insert(memberCongregation)
         insert(memberMovement)
     }
 
@@ -125,11 +139,19 @@ interface MemberDao {
     suspend fun update(vararg members: MemberEntity)
 
     @Update
+    suspend fun update(vararg memberCongregation: MemberCongregationCrossRefEntity)
+
+    @Update
     suspend fun update(vararg memberMovement: MemberMovementEntity)
 
     @Transaction
-    suspend fun update(member: MemberEntity, memberMovement: MemberMovementEntity) {
+    suspend fun update(
+        member: MemberEntity,
+        memberCongregation: MemberCongregationCrossRefEntity,
+        memberMovement: MemberMovementEntity
+    ) {
         update(member)
+        insert(memberCongregation)
         insert(memberMovement)
     }
 
@@ -145,6 +167,15 @@ interface MemberDao {
 
     @Query("DELETE FROM ${MemberEntity.TABLE_NAME} WHERE memberId = :memberId")
     suspend fun deleteById(memberId: UUID)
+
+    @Delete
+    suspend fun deleteCongregation(vararg memberCongregation: MemberCongregationCrossRefEntity)
+
+    @Query("DELETE FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} WHERE memberCongregationId = :memberCongregationId")
+    suspend fun deleteCongregationById(memberCongregationId: UUID)
+
+    @Query("DELETE FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} WHERE mrMembersId = :memberId")
+    suspend fun deleteCongregationsByMemberId(memberId: UUID)
 
     @Delete
     suspend fun deleteMovement(vararg memberMovement: MemberMovementEntity)

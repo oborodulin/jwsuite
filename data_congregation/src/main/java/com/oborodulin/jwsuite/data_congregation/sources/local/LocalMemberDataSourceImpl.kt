@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_congregation.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
@@ -26,15 +27,21 @@ class LocalMemberDataSourceImpl @Inject constructor(
     override fun getFavoriteCongregationGroupMembers() = memberDao.findByFavoriteCongregationGroup()
     override fun getGroupMembers(groupId: UUID) = memberDao.findByGroupId(groupId)
     override fun getMember(memberId: UUID) = memberDao.findDistinctById(memberId)
-    override suspend fun insertMember(member: MemberEntity, memberMovement: MemberMovementEntity) =
-        withContext(dispatcher) {
-            memberDao.insert(member, memberMovement)
-        }
+    override suspend fun insertMember(
+        member: MemberEntity,
+        memberCongregation: MemberCongregationCrossRefEntity,
+        memberMovement: MemberMovementEntity
+    ) = withContext(dispatcher) {
+        memberDao.insert(member, memberCongregation, memberMovement)
+    }
 
-    override suspend fun updateMember(member: MemberEntity, memberMovement: MemberMovementEntity) =
-        withContext(dispatcher) {
-            memberDao.update(member, memberMovement)
-        }
+    override suspend fun updateMember(
+        member: MemberEntity,
+        memberCongregation: MemberCongregationCrossRefEntity,
+        memberMovement: MemberMovementEntity
+    ) = withContext(dispatcher) {
+        memberDao.update(member, memberCongregation, memberMovement)
+    }
 
     override suspend fun deleteMember(member: MemberEntity) = withContext(dispatcher) {
         memberDao.delete(member)

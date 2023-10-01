@@ -17,6 +17,10 @@ class MemberUiToMemberMapper(private val groupUiMapper: GroupUiToGroupMapper) :
             phoneNumber = input.phoneNumber,
             dateOfBirth = input.dateOfBirth,
             dateOfBaptism = input.dateOfBaptism,
+            memberCongregationId = input.memberCongregationId,
+            congregationId = input.congregationId!!,
+            activityDate = input.activityDate,
+            memberMovementId = input.memberMovementId,
             memberType = input.memberType,
             movementDate = input.movementDate
         )

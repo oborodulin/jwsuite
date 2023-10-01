@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupViewToGroupMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupsListToGroupEntityListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberCongregationCrossRefEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberMovementEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewListToMembersListMapper
@@ -140,6 +141,11 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
+    fun provideMemberToMemberCongregationCrossRefEntityMapper(): MemberToMemberCongregationCrossRefEntityMapper =
+        MemberToMemberCongregationCrossRefEntityMapper()
+
+    @Singleton
+    @Provides
     fun provideMemberToMemberMovementEntityMapper(): MemberToMemberMovementEntityMapper =
         MemberToMemberMovementEntityMapper()
 
@@ -155,12 +161,14 @@ object CongregationMappersModule {
         memberViewToMemberMapper: MemberViewToMemberMapper,
         membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
         memberToMemberEntityMapper: MemberToMemberEntityMapper,
+        memberToMemberCongregationCrossRefEntityMapper: MemberToMemberCongregationCrossRefEntityMapper,
         memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper
     ): MemberMappers = MemberMappers(
         memberViewListToMembersListMapper,
         memberViewToMemberMapper,
         membersListToMemberEntityListMapper,
         memberToMemberEntityMapper,
+        memberToMemberCongregationCrossRefEntityMapper,
         memberToMemberMovementEntityMapper
     )
 }

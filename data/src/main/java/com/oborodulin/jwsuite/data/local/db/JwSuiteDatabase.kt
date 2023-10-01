@@ -5,21 +5,23 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.google.gson.Gson
 import com.oborodulin.home.common.util.Mapper
 import com.oborodulin.jwsuite.data.local.db.converters.JwSuiteTypeConverters
 import com.oborodulin.jwsuite.data.local.db.entities.*
 import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.DATABASE_PASSPHRASE
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
+import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
@@ -32,7 +34,6 @@ import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoStreetDao
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
@@ -43,6 +44,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityDistrictView
@@ -87,17 +89,21 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNames
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import kotlinx.coroutines.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.sqlcipher.database.SupportFactory
 import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.Executors
 
+// https://stackoverflow.com/questions/65043370/type-mismatch-when-serializing-data-class
+//import kotlinx.serialization.encodeToString
 
 private const val TAG = "JwSuiteDatabase"
 
 @Database(
-    entities = [com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity::class,
+    entities = [AppSettingEntity::class, RoleEntity::class,
         GeoRegionEntity::class, GeoRegionTlEntity::class,
         GeoRegionDistrictEntity::class, GeoRegionDistrictTlEntity::class,
         GeoLocalityEntity::class, GeoLocalityTlEntity::class,
@@ -105,7 +111,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoMicrodistrictEntity::class, GeoMicrodistrictTlEntity::class,
         GeoStreetEntity::class, GeoStreetTlEntity::class, GeoStreetDistrictEntity::class,
         CongregationEntity::class, GroupEntity::class, MemberEntity::class, MemberMovementEntity::class,
-        CongregationMemberCrossRefEntity::class, MemberMinistryEntity::class,
+        MemberRoleCrossRefEntity::class, MemberCongregationCrossRefEntity::class, MemberMinistryEntity::class,
         TerritoryCategoryEntity::class, TerritoryEntity::class, TerritoryStreetEntity::class,
         TerritoryMemberCrossRefEntity::class,
         HouseEntity::class, EntranceEntity::class, FloorEntity::class, RoomEntity::class,
@@ -162,7 +168,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         private var INSTANCE: JwSuiteDatabase? = null
 
         @Synchronized
-        fun getInstance(context: Context, jsonLogger: Gson? = Gson()): JwSuiteDatabase {
+        fun getInstance(context: Context, jsonLogger: Json? = Json): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -192,7 +198,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         }
 
         @Synchronized
-        fun getTestInstance(context: Context, jsonLogger: Gson? = null): JwSuiteDatabase {
+        fun getTestInstance(context: Context, jsonLogger: Json? = null): JwSuiteDatabase {
             var instance = INSTANCE
             if (instance == null) {
                 instance =
@@ -209,7 +215,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         // https://androidexplained.github.io/android/room/2020/10/03/room-backup-restore.html
         @Synchronized
-        fun getBackupInstance(context: Context, jsonLogger: Gson? = Gson()): JwSuiteDatabase {
+        fun getBackupInstance(context: Context, jsonLogger: Json? = Json): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -278,7 +284,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     /**
      * https://stackoverflow.com/questions/5955202/how-to-remove-database-from-emulator
      */
-    class DatabaseCallback(private val context: Context, private val jsonLogger: Gson? = null) :
+    class DatabaseCallback(private val context: Context, private val jsonLogger: Json? = null) :
         Callback() {
         private val currentDateTime: OffsetDateTime = OffsetDateTime.now()
 
@@ -307,7 +313,8 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             try {
                 // Default settings:
                 insertDefAppSettings(db)
-
+                // Default member roles:
+                insertDefMemberRoles(db)
                 // ==============================
                 // GEO:
                 // Default regions:
@@ -471,7 +478,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     Mapper.toContentValues(congregation1)
                 )
                 Timber.tag(TAG).i("CONGREGATION: Default 1 Congregation imported")
-                jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(congregation1)) }
+                jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
                 // 2
                 val congregation2 = CongregationEntity.secondCongregation(
                     context, donetsk.localityId
@@ -481,7 +488,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     Mapper.toContentValues(congregation2)
                 )
                 Timber.tag(TAG).i("CONGREGATION: Default 2 Congregation imported")
-                jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(congregation2)) }
+                jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation2)) }
 
                 // Default Groups:
                 val group11 = insertDefGroup(db, 1, congregation1)
@@ -564,129 +571,81 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         private fun insertDefAppSettings(db: SupportSQLiteDatabase) {
             // Lang
-            val lang =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.langParam()
+            val lang = AppSettingEntity.langParam()
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(lang)
             )
             // Currency Code
-            val currencyCode =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.currencyCodeParam()
+            val currencyCode = AppSettingEntity.currencyCodeParam()
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(currencyCode)
             )
             // All Items
-            val allItems =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.allItemsParam(
-                    context
-                )
+            val allItems = AppSettingEntity.allItemsParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(allItems)
             )
             // Day Mu
-            val dayMu =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.dayMuParam(
-                    context
-                )
+            val dayMu = AppSettingEntity.dayMuParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(dayMu)
             )
             // Month Mu
-            val monthMu =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.monthMuParam(
-                    context
-                )
+            val monthMu = AppSettingEntity.monthMuParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
             // Year Mu
-            val yearMu =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.yearMuParam(
-                    context
-                )
+            val yearMu = AppSettingEntity.yearMuParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
             // Person Num MU
-            val personNumMu =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.personNumMuParam(
-                    context
-                )
+            val personNumMu = AppSettingEntity.personNumMuParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(personNumMu)
             )
             // Territory Business Mark
-            val territoryBusinessMark =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryBusinessMarkParam(
-                    context
-                )
+            val territoryBusinessMark = AppSettingEntity.territoryBusinessMarkParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryBusinessMark)
             )
             // Territory Processing Period
-            val territoryProcessingPeriod =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryProcessingPeriodParam(
-                    context
-                )
+            val territoryProcessingPeriod = AppSettingEntity.territoryProcessingPeriodParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryProcessingPeriod)
             )
             // Territory At Hand Period
-            val territoryAtHandPeriod =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryAtHandPeriodParam(
-                    context
-                )
+            val territoryAtHandPeriod = AppSettingEntity.territoryAtHandPeriodParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryAtHandPeriod)
             )
             // Territory Rooms Limit
-            val territoryRoomsLimit =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryRoomsLimitParam(
-                    context
-                )
+            val territoryRoomsLimit = AppSettingEntity.territoryRoomsLimitParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryRoomsLimit)
             )
             // Territory Max Rooms
-            val territoryMaxRoomsParam =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryMaxRoomsParam(
-                    context
-                )
+            val territoryMaxRoomsParam = AppSettingEntity.territoryMaxRoomsParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryMaxRoomsParam)
             )
             // Territory Idle Period
-            val territoryIdlePeriod =
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.territoryIdlePeriodParam(
-                    context
-                )
+            val territoryIdlePeriod = AppSettingEntity.territoryIdlePeriodParam(context)
             db.insert(
-                com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity.TABLE_NAME,
-                SQLiteDatabase.CONFLICT_REPLACE,
+                AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryIdlePeriod)
             )
             Timber.tag(TAG).i("Default app parameters imported")
@@ -694,16 +653,64 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Timber.tag(TAG)
                     .i(
                         ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryBusinessMark\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
-                        it.toJson(lang),
-                        it.toJson(currencyCode),
-                        it.toJson(allItems),
-                        it.toJson(dayMu),
-                        it.toJson(monthMu),
-                        it.toJson(yearMu),
-                        it.toJson(personNumMu),
-                        it.toJson(territoryBusinessMark), it.toJson(territoryProcessingPeriod),
-                        it.toJson(territoryAtHandPeriod), it.toJson(territoryRoomsLimit),
-                        it.toJson(territoryMaxRoomsParam), it.toJson(territoryIdlePeriod)
+                        it.encodeToString(lang),
+                        it.encodeToString(currencyCode),
+                        it.encodeToString(allItems),
+                        it.encodeToString(dayMu),
+                        it.encodeToString(monthMu),
+                        it.encodeToString(yearMu),
+                        it.encodeToString(personNumMu),
+                        it.encodeToString(territoryBusinessMark),
+                        it.encodeToString(territoryProcessingPeriod),
+                        it.encodeToString(territoryAtHandPeriod),
+                        it.encodeToString(territoryRoomsLimit),
+                        it.encodeToString(territoryMaxRoomsParam),
+                        it.encodeToString(territoryIdlePeriod)
+                    )
+            }
+        }
+
+        private fun insertDefMemberRoles(db: SupportSQLiteDatabase) {
+            // Admin
+            val admin = RoleEntity.adminRole(context)
+            db.insert(
+                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(admin)
+            )
+            // User
+            val user = RoleEntity.userRole(context)
+            db.insert(
+                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(user)
+            )
+            // Territories
+            val territories = RoleEntity.territoriesRole(context)
+            db.insert(
+                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(territories)
+            )
+            // Bills
+            val bills = RoleEntity.billsRole(context)
+            db.insert(
+                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(bills)
+            )
+            // Reports
+            val reports = RoleEntity.reportsRole(context)
+            db.insert(
+                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(reports)
+            )
+            Timber.tag(TAG).i("Default member roles imported")
+            jsonLogger?.let {
+                Timber.tag(TAG)
+                    .i(
+                        ": {\"roles\": {\"admin\": {%s}, \"user\": {%s}, \"territories\": {%s}, \"bills\": {%s}, \"reports\": {%s}}",
+                        it.encodeToString(admin),
+                        it.encodeToString(user),
+                        it.encodeToString(territories),
+                        it.encodeToString(bills),
+                        it.encodeToString(reports)
                     )
             }
         }
@@ -733,7 +740,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 )
                 Timber.tag(TAG).i("CONGREGATION: Default group imported")
                 jsonLogger?.let { logger ->
-                    Timber.tag(TAG).i(": {\"group\": {%s}}", logger.toJson(it))
+                    Timber.tag(TAG).i(": {\"group\": {%s}}", logger.encodeToString(it))
                 }
             }
             return group!!
@@ -772,19 +779,19 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     MemberEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(it)
                 )
-                val congregationMember = CongregationMemberCrossRefEntity.defaultCongregationMember(
+                val congregationMember = MemberCongregationCrossRefEntity.defaultCongregationMember(
                     congregationId = congregation.congregationId, memberId = it.memberId
                 )
                 db.insert(
-                    CongregationMemberCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                    MemberCongregationCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(congregationMember)
                 )
                 Timber.tag(TAG).i("CONGREGATION: Default member imported")
                 jsonLogger?.let { logger ->
                     Timber.tag(TAG).i(
                         ": {\"member\": {%s}, \"congregationMember\": {%s}}",
-                        logger.toJson(it),
-                        logger.toJson(congregationMember)
+                        logger.encodeToString(it),
+                        logger.encodeToString(congregationMember)
                     )
                 }
             }
@@ -806,7 +813,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             Timber.tag(TAG).i("GEO: Default region imported")
             jsonLogger?.let {
                 Timber.tag(TAG).i(
-                    ": {\"region\": {%s}, \"tl\": {%s}}", it.toJson(region), it.toJson(textContent)
+                    ": {\"region\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(region),
+                    it.encodeToString(textContent)
                 )
             }
             return region
@@ -832,7 +841,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG).i(
                     ": {\"regionDistrict\": {%s}, \"tl\": {%s}}",
-                    it.toJson(regionDistrict), it.toJson(textContent)
+                    it.encodeToString(regionDistrict), it.encodeToString(textContent)
                 )
             }
             return regionDistrict
@@ -854,7 +863,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG).i(
                     ": {\"locality\": {%s}, \"tl\": {%s}}",
-                    it.toJson(locality), it.toJson(textContent)
+                    it.encodeToString(locality), it.encodeToString(textContent)
                 )
             }
             return locality
@@ -881,7 +890,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG).i(
                     ": {\"localityDistrict\": {%s}, \"tl\": {%s}}",
-                    it.toJson(localityDistrict), it.toJson(textContent)
+                    it.encodeToString(localityDistrict), it.encodeToString(textContent)
                 )
             }
             return localityDistrict
@@ -906,7 +915,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG).i(
                     ": {\"microdistrict\": {%s}, \"tl\": {%s}}",
-                    it.toJson(microdistrict), it.toJson(textContent)
+                    it.encodeToString(microdistrict), it.encodeToString(textContent)
                 )
             }
             return microdistrict
@@ -929,7 +938,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG).i(
                     ": {\"street\": {%s}, \"tl\": {%s}}",
-                    it.toJson(street), it.toJson(textContent)
+                    it.encodeToString(street), it.encodeToString(textContent)
                 )
             }
             return street
@@ -950,7 +959,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Mapper.toContentValues(streetDistrict)
             )
             Timber.tag(TAG).i("GEO: Default street district imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(streetDistrict)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(streetDistrict)) }
         }
 
         private fun insertDefHouse(db: SupportSQLiteDatabase, house: HouseEntity): HouseEntity {
@@ -959,7 +968,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Mapper.toContentValues(house)
             )
             Timber.tag(TAG).i("GEO: Default house imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(house)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(house)) }
             return house
         }
 
@@ -971,7 +980,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Mapper.toContentValues(territoryCategory)
             )
             Timber.tag(TAG).i("TERRITORY: Default territory category imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(territoryCategory)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryCategory)) }
             return territoryCategory
         }
 
@@ -1021,7 +1030,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 jsonLogger?.let {
                     Timber.tag(TAG).i(
                         ": {\"territory\": {%s}, \"congregationTerritory\": {%s}}",
-                        it.toJson(territory), it.toJson(congregationTerritory)
+                        it.encodeToString(territory), it.encodeToString(congregationTerritory)
                     )
                 }
                 territories.add(territory)
@@ -1046,9 +1055,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Array(1) { handOutTerritory.territoryId.toString() }
             )
             Timber.tag(TAG).i("TERRITORY: Default territory member imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(territoryMember)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryMember)) }
             Timber.tag(TAG).i("TERRITORY: Default hand out territory imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(handOutTerritory)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(handOutTerritory)) }
             return territoryMember
         }
 
@@ -1069,9 +1078,11 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Array(1) { idleTerritory.territoryId.toString() }
             )
             Timber.tag(TAG).i("TERRITORY: Delivery imported territory member")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(deliveryTerritoryMember)) }
+            jsonLogger?.let {
+                Timber.tag(TAG).i(": {%s}", it.encodeToString(deliveryTerritoryMember))
+            }
             Timber.tag(TAG).i("TERRITORY: Delivery imported territory")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(idleTerritory)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(idleTerritory)) }
         }
 
         private fun insertDefTerritoryStreet(
@@ -1086,7 +1097,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Mapper.toContentValues(territoryStreet)
             )
             Timber.tag(TAG).i("TERRITORY: Default territory street imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.toJson(territoryStreet)) }
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryStreet)) }
         }
     }
 }

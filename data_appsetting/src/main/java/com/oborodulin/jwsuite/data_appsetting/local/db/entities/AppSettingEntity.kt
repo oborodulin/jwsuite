@@ -5,9 +5,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.R
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.home.common.util.Utils.Companion.currencyCode
 import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import kotlinx.serialization.Serializable
 import java.util.Locale
 import java.util.UUID
 
@@ -15,7 +17,9 @@ import java.util.UUID
     tableName = AppSettingEntity.TABLE_NAME,
     indices = [Index(value = ["paramName"], unique = true)]
 )
+@Serializable
 data class AppSettingEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val settingId: UUID = UUID.randomUUID(),
     val paramName: AppSettingParam,
     val paramValue: String

@@ -2,8 +2,6 @@ package com.oborodulin.jwsuite.data_congregation.local.db.dao
 
 import androidx.room.*
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.pojo.CongregationWithGroupMembers
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
-import java.time.OffsetDateTime
 import java.util.*
 
 private const val TAG = "Data.CongregationDao"
@@ -75,29 +72,12 @@ interface CongregationDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(congregations: List<CongregationEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg congregationMember: CongregationMemberCrossRefEntity)
-
-    suspend fun insert(
-        congregation: CongregationEntity, member: MemberEntity,
-        activityDate: OffsetDateTime = OffsetDateTime.now()
-    ) = insert(
-        CongregationMemberCrossRefEntity(
-            cmCongregationsId = congregation.congregationId,
-            cmMembersId = member.memberId,
-            activityDate = activityDate
-        )
-    )
-
     // UPDATES:
     @Update
     suspend fun update(congregation: CongregationEntity)
 
     @Update
     suspend fun update(vararg congregations: CongregationEntity)
-
-    @Update
-    suspend fun update(vararg congregationMember: CongregationMemberCrossRefEntity)
 
     // DELETES:
     @Delete
@@ -111,15 +91,6 @@ interface CongregationDao {
 
     @Query("DELETE FROM ${CongregationEntity.TABLE_NAME} WHERE congregationId = :congregationId")
     suspend fun deleteById(congregationId: UUID)
-
-    @Delete
-    suspend fun deleteMember(vararg congregationMember: CongregationMemberCrossRefEntity)
-
-    @Query("DELETE FROM ${CongregationMemberCrossRefEntity.TABLE_NAME} WHERE congregationMemberId = :congregationMemberId")
-    suspend fun deleteMemberById(congregationMemberId: UUID)
-
-    @Query("DELETE FROM ${CongregationMemberCrossRefEntity.TABLE_NAME} WHERE cmCongregationsId = :congregationId")
-    suspend fun deleteMembersByCongregationId(congregationId: UUID)
 
     @Query("DELETE FROM ${CongregationEntity.TABLE_NAME}")
     suspend fun deleteAll()

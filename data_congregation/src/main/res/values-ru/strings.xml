@@ -54,4 +54,11 @@
     <string name="def_matveychuk_member_patronymic">Степанович</string>
     <string name="def_matveychuk_member_pseudonym">АС21</string>
     <string name="def_matveychuk_member_birth_date">05–09–1973</string>
+
+    <!--Роли членов собрания-->
+    <string name="def_role_name_admin">Администратор</string>
+    <string name="def_role_name_user">Возвещатель</string>
+    <string name="def_role_name_territories">Участки</string>
+    <string name="def_role_name_bills">Счета</string>
+    <string name="def_role_name_reports">Отчёты</string>
 </resources>

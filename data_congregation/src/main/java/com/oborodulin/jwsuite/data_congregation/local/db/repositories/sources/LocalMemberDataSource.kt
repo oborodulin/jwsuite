@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources
 
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
@@ -12,8 +13,18 @@ interface LocalMemberDataSource {
     fun getFavoriteCongregationGroupMembers(): Flow<List<MemberView>>
     fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
     fun getMember(memberId: UUID): Flow<MemberView>
-    suspend fun insertMember(member: MemberEntity, memberMovement: MemberMovementEntity)
-    suspend fun updateMember(member: MemberEntity, memberMovement: MemberMovementEntity)
+    suspend fun insertMember(
+        member: MemberEntity,
+        memberCongregation: MemberCongregationCrossRefEntity,
+        memberMovement: MemberMovementEntity
+    )
+
+    suspend fun updateMember(
+        member: MemberEntity,
+        memberCongregation: MemberCongregationCrossRefEntity,
+        memberMovement: MemberMovementEntity
+    )
+
     suspend fun deleteMember(member: MemberEntity)
     suspend fun deleteMemberById(memberId: UUID)
     suspend fun deleteMembers(members: List<MemberEntity>)

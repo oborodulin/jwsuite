@@ -6,8 +6,11 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.OffsetDateTimeSerializer
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.R
+import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -26,7 +29,9 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class MemberEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val memberId: UUID = UUID.randomUUID(),
     val memberNum: String,
     val memberName: String? = null,
@@ -34,8 +39,11 @@ data class MemberEntity(
     val patronymic: String? = null,
     val pseudonym: String,
     val phoneNumber: String? = null,
+    @Serializable(with = OffsetDateTimeSerializer::class)
     val dateOfBirth: OffsetDateTime? = null,
+    @Serializable(with = OffsetDateTimeSerializer::class)
     val dateOfBaptism: OffsetDateTime? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val mGroupsId: UUID
 ) : BaseEntity() {
 

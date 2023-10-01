@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
 }
 
@@ -70,7 +71,8 @@ dependencies {
     implementation deps.jvm.inject
 
     // JSON
-    implementation deps.google.gson
+    implementation deps.json.kotlinx
+    //implementation deps.google.gson
 
     // Coroutines
     implementation deps.coroutines.android

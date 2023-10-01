@@ -15,6 +15,9 @@ data class Member(
     val phoneNumber: String? = null,
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
+    var memberCongregationId: UUID? = null,
+    val congregationId: UUID,
+    val activityDate: OffsetDateTime,
     var memberMovementId: UUID? = null,
     val memberType: MemberType = MemberType.PREACHER,
     val movementDate: OffsetDateTime

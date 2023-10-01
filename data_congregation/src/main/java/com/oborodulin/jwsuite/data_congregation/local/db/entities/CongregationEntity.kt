@@ -6,9 +6,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.OffsetDateTimeSerializer
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
+import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -23,13 +26,17 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class CongregationEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val congregationId: UUID = UUID.randomUUID(),
     val congregationNum: String,
     val congregationName: String,
     val territoryMark: String,
     val isFavorite: Boolean = false,
+    @Serializable(with = OffsetDateTimeSerializer::class)
     val lastVisitDate: OffsetDateTime? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val cLocalitiesId: UUID
 ) : BaseEntity() {
 

@@ -8,6 +8,7 @@ import com.oborodulin.home.common.util.Constants.CONV_COEFF_BIGDECIMAL
 import com.oborodulin.jwsuite.domain.util.AppSettingParam
 import com.oborodulin.jwsuite.domain.util.BuildingType
 import com.oborodulin.jwsuite.domain.util.LocalityType
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.RoadType
 import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
@@ -139,6 +140,13 @@ object JwSuiteTypeConverters {
 
     @TypeConverter
     fun fromTerritoryCategoryType(value: TerritoryCategoryType) = value.name
+
+    //-----------------------------
+    @TypeConverter
+    fun toMemberRoleType(value: String) = enumValueOf<MemberRoleType>(value)
+
+    @TypeConverter
+    fun fromMemberRoleType(value: MemberRoleType) = value.name
 
     //-----------------------------
     @TypeConverter
