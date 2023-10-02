@@ -19,9 +19,9 @@ class MemberViewToMemberMapper(private val groupMapper: GroupViewToGroupMapper) 
             phoneNumber = input.member.phoneNumber,
             dateOfBirth = input.member.dateOfBirth,
             dateOfBaptism = input.member.dateOfBaptism,
-            memberCongregationId = input.congregation.memberCongregationId,
-            congregationId = input.congregation.mcCongregationsId,
-            activityDate = input.congregation.activityDate,
+            memberCongregationId = input.memberCongregation.memberCongregationId,
+            congregationId = input.memberCongregation.mcCongregationsId,
+            activityDate = input.memberCongregation.activityDate,
             memberMovementId = input.movement.memberMovementId,
             memberType = input.movement.memberType,
             movementDate = input.movement.movementDate

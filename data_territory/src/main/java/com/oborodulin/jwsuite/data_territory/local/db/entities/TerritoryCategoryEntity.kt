@@ -4,16 +4,20 @@ import android.content.Context
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
     tableName = TerritoryCategoryEntity.TABLE_NAME,
     indices = [Index(value = ["territoryCategoryCode"], unique = true)],
 )
+@Serializable
 data class TerritoryCategoryEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryCategoryId: UUID = UUID.randomUUID(),
     val territoryCategoryCode: TerritoryCategoryType,
     val territoryCategoryMark: String,

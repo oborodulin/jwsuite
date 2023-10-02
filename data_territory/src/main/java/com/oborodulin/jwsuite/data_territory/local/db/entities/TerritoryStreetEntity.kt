@@ -5,8 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -29,12 +31,16 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class TerritoryStreetEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryStreetId: UUID = UUID.randomUUID(),
     val isEvenSide: Boolean? = null,
     val isTerStreetPrivateSector: Boolean? = null,
     val estTerStreetHouses: Int? = null, // estimated houses of the territory street
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tsStreetsId: UUID,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tsTerritoriesId: UUID
 ) : BaseEntity() {
 

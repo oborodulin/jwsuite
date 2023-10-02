@@ -43,8 +43,8 @@ data class MemberRoleCrossRefEntity(
     companion object {
         const val TABLE_NAME = "member_roles"
 
-        fun defaultCongregationMember(roleId: UUID, memberId: UUID) = MemberRoleCrossRefEntity(
-            mrRolesId = roleId, mrMembersId = memberId
+        fun defaultMemberRole(memberId: UUID, roleId: UUID) = MemberRoleCrossRefEntity(
+            mrMembersId = memberId, mrRolesId = roleId
         )
     }
 

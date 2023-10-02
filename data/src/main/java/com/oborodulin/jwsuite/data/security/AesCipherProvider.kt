@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data.security
 
+import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import com.oborodulin.jwsuite.data.di.SecurityModule
 import java.security.KeyStore

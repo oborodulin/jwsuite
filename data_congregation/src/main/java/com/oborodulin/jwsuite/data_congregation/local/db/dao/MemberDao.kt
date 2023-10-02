@@ -5,7 +5,10 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.MemberType
@@ -41,7 +44,7 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mrMembersId = m.memberId 
+    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
     WHERE cm.mcCongregationsId = :congregationId
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
         """
@@ -55,7 +58,7 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mrMembersId = m.memberId 
+    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
         JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
     """
@@ -68,7 +71,7 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mrMembersId = m.memberId 
+    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
         JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
         JOIN (SELECT g.gCongregationsId, MIN(g.groupNum) minGroupNum FROM ${GroupEntity.TABLE_NAME} g) mg ON mg.gCongregationsId = fc.congregationId AND mg.minGroupNum = m.groupNum
     ORDER BY surname, memberName, patronymic, pseudonym
@@ -81,6 +84,22 @@ interface MemberDao {
         findByFavoriteCongregationGroup().distinctUntilChanged()
 
     //-----------------------------
+    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId ORDER BY roleName")
+    fun findRolesByMemberId(memberId: UUID): Flow<List<MemberRoleView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctRolesByMemberId(memberId: UUID) =
+        findRolesByMemberId(memberId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${RoleEntity.TABLE_NAME} WHERE roleId Not IN (SELECT mrRolesId FROM ${MemberRoleCrossRefEntity.TABLE_NAME} WHERE mrMembersId = :memberId) ORDER BY roleName")
+    fun findRolesForMemberByMemberId(memberId: UUID): Flow<List<RoleEntity>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctRolesForMemberByMemberId(memberId: UUID) =
+        findRolesForMemberByMemberId(memberId).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
     fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberView>>
 
@@ -88,11 +107,11 @@ interface MemberDao {
     fun findByPseudonym(groupId: UUID, pseudonym: String): Flow<List<MemberView>>
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME} WHERE mMembersId = :memberId ORDER BY strftime(${DB_FRACT_SEC_TIME}, movementDate)")
+    @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME} WHERE mMembersId = :memberId ORDER BY strftime($DB_FRACT_SEC_TIME, movementDate)")
     fun findMovementsByMemberId(memberId: UUID): Flow<List<MemberMovementEntity>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctfindMovementsByMemberId(memberId: UUID) =
+    fun findDistinctMovementsByMemberId(memberId: UUID) =
         findMovementsByMemberId(memberId).distinctUntilChanged()
 
     // INSERTS:
@@ -106,10 +125,13 @@ interface MemberDao {
     suspend fun insert(members: List<MemberEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg memberCongregation: MemberCongregationCrossRefEntity)
+    suspend fun insert(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg memberMovement: MemberMovementEntity)
+    suspend fun insert(vararg memberRoles: MemberRoleCrossRefEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg memberMovements: MemberMovementEntity)
 
     suspend fun insert(
         member: MemberEntity, memberType: MemberType = MemberType.PREACHER,
@@ -139,10 +161,13 @@ interface MemberDao {
     suspend fun update(vararg members: MemberEntity)
 
     @Update
-    suspend fun update(vararg memberCongregation: MemberCongregationCrossRefEntity)
+    suspend fun update(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
     @Update
-    suspend fun update(vararg memberMovement: MemberMovementEntity)
+    suspend fun update(vararg memberRoles: MemberRoleCrossRefEntity)
+
+    @Update
+    suspend fun update(vararg memberMovements: MemberMovementEntity)
 
     @Transaction
     suspend fun update(
@@ -168,24 +193,35 @@ interface MemberDao {
     @Query("DELETE FROM ${MemberEntity.TABLE_NAME} WHERE memberId = :memberId")
     suspend fun deleteById(memberId: UUID)
 
+    @Query("DELETE FROM ${MemberEntity.TABLE_NAME}")
+    suspend fun deleteAll()
+
+    // Congregations:
     @Delete
-    suspend fun deleteCongregation(vararg memberCongregation: MemberCongregationCrossRefEntity)
+    suspend fun deleteCongregation(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
     @Query("DELETE FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} WHERE memberCongregationId = :memberCongregationId")
     suspend fun deleteCongregationById(memberCongregationId: UUID)
 
-    @Query("DELETE FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} WHERE mrMembersId = :memberId")
+    @Query("DELETE FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} WHERE mcMembersId = :memberId")
     suspend fun deleteCongregationsByMemberId(memberId: UUID)
 
+    // Roles:
     @Delete
-    suspend fun deleteMovement(vararg memberMovement: MemberMovementEntity)
+    suspend fun deleteRole(vararg memberRoles: MemberRoleCrossRefEntity)
+
+    @Query("DELETE FROM ${MemberRoleCrossRefEntity.TABLE_NAME} WHERE memberRoleId = :memberRoleId")
+    suspend fun deleteRoleById(memberRoleId: UUID)
+
+    @Query("DELETE FROM ${MemberRoleCrossRefEntity.TABLE_NAME} WHERE mrMembersId = :memberId")
+    suspend fun deleteRolesByMemberId(memberId: UUID)
+
+    @Delete
+    suspend fun deleteMovement(vararg memberMovements: MemberMovementEntity)
 
     @Query("DELETE FROM ${MemberMovementEntity.TABLE_NAME} WHERE memberMovementId = :memberMovementId")
     suspend fun deleteMovementById(memberMovementId: UUID)
 
     @Query("DELETE FROM ${MemberMovementEntity.TABLE_NAME} WHERE mMembersId = :memberId")
     suspend fun deleteMovementsByMemberId(memberId: UUID)
-
-    @Query("DELETE FROM ${MemberEntity.TABLE_NAME}")
-    suspend fun deleteAll()
 }

@@ -5,7 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -34,16 +36,22 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class RoomEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val roomId: UUID = UUID.randomUUID(),
     val roomNum: Int,
     val isIntercomRoom: Boolean? = null,
     val isResidentialRoom: Boolean = true,
     val isForeignLangRoom: Boolean = false,
     val roomDesc: String? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val rTerritoriesId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val rFloorsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val rEntrancesId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val rHousesId: UUID
 ) : BaseEntity() {
 

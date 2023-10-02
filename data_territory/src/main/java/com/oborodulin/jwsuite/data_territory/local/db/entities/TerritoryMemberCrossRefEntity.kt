@@ -5,8 +5,11 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.OffsetDateTimeSerializer
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -31,13 +34,19 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class TerritoryMemberCrossRefEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryMemberId: UUID = UUID.randomUUID(),
+    @Serializable(with = OffsetDateTimeSerializer::class)
     val receivingDate: OffsetDateTime = OffsetDateTime.now(),
+    @Serializable(with = OffsetDateTimeSerializer::class)
     val deliveryDate: OffsetDateTime? = null,
     // warning: servicesId column references a foreign key but it is not part of an index.
     // This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmcTerritoriesId: UUID,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmcMembersId: UUID
 ) : BaseEntity() {
 

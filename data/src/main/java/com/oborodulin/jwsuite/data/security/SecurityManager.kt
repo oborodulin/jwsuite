@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data.util
+package com.oborodulin.jwsuite.data.security
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties.BLOCK_MODE_GCM
@@ -13,7 +13,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 
-class SecurityUtil @Inject constructor() {
+class SecurityManager @Inject constructor() {
     private val provider = "AndroidKeyStore"
     private val cipher by lazy { Cipher.getInstance("AES/GCM/NoPadding") }
     private val charset by lazy { charset("UTF-8") }

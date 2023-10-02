@@ -3,6 +3,9 @@ package com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -12,6 +15,8 @@ interface LocalMemberDataSource {
     fun getCongregationMembers(congregationId: UUID): Flow<List<MemberView>>
     fun getFavoriteCongregationGroupMembers(): Flow<List<MemberView>>
     fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
+    fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
+    fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
     fun getMember(memberId: UUID): Flow<MemberView>
     suspend fun insertMember(
         member: MemberEntity,
@@ -29,6 +34,12 @@ interface LocalMemberDataSource {
     suspend fun deleteMemberById(memberId: UUID)
     suspend fun deleteMembers(members: List<MemberEntity>)
     suspend fun deleteAllMembers()
+
+    // Congregations:
+    // Roles:
+    suspend fun insertMemberRole(memberRole: MemberRoleCrossRefEntity)
+    suspend fun updateMemberRole(memberRole: MemberRoleCrossRefEntity)
+    suspend fun deleteRoleById(memberRoleId: UUID)
 
     // Movements:
     suspend fun deleteMovementById(memberMovementId: UUID)

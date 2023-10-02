@@ -27,6 +27,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberMovementView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
@@ -88,6 +89,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouse
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -123,7 +125,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
-        MemberMovementView::class, CongregationTotalView::class,
+        MemberRoleView::class, MemberMovementView::class, CongregationTotalView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
@@ -313,8 +315,6 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             try {
                 // Default settings:
                 insertDefAppSettings(db)
-                // Default member roles:
-                insertDefMemberRoles(db)
                 // ==============================
                 // GEO:
                 // Default regions:
@@ -468,6 +468,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
                 // ==============================
                 // CONGREGATION:
+                // Default member roles:
+                val adminRole = insertDefMemberRole(db, MemberRoleType.ADMIN)
+                val userRole = insertDefMemberRole(db, MemberRoleType.USER)
+                val territoriesRole = insertDefMemberRole(db, MemberRoleType.TERRITORIES)
+                val billsRole = insertDefMemberRole(db, MemberRoleType.BILLS)
+                val reportsRole = insertDefMemberRole(db, MemberRoleType.REPORTS)
+
                 // Default congregations:
                 // 1
                 val congregation1 = CongregationEntity.favoriteCongregation(
@@ -500,9 +507,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 val group17 = insertDefGroup(db, 7, congregation1)
 
                 // Group members:
-                val ivanov = insertDefMember(db, 1, congregation1, group11)
-                val petrov = insertDefMember(db, 2, congregation1, group11)
-                val sidorov = insertDefMember(db, 1, congregation1, group12)
+                val ivanov = insertDefMember(db, 1, congregation1, group11, adminRole)
+                val petrov = insertDefMember(db, 2, congregation1, group11, userRole)
+                val sidorov = insertDefMember(db, 1, congregation1, group12, territoriesRole)
 
                 // ==============================
                 // TERRITORY:
@@ -670,68 +677,43 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             }
         }
 
-        private fun insertDefMemberRoles(db: SupportSQLiteDatabase) {
-            // Admin
-            val admin = RoleEntity.adminRole(context)
-            db.insert(
-                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(admin)
-            )
-            // User
-            val user = RoleEntity.userRole(context)
-            db.insert(
-                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(user)
-            )
-            // Territories
-            val territories = RoleEntity.territoriesRole(context)
-            db.insert(
-                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(territories)
-            )
-            // Bills
-            val bills = RoleEntity.billsRole(context)
-            db.insert(
-                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(bills)
-            )
-            // Reports
-            val reports = RoleEntity.reportsRole(context)
-            db.insert(
-                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(reports)
-            )
-            Timber.tag(TAG).i("Default member roles imported")
-            jsonLogger?.let {
-                Timber.tag(TAG)
-                    .i(
-                        ": {\"roles\": {\"admin\": {%s}, \"user\": {%s}, \"territories\": {%s}, \"bills\": {%s}, \"reports\": {%s}}",
-                        it.encodeToString(admin),
-                        it.encodeToString(user),
-                        it.encodeToString(territories),
-                        it.encodeToString(bills),
-                        it.encodeToString(reports)
-                    )
+        private fun insertDefMemberRole(db: SupportSQLiteDatabase, roleType: MemberRoleType):
+                RoleEntity {
+            val role = when (roleType) {
+                MemberRoleType.ADMIN -> RoleEntity.adminRole(context)
+                MemberRoleType.USER -> RoleEntity.userRole(context)
+                MemberRoleType.TERRITORIES -> RoleEntity.territoriesRole(context)
+                MemberRoleType.BILLS -> RoleEntity.billsRole(context)
+                MemberRoleType.REPORTS -> RoleEntity.reportsRole(context)
             }
+            db.insert(
+                RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(role)
+            )
+            Timber.tag(TAG).i("Default member role imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(": {\"role\": {%s}}", it.encodeToString(role))
+            }
+            return role
         }
 
         private fun insertDefGroup(
             db: SupportSQLiteDatabase, groupNum: Int, congregation: CongregationEntity
         ): GroupEntity {
-            var group: GroupEntity? = null
-            when (groupNum) {
-                1 -> group = GroupEntity.group1(context, congregation.congregationId)
-                2 -> group = GroupEntity.group2(context, congregation.congregationId)
-                3 -> group = GroupEntity.group3(context, congregation.congregationId)
-                4 -> group = GroupEntity.group4(context, congregation.congregationId)
-                5 -> group = GroupEntity.group5(context, congregation.congregationId)
-                6 -> group = GroupEntity.group6(context, congregation.congregationId)
-                7 -> group = GroupEntity.group7(context, congregation.congregationId)
-                8 -> group = GroupEntity.group8(context, congregation.congregationId)
-                9 -> group = GroupEntity.group9(context, congregation.congregationId)
-                10 -> group = GroupEntity.group10(context, congregation.congregationId)
-                11 -> group = GroupEntity.group11(context, congregation.congregationId)
-                12 -> group = GroupEntity.group12(context, congregation.congregationId)
+            val group = when (groupNum) {
+                1 -> GroupEntity.group1(context, congregation.congregationId)
+                2 -> GroupEntity.group2(context, congregation.congregationId)
+                3 -> GroupEntity.group3(context, congregation.congregationId)
+                4 -> GroupEntity.group4(context, congregation.congregationId)
+                5 -> GroupEntity.group5(context, congregation.congregationId)
+                6 -> GroupEntity.group6(context, congregation.congregationId)
+                7 -> GroupEntity.group7(context, congregation.congregationId)
+                8 -> GroupEntity.group8(context, congregation.congregationId)
+                9 -> GroupEntity.group9(context, congregation.congregationId)
+                10 -> GroupEntity.group10(context, congregation.congregationId)
+                11 -> GroupEntity.group11(context, congregation.congregationId)
+                12 -> GroupEntity.group12(context, congregation.congregationId)
+                else -> null
             }
             group?.let {
                 db.insert(
@@ -748,50 +730,67 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         private fun insertDefMember(
             db: SupportSQLiteDatabase, memberNumInGroup: Int,
-            congregation: CongregationEntity, group: GroupEntity
+            congregation: CongregationEntity, group: GroupEntity, role: RoleEntity
         ): MemberEntity {
-            var member: MemberEntity? = null
-            when (congregation.congregationNum) {
+            val member = when (congregation.congregationNum) {
                 "1" -> when (group.groupNum) {
                     1 -> when (memberNumInGroup) {
-                        1 -> member = MemberEntity.ivanovMember11(context, group.groupId)
-                        2 -> member = MemberEntity.petrovMember12(context, group.groupId)
+                        1 -> MemberEntity.ivanovMember11(context, group.groupId)
+                        2 -> MemberEntity.petrovMember12(context, group.groupId)
+                        else -> null
                     }
 
                     2 -> when (memberNumInGroup) {
-                        1 -> member = MemberEntity.sidorovMember21(context, group.groupId)
+                        1 -> MemberEntity.sidorovMember21(context, group.groupId)
+                        else -> null
                     }
+
+                    else -> null
                 }
 
                 "2" -> when (group.groupNum) {
                     1 -> when (memberNumInGroup) {
-                        1 -> member = MemberEntity.tarasovaMember11(context, group.groupId)
-                        2 -> member = MemberEntity.shevchukMember12(context, group.groupId)
+                        1 -> MemberEntity.tarasovaMember11(context, group.groupId)
+                        2 -> MemberEntity.shevchukMember12(context, group.groupId)
+                        else -> null
                     }
 
                     2 -> when (memberNumInGroup) {
-                        1 -> member = MemberEntity.matveychukMember21(context, group.groupId)
+                        1 -> MemberEntity.matveychukMember21(context, group.groupId)
+                        else -> null
                     }
+
+                    else -> null
                 }
+
+                else -> null
             }
             member?.let {
                 db.insert(
                     MemberEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(it)
                 )
-                val congregationMember = MemberCongregationCrossRefEntity.defaultCongregationMember(
+                val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
                     congregationId = congregation.congregationId, memberId = it.memberId
                 )
                 db.insert(
                     MemberCongregationCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                    Mapper.toContentValues(congregationMember)
+                    Mapper.toContentValues(memberCongregation)
+                )
+                val memberRole = MemberRoleCrossRefEntity.defaultMemberRole(
+                    memberId = it.memberId, roleId = role.roleId
+                )
+                db.insert(
+                    MemberRoleCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                    Mapper.toContentValues(memberRole)
                 )
                 Timber.tag(TAG).i("CONGREGATION: Default member imported")
                 jsonLogger?.let { logger ->
                     Timber.tag(TAG).i(
-                        ": {\"member\": {%s}, \"congregationMember\": {%s}}",
+                        ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberRole\": {%s}}",
                         logger.encodeToString(it),
-                        logger.encodeToString(congregationMember)
+                        logger.encodeToString(memberCongregation),
+                        logger.encodeToString(memberRole)
                     )
                 }
             }

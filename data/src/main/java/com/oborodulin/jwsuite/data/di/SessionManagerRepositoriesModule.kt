@@ -21,7 +21,6 @@ object SessionManagerRepositoriesModule {
         localSessionManagerDataSource: LocalSessionManagerDataSource,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): SessionManagerRepository = SessionManagerRepositoryImpl(
-        localSessionManagerDataSource,
-        dispatcher
+        localSessionManagerDataSource, dispatcher
     )
 }

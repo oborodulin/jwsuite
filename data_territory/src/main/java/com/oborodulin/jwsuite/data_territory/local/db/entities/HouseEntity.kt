@@ -5,11 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.domain.util.BuildingType
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -41,7 +43,9 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class HouseEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val houseId: UUID = UUID.randomUUID(),
     val zipCode: String? = null,
     val houseNum: Int,
@@ -59,9 +63,13 @@ data class HouseEntity(
     val isForeignLangHouse: Boolean = false,
     val isHousePrivateSector: Boolean = false,
     val houseDesc: String? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val hTerritoriesId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val hMicrodistrictsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val hLocalityDistrictsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val hStreetsId: UUID
 ) : BaseEntity() {
 

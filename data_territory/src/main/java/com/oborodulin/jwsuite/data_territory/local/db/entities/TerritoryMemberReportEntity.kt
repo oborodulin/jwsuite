@@ -5,8 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.domain.util.TerritoryMemberMark
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -41,7 +43,9 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class TerritoryMemberReportEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryMemberReportId: UUID = UUID.randomUUID(),
     val territoryMemberMark: TerritoryMemberMark? = null,
     val languageCode: String? = null,
@@ -49,9 +53,13 @@ data class TerritoryMemberReportEntity(
     val age: Int? = null,
     val isProcessed: Boolean = false,
     val territoryReportDesc: String? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmrRoomsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmrHousesId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmrTerritoryStreetsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmrTerritoryMembersId: UUID
 ) : BaseEntity() {
 

@@ -5,7 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -25,7 +27,9 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class EntranceEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val entranceId: UUID = UUID.randomUUID(),
     val entranceNum: Int,
     val isSecurityEntrance: Boolean = false,
@@ -35,7 +39,9 @@ data class EntranceEntity(
     val roomsByEntranceFloor: Int? = null, // number rooms by one floor of the entrance
     val estEntranceRooms: Int? = null, // estimated rooms of the house (if null then entranceFloorsQty * roomsByEntranceFloor)
     val entranceDesc: String? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val eTerritoriesId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val eHousesId: UUID
 ) : BaseEntity() {
 

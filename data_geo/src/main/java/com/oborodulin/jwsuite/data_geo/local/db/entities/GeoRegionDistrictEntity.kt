@@ -6,8 +6,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -21,10 +23,13 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class GeoRegionDistrictEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val regionDistrictId: UUID = UUID.randomUUID(),
     val regDistrictShortName: String,
-    @ColumnInfo(index = true) val rRegionsId: UUID,
+    @Serializable(with = UUIDSerializer::class)
+    @ColumnInfo(index = true) val rRegionsId: UUID
 ) : BaseEntity() {
 
     companion object {

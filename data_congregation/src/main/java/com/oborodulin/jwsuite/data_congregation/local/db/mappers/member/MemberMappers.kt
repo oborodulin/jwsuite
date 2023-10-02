@@ -6,5 +6,8 @@ data class MemberMappers(
     val membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
     val memberToMemberEntityMapper: MemberToMemberEntityMapper,
     val memberToMemberCongregationCrossRefEntityMapper: MemberToMemberCongregationCrossRefEntityMapper,
+    val roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
+    val memberRoleViewListToMemberRolesListMapper: MemberRoleViewListToMemberRolesListMapper,
+    val memberRoleToMemberRoleCrossRefEntityMapper: MemberRoleToMemberRoleCrossRefEntityMapper,
     val memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper
 )

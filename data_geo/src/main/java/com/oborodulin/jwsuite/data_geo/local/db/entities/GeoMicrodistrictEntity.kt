@@ -6,9 +6,11 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.util.VillageType
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -31,11 +33,15 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class GeoMicrodistrictEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val microdistrictId: UUID = UUID.randomUUID(),
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
     val microdistrictShortName: String,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val mLocalityDistrictsId: UUID,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val mLocalitiesId: UUID
 ) : BaseEntity() {
 

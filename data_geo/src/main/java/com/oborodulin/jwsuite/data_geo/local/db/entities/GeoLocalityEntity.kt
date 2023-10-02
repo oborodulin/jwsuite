@@ -6,9 +6,11 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.util.LocalityType
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -28,11 +30,15 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class GeoLocalityEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val localityId: UUID = UUID.randomUUID(),
     val localityCode: String,
     val localityType: LocalityType,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val lRegionDistrictsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val lRegionsId: UUID
 ) : BaseEntity() {
 

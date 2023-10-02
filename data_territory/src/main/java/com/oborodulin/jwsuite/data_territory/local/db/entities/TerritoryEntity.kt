@@ -5,11 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
@@ -46,7 +48,9 @@ import java.util.UUID
         deferred = true
     )]
 )
+@Serializable
 data class TerritoryEntity(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryId: UUID = UUID.randomUUID(),
     val territoryNum: Int,
     val isActive: Boolean = true,
@@ -55,10 +59,15 @@ data class TerritoryEntity(
     //val isInPerimeter: Boolean = false, // need ones table perimeter_streets
     val isProcessed: Boolean = true, // for isGroupMinistry
     val territoryDesc: String? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tMicrodistrictsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tLocalityDistrictsId: UUID? = null,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tLocalitiesId: UUID,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tTerritoryCategoriesId: UUID,
+    @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tCongregationsId: UUID
 ) : BaseEntity() {
 

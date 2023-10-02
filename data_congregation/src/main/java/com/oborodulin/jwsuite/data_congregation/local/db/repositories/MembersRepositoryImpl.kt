@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.model.Member
+import com.oborodulin.jwsuite.domain.model.MemberRole
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -28,6 +29,13 @@ class MembersRepositoryImpl @Inject constructor(
     override fun getAllByGroup(groupId: UUID) = localMemberDataSource.getGroupMembers(groupId)
         .map(mappers.memberViewListToMembersListMapper::map)
 
+    override fun getMemberRoles(memberId: UUID) = localMemberDataSource.getMemberRoles(memberId)
+        .map(mappers.memberRoleViewListToMemberRolesListMapper::map)
+
+    override fun getRolesForMember(memberId: UUID) =
+        localMemberDataSource.getRolesForMember(memberId)
+            .map(mappers.roleEntityListToRolesListMapper::map)
+
     override fun get(memberId: UUID) = localMemberDataSource.getMember(memberId)
         .map(mappers.memberViewToMemberMapper::map)
 
@@ -48,6 +56,19 @@ class MembersRepositoryImpl @Inject constructor(
         emit(member)
     }
 
+    override fun saveRole(role: MemberRole) = flow {
+        if (role.id == null) {
+            localMemberDataSource.insertMemberRole(
+                mappers.memberRoleToMemberRoleCrossRefEntityMapper.map(role)
+            )
+        } else {
+            localMemberDataSource.updateMemberRole(
+                mappers.memberRoleToMemberRoleCrossRefEntityMapper.map(role)
+            )
+        }
+        emit(role)
+    }
+
     override fun delete(member: Member) = flow {
         localMemberDataSource.deleteMember(mappers.memberToMemberEntityMapper.map(member))
         this.emit(member)
@@ -59,6 +80,11 @@ class MembersRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localMemberDataSource.deleteAllMembers()
+
+    override fun deleteRoleById(memberRoleId: UUID) = flow {
+        localMemberDataSource.deleteRoleById(memberRoleId)
+        this.emit(memberRoleId)
+    }
 
     override fun deleteMovementById(memberMovementId: UUID) = flow {
         localMemberDataSource.deleteMovementById(memberMovementId)
