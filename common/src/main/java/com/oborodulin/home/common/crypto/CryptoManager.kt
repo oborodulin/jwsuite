@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data.security
+package com.oborodulin.home.common.crypto
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties.BLOCK_MODE_GCM
@@ -13,7 +13,9 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 
-class SecurityManager @Inject constructor() {
+// https://proandroiddev.com/securing-androids-datastore-ad56958ca6ee
+// https://blog.stylingandroid.com/datastore-basics/
+class CryptoManager @Inject constructor() {
     private val provider = "AndroidKeyStore"
     private val cipher by lazy { Cipher.getInstance("AES/GCM/NoPadding") }
     private val charset by lazy { charset("UTF-8") }

@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
 }
 
@@ -51,12 +52,14 @@ dependencies {
     implementation deps.coroutines.core
     implementation deps.jvm.inject
 
-    implementation deps.retrofit2.retrofit
+    // JSON
+    implementation deps.json.kotlinx
 
     implementation deps.androidx.coreKtx
     implementation deps.androidx.appcompat
     implementation deps.google.material
 /*
+    implementation deps.retrofit2.retrofit
     // Testing: Local
     implementation deps.test.extJunitKtx
     implementation deps.test.runner

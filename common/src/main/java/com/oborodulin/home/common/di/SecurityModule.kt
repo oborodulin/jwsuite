@@ -1,10 +1,9 @@
-package com.oborodulin.jwsuite.data.di
+package com.oborodulin.home.common.di
 
-import com.oborodulin.jwsuite.data.security.AesCipherProvider
-import com.oborodulin.jwsuite.data.security.CipherProvider
-import com.oborodulin.jwsuite.data.security.Crypto
-import com.oborodulin.jwsuite.data.security.CryptoImpl
-import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.home.common.crypto.AesCipherProvider
+import com.oborodulin.home.common.crypto.CipherProvider
+import com.oborodulin.home.common.crypto.Crypto
+import com.oborodulin.home.common.crypto.CryptoImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -13,24 +12,26 @@ import dagger.hilt.components.SingletonComponent
 import java.security.KeyStore
 import javax.inject.Named
 
+// https://blog.stylingandroid.com/datastore-security/
 @Module(includes = [SecurityModule.Declarations::class])
 //@InstallIn(ApplicationComponent::class)
 @InstallIn(SingletonComponent::class)
 object SecurityModule {
-
     const val KEY_NAME = "Key Name"
     const val KEY_STORE_NAME = "Key Store Name"
 
+    private const val AUTH_DATA_KEY_NAME = "AuthDataKey"
     private const val ANDROID_KEY_STORE_TYPE = "AndroidKeyStore"
-    private const val SIMPLE_DATA_KEY_NAME = "SimpleDataKey"
 
     @Provides
     fun provideKeyStore(): KeyStore =
         KeyStore.getInstance(ANDROID_KEY_STORE_TYPE).apply { load(null) }
 
+    // https://stackoverflow.com/questions/69992306/what-is-named-in-kotlin
+    // https://medium.com/@WindRider/correct-usage-of-dagger-2-named-annotation-in-kotlin-8ab17ced6928
     @Provides
     @Named(KEY_NAME)
-    fun providesKeyName(): String = SIMPLE_DATA_KEY_NAME
+    fun providesKeyName(): String = AUTH_DATA_KEY_NAME
 
     @Provides
     @Named(KEY_STORE_NAME)
@@ -40,7 +41,6 @@ object SecurityModule {
 //    @InstallIn(ApplicationComponent::class)
     @InstallIn(SingletonComponent::class)
     interface Declarations {
-
         @Binds
         fun bindsCipherProvider(impl: AesCipherProvider): CipherProvider
 

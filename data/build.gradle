@@ -83,7 +83,10 @@ dependencies {
     implementation deps.sql.sqlcipher
     implementation deps.sql.sqlite
 
+    // DataStore
+    implementation deps.datastore.core
     implementation deps.datastore.preferences
+    //implementation deps.datastore.proto
 
     // Hilt
     implementation deps.dagger.hilt

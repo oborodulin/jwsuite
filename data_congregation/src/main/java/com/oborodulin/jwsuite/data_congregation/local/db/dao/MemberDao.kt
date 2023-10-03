@@ -84,6 +84,19 @@ interface MemberDao {
         findByFavoriteCongregationGroup().distinctUntilChanged()
 
     //-----------------------------
+    @Query(
+        """
+    SELECT r.* FROM ${RoleEntity.TABLE_NAME} r JOIN ${MemberRoleCrossRefEntity.TABLE_NAME} mr ON mr.mrRolesId = r.roleId
+        JOIN ${MemberEntity.TABLE_NAME} m ON m.memberId = mr.mrMembersId AND m.pseudonym = :pseudonym
+    """
+    )
+    fun findRolesByPseudonym(pseudonym: String): Flow<List<RoleEntity>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctRolesByPseudonym(pseudonym: String) =
+        findRolesByPseudonym(pseudonym).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId ORDER BY roleName")
     fun findRolesByMemberId(memberId: UUID): Flow<List<MemberRoleView>>
 

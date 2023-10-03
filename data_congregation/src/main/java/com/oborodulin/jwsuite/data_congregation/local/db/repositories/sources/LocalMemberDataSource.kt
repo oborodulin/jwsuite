@@ -16,6 +16,7 @@ interface LocalMemberDataSource {
     fun getFavoriteCongregationGroupMembers(): Flow<List<MemberView>>
     fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
+    fun getMemberRoles(pseudonym: String): Flow<List<RoleEntity>>
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
     fun getMember(memberId: UUID): Flow<MemberView>
     suspend fun insertMember(

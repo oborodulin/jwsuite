@@ -1,11 +1,11 @@
-package com.oborodulin.jwsuite.data.security
+package com.oborodulin.home.common.crypto
 
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 
+// https://blog.stylingandroid.com/datastore-security/
 class CryptoImpl @Inject constructor(private val cipherProvider: CipherProvider) : Crypto {
-
     override fun encrypt(rawBytes: ByteArray, outputStream: OutputStream) {
         val cipher = cipherProvider.encryptCipher
         val encryptedBytes = cipher.doFinal(rawBytes)

@@ -18,7 +18,7 @@ import java.util.UUID
 @Entity(
     tableName = MemberEntity.TABLE_NAME,
     indices = [Index(
-        value = ["mGroupsId", "memberNum", "pseudonym", "memberName", "surname", "patronymic", "memberType", "dateOfBirth"],
+        value = ["mGroupsId", "memberNum", "pseudonym", "memberName", "surname", "patronymic", "dateOfBirth"],
         unique = true
     )],
     foreignKeys = [ForeignKey(

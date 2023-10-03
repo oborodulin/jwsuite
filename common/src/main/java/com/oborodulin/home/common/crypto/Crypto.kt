@@ -1,8 +1,9 @@
-package com.oborodulin.jwsuite.data.security
+package com.oborodulin.home.common.crypto
 
 import java.io.InputStream
 import java.io.OutputStream
 
+// https://blog.stylingandroid.com/datastore-security/
 interface Crypto {
     fun encrypt(rawBytes: ByteArray, outputStream: OutputStream)
     fun decrypt(inputStream: InputStream): ByteArray

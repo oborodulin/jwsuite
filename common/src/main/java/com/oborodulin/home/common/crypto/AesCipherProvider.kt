@@ -1,8 +1,8 @@
-package com.oborodulin.jwsuite.data.security
+package com.oborodulin.home.common.crypto
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import com.oborodulin.jwsuite.data.di.SecurityModule
+import com.oborodulin.home.common.di.SecurityModule
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -11,6 +11,9 @@ import javax.crypto.spec.IvParameterSpec
 import javax.inject.Inject
 import javax.inject.Named
 
+// https://blog.stylingandroid.com/datastore-security/
+// https://code.tutsplus.com/ru/keys-credentials-and-storage-on-android--cms-30827t
+// https://www.youtube.com/watch?v=aaSck7jBDbw
 class AesCipherProvider @Inject constructor(
     @Named(SecurityModule.KEY_NAME) private val keyName: String,
     private val keyStore: KeyStore,

@@ -1,10 +1,14 @@
 package com.oborodulin.home.common.domain.model;
 
+import com.oborodulin.home.common.data.UUIDSerializer
 import java.io.Serializable
 import java.util.UUID
 
+@kotlinx.serialization.Serializable
 open class DomainModel(
+    @kotlinx.serialization.Serializable(with = UUIDSerializer::class)
     var id: UUID? = null,
+    @kotlinx.serialization.Serializable(with = UUIDSerializer::class)
     var tlId: UUID? = null
 ) : Serializable {
     override fun equals(other: Any?): Boolean {

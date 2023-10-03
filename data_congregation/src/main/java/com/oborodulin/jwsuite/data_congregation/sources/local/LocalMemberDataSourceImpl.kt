@@ -28,6 +28,8 @@ class LocalMemberDataSourceImpl @Inject constructor(
     override fun getFavoriteCongregationGroupMembers() = memberDao.findByFavoriteCongregationGroup()
     override fun getGroupMembers(groupId: UUID) = memberDao.findByGroupId(groupId)
     override fun getMemberRoles(memberId: UUID) = memberDao.findRolesByMemberId(memberId)
+    override fun getMemberRoles(pseudonym: String) = memberDao.findRolesByPseudonym(pseudonym)
+
     override fun getRolesForMember(memberId: UUID) =
         memberDao.findRolesForMemberByMemberId(memberId)
 
