@@ -6,8 +6,9 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 data class MemberUi(
-    val group: GroupUi = GroupUi(),
-    val memberNum: String = "",
+    val congregation: CongregationUi = CongregationUi(),
+    val group: GroupUi? = null,
+    val memberNum: String? = null,
     val memberName: String? = null,
     val surname: String? = null,
     val patronymic: String? = null,
@@ -17,6 +18,7 @@ data class MemberUi(
     val phoneNumber: String? = null,
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
+    val loginExpiredDate: OffsetDateTime? = null,
     val memberCongregationId: UUID? = null,
     val congregationId: UUID? = null,
     val activityDate: OffsetDateTime = OffsetDateTime.now(),
@@ -35,5 +37,6 @@ fun MemberUi.toMembersListItem() = MembersListItem(
     memberType = this.memberType,
     dateOfBirth = this.dateOfBirth,
     dateOfBaptism = this.dateOfBaptism,
+    loginExpiredDate = this.loginExpiredDate,
     movementDate = this.movementDate
 )

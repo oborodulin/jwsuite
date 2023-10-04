@@ -1,16 +1,16 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.domain.model.MemberRole
 import java.util.UUID
 
-class MemberRoleToMemberRoleCrossRefEntityMapper :
-    NullableMapper<MemberRole, MemberRoleCrossRefEntity>,
-    Mapper<MemberRole, MemberRoleCrossRefEntity> {
-    override fun map(input: MemberRole) = MemberRoleCrossRefEntity(
+class MemberRoleToMemberRoleEntityMapper :
+    NullableMapper<MemberRole, MemberRoleEntity>, Mapper<MemberRole, MemberRoleEntity> {
+    override fun map(input: MemberRole) = MemberRoleEntity(
         memberRoleId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
+        roleExpiredDate = input.roleExpiredDate,
         mrMembersId = input.memberId,
         mrRolesId = input.role.id!!
     )

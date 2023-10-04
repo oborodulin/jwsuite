@@ -5,7 +5,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +27,9 @@ class LocalMemberDataSourceImpl @Inject constructor(
 
     override fun getFavoriteCongregationGroupMembers() = memberDao.findByFavoriteCongregationGroup()
     override fun getGroupMembers(groupId: UUID) = memberDao.findByGroupId(groupId)
+    override fun getEmptyGroupMembers(congregationId: UUID?) =
+        memberDao.findDistinctByCongregationIdAndGroupIdIsNull(congregationId)
+
     override fun getMemberRoles(memberId: UUID) = memberDao.findRolesByMemberId(memberId)
     override fun getMemberRoles(pseudonym: String) = memberDao.findRolesByPseudonym(pseudonym)
 
@@ -66,12 +69,12 @@ class LocalMemberDataSourceImpl @Inject constructor(
         memberDao.deleteAll()
     }
 
-    override suspend fun insertMemberRole(memberRole: MemberRoleCrossRefEntity) =
+    override suspend fun insertMemberRole(memberRole: MemberRoleEntity) =
         withContext(dispatcher) {
             memberDao.insert(memberRole)
         }
 
-    override suspend fun updateMemberRole(memberRole: MemberRoleCrossRefEntity) =
+    override suspend fun updateMemberRole(memberRole: MemberRoleEntity) =
         withContext(dispatcher) {
             memberDao.update(memberRole)
         }

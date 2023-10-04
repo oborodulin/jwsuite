@@ -13,17 +13,18 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupViewToGroupMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupsListToGroupEntityListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberRoleToMemberRoleCrossRefEntityMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberRoleViewListToMemberRolesListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberRoleViewToMemberRoleMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberCongregationCrossRefEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberMovementEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewListToMembersListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MembersListToMemberEntityListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.RoleEntityListToRolesListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.RoleEntityToRoleMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.congregation.MemberToMemberCongregationCrossRefEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberMovementEntityToMemberMovementMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberToMemberMovementEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleToMemberRoleEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewListToMemberRolesListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewToMemberRoleMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.RoleEntityListToRolesListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.RoleEntityToRoleMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
@@ -129,31 +130,8 @@ object CongregationMappersModule {
     )
 
     // Members:
-    @Singleton
-    @Provides
-    fun provideMemberViewToMemberMapper(mapper: GroupViewToGroupMapper): MemberViewToMemberMapper =
-        MemberViewToMemberMapper(groupMapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMMemberViewListToMembersListMapper(mapper: MemberViewToMemberMapper): MemberViewListToMembersListMapper =
-        MemberViewListToMembersListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberToMemberEntityMapper(): MemberToMemberEntityMapper =
-        MemberToMemberEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideMemberToMemberCongregationCrossRefEntityMapper(): MemberToMemberCongregationCrossRefEntityMapper =
-        MemberToMemberCongregationCrossRefEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideMemberToMemberMovementEntityMapper(): MemberToMemberMovementEntityMapper =
-        MemberToMemberMovementEntityMapper()
-
+    // Member Congregation:
+    // Member Role:
     @Singleton
     @Provides
     fun provideRoleEntityToRoleMapper(): RoleEntityToRoleMapper = RoleEntityToRoleMapper()
@@ -175,8 +153,47 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
-    fun provideMemberRoleToMemberRoleCrossRefEntityMapper(): MemberRoleToMemberRoleCrossRefEntityMapper =
-        MemberRoleToMemberRoleCrossRefEntityMapper()
+    fun provideMemberRoleToMemberRoleEntityMapper(): MemberRoleToMemberRoleEntityMapper =
+        MemberRoleToMemberRoleEntityMapper()
+
+    // Member Movement:
+    @Singleton
+    @Provides
+    fun provideMemberToMemberMovementEntityMapper(): MemberToMemberMovementEntityMapper =
+        MemberToMemberMovementEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberMovementEntityToMemberMovementMapper(): MemberMovementEntityToMemberMovementMapper =
+        MemberMovementEntityToMemberMovementMapper()
+
+    // Member:
+    @Singleton
+    @Provides
+    fun provideMemberViewToMemberMapper(
+        congregationMapper: CongregationViewToCongregationMapper,
+        groupMapper: GroupViewToGroupMapper,
+        movementMapper: MemberMovementEntityToMemberMovementMapper
+    ): MemberViewToMemberMapper = MemberViewToMemberMapper(
+        congregationMapper = congregationMapper,
+        groupMapper = groupMapper,
+        movementMapper = movementMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideMemberViewListToMembersListMapper(mapper: MemberViewToMemberMapper): MemberViewListToMembersListMapper =
+        MemberViewListToMembersListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberToMemberEntityMapper(): MemberToMemberEntityMapper =
+        MemberToMemberEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberToMemberCongregationCrossRefEntityMapper(): MemberToMemberCongregationCrossRefEntityMapper =
+        MemberToMemberCongregationCrossRefEntityMapper()
 
     @Singleton
     @Provides
@@ -193,7 +210,7 @@ object CongregationMappersModule {
         memberToMemberCongregationCrossRefEntityMapper: MemberToMemberCongregationCrossRefEntityMapper,
         roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
         memberRoleViewListToMemberRolesListMapper: MemberRoleViewListToMemberRolesListMapper,
-        memberRoleToMemberRoleCrossRefEntityMapper: MemberRoleToMemberRoleCrossRefEntityMapper,
+        memberRoleToMemberRoleEntityMapper: MemberRoleToMemberRoleEntityMapper,
         memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper
     ): MemberMappers = MemberMappers(
         memberViewListToMembersListMapper,
@@ -203,7 +220,7 @@ object CongregationMappersModule {
         memberToMemberCongregationCrossRefEntityMapper,
         roleEntityListToRolesListMapper,
         memberRoleViewListToMemberRolesListMapper,
-        memberRoleToMemberRoleCrossRefEntityMapper,
+        memberRoleToMemberRoleEntityMapper,
         memberToMemberMovementEntityMapper
     )
 }

@@ -59,11 +59,11 @@ class MembersRepositoryImpl @Inject constructor(
     override fun saveRole(role: MemberRole) = flow {
         if (role.id == null) {
             localMemberDataSource.insertMemberRole(
-                mappers.memberRoleToMemberRoleCrossRefEntityMapper.map(role)
+                mappers.memberRoleToMemberRoleEntityMapper.map(role)
             )
         } else {
             localMemberDataSource.updateMemberRole(
-                mappers.memberRoleToMemberRoleCrossRefEntityMapper.map(role)
+                mappers.memberRoleToMemberRoleEntityMapper.map(role)
             )
         }
         emit(role)

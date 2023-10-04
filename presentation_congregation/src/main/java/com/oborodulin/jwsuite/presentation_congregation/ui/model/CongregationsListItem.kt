@@ -7,9 +7,9 @@ import java.util.UUID
 
 data class CongregationsListItem(
     val id: UUID,
-    val congregationName: String,
-    val congregationNum: String,
-    val territoryMark: String,
+    val congregationName: String = "",
+    val congregationNum: String = "",
+    val territoryMark: String = "",
     val isFavorite: Boolean = false,
     val locality: LocalityUi
 ) : Parcelable, ListItemModel(

@@ -44,7 +44,6 @@ import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupFields
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -75,10 +74,11 @@ fun MemberView(
     val patronymic by viewModel.patronymic.collectAsStateWithLifecycle()
     val pseudonym by viewModel.pseudonym.collectAsStateWithLifecycle()
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
-    val memberType by viewModel.memberType.collectAsStateWithLifecycle()
     val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
     val dateOfBaptism by viewModel.dateOfBaptism.collectAsStateWithLifecycle()
-    val inactiveDate by viewModel.inactiveDate.collectAsStateWithLifecycle()
+    val memberType by viewModel.memberType.collectAsStateWithLifecycle()
+    val movementDate by viewModel.movementDate.collectAsStateWithLifecycle()
+    val loginExpiredDate by viewModel.loginExpiredDate.collectAsStateWithLifecycle()
 
     val memberTypes by viewModel.memberTypes.collectAsStateWithLifecycle()
 
@@ -138,7 +138,7 @@ fun MemberView(
             onValueChange = { groupNum ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Group(groupNum))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${groupNum.headline.firstOrNull() ?: ""}${memberNum.value.firstOrNull() ?: ""}"))
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${groupNum.headline.firstOrNull() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}"))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -160,7 +160,7 @@ fun MemberView(
             onValueChange = { numInGroup ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberNum(numInGroup))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: ""}${numInGroup.firstOrNull() ?: ""}"))
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: "0"}${numInGroup.firstOrNull() ?: "0"}"))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -185,7 +185,7 @@ fun MemberView(
             onValueChange = { value ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Surname(value))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: ""}${memberNum.value.firstOrNull() ?: ""}"))
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}"))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -210,7 +210,7 @@ fun MemberView(
             onValueChange = { name ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberName(name))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${name.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: ""}${memberNum.value.firstOrNull() ?: ""}"))
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${name.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}"))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -329,19 +329,19 @@ fun MemberView(
         )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_INACTIVE_DATE]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_MOVEMENT_DATE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberFields.MEMBER_INACTIVE_DATE,
+                        focusedField = MemberFields.MEMBER_MOVEMENT_DATE,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_inactive_date_hint,
+            labelResId = R.string.member_movement_date_hint,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
             },
-            inputWrapper = inactiveDate,
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.InactiveDate(it)) },
+            inputWrapper = movementDate,
+            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MovementDate(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

@@ -8,24 +8,28 @@ import java.util.UUID
 
 data class MembersListItem(
     val id: UUID,
-    val group: GroupUi,
-    val memberNum: String,
+    val group: GroupUi? = null,
+    val memberNum: String? = null,
     val memberFullName: String,
     val memberShortName: String,
     val phoneNumber: String? = null,
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
     val memberType: MemberType = MemberType.PREACHER,
-    val movementDate: OffsetDateTime? = null
+    val movementDate: OffsetDateTime? = null,
+    val loginExpiredDate: OffsetDateTime? = null
 ) : Parcelable, ListItemModel(
-    itemId = id, headline = memberFullName, supportingText = "${group.groupNum}.$memberNum"
+    itemId = id,
+    headline = memberFullName,
+    supportingText = group?.groupNum?.let { "$it.${memberNum.orEmpty()}" }
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
+        val groupNum = group?.groupNum?.toString().orEmpty()
         val matchingCombinations = listOf(
-            "${group.groupNum}.$memberNum$memberFullName",
-            "${group.groupNum}.$memberNum $memberFullName",
-            "${group.groupNum}.$memberNum$memberShortName",
-            "${group.groupNum}.$memberNum $memberShortName"
+            "$groupNum.${memberNum.orEmpty()}$memberFullName",
+            "$groupNum.${memberNum.orEmpty()} $memberFullName",
+            "$groupNum.${memberNum.orEmpty()}$memberShortName",
+            "$groupNum.${memberNum.orEmpty()} $memberShortName"
         )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }

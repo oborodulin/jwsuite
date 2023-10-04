@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
@@ -15,6 +15,7 @@ interface LocalMemberDataSource {
     fun getCongregationMembers(congregationId: UUID): Flow<List<MemberView>>
     fun getFavoriteCongregationGroupMembers(): Flow<List<MemberView>>
     fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
+    fun getEmptyGroupMembers(congregationId: UUID? = null): Flow<List<MemberView>>
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
     fun getMemberRoles(pseudonym: String): Flow<List<RoleEntity>>
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
@@ -38,8 +39,8 @@ interface LocalMemberDataSource {
 
     // Congregations:
     // Roles:
-    suspend fun insertMemberRole(memberRole: MemberRoleCrossRefEntity)
-    suspend fun updateMemberRole(memberRole: MemberRoleCrossRefEntity)
+    suspend fun insertMemberRole(memberRole: MemberRoleEntity)
+    suspend fun updateMemberRole(memberRole: MemberRoleEntity)
     suspend fun deleteRoleById(memberRoleId: UUID)
 
     // Movements:

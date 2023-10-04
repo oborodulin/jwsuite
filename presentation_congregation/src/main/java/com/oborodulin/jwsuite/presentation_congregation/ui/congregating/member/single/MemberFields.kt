@@ -15,7 +15,8 @@ enum class MemberFields : Focusable {
     MEMBER_TYPE,
     MEMBER_DATE_OF_BIRTH,
     MEMBER_DATE_OF_BAPTISM,
-    MEMBER_INACTIVE_DATE;
+    MEMBER_LOGIN_EXPIRED_DATE,
+    MEMBER_MOVEMENT_DATE;
 
     override fun key(): String {
         return this.name

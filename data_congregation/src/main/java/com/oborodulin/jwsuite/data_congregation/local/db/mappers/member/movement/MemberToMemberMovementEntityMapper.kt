@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
@@ -7,11 +7,11 @@ import java.util.UUID
 
 class MemberToMemberMovementEntityMapper : Mapper<Member, MemberMovementEntity> {
     override fun map(input: Member) = MemberMovementEntity(
-        memberMovementId = input.memberMovementId ?: input.apply {
-            memberMovementId = UUID.randomUUID()
-        }.memberMovementId!!,
-        memberType = input.memberType,
-        movementDate = input.movementDate,
+        memberMovementId = input.lastMovement.id ?: input.lastMovement.apply {
+            id = UUID.randomUUID()
+        }.id!!,
+        memberType = input.lastMovement.memberType,
+        movementDate = input.lastMovement.movementDate,
         mMembersId = input.id!!
     )
 }

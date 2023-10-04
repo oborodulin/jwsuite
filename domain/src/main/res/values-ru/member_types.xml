@@ -4,6 +4,8 @@
         <item>возвещатель</item>
         <!--FULL_TIME -->
         <item>полновременный</item>
+        <!--SERVICE -->
+        <item>сервисный</item>
         <!--IN_ACTIVE -->
         <item>неактивный</item>
     </string-array>

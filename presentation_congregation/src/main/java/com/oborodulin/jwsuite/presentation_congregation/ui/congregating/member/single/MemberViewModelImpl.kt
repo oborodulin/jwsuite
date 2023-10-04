@@ -86,24 +86,25 @@ class MemberViewModelImpl @Inject constructor(
     override val phoneNumber: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_PHONE_NUMBER.name, InputWrapper())
     }
-    override val memberType: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_TYPE.name, InputWrapper())
-    }
     override val dateOfBirth: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_DATE_OF_BIRTH.name, InputWrapper())
     }
     override val dateOfBaptism: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_DATE_OF_BAPTISM.name, InputWrapper())
     }
-    override val inactiveDate: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_INACTIVE_DATE.name, InputWrapper())
+    override val memberType: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_TYPE.name, InputWrapper())
+    }
+    override val movementDate: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_MOVEMENT_DATE.name, InputWrapper())
+    }
+    override val loginExpiredDate: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_LOGIN_EXPIRED_DATE.name, InputWrapper())
     }
 
     override val areInputsValid =
         combine(
-            group,
-            memberNum,
-            memberName,
+            //group, memberNum, memberName,
             surname,
             patronymic,
             pseudonym,
@@ -111,7 +112,8 @@ class MemberViewModelImpl @Inject constructor(
             memberType,
             dateOfBirth,
             dateOfBaptism,
-            inactiveDate
+            loginExpiredDate,
+            movementDate
         )
         { stateFlowsArray ->
             var errorIdResult = true
@@ -183,6 +185,7 @@ class MemberViewModelImpl @Inject constructor(
             dateOfBirthOffsetDateTime
         )
         val memberUi = MemberUi(
+            congregation = congregationUi,
             group = groupUi,
             memberNum = memberNum.value.value,
             memberName = memberName.value.value,
@@ -198,12 +201,16 @@ class MemberViewModelImpl @Inject constructor(
                     DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
                 ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
             else null,
-            inactiveDate = if (inactiveDate.value.value.isNotEmpty())
+            loginExpiredDate = if (loginExpiredDate.value.value.isNotEmpty())
                 LocalDate.parse(
-                    dateOfBaptism.value.value,
+                    loginExpiredDate.value.value,
                     DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
                 ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-            else null
+            else null,
+            movementDate = LocalDate.parse(
+                dateOfBaptism.value.value,
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+            ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
 //                offsetFormatter.parse(
 //                inactiveDate.value.value, OffsetDateTime::from
 //            ) else null
@@ -233,21 +240,23 @@ class MemberViewModelImpl @Inject constructor(
         uiModel.id?.let { initStateValue(MemberFields.MEMBER_ID, id, it.toString()) }
         initStateValue(
             MemberFields.MEMBER_CONGREGATION, congregation,
-            uiModel.group.congregation.toCongregationsListItem()
+            uiModel.congregation.toCongregationsListItem()
         )
         initStateValue(
             MemberFields.MEMBER_GROUP, group,
-            ListItemModel(uiModel.group.id, uiModel.group.groupNum?.toString().orEmpty())
+            ListItemModel(uiModel.group?.id, uiModel.group?.groupNum?.toString().orEmpty())
         )
-        initStateValue(MemberFields.MEMBER_NUM, memberNum, uiModel.memberNum)
+        initStateValue(MemberFields.MEMBER_NUM, memberNum, uiModel.memberNum.orEmpty())
         initStateValue(MemberFields.MEMBER_NAME, memberName, uiModel.memberName.orEmpty())
         initStateValue(MemberFields.MEMBER_SURNAME, surname, uiModel.surname.orEmpty())
         initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, uiModel.patronymic.orEmpty())
-        initStateValue(MemberFields.MEMBER_PSEUDONYM, pseudonym, uiModel.pseudonym)
+        initStateValue(
+            MemberFields.MEMBER_PSEUDONYM, pseudonym,
+            uiModel.pseudonym.ifEmpty { "${uiModel.surname?.firstOrNull() ?: ""}${uiModel.memberName?.firstOrNull() ?: ""}${uiModel.group?.groupNum?.toString() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}" }
+        )
         initStateValue(
             MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, uiModel.phoneNumber.orEmpty()
         )
-        initStateValue(MemberFields.MEMBER_TYPE, memberType, uiModel.memberType.name)
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
             uiModel.dateOfBirth?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))// .ofPattern(Constants.APP_OFFSET_DATE_TIME))
@@ -258,9 +267,15 @@ class MemberViewModelImpl @Inject constructor(
             uiModel.dateOfBaptism?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
                 .orEmpty()
         )
+        initStateValue(MemberFields.MEMBER_TYPE, memberType, uiModel.memberType.name)
         initStateValue(
-            MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
-            uiModel.inactiveDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+            MemberFields.MEMBER_MOVEMENT_DATE, movementDate,
+            uiModel.movementDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+                .orEmpty()
+        )
+        initStateValue(
+            MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
+            uiModel.loginExpiredDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
                 .orEmpty()
         )
         return null
@@ -329,17 +344,6 @@ class MemberViewModelImpl @Inject constructor(
                             )
                         }
 
-                    is MemberInputEvent.MemberType ->
-                        when (MemberInputValidator.MemberType.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_TYPE, memberType, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                MemberFields.MEMBER_TYPE, memberType, event.input
-                            )
-                        }
-
                     is MemberInputEvent.DateOfBirth ->
                         when (MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
                             null -> setStateValue(
@@ -363,14 +367,38 @@ class MemberViewModelImpl @Inject constructor(
                             )
                         }
 
-                    is MemberInputEvent.InactiveDate ->
-                        when (MemberInputValidator.InactiveDate.errorIdOrNull(event.input)) {
+                    is MemberInputEvent.MemberType ->
+                        when (MemberInputValidator.MemberType.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                MemberFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input, true
+                                MemberFields.MEMBER_TYPE, memberType, event.input, true
                             )
 
                             else -> setStateValue(
-                                MemberFields.MEMBER_INACTIVE_DATE, inactiveDate, event.input
+                                MemberFields.MEMBER_TYPE, memberType, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.MovementDate ->
+                        when (MemberInputValidator.MovementDate.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_MOVEMENT_DATE, movementDate, event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_MOVEMENT_DATE, movementDate, event.input
+                            )
+                        }
+
+                    is MemberInputEvent.LoginExpiredDate ->
+                        when (MemberInputValidator.LoginExpiredDate.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
+                                event.input
                             )
                         }
                 }
@@ -378,6 +406,12 @@ class MemberViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
+                    is MemberInputEvent.Congregation ->
+                        setStateValue(
+                            MemberFields.MEMBER_CONGREGATION, congregation,
+                            MemberInputValidator.Congregation.errorIdOrNull(event.input.headline)
+                        )
+
                     is MemberInputEvent.Group ->
                         setStateValue(
                             MemberFields.MEMBER_GROUP, group,
@@ -411,12 +445,6 @@ class MemberViewModelImpl @Inject constructor(
                             MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.MemberType ->
-                        setStateValue(
-                            MemberFields.MEMBER_TYPE, memberType,
-                            MemberInputValidator.MemberType.errorIdOrNull(event.input)
-                        )
-
                     is MemberInputEvent.DateOfBirth ->
                         setStateValue(
                             MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
@@ -429,10 +457,22 @@ class MemberViewModelImpl @Inject constructor(
                             MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)
                         )
 
-                    is MemberInputEvent.InactiveDate ->
+                    is MemberInputEvent.MemberType ->
                         setStateValue(
-                            MemberFields.MEMBER_INACTIVE_DATE, inactiveDate,
-                            MemberInputValidator.InactiveDate.errorIdOrNull(event.input)
+                            MemberFields.MEMBER_TYPE, memberType,
+                            MemberInputValidator.MemberType.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.MovementDate ->
+                        setStateValue(
+                            MemberFields.MEMBER_MOVEMENT_DATE, movementDate,
+                            MemberInputValidator.MovementDate.errorIdOrNull(event.input)
+                        )
+
+                    is MemberInputEvent.LoginExpiredDate ->
+                        setStateValue(
+                            MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
+                            MemberInputValidator.LoginExpiredDate.errorIdOrNull(event.input)
                         )
                 }
             }
@@ -474,9 +514,9 @@ class MemberViewModelImpl @Inject constructor(
                 InputError(fieldName = MemberFields.MEMBER_DATE_OF_BAPTISM.name, errorId = it)
             )
         }
-        MemberInputValidator.InactiveDate.errorIdOrNull(inactiveDate.value.value)?.let {
+        MemberInputValidator.MovementDate.errorIdOrNull(movementDate.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = MemberFields.MEMBER_INACTIVE_DATE.name, errorId = it)
+                InputError(fieldName = MemberFields.MEMBER_MOVEMENT_DATE.name, errorId = it)
             )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
@@ -494,7 +534,7 @@ class MemberViewModelImpl @Inject constructor(
                 MemberFields.MEMBER_TYPE -> memberType.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_DATE_OF_BIRTH -> dateOfBirth.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_DATE_OF_BAPTISM -> dateOfBaptism.value.copy(errorId = error.errorId)
-                MemberFields.MEMBER_INACTIVE_DATE -> inactiveDate.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_MOVEMENT_DATE -> movementDate.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -528,10 +568,11 @@ class MemberViewModelImpl @Inject constructor(
                 override val patronymic = MutableStateFlow(InputWrapper())
                 override val pseudonym = MutableStateFlow(InputWrapper())
                 override val phoneNumber = MutableStateFlow(InputWrapper())
-                override val memberType = MutableStateFlow(InputWrapper())
                 override val dateOfBirth = MutableStateFlow(InputWrapper())
                 override val dateOfBaptism = MutableStateFlow(InputWrapper())
-                override val inactiveDate = MutableStateFlow(InputWrapper())
+                override val memberType = MutableStateFlow(InputWrapper())
+                override val movementDate = MutableStateFlow(InputWrapper())
+                override val loginExpiredDate = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
@@ -545,7 +586,12 @@ class MemberViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

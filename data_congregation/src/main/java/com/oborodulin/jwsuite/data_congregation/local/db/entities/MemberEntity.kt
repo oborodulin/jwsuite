@@ -33,7 +33,7 @@ import java.util.UUID
 data class MemberEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val memberId: UUID = UUID.randomUUID(),
-    val memberNum: String,
+    val memberNum: String? = null,
     val memberName: String? = null,
     val surname: String? = null,
     val patronymic: String? = null,
@@ -43,16 +43,18 @@ data class MemberEntity(
     val dateOfBirth: OffsetDateTime? = null,
     @Serializable(with = OffsetDateTimeSerializer::class)
     val dateOfBaptism: OffsetDateTime? = null,
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val loginExpiredDate: OffsetDateTime? = null,
     @Serializable(with = UUIDSerializer::class)
-    @ColumnInfo(index = true) val mGroupsId: UUID
+    @ColumnInfo(index = true) val mGroupsId: UUID? = null
 ) : BaseEntity() {
 
     companion object {
         const val TABLE_NAME = "members"
 
         fun defaultMember(
-            memberId: UUID = UUID.randomUUID(), groupId: UUID = UUID.randomUUID(),
-            memberNum: String, memberName: String? = null, surname: String? = null,
+            memberId: UUID = UUID.randomUUID(), groupId: UUID? = null,
+            memberNum: String? = null, memberName: String? = null, surname: String? = null,
             patronymic: String? = null, pseudonym: String, phoneNumber: String? = null,
             dateOfBirth: OffsetDateTime? = null, dateOfBaptism: OffsetDateTime? = null
         ) = MemberEntity(
@@ -62,8 +64,13 @@ data class MemberEntity(
             phoneNumber = phoneNumber, dateOfBirth = dateOfBirth, dateOfBaptism = dateOfBaptism
         )
 
-        fun ivanovMember11(ctx: Context, groupId: UUID) = MemberEntity(
-            mGroupsId = groupId,
+        fun adminMember(ctx: Context) = defaultMember(
+            memberName = ctx.resources.getString(R.string.def_admin_member_name),
+            pseudonym = ctx.resources.getString(R.string.def_admin_member_pseudonym)
+        )
+
+        fun ivanovMember11(ctx: Context, groupId: UUID? = null) = defaultMember(
+            groupId = groupId,
             memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
             memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
             surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
@@ -71,8 +78,8 @@ data class MemberEntity(
             pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym)
         )
 
-        fun petrovMember12(ctx: Context, groupId: UUID) = MemberEntity(
-            mGroupsId = groupId,
+        fun petrovMember12(ctx: Context, groupId: UUID? = null) = defaultMember(
+            groupId = groupId,
             memberNum = ctx.resources.getString(R.string.def_petrov_member_num),
             memberName = ctx.resources.getString(R.string.def_petrov_member_name),
             surname = ctx.resources.getString(R.string.def_petrov_member_surname),
@@ -80,8 +87,8 @@ data class MemberEntity(
             pseudonym = ctx.resources.getString(R.string.def_petrov_member_pseudonym)
         )
 
-        fun sidorovMember21(ctx: Context, groupId: UUID) = MemberEntity(
-            mGroupsId = groupId,
+        fun sidorovMember21(ctx: Context, groupId: UUID? = null) = defaultMember(
+            groupId = groupId,
             memberNum = ctx.resources.getString(R.string.def_sidorov_member_num),
             memberName = ctx.resources.getString(R.string.def_sidorov_member_name),
             surname = ctx.resources.getString(R.string.def_sidorov_member_surname),
@@ -89,8 +96,8 @@ data class MemberEntity(
             pseudonym = ctx.resources.getString(R.string.def_sidorov_member_pseudonym)
         )
 
-        fun tarasovaMember11(ctx: Context, groupId: UUID) = MemberEntity(
-            mGroupsId = groupId,
+        fun tarasovaMember11(ctx: Context, groupId: UUID? = null) = defaultMember(
+            groupId = groupId,
             memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
             memberName = ctx.resources.getString(R.string.def_tarasova_member_name),
             surname = ctx.resources.getString(R.string.def_tarasova_member_surname),
@@ -98,8 +105,8 @@ data class MemberEntity(
             pseudonym = ctx.resources.getString(R.string.def_tarasova_member_pseudonym)
         )
 
-        fun shevchukMember12(ctx: Context, groupId: UUID) = MemberEntity(
-            mGroupsId = groupId,
+        fun shevchukMember12(ctx: Context, groupId: UUID? = null) = defaultMember(
+            groupId = groupId,
             memberNum = ctx.resources.getString(R.string.def_shevchuk_member_num),
             memberName = ctx.resources.getString(R.string.def_shevchuk_member_name),
             surname = ctx.resources.getString(R.string.def_shevchuk_member_surname),
@@ -107,8 +114,8 @@ data class MemberEntity(
             pseudonym = ctx.resources.getString(R.string.def_shevchuk_member_pseudonym)
         )
 
-        fun matveychukMember21(ctx: Context, groupId: UUID) = MemberEntity(
-            mGroupsId = groupId,
+        fun matveychukMember21(ctx: Context, groupId: UUID? = null) = defaultMember(
+            groupId = groupId,
             memberNum = ctx.resources.getString(R.string.def_matveychuk_member_num),
             memberName = ctx.resources.getString(R.string.def_matveychuk_member_name),
             surname = ctx.resources.getString(R.string.def_matveychuk_member_surname),

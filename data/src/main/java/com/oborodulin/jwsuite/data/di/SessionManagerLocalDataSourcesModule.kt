@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.data.di
 import androidx.datastore.core.DataStore
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.sources.local.LocalSessionManagerDataSourceImpl
-import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.domain.model.AuthData
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
@@ -23,7 +22,6 @@ object SessionManagerLocalDataSourcesModule {
 
     @Singleton
     @Provides
-    fun provideLocalSessionManagerDataSource(
-        authDataStore: DataStore<AuthData>, memberDao: MemberDao
-    ): LocalSessionManagerDataSource = LocalSessionManagerDataSourceImpl(authDataStore, memberDao)
+    fun provideLocalSessionManagerDataSource(authDataStore: DataStore<AuthData>):
+            LocalSessionManagerDataSource = LocalSessionManagerDataSourceImpl(authDataStore)
 }

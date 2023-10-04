@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.OffsetDateTimeSerializer
 import com.oborodulin.home.common.data.UUIDSerializer
@@ -15,6 +16,10 @@ import java.util.UUID
 
 @Entity(
     tableName = MemberMovementEntity.TABLE_NAME,
+    indices = [Index(
+        value = ["mMembersId", "memberType", "movementDate"],
+        unique = true
+    )],
     foreignKeys = [ForeignKey(
         entity = MemberEntity::class,
         parentColumns = arrayOf("memberId"),

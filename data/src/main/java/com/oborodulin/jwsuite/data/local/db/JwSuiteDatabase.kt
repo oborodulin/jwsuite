@@ -20,7 +20,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
@@ -113,7 +113,7 @@ private const val TAG = "JwSuiteDatabase"
         GeoMicrodistrictEntity::class, GeoMicrodistrictTlEntity::class,
         GeoStreetEntity::class, GeoStreetTlEntity::class, GeoStreetDistrictEntity::class,
         CongregationEntity::class, GroupEntity::class, MemberEntity::class, MemberMovementEntity::class,
-        MemberRoleCrossRefEntity::class, MemberCongregationCrossRefEntity::class, MemberMinistryEntity::class,
+        MemberRoleEntity::class, MemberCongregationCrossRefEntity::class, MemberMinistryEntity::class,
         TerritoryCategoryEntity::class, TerritoryEntity::class, TerritoryStreetEntity::class,
         TerritoryMemberCrossRefEntity::class,
         HouseEntity::class, EntranceEntity::class, FloorEntity::class, RoomEntity::class,
@@ -777,11 +777,11 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     MemberCongregationCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(memberCongregation)
                 )
-                val memberRole = MemberRoleCrossRefEntity.defaultMemberRole(
+                val memberRole = MemberRoleEntity.defaultMemberRole(
                     memberId = it.memberId, roleId = role.roleId
                 )
                 db.insert(
-                    MemberRoleCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                    MemberRoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(memberRole)
                 )
                 Timber.tag(TAG).i("CONGREGATION: Default member imported")

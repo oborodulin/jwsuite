@@ -5,13 +5,15 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.OffsetDateTimeSerializer
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import kotlinx.serialization.Serializable
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Entity(
-    tableName = MemberRoleCrossRefEntity.TABLE_NAME,
+    tableName = MemberRoleEntity.TABLE_NAME,
     indices = [Index(
         value = ["mrMembersId", "mrRolesId"],
         unique = true
@@ -31,9 +33,11 @@ import java.util.UUID
     )]
 )
 @Serializable
-data class MemberRoleCrossRefEntity(
+data class MemberRoleEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val memberRoleId: UUID = UUID.randomUUID(),
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val roleExpiredDate: OffsetDateTime? = null,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val mrMembersId: UUID,
     @Serializable(with = UUIDSerializer::class)
@@ -43,7 +47,7 @@ data class MemberRoleCrossRefEntity(
     companion object {
         const val TABLE_NAME = "member_roles"
 
-        fun defaultMemberRole(memberId: UUID, roleId: UUID) = MemberRoleCrossRefEntity(
+        fun defaultMemberRole(memberId: UUID, roleId: UUID) = MemberRoleEntity(
             mrMembersId = memberId, mrRolesId = roleId
         )
     }

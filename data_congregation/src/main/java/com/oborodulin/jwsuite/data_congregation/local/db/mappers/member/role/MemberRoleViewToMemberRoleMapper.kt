@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
@@ -10,6 +10,7 @@ class MemberRoleViewToMemberRoleMapper(private val mapper: RoleEntityToRoleMappe
     override fun map(input: MemberRoleView): MemberRole {
         val member = MemberRole(
             role = mapper.map(input.role),
+            roleExpiredDate = input.memberRole.roleExpiredDate,
             memberId = input.memberRole.mrMembersId,
         )
         member.id = input.memberRole.memberRoleId

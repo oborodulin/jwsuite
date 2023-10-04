@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 import java.util.UUID
 
+// https://medium.com/@saqib.tech/compose-single-selection-with-data-binding-37a12cf51bc8
 @Parcelize
 open class ListItemModel(
     val itemId: UUID? = null,

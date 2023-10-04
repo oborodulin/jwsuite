@@ -27,10 +27,11 @@ interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingle
     val patronymic: StateFlow<InputWrapper>
     val pseudonym: StateFlow<InputWrapper>
     val phoneNumber: StateFlow<InputWrapper>
-    val memberType: StateFlow<InputWrapper>
     val dateOfBirth: StateFlow<InputWrapper>
     val dateOfBaptism: StateFlow<InputWrapper>
-    val inactiveDate: StateFlow<InputWrapper>
+    val memberType: StateFlow<InputWrapper>
+    val movementDate: StateFlow<InputWrapper>
+    val loginExpiredDate: StateFlow<InputWrapper>
 
     val areInputsValid: StateFlow<Boolean>
 

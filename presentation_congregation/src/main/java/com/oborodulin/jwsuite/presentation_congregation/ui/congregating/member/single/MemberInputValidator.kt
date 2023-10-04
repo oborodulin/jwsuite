@@ -6,21 +6,28 @@ import com.oborodulin.jwsuite.presentation_congregation.R
 private const val TAG = "Congregating.GroupInputValidator"
 
 sealed class MemberInputValidator : Validatable {
-    data object Group : MemberInputValidator() {
+    data object Congregation : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.member_group_empty_error
-                else -> null
-            }
+        when {
+            inputs[0].isNullOrEmpty() -> R.string.member_congregation_empty_error
+            else -> null
+        }
+    }
+    data object Group : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*when {
+            inputs[0].isNullOrEmpty() -> R.string.member_group_empty_error
+            else -> null
+        }*/
     }
 
     data object MemberNum : MemberInputValidator() {
-        override fun errorIdOrNull(vararg inputs: String?): Int? =
-            when {
-                inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
-                //etc..
-                else -> null
-            }
+        override fun errorIdOrNull(vararg inputs: String?): Int? = null
+        /*when {
+            inputs[0].isNullOrEmpty() -> R.string.member_num_empty_error
+            //etc..
+            else -> null
+        }*/
     }
 
     data object Pseudonym : MemberInputValidator() {
@@ -72,7 +79,7 @@ sealed class MemberInputValidator : Validatable {
      */
     }
 
-    data object InactiveDate : MemberInputValidator() {
+    data object LoginExpiredDate : MemberInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? = null
         /*when {
             inputs[0].isNullOrEmpty() -> R.string.num_empty_error
@@ -80,5 +87,14 @@ sealed class MemberInputValidator : Validatable {
             else -> null
         }
      */
+    }
+
+    data object MovementDate : MemberInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
+            when {
+                inputs[0].isNullOrEmpty() -> R.string.member_movement_date_empty_error
+                //etc..
+                else -> null
+            }
     }
 }

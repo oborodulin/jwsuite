@@ -54,6 +54,10 @@
     <string name="def_matveychuk_member_patronymic">Степанович</string>
     <string name="def_matveychuk_member_pseudonym">АС21</string>
     <string name="def_matveychuk_member_birth_date">05–09–1973</string>
+    <!--Сервисные члены собрания-->
+    <!--Администратор-->
+    <string name="def_admin_member_name">admin</string>
+    <string name="def_admin_member_pseudonym">AD00</string>
 
     <!--Роли членов собрания-->
     <string name="def_role_name_admin">Администратор</string>
