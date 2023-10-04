@@ -232,6 +232,12 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     override fun stateInputFields() = enumValues<MemberFields>().map { it.name }
+    override fun getPseudonym(
+        surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
+    ) =
+        "${surname?.firstOrNull() ?: ""}${memberName?.firstOrNull() ?: ""}${groupNum?.toString() ?: "0"}${
+            memberNum?.let { ".$it" }.orEmpty()
+        }"
 
     override fun initFieldStatesByUiModel(uiModel: MemberUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
@@ -252,7 +258,14 @@ class MemberViewModelImpl @Inject constructor(
         initStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, uiModel.patronymic.orEmpty())
         initStateValue(
             MemberFields.MEMBER_PSEUDONYM, pseudonym,
-            uiModel.pseudonym.ifEmpty { "${uiModel.surname?.firstOrNull() ?: ""}${uiModel.memberName?.firstOrNull() ?: ""}${uiModel.group?.groupNum?.toString() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}" }
+            uiModel.pseudonym.ifEmpty {
+                getPseudonym(
+                    surname = uiModel.surname,
+                    memberName = uiModel.memberName,
+                    groupNum = uiModel.group?.groupNum,
+                    memberNum = uiModel.memberNum
+                )
+            }
         )
         initStateValue(
             MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, uiModel.phoneNumber.orEmpty()
@@ -576,7 +589,10 @@ class MemberViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                override fun getPseudonym(
+                    surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
+                ) = ""
+
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: MemberUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

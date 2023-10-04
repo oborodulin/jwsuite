@@ -10,7 +10,6 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -35,7 +34,11 @@ interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingle
 
     val areInputsValid: StateFlow<Boolean>
 
-    fun viewModelScope(): CoroutineScope
+    fun getPseudonym(
+        surname: String? = null, memberName: String? = null, groupNum: Int? = null,
+        memberNum: String? = null
+    ): String
+
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: MemberFields, isFocused: Boolean)
     fun moveFocusImeAction()

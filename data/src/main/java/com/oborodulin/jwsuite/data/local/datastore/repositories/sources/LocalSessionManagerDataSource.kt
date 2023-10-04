@@ -7,6 +7,7 @@ interface LocalSessionManagerDataSource {
     fun isSigned(): Flow<Boolean>
     fun isLogged(): Flow<Boolean>
     fun username(): Flow<String?>
+    fun databasePassphrase(): Flow<String>
     fun checkPassword(password: String): Flow<Boolean>
     fun roles(): Flow<List<Role>>
     suspend fun signup(username: String, password: String)

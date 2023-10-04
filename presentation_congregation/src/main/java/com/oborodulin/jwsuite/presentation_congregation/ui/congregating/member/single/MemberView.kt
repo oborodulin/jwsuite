@@ -138,7 +138,11 @@ fun MemberView(
             onValueChange = { groupNum ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Group(groupNum))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${groupNum.headline.firstOrNull() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}"))
+                    val pseudonymVal = viewModel.getPseudonym(
+                        surname.value, memberName.value, groupNum.headline.toIntOrNull(),
+                        memberNum.value
+                    )
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -160,7 +164,11 @@ fun MemberView(
             onValueChange = { numInGroup ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberNum(numInGroup))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: "0"}${numInGroup.firstOrNull() ?: "0"}"))
+                    val pseudonymVal = viewModel.getPseudonym(
+                        surname.value, memberName.value, group.item?.headline?.toIntOrNull(),
+                        numInGroup
+                    )
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -185,7 +193,11 @@ fun MemberView(
             onValueChange = { value ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Surname(value))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${value.firstOrNull() ?: ""}${memberName.value.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}"))
+                    val pseudonymVal = viewModel.getPseudonym(
+                        value, memberName.value, group.item?.headline?.toIntOrNull(),
+                        memberNum.value
+                    )
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -210,7 +222,11 @@ fun MemberView(
             onValueChange = { name ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberName(name))
                 viewModel.onInsert {
-                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym("${surname.value.firstOrNull() ?: ""}${name.firstOrNull() ?: ""}${group.item?.headline?.firstOrNull() ?: "0"}${memberNum.value.firstOrNull() ?: "0"}"))
+                    val pseudonymVal = viewModel.getPseudonym(
+                        surname.value, name, group.item?.headline?.toIntOrNull(),
+                        memberNum.value
+                    )
+                    viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
@@ -247,7 +263,7 @@ fun MemberView(
             labelResId = R.string.member_pseudonym_hint,
             keyboardOptions = remember {
                 KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
+                    capitalization = KeyboardCapitalization.Characters,
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
@@ -271,26 +287,6 @@ fun MemberView(
             },
             inputWrapper = phoneNumber,
             onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.PhoneNumber(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        ExposedDropdownMenuBoxComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberFields.MEMBER_PHONE_NUMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_type_hint,
-            leadingPainterResId = R.drawable.ic_badge_36,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = memberType,
-            values = memberTypes.values.toList(), // resolve Enums to Resource
-            keys = memberTypes.keys.map { it.name }, // Enums
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MemberType(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         DatePickerComponent(
@@ -327,6 +323,26 @@ fun MemberView(
             onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.DateOfBaptism(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
+        ExposedDropdownMenuBoxComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_PHONE_NUMBER,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_type_hint,
+            leadingPainterResId = R.drawable.ic_badge_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+            },
+            inputWrapper = memberType,
+            values = memberTypes.values.toList(), // resolve Enums to Resource
+            keys = memberTypes.keys.map { it.name }, // Enums
+            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MemberType(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
         DatePickerComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberFields.MEMBER_MOVEMENT_DATE]!!.focusRequester)
@@ -338,10 +354,27 @@ fun MemberView(
                 },
             labelResId = R.string.member_movement_date_hint,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
             inputWrapper = movementDate,
             onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MovementDate(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
+        DatePickerComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_LOGIN_EXPIRED_DATE]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_LOGIN_EXPIRED_DATE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_login_expired_date_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+            },
+            inputWrapper = loginExpiredDate,
+            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.LoginExpiredDate(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

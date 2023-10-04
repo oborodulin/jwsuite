@@ -18,13 +18,13 @@ data class MemberUi(
     val phoneNumber: String? = null,
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
-    val loginExpiredDate: OffsetDateTime? = null,
     val memberCongregationId: UUID? = null,
     val congregationId: UUID? = null,
     val activityDate: OffsetDateTime = OffsetDateTime.now(),
     val memberMovementId: UUID? = null,
     val memberType: MemberType = MemberType.PREACHER,
-    val movementDate: OffsetDateTime = OffsetDateTime.now()
+    val movementDate: OffsetDateTime = OffsetDateTime.now(),
+    val loginExpiredDate: OffsetDateTime? = null
 ) : ModelUi()
 
 fun MemberUi.toMembersListItem() = MembersListItem(

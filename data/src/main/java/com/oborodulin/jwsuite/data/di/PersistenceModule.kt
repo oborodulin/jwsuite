@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data.di
 
 import android.content.Context
+import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
@@ -18,6 +19,9 @@ object PersistenceModule {
     @Singleton
     @Provides
     fun provideJwSuiteDatabase(
-        @ApplicationContext appContext: Context, jsonLogger: Json
-    ): JwSuiteDatabase = JwSuiteDatabase.getInstance(appContext, jsonLogger)
+        @ApplicationContext appContext: Context, jsonLogger: Json,
+        localSessionManagerDataSource: LocalSessionManagerDataSource
+    ): JwSuiteDatabase = JwSuiteDatabase.getInstance(
+        appContext, jsonLogger, localSessionManagerDataSource
+    )
 }

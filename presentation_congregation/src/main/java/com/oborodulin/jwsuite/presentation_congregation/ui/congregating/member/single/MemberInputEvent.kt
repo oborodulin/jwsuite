@@ -13,11 +13,11 @@ sealed class MemberInputEvent(val value: String) : Inputable {
     data class Patronymic(val input: String) : MemberInputEvent(input)
     data class Pseudonym(val input: String) : MemberInputEvent(input)
     data class PhoneNumber(val input: String) : MemberInputEvent(input)
-    data class MemberType(val input: String) : MemberInputEvent(input)
     data class DateOfBirth(val input: String) : MemberInputEvent(input)
     data class DateOfBaptism(val input: String) : MemberInputEvent(input)
-    data class LoginExpiredDate(val input: String) : MemberInputEvent(input)
+    data class MemberType(val input: String) : MemberInputEvent(input)
     data class MovementDate(val input: String) : MemberInputEvent(input)
+    data class LoginExpiredDate(val input: String) : MemberInputEvent(input)
 
     override fun value(): String {
         return this.value

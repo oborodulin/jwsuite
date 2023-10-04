@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.oborodulin.home.common.util.Mapper
+import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.converters.JwSuiteTypeConverters
 import com.oborodulin.jwsuite.data.local.db.entities.*
 import com.oborodulin.jwsuite.data.util.Constants
@@ -91,6 +92,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.sqlcipher.database.SupportFactory
@@ -170,7 +172,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         private var INSTANCE: JwSuiteDatabase? = null
 
         @Synchronized
-        fun getInstance(context: Context, jsonLogger: Json? = Json): JwSuiteDatabase {
+        fun getInstance(
+            context: Context, jsonLogger: Json? = Json,
+            localSessionManagerDataSource: LocalSessionManagerDataSource
+        ): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -179,12 +184,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             var instance = INSTANCE
             // If instance is `null` make a new database instance.
             if (instance == null) {
+                val databasePassphrase = localSessionManagerDataSource.databasePassphrase().first()
                 instance =
                     Room.databaseBuilder(
                         context,
                         JwSuiteDatabase::class.java,
                         Constants.DATABASE_NAME
-                    )//.openHelperFactory(SupportFactory(DATABASE_PASSPHRASE.toByteArray()))
+                    )//.openHelperFactory(SupportFactory(databasePassphrase.toByteArray())) //DATABASE_PASSPHRASE.toByteArray()
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:

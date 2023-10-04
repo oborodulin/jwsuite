@@ -25,6 +25,8 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override fun checkPassword(password: String) =
         dataStore.data.map { authData -> authData.password?.let { it == password } ?: false }
 
+    override fun databasePassphrase() = dataStore.data.map { authData -> authData.databasePassphrase }
+
     override fun roles() = dataStore.data.map { authData -> authData.roles }
 
     override suspend fun signup(username: String, password: String) {
@@ -32,6 +34,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
             AuthData(
                 username = username,
                 password = password,
+                databasePassphrase = password,
                 isLogged = true
             )
         }
