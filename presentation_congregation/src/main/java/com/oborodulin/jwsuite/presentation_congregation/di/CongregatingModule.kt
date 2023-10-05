@@ -25,6 +25,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.Grou
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupsListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationToCongregationsListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationUiToCongregationMapper
@@ -126,6 +127,11 @@ object CongregatingModule {
     @Provides
     fun provideCongregationConverter(mapper: CongregationToCongregationUiMapper): CongregationConverter =
         CongregationConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideSaveCongregationConverter(mapper: CongregationToCongregationUiMapper): SaveCongregationConverter =
+        SaveCongregationConverter(mapper = mapper)
 
     // Group:
     @Singleton

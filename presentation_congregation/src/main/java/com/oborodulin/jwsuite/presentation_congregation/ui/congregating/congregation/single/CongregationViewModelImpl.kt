@@ -17,6 +17,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCas
 import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationUiToCongregationMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
@@ -35,7 +36,8 @@ private const val TAG = "Congregating.CongregationViewModelImpl"
 class CongregationViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: CongregationUseCases,
-    private val converter: CongregationConverter,
+    private val congregationConverter: CongregationConverter,
+    private val saveCongregationConverter: SaveCongregationConverter,
     private val mapper: CongregationUiToCongregationMapper
 ) : CongregationViewModel,
     DialogSingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
@@ -91,7 +93,7 @@ class CongregationViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getCongregationUseCase.execute(GetCongregationUseCase.Request(congregationId))
                 .map {
-                    converter.convert(it)
+                    congregationConverter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -123,8 +125,11 @@ class CongregationViewModelImpl @Inject constructor(
                 SaveCongregationUseCase.Request(mapper.map(congregationUi))
             ).catch {
                 Timber.tag(TAG).d("saveCongregation() error: %s", it.message)
+            }.map {
+                saveCongregationConverter.convert(it)
             }.collect {
                 Timber.tag(TAG).d("saveCongregation() result: %s", it::class.java)
+                submitState(it)
             }
         }
         return job
@@ -333,7 +338,12 @@ class CongregationViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

@@ -23,6 +23,9 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
     override val uiStateFlow = _uiStateFlow
 
+    private val _errorMessage: MutableStateFlow<String> = MutableStateFlow("")
+    override val errorMessage = _errorMessage.asStateFlow()
+
     private val _actionsFlow: MutableSharedFlow<A> = MutableSharedFlow()
 
     private val _actionsJobFlow: MutableSharedFlow<Job?> = MutableSharedFlow()
@@ -115,6 +118,16 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         }
     }*/
 
+    private fun setErrorMessage(errorMessage: String) {
+        Timber.tag(TAG)
+            .d("setErrorMessage() called: errorMessage = %s", errorMessage)
+        _errorMessage.value = errorMessage
+    }
+
+    private fun clearErrorMessage() {
+        setErrorMessage("")
+    }
+
     abstract suspend fun handleAction(action: A): Job?
 
     abstract fun initFieldStatesByUiModel(uiModel: T): Job?
@@ -132,9 +145,12 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                     job?.toString()
                 )
                 job?.join()
-                afterAction()
+                if (_errorMessage.value.isEmpty()) {
+                    afterAction()
+                }
             }
         }
+        clearErrorMessage()
         action()
         Timber.tag(TAG).d("handleActionJob(...) ended")
     }
@@ -160,9 +176,17 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         return job
     }
 
-    fun uiState(): T? = when (_uiStateFlow.value) {
-        is UiState.Success<*> -> (_uiStateFlow.value as UiState.Success<*>).data as T
-        else -> null
+    fun uiState(): T? {
+        clearErrorMessage()
+        return when (_uiStateFlow.value) {
+            is UiState.Success<*> -> (_uiStateFlow.value as UiState.Success<*>).data as T
+
+            is UiState.Error -> {
+                setErrorMessage((_uiStateFlow.value as UiState.Error).errorMessage); null
+            }
+
+            else -> null
+        }
     }
 
     fun submitSingleEvent(event: E): Job {

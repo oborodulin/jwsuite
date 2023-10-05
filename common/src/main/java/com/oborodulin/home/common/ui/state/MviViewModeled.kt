@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface MviViewModeled<T : Any, A : UiAction, E : UiSingleEvent> {
     val uiStateFlow: StateFlow<UiState<T>>
+
+    val errorMessage: StateFlow<String>
+
     val actionsJobFlow: SharedFlow<Job?>
     val singleEventFlow: Flow<E>
 
