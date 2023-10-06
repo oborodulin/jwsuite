@@ -12,8 +12,7 @@ import timber.log.Timber
 private const val TAG = "Domain.SaveCongregationUseCase"
 
 class SaveCongregationUseCase(
-    configuration: Configuration,
-    private val congregationsRepository: CongregationsRepository
+    configuration: Configuration, private val congregationsRepository: CongregationsRepository
 ) : UseCase<SaveCongregationUseCase.Request, SaveCongregationUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {

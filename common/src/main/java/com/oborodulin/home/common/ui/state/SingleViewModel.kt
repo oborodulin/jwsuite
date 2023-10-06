@@ -17,7 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,6 +35,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     val id: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(idFieldName.orEmpty(), InputWrapper())
     }
+    private val _isUiStateChanged: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    override val isUiStateChanged = _isUiStateChanged.asStateFlow()
     private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
         key = state[FOCUSED_FIELD_KEY] ?: initFocusedTextField?.key()
@@ -84,6 +88,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         if (property.value.isEmpty) {
             Timber.tag(TAG).d("initStateValue(...): %s = '%s'", field.key(), value)
             setStateValue(field, property, value)
+            _isUiStateChanged.value = false
         }
     }
 
@@ -97,6 +102,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         } else {
             state[field.key()] = property.value.copy(value = value, isEmpty = false)
         }
+        _isUiStateChanged.value = true
     }
 
     @JvmName("setInputWrapperStateValue")
@@ -104,6 +110,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         Timber.tag(TAG)
             .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
+        _isUiStateChanged.value = true
     }
 
     //InputsWrapper:
@@ -151,6 +158,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             )
         }
         state[field.key()] = properties.value.copy(inputs = properties.value.inputs.toMutableMap())
+        _isUiStateChanged.value = true
     }
 
     fun setStateValue(
@@ -167,6 +175,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
                 isSaved = errorId != null
             )
         state[field.key()] = properties.value.copy(inputs = properties.value.inputs.toMutableMap())
+        _isUiStateChanged.value = true
     }
 
     //InputListItemWrapper:
@@ -178,6 +187,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         if (property.value.isEmpty) {
             Timber.tag(TAG).d("initStateValue(...): %s = '%s'", field.key(), item)
             setStateValue(field, property, item)
+            _isUiStateChanged.value = false
         }
     }
 
@@ -193,6 +203,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         } else {
             state[field.key()] = property.value.copy(item = item, isEmpty = false)
         }
+        _isUiStateChanged.value = true
     }
 
     @JvmName("setInputListItemWrapperStateValue")
@@ -202,6 +213,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         Timber.tag(TAG)
             .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
+        _isUiStateChanged.value = true
     }
 
     fun onTextFieldEntered(inputEvent: Inputable) {
@@ -272,4 +284,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             }
         }
     }
+
+    override fun submitState(state: S) =
+        super.submitStateWithErrorStateMessageRedirection(state, true)
 }

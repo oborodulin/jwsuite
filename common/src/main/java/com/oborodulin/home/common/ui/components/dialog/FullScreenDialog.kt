@@ -100,9 +100,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                     IconButton(onClick = {
                                         viewModel.onDialogDismiss(onDismissRequest)
                                         onShowListDialog()
-                                    }) {
-                                        Icon(Icons.Outlined.Close, null)
-                                    }
+                                    }) { Icon(Icons.Outlined.Close, null) }
                                 }, actions = {
                                     IconButton(onClick = {
                                         // check for errors
@@ -133,9 +131,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
                                             // execute viewModel.Save()
                                             viewModel.submitAction(confirmUiAction)
                                         }
-                                    }) {
-                                        Icon(Icons.Outlined.Done, null)
-                                    }
+                                    }) { Icon(Icons.Outlined.Done, null) }
                                 })
                             Spacer(modifier = Modifier.height(8.dp))
                             dialogView(it)

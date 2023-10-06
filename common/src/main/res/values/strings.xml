@@ -10,13 +10,21 @@
     <!--кнопки-->
     <string name="btn_save_lbl">Сохранить</string>
     <string name="btn_cancel_lbl">Отменить</string>
+    <string name="btn_leave_lbl">Оставить</string>
+    <string name="btn_try_again_lbl">Повторить</string>
+    <string name="btn_dismiss_lbl">Пропустить</string>
     <string name="btn_ok_lbl">ОК</string>
+    <string name="btn_delete_lbl">Удалить</string>
     <string name="btn_add_lbl">Добавить</string>
     <string name="btn_next_lbl">Далее</string>
     <string name="btn_continue_lbl">Продолжить</string>
     <string name="btn_close_lbl">Закрыть</string>
+    <string name="btn_done_lbl">Готово</string>
     <!--диалог-->
+    <string name="dlg_error_title">Внимание! Ошибка!</string>
     <string name="dlg_confirm_title">Подтверждение</string>
+    <string name="dlg_confirm_delete_title">Удалить?</string>
+    <string name="dlg_confirm_cancel_changes_title">Отменить изменения?</string>
     <!--значения-->
     <string name="all_items_val">ВСЕ</string>
 

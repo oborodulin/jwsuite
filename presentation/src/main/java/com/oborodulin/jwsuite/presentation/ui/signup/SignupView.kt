@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.register
+package com.oborodulin.jwsuite.presentation.ui.signup
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -36,11 +36,11 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Geo.RegionView"
+private const val TAG = "Presentation.RegionView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegionView(viewModel: RegisterViewModel) {
+fun RegionView(viewModel: SignupViewModel) {
     Timber.tag(TAG).d("RegionView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -52,12 +52,12 @@ fun RegionView(viewModel: RegisterViewModel) {
     }
 
     Timber.tag(TAG).d("Region: CollectAsStateWithLifecycle for all fields")
-    val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
-    val regionName by viewModel.regionName.collectAsStateWithLifecycle()
+    val regionCode by viewModel.username.collectAsStateWithLifecycle()
+    val regionName by viewModel.password.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Region: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<RegisterFields, InputFocusRequester>(RegisterFields::class.java)
-    enumValues<RegisterFields>().forEach {
+    val focusRequesters = EnumMap<SignupFields, InputFocusRequester>(SignupFields::class.java)
+    enumValues<SignupFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
@@ -85,10 +85,10 @@ fun RegionView(viewModel: RegisterViewModel) {
     ) {
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegisterFields.REGISTER_USERNAME]!!.focusRequester)
+                .focusRequester(focusRequesters[SignupFields.SIGNUP_USERNAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = RegisterFields.REGISTER_USERNAME,
+                        focusedField = SignupFields.SIGNUP_USERNAME,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -98,15 +98,15 @@ fun RegionView(viewModel: RegisterViewModel) {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = regionCode,
-            onValueChange = { viewModel.onTextFieldEntered(RegisterInputEvent.Username(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(SignupInputEvent.Username(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[RegisterFields.REGISTER_PASSWORD]!!.focusRequester)
+                .focusRequester(focusRequesters[SignupFields.SIGNUP_PASSWORD]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = RegisterFields.REGISTER_PASSWORD,
+                        focusedField = SignupFields.SIGNUP_PASSWORD,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -120,7 +120,7 @@ fun RegionView(viewModel: RegisterViewModel) {
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = regionName,
-            onValueChange = { viewModel.onTextFieldEntered(RegisterInputEvent.Password(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(SignupInputEvent.Password(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
@@ -132,7 +132,7 @@ fun RegionView(viewModel: RegisterViewModel) {
 fun PreviewRegionView() {
     JWSuiteTheme {
         Surface {
-            RegionView(viewModel = RegisterViewModelImpl.previewModel(LocalContext.current))
+            RegionView(viewModel = SignupViewModelImpl.previewModel(LocalContext.current))
         }
     }
 }

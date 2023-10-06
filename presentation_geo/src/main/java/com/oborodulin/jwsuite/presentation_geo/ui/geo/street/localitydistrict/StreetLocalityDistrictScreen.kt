@@ -40,7 +40,7 @@ fun StreetLocalityDistrictScreen(
             "StreetLocalityDistrictScreen(...) called: streetLocalityDistrictInput = %s",
             streetLocalityDistrictInput
         )
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         // checks all errors
         viewModel.onContinueClick {
             Timber.tag(TAG).d("StreetLocalityDistrictScreen(...): Save Button onClick...")
@@ -72,7 +72,7 @@ fun StreetLocalityDistrictScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -89,7 +89,7 @@ fun StreetLocalityDistrictScreen(
                             streetLocalityDistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

@@ -28,7 +28,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.RegionViewModelImpl"
+private const val TAG = "Presentation.RegionViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -42,7 +42,7 @@ class LoginViewModelImpl @Inject constructor(
     DialogSingleViewModel<RegionUi, UiState<RegionUi>, LoginUiAction, UiSingleEvent, LoginFields, InputWrapper>(
         state, LoginFields.REGION_ID.name, LoginFields.LOGIN_USERNAME
     ) {
-    override val regionCode: StateFlow<InputWrapper> by lazy {
+    override val password: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
             LoginFields.LOGIN_USERNAME.name,
             InputWrapper()
@@ -57,7 +57,7 @@ class LoginViewModelImpl @Inject constructor(
 
     override val areInputsValid =
         combine(
-            regionCode,
+            password,
             regionName
         ) { regionCode, regionName ->
             regionCode.errorId == null && regionName.errorId == null
@@ -107,7 +107,7 @@ class LoginViewModelImpl @Inject constructor(
 
     private fun saveRegion(): Job {
         val regionUi = RegionUi(
-            regionCode = regionCode.value.value,
+            regionCode = password.value.value,
             regionName = regionName.value.value
         )
         regionUi.id = if (id.value.value.isNotEmpty()) {
@@ -133,7 +133,7 @@ class LoginViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", uiModel)
         uiModel.id?.let { initStateValue(LoginFields.REGION_ID, id, it.toString()) }
-        initStateValue(LoginFields.LOGIN_USERNAME, regionCode, uiModel.regionCode)
+        initStateValue(LoginFields.LOGIN_USERNAME, password, uiModel.regionCode)
         initStateValue(LoginFields.LOGIN_PASSWORD, regionName, uiModel.regionName)
         return null
     }
@@ -146,11 +146,11 @@ class LoginViewModelImpl @Inject constructor(
                     is LoginInputEvent.Username ->
                         when (LoginInputValidator.LoginCode.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                LoginFields.LOGIN_USERNAME, regionCode, event.input, true
+                                LoginFields.LOGIN_USERNAME, password, event.input, true
                             )
 
                             else -> setStateValue(
-                                LoginFields.LOGIN_USERNAME, regionCode, event.input
+                                LoginFields.LOGIN_USERNAME, password, event.input
                             )
                         }
 
@@ -171,7 +171,7 @@ class LoginViewModelImpl @Inject constructor(
                 when (event) {
                     is LoginInputEvent.Username ->
                         setStateValue(
-                            LoginFields.LOGIN_USERNAME, regionCode,
+                            LoginFields.LOGIN_USERNAME, password,
                             LoginInputValidator.LoginCode.errorIdOrNull(event.input)
                         )
 
@@ -189,7 +189,7 @@ class LoginViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        LoginInputValidator.LoginCode.errorIdOrNull(regionCode.value.value)?.let {
+        LoginInputValidator.LoginCode.errorIdOrNull(password.value.value)?.let {
             inputErrors.add(InputError(fieldName = LoginFields.LOGIN_USERNAME.name, errorId = it))
         }
         LoginInputValidator.LoginName.errorIdOrNull(regionName.value.value)?.let {
@@ -203,7 +203,7 @@ class LoginViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (LoginFields.valueOf(error.fieldName)) {
-                LoginFields.LOGIN_USERNAME -> regionCode.value.copy(errorId = error.errorId)
+                LoginFields.LOGIN_USERNAME -> password.value.copy(errorId = error.errorId)
                 LoginFields.LOGIN_PASSWORD -> regionName.value.copy(errorId = error.errorId)
                 else -> null
             }
@@ -226,7 +226,7 @@ class LoginViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val regionCode = MutableStateFlow(InputWrapper())
+                override val password = MutableStateFlow(InputWrapper())
                 override val regionName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)

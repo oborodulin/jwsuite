@@ -21,16 +21,20 @@ class SessionManagerRepositoryImpl @Inject constructor(
 ) : SessionManagerRepository {
     override fun isSigned() = localSessionManagerDataSource.isSigned()
     override fun isLogged() = localSessionManagerDataSource.isLogged()
-    override suspend fun signup(username: String, password: String) = withContext(dispatcher) {
+    override fun roles() = localSessionManagerDataSource.roles()
+
+    override fun signup(username: String, password: String) = flow {
         localSessionManagerDataSource.signup(username, password)
         val roles = localMemberDataSource.getMemberRoles(username)
             .map(mappers.roleEntityListToRolesListMapper::map).first()
         localSessionManagerDataSource.updateRoles(roles)
         localSessionManagerDataSource.login()
+        emit(true)
     }
 
-    override fun roles() = localSessionManagerDataSource.roles()
-
+    override fun signout() = withContext(dispatcher) {
+        localSessionManagerDataSource.signout()
+    }
     override suspend fun login(password: String) = flow {
         val isSuccess = localSessionManagerDataSource.checkPassword(password).first()
         if (isSuccess) {

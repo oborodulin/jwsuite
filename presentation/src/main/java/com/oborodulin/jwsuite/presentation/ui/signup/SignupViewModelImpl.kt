@@ -1,5 +1,6 @@
-package com.oborodulin.jwsuite.presentation.ui.register
+package com.oborodulin.jwsuite.presentation.ui.signup
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
@@ -13,14 +14,15 @@ import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
+import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionToRegionsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionUiToRegionMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -28,92 +30,48 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Geo.RegionViewModelImpl"
+private const val TAG = "Presentation.RegionViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class RegisterViewModelImpl @Inject constructor(
+class SignupViewModelImpl @Inject constructor(
+    @SuppressLint("StaticFieldLeak") @ApplicationContext val ctx: Context,
     private val state: SavedStateHandle,
     private val useCases: RegionUseCases,
     private val converter: RegionConverter,
     private val regionUiMapper: RegionUiToRegionMapper,
     private val regionMapper: RegionToRegionsListItemMapper
-) : RegisterViewModel,
-    DialogSingleViewModel<RegionUi, UiState<RegionUi>, RegisterUiAction, UiSingleEvent, RegisterFields, InputWrapper>(
-        state, RegisterFields.REGION_ID.name, RegisterFields.REGISTER_USERNAME
+) : SignupViewModel,
+    DialogSingleViewModel<Any, UiState<Any>, SignupUiAction, UiSingleEvent, SignupFields, InputWrapper>(
+        state, initFocusedTextField = SignupFields.SIGNUP_USERNAME
     ) {
-    override val regionCode: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegisterFields.REGISTER_USERNAME.name,
-            InputWrapper()
-        )
+    override val username: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(SignupFields.SIGNUP_USERNAME.name, InputWrapper())
     }
-    override val regionName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegisterFields.REGISTER_PASSWORD.name,
-            InputWrapper()
-        )
+    override val password: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(SignupFields.SIGNUP_PASSWORD.name, InputWrapper())
+    }
+    override val confirmPassword: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(SignupFields.SIGNUP_CONFIRM_PASSWORD.name, InputWrapper())
     }
 
     override val areInputsValid =
-        combine(
-            regionCode,
-            regionName
-        ) { regionCode, regionName ->
-            regionCode.errorId == null && regionName.errorId == null
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+        combine(username, password, confirmPassword) { username, password, confirmPassword ->
+            username.errorId == null && password.errorId == null && confirmPassword.errorId == null
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<RegionUi> = UiState.Loading
+    override fun initState(): UiState<Any> = UiState.Loading
 
-    override suspend fun handleAction(action: RegisterUiAction): Job {
-        Timber.tag(TAG).d("handleAction(RegionUiAction) called: %s", action.javaClass.name)
+    override suspend fun handleAction(action: SignupUiAction): Job {
+        Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegisterUiAction.Load -> when (action.regionId) {
-                null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.region_new_subheader)
-                    submitState(UiState.Success(RegionUi()))
-                }
-
-                else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.region_subheader)
-                    loadRegion(action.regionId)
-                }
-            }
-
-            is RegisterUiAction.Register -> {
-                saveRegion()
-            }
+            is SignupUiAction.Signup -> signup(action.username, action.password)
         }
         return job
     }
 
-    private fun loadRegion(regionId: UUID): Job {
-        Timber.tag(TAG).d("loadRegion(UUID) called: %s", regionId.toString())
-        val job = viewModelScope.launch(errorHandler) {
-            useCases.getRegionUseCase.execute(GetRegionUseCase.Request(regionId))
-                .map {
-                    converter.convert(it)
-                }
-                .collect {
-                    submitState(it)
-                }
-        }
-        return job
-    }
-
-    private fun saveRegion(): Job {
-        val regionUi = RegionUi(
-            regionCode = regionCode.value.value,
-            regionName = regionName.value.value
-        )
-        regionUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
-        Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
+    private fun signup(username: String, password: String): Job {
+        Timber.tag(TAG).d("signup(...) called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(regionUiMapper.map(regionUi)))
                 .collect {
@@ -126,15 +84,15 @@ class RegisterViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun stateInputFields() = enumValues<RegisterFields>().map { it.name }
+    override fun stateInputFields() = enumValues<SignupFields>().map { it.name }
 
     override fun initFieldStatesByUiModel(uiModel: RegionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", uiModel)
-        uiModel.id?.let { initStateValue(RegisterFields.REGION_ID, id, it.toString()) }
-        initStateValue(RegisterFields.REGISTER_USERNAME, regionCode, uiModel.regionCode)
-        initStateValue(RegisterFields.REGISTER_PASSWORD, regionName, uiModel.regionName)
+        uiModel.id?.let { initStateValue(SignupFields.REGION_ID, id, it.toString()) }
+        initStateValue(SignupFields.SIGNUP_USERNAME, username, uiModel.regionCode)
+        initStateValue(SignupFields.SIGNUP_PASSWORD, password, uiModel.regionName)
         return null
     }
 
@@ -143,25 +101,25 @@ class RegisterViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is RegisterInputEvent.Username ->
-                        when (RegisterInputValidator.Username.errorIdOrNull(event.input)) {
+                    is SignupInputEvent.Username ->
+                        when (SignupInputValidator.Username.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                RegisterFields.REGISTER_USERNAME, regionCode, event.input, true
+                                SignupFields.SIGNUP_USERNAME, username, event.input, true
                             )
 
                             else -> setStateValue(
-                                RegisterFields.REGISTER_USERNAME, regionCode, event.input
+                                SignupFields.SIGNUP_USERNAME, username, event.input
                             )
                         }
 
-                    is RegisterInputEvent.Password ->
-                        when (RegisterInputValidator.Password.errorIdOrNull(event.input)) {
+                    is SignupInputEvent.Password ->
+                        when (SignupInputValidator.Password.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                RegisterFields.REGISTER_PASSWORD, regionName, event.input, true
+                                SignupFields.SIGNUP_PASSWORD, password, event.input, true
                             )
 
                             else -> setStateValue(
-                                RegisterFields.REGISTER_PASSWORD, regionName, event.input
+                                SignupFields.SIGNUP_PASSWORD, password, event.input
                             )
                         }
                 }
@@ -169,16 +127,16 @@ class RegisterViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is RegisterInputEvent.Username ->
+                    is SignupInputEvent.Username ->
                         setStateValue(
-                            RegisterFields.REGISTER_USERNAME, regionCode,
-                            RegisterInputValidator.Username.errorIdOrNull(event.input)
+                            SignupFields.SIGNUP_USERNAME, username,
+                            SignupInputValidator.Username.errorIdOrNull(event.input)
                         )
 
-                    is RegisterInputEvent.Password ->
+                    is SignupInputEvent.Password ->
                         setStateValue(
-                            RegisterFields.REGISTER_PASSWORD, regionName,
-                            RegisterInputValidator.Password.errorIdOrNull(event.input)
+                            SignupFields.SIGNUP_PASSWORD, password,
+                            SignupInputValidator.Password.errorIdOrNull(event.input)
                         )
 
                 }
@@ -189,22 +147,28 @@ class RegisterViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        RegisterInputValidator.Username.errorIdOrNull(regionCode.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegisterFields.REGISTER_USERNAME.name, errorId = it))
+        SignupInputValidator.Username.errorIdOrNull(username.value.value)?.let {
+            inputErrors.add(InputError(fieldName = SignupFields.SIGNUP_USERNAME.name, errorId = it))
         }
-        RegisterInputValidator.Password.errorIdOrNull(regionName.value.value)?.let {
-            inputErrors.add(InputError(fieldName = RegisterFields.REGISTER_PASSWORD.name, errorId = it))
+        SignupInputValidator.Password.errorIdOrNull(password.value.value)?.let {
+            inputErrors.add(InputError(fieldName = SignupFields.SIGNUP_PASSWORD.name, errorId = it))
         }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
 
+    // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
     override fun displayInputErrors(inputErrors: List<InputError>) {
         Timber.tag(TAG)
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        val res = ctx.resources
         for (error in inputErrors) {
-            state[error.fieldName] = when (RegisterFields.valueOf(error.fieldName)) {
-                RegisterFields.REGISTER_USERNAME -> regionCode.value.copy(errorId = error.errorId)
-                RegisterFields.REGISTER_PASSWORD -> regionName.value.copy(errorId = error.errorId)
+            state[error.fieldName] = when (SignupFields.valueOf(error.fieldName)) {
+                SignupFields.SIGNUP_USERNAME -> username.value.copy(errorId = error.errorId)
+                SignupFields.SIGNUP_PASSWORD -> password.value.copy(
+                    errorId = error.errorId,
+                    errorMsg = res.getString(error.errorId!!, PASS_MIN_LENGTH)
+                )
+
                 else -> null
             }
         }
@@ -212,7 +176,7 @@ class RegisterViewModelImpl @Inject constructor(
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : RegisterViewModel {
+            object : SignupViewModel {
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
@@ -226,22 +190,27 @@ class RegisterViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val regionCode = MutableStateFlow(InputWrapper())
-                override val regionName = MutableStateFlow(InputWrapper())
+                override val username = MutableStateFlow(InputWrapper())
+                override val password = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
-                override fun submitAction(action: RegisterUiAction): Job? = null
+                override fun submitAction(action: SignupUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
-                    focusedField: RegisterFields, isFocused: Boolean
+                    focusedField: SignupFields, isFocused: Boolean
                 ) {
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

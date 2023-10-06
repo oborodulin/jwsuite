@@ -47,7 +47,7 @@ fun TerritoryStreetScreen(
     Timber.tag(TAG)
         .d("TerritoryStreetScreen(...) called: territoryStreetInput = %s", territoryStreetInput)
     val coroutineScope = rememberCoroutineScope()
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         territoryStreetViewModel.onContinueClick {
             Timber.tag(TAG).d("TerritoryStreetScreen(...): Save Button onClick...")
             // checks all errors
@@ -95,7 +95,7 @@ fun TerritoryStreetScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -112,7 +112,7 @@ fun TerritoryStreetScreen(
                             territoryViewModel = territoryViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

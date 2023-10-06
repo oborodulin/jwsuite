@@ -41,7 +41,7 @@ fun GroupScreen(
 ) {
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
     val coroutineScope = rememberCoroutineScope()
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         Timber.tag(TAG).d("GroupScreen(...): Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
@@ -87,7 +87,7 @@ fun GroupScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -101,7 +101,7 @@ fun GroupScreen(
                     ) {
                         GroupView(appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

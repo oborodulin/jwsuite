@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation.ui.login
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import com.oborodulin.jwsuite.presentation_geo.R
 
-private const val TAG = "Geo.RegionInputValidator"
+private const val TAG = "Presentation.RegionInputValidator"
 
 sealed class LoginInputValidator : Validatable {
     data object LoginCode : LoginInputValidator() {

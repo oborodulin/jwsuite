@@ -3,11 +3,13 @@ package com.oborodulin.jwsuite.domain.repositories
 import com.oborodulin.jwsuite.domain.model.Role
 import kotlinx.coroutines.flow.Flow
 
+// https://www.quora.com/What-is-the-difference-between-sign-in-sign-up-sign-out-log-in-log-on-log-out-and-log-off-and-when-to-use-them
 interface SessionManagerRepository {
     fun isSigned(): Flow<Boolean>
     fun isLogged(): Flow<Boolean>
     fun roles(): Flow<List<Role>>
-    suspend fun signup(username: String, password: String)
-    suspend fun login(password: String): Flow<Boolean>
-    suspend fun logout()
+    fun signup(username: String, password: String): Flow<Boolean>
+    fun signout(): Flow<Boolean>
+    fun login(password: String): Flow<Boolean>
+    fun logout(): Flow<Boolean>
 }

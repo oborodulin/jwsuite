@@ -25,7 +25,8 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override fun checkPassword(password: String) =
         dataStore.data.map { authData -> authData.password?.let { it == password } ?: false }
 
-    override fun databasePassphrase() = dataStore.data.map { authData -> authData.databasePassphrase }
+    override fun databasePassphrase() =
+        dataStore.data.map { authData -> authData.databasePassphrase }
 
     override fun roles() = dataStore.data.map { authData -> authData.roles }
 
@@ -35,9 +36,14 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
                 username = username,
                 password = password,
                 databasePassphrase = password,
+                lastLoginTime = OffsetDateTime.now(),
                 isLogged = true
             )
         }
+    }
+
+    override suspend fun signout() {
+        dataStore.updateData { it.copy(username = null, password = null, isLogged = false) }
     }
 
     override suspend fun login() {

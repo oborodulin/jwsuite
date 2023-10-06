@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.util
 
 /**
- * Created by tfakioglu on 13.December.2021
+ * Created by o.borodulin on 06.October.2023
  */
 object Constants {
     // Database constants:

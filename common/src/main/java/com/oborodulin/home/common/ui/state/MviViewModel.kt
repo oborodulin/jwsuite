@@ -23,8 +23,8 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
     override val uiStateFlow = _uiStateFlow
 
-    private val _errorMessage: MutableStateFlow<String> = MutableStateFlow("")
-    override val errorMessage = _errorMessage.asStateFlow()
+    private val _uiStateErrorMsg: MutableStateFlow<String?> = MutableStateFlow(null)
+    override val uiStateErrorMsg = _uiStateErrorMsg.asStateFlow()
 
     private val _actionsFlow: MutableSharedFlow<A> = MutableSharedFlow()
 
@@ -118,14 +118,14 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         }
     }*/
 
-    private fun setErrorMessage(errorMessage: String) {
+    private fun redirectUiStateErrorMessage(errorMessage: String?) {
         Timber.tag(TAG)
-            .d("setErrorMessage() called: errorMessage = %s", errorMessage)
-        _errorMessage.value = errorMessage
+            .d("redirectUiStateErrorMessage() called: errorMessage = %s", errorMessage)
+        _uiStateErrorMsg.value = errorMessage
     }
 
-    private fun clearErrorMessage() {
-        setErrorMessage("")
+    private fun clearUiStateErrorMessage() {
+        redirectUiStateErrorMessage(null)
     }
 
     abstract suspend fun handleAction(action: A): Job?
@@ -145,12 +145,10 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                     job?.toString()
                 )
                 job?.join()
-                if (_errorMessage.value.isEmpty()) {
-                    afterAction()
-                }
+                afterAction()
             }
         }
-        clearErrorMessage()
+        clearUiStateErrorMessage()
         action()
         Timber.tag(TAG).d("handleActionJob(...) ended")
     }
@@ -163,26 +161,41 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         return job
     }
 
-    fun submitState(state: S): Job {
-        Timber.tag(TAG).d("submitState(S): change ui state = %s", state.javaClass.name)
+    open fun submitState(state: S) =
+        submitStateWithErrorStateMessageRedirection(state, false)
+
+    fun submitStateWithErrorStateMessageRedirection(
+        state: S, redirectErrorStateMessage: Boolean
+    ): Job {
+        Timber.tag(TAG).d(
+            "submitStateWithErrorStateMessageRedirection(S): redirectErrorStateMessage = %s; change ui state = %s",
+            redirectErrorStateMessage,
+            state.javaClass.name
+        )
         val job = viewModelScope.launch(errorHandler) {
-            _uiStateFlow.value = state
-            uiState()?.let {
-                Timber.tag(TAG).d("submitState: state.data = %s", it)
+            if (!redirectErrorStateMessage) {
+                _uiStateFlow.value = state
+            }
+            uiState(_uiStateFlow.value)?.let {
+                if (redirectErrorStateMessage) {
+                    _uiStateFlow.value = state
+                }
+                Timber.tag(TAG)
+                    .d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
                 initFieldStatesByUiModel(it)
             }
         }
-        Timber.tag(TAG).d("submitState(S) ended")
+        Timber.tag(TAG).d("submitStateWithErrorStateMessageRedirection(S) ended")
         return job
     }
 
-    fun uiState(): T? {
-        clearErrorMessage()
-        return when (_uiStateFlow.value) {
-            is UiState.Success<*> -> (_uiStateFlow.value as UiState.Success<*>).data as T
+    fun uiState(state: S? = null): T? {
+        clearUiStateErrorMessage()
+        return when (val uiState = state ?: _uiStateFlow.value) {
+            is UiState.Success<*> -> (uiState as UiState.Success<*>).data as T
 
             is UiState.Error -> {
-                setErrorMessage((_uiStateFlow.value as UiState.Error).errorMessage); null
+                redirectUiStateErrorMessage((uiState as UiState.Error).errorMessage); null
             }
 
             else -> null

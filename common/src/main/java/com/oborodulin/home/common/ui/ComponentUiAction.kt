@@ -4,8 +4,7 @@ import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.util.OnListItemEvent
 
 sealed class ComponentUiAction(
-    val isMenuButton: Boolean = true,
-    override val isEmitJob: Boolean = true
+    val isMenuButton: Boolean = true, override val isEmitJob: Boolean = true
 ) : UiAction {
     data class EditListItem(val event: OnListItemEvent) : ComponentUiAction()
 

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.register
+package com.oborodulin.jwsuite.presentation.ui.signup
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -23,18 +23,18 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Geo.RegionScreen"
+private const val TAG = "Presentation.RegionScreen"
 
 @Composable
 fun RegionScreen(
     appState: AppState,
-    viewModel: RegisterViewModelImpl = hiltViewModel(),
+    viewModel: SignupViewModelImpl = hiltViewModel(),
     regionInput: RegionInput? = null
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
         Timber.tag(TAG).d("RegionScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(RegisterUiAction.Load(regionInput?.regionId))
+        viewModel.submitAction(SignupUiAction.Load(regionInput?.regionId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -69,7 +69,7 @@ fun RegionScreen(
                                         appState.backToBottomBarScreen()
                                     }
                                 }
-                                viewModel.submitAction(RegisterUiAction.Register)
+                                viewModel.submitAction(SignupUiAction.Signup)
                                 Timber.tag(TAG).d("RegionScreen(...): onSubmit() executed")
                             }
                         }

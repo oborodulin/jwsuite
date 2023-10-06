@@ -40,7 +40,7 @@ fun StreetMicrodistrictScreen(
             "StreetMicrodistrictScreen(...) called: streetMicrodistrictInput = %s",
             streetMicrodistrictInput
         )
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         // checks all errors
         viewModel.onContinueClick {
             Timber.tag(TAG).d("StreetMicrodistrictScreen(...): Save Button onClick...")
@@ -72,7 +72,7 @@ fun StreetMicrodistrictScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -89,7 +89,7 @@ fun StreetMicrodistrictScreen(
                             streetMicrodistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

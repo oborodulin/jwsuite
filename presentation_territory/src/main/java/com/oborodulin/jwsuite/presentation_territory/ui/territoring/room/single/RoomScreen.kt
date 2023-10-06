@@ -40,7 +40,7 @@ fun RoomScreen(
 ) {
     Timber.tag(TAG).d("RoomScreen(...) called: houseInput = %s", roomInput)
     val coroutineScope = rememberCoroutineScope()
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG).d("RoomScreen(...): Save Button onClick...")
             // checks all errors
@@ -71,7 +71,7 @@ fun RoomScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -85,7 +85,7 @@ fun RoomScreen(
                     ) {
                         RoomView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

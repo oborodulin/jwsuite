@@ -41,7 +41,7 @@ fun TerritoryHouseScreen(
     Timber.tag(TAG)
         .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
 
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         // checks all errors
         territoryHouseViewModel.onContinueClick {
             Timber.tag(TAG).d("TerritoryHouseScreen(...): Save Button onClick...")
@@ -72,7 +72,7 @@ fun TerritoryHouseScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -91,7 +91,7 @@ fun TerritoryHouseScreen(
                             territoryHouseViewModel = territoryHouseViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

@@ -24,7 +24,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.ComponentUiAction
-import com.oborodulin.home.common.ui.components.dialog.AlertDialogComponent
+import com.oborodulin.home.common.ui.components.dialog.alert.DeleteConfirmDialogComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.ui.theme.Typography
@@ -188,10 +187,8 @@ fun ListItemComponent(
                         }
 
                         is ComponentUiAction.DeleteListItem -> {
-                            AlertDialogComponent(
-                                isShow = isShowAlert,
-                                title = { Text(stringResource(R.string.dlg_confirm_title)) },
-                                text = { Text(text = action.alertText) }
+                            DeleteConfirmDialogComponent(
+                                isShow = isShowAlert, text = action.alertText
                             ) { action.event(item) }
                             Image(
                                 modifier = Modifier

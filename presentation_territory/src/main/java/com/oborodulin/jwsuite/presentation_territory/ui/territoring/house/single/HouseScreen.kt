@@ -38,7 +38,7 @@ fun HouseScreen(
     houseInput: HouseInput? = null
 ) {
     Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
@@ -67,7 +67,7 @@ fun HouseScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -81,7 +81,7 @@ fun HouseScreen(
                     ) {
                         HouseView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

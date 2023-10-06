@@ -36,7 +36,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Geo.RegionView"
+private const val TAG = "Presentation.RegionView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -52,7 +52,7 @@ fun RegionView(viewModel: LoginViewModel) {
     }
 
     Timber.tag(TAG).d("Region: CollectAsStateWithLifecycle for all fields")
-    val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
+    val regionCode by viewModel.password.collectAsStateWithLifecycle()
     val regionName by viewModel.regionName.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Region: Init Focus Requesters for all fields")

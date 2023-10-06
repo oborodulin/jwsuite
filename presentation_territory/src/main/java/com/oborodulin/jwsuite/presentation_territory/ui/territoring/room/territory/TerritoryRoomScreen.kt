@@ -41,7 +41,7 @@ fun TerritoryRoomScreen(
     Timber.tag(TAG)
         .d("TerritoryRoomScreen(...) called: territoryRoomInput = %s", territoryRoomInput)
 
-    val saveButtonOnClick = {
+    val onSaveButtonClick = {
         // checks all errors
         territoryRoomViewModel.onContinueClick {
             Timber.tag(TAG).d("TerritoryRoomScreen(...): Save Button onClick...")
@@ -72,7 +72,7 @@ fun TerritoryRoomScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -91,7 +91,7 @@ fun TerritoryRoomScreen(
                             territoryRoomViewModel = territoryRoomViewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = saveButtonOnClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
                     }
                 }
             }

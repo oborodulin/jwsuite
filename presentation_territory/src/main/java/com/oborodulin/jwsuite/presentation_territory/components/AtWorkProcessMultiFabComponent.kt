@@ -4,13 +4,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import com.oborodulin.home.common.ui.components.dialog.AlertDialogComponent
+import com.oborodulin.home.common.ui.components.dialog.alert.AlertDialogComponent
 import com.oborodulin.home.common.ui.components.fab.MinFabItem
 import com.oborodulin.home.common.ui.components.fab.MultiFabComponent
 import com.oborodulin.home.common.ui.components.fab.MultiFloatingState
@@ -86,8 +84,8 @@ fun AtWorkProcessMultiFabComponent(
     }
     AlertDialogComponent(
         isShow = isShowAlert,
-        title = { Text(stringResource(com.oborodulin.home.common.R.string.dlg_confirm_title)) },
-        text = { Text(text = "Обработать отмеченные участки?") }
+        titleResId = com.oborodulin.home.common.R.string.dlg_confirm_title,
+        text = "Обработать отмеченные участки?"
     ) { territoriesGridViewModel.submitAction(TerritoriesGridUiAction.Process) }
 
     MultiFabComponent(

@@ -13,6 +13,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,11 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
+import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
+import com.oborodulin.home.common.ui.components.dialog.alert.ErrorAlertDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_congregation.R
 import timber.log.Timber
 
 private const val TAG = "Congregating.CongregationScreen"
@@ -36,19 +41,6 @@ fun CongregationScreen(
     congregationInput: CongregationInput? = null
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
-    val saveButtonOnClick = {
-        Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
-        // checks all errors
-        viewModel.onContinueClick {
-            // checks all errors
-            viewModel.onContinueClick {
-                // if success, save then backToBottomBarScreen
-                viewModel.handleActionJob(
-                    { viewModel.submitAction(CongregationUiAction.Save) },
-                    { appState.backToBottomBarScreen() })
-            }
-        }
-    }
     LaunchedEffect(congregationInput?.congregationId) {
         Timber.tag(TAG).d("CongregationScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(CongregationUiAction.Load(congregationInput?.congregationId))
@@ -58,21 +50,53 @@ fun CongregationScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             appState.actionBarSubtitle.value = stringResource(it)
         }
+        val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
+        val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
+        CancelChangesConfirmDialogComponent(
+            isShow = isCancelChangesShowAlert,
+            text = stringResource(R.string.dlg_confirm_cancel_changes_congregation)
+        ) { appState.backToBottomBarScreen() }
+        val onBackNavigationClick = {
+            if (isUiStateChanged) {
+                isCancelChangesShowAlert.value = true
+            } else {
+                appState.backToBottomBarScreen()
+            }
+        }
+        val errorMessage by viewModel.uiStateErrorMsg.collectAsStateWithLifecycle()
+        val isErrorShowAlert = rememberSaveable { mutableStateOf(false) }
+        ErrorAlertDialogComponent(isShow = isErrorShowAlert, text = errorMessage) {
+            isErrorShowAlert.value = false; appState.backToBottomBarScreen()
+        }
+        val onSaveButtonClick = {
+            Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
+            // checks all errors
+            viewModel.onContinueClick {
+                // checks all errors
+                viewModel.onContinueClick {
+                    // if success, save then backToBottomBarScreen
+                    viewModel.handleActionJob({ viewModel.submitAction(CongregationUiAction.Save) },
+                        {
+                            if (errorMessage.isNotEmpty()) {
+                                isErrorShowAlert.value = true
+                            } else {
+                                appState.backToBottomBarScreen()
+                            }
+                        })
+                }
+            }
+        }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme {
-            ScaffoldComponent(
-                appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                },
-                topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = saveButtonOnClick) {
-                        Icon(Icons.Outlined.Done, null)
-                    }
+            ScaffoldComponent(appState = appState, topBarNavigationIcon = {
+                IconButton(onClick = onBackNavigationClick) {
+                    Icon(Icons.Outlined.ArrowBack, null)
                 }
-            ) { paddingValues ->
+            }, topBarActions = {
+                IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
+                    Icon(Icons.Outlined.Done, null)
+                }
+            }) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
                     Column(
                         modifier = Modifier
@@ -83,8 +107,7 @@ fun CongregationScreen(
                         CongregationView()
                         Spacer(Modifier.height(8.dp))
                         SaveButtonComponent(
-                            enabled = areInputsValid,
-                            onClick = saveButtonOnClick
+                            enabled = areInputsValid, onClick = onSaveButtonClick
                         )
                     }
                 }
