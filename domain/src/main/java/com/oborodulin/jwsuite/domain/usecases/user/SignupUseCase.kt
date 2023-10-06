@@ -1,11 +1,8 @@
 package com.oborodulin.jwsuite.domain.usecases.user
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.home.common.domain.usecases.UseCaseException
-import com.oborodulin.jwsuite.domain.model.Congregation
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
@@ -17,8 +14,7 @@ class SignupUseCase(
 
     override fun process(request: Request): Flow<Response> {
         Timber.tag(TAG).d("process(...) called")
-        sessionManagerRepository.signup(request.username, request.password)
-        emit(Response)
+        return sessionManagerRepository.signup(request.username, request.password).map { Response }
     }
 
     data class Request(val username: String, val password: String) : UseCase.Request

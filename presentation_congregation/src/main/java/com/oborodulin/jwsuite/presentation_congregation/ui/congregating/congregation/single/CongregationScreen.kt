@@ -77,10 +77,9 @@ fun CongregationScreen(
                     // if success, save then backToBottomBarScreen
                     viewModel.handleActionJob({ viewModel.submitAction(CongregationUiAction.Save) },
                         {
-                            if (errorMessage.isNotEmpty()) {
-                                isErrorShowAlert.value = true
-                            } else {
-                                appState.backToBottomBarScreen()
+                            when (errorMessage) {
+                                null -> appState.backToBottomBarScreen()
+                                else -> isErrorShowAlert.value = true
                             }
                         })
                 }
