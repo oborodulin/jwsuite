@@ -4,7 +4,7 @@ import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityView
-import com.oborodulin.jwsuite.domain.model.GeoLocality
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
 
 class GeoLocalityViewToGeoLocalityMapper(
     private val regionMapper: GeoRegionViewToGeoRegionMapper,

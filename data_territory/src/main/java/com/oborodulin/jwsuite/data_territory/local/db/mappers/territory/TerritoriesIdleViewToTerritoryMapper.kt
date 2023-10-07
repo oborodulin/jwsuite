@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewT
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
-import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class TerritoriesIdleViewToTerritoryMapper(
     private val congregationMapper: CongregationViewToCongregationMapper,

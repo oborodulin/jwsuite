@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
-import com.oborodulin.jwsuite.domain.model.GeoMicrodistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
 import java.util.UUID
 
 class GeoMicrodistrictToGeoMicrodistrictEntityMapper :

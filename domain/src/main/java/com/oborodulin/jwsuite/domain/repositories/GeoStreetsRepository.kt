@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.domain.repositories
 
-import com.oborodulin.jwsuite.domain.model.GeoStreet
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

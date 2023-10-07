@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.house
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.TerritoryWithHouses
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryWithHouses
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import kotlinx.coroutines.flow.combine

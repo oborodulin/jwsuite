@@ -92,7 +92,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.sqlcipher.database.SupportFactory
@@ -173,7 +172,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         @Synchronized
         fun getInstance(
-            context: Context, jsonLogger: Json? = Json,
+            ctx: Context, jsonLogger: Json? = Json,
             localSessionManagerDataSource: LocalSessionManagerDataSource
         ): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
@@ -182,21 +181,27 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
             // Smart cast is only available to local variables.
             var instance = INSTANCE
+            // DATABASE_PASSPHRASE.toByteArray()
+            var databasePassphrase = ""
             // If instance is `null` make a new database instance.
             if (instance == null) {
-                val databasePassphrase = localSessionManagerDataSource.databasePassphrase().first()
+                runBlocking {
+                    localSessionManagerDataSource.databasePassphrase().collect {
+                        databasePassphrase = it
+                    }
+                }
                 instance =
                     Room.databaseBuilder(
-                        context,
+                        ctx,
                         JwSuiteDatabase::class.java,
                         Constants.DATABASE_NAME
-                    )//.openHelperFactory(SupportFactory(databasePassphrase.toByteArray())) //DATABASE_PASSPHRASE.toByteArray()
+                    ).openHelperFactory(SupportFactory(databasePassphrase.toByteArray()))
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         //.fallbackToDestructiveMigration()
-                        .addCallback(DatabaseCallback(context, jsonLogger))
+                        .addCallback(DatabaseCallback(ctx, jsonLogger))
                         .build()
                 // Assign INSTANCE to the newly created database.
                 INSTANCE = instance
@@ -206,11 +211,11 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         }
 
         @Synchronized
-        fun getTestInstance(context: Context, jsonLogger: Json? = null): JwSuiteDatabase {
+        fun getTestInstance(ctx: Context, jsonLogger: Json? = null): JwSuiteDatabase {
             var instance = INSTANCE
             if (instance == null) {
                 instance =
-                    Room.inMemoryDatabaseBuilder(context, JwSuiteDatabase::class.java)
+                    Room.inMemoryDatabaseBuilder(ctx, JwSuiteDatabase::class.java)
                         //.addCallback(DatabaseCallback(context, jsonLogger))
                         .allowMainThreadQueries()
                         //https://stackoverflow.com/questions/57027850/testing-android-room-with-livedata-coroutines-and-transactions

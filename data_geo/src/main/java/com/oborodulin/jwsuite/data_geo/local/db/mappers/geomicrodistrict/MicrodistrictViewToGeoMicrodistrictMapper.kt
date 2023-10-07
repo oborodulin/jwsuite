@@ -4,9 +4,9 @@ import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.home.common.mapping.NullableConstructedMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
-import com.oborodulin.jwsuite.domain.model.GeoLocality
-import com.oborodulin.jwsuite.domain.model.GeoLocalityDistrict
-import com.oborodulin.jwsuite.domain.model.GeoMicrodistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
 
 class MicrodistrictViewToGeoMicrodistrictMapper(private val ctx: Context) :
     ConstructedMapper<MicrodistrictView, GeoMicrodistrict>,

@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.room
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.Room
+import com.oborodulin.jwsuite.domain.model.territory.Room
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import kotlinx.coroutines.flow.map
 import java.util.UUID

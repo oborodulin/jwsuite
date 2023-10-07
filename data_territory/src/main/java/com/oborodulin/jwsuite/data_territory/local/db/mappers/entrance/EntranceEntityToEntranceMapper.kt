@@ -4,9 +4,9 @@ import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.home.common.mapping.NullableConstructedMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
-import com.oborodulin.jwsuite.domain.model.Entrance
-import com.oborodulin.jwsuite.domain.model.House
-import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.territory.Entrance
+import com.oborodulin.jwsuite.domain.model.territory.House
+import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class EntranceEntityToEntranceMapper(private val ctx: Context) :
     ConstructedMapper<EntranceEntity, Entrance>,

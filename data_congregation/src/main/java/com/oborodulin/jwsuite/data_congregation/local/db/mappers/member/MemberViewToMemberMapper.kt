@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.Co
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupViewToGroupMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberMovementEntityToMemberMovementMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
-import com.oborodulin.jwsuite.domain.model.Member
+import com.oborodulin.jwsuite.domain.model.congregation.Member
 
 class MemberViewToMemberMapper(
     private val congregationMapper: CongregationViewToCongregationMapper,

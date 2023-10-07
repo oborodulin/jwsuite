@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
-import com.oborodulin.jwsuite.domain.model.Role
+import com.oborodulin.jwsuite.domain.model.congregation.Role
 
 class RoleEntityToRoleMapper : NullableMapper<RoleEntity, Role>, Mapper<RoleEntity, Role> {
     override fun map(input: RoleEntity): Role {

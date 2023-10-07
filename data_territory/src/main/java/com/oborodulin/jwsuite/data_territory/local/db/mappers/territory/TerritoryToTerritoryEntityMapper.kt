@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
-import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.territory.Territory
 import java.util.UUID
 
 class TerritoryToTerritoryEntityMapper : Mapper<Territory, TerritoryEntity> {

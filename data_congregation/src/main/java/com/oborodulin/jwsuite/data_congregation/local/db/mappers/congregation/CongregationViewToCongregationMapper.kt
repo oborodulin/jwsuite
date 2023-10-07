@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.domain.model.Congregation
+import com.oborodulin.jwsuite.domain.model.congregation.Congregation
 
 class CongregationViewToCongregationMapper(
     private val regionMapper: GeoRegionViewToGeoRegionMapper,

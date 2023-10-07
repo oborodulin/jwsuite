@@ -3,8 +3,8 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.home.common.mapping.NullableConstructedMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
-import com.oborodulin.jwsuite.domain.model.GeoLocality
-import com.oborodulin.jwsuite.domain.model.GeoLocalityDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
 
 class LocalityDistrictViewToGeoLocalityDistrictMapper :
     ConstructedMapper<LocalityDistrictView, GeoLocalityDistrict>,

@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.domain.repositories
 
-import com.oborodulin.jwsuite.domain.model.Member
-import com.oborodulin.jwsuite.domain.model.MemberRole
-import com.oborodulin.jwsuite.domain.model.Role
+import com.oborodulin.jwsuite.domain.model.congregation.Member
+import com.oborodulin.jwsuite.domain.model.congregation.MemberRole
+import com.oborodulin.jwsuite.domain.model.congregation.Role
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

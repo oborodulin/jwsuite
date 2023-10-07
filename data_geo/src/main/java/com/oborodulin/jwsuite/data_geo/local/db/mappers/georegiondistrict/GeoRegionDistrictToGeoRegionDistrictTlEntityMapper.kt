@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 import java.util.UUID
 
 class GeoRegionDistrictToGeoRegionDistrictTlEntityMapper :

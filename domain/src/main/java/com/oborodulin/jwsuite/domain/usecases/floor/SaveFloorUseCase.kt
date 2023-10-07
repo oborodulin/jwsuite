@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.domain.usecases.floor
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
-import com.oborodulin.jwsuite.domain.model.Floor
+import com.oborodulin.jwsuite.domain.model.territory.Floor
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

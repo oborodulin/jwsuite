@@ -25,31 +25,39 @@ class SessionManagerRepositoryImpl @Inject constructor(
 
     override fun signup(username: String, password: String) = flow {
         localSessionManagerDataSource.signup(username, password)
-        val roles = localMemberDataSource.getMemberRoles(username)
-            .map(mappers.roleEntityListToRolesListMapper::map).first()
-        localSessionManagerDataSource.updateRoles(roles)
-        localSessionManagerDataSource.login()
+        withContext(dispatcher) {
+            localMemberDataSource.getMemberRoles(username)
+                .map(mappers.roleEntityListToRolesListMapper::map).collect {
+                    localSessionManagerDataSource.updateRoles(it)
+                    localSessionManagerDataSource.login()
+                }
+        }
         emit(true)
     }
 
-    override fun signout() = withContext(dispatcher) {
+    override fun signout() = flow {
         localSessionManagerDataSource.signout()
+        emit(true)
     }
-    override suspend fun login(password: String) = flow {
-        val isSuccess = localSessionManagerDataSource.checkPassword(password).first()
-        if (isSuccess) {
-            val username = localSessionManagerDataSource.username().first()
-            username?.let {
-                val roles = localMemberDataSource.getMemberRoles(it)
-                    .map(mappers.roleEntityListToRolesListMapper::map).first()
-                localSessionManagerDataSource.updateRoles(roles)
-                localSessionManagerDataSource.login()
+
+    override fun login(password: String) = flow {
+        var isSuccess = false
+        withContext(dispatcher) {
+            localSessionManagerDataSource.checkPassword(password).collect { username ->
+                username?.let { name ->
+                    localMemberDataSource.getMemberRoles(name)
+                        .map(mappers.roleEntityListToRolesListMapper::map).first()
+                    localSessionManagerDataSource.updateRoles(roles)
+                    localSessionManagerDataSource.login()
+                    isSuccess = true
+                }
             }
         }
         emit(isSuccess)
     }
 
-    override suspend fun logout() = withContext(dispatcher) {
+    override fun logout() = flow {
         localSessionManagerDataSource.logout()
+        emit(true)
     }
 }

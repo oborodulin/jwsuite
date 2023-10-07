@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.repositories
 
-import com.oborodulin.jwsuite.domain.model.Congregation
-import com.oborodulin.jwsuite.domain.model.CongregationTotals
+import com.oborodulin.jwsuite.domain.model.congregation.Congregation
+import com.oborodulin.jwsuite.domain.model.congregation.CongregationTotals
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

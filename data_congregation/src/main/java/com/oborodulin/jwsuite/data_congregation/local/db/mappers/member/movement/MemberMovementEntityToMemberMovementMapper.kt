@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movemen
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
-import com.oborodulin.jwsuite.domain.model.MemberMovement
+import com.oborodulin.jwsuite.domain.model.congregation.MemberMovement
 
 class MemberMovementEntityToMemberMovementMapper :
     NullableMapper<MemberMovementEntity, MemberMovement>,

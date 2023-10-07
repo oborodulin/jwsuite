@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.domain.usecases.geostreet
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
-import com.oborodulin.jwsuite.domain.model.GeoStreet
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

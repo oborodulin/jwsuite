@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.domain.repositories
 
-import com.oborodulin.jwsuite.domain.model.TerritoryCategory
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryCategory
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

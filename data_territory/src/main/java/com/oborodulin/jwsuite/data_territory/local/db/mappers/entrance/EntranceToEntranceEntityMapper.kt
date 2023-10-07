@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
-import com.oborodulin.jwsuite.domain.model.Entrance
+import com.oborodulin.jwsuite.domain.model.territory.Entrance
 import java.util.UUID
 
 class EntranceToEntranceEntityMapper : Mapper<Entrance, EntranceEntity> {

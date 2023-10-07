@@ -2,8 +2,8 @@ package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
-import com.oborodulin.jwsuite.domain.model.Member
-import com.oborodulin.jwsuite.domain.model.MemberRole
+import com.oborodulin.jwsuite.domain.model.congregation.Member
+import com.oborodulin.jwsuite.domain.model.congregation.MemberRole
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map

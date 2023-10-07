@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
-import com.oborodulin.jwsuite.domain.model.House
+import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map

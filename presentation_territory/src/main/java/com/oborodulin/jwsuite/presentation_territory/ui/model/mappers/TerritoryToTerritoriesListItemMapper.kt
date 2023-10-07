@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberToMemberUiMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper

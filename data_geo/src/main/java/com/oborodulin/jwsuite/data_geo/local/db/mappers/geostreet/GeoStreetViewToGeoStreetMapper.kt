@@ -4,7 +4,7 @@ import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
-import com.oborodulin.jwsuite.domain.model.GeoStreet
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 
 class GeoStreetViewToGeoStreetMapper(
     private val ctx: Context, private val localityMapper: GeoLocalityViewToGeoLocalityMapper,

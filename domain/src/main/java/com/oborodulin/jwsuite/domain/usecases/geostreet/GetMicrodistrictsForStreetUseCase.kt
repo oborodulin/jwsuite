@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.geostreet
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.GeoStreetWithMicrodistricts
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreetWithMicrodistricts
 import com.oborodulin.jwsuite.domain.repositories.GeoMicrodistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import kotlinx.coroutines.flow.Flow

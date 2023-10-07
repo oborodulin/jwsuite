@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.floor
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.TerritoryWithFloors
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryWithFloors
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import kotlinx.coroutines.flow.combine

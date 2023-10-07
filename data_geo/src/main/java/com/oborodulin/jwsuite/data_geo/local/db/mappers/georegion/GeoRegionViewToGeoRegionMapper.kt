@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
-import com.oborodulin.jwsuite.domain.model.GeoRegion
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 
 class GeoRegionViewToGeoRegionMapper : Mapper<GeoRegionView, GeoRegion>,
     NullableMapper<GeoRegionView, GeoRegion> {

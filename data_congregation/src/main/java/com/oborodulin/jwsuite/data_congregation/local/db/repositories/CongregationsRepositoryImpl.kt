@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
-import com.oborodulin.jwsuite.domain.model.Congregation
+import com.oborodulin.jwsuite.domain.model.congregation.Congregation
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map

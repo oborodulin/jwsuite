@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.domain.repositories
 
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

@@ -3,8 +3,8 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.home.common.mapping.NullableConstructedMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
-import com.oborodulin.jwsuite.domain.model.GeoRegion
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 
 private const val TAG = "Data.RegionDistrictViewToGeoRegionDistrictMapper"
 

@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.domain.usecases.territory
 
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.TerritoryDetail
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryDetail
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

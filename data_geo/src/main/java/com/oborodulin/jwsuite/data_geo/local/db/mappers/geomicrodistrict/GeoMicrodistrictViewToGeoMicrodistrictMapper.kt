@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.Loca
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoMicrodistrictView
-import com.oborodulin.jwsuite.domain.model.GeoMicrodistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
 
 class GeoMicrodistrictViewToGeoMicrodistrictMapper(
     private val regionMapper: GeoRegionViewToGeoRegionMapper,

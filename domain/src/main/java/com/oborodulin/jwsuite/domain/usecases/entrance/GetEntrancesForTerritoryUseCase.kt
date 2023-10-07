@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.entrance
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.TerritoryWithEntrances
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryWithEntrances
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import kotlinx.coroutines.flow.combine

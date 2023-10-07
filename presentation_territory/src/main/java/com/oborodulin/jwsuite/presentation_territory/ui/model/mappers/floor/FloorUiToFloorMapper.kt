@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
-import com.oborodulin.jwsuite.domain.model.Floor
+import com.oborodulin.jwsuite.domain.model.territory.Floor
 import com.oborodulin.jwsuite.presentation_territory.ui.model.FloorUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.TerritoryUiToTerritoryMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntranceUiToEntranceMapper

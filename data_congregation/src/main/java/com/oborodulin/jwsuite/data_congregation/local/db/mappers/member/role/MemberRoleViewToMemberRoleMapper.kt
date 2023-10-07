@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
-import com.oborodulin.jwsuite.domain.model.MemberRole
+import com.oborodulin.jwsuite.domain.model.congregation.MemberRole
 
 class MemberRoleViewToMemberRoleMapper(private val mapper: RoleEntityToRoleMapper) :
     NullableMapper<MemberRoleView, MemberRole>, Mapper<MemberRoleView, MemberRole> {

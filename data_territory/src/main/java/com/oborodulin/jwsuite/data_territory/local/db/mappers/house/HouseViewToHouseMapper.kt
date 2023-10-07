@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.Region
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryViewToTerritoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
-import com.oborodulin.jwsuite.domain.model.House
+import com.oborodulin.jwsuite.domain.model.territory.House
 
 class HouseViewToHouseMapper(
     private val streetMapper: GeoStreetViewToGeoStreetMapper,

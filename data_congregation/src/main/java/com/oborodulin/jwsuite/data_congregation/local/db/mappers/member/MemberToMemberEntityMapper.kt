@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
-import com.oborodulin.jwsuite.domain.model.Member
+import com.oborodulin.jwsuite.domain.model.congregation.Member
 import java.util.UUID
 
 class MemberToMemberEntityMapper : Mapper<Member, MemberEntity> {

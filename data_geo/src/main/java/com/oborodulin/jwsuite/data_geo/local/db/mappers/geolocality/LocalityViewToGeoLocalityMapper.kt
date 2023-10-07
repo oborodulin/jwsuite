@@ -4,9 +4,9 @@ import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.home.common.mapping.NullableConstructedMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
-import com.oborodulin.jwsuite.domain.model.GeoLocality
-import com.oborodulin.jwsuite.domain.model.GeoRegion
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 
 class LocalityViewToGeoLocalityMapper(private val ctx: Context) :
     ConstructedMapper<LocalityView, GeoLocality>,

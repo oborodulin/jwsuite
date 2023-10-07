@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.domain.usecases.entrance
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
-import com.oborodulin.jwsuite.domain.model.Entrance
+import com.oborodulin.jwsuite.domain.model.territory.Entrance
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

@@ -3,11 +3,11 @@ package com.oborodulin.jwsuite.data_territory.local.db.mappers.house
 import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
-import com.oborodulin.jwsuite.domain.model.GeoLocalityDistrict
-import com.oborodulin.jwsuite.domain.model.GeoMicrodistrict
-import com.oborodulin.jwsuite.domain.model.GeoStreet
-import com.oborodulin.jwsuite.domain.model.House
-import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
+import com.oborodulin.jwsuite.domain.model.territory.House
+import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class HouseEntityToHouseMapper(private val ctx: Context) : ConstructedMapper<HouseEntity, House> {
     override fun map(input: HouseEntity, vararg properties: Any?): House {

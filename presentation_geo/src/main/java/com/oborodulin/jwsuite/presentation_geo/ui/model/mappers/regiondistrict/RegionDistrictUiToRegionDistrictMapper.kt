@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionUiToRegionMapper
 

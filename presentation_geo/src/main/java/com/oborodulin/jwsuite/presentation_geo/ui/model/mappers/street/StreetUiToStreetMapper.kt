@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.domain.model.GeoStreet
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper

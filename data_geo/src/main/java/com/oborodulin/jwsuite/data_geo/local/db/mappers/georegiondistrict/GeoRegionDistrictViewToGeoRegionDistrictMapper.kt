@@ -4,7 +4,7 @@ import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionDistrictView
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 
 class GeoRegionDistrictViewToGeoRegionDistrictMapper(private val mapper: GeoRegionViewToGeoRegionMapper) :
     Mapper<GeoRegionDistrictView, GeoRegionDistrict>,

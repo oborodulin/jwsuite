@@ -1,14 +1,16 @@
 package com.oborodulin.jwsuite.data.di
 
 import androidx.datastore.core.DataStore
+import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.sources.local.LocalSessionManagerDataSourceImpl
-import com.oborodulin.jwsuite.domain.model.AuthData
+import com.oborodulin.jwsuite.domain.model.session.AuthData
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -22,6 +24,7 @@ object SessionManagerLocalDataSourcesModule {
 
     @Singleton
     @Provides
-    fun provideLocalSessionManagerDataSource(authDataStore: DataStore<AuthData>):
-            LocalSessionManagerDataSource = LocalSessionManagerDataSourceImpl(authDataStore)
+    fun provideLocalSessionManagerDataSource(
+        authDataStore: DataStore<AuthData>, @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalSessionManagerDataSource = LocalSessionManagerDataSourceImpl(authDataStore, dispatcher)
 }

@@ -5,7 +5,7 @@ import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
-import com.oborodulin.jwsuite.domain.model.TerritoryStreet
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
 
 class TerritoryStreetViewToTerritoryStreetMapper(private val ctx: Context, private val mapper: GeoStreetViewToGeoStreetMapper) :
     Mapper<TerritoryStreetView, TerritoryStreet>,

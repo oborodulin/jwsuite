@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.domain.usecases.territorycategory
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
-import com.oborodulin.jwsuite.domain.model.TerritoryCategory
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryCategory
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

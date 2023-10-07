@@ -8,7 +8,7 @@ import androidx.datastore.dataStoreFile
 import com.oborodulin.home.common.crypto.Crypto
 import com.oborodulin.jwsuite.data.local.datastore.SecureAuthDataSerializer
 import com.oborodulin.jwsuite.data.util.Constants.DATA_STORE_NAME
-import com.oborodulin.jwsuite.domain.model.AuthData
+import com.oborodulin.jwsuite.domain.model.session.AuthData
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides

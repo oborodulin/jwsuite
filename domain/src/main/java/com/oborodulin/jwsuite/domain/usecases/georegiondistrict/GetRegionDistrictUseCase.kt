@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.georegiondistrict
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.GeoRegionDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionDistrictsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

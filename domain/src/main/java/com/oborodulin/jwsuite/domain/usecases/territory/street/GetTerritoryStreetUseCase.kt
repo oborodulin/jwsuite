@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases.territory.street
 
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.jwsuite.domain.model.TerritoryStreetWithTerritoryAndStreets
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreetWithTerritoryAndStreets
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

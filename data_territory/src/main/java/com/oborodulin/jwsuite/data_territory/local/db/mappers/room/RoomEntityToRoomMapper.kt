@@ -3,15 +3,15 @@ package com.oborodulin.jwsuite.data_territory.local.db.mappers.room
 import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
-import com.oborodulin.jwsuite.domain.model.Entrance
-import com.oborodulin.jwsuite.domain.model.Floor
-import com.oborodulin.jwsuite.domain.model.GeoLocality
-import com.oborodulin.jwsuite.domain.model.GeoLocalityDistrict
-import com.oborodulin.jwsuite.domain.model.GeoMicrodistrict
-import com.oborodulin.jwsuite.domain.model.GeoStreet
-import com.oborodulin.jwsuite.domain.model.House
-import com.oborodulin.jwsuite.domain.model.Room
-import com.oborodulin.jwsuite.domain.model.Territory
+import com.oborodulin.jwsuite.domain.model.territory.Entrance
+import com.oborodulin.jwsuite.domain.model.territory.Floor
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
+import com.oborodulin.jwsuite.domain.model.territory.House
+import com.oborodulin.jwsuite.domain.model.territory.Room
+import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class RoomEntityToRoomMapper(private val ctx: Context) : ConstructedMapper<RoomEntity, Room> {
     override fun map(input: RoomEntity, vararg properties: Any?): Room {

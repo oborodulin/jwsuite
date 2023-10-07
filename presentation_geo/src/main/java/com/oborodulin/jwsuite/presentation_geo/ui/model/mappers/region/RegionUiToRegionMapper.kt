@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.domain.model.GeoRegion
+import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 
 class RegionUiToRegionMapper : Mapper<RegionUi, GeoRegion> {

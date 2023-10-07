@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.domain.model.TerritoryStreetWithTerritoryAndStreets
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreetWithTerritoryAndStreets
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetsListToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel

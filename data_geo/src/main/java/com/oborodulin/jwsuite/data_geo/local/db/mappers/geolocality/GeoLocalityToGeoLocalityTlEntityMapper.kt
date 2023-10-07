@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityTlEntity
-import com.oborodulin.jwsuite.domain.model.GeoLocality
+import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
 import java.util.UUID
 
 class GeoLocalityToGeoLocalityTlEntityMapper : Mapper<GeoLocality, GeoLocalityTlEntity> {

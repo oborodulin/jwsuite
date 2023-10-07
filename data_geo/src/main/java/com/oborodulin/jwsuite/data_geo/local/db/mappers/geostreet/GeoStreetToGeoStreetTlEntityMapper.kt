@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
-import com.oborodulin.jwsuite.domain.model.GeoStreet
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import java.util.UUID
 
 class GeoStreetToGeoStreetTlEntityMapper : Mapper<GeoStreet, GeoStreetTlEntity> {

@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.mappers.group
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
-import com.oborodulin.jwsuite.domain.model.Group
+import com.oborodulin.jwsuite.domain.model.congregation.Group
 import java.util.UUID
 
 class GroupToGroupEntityMapper : Mapper<Group, GroupEntity> {
