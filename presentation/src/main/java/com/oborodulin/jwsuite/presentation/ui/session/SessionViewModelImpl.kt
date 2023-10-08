@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -13,14 +12,15 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
+import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
+import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SessionUseCases
+import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
+import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
+import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
+import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
-import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionConverter
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionToRegionsListItemMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionUiToRegionMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
@@ -30,7 +30,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Presentation.RegionViewModelImpl"
+private const val TAG = "Presentation.SessionViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -38,11 +38,10 @@ class SessionViewModelImpl @Inject constructor(
     @SuppressLint("StaticFieldLeak") @ApplicationContext val ctx: Context,
     private val state: SavedStateHandle,
     private val useCases: SessionUseCases,
-    private val converter: RegionConverter,
-    private val regionUiMapper: RegionUiToRegionMapper,
-    private val regionMapper: RegionToRegionsListItemMapper
+    private val signupConverter: SignupSessionConverter,
+    private val loginConverter: LoginSessionConverter
 ) : SessionViewModel,
-    DialogSingleViewModel<Any, UiState<Any>, SessionUiAction, UiSingleEvent, SessionFields, InputWrapper>(
+    DialogSingleViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, UiSingleEvent, SessionFields, InputWrapper>(
         state, initFocusedTextField = SessionFields.SESSION_USERNAME
     ) {
     override val username: StateFlow<InputWrapper> by lazy {
@@ -60,12 +59,15 @@ class SessionViewModelImpl @Inject constructor(
             username.errorId == null && password.errorId == null && confirmPassword.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<Any> = UiState.Loading
+    override fun initState(): UiState<SessionUi> = UiState.Loading
 
     override suspend fun handleAction(action: SessionUiAction): Job {
         Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Signup -> signup(action.username, action.password)
+            is SessionUiAction.Signout -> signout()
+            is SessionUiAction.Login -> login(action.password)
+            is SessionUiAction.Logout -> logout()
         }
         return job
     }
@@ -73,12 +75,44 @@ class SessionViewModelImpl @Inject constructor(
     private fun signup(username: String, password: String): Job {
         Timber.tag(TAG).d("signup(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(regionUiMapper.map(regionUi)))
+            useCases.signupUseCase.execute(SignupUseCase.Request(username, password))
+                .map { signupConverter.convert(it) }
                 .collect {
-                    Timber.tag(TAG).d("saveRegion() collect: %s", it)
-                    if (it is Result.Success) {
-                        setSavedListItem(regionMapper.map(it.data.region))
-                    }
+                    submitState(it)
+                }
+        }
+        return job
+    }
+
+    private fun signout(): Job {
+        Timber.tag(TAG).d("signout(...) called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.signoutUseCase.execute(SignoutUseCase.Request)
+                .collect {
+                    submitState(UiState.Success(SessionUi()))
+                }
+        }
+        return job
+    }
+
+    private fun login(password: String): Job {
+        Timber.tag(TAG).d("login(...) called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.loginUseCase.execute(LoginUseCase.Request(password))
+                .map { loginConverter.convert(it) }
+                .collect {
+                    submitState(it)
+                }
+        }
+        return job
+    }
+
+    private fun logout(): Job {
+        Timber.tag(TAG).d("logout(...) called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.logoutUseCase.execute(LogoutUseCase.Request)
+                .collect {
+                    submitState(UiState.Success(SessionUi()))
                 }
         }
         return job
@@ -86,15 +120,7 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<SessionFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: RegionUi): Job? {
-        super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", uiModel)
-        uiModel.id?.let { initStateValue(SessionFields.REGION_ID, id, it.toString()) }
-        initStateValue(SessionFields.SESSION_USERNAME, username, uiModel.regionCode)
-        initStateValue(SessionFields.SESSION_PASSWORD, password, uiModel.regionName)
-        return null
-    }
+    override fun initFieldStatesByUiModel(uiModel: SessionUi) = null
 
     override suspend fun observeInputEvents() {
         Timber.tag(TAG).d("observeInputEvents() called")
@@ -122,6 +148,18 @@ class SessionViewModelImpl @Inject constructor(
                                 SessionFields.SESSION_PASSWORD, password, event.input
                             )
                         }
+
+                    is SessionInputEvent.ConfirmPassword ->
+                        when (SessionInputValidator.ConfirmPassword.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPassword,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPassword, event.input
+                            )
+                        }
                 }
             }
             .debounce(350)
@@ -139,6 +177,11 @@ class SessionViewModelImpl @Inject constructor(
                             SessionInputValidator.Password.errorIdOrNull(event.input)
                         )
 
+                    is SessionInputEvent.ConfirmPassword ->
+                        setStateValue(
+                            SessionFields.SESSION_CONFIRM_PASSWORD, confirmPassword,
+                            SessionInputValidator.ConfirmPassword.errorIdOrNull(event.input)
+                        )
                 }
             }
     }
@@ -148,10 +191,19 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         SessionInputValidator.Username.errorIdOrNull(username.value.value)?.let {
-            inputErrors.add(InputError(fieldName = SessionFields.SESSION_USERNAME.name, errorId = it))
+            inputErrors.add(
+                InputError(fieldName = SessionFields.SESSION_USERNAME.name, errorId = it)
+            )
         }
         SessionInputValidator.Password.errorIdOrNull(password.value.value)?.let {
-            inputErrors.add(InputError(fieldName = SessionFields.SESSION_PASSWORD.name, errorId = it))
+            inputErrors.add(
+                InputError(fieldName = SessionFields.SESSION_PASSWORD.name, errorId = it)
+            )
+        }
+        SessionInputValidator.ConfirmPassword.errorIdOrNull(confirmPassword.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = SessionFields.SESSION_CONFIRM_PASSWORD.name, errorId = it)
+            )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
@@ -169,6 +221,10 @@ class SessionViewModelImpl @Inject constructor(
                     errorMsg = res.getString(error.errorId!!, PASS_MIN_LENGTH)
                 )
 
+                SessionFields.SESSION_CONFIRM_PASSWORD -> confirmPassword.value.copy(
+                    errorId = error.errorId
+                )
+
                 else -> null
             }
         }
@@ -177,6 +233,8 @@ class SessionViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : SessionViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
+                override val isUiStateChanged = MutableStateFlow(true)
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
@@ -192,10 +250,10 @@ class SessionViewModelImpl @Inject constructor(
 
                 override val username = MutableStateFlow(InputWrapper())
                 override val password = MutableStateFlow(InputWrapper())
+                override val confirmPassword = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: SessionUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
@@ -218,13 +276,15 @@ class SessionViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): RegionUi {
-            val regionUi = RegionUi(
-                regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
-                regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
+        fun previewUiModel(ctx: Context): SessionUi {
+            val sessionUi = SessionUi(
+                isSigned = true,
+                isLogged = true,
+                roles = emptyList(),
+                currentNavRoute = null
             )
-            regionUi.id = UUID.randomUUID()
-            return regionUi
+            sessionUi.id = UUID.randomUUID()
+            return sessionUi
         }
     }
 }

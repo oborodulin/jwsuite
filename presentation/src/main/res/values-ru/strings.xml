@@ -55,6 +55,10 @@
     <string name="is_private_sector_hint">Частный сектор?</string>
     <!--участки-->
     <string name="territory_hint">Участок</string>
+    <!--регистрация-->
+    <string name="session_username_hint">Логин</string>
+    <string name="session_password_hint">Пароль</string>
+    <string name="session_confirm_password_hint">Подтвердите пароль</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->
