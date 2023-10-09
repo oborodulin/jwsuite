@@ -26,15 +26,11 @@ import timber.log.Timber
 private const val TAG = "Presentation.SessionScreen"
 
 @Composable
-fun SessionScreen(
-    appState: AppState,
-    viewModel: SessionViewModelImpl = hiltViewModel(),
-    regionInput: RegionInput? = null
-) {
-    Timber.tag(TAG).d("SessionScreen(...) called: regionInput = %s", regionInput)
-    LaunchedEffect(regionInput?.regionId) {
+fun SessionScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltViewModel()) {
+    Timber.tag(TAG).d("SessionScreen(...) called")
+    LaunchedEffect(Unit) {
         Timber.tag(TAG).d("SessionScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(SessionUiAction.Load(regionInput?.regionId))
+        viewModel.submitAction(SessionUiAction.Load)
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
