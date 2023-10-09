@@ -23,17 +23,17 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Presentation.RegionScreen"
+private const val TAG = "Presentation.SessionScreen"
 
 @Composable
-fun RegionScreen(
+fun SessionScreen(
     appState: AppState,
     viewModel: SessionViewModelImpl = hiltViewModel(),
     regionInput: RegionInput? = null
 ) {
-    Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
+    Timber.tag(TAG).d("SessionScreen(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
-        Timber.tag(TAG).d("RegionScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("SessionScreen: LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(SessionUiAction.Load(regionInput?.regionId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -58,11 +58,11 @@ fun RegionScreen(
                         enabled = areInputsValid,
                         onClick = {
                             viewModel.onContinueClick {
-                                Timber.tag(TAG).d("RegionScreen(...): Start viewModelScope.launch")
+                                Timber.tag(TAG).d("SessionScreen(...): Start viewModelScope.launch")
                                 viewModel.viewModelScope().launch {
                                     viewModel.actionsJobFlow.collect {
                                         Timber.tag(TAG).d(
-                                            "RegionScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                            "SessionScreen(...): Start actionsJobFlow.collect [job = %s]",
                                             it?.toString()
                                         )
                                         it?.join()
@@ -70,7 +70,7 @@ fun RegionScreen(
                                     }
                                 }
                                 viewModel.submitAction(SessionUiAction.Signup)
-                                Timber.tag(TAG).d("RegionScreen(...): onSubmit() executed")
+                                Timber.tag(TAG).d("SessionScreen(...): onSubmit() executed")
                             }
                         }
                     )

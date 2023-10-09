@@ -6,7 +6,7 @@
     <string name="nav_item_territoring">Участки</string>
     <string name="nav_item_ministring">Служение</string>
     <!--промежуточная-->
-    <string name="nav_item_login">Вход</string>
+    <string name="nav_item_session">Сессия</string>
     <string name="nav_item_geo">География</string>
     <string name="nav_item_housing">Дома</string>
     <!--дополнительная-->
@@ -55,7 +55,9 @@
     <string name="is_private_sector_hint">Частный сектор?</string>
     <!--участки-->
     <string name="territory_hint">Участок</string>
-    <!--регистрация-->
+    <!--регистрация/вход-->
+    <string name="session_signup_subheader">Регистрация</string>
+    <string name="session_login_subheader">Вход</string>
     <string name="session_username_hint">Логин</string>
     <string name="session_password_hint">Пароль</string>
     <string name="session_confirm_password_hint">Подтвердите пароль</string>

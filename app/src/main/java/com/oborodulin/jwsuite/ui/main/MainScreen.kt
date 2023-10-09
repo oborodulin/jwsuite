@@ -110,7 +110,7 @@ private fun HomeNavigationHost(
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("HomeNavigationHost(...) called")
-    NavHost(appState.commonNavController, startDestination = NavRoutes.Home.route) {
+    NavHost(appState.commonNavController, startDestination = NavRoutes.Session.route) {
         // Congregation:
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments

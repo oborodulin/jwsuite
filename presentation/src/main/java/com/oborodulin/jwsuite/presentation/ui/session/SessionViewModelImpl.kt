@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogSingleViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SessionUseCases
@@ -19,6 +20,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +40,7 @@ class SessionViewModelImpl @Inject constructor(
     @SuppressLint("StaticFieldLeak") @ApplicationContext val ctx: Context,
     private val state: SavedStateHandle,
     private val useCases: SessionUseCases,
+    private val sessionConverter: SessionConverter,
     private val signupConverter: SignupSessionConverter,
     private val loginConverter: LoginSessionConverter
 ) : SessionViewModel,
@@ -64,10 +67,23 @@ class SessionViewModelImpl @Inject constructor(
     override suspend fun handleAction(action: SessionUiAction): Job {
         Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
+            is SessionUiAction.Load -> loadSession()
             is SessionUiAction.Signup -> signup(action.username, action.password)
             is SessionUiAction.Signout -> signout()
             is SessionUiAction.Login -> login(action.password)
             is SessionUiAction.Logout -> logout()
+        }
+        return job
+    }
+
+    private fun loadSession(): Job {
+        Timber.tag(TAG).d("loadSession(...) called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
+                .map { sessionConverter.convert(it) }
+                .collect {
+                    submitState(it)
+                }
         }
         return job
     }

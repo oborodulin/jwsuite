@@ -8,7 +8,7 @@ object MainDestinations {
     const val ROUTE_TERRITORING = "territoring"
     const val ROUTE_MINISTRING = "ministring"
 
-    const val ROUTE_LOGIN = "login"
+    const val ROUTE_SESSION = "session"
     const val ROUTE_GEO = "geo"
     const val ROUTE_HOUSING = "housing"
 

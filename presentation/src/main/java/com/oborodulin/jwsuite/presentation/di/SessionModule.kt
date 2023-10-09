@@ -1,11 +1,13 @@
 package com.oborodulin.jwsuite.presentation.di
 
+import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SessionUseCases
 import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.RoleToRolesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.RolesListToRolesListItemMapper
@@ -37,6 +39,11 @@ object SessionModule {
     // CONVERTERS:
     @Singleton
     @Provides
+    fun provideSessionConverter(mapper: SessionToSessionUiMapper): SessionConverter =
+        SessionConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideSignupSessionConverter(mapper: SessionToSessionUiMapper): SignupSessionConverter =
         SignupSessionConverter(mapper = mapper)
 
@@ -49,11 +56,13 @@ object SessionModule {
     @Singleton
     @Provides
     fun provideSessionUseCases(
+        getSessionUseCase: GetSessionUseCase,
         signupUseCase: SignupUseCase,
         signoutUseCase: SignoutUseCase,
         loginUseCase: LoginUseCase,
         logoutUseCase: LogoutUseCase
     ): SessionUseCases = SessionUseCases(
+        getSessionUseCase,
         signupUseCase,
         signoutUseCase,
         loginUseCase,

@@ -28,7 +28,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOU
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOGIN
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SESSION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
@@ -168,10 +168,10 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_ministring
     )
 
-    data object Login : NavRoutes(
-        route = ROUTE_LOGIN,
+    data object Session : NavRoutes(
+        route = ROUTE_SESSION,
         iconImageVector = Icons.Outlined.Lock,
-        titleResId = R.string.nav_item_login
+        titleResId = R.string.nav_item_session
     )
 
     data object Geo : NavRoutes(

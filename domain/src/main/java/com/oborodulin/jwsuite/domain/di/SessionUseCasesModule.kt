@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.di
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
@@ -16,6 +17,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SessionUseCasesModule {
+    @Singleton
+    @Provides
+    fun provideGetSessionUseCase(
+        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository
+    ): GetSessionUseCase = GetSessionUseCase(configuration, sessionManagerRepository)
+
     @Singleton
     @Provides
     fun provideSignupUseCase(
