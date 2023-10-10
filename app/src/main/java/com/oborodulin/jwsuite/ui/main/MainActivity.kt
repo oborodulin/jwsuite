@@ -11,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.oborodulin.home.ui.main.MainScreen
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -23,7 +22,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.tag(TAG).d("onCreate(Bundle?) called")
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT; // Make to run your application only in portrait mode
+        // Make to run your application only in portrait mode
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Make to run your application only in LANDSCAPE mode
         setContent {
             JWSuiteTheme {
@@ -31,9 +31,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
-                    MainScreen()
-                }
+                ) { MainScreen() }
             }
         }
     }
@@ -43,6 +41,11 @@ class MainActivity : ComponentActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         Timber.tag(TAG).d("onConfigurationChanged(Configuration) called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.tag(TAG).d("onStop() called")
     }
 }
 

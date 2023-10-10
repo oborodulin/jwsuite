@@ -17,8 +17,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,11 +26,17 @@ import timber.log.Timber
 private const val TAG = "Presentation.SessionScreen"
 
 @Composable
-fun SessionScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltViewModel()) {
-    Timber.tag(TAG).d("SessionScreen(...) called")
-    LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("SessionScreen: LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(SessionUiAction.Load)
+fun SessionScreen(
+    appState: AppState,
+    session: SessionUi? = null,
+    viewModel: SessionViewModelImpl = hiltViewModel()
+) {
+    Timber.tag(TAG).d("SessionScreen(...) called: session = %s", session)
+    if (session == null) {
+        LaunchedEffect(Unit) {
+            Timber.tag(TAG).d("SessionScreen: LaunchedEffect() BEFORE collect ui state flow")
+            viewModel.submitAction(SessionUiAction.Load)
+        }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
@@ -47,7 +53,7 @@ fun SessionScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltView
                 }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
-                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+                    val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
                     SignupView(viewModel)
                     Spacer(Modifier.height(8.dp))
                     SaveButtonComponent(

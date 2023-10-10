@@ -58,7 +58,7 @@ class SessionViewModelImpl @Inject constructor(
         state.getStateFlow(SessionFields.SESSION_CONFIRM_PASSWORD.name, InputWrapper())
     }
 
-    override val areInputsValid =
+    override val areSignupInputsValid =
         combine(username, password, confirmPassword) { username, password, confirmPassword ->
             username.errorId == null && password.errorId == null && confirmPassword.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
@@ -69,17 +69,9 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
-            is SessionUiAction.Signup -> {
-                setDialogTitleResId(R.string.session_signup_subheader)
-                signup(action.username, action.password)
-            }
-
+            is SessionUiAction.Signup -> signup(action.username, action.password)
             is SessionUiAction.Signout -> signout()
-            is SessionUiAction.Login -> {
-                setDialogTitleResId(R.string.session_login_subheader)
-                login(action.password)
-            }
-
+            is SessionUiAction.Login -> login(action.password)
             is SessionUiAction.Logout -> logout()
         }
         return job
@@ -89,7 +81,18 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("loadSession(...) called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
-                .map { sessionConverter.convert(it) }.collect { submitState(it) }
+                .map { sessionConverter.convert(it) }.collect { state ->
+                    uiState(state)?.let { session ->
+                        when (session.isSigned) {
+                            false -> setDialogTitleResId(R.string.session_signup_subheader)
+                            true -> when (session.isLogged) {
+                                false -> setDialogTitleResId(R.string.session_login_subheader)
+                                true -> {}
+                            }
+                        }
+                    }
+                    submitState(state)
+                }
         }
         return job
     }
@@ -264,7 +267,7 @@ class SessionViewModelImpl @Inject constructor(
                 override val password = MutableStateFlow(InputWrapper())
                 override val confirmPassword = MutableStateFlow(InputWrapper())
 
-                override val areInputsValid = MutableStateFlow(true)
+                override val areSignupInputsValid = MutableStateFlow(true)
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: SessionUiAction): Job? = null

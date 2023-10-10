@@ -16,7 +16,7 @@ interface SessionViewModel : DialogViewModeled<SessionUi, SessionUiAction, UiSin
     val password: StateFlow<InputWrapper>
     val confirmPassword: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
+    val areSignupInputsValid: StateFlow<Boolean>
 
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: SessionFields, isFocused: Boolean)

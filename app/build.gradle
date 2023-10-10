@@ -4,7 +4,6 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.devtools.ksp'
-    id 'org.jetbrains.kotlin.kapt'      // must be in the bottom of plugins
 }
 
 android {
@@ -86,7 +85,7 @@ dependencies {
 
     // Dagger - Hilt
     implementation deps.dagger.hilt
-    kapt deps.dagger.compiler
+    ksp deps.dagger.compiler
     implementation deps.hilt.navigationCompose
 
     implementation deps.androidx.coreKtx
@@ -124,6 +123,8 @@ dependencies {
     // UI
     implementation deps.compose.uiBom
     implementation deps.compose.uiGraphicsBom
+    // Compose lifecycle
+    implementation deps.lifecycle.runtimeCompose
 
 /*
     testImplementation 'junit:junit:4.13.2'

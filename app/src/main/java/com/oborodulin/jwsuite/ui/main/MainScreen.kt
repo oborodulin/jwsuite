@@ -1,10 +1,11 @@
-package com.oborodulin.home.ui.main
+package com.oborodulin.jwsuite.ui.main
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,14 +21,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.R
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
+import com.oborodulin.jwsuite.presentation.ui.session.SessionScreen
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
@@ -40,9 +46,9 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.Regi
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict.StreetLocalityDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict.StreetMicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single.RoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territory.TerritoryRoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
@@ -53,7 +59,6 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.si
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetScreen
-import com.oborodulin.jwsuite.ui.main.MainViewModelImpl
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -64,41 +69,57 @@ import kotlin.math.roundToInt
 private const val TAG = "App.ui.MainScreen"
 
 @Composable
-fun MainScreen(viewModel: MainViewModelImpl = hiltViewModel()) {
+fun MainScreen(viewModel: SessionViewModelImpl = hiltViewModel()) {
     Timber.tag(TAG).d("MainScreen() called")
     val appState = rememberAppState(appName = stringResource(R.string.app_name))
 
-    val bottomBarHeight = 72.dp
-    val bottomBarHeightPx = with(LocalDensity.current) {
-        bottomBarHeight.roundToPx().toFloat()
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG).d("MainScreen: LaunchedEffect() BEFORE collect ui state flow")
+        viewModel.submitAction(SessionUiAction.Load)
     }
-    var bottomBarOffsetHeightPx by rememberSaveable { mutableStateOf(0f) }
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(
-                available: Offset,
-                source: NestedScrollSource,
-            ): Offset {
-                val delta = available.y
-                val newOffset = bottomBarOffsetHeightPx + delta
-                bottomBarOffsetHeightPx = newOffset.coerceIn(-bottomBarHeightPx, 0f)
-                return Offset.Zero
-            }
-        }
-    }
-    HomeNavigationHost(appState = appState, nestedScrollConnection = nestedScrollConnection) {
-        if (true) {//appState.shouldShowBottomNavBar
-            BottomNavigationComponent(
-                modifier = Modifier
-                    .height(bottomBarHeight)
-                    .offset {
-                        IntOffset(
-                            x = 0,
-                            y = -bottomBarOffsetHeightPx.roundToInt()
+
+    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+        CommonScreen(state = state) { session ->
+            if (!session.isSigned || !session.isLogged) {
+                SessionScreen(appState = appState, session = session)
+            } else {
+                val bottomBarHeight = 72.dp
+                val bottomBarHeightPx = with(LocalDensity.current) {
+                    bottomBarHeight.roundToPx().toFloat()
+                }
+                var bottomBarOffsetHeightPx by rememberSaveable { mutableStateOf(0f) }
+                val nestedScrollConnection = remember {
+                    object : NestedScrollConnection {
+                        override fun onPreScroll(
+                            available: Offset,
+                            source: NestedScrollSource,
+                        ): Offset {
+                            val delta = available.y
+                            val newOffset = bottomBarOffsetHeightPx + delta
+                            bottomBarOffsetHeightPx = newOffset.coerceIn(-bottomBarHeightPx, 0f)
+                            return Offset.Zero
+                        }
+                    }
+                }
+                HomeNavigationHost(
+                    appState = appState,
+                    nestedScrollConnection = nestedScrollConnection
+                ) {
+                    if (true) {//appState.shouldShowBottomNavBar
+                        BottomNavigationComponent(
+                            modifier = Modifier
+                                .height(bottomBarHeight)
+                                .offset {
+                                    IntOffset(
+                                        x = 0,
+                                        y = -bottomBarOffsetHeightPx.roundToInt()
+                                    )
+                                },
+                            appState
                         )
-                    },
-                appState
-            )
+                    }
+                }
+            }
         }
     }
 }
