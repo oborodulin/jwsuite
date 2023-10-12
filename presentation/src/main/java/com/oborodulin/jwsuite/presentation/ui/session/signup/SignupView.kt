@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.session
+package com.oborodulin.jwsuite.presentation.ui.session.signup
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -35,6 +35,10 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
+import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.util.EnumMap

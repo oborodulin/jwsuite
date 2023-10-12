@@ -19,6 +19,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SessionUseCases
 import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
@@ -63,15 +64,19 @@ class SessionViewModelImpl @Inject constructor(
             username.errorId == null && password.errorId == null && confirmPassword.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    init {
+        loadSession()
+    }
+
     override fun initState(): UiState<SessionUi> = UiState.Loading
 
     override suspend fun handleAction(action: SessionUiAction): Job {
         Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
-            is SessionUiAction.Signup -> signup(action.username, action.password)
+            is SessionUiAction.Signup -> signup()
             is SessionUiAction.Signout -> signout()
-            is SessionUiAction.Login -> login(action.password)
+            is SessionUiAction.Login -> login()
             is SessionUiAction.Logout -> logout()
         }
         return job
@@ -97,11 +102,12 @@ class SessionViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun signup(username: String, password: String): Job {
+    private fun signup(): Job {
         Timber.tag(TAG).d("signup(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.signupUseCase.execute(SignupUseCase.Request(username, password))
-                .map { signupConverter.convert(it) }.collect { submitState(it) }
+            useCases.signupUseCase.execute(
+                SignupUseCase.Request(username.value.value, password.value.value)
+            ).map { signupConverter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
@@ -110,15 +116,15 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("signout(...) called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.signoutUseCase.execute(SignoutUseCase.Request)
-                .collect { submitState(UiState.Success(SessionUi())) }
+                .collect { submitState(UiState.Success(SessionUi(startDestination = NavRoutes.Signup.route))) }
         }
         return job
     }
 
-    private fun login(password: String): Job {
+    private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.loginUseCase.execute(LoginUseCase.Request(password))
+            useCases.loginUseCase.execute(LoginUseCase.Request(password.value.value))
                 .map { loginConverter.convert(it) }.collect { submitState(it) }
         }
         return job
@@ -296,7 +302,7 @@ class SessionViewModelImpl @Inject constructor(
                 isSigned = true,
                 isLogged = true,
                 roles = emptyList(),
-                currentNavRoute = null
+                startDestination = null
             )
             sessionUi.id = UUID.randomUUID()
             return sessionUi

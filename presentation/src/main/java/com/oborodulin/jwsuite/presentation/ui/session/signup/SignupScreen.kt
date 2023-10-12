@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.session
+package com.oborodulin.jwsuite.presentation.ui.session.signup
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,22 +19,24 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private const val TAG = "Presentation.SessionScreen"
+private const val TAG = "Presentation.SignupScreen"
 
 @Composable
-fun SessionScreen(
+fun SignupScreen(
     appState: AppState,
     session: SessionUi? = null,
     viewModel: SessionViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("SessionScreen(...) called: session = %s", session)
+    Timber.tag(TAG).d("SignupScreen(...) called: session = %s", session)
     if (session == null) {
         LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("SessionScreen: LaunchedEffect() BEFORE collect ui state flow")
+            Timber.tag(TAG).d("SignupScreen: LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(SessionUiAction.Load)
         }
     }
@@ -60,11 +62,11 @@ fun SessionScreen(
                         enabled = areInputsValid,
                         onClick = {
                             viewModel.onContinueClick {
-                                Timber.tag(TAG).d("SessionScreen(...): Start viewModelScope.launch")
+                                Timber.tag(TAG).d("SignupScreen(...): Start viewModelScope.launch")
                                 viewModel.viewModelScope().launch {
                                     viewModel.actionsJobFlow.collect {
                                         Timber.tag(TAG).d(
-                                            "SessionScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                            "SignupScreen(...): Start actionsJobFlow.collect [job = %s]",
                                             it?.toString()
                                         )
                                         it?.join()
@@ -72,7 +74,7 @@ fun SessionScreen(
                                     }
                                 }
                                 viewModel.submitAction(SessionUiAction.Signup)
-                                Timber.tag(TAG).d("SessionScreen(...): onSubmit() executed")
+                                Timber.tag(TAG).d("SignupScreen(...): onSubmit() executed")
                             }
                         }
                     )

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
@@ -28,13 +29,14 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOU
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SESSION
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOGIN
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ROOM
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SIGNUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET_MICRODISTRICT
@@ -106,6 +108,8 @@ import java.util.UUID
 
 private const val TAG = "Presentation.NavRoutes"
 
+// https://betterprogramming.pub/jetpack-compose-clean-navigation-94b386f7a076
+
 // Geo:
 private const val ARG_REGION_ID = "regionId"
 private const val ARG_REGION_DISTRICT_ID = "regionDistrictId"
@@ -168,10 +172,16 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_ministring
     )
 
-    data object Session : NavRoutes(
-        route = ROUTE_SESSION,
+    data object Signup : NavRoutes(
+        route = ROUTE_SIGNUP,
+        iconImageVector = Icons.Outlined.AccountBox,
+        titleResId = R.string.nav_item_signup
+    )
+
+    data object Login : NavRoutes(
+        route = ROUTE_LOGIN,
         iconImageVector = Icons.Outlined.Lock,
-        titleResId = R.string.nav_item_session
+        titleResId = R.string.nav_item_login
     )
 
     data object Geo : NavRoutes(
