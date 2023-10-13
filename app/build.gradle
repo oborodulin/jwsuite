@@ -67,7 +67,7 @@ android {
 dependencies {
     implementation project(':common')
     implementation project(':data')
-    //implementation project(':domain')
+    implementation project(':domain')
     implementation project(':presentation')
     implementation project(':presentation_geo')
     implementation project(':presentation_dashboard')
@@ -101,6 +101,8 @@ dependencies {
 
     // Work
     implementation deps.work.runtimeKtx
+    implementation deps.dagger.hiltWork
+    implementation deps.androidx.startup
 
     // Compose
     def composeBom = platform(deps.compose.bom)

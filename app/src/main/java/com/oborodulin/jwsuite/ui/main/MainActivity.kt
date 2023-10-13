@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
         }
         // logout
         viewModel.submitAction(SessionUiAction.Logout)
-        logoutJob.join()
+        //logoutJob.join()
     }
 }
 

@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite
 
 import android.app.Application
 import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.oborodulin.home.common.BuildConfig
 import com.oborodulin.home.common.util.Constants
@@ -15,11 +16,15 @@ import com.oborodulin.jwsuite.data.util.dbVersion
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import java.util.Locale
+import javax.inject.Inject
 
 private const val TAG = "JWSuiteApp"
 
 @HiltAndroidApp
 class JwSuiteApplication : Application(), Configuration.Provider {
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
     init {
         app = this
     }
@@ -81,10 +86,14 @@ class JwSuiteApplication : Application(), Configuration.Provider {
         Timber.tag(TAG).i("Initialise Dagger")
     }
 
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
-            .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.VERBOSE else android.util.Log.ERROR)
-            .build()
+    override fun getWorkManagerConfiguration() = Configuration.Builder()
+        .setWorkerFactory(workerFactory)
+        .build()
+
+    /*    override fun getWorkManagerConfiguration(): Configuration =
+            Configuration.Builder()
+                .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.VERBOSE else android.util.Log.ERROR)
+                .build()*/
 
     companion object {
         private lateinit var app: JwSuiteApplication

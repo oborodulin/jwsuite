@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.Graph
 
 @Composable
 fun rememberParentEntry(navController: NavHostController): NavBackStackEntry {
@@ -21,6 +21,6 @@ fun rememberParentEntry(navController: NavHostController): NavBackStackEntry {
         }
     }
     return remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavRoutes.Home.route)
+        navController.getBackStackEntry(Graph.ROOT) //NavRoutes.Home.route
     }
 }

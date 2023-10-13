@@ -55,6 +55,9 @@ dependencies {
     // JSON
     implementation deps.json.kotlinx
 
+    // Work
+    implementation deps.work.runtimeKtx
+
     implementation deps.androidx.coreKtx
     implementation deps.androidx.appcompat
     implementation deps.google.material
