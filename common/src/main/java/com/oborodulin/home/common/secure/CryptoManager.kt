@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.crypto
+package com.oborodulin.home.common.secure
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties.BLOCK_MODE_GCM

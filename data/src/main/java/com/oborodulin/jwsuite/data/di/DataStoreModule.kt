@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.ExperimentalMultiProcessDataStore
 import androidx.datastore.dataStoreFile
-import com.oborodulin.home.common.crypto.Crypto
+import com.oborodulin.home.common.secure.Crypto
 import com.oborodulin.jwsuite.data.local.datastore.SecureAuthDataSerializer
 import com.oborodulin.jwsuite.data.util.Constants.DATA_STORE_NAME
 import com.oborodulin.jwsuite.domain.model.session.AuthData
@@ -24,11 +24,11 @@ object DataStoreModule {
     @OptIn(ExperimentalMultiProcessDataStore::class)
     @Singleton
     @Provides
-    fun provideAuthDataStore(@ApplicationContext ctx: Context, crypto: Crypto): DataStore<AuthData> =
-        DataStoreFactory.create(
-            serializer = SecureAuthDataSerializer(crypto),
-            produceFile = { ctx.dataStoreFile(DATA_STORE_NAME) }
-        )
+    fun provideAuthDataStore(@ApplicationContext ctx: Context, crypto: Crypto):
+            DataStore<AuthData> = DataStoreFactory.create(
+        serializer = SecureAuthDataSerializer(crypto),
+        produceFile = { ctx.dataStoreFile(DATA_STORE_NAME) }
+    )
     /*MultiProcessDataStoreFactory.create(
         serializer = SecureAuthDataSerializer(crypto),
         produceFile = { File("${ctx.cacheDir.path}/$DATA_STORE_NAME") }

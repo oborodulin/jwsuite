@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data.local.datastore
 
 import androidx.datastore.core.Serializer
-import com.oborodulin.home.common.crypto.Crypto
+import com.oborodulin.home.common.secure.Crypto
 import com.oborodulin.jwsuite.domain.model.session.AuthData
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString

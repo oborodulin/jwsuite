@@ -3,8 +3,8 @@ package com.oborodulin.jwsuite.domain.di
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import com.oborodulin.jwsuite.domain.usecases.*
-import com.oborodulin.jwsuite.domain.usecases.worker.CreateWorkUseCase
-import com.oborodulin.jwsuite.domain.usecases.worker.WorkerOnSuccessUseCase
+import com.oborodulin.jwsuite.domain.usecases.worker.CreateLogoutWorkUseCase
+import com.oborodulin.jwsuite.domain.usecases.worker.LogoutWorkerOnSuccessUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +18,11 @@ object WorkerUseCasesModule {
     @Provides
     fun provideCreateWorkUseCase(
         configuration: UseCase.Configuration, workerRepository: WorkerProviderRepository
-    ): CreateWorkUseCase = CreateWorkUseCase(configuration, workerRepository)
+    ): CreateLogoutWorkUseCase = CreateLogoutWorkUseCase(configuration, workerRepository)
 
     @Singleton
     @Provides
     fun provideWorkerOnSuccessUseCase(
         configuration: UseCase.Configuration, workerRepository: WorkerProviderRepository
-    ): WorkerOnSuccessUseCase = WorkerOnSuccessUseCase(configuration, workerRepository)
+    ): LogoutWorkerOnSuccessUseCase = LogoutWorkerOnSuccessUseCase(configuration, workerRepository)
 }

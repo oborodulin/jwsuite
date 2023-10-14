@@ -11,6 +11,7 @@ import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.setLocale
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.util.dbVersion
+import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 //import com.orhanobut.logger.FormatStrategy
 //import com.orhanobut.logger.PrettyFormatStrategy
 import dagger.hilt.android.HiltAndroidApp
@@ -24,6 +25,9 @@ private const val TAG = "JWSuiteApp"
 class JwSuiteApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var workerProviderRepository: WorkerProviderRepository
 
     init {
         app = this

@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
  */
-import com.oborodulin.home.common.crypto.CryptoManager
+import com.oborodulin.home.common.secure.CryptoManager
 import javax.inject.Inject
 
 class SecureDataStore @Inject constructor(private val security: CryptoManager) {

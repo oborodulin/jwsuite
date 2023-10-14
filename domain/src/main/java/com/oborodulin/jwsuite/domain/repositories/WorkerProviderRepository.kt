@@ -4,6 +4,6 @@ import androidx.work.WorkInfo
 import kotlinx.coroutines.flow.Flow
 
 interface WorkerProviderRepository {
-    fun createWork()
-    fun onWorkerSuccess(): Flow<List<WorkInfo>>
+    fun createLogoutWork()
+    fun onLogoutWorkerSuccess(): Flow<List<WorkInfo>>
 }

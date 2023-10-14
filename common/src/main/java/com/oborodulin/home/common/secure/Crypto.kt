@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.crypto
+package com.oborodulin.home.common.secure
 
 import java.io.InputStream
 import java.io.OutputStream

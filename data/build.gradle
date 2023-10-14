@@ -105,6 +105,7 @@ dependencies {
 
     // Work
     implementation deps.work.runtimeKtx
+    implementation deps.dagger.hiltWork
 
     implementation deps.androidx.coreKtx
 /*

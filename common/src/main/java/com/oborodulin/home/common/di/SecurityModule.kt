@@ -1,9 +1,9 @@
 package com.oborodulin.home.common.di
 
-import com.oborodulin.home.common.crypto.AesCipherProvider
-import com.oborodulin.home.common.crypto.CipherProvider
-import com.oborodulin.home.common.crypto.Crypto
-import com.oborodulin.home.common.crypto.CryptoImpl
+import com.oborodulin.home.common.secure.AesCipherProvider
+import com.oborodulin.home.common.secure.CipherProvider
+import com.oborodulin.home.common.secure.Crypto
+import com.oborodulin.home.common.secure.CryptoImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

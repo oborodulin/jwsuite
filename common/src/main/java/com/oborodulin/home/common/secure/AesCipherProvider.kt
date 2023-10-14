@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.crypto
+package com.oborodulin.home.common.secure
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -12,6 +12,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 // https://blog.stylingandroid.com/datastore-security/
+// https://labs.withsecure.com/publications/how-secure-is-your-android-keystore-authentication
 // https://code.tutsplus.com/ru/keys-credentials-and-storage-on-android--cms-30827t
 // https://www.youtube.com/watch?v=aaSck7jBDbw
 class AesCipherProvider @Inject constructor(
@@ -34,10 +35,9 @@ class AesCipherProvider @Inject constructor(
         (keyStore.getEntry(keyName, null) as? KeyStore.SecretKeyEntry)?.secretKey
             ?: generateKey()
 
-    private fun generateKey(): SecretKey =
-        KeyGenerator.getInstance(ALGORITHM, keyStoreName)
-            .apply { init(keyGenParams) }
-            .generateKey()
+    private fun generateKey(): SecretKey = KeyGenerator.getInstance(ALGORITHM, keyStoreName)
+        .apply { init(keyGenParams) }
+        .generateKey()
 
     private val keyGenParams =
         KeyGenParameterSpec.Builder(
@@ -46,7 +46,8 @@ class AesCipherProvider @Inject constructor(
         ).apply {
             setBlockModes(BLOCK_MODE)
             setEncryptionPaddings(PADDING)
-            setUserAuthenticationRequired(false)
+            // https://labs.withsecure.com/publications/how-secure-is-your-android-keystore-authentication
+            setUserAuthenticationRequired(false) // true
             setRandomizedEncryptionRequired(true)
         }.build()
 

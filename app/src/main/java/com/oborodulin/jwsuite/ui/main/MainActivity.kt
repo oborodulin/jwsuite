@@ -14,28 +14,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.R
+import com.oborodulin.jwsuite.data.local.worker.repositories.WorkerProviderRepositoryImpl
+import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
-import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.graphs.RootNavigationGraph
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "App.MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var workerProviderRepository: WorkerProviderRepository
+
     // https://stackoverflow.com/questions/53665470/wait-until-kotlin-coroutine-finishes-in-oncreateview?rq=4
     private var job: Job = Job()
     private val coroutineContext: CoroutineContext
@@ -84,18 +85,21 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         Timber.tag(TAG).d("onStop() called")
-        val logoutJob = lifecycleScope.launch {
-            viewModel.actionsJobFlow.collectLatest { job ->
-                Timber.tag(TAG).d(
-                    "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
-                    job?.toString()
-                )
-                job?.join()
-            }
-        }
-        // logout
-        viewModel.submitAction(SessionUiAction.Logout)
-        //logoutJob.join()
+        workerProviderRepository.createLogoutWork()
+        Timber.tag(TAG)
+            .i("Work Manager: '%s' created", WorkerProviderRepositoryImpl.WORK_NAME_LOGOUT)
+        /*        val logoutJob = lifecycleScope.launch {
+                    viewModel.actionsJobFlow.collectLatest { job ->
+                        Timber.tag(TAG).d(
+                            "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
+                            job?.toString()
+                        )
+                        job?.join()
+                    }
+                }
+                // logout
+                viewModel.submitAction(SessionUiAction.Logout)
+                //logoutJob.join()*/
     }
 }
 
