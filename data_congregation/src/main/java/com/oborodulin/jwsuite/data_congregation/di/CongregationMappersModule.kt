@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_congregation.di
 
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationEntityToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationToCongregationEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationTotalViewToCongregationTotalsMapper
@@ -42,14 +43,21 @@ object CongregationMappersModule {
     // Congregations:
     @Singleton
     @Provides
+    fun provideCongregationEntityToCongregationMapper(): CongregationEntityToCongregationMapper =
+        CongregationEntityToCongregationMapper()
+
+    @Singleton
+    @Provides
     fun provideCongregationViewToCongregationMapper(
         regionMapper: GeoRegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper
+        localityMapper: LocalityViewToGeoLocalityMapper,
+        congregationMapper: CongregationEntityToCongregationMapper
     ): CongregationViewToCongregationMapper = CongregationViewToCongregationMapper(
         regionMapper = regionMapper,
         regionDistrictMapper = regionDistrictMapper,
-        localityMapper = localityMapper
+        localityMapper = localityMapper,
+        congregationMapper = congregationMapper
     )
 
     @Singleton
@@ -171,10 +179,16 @@ object CongregationMappersModule {
     @Singleton
     @Provides
     fun provideMemberViewToMemberMapper(
-        congregationMapper: CongregationViewToCongregationMapper,
+        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: LocalityViewToGeoLocalityMapper,
+        congregationMapper: CongregationEntityToCongregationMapper,
         groupMapper: GroupViewToGroupMapper,
         movementMapper: MemberMovementEntityToMemberMovementMapper
     ): MemberViewToMemberMapper = MemberViewToMemberMapper(
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper,
         congregationMapper = congregationMapper,
         groupMapper = groupMapper,
         movementMapper = movementMapper

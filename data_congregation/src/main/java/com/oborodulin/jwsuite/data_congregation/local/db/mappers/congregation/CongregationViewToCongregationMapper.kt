@@ -11,20 +11,14 @@ import com.oborodulin.jwsuite.domain.model.congregation.Congregation
 class CongregationViewToCongregationMapper(
     private val regionMapper: GeoRegionViewToGeoRegionMapper,
     private val regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-    private val localityMapper: LocalityViewToGeoLocalityMapper
+    private val localityMapper: LocalityViewToGeoLocalityMapper,
+    private val congregationMapper: CongregationEntityToCongregationMapper
 ) : Mapper<CongregationView, Congregation>, NullableMapper<CongregationView, Congregation> {
     override fun map(input: CongregationView): Congregation {
         val region = regionMapper.map(input.region)
         val regionDistrict = regionDistrictMapper.nullableMap(input.district, region)
-        val congregation = Congregation(
-            congregationNum = input.congregation.congregationNum,
-            congregationName = input.congregation.congregationName,
-            territoryMark = input.congregation.territoryMark,
-            isFavorite = input.congregation.isFavorite,
-            locality = localityMapper.map(input.locality, region, regionDistrict),
-        )
-        congregation.id = input.congregation.congregationId
-        return congregation
+        val locality = localityMapper.map(input.locality, region, regionDistrict)
+        return congregationMapper.map(input.congregation, locality)
     }
 
     override fun nullableMap(input: CongregationView?) = input?.let { map(it) }

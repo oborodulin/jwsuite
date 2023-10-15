@@ -13,13 +13,13 @@ import java.util.UUID
 @DatabaseView(
     viewName = TerritoriesHandOutView.VIEW_NAME,
     value = """
-SELECT t.*, m.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, $DB_FALSE) AS isPrivateSector, rld.handOutTotalDays, 
+SELECT tv.*, mv.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, $DB_FALSE) AS isPrivateSector, rld.handOutTotalDays, 
         s.paramValue AS handOutTerritoryBusinessMark
-FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-        ON ct.ctTerritoriesId = t.territoryId AND t.isActive = $DB_TRUE AND t.isProcessed = $DB_TRUE
-    LEFT JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tps ON tps.territoryId = t.territoryId
-    LEFT JOIN ${TerritoryMemberLastReceivingDateView.VIEW_NAME} rld ON rld.tmcTerritoriesId = t.territoryId
-    LEFT JOIN ${MemberView.VIEW_NAME} m ON m.memberId = rld.tmcMembersId
+FROM ${TerritoryView.VIEW_NAME} tv JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
+        ON ct.ctTerritoriesId = tv.territoryId AND tv.isActive = $DB_TRUE AND tv.isProcessed = $DB_TRUE
+    LEFT JOIN ${TerritoryPrivateSectorView.VIEW_NAME} tps ON tps.territoryId = tv.territoryId
+    LEFT JOIN ${TerritoryMemberLastReceivingDateView.VIEW_NAME} rld ON rld.tmcTerritoriesId = tv.territoryId
+    LEFT JOIN ${MemberView.VIEW_NAME} mv ON mv.memberId = rld.tmcMembersId
     JOIN ${AppSettingEntity.TABLE_NAME} s ON s.paramName = $PRM_TERRITORY_BUSINESS_MARK_VAL
 WHERE rld.fullIdleMonths IS NULL OR rld.fullIdleMonths >= rld.territoryIdlePeriod
 ORDER BY ifnull(rld.fullIdleMonths - rld.territoryIdlePeriod, 1000) DESC

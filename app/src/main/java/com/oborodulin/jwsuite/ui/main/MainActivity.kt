@@ -86,8 +86,6 @@ class MainActivity : ComponentActivity() {
         super.onStop()
         Timber.tag(TAG).d("onStop() called")
         workerProviderRepository.createLogoutWork()
-        Timber.tag(TAG)
-            .i("Work Manager: '%s' created", WorkerProviderRepositoryImpl.WORK_NAME_LOGOUT)
         /*        val logoutJob = lifecycleScope.launch {
                     viewModel.actionsJobFlow.collectLatest { job ->
                         Timber.tag(TAG).d(

@@ -99,6 +99,7 @@ import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
 // https://stackoverflow.com/questions/65043370/type-mismatch-when-serializing-data-class
 //import kotlinx.serialization.encodeToString
@@ -138,6 +139,10 @@ private const val TAG = "JwSuiteDatabase"
 )
 @TypeConverters(JwSuiteTypeConverters::class)
 abstract class JwSuiteDatabase : RoomDatabase() {
+    @Inject
+    lateinit var localSessionManagerDataSource: LocalSessionManagerDataSource
+
+    // DAOs:
     abstract fun appSettingDao(): AppSettingDao
 
     // Geo:

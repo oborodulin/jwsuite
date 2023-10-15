@@ -90,7 +90,7 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                 app: [applicationId: "com.oborodulin.jwsuite",
                       versionCode  : 1,
                       versionName  : "1.0"],
-                sdk: [compileVersion: 33,
+                sdk: [compileVersion: 34,
                       minVersion    : 28, // also in resources/robolectric.properties
                       targetVersion : 33],
                 jvm: [target       : JavaVersion.VERSION_18,

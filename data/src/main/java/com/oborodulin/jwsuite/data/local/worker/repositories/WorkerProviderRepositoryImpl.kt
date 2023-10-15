@@ -7,7 +7,10 @@ import androidx.work.WorkManager
 import com.oborodulin.jwsuite.data.local.worker.LogoutWorker
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
+
+private const val TAG = "Data.Worker.WorkerProviderRepositoryImpl"
 
 // https://medium.com/@sumon.v0.0/android-jetpack-workmanager-onetime-and-periodic-work-request-94ace224ff7d
 class WorkerProviderRepositoryImpl @Inject constructor(private val workManager: WorkManager) :
@@ -25,6 +28,8 @@ class WorkerProviderRepositoryImpl @Inject constructor(private val workManager: 
         workManager.enqueueUniqueWork(
             WORK_NAME_LOGOUT, ExistingWorkPolicy.REPLACE, workRequest
         )
+        Timber.tag(TAG)
+            .i("Work Manager: '%s' created", WorkerProviderRepositoryImpl.WORK_NAME_LOGOUT)
     }
 
     // https://chao2zhang.medium.com/converting-livedata-to-flow-lessons-learned-9362a00611c8
