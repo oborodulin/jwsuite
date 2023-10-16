@@ -99,7 +99,6 @@ import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.Executors
-import javax.inject.Inject
 
 // https://stackoverflow.com/questions/65043370/type-mismatch-when-serializing-data-class
 //import kotlinx.serialization.encodeToString
@@ -139,9 +138,6 @@ private const val TAG = "JwSuiteDatabase"
 )
 @TypeConverters(JwSuiteTypeConverters::class)
 abstract class JwSuiteDatabase : RoomDatabase() {
-    @Inject
-    lateinit var localSessionManagerDataSource: LocalSessionManagerDataSource
-
     // DAOs:
     abstract fun appSettingDao(): AppSettingDao
 
@@ -178,7 +174,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         @Synchronized
         fun getInstance(
             ctx: Context, jsonLogger: Json? = Json,
-            localSessionManagerDataSource: LocalSessionManagerDataSource
+            localSessionManagerDataSource: LocalSessionManagerDataSource? = null
         ): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
@@ -190,25 +186,28 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             var databasePassphrase = ""
             // If instance is `null` make a new database instance.
             if (instance == null) {
-                runBlocking {
-                    localSessionManagerDataSource.databasePassphrase().collect {
-                        databasePassphrase = it
+                localSessionManagerDataSource?.let {
+                    runBlocking {
+                        localSessionManagerDataSource.databasePassphrase().collect {
+                            databasePassphrase = it
+                        }
                     }
                 }
-                instance =
-                    Room.databaseBuilder(
-                        ctx,
-                        JwSuiteDatabase::class.java,
-                        Constants.DATABASE_NAME
-                    ).openHelperFactory(SupportFactory(databasePassphrase.toByteArray()))
-                        // Wipes and rebuilds instead of migrating if no Migration object.
-                        // Migration is not part of this lesson. You can learn more about
-                        // migration with Room in this blog post:
-                        // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                        //.fallbackToDestructiveMigration()
-                        .addCallback(DatabaseCallback(ctx, jsonLogger))
-                        .build()
+                val roomBuilder = Room.databaseBuilder(
+                    ctx,
+                    JwSuiteDatabase::class.java,
+                    Constants.DATABASE_NAME
+                )// Wipes and rebuilds instead of migrating if no Migration object.
+                    // Migration is not part of this lesson. You can learn more about
+                    // migration with Room in this blog post:
+                    // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
+                    //.fallbackToDestructiveMigration()
+                    .addCallback(DatabaseCallback(ctx, jsonLogger))
+                if (databasePassphrase.isNotEmpty()) {
+                    roomBuilder.openHelperFactory(SupportFactory(databasePassphrase.toByteArray()))
+                }
                 // Assign INSTANCE to the newly created database.
+                instance = roomBuilder.build()
                 INSTANCE = instance
             }
             // Return instance; smart cast to be non-null.

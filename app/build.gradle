@@ -29,7 +29,6 @@ android {
             useSupportLibrary true
         }
     }
-
     buildTypes {
         debug {
             testCoverageEnabled true
