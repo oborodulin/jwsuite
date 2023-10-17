@@ -2,13 +2,24 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.congregation.Member
+import com.oborodulin.jwsuite.domain.model.congregation.MemberMovement
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 
-class MemberUiToMemberMapper(private val groupUiMapper: GroupUiToGroupMapper) :
+class MemberUiToMemberMapper(
+    private val congregationUiMapper: CongregationUiToCongregationMapper,
+    private val groupUiMapper: GroupUiToGroupMapper
+) :
     Mapper<MemberUi, Member> {
     override fun map(input: MemberUi): Member {
+        val movement = MemberMovement(
+            memberId = input.id!!,
+            memberType = input.memberType,
+            movementDate = input.movementDate
+        )
+        movement.id = input.memberMovementId
         val member = Member(
-            group = groupUiMapper.map(input.group),
+            congregation = congregationUiMapper.map(input.congregation),
+            group = groupUiMapper.nullableMap(input.group),
             memberNum = input.memberNum,
             memberName = input.memberName,
             surname = input.surname,
@@ -20,9 +31,7 @@ class MemberUiToMemberMapper(private val groupUiMapper: GroupUiToGroupMapper) :
             memberCongregationId = input.memberCongregationId,
             congregationId = input.congregationId!!,
             activityDate = input.activityDate,
-            memberMovementId = input.memberMovementId,
-            memberType = input.memberType,
-            movementDate = input.movementDate
+            lastMovement = movement
         )
         member.id = input.id
         return member

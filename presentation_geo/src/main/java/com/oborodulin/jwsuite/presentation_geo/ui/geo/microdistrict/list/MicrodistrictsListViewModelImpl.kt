@@ -116,6 +116,7 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
                 override val singleEventFlow =
                     Channel<MicrodistrictsListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+                override val uiStateErrorMsg = MutableStateFlow("")
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)

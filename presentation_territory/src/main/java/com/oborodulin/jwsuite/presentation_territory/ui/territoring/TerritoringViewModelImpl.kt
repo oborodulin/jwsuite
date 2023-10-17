@@ -153,6 +153,8 @@ class TerritoringViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : TerritoringViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
+                override val isUiStateChanged = MutableStateFlow(true)
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<TerritoringUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()

@@ -9,14 +9,14 @@ class MemberToMembersListItemMapper(private val groupMapper: GroupToGroupUiMappe
     Mapper<Member, MembersListItem> {
     override fun map(input: Member) = MembersListItem(
         id = input.id ?: UUID.randomUUID(),
-        group = groupMapper.map(input.group),
+        group = groupMapper.nullableMap(input.group),
         memberNum = input.memberNum,
         memberFullName = input.fullName,
         memberShortName = input.shortName,
         phoneNumber = input.phoneNumber,
-        memberType = input.memberType,
         dateOfBirth = input.dateOfBirth,
         dateOfBaptism = input.dateOfBaptism,
-        inactiveDate = input.inactiveDate
+        memberType = input.lastMovement.memberType,
+        movementDate = input.lastMovement.movementDate
     )
 }

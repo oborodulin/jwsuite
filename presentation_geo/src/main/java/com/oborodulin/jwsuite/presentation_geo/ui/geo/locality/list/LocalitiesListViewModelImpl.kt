@@ -114,6 +114,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 override val singleEventFlow =
                     Channel<LocalitiesListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+                override val uiStateErrorMsg = MutableStateFlow("")
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)

@@ -532,6 +532,8 @@ class HouseViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : HouseViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
+                override val isUiStateChanged = MutableStateFlow(true)
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())

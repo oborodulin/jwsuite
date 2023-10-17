@@ -103,8 +103,13 @@ object CongregatingModule {
 
     @Singleton
     @Provides
-    fun provideMemberUiToMemberMapper(mapper: GroupUiToGroupMapper): MemberUiToMemberMapper =
-        MemberUiToMemberMapper(groupUiMapper = mapper)
+    fun provideMemberUiToMemberMapper(
+        congregationUiMapper: CongregationUiToCongregationMapper,
+        groupUiMapper: GroupUiToGroupMapper
+    ): MemberUiToMemberMapper = MemberUiToMemberMapper(
+        congregationUiMapper = congregationUiMapper,
+        groupUiMapper = groupUiMapper
+    )
 
     @Singleton
     @Provides

@@ -139,6 +139,8 @@ class HousingViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : HousingViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
+                override val isUiStateChanged = MutableStateFlow(true)
                 override val uiStateFlow = MutableStateFlow(UiState.Success(1)) // Any
                 override val singleEventFlow = Channel<HousingUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()

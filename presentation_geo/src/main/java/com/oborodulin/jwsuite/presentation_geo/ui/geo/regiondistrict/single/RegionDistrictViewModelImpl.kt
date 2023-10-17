@@ -265,6 +265,8 @@ class RegionDistrictViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : RegionDistrictViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
+                override val isUiStateChanged = MutableStateFlow(true)
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())

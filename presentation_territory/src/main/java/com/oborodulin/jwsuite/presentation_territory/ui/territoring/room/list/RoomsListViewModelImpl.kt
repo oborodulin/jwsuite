@@ -95,6 +95,7 @@ class RoomsListViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : RoomsListViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()

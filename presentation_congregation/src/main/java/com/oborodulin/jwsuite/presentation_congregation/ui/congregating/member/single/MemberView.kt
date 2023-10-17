@@ -384,7 +384,7 @@ fun MemberView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    val ctx = LocalContext.current
+    //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
             MemberView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
