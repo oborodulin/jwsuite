@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory
 
 import android.content.Context
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
@@ -153,14 +152,12 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     companion object {
         fun previewModel(ctx: Context) =
             object : TerritoryHouseViewModel {
+                override val uiStateErrorMsg = MutableStateFlow("")
+                override val isUiStateChanged = MutableStateFlow(true)
                 override val dialogTitleResId =
                     MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
-
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
@@ -176,7 +173,6 @@ class TerritoryHouseViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoryHouseUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

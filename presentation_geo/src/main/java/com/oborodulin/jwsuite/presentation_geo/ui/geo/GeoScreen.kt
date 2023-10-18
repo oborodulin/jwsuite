@@ -118,11 +118,8 @@ fun GeoScreen(
         ScaffoldComponent(
             appState = appState,
             topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_geo,
-            topBarNavigationIcon = {
-                IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                    Icon(Icons.Outlined.ArrowBack, null)
-                }
-            },
+            topBarNavImageVector = Icons.Outlined.ArrowBack,
+            topBarNavOnClick = { appState.backToBottomBarScreen() },
             topBarActions = {
                 IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
                 IconButton(onClick = { context.toast("Settings button clicked...") }) {

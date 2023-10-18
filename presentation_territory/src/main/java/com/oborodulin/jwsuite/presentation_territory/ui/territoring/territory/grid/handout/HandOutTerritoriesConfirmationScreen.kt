@@ -47,11 +47,8 @@ fun HandOutTerritoriesConfirmationScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                }
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.backToBottomBarScreen() }
             ) { paddingValues ->
                 val areInputsValid by viewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
                 Column(

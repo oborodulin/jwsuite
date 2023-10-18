@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.DeleteMicrodistrictUseCase
@@ -35,7 +35,7 @@ class MicrodistrictsListViewModelImpl @Inject constructor(
     private val useCases: MicrodistrictUseCases,
     private val converter: MicrodistrictsListConverter
 ) : MicrodistrictsListViewModel,
-    MviViewModel<List<MicrodistrictsListItem>, UiState<List<MicrodistrictsListItem>>, MicrodistrictsListUiAction, MicrodistrictsListUiSingleEvent>() {
+    ListViewModel<List<MicrodistrictsListItem>, UiState<List<MicrodistrictsListItem>>, MicrodistrictsListUiAction, MicrodistrictsListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

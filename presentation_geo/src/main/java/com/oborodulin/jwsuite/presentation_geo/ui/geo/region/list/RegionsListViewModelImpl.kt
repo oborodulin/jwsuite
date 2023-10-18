@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
@@ -34,7 +34,7 @@ class RegionsListViewModelImpl @Inject constructor(
     private val regionUseCases: RegionUseCases,
     private val regionsListConverter: RegionsListConverter
 ) : RegionsListViewModel,
-    MviViewModel<List<RegionsListItem>, UiState<List<RegionsListItem>>, RegionsListUiAction, RegionsListUiSingleEvent>() {
+    ListViewModel<List<RegionsListItem>, UiState<List<RegionsListItem>>, RegionsListUiAction, RegionsListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

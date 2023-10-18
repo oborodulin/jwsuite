@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_congregation.R
@@ -36,7 +37,7 @@ class CongregationsListViewModelImpl @Inject constructor(
     private val congregationUseCases: CongregationUseCases,
     private val congregationsListConverter: CongregationsListConverter
 ) : CongregationsListViewModel,
-    MviViewModel<List<CongregationsListItem>, UiState<List<CongregationsListItem>>, CongregationsListUiAction, CongregationsListUiSingleEvent>() {
+    ListViewModel<List<CongregationsListItem>, UiState<List<CongregationsListItem>>, CongregationsListUiAction, CongregationsListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

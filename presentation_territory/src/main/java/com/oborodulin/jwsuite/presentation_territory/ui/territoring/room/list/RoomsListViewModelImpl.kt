@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
@@ -35,7 +35,7 @@ class RoomsListViewModelImpl @Inject constructor(
     private val useCases: RoomUseCases,
     private val converter: RoomsListConverter
 ) : RoomsListViewModel,
-    MviViewModel<List<RoomsListItem>, UiState<List<RoomsListItem>>, RoomsListUiAction, UiSingleEvent>() {
+    ListViewModel<List<RoomsListItem>, UiState<List<RoomsListItem>>, RoomsListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

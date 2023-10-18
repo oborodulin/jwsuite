@@ -45,11 +45,8 @@ fun TerritoryCategoryScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                }
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.backToBottomBarScreen() }
             ) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()

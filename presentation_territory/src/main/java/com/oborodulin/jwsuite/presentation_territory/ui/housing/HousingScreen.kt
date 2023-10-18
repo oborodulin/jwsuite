@@ -122,11 +122,8 @@ fun HousingScreen(
             ScaffoldComponent(
                 appState = appState,
                 topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_housing,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.commonNavigateUp() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                },
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.commonNavigateUp() },
                 actionBar = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(

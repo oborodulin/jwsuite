@@ -1,8 +1,9 @@
 package com.oborodulin.jwsuite.ui.navigation.graphs
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -21,9 +22,11 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.bottomBarNavGraph"
 
 fun NavGraphBuilder.bottomBarNavGraph(
-    appState: AppState,
-    nestedScrollConnection: NestedScrollConnection,
-    bottomBar: @Composable () -> Unit
+    appState: AppState, paddingValues: PaddingValues,
+    onChangeActionBar: (@Composable (() -> Unit)?) -> Unit,
+    onChangeActionBarTitle: (String) -> Unit,
+    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit,
+    onChangeFab: (@Composable () -> Unit) -> Unit
 ) {
     navigation(route = Graph.BOTTOM_BAR, startDestination = NavRoutes.Dashboarding.route) {
         // DashboardingScreen:
@@ -39,10 +42,10 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             appState.sharedViewModel.value = sharedViewModel
             DashboardingScreen(
-                appState = appState,
-                nestedScrollConnection = nestedScrollConnection,
-                bottomBar = bottomBar
-            ) //setFabOnClick = setFabOnClick
+                appState = appState, paddingValues = paddingValues,
+                onChangeActionBarTitle = onChangeActionBarTitle,
+                onChangeTopBarActions = onChangeTopBarActions
+            )//setFabOnClick = setFabOnClick
         }
         // CongregatingScreen:
         composable(
@@ -53,9 +56,9 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             CongregatingScreen(
-                appState = appState,
-                nestedScrollConnection = nestedScrollConnection,
-                bottomBar = bottomBar
+                appState = appState, paddingValues = paddingValues,
+                onChangeActionBarTitle = onChangeActionBarTitle,
+                onChangeTopBarActions = onChangeTopBarActions
             )
         }
         // TerritoringScreen:
@@ -69,11 +72,13 @@ fun NavGraphBuilder.bottomBarNavGraph(
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             TerritoringScreen(
-                appState = appState,
+                appState = appState, paddingValues = paddingValues,
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
-                nestedScrollConnection = nestedScrollConnection,
-                bottomBar = bottomBar
+                onChangeActionBar = onChangeActionBar,
+                onChangeActionBarTitle = onChangeActionBarTitle,
+                onChangeTopBarActions = onChangeTopBarActions,
+                onChangeFab = onChangeFab
             )
         }
         // MinistringScreen:
@@ -83,7 +88,9 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 .d("Navigation Graph: to MinistringScreen [route = '%s']", it.destination.route)
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            //MinistringScreen(navController)
+            //MinistringScreen(appState = appState, paddingValues = paddingValues,
+            //                onChangeActionBarTitle = onChangeActionBarTitle,
+            //                onChangeTopBarActions = onChangeTopBarActions)
         }
     }
 }

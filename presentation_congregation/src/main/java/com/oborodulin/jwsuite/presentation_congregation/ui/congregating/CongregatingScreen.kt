@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,10 +35,8 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
@@ -54,10 +53,11 @@ private const val TAG = "Congregating.CongregatingScreen"
 @Composable
 fun CongregatingScreen(
     appState: AppState,
+    paddingValues: PaddingValues,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    nestedScrollConnection: NestedScrollConnection,
-    bottomBar: @Composable () -> Unit
+    onChangeActionBarTitle: (String) -> Unit,
+    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val context = LocalContext.current
@@ -81,56 +81,48 @@ fun CongregatingScreen(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
-    JWSuiteTheme { //(darkTheme = true)
-        ScaffoldComponent(
-            appState = appState,
-            nestedScrollConnection = nestedScrollConnection,
-            topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating,
-            topBarActions = {
-                IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
-                IconButton(onClick = { context.toast("Settings button clicked...") }) {
-                    Icon(Icons.Outlined.Settings, null)
-                }
-            },
-            bottomBar = bottomBar
-        ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)) {
-                CustomScrollableTabRow(
-                    listOf(
-                        TabRowItem(
-                            title = stringResource(R.string.congregation_tab_congregations),
-                            onClick = { onChangeTab(CongregatingTabType.CONGREGATIONS) }
-                        ) {
-                            CongregationMembersView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                membersListViewModel = membersListViewModel
-                            )
-                        },
-                        TabRowItem(
-                            title = stringResource(R.string.congregation_tab_groups),
-                            onClick = { onChangeTab(CongregatingTabType.GROUPS) }
-                        ) {
-                            GroupMembersView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                membersListViewModel = membersListViewModel
-                            )
-                        },
-                        TabRowItem(
-                            title = stringResource(R.string.congregation_tab_members),
-                            onClick = { onChangeTab(CongregatingTabType.MEMBERS) }
-                        ) {
-                            MembersView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                membersListViewModel = membersListViewModel
-                            )
-                        }
-                    )
-                )
-            }
+    onChangeActionBarTitle(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
+    onChangeTopBarActions {
+        IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
+        IconButton(onClick = { context.toast("Settings button clicked...") }) {
+            Icon(Icons.Outlined.Settings, null)
         }
+    }
+    Column(modifier = Modifier.padding(paddingValues)) {
+        CustomScrollableTabRow(
+            listOf(
+                TabRowItem(
+                    title = stringResource(R.string.congregation_tab_congregations),
+                    onClick = { onChangeTab(CongregatingTabType.CONGREGATIONS) }
+                ) {
+                    CongregationMembersView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                        membersListViewModel = membersListViewModel
+                    )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.congregation_tab_groups),
+                    onClick = { onChangeTab(CongregatingTabType.GROUPS) }
+                ) {
+                    GroupMembersView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                        membersListViewModel = membersListViewModel
+                    )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.congregation_tab_members),
+                    onClick = { onChangeTab(CongregatingTabType.MEMBERS) }
+                ) {
+                    MembersView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                        membersListViewModel = membersListViewModel
+                    )
+                }
+            )
+        )
     }
 // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback

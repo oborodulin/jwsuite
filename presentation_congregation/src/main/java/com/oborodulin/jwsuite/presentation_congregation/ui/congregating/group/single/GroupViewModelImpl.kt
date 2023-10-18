@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single
 
 import android.content.Context
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -219,10 +218,6 @@ class GroupViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val groupNum = MutableStateFlow(InputWrapper())
@@ -230,7 +225,6 @@ class GroupViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 //override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: GroupUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -239,7 +233,11 @@ class GroupViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean, onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Utils
@@ -38,7 +38,7 @@ class TerritoriesListViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val listConverter: TerritoriesListConverter
 ) : TerritoriesListViewModel,
-    MviViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesListUiAction, UiSingleEvent>() {
+    ListViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

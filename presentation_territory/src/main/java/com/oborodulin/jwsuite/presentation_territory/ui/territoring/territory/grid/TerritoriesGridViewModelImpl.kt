@@ -370,9 +370,6 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
                 override val checkedListItems = MutableStateFlow(previewList(ctx))
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
                 override val handOutSearchText = MutableStateFlow(TextFieldValue(""))
                 override val atWorkSearchText = MutableStateFlow(TextFieldValue(""))
                 override val idleSearchText = MutableStateFlow(TextFieldValue(""))
@@ -389,7 +386,6 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val areAtWorkProcessInputsValid = MutableStateFlow(true)
 
                 override fun observeCheckedListItems() {}
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

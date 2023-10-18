@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list
 
-import com.oborodulin.home.common.ui.state.MviViewModeled
+import com.oborodulin.home.common.ui.state.ListViewModeled
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 
 interface StreetsListViewModel :
-    MviViewModeled<List<StreetsListItem>, StreetsListUiAction, StreetsListUiSingleEvent> {
+    ListViewModeled<List<StreetsListItem>, StreetsListUiAction, StreetsListUiSingleEvent> {
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

@@ -1,9 +1,7 @@
 package com.oborodulin.home.common.ui.state
 
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -34,36 +32,6 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _singleEventFlow = Channel<E>()
     override val singleEventFlow = _singleEventFlow.receiveAsFlow()
 
-    private val _searchText: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
-    final override val searchText = _searchText.asStateFlow()
-
-    private val _isSearching = MutableStateFlow(false)
-    override val isSearching = _isSearching.asStateFlow()
-
-    // https://www.youtube.com/watch?v=CfL6Dl2_dAE
-    // https://stackoverflow.com/questions/70709121/how-to-convert-a-flowcustomtype-to-stateflowuistate-android-kotlin
-    /*    @OptIn(FlowPreview::class)
-        override val uiStateFlow: StateFlow<S> = searchText
-            .debounce(500L)
-            .onEach { _isSearching.update { true } }
-            .combine(_uiStateFlow) { query, uiState ->
-                if (query.text.isBlank()) uiState
-                if (uiState !is UiState.Success<*>) uiState
-                uiState as UiState.Success<*>
-                if (uiState.data !is List<*>) uiState
-                uiState.data as List<*>
-                if (uiState.data.first() !is Searchable) uiState
-                UiState.Success(data = uiState.data.filter {
-                    (it as Searchable).doesMatchSearchQuery(query.text)
-                }) as S
-
-            }
-            .onEach { _isSearching.update { false } }
-            .stateIn(
-                viewModelScope, SharingStarted.WhileSubscribed(5000),
-                _uiStateFlow.value
-            )
-    */
     val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.tag(TAG).e(exception)
         //_uiState.value = _uiState.value.copy(error = exception.message, isLoading = false)
@@ -85,38 +53,6 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     }
 
     abstract fun initState(): S
-
-    override fun onSearchTextChange(text: TextFieldValue) {
-        _searchText.value = text
-    }
-
-    // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
-    override fun singleSelectItem(selectedItem: ListItemModel) {
-        Timber.tag(TAG).d("observeSelection() called")
-        uiState()?.let { uiState ->
-            if (uiState is List<*>) {
-                (uiState as List<*>).forEach {
-                    if (it is ListItemModel) it.selected = false
-                }
-                ((uiState as List<*>).find {
-                    (it is ListItemModel) && it.itemId == selectedItem.itemId
-                } as? ListItemModel)?.selected = true
-                Timber.tag(TAG).d("selected %s list item", selectedItem)
-            }
-        }
-    }
-
-    /*override fun checkItem(checkedItem: ListItemModel, checkValue: Boolean) {
-        Timber.tag(TAG).d("observeSelection() called")
-        uiState()?.let { uiState ->
-            if (uiState is List<*>) {
-                ((uiState as List<*>).find {
-                    (it is ListItemModel) && it.itemId == checkedItem.itemId
-                } as? ListItemModel)?.checked = checkValue
-                Timber.tag(TAG).d("checked %s list item", checkedItem)
-            }
-        }
-    }*/
 
     private fun redirectUiStateErrorMessage(errorMessage: String?) {
         Timber.tag(TAG)

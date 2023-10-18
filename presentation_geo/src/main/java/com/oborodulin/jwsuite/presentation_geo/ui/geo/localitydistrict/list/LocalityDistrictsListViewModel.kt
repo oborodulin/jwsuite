@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list
 
-import com.oborodulin.home.common.ui.state.MviViewModeled
+import com.oborodulin.home.common.ui.state.ListViewModeled
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
 
 interface LocalityDistrictsListViewModel :
-    MviViewModeled<List<LocalityDistrictsListItem>, LocalityDistrictsListUiAction, LocalityDistrictsListUiSingleEvent> {
+    ListViewModeled<List<LocalityDistrictsListItem>, LocalityDistrictsListUiAction, LocalityDistrictsListUiSingleEvent> {
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

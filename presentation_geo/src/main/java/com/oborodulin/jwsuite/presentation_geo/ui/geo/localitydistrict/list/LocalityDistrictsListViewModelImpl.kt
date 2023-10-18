@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.DeleteLocalityDistrictUseCase
@@ -37,7 +37,7 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
     private val streetUseCases: StreetUseCases,
     private val converter: LocalityDistrictsListConverter
 ) : LocalityDistrictsListViewModel,
-    MviViewModel<List<LocalityDistrictsListItem>, UiState<List<LocalityDistrictsListItem>>, LocalityDistrictsListUiAction, LocalityDistrictsListUiSingleEvent>() {
+    ListViewModel<List<LocalityDistrictsListItem>, UiState<List<LocalityDistrictsListItem>>, LocalityDistrictsListUiAction, LocalityDistrictsListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

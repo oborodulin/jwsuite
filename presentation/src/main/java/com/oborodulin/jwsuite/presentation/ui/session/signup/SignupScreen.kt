@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,11 +46,8 @@ fun SignupScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                }
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.backToBottomBarScreen() }
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()

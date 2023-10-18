@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
@@ -36,7 +36,7 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val converter: TerritoryStreetsListConverter
 ) : TerritoryStreetsListViewModel,
-    MviViewModel<List<TerritoryStreetsListItem>, UiState<List<TerritoryStreetsListItem>>, TerritoryStreetsListUiAction, UiSingleEvent>() {
+    ListViewModel<List<TerritoryStreetsListItem>, UiState<List<TerritoryStreetsListItem>>, TerritoryStreetsListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

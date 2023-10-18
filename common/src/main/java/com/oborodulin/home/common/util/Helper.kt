@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.workmanager.util
+package com.oborodulin.home.common.util
 
 fun Double.is5PercentUp(): Boolean {
     return this >= 5

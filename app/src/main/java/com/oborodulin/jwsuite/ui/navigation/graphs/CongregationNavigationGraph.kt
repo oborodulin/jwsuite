@@ -1,5 +1,8 @@
 package com.oborodulin.jwsuite.ui.navigation.graphs
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -13,7 +16,11 @@ import timber.log.Timber
 
 private const val TAG = "App.Navigation.congregationNavGraph"
 
-fun NavGraphBuilder.congregationNavGraph(appState: AppState) {
+fun NavGraphBuilder.congregationNavGraph(
+    appState: AppState,
+    paddingValues: PaddingValues,
+    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+) {
     navigation(
         route = Graph.CONGREGATION,
         startDestination = NavRoutes.Congregation.route

@@ -31,7 +31,7 @@ class TerritoryDetailsListViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val converter: TerritoryDetailsListConverter
 ) : TerritoryDetailsListViewModel,
-    MviViewModel<List<TerritoryDetailsListItem>, UiState<List<TerritoryDetailsListItem>>, TerritoryDetailsListUiAction, UiSingleEvent>() {
+    ListViewModel<List<TerritoryDetailsListItem>, UiState<List<TerritoryDetailsListItem>>, TerritoryDetailsListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

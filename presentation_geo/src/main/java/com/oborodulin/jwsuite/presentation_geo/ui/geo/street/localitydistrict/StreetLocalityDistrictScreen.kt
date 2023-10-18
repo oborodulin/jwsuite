@@ -66,11 +66,8 @@ fun StreetLocalityDistrictScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.commonNavigateUp() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                },
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.commonNavigateUp() },
                 topBarActions = {
                     IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)

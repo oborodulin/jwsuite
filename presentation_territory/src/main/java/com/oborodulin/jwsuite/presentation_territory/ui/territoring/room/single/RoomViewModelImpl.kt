@@ -403,10 +403,6 @@ class RoomViewModelImpl @Inject constructor(
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
@@ -430,7 +426,6 @@ class RoomViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: RoomUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

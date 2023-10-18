@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single
 
 import android.content.Context
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -224,17 +223,12 @@ class RegionViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val regionCode = MutableStateFlow(InputWrapper())
                 override val regionName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: RegionUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -243,7 +237,12 @@ class RegionViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

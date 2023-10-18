@@ -8,7 +8,6 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -24,7 +23,6 @@ interface CongregationViewModel :
 
     val areInputsValid: StateFlow<Boolean>
 
-    fun viewModelScope(): CoroutineScope
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: CongregationFields, isFocused: Boolean)
     fun moveFocusImeAction()

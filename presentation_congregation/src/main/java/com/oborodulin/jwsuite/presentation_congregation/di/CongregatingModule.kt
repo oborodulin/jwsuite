@@ -107,8 +107,7 @@ object CongregatingModule {
         congregationUiMapper: CongregationUiToCongregationMapper,
         groupUiMapper: GroupUiToGroupMapper
     ): MemberUiToMemberMapper = MemberUiToMemberMapper(
-        congregationUiMapper = congregationUiMapper,
-        groupUiMapper = groupUiMapper
+        congregationUiMapper = congregationUiMapper, groupUiMapper = groupUiMapper
     )
 
     @Singleton

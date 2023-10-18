@@ -1,5 +1,8 @@
 package com.oborodulin.jwsuite.ui.navigation.graphs
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -22,7 +25,11 @@ import timber.log.Timber
 
 private const val TAG = "App.Navigation.territoryNavGraph"
 
-fun NavGraphBuilder.territoryNavGraph(appState: AppState) {
+fun NavGraphBuilder.territoryNavGraph(
+    appState: AppState,
+    paddingValues: PaddingValues,
+    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+) {
     navigation(route = Graph.TERRITORY, startDestination = NavRoutes.Congregation.route) {
         composable(route = NavRoutes.HandOutTerritoriesConfirmation.route) {
             Timber.tag(TAG)

@@ -72,30 +72,26 @@ fun CongregationScreen(
             Timber.tag(TAG).d("CongregationScreen(...): Save Button onClick...")
             // checks all errors
             viewModel.onContinueClick {
-                // checks all errors
-                viewModel.onContinueClick {
-                    // if success, save then backToBottomBarScreen
-                    viewModel.handleActionJob({ viewModel.submitAction(CongregationUiAction.Save) },
-                        {
-                            when (errorMessage) {
-                                null -> appState.backToBottomBarScreen()
-                                else -> isErrorShowAlert.value = true
-                            }
-                        })
-                }
+                // if success, save then backToBottomBarScreen
+                viewModel.handleActionJob({ viewModel.submitAction(CongregationUiAction.Save) },
+                    {
+                        when (errorMessage) {
+                            null -> appState.backToBottomBarScreen()
+                            else -> isErrorShowAlert.value = true
+                        }
+                    })
             }
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme {
-            ScaffoldComponent(appState = appState, topBarNavigationIcon = {
-                IconButton(onClick = onBackNavigationClick) {
-                    Icon(Icons.Outlined.ArrowBack, null)
-                }
-            }, topBarActions = {
-                IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
-                    Icon(Icons.Outlined.Done, null)
-                }
-            }) { paddingValues ->
+            ScaffoldComponent(appState = appState,
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = onBackNavigationClick,
+                topBarActions = {
+                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
+                        Icon(Icons.Outlined.Done, null)
+                    }
+                }) { paddingValues ->
                 CommonScreen(paddingValues = paddingValues, state = state) {
                     Column(
                         modifier = Modifier

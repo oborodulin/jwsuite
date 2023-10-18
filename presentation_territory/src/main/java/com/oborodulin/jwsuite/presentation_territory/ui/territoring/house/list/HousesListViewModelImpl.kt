@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.R
@@ -37,7 +37,7 @@ class HousesListViewModelImpl @Inject constructor(
     private val useCases: HouseUseCases,
     private val converter: HousesListConverter
 ) : HousesListViewModel,
-    MviViewModel<List<HousesListItem>, UiState<List<HousesListItem>>, HousesListUiAction, UiSingleEvent>() {
+    ListViewModel<List<HousesListItem>, UiState<List<HousesListItem>>, HousesListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

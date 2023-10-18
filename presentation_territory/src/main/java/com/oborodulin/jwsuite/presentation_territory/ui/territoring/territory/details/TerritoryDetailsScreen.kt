@@ -127,11 +127,8 @@ fun TerritoryDetailsScreen(
             JWSuiteTheme { //(darkTheme = true)
                 ScaffoldComponent(
                     appState = appState,
-                    topBarNavigationIcon = {
-                        IconButton(onClick = { appState.commonNavigateUp() }) {
-                            Icon(Icons.Outlined.ArrowBack, null)
-                        }
-                    },
+                    topBarNavImageVector = Icons.Outlined.ArrowBack,
+                    topBarNavOnClick = { appState.commonNavigateUp() },
                     topBarActions = {
                         IconButton(onClick = { appState.backToBottomBarScreen() }) {
                             Icon(Icons.Outlined.Done, null)

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data_congregation.R
@@ -36,7 +36,7 @@ class MembersListViewModelImpl @Inject constructor(
     private val useCases: MemberUseCases,
     private val converter: MembersListConverter
 ) : MembersListViewModel,
-    MviViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, MembersListUiAction, MembersListUiSingleEvent>() {
+    ListViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, MembersListUiAction, MembersListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
@@ -71,7 +71,10 @@ class MembersListViewModelImpl @Inject constructor(
         congregationId: UUID? = null, groupId: UUID? = null, byCongregation: Boolean
     ): Job {
         Timber.tag(TAG)
-            .d("loadMembers() called: congregationId = %s; groupId = %s", congregationId, groupId)
+            .d(
+                "loadMembers(...) called: congregationId = %s; groupId = %s",
+                congregationId, groupId
+            )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(
                 GetMembersUseCase.Request(

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.MviViewModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
@@ -35,7 +35,7 @@ class TerritoryCategoriesListViewModelImpl @Inject constructor(
     private val useCases: TerritoryCategoryUseCases,
     private val converter: TerritoryCategoriesListConverter
 ) : TerritoryCategoriesListViewModel,
-    MviViewModel<List<TerritoryCategoriesListItem>, UiState<List<TerritoryCategoriesListItem>>, TerritoryCategoriesListUiAction, TerritoryCategoriesListUiSingleEvent>() {
+    ListViewModel<List<TerritoryCategoriesListItem>, UiState<List<TerritoryCategoriesListItem>>, TerritoryCategoriesListUiAction, TerritoryCategoriesListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 

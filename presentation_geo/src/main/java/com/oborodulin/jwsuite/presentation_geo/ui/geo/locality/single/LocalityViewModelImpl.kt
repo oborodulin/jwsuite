@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single
 
 import android.content.Context
 import androidx.annotation.ArrayRes
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -19,13 +18,13 @@ import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
 import com.oborodulin.jwsuite.domain.util.LocalityType
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalitiesListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -73,9 +72,9 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     override val areInputsValid = combine(region, localityCode, localityShortName, localityName)
-        { region, localityCode, localityShortName, localityName ->
-            region.errorId == null && localityCode.errorId == null && localityShortName.errorId == null && localityName.errorId == null
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    { region, localityCode, localityShortName, localityName ->
+        region.errorId == null && localityCode.errorId == null && localityShortName.errorId == null && localityName.errorId == null
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
         initLocalityTypes(com.oborodulin.jwsuite.domain.R.array.locality_types)
@@ -334,10 +333,6 @@ class LocalityViewModelImpl @Inject constructor(
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val localityTypes = MutableStateFlow(mutableMapOf<LocalityType, String>())
 
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
@@ -356,7 +351,6 @@ class LocalityViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: LocalityUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -365,7 +359,12 @@ class LocalityViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

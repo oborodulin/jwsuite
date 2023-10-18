@@ -1,13 +1,11 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring
 
 import android.content.Context
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
@@ -160,15 +158,10 @@ class TerritoringViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val location =
                     MutableStateFlow(InputListItemWrapper<TerritoryLocationsListItem>())
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoringUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -177,7 +170,11 @@ class TerritoringViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
             }
 
         fun previewList(ctx: Context) = listOf(

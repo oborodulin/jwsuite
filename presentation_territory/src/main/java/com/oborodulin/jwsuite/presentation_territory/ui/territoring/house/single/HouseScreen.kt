@@ -61,11 +61,8 @@ fun HouseScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                },
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.backToBottomBarScreen() },
                 topBarActions = {
                     IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)

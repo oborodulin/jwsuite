@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.
 
 import android.content.Context
 import androidx.annotation.ArrayRes
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -566,10 +565,6 @@ class MemberViewModelImpl @Inject constructor(
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
                 override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
@@ -595,7 +590,6 @@ class MemberViewModelImpl @Inject constructor(
                     surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
                 ) = ""
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: MemberUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

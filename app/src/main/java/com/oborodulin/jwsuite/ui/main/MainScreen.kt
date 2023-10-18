@@ -1,8 +1,11 @@
 package com.oborodulin.jwsuite.ui.main
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
@@ -58,21 +62,65 @@ fun MainScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltViewMod
             }
         }
     }
-    MainNavigationGraph(
-        appState = appState,
-        nestedScrollConnection = nestedScrollConnection
-    ) {
-        if (true) {//appState.shouldShowBottomNavBar
-            BottomNavigationComponent(
-                modifier = Modifier
-                    .height(bottomBarHeight)
-                    .offset {
-                        IntOffset(
-                            x = 0,
-                            y = -bottomBarOffsetHeightPx.roundToInt()
-                        )
-                    },
-                appState
+    var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
+    val onChangeActionBar: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
+
+    var actionBarTitle by rememberSaveable { mutableStateOf(appState.appName) }
+    val onChangeActionBarTitle: (String) -> Unit = { actionBarTitle = "${appState.appName} - $it" }
+
+    var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
+    val onChangeActionBarSubtitle: (String) -> Unit = { actionBarSubtitle = it }
+
+    var isUseNestedScrollConnection by rememberSaveable { mutableStateOf(false) }
+    val areUsingNestedScrollConnection: (Boolean) -> Unit =
+        { isUseNestedScrollConnection = it }
+
+    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf({}) }
+    val onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+
+    var isUseBottomNavigation by rememberSaveable { mutableStateOf(false) }
+    val areUsingBottomNavigation: (Boolean) -> Unit = { isUseBottomNavigation = it }
+
+    var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
+    val onChangeFab: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
+
+    JWSuiteTheme { //(darkTheme = true)
+        ScaffoldComponent(
+            appState = appState,
+            nestedScrollConnection = nestedScrollConnection,
+            isUseNestedScrollConnection = isUseNestedScrollConnection,
+            topBarNavImageVector = Icons.Outlined.ArrowBack,
+            topBarNavOnClick = { appState.backToBottomBarScreen() },
+            actionBar = actionBar,
+            topBarActions = topBarActions,
+            bottomBar = {
+                if (true) {//appState.shouldShowBottomNavBar
+                    BottomNavigationComponent(
+                        modifier = Modifier
+                            .height(bottomBarHeight)
+                            .offset {
+                                IntOffset(
+                                    x = 0,
+                                    y = -bottomBarOffsetHeightPx.roundToInt()
+                                )
+                            },
+                        appState
+                    )
+                }
+            },
+            isUseBottomNavigation = isUseBottomNavigation,
+            floatingActionButton = floatingActionButton
+        ) { paddingValues ->
+            MainNavigationGraph(
+                appState = appState,
+                paddingValues = paddingValues,
+                onChangeActionBar = onChangeActionBar,
+                onChangeActionBarTitle = onChangeActionBarTitle,
+                onChangeActionBarSubtitle = onChangeActionBarSubtitle,
+                areUsingNestedScrollConnection = areUsingNestedScrollConnection,
+                onChangeTopBarActions = onChangeTopBarActions,
+                areUsingBottomNavigation = areUsingBottomNavigation,
+                onChangeFab = onChangeFab
             )
         }
     }
@@ -93,7 +141,10 @@ private fun HomeNavigationHost(
         composable(NavRoutes.Home.route) {
             // Dashboard: Congregations; Meters values; Payments
             Timber.tag(TAG)
-                .d("Navigation Graph: to NavBarNavigationHost [route = '%s']", it.destination.route)
+                .d(
+                    "Navigation Graph: to NavBarNavigationHost [route = '%s']",
+                    it.destination.route
+                )
             NavBarNavigationHost(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,

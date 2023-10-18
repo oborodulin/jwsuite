@@ -439,10 +439,6 @@ class TerritoryViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val id = MutableStateFlow(InputWrapper())
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
@@ -460,7 +456,6 @@ class TerritoryViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoryUiAction): Job? = null
                 override fun onInsert(block: () -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

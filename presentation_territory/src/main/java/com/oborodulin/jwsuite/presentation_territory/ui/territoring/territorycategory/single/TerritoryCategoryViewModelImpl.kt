@@ -307,10 +307,6 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val territoryCategoryCode = MutableStateFlow(InputWrapper())
                 override val territoryCategoryMark = MutableStateFlow(InputWrapper())
                 override val territoryCategoryName = MutableStateFlow(InputWrapper())
@@ -318,7 +314,6 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoryCategoryUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

@@ -44,11 +44,8 @@ fun RegionScreen(
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarNavigationIcon = {
-                    IconButton(onClick = { appState.backToBottomBarScreen() }) {
-                        Icon(Icons.Outlined.ArrowBack, null)
-                    }
-                }
+                topBarNavImageVector = Icons.Outlined.ArrowBack,
+                topBarNavOnClick = { appState.backToBottomBarScreen() },
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()

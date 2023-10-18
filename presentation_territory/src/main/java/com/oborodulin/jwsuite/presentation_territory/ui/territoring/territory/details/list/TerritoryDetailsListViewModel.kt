@@ -5,6 +5,6 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsListItem
 
 interface TerritoryDetailsListViewModel :
-    MviViewModeled<List<TerritoryDetailsListItem>, TerritoryDetailsListUiAction, UiSingleEvent> {
+    ListViewModeled<List<TerritoryDetailsListItem>, TerritoryDetailsListUiAction, UiSingleEvent> {
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

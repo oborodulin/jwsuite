@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.ui.navigation.graphs
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.navigation.Graph
@@ -13,20 +13,33 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 @Composable
 fun MainNavigationGraph(
     appState: AppState,
-    nestedScrollConnection: NestedScrollConnection,
-    bottomBar: @Composable () -> Unit
+    paddingValues: PaddingValues,
+    onChangeActionBar: (@Composable (() -> Unit)?) -> Unit,
+    onChangeActionBarTitle: (String) -> Unit,
+    onChangeActionBarSubtitle: (String) -> Unit,
+    areUsingNestedScrollConnection: (Boolean) -> Unit,
+    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit,
+    areUsingBottomNavigation: (Boolean) -> Unit,
+    onChangeFab: (@Composable () -> Unit) -> Unit
 ) {
     NavHost(
         navController = appState.commonNavController,
         route = Graph.MAIN,
         startDestination = NavRoutes.Home.route
     ) {
-        congregationNavGraph(appState)
-        territoryNavGraph(appState)
-        geoNavGraph(appState)
-        housingNavGraph(appState)
+        areUsingNestedScrollConnection(false)
+        areUsingBottomNavigation(false)
+        congregationNavGraph(appState, paddingValues, onChangeTopBarActions)
+        territoryNavGraph(appState, paddingValues, onChangeTopBarActions)
+        geoNavGraph(appState, paddingValues, onChangeTopBarActions)
+        housingNavGraph(appState, paddingValues, onChangeTopBarActions)
         composable(NavRoutes.Home.route) {
-            bottomBarNavGraph(appState, nestedScrollConnection, bottomBar)
+            areUsingNestedScrollConnection(true)
+            areUsingBottomNavigation(true)
+            bottomBarNavGraph(
+                appState, paddingValues, onChangeActionBar, onChangeActionBarTitle,
+                onChangeTopBarActions, onChangeFab
+            )
         }
     }
 }

@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single
 
 import android.content.Context
 import androidx.annotation.ArrayRes
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -362,10 +361,6 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 override val savedListItem = MutableStateFlow(ListItemModel())
                 override val showDialog = MutableStateFlow(true)
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-
                 override val microdistrictTypes =
                     MutableStateFlow(mutableMapOf<VillageType, String>())
 
@@ -384,7 +379,6 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: MicrodistrictUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -393,7 +387,12 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}
