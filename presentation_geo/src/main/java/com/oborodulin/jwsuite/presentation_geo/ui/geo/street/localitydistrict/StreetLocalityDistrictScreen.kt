@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -15,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,14 +36,19 @@ private const val TAG = "Territoring.StreetLocalityDistrictScreen"
 fun StreetLocalityDistrictScreen(
     appState: AppState,
     viewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
-    streetLocalityDistrictInput: NavigationInput.StreetLocalityDistrictInput? = null
+    streetLocalityDistrictInput: NavigationInput.StreetLocalityDistrictInput? = null,
+    paddingValues: PaddingValues,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d(
             "StreetLocalityDistrictScreen(...) called: streetLocalityDistrictInput = %s",
             streetLocalityDistrictInput
         )
-    val onSaveButtonClick = {
+    val handleSaveButtonClick = {
         // checks all errors
         viewModel.onContinueClick {
             Timber.tag(TAG).d("StreetLocalityDistrictScreen(...): Save Button onClick...")
@@ -60,16 +68,16 @@ fun StreetLocalityDistrictScreen(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-            appState.actionBarSubtitle.value = stringResource(it)
+            onActionBarSubtitleChange(stringResource(it))
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 topBarNavImageVector = Icons.Outlined.ArrowBack,
-                topBarNavOnClick = { appState.commonNavigateUp() },
+                onTopBarNavClick = { appState.commonNavigateUp() },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
+                    IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -86,7 +94,7 @@ fun StreetLocalityDistrictScreen(
                             streetLocalityDistrictViewModel = viewModel
                         )
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
                     }
                 }
             }

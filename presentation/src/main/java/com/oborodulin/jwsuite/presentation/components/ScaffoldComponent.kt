@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.components.IconComponent
@@ -26,23 +25,24 @@ fun ScaffoldComponent(
     appState: AppState,
 //    scaffoldState: ScaffoldState = rememberScaffoldState(),
     nestedScrollConnection: NestedScrollConnection? = null,
-    isUseNestedScrollConnection: Boolean = false,
+    isNestedScrollConnection: Boolean = false,
     @StringRes topBarTitleResId: Int? = null,
+    topBarTitle: String = "",
     actionBar: @Composable (() -> Unit)? = null,
     topBarNavImageVector: ImageVector? = null,
     @DrawableRes topBarNavPainterResId: Int? = null,
     @StringRes topBarNavCntDescResId: Int? = null,
-    topBarNavOnClick: () -> Unit = {},
+    onTopBarNavClick: () -> Unit = {},
     topBarActions: @Composable RowScope.() -> Unit = {},
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable () -> Unit = {},
-    isUseBottomNavigation: Boolean = false,
+    isBottomNavigation: Boolean = false,
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Timber.tag(TAG).d("ScaffoldComponent() called")
-    val context = LocalContext.current
+    //val context = LocalContext.current
     var actionBarTitle by rememberSaveable { mutableStateOf(appState.appName) }
 
     /*    LaunchedEffect(appState.navBarNavController) {
@@ -58,7 +58,7 @@ fun ScaffoldComponent(
     val modifier = Modifier.fillMaxSize()
     Scaffold(
         modifier = nestedScrollConnection?.let {
-            if (isUseNestedScrollConnection) modifier.nestedScroll(it) else null
+            if (isNestedScrollConnection) modifier.nestedScroll(it) else null
         } ?: modifier,
         topBar = {
             when (topBar) {
@@ -72,7 +72,8 @@ fun ScaffoldComponent(
                                     Text(
                                         text = appState.appName.plus(topBarTitleResId?.let {
                                             " - ${stringResource(it)}"
-                                        } ?: ""),
+                                        }
+                                            ?: (if (topBarTitle.isNotEmpty()) " - $topBarTitle" else "")),
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
@@ -87,7 +88,7 @@ fun ScaffoldComponent(
                             }
                         },
                         navigationIcon = {
-                            IconButton(onClick = topBarNavOnClick) {
+                            IconButton(onClick = onTopBarNavClick) {
                                 IconComponent(
                                     imageVector = topBarNavImageVector,
                                     painterResId = topBarNavPainterResId,
@@ -110,7 +111,7 @@ fun ScaffoldComponent(
         },
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingActionButton = floatingActionButton,
-        bottomBar = { if (isUseBottomNavigation) bottomBar }
+        bottomBar = { if (isBottomNavigation) bottomBar }
     ) {
         content(it)
     }

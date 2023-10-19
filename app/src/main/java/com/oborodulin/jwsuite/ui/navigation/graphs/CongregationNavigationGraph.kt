@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -19,11 +20,13 @@ private const val TAG = "App.Navigation.congregationNavGraph"
 fun NavGraphBuilder.congregationNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     navigation(
-        route = Graph.CONGREGATION,
-        startDestination = NavRoutes.Congregation.route
+        route = Graph.CONGREGATION, startDestination = NavRoutes.Congregation.route
     ) {
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
@@ -34,7 +37,12 @@ fun NavGraphBuilder.congregationNavGraph(
                     it.destination.route, NavRoutes.Congregation.arguments.firstOrNull()
                 )
             CongregationScreen(
-                appState = appState, congregationInput = NavRoutes.Congregation.fromEntry(it)
+                appState = appState, congregationInput = NavRoutes.Congregation.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(route = NavRoutes.Group.route, arguments = NavRoutes.Group.arguments) {
@@ -47,7 +55,12 @@ fun NavGraphBuilder.congregationNavGraph(
             GroupScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
-                groupInput = NavRoutes.Group.fromEntry(it)
+                groupInput = NavRoutes.Group.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
@@ -60,7 +73,12 @@ fun NavGraphBuilder.congregationNavGraph(
             MemberScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
-                memberInput = NavRoutes.Member.fromEntry(it)
+                memberInput = NavRoutes.Member.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
     }

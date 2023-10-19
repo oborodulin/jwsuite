@@ -40,7 +40,7 @@ fun RoomScreen(
 ) {
     Timber.tag(TAG).d("RoomScreen(...) called: houseInput = %s", roomInput)
     val coroutineScope = rememberCoroutineScope()
-    val onSaveButtonClick = {
+    val handleSaveButtonClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG).d("RoomScreen(...): Save Button onClick...")
             // checks all errors
@@ -59,16 +59,16 @@ fun RoomScreen(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-            appState.actionBarSubtitle.value = stringResource(it)
+            onActionBarSubtitleChange(stringResource(it))
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 topBarNavImageVector = Icons.Outlined.ArrowBack,
-                topBarNavOnClick = { appState.backToBottomBarScreen() },
+                onTopBarNavClick = { appState.backToBottomBarScreen() },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
+                    IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -82,7 +82,7 @@ fun RoomScreen(
                     ) {
                         RoomView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
                     }
                 }
             }

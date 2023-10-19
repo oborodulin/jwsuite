@@ -78,10 +78,10 @@ fun TerritoringScreen(
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
 //    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
-    onChangeActionBar: (@Composable (() -> Unit)?) -> Unit,
-    onChangeActionBarTitle: (String) -> Unit,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit,
-    onChangeFab: (@Composable () -> Unit) -> Unit
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    onActionBarTitleChange: (String) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
     val currentCongregation =
@@ -101,8 +101,8 @@ fun TerritoringScreen(
     var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
     var tabType by rememberSaveable { mutableStateOf(TerritoringTabType.HAND_OUT.name) }
-    val onChangeTab: (TerritoringTabType) -> Unit = { tabType = it.name }
-    onChangeFab {
+    val onTabChange: (TerritoringTabType) -> Unit = { tabType = it.name }
+    onFabChange {
         when (TerritoringTabType.valueOf(tabType)) {
             TerritoringTabType.HAND_OUT -> HandOutFabComponent(
                 enabled = areHandOutInputsValid,
@@ -151,8 +151,8 @@ fun TerritoringScreen(
     }*/
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        onChangeActionBarTitle(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
-        onChangeTopBarActions {
+        onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
+        onTopBarActionsChange {
             IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                 Icon(Icons.Outlined.Add, null)
             }
@@ -163,7 +163,7 @@ fun TerritoringScreen(
                 Icon(Icons.Outlined.Settings, null)
             }*/
         }
-        onChangeActionBar {
+        onActionBarChange {
             CommonScreen(state = state) { territoringUi ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
@@ -226,7 +226,7 @@ fun TerritoringScreen(
                 listOf(
                     TabRowItem(
                         title = stringResource(R.string.territory_tab_hand_out),
-                        onClick = { onChangeTab(TerritoringTabType.HAND_OUT) }
+                        onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
                     ) {
                         location.item?.let {
                             HandOutTerritoriesView(
@@ -243,7 +243,7 @@ fun TerritoringScreen(
                     },
                     TabRowItem(
                         title = stringResource(R.string.territory_tab_at_work),
-                        onClick = { onChangeTab(TerritoringTabType.AT_WORK) }
+                        onClick = { onTabChange(TerritoringTabType.AT_WORK) }
                     ) {
                         location.item?.let {
                             AtWorkTerritoriesView(
@@ -258,7 +258,7 @@ fun TerritoringScreen(
                     },
                     TabRowItem(
                         title = stringResource(R.string.territory_tab_idle),
-                        onClick = { onChangeTab(TerritoringTabType.IDLE) }
+                        onClick = { onTabChange(TerritoringTabType.IDLE) }
                     ) {
                         location.item?.let {
                             IdleTerritoriesView(
@@ -273,7 +273,7 @@ fun TerritoringScreen(
                     },
                     TabRowItem(
                         title = stringResource(R.string.territory_tab_all),
-                        onClick = { onChangeTab(TerritoringTabType.ALL) }
+                        onClick = { onTabChange(TerritoringTabType.ALL) }
                     ) {
                         location.item?.let {
                             AllTerritoriesView(

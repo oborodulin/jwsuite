@@ -23,10 +23,11 @@ private const val TAG = "App.Navigation.bottomBarNavGraph"
 
 fun NavGraphBuilder.bottomBarNavGraph(
     appState: AppState, paddingValues: PaddingValues,
-    onChangeActionBar: (@Composable (() -> Unit)?) -> Unit,
-    onChangeActionBarTitle: (String) -> Unit,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit,
-    onChangeFab: (@Composable () -> Unit) -> Unit
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    onActionBarTitleChange: (String) -> Unit,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(route = Graph.BOTTOM_BAR, startDestination = NavRoutes.Dashboarding.route) {
         // DashboardingScreen:
@@ -43,8 +44,9 @@ fun NavGraphBuilder.bottomBarNavGraph(
             appState.sharedViewModel.value = sharedViewModel
             DashboardingScreen(
                 appState = appState, paddingValues = paddingValues,
-                onChangeActionBarTitle = onChangeActionBarTitle,
-                onChangeTopBarActions = onChangeTopBarActions
+                onActionBarTitleChange = onActionBarTitleChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )//setFabOnClick = setFabOnClick
         }
         // CongregatingScreen:
@@ -57,8 +59,9 @@ fun NavGraphBuilder.bottomBarNavGraph(
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             CongregatingScreen(
                 appState = appState, paddingValues = paddingValues,
-                onChangeActionBarTitle = onChangeActionBarTitle,
-                onChangeTopBarActions = onChangeTopBarActions
+                onActionBarTitleChange = onActionBarTitleChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         // TerritoringScreen:
@@ -75,10 +78,10 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 appState = appState, paddingValues = paddingValues,
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
-                onChangeActionBar = onChangeActionBar,
-                onChangeActionBarTitle = onChangeActionBarTitle,
-                onChangeTopBarActions = onChangeTopBarActions,
-                onChangeFab = onChangeFab
+                onActionBarChange = onActionBarChange,
+                onActionBarTitleChange = onActionBarTitleChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // MinistringScreen:
@@ -89,8 +92,8 @@ fun NavGraphBuilder.bottomBarNavGraph(
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             //MinistringScreen(appState = appState, paddingValues = paddingValues,
-            //                onChangeActionBarTitle = onChangeActionBarTitle,
-            //                onChangeTopBarActions = onChangeTopBarActions)
+            //                onActionBarTitleChange = onActionBarTitleChange,
+            //                onTopBarActionsChange = onTopBarActionsChange)
         }
     }
 }

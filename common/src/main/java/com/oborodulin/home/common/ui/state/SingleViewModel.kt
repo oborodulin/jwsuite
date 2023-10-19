@@ -241,6 +241,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
                     Timber.tag(TAG).d("onContinueClick: no errors")
                     clearFocusAndHideKeyboard()
                     onSuccess()
+                    _isUiStateChanged.value = false
                     //clearInputFieldsStates()
                     //_events.send(ScreenEvent.ShowToast(com.oborodulin.home.common.R.string.success))
                 }

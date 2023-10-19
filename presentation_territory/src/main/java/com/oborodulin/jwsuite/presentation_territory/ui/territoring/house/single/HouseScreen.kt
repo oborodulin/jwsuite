@@ -38,7 +38,7 @@ fun HouseScreen(
     houseInput: HouseInput? = null
 ) {
     Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
-    val onSaveButtonClick = {
+    val handleSaveButtonClick = {
         Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
@@ -55,16 +55,16 @@ fun HouseScreen(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-            appState.actionBarSubtitle.value = stringResource(it)
+            onActionBarSubtitleChange(stringResource(it))
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 topBarNavImageVector = Icons.Outlined.ArrowBack,
-                topBarNavOnClick = { appState.backToBottomBarScreen() },
+                onTopBarNavClick = { appState.backToBottomBarScreen() },
                 topBarActions = {
-                    IconButton(enabled = areInputsValid, onClick = onSaveButtonClick) {
+                    IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 }
@@ -78,7 +78,7 @@ fun HouseScreen(
                     ) {
                         HouseView(sharedViewModel = appState.sharedViewModel.value)
                         Spacer(Modifier.height(8.dp))
-                        SaveButtonComponent(enabled = areInputsValid, onClick = onSaveButtonClick)
+                        SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
                     }
                 }
             }

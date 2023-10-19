@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -19,7 +20,10 @@ private const val TAG = "App.Navigation.housingNavGraph"
 fun NavGraphBuilder.housingNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     navigation(route = Graph.HOUSING, startDestination = NavRoutes.Housing.route) {
         // House, Entrance, Floor, Room:

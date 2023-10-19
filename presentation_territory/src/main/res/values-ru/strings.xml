@@ -138,7 +138,8 @@
     <string name="dlg_title_select_territory_entrance">Выберите подъезд участка</string>
     <string name="dlg_title_select_territory_floor">Выберите этаж участка</string>
     <string name="dlg_title_select_territory_room">Выберите квартиру участка</string>
-    <!--подтверждения-->
+    <!--Подтверждения-->
+    <!--удаления-->
     <string name="dlg_confirm_del_house">Удалить дом на улице №%1$s?</string>
     <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
     <string name="dlg_confirm_del_floor">Удалить этаж №%1$s?</string>
@@ -148,6 +149,13 @@
     <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
     <string name="dlg_confirm_del_territory_house">Удалить дом участка №%1$s?</string>
     <string name="dlg_confirm_del_territory_room">Удалить квартиру участка %1$s?</string>
+    <!--отмена изменений-->
+    <string name="dlg_confirm_cancel_changes_hand_out">Данные выдачи участков не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_at_work">Данные об обработке участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory">Изменённые данные участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_category">Изменённые данные категории участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_house">Изменённые данные по домам участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_room">Изменённые данные по квартирам участка не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->

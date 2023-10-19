@@ -46,8 +46,9 @@ fun DashboardingScreen(
     paddingValues: PaddingValues,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
-    onChangeActionBarTitle: (String) -> Unit,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+    onActionBarTitleChange: (String) -> Unit,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
     val coroutineScope = rememberCoroutineScope()
@@ -58,8 +59,8 @@ fun DashboardingScreen(
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        onChangeActionBarTitle(stringResource(R.string.nav_item_dashboarding))
-        onChangeTopBarActions {
+        onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
+        onTopBarActionsChange {
             IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                 Icon(Icons.Outlined.Add, null)
             }
@@ -81,6 +82,7 @@ fun DashboardingScreen(
                         dashboardingUi.favoriteCongregation?.let { favorite ->
                             appState.sharedViewModel.value?.submitData(favorite.toCongregationsListItem())
                             appState.actionBarSubtitle.value = favorite.congregationName
+                            onActionBarSubtitleChange(favorite.congregationName)
                             val currentCongregation =
                                 appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
                             Timber.tag(TAG).d(

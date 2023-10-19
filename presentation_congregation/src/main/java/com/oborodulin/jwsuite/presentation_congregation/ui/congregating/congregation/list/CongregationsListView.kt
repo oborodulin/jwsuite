@@ -38,6 +38,7 @@ fun CongregationsListView(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsListView(...) called")
     LaunchedEffect(Unit) {
@@ -73,6 +74,7 @@ fun CongregationsListView(
                 )
                 appState.sharedViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
+                onActionBarSubtitleChange(congregation.congregationName)
                 congregationsListViewModel.singleSelectItem(congregation)
                 membersListViewModel.submitAction(
                     MembersListUiAction.LoadByCongregation(congregation.id)

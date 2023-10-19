@@ -4,8 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,6 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
@@ -63,34 +62,40 @@ fun MainScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltViewMod
         }
     }
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
-    val onChangeActionBar: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
+    val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
 
     var actionBarTitle by rememberSaveable { mutableStateOf(appState.appName) }
-    val onChangeActionBarTitle: (String) -> Unit = { actionBarTitle = "${appState.appName} - $it" }
+    val onActionBarTitleChange: (String) -> Unit = { actionBarTitle = "${appState.appName} - $it" }
 
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
-    val onChangeActionBarSubtitle: (String) -> Unit = { actionBarSubtitle = it }
+    val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
 
-    var isUseNestedScrollConnection by rememberSaveable { mutableStateOf(false) }
+    var isNestedScrollConnection by rememberSaveable { mutableStateOf(false) }
     val areUsingNestedScrollConnection: (Boolean) -> Unit =
-        { isUseNestedScrollConnection = it }
+        { isNestedScrollConnection = it }
+
+    var topBarNavImageVector: ImageVector? by remember { mutableStateOf(null) }
+    val onTopBarNavImageVectorChange: (ImageVector) -> Unit = { topBarNavImageVector = it }
+
+    var onTopBarNavClick: () -> Unit by remember { mutableStateOf({ }) }
+    val onTopBarNavClickChange: (() -> Unit) -> Unit = { onTopBarNavClick = it }
 
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf({}) }
-    val onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
 
-    var isUseBottomNavigation by rememberSaveable { mutableStateOf(false) }
-    val areUsingBottomNavigation: (Boolean) -> Unit = { isUseBottomNavigation = it }
+    var isBottomNavigation by rememberSaveable { mutableStateOf(false) }
+    val areUsingBottomNavigation: (Boolean) -> Unit = { isBottomNavigation = it }
 
     var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
-    val onChangeFab: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
+    val onFabChange: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
 
     JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
             appState = appState,
             nestedScrollConnection = nestedScrollConnection,
-            isUseNestedScrollConnection = isUseNestedScrollConnection,
-            topBarNavImageVector = Icons.Outlined.ArrowBack,
-            topBarNavOnClick = { appState.backToBottomBarScreen() },
+            isNestedScrollConnection = isNestedScrollConnection,
+            topBarNavImageVector = topBarNavImageVector,
+            onTopBarNavClick = onTopBarNavClick,
             actionBar = actionBar,
             topBarActions = topBarActions,
             bottomBar = {
@@ -108,19 +113,19 @@ fun MainScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltViewMod
                     )
                 }
             },
-            isUseBottomNavigation = isUseBottomNavigation,
+            isBottomNavigation = isBottomNavigation,
             floatingActionButton = floatingActionButton
         ) { paddingValues ->
             MainNavigationGraph(
                 appState = appState,
                 paddingValues = paddingValues,
-                onChangeActionBar = onChangeActionBar,
-                onChangeActionBarTitle = onChangeActionBarTitle,
-                onChangeActionBarSubtitle = onChangeActionBarSubtitle,
+                onActionBarChange = onActionBarChange,
+                onActionBarTitleChange = onActionBarTitleChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
                 areUsingNestedScrollConnection = areUsingNestedScrollConnection,
-                onChangeTopBarActions = onChangeTopBarActions,
+                onTopBarActionsChange = onTopBarActionsChange,
                 areUsingBottomNavigation = areUsingBottomNavigation,
-                onChangeFab = onChangeFab
+                onFabChange = onFabChange
             )
         }
     }

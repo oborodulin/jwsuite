@@ -61,8 +61,8 @@ fun GeoScreen(
     Timber.tag(TAG).d("GeoScreen(...) called")
     val context = LocalContext.current
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
-    val onChangeTab: (GeoTabType) -> Unit = { tabType = it.name }
-    val addActionOnClick = {
+    val onTabChange: (GeoTabType) -> Unit = { tabType = it.name }
+    val handleActionAdd = {
         appState.commonNavController.navigate(
             when (GeoTabType.valueOf(tabType)) {
                 GeoTabType.REGIONS -> NavRoutes.Region.routeForRegion()
@@ -119,9 +119,9 @@ fun GeoScreen(
             appState = appState,
             topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_geo,
             topBarNavImageVector = Icons.Outlined.ArrowBack,
-            topBarNavOnClick = { appState.backToBottomBarScreen() },
+            onTopBarNavClick = { appState.backToBottomBarScreen() },
             topBarActions = {
-                IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
+                IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
                 IconButton(onClick = { context.toast("Settings button clicked...") }) {
                     Icon(Icons.Outlined.Settings, null)
                 }
@@ -134,19 +134,19 @@ fun GeoScreen(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_regions),
-                            onClick = { onChangeTab(GeoTabType.REGIONS) }
+                            onClick = { onTabChange(GeoTabType.REGIONS) }
                         ) { RegionRegionDistrictsLocalitiesView(appState = appState) },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_region_districts),
-                            onClick = { onChangeTab(GeoTabType.REGION_DISTRICTS) }
+                            onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
                         ) { RegionDistrictsLocalitiesView(appState = appState) },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_localities),
-                            onClick = { onChangeTab(GeoTabType.LOCALITIES) }
+                            onClick = { onTabChange(GeoTabType.LOCALITIES) }
                         ) {},
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_locality_districts),
-                            onClick = { onChangeTab(GeoTabType.LOCALITY_DISTRICTS) }
+                            onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
                         ) {
                             LocalitiesDistrictsMicrodistrictsStreetsView(
                                 appState = appState,
@@ -155,7 +155,7 @@ fun GeoScreen(
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_microdistricts),
-                            onClick = { onChangeTab(GeoTabType.MICRODISTRICTS) }
+                            onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
                         ) {
                             MicrodistrictsStreetsView(
                                 appState = appState,
@@ -164,7 +164,7 @@ fun GeoScreen(
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_streets),
-                            onClick = { onChangeTab(GeoTabType.STREETS) }
+                            onClick = { onTabChange(GeoTabType.STREETS) }
                         ) {
                             StreetsView(
                                 appState = appState,

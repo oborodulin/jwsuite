@@ -42,13 +42,13 @@ fun LocalityDistrictScreen(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-            appState.actionBarSubtitle.value = stringResource(it)
+            onActionBarSubtitleChange(stringResource(it))
         }
         JWSuiteTheme {
             ScaffoldComponent(
                 appState = appState,
                 topBarNavImageVector = Icons.Outlined.ArrowBack,
-                topBarNavOnClick = { appState.backToBottomBarScreen() },
+                onTopBarNavClick = { appState.backToBottomBarScreen() },
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()

@@ -1,5 +1,7 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
@@ -10,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,7 +32,12 @@ private const val TAG = "Geo.RegionScreen"
 fun RegionScreen(
     appState: AppState,
     viewModel: RegionViewModelImpl = hiltViewModel(),
-    regionInput: RegionInput? = null
+    regionInput: RegionInput? = null,
+    paddingValues: PaddingValues,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
@@ -39,13 +47,13 @@ fun RegionScreen(
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-            appState.actionBarSubtitle.value = stringResource(it)
+            onActionBarSubtitleChange(stringResource(it))
         }
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
                 topBarNavImageVector = Icons.Outlined.ArrowBack,
-                topBarNavOnClick = { appState.backToBottomBarScreen() },
+                onTopBarNavClick = { appState.backToBottomBarScreen() },
             ) { it ->
                 CommonScreen(paddingValues = it, state = state) {
                     val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()

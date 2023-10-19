@@ -56,14 +56,15 @@ fun CongregatingScreen(
     paddingValues: PaddingValues,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    onChangeActionBarTitle: (String) -> Unit,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+    onActionBarTitleChange: (String) -> Unit,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val context = LocalContext.current
     var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
-    val onChangeTab: (CongregatingTabType) -> Unit = { tabType = it.name }
-    val addActionOnClick = {
+    val onTabChange: (CongregatingTabType) -> Unit = { tabType = it.name }
+    val handleActionAdd = {
         appState.commonNavController.navigate(
             when (CongregatingTabType.valueOf(tabType)) {
                 CongregatingTabType.CONGREGATIONS -> NavRoutes.Congregation.routeForCongregation()
@@ -81,9 +82,9 @@ fun CongregatingScreen(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
-    onChangeActionBarTitle(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
-    onChangeTopBarActions {
-        IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
+    onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
+    onTopBarActionsChange {
+        IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
         IconButton(onClick = { context.toast("Settings button clicked...") }) {
             Icon(Icons.Outlined.Settings, null)
         }
@@ -93,17 +94,18 @@ fun CongregatingScreen(
             listOf(
                 TabRowItem(
                     title = stringResource(R.string.congregation_tab_congregations),
-                    onClick = { onChangeTab(CongregatingTabType.CONGREGATIONS) }
+                    onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
                 ) {
                     CongregationMembersView(
                         appState = appState,
                         //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel
+                        membersListViewModel = membersListViewModel,
+                        onActionBarSubtitleChange = onActionBarSubtitleChange
                     )
                 },
                 TabRowItem(
                     title = stringResource(R.string.congregation_tab_groups),
-                    onClick = { onChangeTab(CongregatingTabType.GROUPS) }
+                    onClick = { onTabChange(CongregatingTabType.GROUPS) }
                 ) {
                     GroupMembersView(
                         appState = appState,
@@ -113,7 +115,7 @@ fun CongregatingScreen(
                 },
                 TabRowItem(
                     title = stringResource(R.string.congregation_tab_members),
-                    onClick = { onChangeTab(CongregatingTabType.MEMBERS) }
+                    onClick = { onTabChange(CongregatingTabType.MEMBERS) }
                 ) {
                     MembersView(
                         appState = appState,
@@ -141,7 +143,8 @@ fun CongregatingScreen(
 fun CongregationMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel
+    membersListViewModel: MembersListViewModel,
+    onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
@@ -169,7 +172,10 @@ fun CongregationMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CongregationsListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            CongregationsListView(
+                appState = appState,
+                onActionBarSubtitleChange = onActionBarSubtitleChange
+            )//, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier

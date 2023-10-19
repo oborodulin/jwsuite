@@ -2,7 +2,10 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.navigation.Graph
@@ -14,13 +17,15 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 fun MainNavigationGraph(
     appState: AppState,
     paddingValues: PaddingValues,
-    onChangeActionBar: (@Composable (() -> Unit)?) -> Unit,
-    onChangeActionBarTitle: (String) -> Unit,
-    onChangeActionBarSubtitle: (String) -> Unit,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    onActionBarTitleChange: (String) -> Unit,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
     areUsingNestedScrollConnection: (Boolean) -> Unit,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     areUsingBottomNavigation: (Boolean) -> Unit,
-    onChangeFab: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     NavHost(
         navController = appState.commonNavController,
@@ -29,16 +34,52 @@ fun MainNavigationGraph(
     ) {
         areUsingNestedScrollConnection(false)
         areUsingBottomNavigation(false)
-        congregationNavGraph(appState, paddingValues, onChangeTopBarActions)
-        territoryNavGraph(appState, paddingValues, onChangeTopBarActions)
-        geoNavGraph(appState, paddingValues, onChangeTopBarActions)
-        housingNavGraph(appState, paddingValues, onChangeTopBarActions)
+        congregationNavGraph(
+            appState = appState,
+            paddingValues = paddingValues,
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+            onTopBarNavClickChange = onTopBarNavClickChange,
+            onTopBarActionsChange = onTopBarActionsChange
+        )
+        territoryNavGraph(
+            appState = appState,
+            paddingValues = paddingValues,
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+            onTopBarNavClickChange = onTopBarNavClickChange,
+            onTopBarActionsChange = onTopBarActionsChange,
+            onFabChange = onFabChange
+        )
+        geoNavGraph(
+            appState = appState,
+            paddingValues = paddingValues,
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+            onTopBarNavClickChange = onTopBarNavClickChange,
+            onTopBarActionsChange = onTopBarActionsChange
+        )
+        housingNavGraph(
+            appState = appState,
+            paddingValues = paddingValues,
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+            onTopBarNavClickChange = onTopBarNavClickChange,
+            onTopBarActionsChange = onTopBarActionsChange
+        )
         composable(NavRoutes.Home.route) {
+            onTopBarNavImageVectorChange(Icons.Outlined.Menu)
+            onTopBarNavClickChange {}
             areUsingNestedScrollConnection(true)
             areUsingBottomNavigation(true)
             bottomBarNavGraph(
-                appState, paddingValues, onChangeActionBar, onChangeActionBarTitle,
-                onChangeTopBarActions, onChangeFab
+                appState = appState,
+                paddingValues = paddingValues,
+                onActionBarChange = onActionBarChange,
+                onActionBarTitleChange = onActionBarTitleChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
     }

@@ -91,8 +91,8 @@ fun HousingScreen(
 
     // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
     var tabType by rememberSaveable { mutableStateOf(HousingTabType.HOUSES.name) }
-    val onChangeTab: (HousingTabType) -> Unit = { tabType = it.name }
-    val addActionOnClick = {
+    val onTabChange: (HousingTabType) -> Unit = { tabType = it.name }
+    val handleActionAdd = {
         appState.commonNavController.navigate(
             when (HousingTabType.valueOf(tabType)) {
                 HousingTabType.HOUSES -> NavRoutes.House.routeForHouse()
@@ -123,7 +123,7 @@ fun HousingScreen(
                 appState = appState,
                 topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_housing,
                 topBarNavImageVector = Icons.Outlined.ArrowBack,
-                topBarNavOnClick = { appState.commonNavigateUp() },
+                onTopBarNavClick = { appState.commonNavigateUp() },
                 actionBar = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
@@ -170,7 +170,7 @@ fun HousingScreen(
                     }
                 },
                 topBarActions = {
-                    IconButton(onClick = addActionOnClick) { Icon(Icons.Outlined.Add, null) }
+                    IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
                     /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
                         Icon(Icons.Outlined.Settings, null)
                     }*/
@@ -181,7 +181,7 @@ fun HousingScreen(
                         listOf(
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_houses),
-                                onClick = { onChangeTab(HousingTabType.HOUSES) }
+                                onClick = { onTabChange(HousingTabType.HOUSES) }
                             ) {
                                 street.item?.itemId?.let {
                                     HousesEntrancesFloorsRoomsView(
@@ -192,15 +192,15 @@ fun HousingScreen(
                             },
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_entrances),
-                                onClick = { onChangeTab(HousingTabType.ENTRANCES) }
+                                onClick = { onTabChange(HousingTabType.ENTRANCES) }
                             ) {},
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_floors),
-                                onClick = { onChangeTab(HousingTabType.FLOORS) }
+                                onClick = { onTabChange(HousingTabType.FLOORS) }
                             ) {},
                             TabRowItem(
                                 title = stringResource(R.string.houses_tab_rooms),
-                                onClick = { onChangeTab(HousingTabType.ROOMS) }
+                                onClick = { onTabChange(HousingTabType.ROOMS) }
                             ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
                         )
                     )

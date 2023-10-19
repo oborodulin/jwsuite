@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -28,7 +29,11 @@ private const val TAG = "App.Navigation.territoryNavGraph"
 fun NavGraphBuilder.territoryNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
-    onChangeTopBarActions: (@Composable RowScope.() -> Unit) -> Unit
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(route = Graph.TERRITORY, startDestination = NavRoutes.Congregation.route) {
         composable(route = NavRoutes.HandOutTerritoriesConfirmation.route) {
@@ -44,7 +49,12 @@ fun NavGraphBuilder.territoryNavGraph(
             HandOutTerritoriesConfirmationScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
-                viewModel = territoriesGridViewModel
+                viewModel = territoriesGridViewModel,
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(route = NavRoutes.AtWorkTerritoriesConfirmation.route) {
@@ -60,7 +70,12 @@ fun NavGraphBuilder.territoryNavGraph(
             AtWorkTerritoriesConfirmationScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
-                viewModel = territoriesGridViewModel
+                viewModel = territoriesGridViewModel,
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(route = NavRoutes.Territory.route, arguments = NavRoutes.Territory.arguments) {
@@ -77,7 +92,12 @@ fun NavGraphBuilder.territoryNavGraph(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoryViewModel,
-                territoryInput = NavRoutes.Territory.fromEntry(it)
+                territoryInput = NavRoutes.Territory.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(
@@ -94,7 +114,13 @@ fun NavGraphBuilder.territoryNavGraph(
             TerritoryDetailsScreen(
                 appState = appState,
                 territoryViewModel = territoryViewModel,
-                territoryInput = NavRoutes.TerritoryDetails.fromEntry(it)
+                territoryInput = NavRoutes.TerritoryDetails.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(
@@ -108,7 +134,12 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             TerritoryCategoryScreen(
                 appState = appState,
-                territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it)
+                territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
 
@@ -128,7 +159,12 @@ fun NavGraphBuilder.territoryNavGraph(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
                 territoryViewModel = territoryViewModel,
-                territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it)
+                territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(
@@ -145,7 +181,12 @@ fun NavGraphBuilder.territoryNavGraph(
             TerritoryHouseScreen(
                 appState = appState,
                 territoryViewModel = territoryViewModel,
-                territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it)
+                territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
 
@@ -163,7 +204,12 @@ fun NavGraphBuilder.territoryNavGraph(
             TerritoryRoomScreen(
                 appState = appState,
                 territoryViewModel = territoryViewModel,
-                territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it)
+                territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
     }
