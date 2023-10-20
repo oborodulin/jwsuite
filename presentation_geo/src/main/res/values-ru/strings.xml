@@ -73,7 +73,8 @@
     <string name="dlg_title_select_locality_district">Выберите район населённого пункта</string>
     <string name="dlg_title_select_microdistrict">Выберите микрорайон</string>
     <string name="dlg_title_select_street">Выберите улицу</string>
-    <!--подтверждения-->
+    <!--Подтверждения-->
+    <!--удаления-->
     <string name="dlg_confirm_del_region">Удалить область %1$s?</string>
     <string name="dlg_confirm_del_region_district">Удалить район %1$s?</string>
     <string name="dlg_confirm_del_locality">Удалить населённый пункт %1$s?</string>
@@ -82,6 +83,15 @@
     <string name="dlg_confirm_del_street">Удалить улицу %1$s?</string>
     <string name="dlg_confirm_del_street_locality_district">Удалить район улицы %1$s?</string>
     <string name="dlg_confirm_del_street_microdistrict">Удалить микрорайон улицы %1$s?</string>
+    <!--отмена изменений-->
+    <string name="dlg_confirm_cancel_changes_region">Изменённые данные области не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_region_district">Изменённые данные района области не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_locality">Изменённые данные населённого пункта не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_locality_district">Изменённые данные района населённого пункта не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_microdistrict">Изменённые данные микрорайона не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_street">Изменённые данные улицы не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_street_locality_district">Изменённые данные района улицы не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_street_microdistrict">Изменённые данные микрорайона улицы не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->

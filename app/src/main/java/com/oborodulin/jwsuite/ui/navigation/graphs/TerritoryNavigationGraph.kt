@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -30,7 +29,6 @@ fun NavGraphBuilder.territoryNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
@@ -52,7 +50,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 viewModel = territoriesGridViewModel,
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -73,7 +70,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 viewModel = territoriesGridViewModel,
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -95,7 +91,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryInput = NavRoutes.Territory.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -117,7 +112,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryInput = NavRoutes.TerritoryDetails.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
@@ -137,7 +131,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -162,7 +155,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -184,7 +176,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -207,7 +198,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )

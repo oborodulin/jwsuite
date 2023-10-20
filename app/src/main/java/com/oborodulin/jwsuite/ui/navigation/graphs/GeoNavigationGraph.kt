@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -12,6 +11,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.single.RegionDistrictScreen
@@ -25,34 +25,40 @@ private const val TAG = "App.Navigation.geoNavGraph"
 fun NavGraphBuilder.geoNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
+    onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(route = Graph.GEO, startDestination = NavRoutes.Geo.route) {
         // GeoScreen:
         composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Geo.arguments
-                )
-            GeoScreen(appState = appState)
+                "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Geo.arguments
+            )
+            GeoScreen(
+                appState = appState, paddingValues = paddingValues,
+                onActionBarTitleChange = onActionBarTitleChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
+            )
         }
         // RegionScreen:
         composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to RegionScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Region.arguments
-                )
+                "Navigation Graph: to RegionScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Region.arguments
+            )
             RegionScreen(
                 appState = appState,
                 regionInput = NavRoutes.Region.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -62,16 +68,15 @@ fun NavGraphBuilder.geoNavGraph(
             route = NavRoutes.RegionDistrict.route, arguments = NavRoutes.RegionDistrict.arguments
         ) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to RegionDistrictScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.RegionDistrict.arguments
-                )
+                "Navigation Graph: to RegionDistrictScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.RegionDistrict.arguments
+            )
             RegionDistrictScreen(
                 appState = appState,
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -79,16 +84,34 @@ fun NavGraphBuilder.geoNavGraph(
         // LocalityScreen:
         composable(route = NavRoutes.Locality.route, arguments = NavRoutes.Locality.arguments) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to LocalityScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Locality.arguments
-                )
+                "Navigation Graph: to LocalityScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Locality.arguments
+            )
             LocalityScreen(
                 appState = appState,
                 localityInput = NavRoutes.Locality.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
+            )
+        }
+        // LocalityDistrictScreen:
+        composable(
+            route = NavRoutes.LocalityDistrict.route,
+            arguments = NavRoutes.LocalityDistrict.arguments
+        ) {
+            Timber.tag(TAG).d(
+                "Navigation Graph: to LocalityDistrictScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.LocalityDistrict.arguments
+            )
+            LocalityDistrictScreen(
+                appState = appState,
+                localityDistrictInput = NavRoutes.LocalityDistrict.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -98,16 +121,15 @@ fun NavGraphBuilder.geoNavGraph(
             route = NavRoutes.Microdistrict.route, arguments = NavRoutes.Microdistrict.arguments
         ) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to MicrodistrictScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Microdistrict.arguments
-                )
+                "Navigation Graph: to MicrodistrictScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Microdistrict.arguments
+            )
             MicrodistrictScreen(
                 appState = appState,
                 microdistrictInput = NavRoutes.Microdistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -115,16 +137,15 @@ fun NavGraphBuilder.geoNavGraph(
         // StreetScreen:
         composable(route = NavRoutes.Street.route, arguments = NavRoutes.Street.arguments) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to StreetScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Street.arguments
-                )
+                "Navigation Graph: to StreetScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Street.arguments
+            )
             StreetScreen(
                 appState = appState,
                 streetInput = NavRoutes.Street.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -135,16 +156,14 @@ fun NavGraphBuilder.geoNavGraph(
             arguments = NavRoutes.StreetLocalityDistrict.arguments
         ) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to StreetLocalityDistrictScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.StreetLocalityDistrict.arguments
-                )
+                "Navigation Graph: to StreetLocalityDistrictScreen [route = '%s', arguments = '%s']",
+                it.destination.route, NavRoutes.StreetLocalityDistrict.arguments
+            )
             StreetLocalityDistrictScreen(
                 appState = appState,
                 streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -155,16 +174,14 @@ fun NavGraphBuilder.geoNavGraph(
             arguments = NavRoutes.StreetMicrodistrict.arguments
         ) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to StreetMicrodistrictScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.StreetMicrodistrict.arguments
-                )
+                "Navigation Graph: to StreetMicrodistrictScreen [route = '%s', arguments = '%s']",
+                it.destination.route, NavRoutes.StreetMicrodistrict.arguments
+            )
             StreetMicrodistrictScreen(
                 appState = appState,
                 streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )

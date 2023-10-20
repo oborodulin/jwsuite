@@ -21,7 +21,6 @@ fun NavGraphBuilder.congregationNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
@@ -40,7 +39,6 @@ fun NavGraphBuilder.congregationNavGraph(
                 appState = appState, congregationInput = NavRoutes.Congregation.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -58,7 +56,6 @@ fun NavGraphBuilder.congregationNavGraph(
                 groupInput = NavRoutes.Group.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -76,7 +73,6 @@ fun NavGraphBuilder.congregationNavGraph(
                 memberInput = NavRoutes.Member.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )

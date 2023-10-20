@@ -5,14 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,11 +47,10 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
-import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.BarLocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.BarStreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -69,7 +70,12 @@ private const val TAG = "Housing.HousingScreen"
 fun HousingScreen(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    housesViewModel: HousingViewModelImpl = hiltViewModel()
+    housesViewModel: HousingViewModelImpl = hiltViewModel(),
+    paddingValues: PaddingValues,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    onActionBarTitleChange: (String) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit,
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("HousingScreen(...) called")
     val context = LocalContext.current
@@ -118,94 +124,88 @@ fun HousingScreen(
     }
     housesViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        JWSuiteTheme { //(darkTheme = true)
-            ScaffoldComponent(
-                appState = appState,
-                topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_housing,
-                topBarNavImageVector = Icons.Outlined.ArrowBack,
-                onTopBarNavClick = { appState.commonNavigateUp() },
-                actionBar = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier.weight(2.8f)
-                        ) {
-                            BarLocalityComboBox(
-                                modifier = Modifier
-                                    .focusRequester(focusRequesters[HousingFields.HOUSES_LOCALITY]!!.focusRequester)
-                                    .onFocusChanged { focusState ->
-                                        housesViewModel.onTextFieldFocusChanged(
-                                            focusedField = HousingFields.HOUSES_LOCALITY,
-                                            isFocused = focusState.isFocused
-                                        )
-                                    },
-                                inputWrapper = locality,
-                                onValueChange = {
-                                    housesViewModel.onTextFieldEntered(
-                                        HousingInputEvent.Locality(it)
-                                    )
-                                }
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(3f)
-                        ) {
-                            BarStreetComboBox(
-                                modifier = Modifier
-                                    .focusRequester(focusRequesters[HousingFields.HOUSES_STREET]!!.focusRequester)
-                                    .onFocusChanged { focusState ->
-                                        housesViewModel.onTextFieldFocusChanged(
-                                            focusedField = HousingFields.HOUSES_STREET,
-                                            isFocused = focusState.isFocused
-                                        )
-                                    },
-                                localityId = locality.item?.itemId,
-                                inputWrapper = street,
-                                onValueChange = {
-                                    housesViewModel.onTextFieldEntered(HousingInputEvent.Street(it))
-                                }
-                            )
-                        }
-                    }
-                },
-                topBarActions = {
-                    IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
-                    /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
-                        Icon(Icons.Outlined.Settings, null)
-                    }*/
-                }
-            ) { paddingValues ->
-                Column(modifier = Modifier.padding(paddingValues)) {
-                    CustomScrollableTabRow(
-                        listOf(
-                            TabRowItem(
-                                title = stringResource(R.string.houses_tab_houses),
-                                onClick = { onTabChange(HousingTabType.HOUSES) }
-                            ) {
-                                street.item?.itemId?.let {
-                                    HousesEntrancesFloorsRoomsView(
-                                        appState = appState,
-                                        streetInput = NavigationInput.StreetInput(it)
-                                    )
-                                }
+        // Scaffold Hoisting:
+        onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing))
+        onTopBarNavClickChange { appState.commonNavigateUp() }
+        onTopBarActionsChange {
+            IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
+            IconButton(onClick = { context.toast("Settings action button clicked...") }) {
+                Icon(Icons.Outlined.Settings, null)
+            }
+        }
+        onActionBarChange {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier.weight(2.8f)
+                ) {
+                    BarLocalityComboBox(
+                        modifier = Modifier
+                            .focusRequester(focusRequesters[HousingFields.HOUSES_LOCALITY]!!.focusRequester)
+                            .onFocusChanged { focusState ->
+                                housesViewModel.onTextFieldFocusChanged(
+                                    focusedField = HousingFields.HOUSES_LOCALITY,
+                                    isFocused = focusState.isFocused
+                                )
                             },
-                            TabRowItem(
-                                title = stringResource(R.string.houses_tab_entrances),
-                                onClick = { onTabChange(HousingTabType.ENTRANCES) }
-                            ) {},
-                            TabRowItem(
-                                title = stringResource(R.string.houses_tab_floors),
-                                onClick = { onTabChange(HousingTabType.FLOORS) }
-                            ) {},
-                            TabRowItem(
-                                title = stringResource(R.string.houses_tab_rooms),
-                                onClick = { onTabChange(HousingTabType.ROOMS) }
-                            ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
-                        )
+                        inputWrapper = locality,
+                        onValueChange = {
+                            housesViewModel.onTextFieldEntered(
+                                HousingInputEvent.Locality(it)
+                            )
+                        }
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(3f)
+                ) {
+                    BarStreetComboBox(
+                        modifier = Modifier
+                            .focusRequester(focusRequesters[HousingFields.HOUSES_STREET]!!.focusRequester)
+                            .onFocusChanged { focusState ->
+                                housesViewModel.onTextFieldFocusChanged(
+                                    focusedField = HousingFields.HOUSES_STREET,
+                                    isFocused = focusState.isFocused
+                                )
+                            },
+                        localityId = locality.item?.itemId,
+                        inputWrapper = street,
+                        onValueChange = {
+                            housesViewModel.onTextFieldEntered(HousingInputEvent.Street(it))
+                        }
                     )
                 }
             }
+        }
+        Column(modifier = Modifier.padding(paddingValues)) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_houses),
+                        onClick = { onTabChange(HousingTabType.HOUSES) }
+                    ) {
+                        street.item?.itemId?.let {
+                            HousesEntrancesFloorsRoomsView(
+                                appState = appState,
+                                streetInput = NavigationInput.StreetInput(it)
+                            )
+                        }
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_entrances),
+                        onClick = { onTabChange(HousingTabType.ENTRANCES) }
+                    ) {},
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_floors),
+                        onClick = { onTabChange(HousingTabType.FLOORS) }
+                    ) {},
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_rooms),
+                        onClick = { onTabChange(HousingTabType.ROOMS) }
+                    ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
+                )
+            )
         }
     }
     LaunchedEffect(Unit) {

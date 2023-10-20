@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +37,6 @@ fun TerritoryCategoryScreen(
     territoryCategoryInput: TerritoryCategoryInput? = null,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
@@ -47,11 +45,12 @@ fun TerritoryCategoryScreen(
             "TerritoryCategoryScreen(...) called: territoryCategoryInput = %s",
             territoryCategoryInput
         )
+    val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG)
                 .d("TerritoryCategoryScreen(...): Start viewModelScope.launch")
-            viewModel.viewModelScope().launch {
+            coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(
                         "TerritoryCategoryScreen(...): Start actionsJobFlow.collect [job = %s]",
@@ -85,7 +84,6 @@ fun TerritoryCategoryScreen(
             onConfirm = backNavigation
         )
         // Scaffold Hoisting:
-        onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
             if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
         }

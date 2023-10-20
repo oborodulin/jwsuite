@@ -150,12 +150,14 @@
     <string name="dlg_confirm_del_territory_house">Удалить дом участка №%1$s?</string>
     <string name="dlg_confirm_del_territory_room">Удалить квартиру участка %1$s?</string>
     <!--отмена изменений-->
-    <string name="dlg_confirm_cancel_changes_hand_out">Данные выдачи участков не сохранятся</string>
-    <string name="dlg_confirm_cancel_changes_at_work">Данные об обработке участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_hand_out">Выдача участков не сохранится</string>
+    <string name="dlg_confirm_cancel_changes_at_work">Обработка участка не сохранится</string>
     <string name="dlg_confirm_cancel_changes_territory">Изменённые данные участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_category">Изменённые данные категории участка не сохранятся</string>
-    <string name="dlg_confirm_cancel_changes_territory_house">Изменённые данные по домам участка не сохранятся</string>
-    <string name="dlg_confirm_cancel_changes_territory_room">Изменённые данные по квартирам участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_house">Изменённые данные домов участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_room">Изменённые данные квартир участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_house">Изменённые данные дома не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_room">Изменённые данные квартиры не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->

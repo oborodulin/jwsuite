@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -20,8 +19,9 @@ private const val TAG = "App.Navigation.housingNavGraph"
 fun NavGraphBuilder.housingNavGraph(
     appState: AppState,
     paddingValues: PaddingValues,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
@@ -33,7 +33,14 @@ fun NavGraphBuilder.housingNavGraph(
                     "Navigation Graph: to HousingScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Housing.arguments
                 )
-            HousingScreen(appState = appState)
+            HousingScreen(
+                appState = appState,
+                paddingValues = paddingValues,
+                onActionBarChange = onActionBarChange,
+                onActionBarTitleChange = onActionBarTitleChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
+            )
         }
         composable(
             route = NavRoutes.House.route, arguments = NavRoutes.House.arguments
@@ -48,7 +55,11 @@ fun NavGraphBuilder.housingNavGraph(
             HouseScreen(
                 appState = appState,
                 //territoryViewModel = territoryViewModel,
-                houseInput = NavRoutes.House.fromEntry(it)
+                houseInput = NavRoutes.House.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(
@@ -64,7 +75,11 @@ fun NavGraphBuilder.housingNavGraph(
             RoomScreen(
                 appState = appState,
                 //territoryViewModel = territoryViewModel,
-                roomInput = NavRoutes.Room.fromEntry(it)
+                roomInput = NavRoutes.Room.fromEntry(it),
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavClickChange = onTopBarNavClickChange,
+                onTopBarActionsChange = onTopBarActionsChange
             )
         }
     }

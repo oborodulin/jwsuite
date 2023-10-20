@@ -67,9 +67,9 @@
     <string name="dlg_confirm_del_group">Удалить группу %1$s?</string>
     <string name="dlg_confirm_del_member">Удалить возвещателя %1$s?</string>
     <!--отмена изменений-->
-    <string name="dlg_confirm_cancel_changes_congregation">Изменённые данные по собранию не сохранятся</string>
-    <string name="dlg_confirm_cancel_changes_group">Изменённые данные по группе не сохранятся</string>
-    <string name="dlg_confirm_cancel_changes_member">Изменённые данные по возвещателю не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_congregation">Изменённые данные собрания не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_group">Изменённые данные группы не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_member">Изменённые данные возвещателя не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы собрания-->

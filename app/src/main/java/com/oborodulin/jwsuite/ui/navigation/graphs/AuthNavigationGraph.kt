@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.ui.navigation.graphs
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -11,7 +12,12 @@ import timber.log.Timber
 
 private const val TAG = "App.Navigation.authNavGraph"
 
-fun NavGraphBuilder.authNavGraph(appState: AppState) {
+fun NavGraphBuilder.authNavGraph(
+    appState: AppState,
+    paddingValues: PaddingValues,
+    onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavClickChange: (() -> Unit) -> Unit
+) {
     navigation(route = Graph.AUTH, startDestination = NavRoutes.Signup.route) {
         composable(route = NavRoutes.Signup.route, arguments = NavRoutes.Signup.arguments) {
             Timber.tag(TAG)
@@ -19,7 +25,12 @@ fun NavGraphBuilder.authNavGraph(appState: AppState) {
                     "Navigation Graph: to SignupScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Signup.arguments
                 )
-            SignupScreen(appState = appState)
+            SignupScreen(
+                appState = appState,
+                paddingValues = paddingValues,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavClickChange = onTopBarNavClickChange
+            )
         }
         composable(route = NavRoutes.Login.route, arguments = NavRoutes.Login.arguments) {
             Timber.tag(TAG)
@@ -27,7 +38,11 @@ fun NavGraphBuilder.authNavGraph(appState: AppState) {
                     "Navigation Graph: to LoginScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Login.arguments
                 )
-            //LoginScreen(appState = appState)
+            //LoginScreen(
+            // appState = appState,
+            //                paddingValues = paddingValues,
+            //                onActionBarSubtitleChange = onActionBarSubtitleChange,
+            //                onTopBarNavClickChange = onTopBarNavClickChange)
         }
     }
 }

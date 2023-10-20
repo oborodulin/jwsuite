@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,7 +50,6 @@ fun TerritoryDetailsScreen(
     territoryInput: TerritoryInput,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
@@ -135,7 +132,6 @@ fun TerritoryDetailsScreen(
             )
             val backNavigation = { appState.commonNavigateUp() }
             // Scaffold Hoisting:
-            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             onTopBarNavClickChange { backNavigation() }
             onTopBarActionsChange {
                 IconButton(onClick = { appState.backToBottomBarScreen() }) {
