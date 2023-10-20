@@ -153,7 +153,6 @@ class HousingViewModelImpl @Inject constructor(
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: HousingUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

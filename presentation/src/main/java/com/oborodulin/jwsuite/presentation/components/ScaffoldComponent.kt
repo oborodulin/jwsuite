@@ -27,7 +27,8 @@ fun ScaffoldComponent(
     nestedScrollConnection: NestedScrollConnection? = null,
     isNestedScrollConnection: Boolean = false,
     @StringRes topBarTitleResId: Int? = null,
-    topBarTitle: String = "",
+    topBarTitle: String? = null,
+    topBarSubtitle: String? = null,
     actionBar: @Composable (() -> Unit)? = null,
     topBarNavImageVector: ImageVector? = null,
     @DrawableRes topBarNavPainterResId: Int? = null,
@@ -73,17 +74,18 @@ fun ScaffoldComponent(
                                         text = appState.appName.plus(topBarTitleResId?.let {
                                             " - ${stringResource(it)}"
                                         }
-                                            ?: (if (topBarTitle.isNotEmpty()) " - $topBarTitle" else "")),
+                                            ?: (topBarTitle?.let { " - $topBarTitle" } ?: "")),
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
-                                if (appState.actionBarSubtitle.value.isNotEmpty()) {
+                                topBarSubtitle?.let {
                                     Text(
-                                        text = appState.actionBarSubtitle.value,
+                                        text = it,
                                         style = Typography.titleMedium,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
+                                //if (appState.actionBarSubtitle.value.isNotEmpty()) {}
                                 actionBar?.let { it() }
                             }
                         },

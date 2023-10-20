@@ -60,8 +60,8 @@ fun SignupView(viewModel: SessionViewModel) {
 
     Timber.tag(TAG).d("Session: CollectAsStateWithLifecycle for all fields")
     val username by viewModel.username.collectAsStateWithLifecycle()
-    val password by viewModel.password.collectAsStateWithLifecycle()
-    val confirmPassword by viewModel.confirmPassword.collectAsStateWithLifecycle()
+    val pin by viewModel.pin.collectAsStateWithLifecycle()
+    val confirmPin by viewModel.confirmPin.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Session: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<SessionFields, InputFocusRequester>(SessionFields::class.java)
@@ -121,7 +121,7 @@ fun SignupView(viewModel: SessionViewModel) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.session_password_hint,
+            labelResId = R.string.session_pin_hint,
             leadingImageVector = Icons.Outlined.Lock,
             keyboardOptions = remember {
                 KeyboardOptions(
@@ -129,8 +129,9 @@ fun SignupView(viewModel: SessionViewModel) {
                 )
             },
             //  visualTransformation = ::creditCardFilter,
-            inputWrapper = password,
-            onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.Password(it)) },
+            inputWrapper = pin,
+            maxLength = 6,
+            onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.Pin(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -142,7 +143,7 @@ fun SignupView(viewModel: SessionViewModel) {
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.session_confirm_password_hint,
+            labelResId = R.string.session_confirm_pin_hint,
             leadingImageVector = Icons.Outlined.Lock,
             keyboardOptions = remember {
                 KeyboardOptions(
@@ -150,8 +151,9 @@ fun SignupView(viewModel: SessionViewModel) {
                 )
             },
             //  visualTransformation = ::creditCardFilter,
-            inputWrapper = confirmPassword,
-            onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.ConfirmPassword(it)) },
+            inputWrapper = confirmPin,
+            maxLength = 6,
+            onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.ConfirmPin(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

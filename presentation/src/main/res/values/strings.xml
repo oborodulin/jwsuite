@@ -60,8 +60,8 @@
     <string name="session_signup_subheader">Регистрация</string>
     <string name="session_login_subheader">Вход</string>
     <string name="session_username_hint">Логин</string>
-    <string name="session_password_hint">Пароль</string>
-    <string name="session_confirm_password_hint">Подтвердите пароль</string>
+    <string name="session_pin_hint">PIN</string>
+    <string name="session_confirm_pin_hint">Подтвердите PIN</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

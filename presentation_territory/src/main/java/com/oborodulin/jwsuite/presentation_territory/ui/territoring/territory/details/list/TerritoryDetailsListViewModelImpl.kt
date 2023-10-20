@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
@@ -70,6 +71,7 @@ class TerritoryDetailsListViewModelImpl @Inject constructor(
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+                override val uiStateErrorMsg = MutableStateFlow("")
 
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)

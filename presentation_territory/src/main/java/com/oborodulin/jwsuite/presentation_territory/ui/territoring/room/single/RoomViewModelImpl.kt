@@ -408,6 +408,10 @@ class RoomViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
+
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

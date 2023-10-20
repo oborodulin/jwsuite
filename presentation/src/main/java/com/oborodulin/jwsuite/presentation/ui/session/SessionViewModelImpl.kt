@@ -52,15 +52,15 @@ class SessionViewModelImpl @Inject constructor(
     override val username: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(SessionFields.SESSION_USERNAME.name, InputWrapper())
     }
-    override val password: StateFlow<InputWrapper> by lazy {
+    override val pin: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(SessionFields.SESSION_PASSWORD.name, InputWrapper())
     }
-    override val confirmPassword: StateFlow<InputWrapper> by lazy {
+    override val confirmPin: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(SessionFields.SESSION_CONFIRM_PASSWORD.name, InputWrapper())
     }
 
     override val areSignupInputsValid =
-        combine(username, password, confirmPassword) { username, password, confirmPassword ->
+        combine(username, pin, confirmPin) { username, password, confirmPassword ->
             username.errorId == null && password.errorId == null && confirmPassword.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
@@ -106,7 +106,7 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("signup(...) called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.signupUseCase.execute(
-                SignupUseCase.Request(username.value.value, password.value.value)
+                SignupUseCase.Request(username.value.value, pin.value.value)
             ).map { signupConverter.convert(it) }.collect { submitState(it) }
         }
         return job
@@ -124,7 +124,7 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.loginUseCase.execute(LoginUseCase.Request(password.value.value))
+            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
                 .map { loginConverter.convert(it) }.collect { submitState(it) }
         }
         return job
@@ -159,26 +159,26 @@ class SessionViewModelImpl @Inject constructor(
                             )
                         }
 
-                    is SessionInputEvent.Password ->
+                    is SessionInputEvent.Pin ->
                         when (SessionInputValidator.Password.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                SessionFields.SESSION_PASSWORD, password, event.input, true
+                                SessionFields.SESSION_PASSWORD, pin, event.input, true
                             )
 
                             else -> setStateValue(
-                                SessionFields.SESSION_PASSWORD, password, event.input
+                                SessionFields.SESSION_PASSWORD, pin, event.input
                             )
                         }
 
-                    is SessionInputEvent.ConfirmPassword ->
+                    is SessionInputEvent.ConfirmPin ->
                         when (SessionInputValidator.ConfirmPassword.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPassword,
+                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPin,
                                 event.input, true
                             )
 
                             else -> setStateValue(
-                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPassword, event.input
+                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPin, event.input
                             )
                         }
                 }
@@ -192,15 +192,15 @@ class SessionViewModelImpl @Inject constructor(
                             SessionInputValidator.Username.errorIdOrNull(event.input)
                         )
 
-                    is SessionInputEvent.Password ->
+                    is SessionInputEvent.Pin ->
                         setStateValue(
-                            SessionFields.SESSION_PASSWORD, password,
+                            SessionFields.SESSION_PASSWORD, pin,
                             SessionInputValidator.Password.errorIdOrNull(event.input)
                         )
 
-                    is SessionInputEvent.ConfirmPassword ->
+                    is SessionInputEvent.ConfirmPin ->
                         setStateValue(
-                            SessionFields.SESSION_CONFIRM_PASSWORD, confirmPassword,
+                            SessionFields.SESSION_CONFIRM_PASSWORD, confirmPin,
                             SessionInputValidator.ConfirmPassword.errorIdOrNull(event.input)
                         )
                 }
@@ -216,12 +216,12 @@ class SessionViewModelImpl @Inject constructor(
                 InputError(fieldName = SessionFields.SESSION_USERNAME.name, errorId = it)
             )
         }
-        SessionInputValidator.Password.errorIdOrNull(password.value.value)?.let {
+        SessionInputValidator.Password.errorIdOrNull(pin.value.value)?.let {
             inputErrors.add(
                 InputError(fieldName = SessionFields.SESSION_PASSWORD.name, errorId = it)
             )
         }
-        SessionInputValidator.ConfirmPassword.errorIdOrNull(confirmPassword.value.value)?.let {
+        SessionInputValidator.ConfirmPassword.errorIdOrNull(confirmPin.value.value)?.let {
             inputErrors.add(
                 InputError(fieldName = SessionFields.SESSION_CONFIRM_PASSWORD.name, errorId = it)
             )
@@ -237,16 +237,15 @@ class SessionViewModelImpl @Inject constructor(
         for (error in inputErrors) {
             state[error.fieldName] = when (SessionFields.valueOf(error.fieldName)) {
                 SessionFields.SESSION_USERNAME -> username.value.copy(errorId = error.errorId)
-                SessionFields.SESSION_PASSWORD -> password.value.copy(
+                SessionFields.SESSION_PASSWORD -> pin.value.copy(
                     errorId = error.errorId,
                     errorMsg = res.getString(error.errorId!!, PASS_MIN_LENGTH)
                 )
 
-                SessionFields.SESSION_CONFIRM_PASSWORD -> confirmPassword.value.copy(
+                SessionFields.SESSION_CONFIRM_PASSWORD -> confirmPin.value.copy(
                     errorId = error.errorId
                 )
 
-                else -> null
             }
         }
     }
@@ -270,12 +269,11 @@ class SessionViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override val username = MutableStateFlow(InputWrapper())
-                override val password = MutableStateFlow(InputWrapper())
-                override val confirmPassword = MutableStateFlow(InputWrapper())
+                override val pin = MutableStateFlow(InputWrapper())
+                override val confirmPin = MutableStateFlow(InputWrapper())
 
                 override val areSignupInputsValid = MutableStateFlow(true)
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: SessionUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

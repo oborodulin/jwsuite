@@ -368,6 +368,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                     Channel<TerritoriesGridUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
+
                 override val checkedListItems = MutableStateFlow(previewList(ctx))
 
                 override val handOutSearchText = MutableStateFlow(TextFieldValue(""))

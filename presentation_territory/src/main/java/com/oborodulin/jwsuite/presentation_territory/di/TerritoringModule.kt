@@ -383,11 +383,14 @@ object TerritoringModule {
     @Singleton
     @Provides
     fun provideRoomUiToRoomMapper(
+        localityUiMapper: LocalityUiToLocalityMapper,
+        streetUiMapper: StreetUiToStreetMapper,
         houseUiMapper: HouseUiToHouseMapper,
         entranceUiMapper: EntranceUiToEntranceMapper,
         floorUiMapper: FloorUiToFloorMapper,
         territoryUiMapper: TerritoryUiToTerritoryMapper
     ): RoomUiToRoomMapper = RoomUiToRoomMapper(
+        localityUiMapper = localityUiMapper, streetUiMapper = streetUiMapper,
         houseUiMapper = houseUiMapper, entranceUiMapper = entranceUiMapper,
         floorUiMapper = floorUiMapper, territoryUiMapper = territoryUiMapper
     )

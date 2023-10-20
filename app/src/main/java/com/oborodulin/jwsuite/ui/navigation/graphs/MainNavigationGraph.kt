@@ -75,6 +75,7 @@ fun MainNavigationGraph(
         composable(NavRoutes.Home.route) {
             onTopBarNavImageVectorChange(Icons.Outlined.Menu)
             onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
+            onActionBarSubtitleChange(appState.actionBarSubtitle.value)
             areUsingNestedScrollConnection(true)
             areUsingBottomNavigation(true)
             bottomBarNavGraph(

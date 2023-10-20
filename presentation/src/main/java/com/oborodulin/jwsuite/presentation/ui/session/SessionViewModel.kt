@@ -13,8 +13,8 @@ interface SessionViewModel : DialogViewModeled<SessionUi, SessionUiAction, UiSin
     val events: Flow<ScreenEvent>
 
     val username: StateFlow<InputWrapper>
-    val password: StateFlow<InputWrapper>
-    val confirmPassword: StateFlow<InputWrapper>
+    val pin: StateFlow<InputWrapper>
+    val confirmPin: StateFlow<InputWrapper>
 
     val areSignupInputsValid: StateFlow<Boolean>
 

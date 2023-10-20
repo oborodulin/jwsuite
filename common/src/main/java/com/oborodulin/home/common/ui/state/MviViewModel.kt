@@ -1,5 +1,6 @@
 package com.oborodulin.home.common.ui.state
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -32,6 +33,12 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _singleEventFlow = Channel<E>()
     override val singleEventFlow = _singleEventFlow.receiveAsFlow()
 
+    private val _searchText: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
+    override val searchText = _searchText.asStateFlow()
+
+    private val _isSearching = MutableStateFlow(false)
+    override val isSearching = _isSearching.asStateFlow()
+
     val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.tag(TAG).e(exception)
         //_uiState.value = _uiState.value.copy(error = exception.message, isLoading = false)
@@ -62,6 +69,10 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     private fun clearUiStateErrorMessage() {
         redirectUiStateErrorMessage(null)
+    }
+
+    override fun onSearchTextChange(text: TextFieldValue) {
+        _searchText.value = text
     }
 
     abstract suspend fun handleAction(action: A): Job?

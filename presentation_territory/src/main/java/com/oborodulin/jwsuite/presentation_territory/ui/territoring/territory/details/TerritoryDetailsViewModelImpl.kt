@@ -108,7 +108,6 @@ class TerritoryDetailsViewModelImpl @Inject constructor() : TerritoryDetailsView
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoryDetailsUiAction): Job? = null
             }

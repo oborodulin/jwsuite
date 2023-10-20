@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.singl
 
 import android.content.Context
 import androidx.annotation.ArrayRes
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -543,7 +544,12 @@ class HouseViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
+                override val searchText = MutableStateFlow(TextFieldValue(""))
+                override val isSearching = MutableStateFlow(false)
+                override fun onSearchTextChange(text: TextFieldValue) {}
+
                 override val buildingTypes = MutableStateFlow(mutableMapOf<BuildingType, String>())
+
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street =
                     MutableStateFlow(InputListItemWrapper<StreetsListItem>())

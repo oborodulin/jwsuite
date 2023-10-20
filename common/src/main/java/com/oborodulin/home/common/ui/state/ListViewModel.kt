@@ -10,11 +10,6 @@ private const val TAG = "Common.ListViewModel"
 
 abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiAction, E : UiSingleEvent> :
     MviViewModel<T, S, A, E>(), ListViewModeled<T, A, E> {
-    private val _searchText: MutableStateFlow<TextFieldValue> = MutableStateFlow(TextFieldValue(""))
-    final override val searchText = _searchText.asStateFlow()
-
-    private val _isSearching = MutableStateFlow(false)
-    override val isSearching = _isSearching.asStateFlow()
 
     // https://www.youtube.com/watch?v=CfL6Dl2_dAE
     // https://stackoverflow.com/questions/70709121/how-to-convert-a-flowcustomtype-to-stateflowuistate-android-kotlin
@@ -40,10 +35,6 @@ abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiActi
                 _uiStateFlow.value
             )
     */
-
-    override fun onSearchTextChange(text: TextFieldValue) {
-        _searchText.value = text
-    }
 
     // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
     override fun singleSelectItem(selectedItem: ListItemModel) {
