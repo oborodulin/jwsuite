@@ -17,23 +17,23 @@ sealed class SessionInputValidator : Validatable {
     }
 
     // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
-    data object Password : SessionInputValidator() {
+    data object Pin : SessionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.password_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.pin_empty_error
                 inputs[0]?.let { it.length <= PASS_MIN_LENGTH }
-                    ?: true -> R.string.signup_password_length_error
+                    ?: true -> R.string.signup_pin_length_error
 
                 else -> null
             }
     }
 
-    data object ConfirmPassword : SessionInputValidator() {
+    data object ConfirmPin : SessionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
-                inputs[0].isNullOrEmpty() -> R.string.signup_confirm_password_empty_error
+                inputs[0].isNullOrEmpty() -> R.string.signup_confirm_pin_empty_error
                 inputs[0]?.let { it != inputs[0].orEmpty() }
-                    ?: true -> R.string.signup_confirm_password_error
+                    ?: true -> R.string.signup_confirm_pin_error
 
                 else -> null
             }

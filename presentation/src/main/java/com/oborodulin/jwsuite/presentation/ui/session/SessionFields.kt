@@ -4,8 +4,8 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class SessionFields : Focusable {
     SESSION_USERNAME,
-    SESSION_PASSWORD,
-    SESSION_CONFIRM_PASSWORD;
+    SESSION_PIN,
+    SESSION_CONFIRM_PIN;
 
     override fun key(): String {
         return this.name

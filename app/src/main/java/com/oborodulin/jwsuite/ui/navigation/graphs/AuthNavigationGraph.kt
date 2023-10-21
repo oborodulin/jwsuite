@@ -6,6 +6,7 @@ import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.session.login.LoginScreen
 import com.oborodulin.jwsuite.presentation.ui.session.signup.SignupScreen
 import timber.log.Timber
 
@@ -27,7 +28,7 @@ fun NavGraphBuilder.authNavGraph(appState: AppState) {
                     "Navigation Graph: to LoginScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Login.arguments
                 )
-            //LoginScreen(appState = appState)
+            LoginScreen(appState = appState)
         }
     }
 }

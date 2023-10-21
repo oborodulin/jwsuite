@@ -73,14 +73,14 @@
     <string name="num_empty_error">Укажите, пожалуйста, номер!</string>
     <string name="type_empty_error">Укажите, пожалуйста, тип!</string>
     <string name="member_empty_error">Укажите, пожалуйста, возвещателя!</string>
-    <string name="password_empty_error">Укажите, пожалуйста, пароль</string>
+    <string name="pin_empty_error">Укажите, пожалуйста, ПИН-код</string>
     <!--формы регистрации-->
     <string name="signup_username_empty_error">Укажите, пожалуйста, имя пользователя</string>
-    <string name="signup_password_length_error">Пароль слишком короткий! Введите, пожалуйста, %1$d цифр</string>
-    <string name="signup_confirm_password_empty_error">Укажите, пожалуйста, пароль ещё раз</string>
-    <string name="signup_confirm_password_error">Пароли не совпадают! Пожалуйста, повторите ввод</string>
+    <string name="signup_pin_length_error">ПИН-код слишком короткий! Введите, пожалуйста, %1$d цифр</string>
+    <string name="signup_confirm_pin_empty_error">Укажите, пожалуйста, ПИН-код ещё раз</string>
+    <string name="signup_confirm_pin_error">ПИН-коды не совпадают! Пожалуйста, подтвердите ПИН-код ещё раз</string>
     <!--формы логина-->
-    <string name="login_password_error">Неверный пароль! Пожалуйста, повторите ввод</string>
+    <string name="login_pin_error">Неверный ПИН-код! Пожалуйста, введите ПИН-код ещё раз</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
 </resources>

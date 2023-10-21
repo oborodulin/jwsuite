@@ -58,7 +58,7 @@ fun SignupScreen(
                         enabled = areInputsValid,
                         onClick = {
                             viewModel.onContinueClick {
-                                Timber.tag(TAG).d("SignupScreen(...): Start viewModelScope.launch")
+                                Timber.tag(TAG).d("SignupScreen(...): Start coroutineScope.launch")
                                 coroutineScope.launch {
                                     viewModel.actionsJobFlow.collect {
                                         Timber.tag(TAG).d(

@@ -53,7 +53,7 @@ fun TerritoryScreen(
     val territoryId by viewModel.id.collectAsStateWithLifecycle()
     val handleNextButtonClick = {
         Timber.tag(TAG)
-            .d("TerritoryScreen(...): Start viewModelScope.launch")
+            .d("TerritoryScreen(...): Start coroutineScope.launch")
         // checks all errors
         viewModel.onContinueClick {
             // if success,

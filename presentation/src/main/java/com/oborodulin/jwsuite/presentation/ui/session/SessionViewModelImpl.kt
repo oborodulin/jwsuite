@@ -53,16 +53,22 @@ class SessionViewModelImpl @Inject constructor(
         state.getStateFlow(SessionFields.SESSION_USERNAME.name, InputWrapper())
     }
     override val pin: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(SessionFields.SESSION_PASSWORD.name, InputWrapper())
+        state.getStateFlow(SessionFields.SESSION_PIN.name, InputWrapper())
     }
     override val confirmPin: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(SessionFields.SESSION_CONFIRM_PASSWORD.name, InputWrapper())
+        state.getStateFlow(SessionFields.SESSION_CONFIRM_PIN.name, InputWrapper())
     }
 
     override val areSignupInputsValid =
-        combine(username, pin, confirmPin) { username, password, confirmPassword ->
-            username.errorId == null && password.errorId == null && confirmPassword.errorId == null
+        combine(username, pin, confirmPin) { username, pin, confirmPin ->
+            username.errorId == null && pin.errorId == null && confirmPin.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    override val areLoginInputsValid = flow { emit(pin.value.errorId == null) }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        false
+    )
 
     init {
         loadSession()
@@ -145,66 +151,63 @@ class SessionViewModelImpl @Inject constructor(
 
     override suspend fun observeInputEvents() {
         Timber.tag(TAG).d("observeInputEvents() called")
-        inputEvents.receiveAsFlow()
-            .onEach { event ->
-                when (event) {
-                    is SessionInputEvent.Username ->
-                        when (SessionInputValidator.Username.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                SessionFields.SESSION_USERNAME, username, event.input, true
-                            )
+        inputEvents.receiveAsFlow().onEach { event ->
+            when (event) {
+                is SessionInputEvent.Username -> when (SessionInputValidator.Username.errorIdOrNull(
+                    event.input
+                )) {
+                    null -> setStateValue(
+                        SessionFields.SESSION_USERNAME, username, event.input, true
+                    )
 
-                            else -> setStateValue(
-                                SessionFields.SESSION_USERNAME, username, event.input
-                            )
-                        }
+                    else -> setStateValue(
+                        SessionFields.SESSION_USERNAME, username, event.input
+                    )
+                }
 
-                    is SessionInputEvent.Pin ->
-                        when (SessionInputValidator.Password.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                SessionFields.SESSION_PASSWORD, pin, event.input, true
-                            )
+                is SessionInputEvent.Pin -> when (SessionInputValidator.Pin.errorIdOrNull(event.input)) {
+                    null -> setStateValue(
+                        SessionFields.SESSION_PIN, pin, event.input, true
+                    )
 
-                            else -> setStateValue(
-                                SessionFields.SESSION_PASSWORD, pin, event.input
-                            )
-                        }
+                    else -> setStateValue(
+                        SessionFields.SESSION_PIN, pin, event.input
+                    )
+                }
 
-                    is SessionInputEvent.ConfirmPin ->
-                        when (SessionInputValidator.ConfirmPassword.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPin,
-                                event.input, true
-                            )
+                is SessionInputEvent.ConfirmPin -> when (SessionInputValidator.ConfirmPin.errorIdOrNull(
+                    event.input
+                )) {
+                    null -> setStateValue(
+                        SessionFields.SESSION_CONFIRM_PIN, confirmPin, event.input, true
+                    )
 
-                            else -> setStateValue(
-                                SessionFields.SESSION_CONFIRM_PASSWORD, confirmPin, event.input
-                            )
-                        }
+                    else -> setStateValue(
+                        SessionFields.SESSION_CONFIRM_PIN, confirmPin, event.input
+                    )
                 }
             }
-            .debounce(350)
-            .collect { event ->
-                when (event) {
-                    is SessionInputEvent.Username ->
-                        setStateValue(
-                            SessionFields.SESSION_USERNAME, username,
-                            SessionInputValidator.Username.errorIdOrNull(event.input)
-                        )
+        }.debounce(350).collect { event ->
+            when (event) {
+                is SessionInputEvent.Username -> setStateValue(
+                    SessionFields.SESSION_USERNAME,
+                    username,
+                    SessionInputValidator.Username.errorIdOrNull(event.input)
+                )
 
-                    is SessionInputEvent.Pin ->
-                        setStateValue(
-                            SessionFields.SESSION_PASSWORD, pin,
-                            SessionInputValidator.Password.errorIdOrNull(event.input)
-                        )
+                is SessionInputEvent.Pin -> setStateValue(
+                    SessionFields.SESSION_PIN,
+                    pin,
+                    SessionInputValidator.Pin.errorIdOrNull(event.input)
+                )
 
-                    is SessionInputEvent.ConfirmPin ->
-                        setStateValue(
-                            SessionFields.SESSION_CONFIRM_PASSWORD, confirmPin,
-                            SessionInputValidator.ConfirmPassword.errorIdOrNull(event.input)
-                        )
-                }
+                is SessionInputEvent.ConfirmPin -> setStateValue(
+                    SessionFields.SESSION_CONFIRM_PIN,
+                    confirmPin,
+                    SessionInputValidator.ConfirmPin.errorIdOrNull(event.input)
+                )
             }
+        }
     }
 
     override fun performValidation() {}
@@ -216,14 +219,14 @@ class SessionViewModelImpl @Inject constructor(
                 InputError(fieldName = SessionFields.SESSION_USERNAME.name, errorId = it)
             )
         }
-        SessionInputValidator.Password.errorIdOrNull(pin.value.value)?.let {
+        SessionInputValidator.Pin.errorIdOrNull(pin.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = SessionFields.SESSION_PASSWORD.name, errorId = it)
+                InputError(fieldName = SessionFields.SESSION_PIN.name, errorId = it)
             )
         }
-        SessionInputValidator.ConfirmPassword.errorIdOrNull(confirmPin.value.value)?.let {
+        SessionInputValidator.ConfirmPin.errorIdOrNull(confirmPin.value.value)?.let {
             inputErrors.add(
-                InputError(fieldName = SessionFields.SESSION_CONFIRM_PASSWORD.name, errorId = it)
+                InputError(fieldName = SessionFields.SESSION_CONFIRM_PIN.name, errorId = it)
             )
         }
         return if (inputErrors.isEmpty()) null else inputErrors
@@ -231,18 +234,17 @@ class SessionViewModelImpl @Inject constructor(
 
     // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        Timber.tag(TAG).d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         val res = ctx.resources
         for (error in inputErrors) {
             state[error.fieldName] = when (SessionFields.valueOf(error.fieldName)) {
                 SessionFields.SESSION_USERNAME -> username.value.copy(errorId = error.errorId)
-                SessionFields.SESSION_PASSWORD -> pin.value.copy(
+                SessionFields.SESSION_PIN -> pin.value.copy(
                     errorId = error.errorId,
                     errorMsg = res.getString(error.errorId!!, PASS_MIN_LENGTH)
                 )
 
-                SessionFields.SESSION_CONFIRM_PASSWORD -> confirmPin.value.copy(
+                SessionFields.SESSION_CONFIRM_PIN -> confirmPin.value.copy(
                     errorId = error.errorId
                 )
 
@@ -251,56 +253,52 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     companion object {
-        fun previewModel(ctx: Context) =
-            object : SessionViewModel {
-                override val uiStateErrorMsg = MutableStateFlow("")
-                override val isUiStateChanged = MutableStateFlow(true)
-                override val dialogTitleResId =
-                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
-                override val savedListItem = MutableStateFlow(ListItemModel())
-                override val showDialog = MutableStateFlow(true)
-                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
-                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
-                override val events = Channel<ScreenEvent>().receiveAsFlow()
-                override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+        fun previewModel(ctx: Context) = object : SessionViewModel {
+            override val uiStateErrorMsg = MutableStateFlow("")
+            override val isUiStateChanged = MutableStateFlow(true)
+            override val dialogTitleResId =
+                MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+            override val savedListItem = MutableStateFlow(ListItemModel())
+            override val showDialog = MutableStateFlow(true)
+            override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+            override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+            override val events = Channel<ScreenEvent>().receiveAsFlow()
+            override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
+            override val searchText = MutableStateFlow(TextFieldValue(""))
+            override val isSearching = MutableStateFlow(false)
+            override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val username = MutableStateFlow(InputWrapper())
-                override val pin = MutableStateFlow(InputWrapper())
-                override val confirmPin = MutableStateFlow(InputWrapper())
+            override val username = MutableStateFlow(InputWrapper())
+            override val pin = MutableStateFlow(InputWrapper())
+            override val confirmPin = MutableStateFlow(InputWrapper())
 
-                override val areSignupInputsValid = MutableStateFlow(true)
+            override val areSignupInputsValid = MutableStateFlow(true)
+            override val areLoginInputsValid = MutableStateFlow(true)
 
-                override fun submitAction(action: SessionUiAction): Job? = null
-                override fun onTextFieldEntered(inputEvent: Inputable) {}
-                override fun onTextFieldFocusChanged(
-                    focusedField: SessionFields, isFocused: Boolean
-                ) {
-                }
-
-                override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean,
-                    onSuccess: () -> Unit
-                ) {
-                }
-
-                override fun setDialogTitleResId(dialogTitleResId: Int) {}
-                override fun setSavedListItem(savedListItem: ListItemModel) {}
-                override fun onOpenDialogClicked() {}
-                override fun onDialogConfirm(onConfirm: () -> Unit) {}
-                override fun onDialogDismiss(onDismiss: () -> Unit) {}
+            override fun submitAction(action: SessionUiAction): Job? = null
+            override fun onTextFieldEntered(inputEvent: Inputable) {}
+            override fun onTextFieldFocusChanged(
+                focusedField: SessionFields, isFocused: Boolean
+            ) {
             }
+
+            override fun moveFocusImeAction() {}
+            override fun onContinueClick(
+                isPartialInputsValid: Boolean, onSuccess: () -> Unit
+            ) {
+            }
+
+            override fun setDialogTitleResId(dialogTitleResId: Int) {}
+            override fun setSavedListItem(savedListItem: ListItemModel) {}
+            override fun onOpenDialogClicked() {}
+            override fun onDialogConfirm(onConfirm: () -> Unit) {}
+            override fun onDialogDismiss(onDismiss: () -> Unit) {}
+        }
 
         fun previewUiModel(ctx: Context): SessionUi {
             val sessionUi = SessionUi(
-                isSigned = true,
-                isLogged = true,
-                roles = emptyList(),
-                startDestination = null
+                isSigned = true, isLogged = true, roles = emptyList(), startDestination = null
             )
             sessionUi.id = UUID.randomUUID()
             return sessionUi

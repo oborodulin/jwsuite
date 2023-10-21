@@ -49,7 +49,7 @@ fun TerritoryCategoryScreen(
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG)
-                .d("TerritoryCategoryScreen(...): Start viewModelScope.launch")
+                .d("TerritoryCategoryScreen(...): Start coroutineScope.launch")
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(

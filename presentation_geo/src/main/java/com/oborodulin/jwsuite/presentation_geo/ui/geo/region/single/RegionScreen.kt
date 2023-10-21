@@ -48,7 +48,7 @@ fun RegionScreen(
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("RegionScreen(...): Start viewModelScope.launch")
+            Timber.tag(TAG).d("RegionScreen(...): Start coroutineScope.launch")
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(

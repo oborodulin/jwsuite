@@ -40,6 +40,7 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation.util.Constants
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -114,10 +115,10 @@ fun SignupView(viewModel: SessionViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[SessionFields.SESSION_PASSWORD]!!.focusRequester)
+                .focusRequester(focusRequesters[SessionFields.SESSION_PIN]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = SessionFields.SESSION_PASSWORD,
+                        focusedField = SessionFields.SESSION_PIN,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -125,21 +126,21 @@ fun SignupView(viewModel: SessionViewModel) {
             leadingImageVector = Icons.Outlined.Lock,
             keyboardOptions = remember {
                 KeyboardOptions(
-                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next
                 )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = pin,
-            maxLength = 6,
+            maxLength = Constants.PASS_MIN_LENGTH,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.Pin(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[SessionFields.SESSION_PASSWORD]!!.focusRequester)
+                .focusRequester(focusRequesters[SessionFields.SESSION_PIN]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = SessionFields.SESSION_PASSWORD,
+                        focusedField = SessionFields.SESSION_PIN,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -147,12 +148,12 @@ fun SignupView(viewModel: SessionViewModel) {
             leadingImageVector = Icons.Outlined.Lock,
             keyboardOptions = remember {
                 KeyboardOptions(
-                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done
                 )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = confirmPin,
-            maxLength = 6,
+            maxLength = Constants.PASS_MIN_LENGTH,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.ConfirmPin(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
