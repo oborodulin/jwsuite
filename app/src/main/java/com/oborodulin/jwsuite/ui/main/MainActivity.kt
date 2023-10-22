@@ -16,9 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.R
-import com.oborodulin.jwsuite.data.local.worker.repositories.WorkerProviderRepositoryImpl
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
-import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -61,11 +59,13 @@ class MainActivity : ComponentActivity() {
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         CommonScreen(state = state) { session ->
                             Timber.tag(TAG)
-                                .d("mainActivity: startDestination = %s", session.startDestination)
+                                .d(
+                                    "mainActivity: startDestination = %s; route = %s",
+                                    session.startDestination, session.route
+                                )
                             RootNavigationGraph(
                                 appState = appState,
-                                startDestination = session.startDestination
-                                    ?: NavRoutes.Signup.route
+                                startDestination = session.route
                             )
                         }
                     }

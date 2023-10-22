@@ -6,13 +6,14 @@ import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.session.login.LoginScreen
 import com.oborodulin.jwsuite.presentation.ui.session.signup.SignupScreen
 import timber.log.Timber
 
 private const val TAG = "App.Navigation.authNavGraph"
 
-fun NavGraphBuilder.authNavGraph(appState: AppState) {
+fun NavGraphBuilder.authNavGraph(appState: AppState, session: SessionUi?) {
     navigation(route = Graph.AUTH, startDestination = NavRoutes.Signup.route) {
         composable(route = NavRoutes.Signup.route, arguments = NavRoutes.Signup.arguments) {
             Timber.tag(TAG)
@@ -20,7 +21,7 @@ fun NavGraphBuilder.authNavGraph(appState: AppState) {
                     "Navigation Graph: to SignupScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Signup.arguments
                 )
-            SignupScreen(appState = appState)
+            SignupScreen(appState = appState, session = session)
         }
         composable(route = NavRoutes.Login.route, arguments = NavRoutes.Login.arguments) {
             Timber.tag(TAG)
@@ -28,7 +29,7 @@ fun NavGraphBuilder.authNavGraph(appState: AppState) {
                     "Navigation Graph: to LoginScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Login.arguments
                 )
-            LoginScreen(appState = appState)
+            LoginScreen(appState = appState, session = session)
         }
     }
 }

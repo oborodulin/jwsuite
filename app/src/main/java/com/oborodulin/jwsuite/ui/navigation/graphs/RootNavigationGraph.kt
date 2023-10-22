@@ -5,19 +5,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.ui.main.MainScreen
 
 // https://medium.com/@mathroda/nested-navigation-graph-in-jetpack-compose-with-bottom-navigation-d983c2d4119f
 @Composable
-fun RootNavigationGraph(appState: AppState, startDestination: String) {
+fun RootNavigationGraph(appState: AppState, session: SessionUi?, startDestination: String) {
     NavHost(
         navController = appState.commonNavController,
         route = Graph.ROOT,
         startDestination = startDestination
     ) {
-        authNavGraph(appState)
+        authNavGraph(appState = appState, session = session)
         composable(Graph.MAIN) {
-            MainScreen(appState)
+            MainScreen(appState = appState)
         }
     }
 }

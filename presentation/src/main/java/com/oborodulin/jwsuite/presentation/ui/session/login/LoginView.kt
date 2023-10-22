@@ -65,7 +65,7 @@ fun LoginView(appState: AppState, session: SessionUi, viewModel: SessionViewMode
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
-    val handleOtpLastCharEntered = {
+    val handleLogin = {
         viewModel.onContinueClick {
             Timber.tag(TAG).d("LoginView(...): Start coroutineScope.launch")
             coroutineScope.launch {
@@ -74,7 +74,7 @@ fun LoginView(appState: AppState, session: SessionUi, viewModel: SessionViewMode
                         "LoginView(...): Start actionsJobFlow.collect [job = %s]", it?.toString()
                     )
                     it?.join()
-                    appState.commonNavController.navigate(session.startDestination ?: Graph.MAIN)
+                    appState.commonNavController.navigate(session.route)
                 }
             }
             viewModel.submitAction(SessionUiAction.Login)
@@ -104,7 +104,7 @@ fun LoginView(appState: AppState, session: SessionUi, viewModel: SessionViewMode
             otpCount = PASS_MIN_LENGTH,
             onOtpTextChange = { value, otpInputFilled ->
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
-                if (otpInputFilled) handleOtpLastCharEntered()
+                if (otpInputFilled) handleLogin()
             })
     }
 }
