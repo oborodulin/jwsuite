@@ -13,7 +13,7 @@ import timber.log.Timber
 
 private const val TAG = "App.Navigation.authNavGraph"
 
-fun NavGraphBuilder.authNavGraph(appState: AppState, session: SessionUi?) {
+fun NavGraphBuilder.authNavGraph() {
     navigation(route = Graph.AUTH, startDestination = NavRoutes.Signup.route) {
         composable(route = NavRoutes.Signup.route, arguments = NavRoutes.Signup.arguments) {
             Timber.tag(TAG)
@@ -21,7 +21,7 @@ fun NavGraphBuilder.authNavGraph(appState: AppState, session: SessionUi?) {
                     "Navigation Graph: to SignupScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Signup.arguments
                 )
-            SignupScreen(appState = appState, session = session)
+            SignupScreen()
         }
         composable(route = NavRoutes.Login.route, arguments = NavRoutes.Login.arguments) {
             Timber.tag(TAG)
@@ -29,7 +29,7 @@ fun NavGraphBuilder.authNavGraph(appState: AppState, session: SessionUi?) {
                     "Navigation Graph: to LoginScreen [route = '%s', arguments = '%s']",
                     it.destination.route, NavRoutes.Login.arguments
                 )
-            LoginScreen(appState = appState, session = session)
+            LoginScreen()
         }
     }
 }

@@ -20,15 +20,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
-import com.oborodulin.jwsuite.presentation.ui.rememberAppState
-import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
 import com.oborodulin.jwsuite.ui.navigation.graphs.MainNavigationGraph
@@ -41,8 +39,9 @@ import kotlin.math.roundToInt
 private const val TAG = "App.ui.MainScreen"
 
 @Composable
-fun MainScreen(appState: AppState, viewModel: SessionViewModelImpl = hiltViewModel()) {
+fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
     Timber.tag(TAG).d("MainScreen() called")
+    val appState = LocalAppState.current
     val bottomBarHeight = 72.dp
     val bottomBarHeightPx = with(LocalDensity.current) {
         bottomBarHeight.roundToPx().toFloat()
@@ -167,9 +166,5 @@ private fun HomeNavigationHost(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMainScreen() {
-    JWSuiteTheme {
-        Surface {
-            MainScreen(rememberAppState())
-        }
-    }
+    JWSuiteTheme { Surface { MainScreen() } }
 }

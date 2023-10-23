@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +18,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.R
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -56,6 +59,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val appState = rememberAppState(appName = stringResource(R.string.app_name))
+                    // https://foso.github.io/Jetpack-Compose-Playground/general/compositionlocal/
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         CommonScreen(state = state) { session ->
                             Timber.tag(TAG)
@@ -63,11 +67,12 @@ class MainActivity : ComponentActivity() {
                                     "mainActivity: startDestination = %s; route = %s",
                                     session.startDestination, session.route
                                 )
-                            RootNavigationGraph(
-                                appState = appState,
-                                session = session,
-                                startDestination = session.route
-                            )
+                            CompositionLocalProvider(
+                                LocalAppState provides appState,
+                                LocalSession provides session
+                            ) {
+                                RootNavigationGraph()
+                            }
                         }
                     }
                 }
@@ -106,5 +111,5 @@ class MainActivity : ComponentActivity() {
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun DefaultPreview() {
-    JWSuiteTheme { Surface { MainScreen(rememberAppState()) } }
+    JWSuiteTheme { Surface { MainScreen() } } // rememberAppState()
 }

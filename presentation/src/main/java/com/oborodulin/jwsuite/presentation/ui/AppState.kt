@@ -59,6 +59,9 @@ fun rememberAppState(
 /**
  * Responsible for holding state related to [App] and containing UI-related logic.
  */
+// https://foso.github.io/Jetpack-Compose-Playground/general/compositionlocal/
+val LocalAppState = compositionLocalOf<AppState> { error("No App state found!") }
+
 @Stable
 class AppState(
     val commonNavController: NavHostController,

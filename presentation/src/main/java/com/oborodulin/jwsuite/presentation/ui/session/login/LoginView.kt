@@ -23,9 +23,8 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.OtpTextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.jwsuite.presentation.ui.AppState
-import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
-import com.oborodulin.jwsuite.presentation.ui.rememberAppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
@@ -41,8 +40,10 @@ private const val TAG = "Presentation.LoginView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginView(appState: AppState, session: SessionUi, viewModel: SessionViewModel) {
+fun LoginView(viewModel: SessionViewModel) {
     Timber.tag(TAG).d("LoginView(...) called")
+    val appState = LocalAppState.current
+    val session = LocalSession.current
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -109,13 +110,5 @@ fun LoginView(appState: AppState, session: SessionUi, viewModel: SessionViewMode
 @Composable
 fun PreviewLoginView() {
     val ctx = LocalContext.current
-    JWSuiteTheme {
-        Surface {
-            LoginView(
-                appState = rememberAppState(),
-                session = SessionViewModelImpl.previewUiModel(ctx),
-                viewModel = SessionViewModelImpl.previewModel(ctx)
-            )
-        }
-    }
+    JWSuiteTheme { Surface { LoginView(viewModel = SessionViewModelImpl.previewModel(ctx)) } }
 }

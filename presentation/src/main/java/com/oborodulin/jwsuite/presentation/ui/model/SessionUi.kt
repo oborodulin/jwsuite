@@ -1,8 +1,11 @@
 package com.oborodulin.jwsuite.presentation.ui.model
 
+import androidx.compose.runtime.compositionLocalOf
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+
+val LocalSession = compositionLocalOf<SessionUi> { error("No session found!") }
 
 data class SessionUi(
     val isSigned: Boolean = false,
