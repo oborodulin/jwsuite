@@ -39,11 +39,11 @@ fun NavBarNavigationHost(
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             appState.sharedViewModel.value = sharedViewModel
-            DashboardingScreen(
+            /*DashboardingScreen(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
-            ) //setFabOnClick = setFabOnClick
+            )*/ //setFabOnClick = setFabOnClick
         }
         composable(
             route = NavRoutes.Congregating.route, arguments = NavRoutes.Congregating.arguments
@@ -52,11 +52,11 @@ fun NavBarNavigationHost(
             Timber.tag(TAG)
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            CongregatingScreen(
+            /*CongregatingScreen(
                 appState = appState,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
-            )
+            )*/
         }
         composable(
             route = NavRoutes.Territoring.route, arguments = NavRoutes.Territoring.arguments
@@ -67,13 +67,13 @@ fun NavBarNavigationHost(
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            TerritoringScreen(
+            /*TerritoringScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 nestedScrollConnection = nestedScrollConnection,
                 bottomBar = bottomBar
-            )
+            )*/
         }
         composable(route = NavRoutes.Ministring.route, arguments = NavRoutes.Ministring.arguments) {
             // ministring:

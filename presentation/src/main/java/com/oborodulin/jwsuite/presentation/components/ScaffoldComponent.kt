@@ -73,19 +73,18 @@ fun ScaffoldComponent(
                                     Text(
                                         text = appState.appName.plus(topBarTitleResId?.let {
                                             " - ${stringResource(it)}"
-                                        }
-                                            ?: (topBarTitle?.let { " - $topBarTitle" } ?: "")),
+                                        } ?: (topBarTitle?.let { " - $topBarTitle" } ?: "")),
                                         overflow = TextOverflow.Ellipsis
                                     )
+                                    topBarSubtitle?.let {
+                                        Text(
+                                            text = it,
+                                            style = Typography.titleMedium,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    //if (appState.actionBarSubtitle.value.isNotEmpty()) {}
                                 }
-                                topBarSubtitle?.let {
-                                    Text(
-                                        text = it,
-                                        style = Typography.titleMedium,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                                //if (appState.actionBarSubtitle.value.isNotEmpty()) {}
                                 actionBar?.let { it() }
                             }
                         },

@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             RootNavigationGraph(
                                 appState = appState,
+                                session = session,
                                 startDestination = session.route
                             )
                         }

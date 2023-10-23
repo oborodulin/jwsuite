@@ -35,6 +35,7 @@ import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetLocalityDistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetMicrodistrictsUseCase
@@ -247,6 +248,14 @@ object GeoUseCasesModule {
     fun provideSaveStreetMicrodistrictsUseCase(
         configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
     ): SaveStreetMicrodistrictsUseCase = SaveStreetMicrodistrictsUseCase(
+        configuration, streetsRepository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetStreetsForTerritoryUseCase(
+        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
+    ): GetStreetsForTerritoryUseCase = GetStreetsForTerritoryUseCase(
         configuration, streetsRepository
     )
 
