@@ -1,5 +1,7 @@
 package com.oborodulin.jwsuite
 
+//import com.orhanobut.logger.FormatStrategy
+//import com.orhanobut.logger.PrettyFormatStrategy
 import android.app.Application
 import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
@@ -12,8 +14,6 @@ import com.oborodulin.home.common.util.setLocale
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.util.dbVersion
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
-//import com.orhanobut.logger.FormatStrategy
-//import com.orhanobut.logger.PrettyFormatStrategy
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import java.util.Locale
@@ -71,19 +71,16 @@ class JwSuiteApplication : Application(), Configuration.Provider {
             ResourcesHelper.getHashMapResource(this, com.oborodulin.home.common.R.xml.languages)
         Timber.tag(TAG)
             .i(
-                "Version %s is starting [%s]. Database v.%s",
+                "App version %s is starting [%s]",
                 1, //BuildConfig.VERSION_NAME,
-                Locale.getDefault().language,
-                dbVersion()
+                Locale.getDefault().language
             )
-        Timber.tag(TAG)
-            .i(
-                "Framework (API %s) SQLite version: %s",
-                android.os.Build.VERSION.SDK_INT,
-                JwSuiteDatabase.sqliteVersion()
-            )
+        Timber.tag(TAG).i("Framework (API %s)", android.os.Build.VERSION.SDK_INT)
+        Timber.tag(TAG).i("SQLite v.%s", JwSuiteDatabase.sqliteVersion())
+        //Timber.tag(TAG).i("JwSuiteDatabase v.%s", dbVersion())
+
         initialiseDagger()
-        Timber.tag(TAG).i("Initialized")
+        Timber.tag(TAG).i("App Initialized")
     }
 
     private fun initialiseDagger() {

@@ -8,5 +8,5 @@ data class Session(
     val isSigned: Boolean = false,
     val isLogged: Boolean = false,
     val roles: List<Role> = emptyList(),
-    val startDestination: String? = null
+    val lastDestination: String? = null
 )

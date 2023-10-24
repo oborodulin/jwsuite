@@ -1,9 +1,12 @@
 package com.oborodulin.jwsuite.presentation.ui.session.login
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,12 +35,17 @@ fun LoginScreen(viewModel: SessionViewModelImpl = hiltViewModel()) {
         JWSuiteTheme { //(darkTheme = true)
             ScaffoldComponent(
                 appState = appState,
-                topBarSubtitle = dialogTitleResId?.let { stringResource(it) },
-                topBarNavImageVector = Icons.Outlined.ArrowBack,
-                onTopBarNavClick = { appState.backToBottomBarScreen() }
-            ) { paddingValues ->
-                CommonScreen(paddingValues = paddingValues, state = state) {
-                    LoginView(viewModel)
+                topBarSubtitle = dialogTitleResId?.let { stringResource(it) }
+            ) { innerPadding ->
+                CommonScreen(paddingValues = innerPadding, state = state) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        LoginView(viewModel)
+                    }
                 }
             }
         }

@@ -21,7 +21,7 @@ import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
-import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.graphs.RootNavigationGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private val viewModel: SessionViewModel by viewModels()
+    private val viewModel: SessionViewModelImpl by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,24 +55,16 @@ class MainActivity : ComponentActivity() {
             JWSuiteTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     val appState = rememberAppState(appName = stringResource(R.string.app_name))
                     // https://foso.github.io/Jetpack-Compose-Playground/general/compositionlocal/
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         CommonScreen(state = state) { session ->
-                            Timber.tag(TAG)
-                                .d(
-                                    "mainActivity: startDestination = %s; route = %s",
-                                    session.startDestination, session.route
-                                )
+                            Timber.tag(TAG).d("mainActivity: session = %s", session)
                             CompositionLocalProvider(
-                                LocalAppState provides appState,
-                                LocalSession provides session
-                            ) {
-                                RootNavigationGraph()
-                            }
+                                LocalAppState provides appState, LocalSession provides session
+                            ) { RootNavigationGraph() }
                         }
                     }
                 }
@@ -91,8 +83,7 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         Timber.tag(TAG).d("onStop() called")
-        workerProviderRepository.createLogoutWork()
-        /*        val logoutJob = lifecycleScope.launch {
+        workerProviderRepository.createLogoutWork()/*        val logoutJob = lifecycleScope.launch {
                     viewModel.actionsJobFlow.collectLatest { job ->
                         Timber.tag(TAG).d(
                             "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",

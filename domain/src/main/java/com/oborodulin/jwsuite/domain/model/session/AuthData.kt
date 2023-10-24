@@ -14,5 +14,5 @@ data class AuthData(
     val lastLoginTime: OffsetDateTime = OffsetDateTime.now(),
     val isLogged: Boolean = false,
     val roles: List<Role> = emptyList(),
-    val startDestination: String? = null
+    val lastDestination: String? = null
 )

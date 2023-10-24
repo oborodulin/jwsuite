@@ -7,6 +7,6 @@ interface InputWrapped {
     val errorMsg: String?
 
     fun errorMessage(ctx: Context): String? {
-        return errorId?.let { ctx.resources.getString(it) } ?: errorMsg
+        return errorMsg ?: errorId?.let { ctx.resources.getString(it) }
     }
 }

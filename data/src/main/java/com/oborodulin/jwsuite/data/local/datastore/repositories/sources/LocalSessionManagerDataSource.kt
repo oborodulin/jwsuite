@@ -9,7 +9,7 @@ interface LocalSessionManagerDataSource {
     fun username(): Flow<String?>
     fun databasePassphrase(): Flow<String>
     fun roles(): Flow<List<Role>>
-    fun checkPassword(password: String): Flow<String?>
+    fun isPasswordValid(password: String): Flow<String?>
     suspend fun updateRoles(roles: List<Role> = emptyList())
     suspend fun signup(username: String, password: String)
     suspend fun signout()

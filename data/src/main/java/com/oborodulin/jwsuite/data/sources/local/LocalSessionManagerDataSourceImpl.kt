@@ -26,7 +26,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override fun isSigned() = dataStore.data.map { authData -> !authData.username.isNullOrEmpty() }
     override fun isLogged() = dataStore.data.map { authData -> authData.isLogged }
     override fun username() = dataStore.data.map { authData -> authData.username }
-    override fun checkPassword(password: String) =
+    override fun isPasswordValid(password: String) =
         dataStore.data.map { authData ->
             authData.username.takeIf { authData.password?.let { it == password } ?: false }
         }

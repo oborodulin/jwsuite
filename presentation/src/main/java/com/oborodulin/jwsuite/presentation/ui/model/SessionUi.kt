@@ -11,18 +11,27 @@ data class SessionUi(
     val isSigned: Boolean = false,
     val isLogged: Boolean = false,
     val roles: List<RolesListItem> = emptyList(),
-    val startDestination: String? = null
+    val lastDestination: String? = null
 ) : ModelUi() {
-    val route = when (isSigned) {
+    val route = when (isSigned && isLogged) {
+        true -> Graph.MAIN  // navigate to MainScreen()
+        else -> Graph.AUTH // navigate to SignupScreen or LoginScreen
+    }
+
+    val startDestination = when (isSigned) {
         true -> when (isLogged) {
-            true -> when (startDestination) {
-                null -> Graph.MAIN  // navigate to MainScreen()
-                else -> startDestination // navigate to previous startDestination
+            true -> when (lastDestination) {
+                null -> NavRoutes.Home.route  // navigate to MainScreen()
+                else -> lastDestination // navigate to previous startDestination
             }
 
             else -> NavRoutes.Login.route // navigate to LoginScreen
         }
 
         else -> NavRoutes.Signup.route // navigate to SignupScreen
+    }
+
+    override fun toString(): String {
+        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', route='$route', startDestination='$startDestination')"
     }
 }

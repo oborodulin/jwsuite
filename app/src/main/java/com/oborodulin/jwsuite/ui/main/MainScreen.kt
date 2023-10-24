@@ -116,10 +116,10 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
             },
             isBottomNavigation = isBottomNavigation,
             floatingActionButton = floatingActionButton
-        ) { paddingValues ->
+        ) { innerPadding ->
             MainNavigationGraph(
                 appState = appState,
-                paddingValues = paddingValues,
+                paddingValues = innerPadding,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,

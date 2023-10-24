@@ -123,7 +123,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
             if (!redirectErrorStateMessage) {
                 _uiStateFlow.value = state
             }
-            uiState(_uiStateFlow.value)?.let {
+            uiState(state)?.let {
                 if (redirectErrorStateMessage) {
                     _uiStateFlow.value = state
                 }

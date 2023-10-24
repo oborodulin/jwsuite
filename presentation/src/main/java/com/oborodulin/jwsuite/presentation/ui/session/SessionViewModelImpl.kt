@@ -122,7 +122,7 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("signout(...) called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.signoutUseCase.execute(SignoutUseCase.Request)
-                .collect { submitState(UiState.Success(SessionUi(startDestination = NavRoutes.Signup.route))) }
+                .collect { submitState(UiState.Success(SessionUi(lastDestination = NavRoutes.Signup.route))) }
         }
         return job
     }
@@ -298,7 +298,7 @@ class SessionViewModelImpl @Inject constructor(
 
         fun previewUiModel(ctx: Context): SessionUi {
             val sessionUi = SessionUi(
-                isSigned = true, isLogged = true, roles = emptyList(), startDestination = null
+                isSigned = true, isLogged = true, roles = emptyList(), lastDestination = null
             )
             sessionUi.id = UUID.randomUUID()
             return sessionUi

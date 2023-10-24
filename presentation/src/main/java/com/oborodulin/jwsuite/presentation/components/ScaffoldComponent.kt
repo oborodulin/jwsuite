@@ -89,12 +89,14 @@ fun ScaffoldComponent(
                             }
                         },
                         navigationIcon = {
-                            IconButton(onClick = onTopBarNavClick) {
-                                IconComponent(
-                                    imageVector = topBarNavImageVector,
-                                    painterResId = topBarNavPainterResId,
-                                    contentDescriptionResId = topBarNavCntDescResId
-                                )
+                            if (topBarNavImageVector != null || topBarNavPainterResId != null){
+                                IconButton(onClick = onTopBarNavClick) {
+                                    IconComponent(
+                                        imageVector = topBarNavImageVector,
+                                        painterResId = topBarNavPainterResId,
+                                        contentDescriptionResId = topBarNavCntDescResId
+                                    )
+                                }
                             }
                             /*when (topBarNavigationIcon) {
                                 null -> IconButton(onClick = { context.toast("Menu button clicked...") }) {
@@ -112,7 +114,7 @@ fun ScaffoldComponent(
         },
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingActionButton = floatingActionButton,
-        bottomBar = { if (isBottomNavigation) bottomBar }
+        bottomBar = { if (isBottomNavigation) bottomBar() }
     ) {
         content(it)
     }

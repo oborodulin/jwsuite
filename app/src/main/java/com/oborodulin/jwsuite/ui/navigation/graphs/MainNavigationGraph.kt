@@ -14,6 +14,11 @@ import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
+import timber.log.Timber
+
+private const val TAG = "App.Navigation.MainNavigationGraph"
 
 // https://medium.com/@mathroda/nested-navigation-graph-in-jetpack-compose-with-bottom-navigation-d983c2d4119f
 @Composable
@@ -30,11 +35,12 @@ fun MainNavigationGraph(
     areUsingBottomNavigation: (Boolean) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
+    Timber.tag(TAG).d("MainNavigationGraph() called")
     val context = LocalContext.current
     NavHost(
-        navController = appState.commonNavController,
+        navController = LocalAppState.current.commonNavController,
         route = Graph.MAIN,
-        startDestination = NavRoutes.Home.route
+        startDestination = LocalSession.current.startDestination
     ) {
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         areUsingNestedScrollConnection(false)
