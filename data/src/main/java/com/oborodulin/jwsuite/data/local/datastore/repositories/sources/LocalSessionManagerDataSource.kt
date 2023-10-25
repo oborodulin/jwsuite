@@ -14,5 +14,5 @@ interface LocalSessionManagerDataSource {
     suspend fun signup(username: String, password: String)
     suspend fun signout()
     suspend fun login()
-    suspend fun logout()
+    suspend fun logout(lastDestination: String? = null)
 }

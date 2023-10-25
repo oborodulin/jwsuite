@@ -16,9 +16,9 @@ import javax.inject.Inject
 
 class SessionManagerRepositoryImpl @Inject constructor(
     private val localSessionManagerDataSource: LocalSessionManagerDataSource,
-    private val localMemberDataSource: LocalMemberDataSource,
-    private val mappers: MemberMappers,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    //private val localMemberDataSource: LocalMemberDataSource,
+    //private val mappers: MemberMappers,
+    //@IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : SessionManagerRepository {
     override fun isSigned() = localSessionManagerDataSource.isSigned()
     override fun isLogged() = localSessionManagerDataSource.isLogged()
@@ -26,9 +26,9 @@ class SessionManagerRepositoryImpl @Inject constructor(
 
     override fun signup(username: String, password: String) = flow {
         localSessionManagerDataSource.signup(username, password)
-        val roles = localMemberDataSource.getMemberRoles(username)
-            .map(mappers.roleEntityListToRolesListMapper::map).first()
-        localSessionManagerDataSource.updateRoles(roles)
+        //val roles = localMemberDataSource.getMemberRoles(username)
+        //    .map(mappers.roleEntityListToRolesListMapper::map).first()
+        //localSessionManagerDataSource.updateRoles(roles)
         localSessionManagerDataSource.login()
         emit(true)
     }
@@ -44,17 +44,17 @@ class SessionManagerRepositoryImpl @Inject constructor(
             when (username) {
                 null -> flow { emit(false) }
                 else -> {
-                    val roles = localMemberDataSource.getMemberRoles(username)
-                        .map(mappers.roleEntityListToRolesListMapper::map).first()
-                    localSessionManagerDataSource.updateRoles(roles)
+                    //val roles = localMemberDataSource.getMemberRoles(username)
+                    //    .map(mappers.roleEntityListToRolesListMapper::map).first()
+                    //localSessionManagerDataSource.updateRoles(roles)
                     localSessionManagerDataSource.login()
                     flow { emit(true) }
                 }
             }
         }
 
-    override fun logout() = flow {
-        localSessionManagerDataSource.logout()
+    override fun logout(lastDestination: String?) = flow {
+        localSessionManagerDataSource.logout(lastDestination)
         emit(true)
     }
 }

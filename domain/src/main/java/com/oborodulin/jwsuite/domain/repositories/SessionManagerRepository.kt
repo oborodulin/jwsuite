@@ -11,5 +11,5 @@ interface SessionManagerRepository {
     fun signup(username: String, password: String): Flow<Boolean>
     fun signout(): Flow<Boolean>
     fun login(password: String): Flow<Boolean>
-    fun logout(): Flow<Boolean>
+    fun logout(lastDestination: String? = null): Flow<Boolean>
 }

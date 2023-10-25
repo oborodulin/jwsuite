@@ -10,9 +10,6 @@ import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
-import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import timber.log.Timber
 
@@ -26,7 +23,7 @@ fun NavBarNavigationHost(
 ) {
     Timber.tag(TAG).d("NavBarNavigationHost(...) called")
     NavHost(
-        appState.navBarNavController, startDestination = NavRoutes.Dashboarding.route
+        appState.mainNavController, startDestination = NavRoutes.Dashboarding.route
     ) {
         composable(NavRoutes.Dashboarding.route) {
             // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
@@ -35,9 +32,9 @@ fun NavBarNavigationHost(
             // https://stackoverflow.com/questions/68857820/how-to-share-a-viewmodel-between-two-or-more-jetpack-composables-inside-a-compos
             // https://proandroiddev.com/jetpack-navigation-component-manual-implementation-of-multiple-back-stacks-62b33e95795c
             val parentEntry =
-                remember(it) { appState.navBarNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
+                remember(it) { appState.mainNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
             val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             appState.sharedViewModel.value = sharedViewModel
             /*DashboardingScreen(
                 appState = appState,
@@ -66,7 +63,7 @@ fun NavBarNavigationHost(
                 .d("Navigation Graph: to TerritoringScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             /*TerritoringScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
@@ -80,7 +77,7 @@ fun NavBarNavigationHost(
             Timber.tag(TAG)
                 .d("Navigation Graph: to MinistringScreen [route = '%s']", it.destination.route)
             val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             //MinistringScreen(navController)
         }
     }

@@ -24,6 +24,7 @@ private const val TAG = "App.Navigation.geoNavGraph"
 
 fun NavGraphBuilder.geoNavGraph(
     appState: AppState,
+    startDestination: String,
     paddingValues: PaddingValues,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -31,7 +32,7 @@ fun NavGraphBuilder.geoNavGraph(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    navigation(route = Graph.GEO, startDestination = NavRoutes.Geo.route) {
+    navigation(route = Graph.GEO, startDestination = startDestination) {
         // GeoScreen:
         composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
             Timber.tag(TAG).d(

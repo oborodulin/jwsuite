@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -14,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
 
 private const val TAG = "Presentation.ScaffoldComponent"
@@ -22,8 +21,6 @@ private const val TAG = "Presentation.ScaffoldComponent"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldComponent(
-    appState: AppState,
-//    scaffoldState: ScaffoldState = rememberScaffoldState(),
     nestedScrollConnection: NestedScrollConnection? = null,
     isNestedScrollConnection: Boolean = false,
     @StringRes topBarTitleResId: Int? = null,
@@ -43,9 +40,6 @@ fun ScaffoldComponent(
     content: @Composable (PaddingValues) -> Unit
 ) {
     Timber.tag(TAG).d("ScaffoldComponent() called")
-    //val context = LocalContext.current
-    var actionBarTitle by rememberSaveable { mutableStateOf(appState.appName) }
-
     /*    LaunchedEffect(appState.navBarNavController) {
             appState.navBarNavController.currentBackStackEntryFlow.collect { backStackEntry ->
                 // You can map the title based on the route using:
@@ -71,9 +65,10 @@ fun ScaffoldComponent(
                             ) {
                                 if (actionBar == null) {
                                     Text(
-                                        text = appState.appName.plus(topBarTitleResId?.let {
-                                            " - ${stringResource(it)}"
-                                        } ?: (topBarTitle?.let { " - $topBarTitle" } ?: "")),
+                                        text = topBarTitle ?: LocalAppState.current.appName.plus(
+                                            topBarTitleResId?.let {
+                                                " - ${stringResource(it)}"
+                                            } ?: ""),
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     topBarSubtitle?.let {
@@ -89,7 +84,7 @@ fun ScaffoldComponent(
                             }
                         },
                         navigationIcon = {
-                            if (topBarNavImageVector != null || topBarNavPainterResId != null){
+                            if (topBarNavImageVector != null || topBarNavPainterResId != null) {
                                 IconButton(onClick = onTopBarNavClick) {
                                     IconComponent(
                                         imageVector = topBarNavImageVector,

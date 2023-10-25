@@ -18,6 +18,7 @@ private const val TAG = "App.Navigation.housingNavGraph"
 
 fun NavGraphBuilder.housingNavGraph(
     appState: AppState,
+    startDestination: String? = null,
     paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
@@ -25,7 +26,9 @@ fun NavGraphBuilder.housingNavGraph(
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
-    navigation(route = Graph.HOUSING, startDestination = NavRoutes.Housing.route) {
+    navigation(
+        route = Graph.HOUSING, startDestination = startDestination ?: NavRoutes.Housing.route
+    ) {
         // House, Entrance, Floor, Room:
         composable(route = NavRoutes.Housing.route, arguments = NavRoutes.Housing.arguments) {
             Timber.tag(TAG)

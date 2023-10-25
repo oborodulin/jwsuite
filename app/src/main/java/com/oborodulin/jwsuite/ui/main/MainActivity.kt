@@ -52,19 +52,22 @@ class MainActivity : ComponentActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Make to run your application only in LANDSCAPE mode
         setContent {
+            Timber.tag(TAG).d("onCreate(): setContent called")
             JWSuiteTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     val appState = rememberAppState(appName = stringResource(R.string.app_name))
+                    Timber.tag(TAG).d("onCreate(): rememberAppState called")
                     // https://foso.github.io/Jetpack-Compose-Playground/general/compositionlocal/
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+                        Timber.tag(TAG).d("onCreate(): collectAsStateWithLifecycle called")
                         CommonScreen(state = state) { session ->
                             Timber.tag(TAG).d("mainActivity: session = %s", session)
                             CompositionLocalProvider(
                                 LocalAppState provides appState, LocalSession provides session
-                            ) { RootNavigationGraph() }
+                            ) { RootNavigationGraph(viewModel = viewModel) }
                         }
                     }
                 }

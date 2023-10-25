@@ -71,6 +71,7 @@ class SessionViewModelImpl @Inject constructor(
     )
 
     init {
+        Timber.tag(TAG).d("init called")
         loadSession()
     }
 
@@ -190,20 +191,17 @@ class SessionViewModelImpl @Inject constructor(
         }.debounce(350).collect { event ->
             when (event) {
                 is SessionInputEvent.Username -> setStateValue(
-                    SessionFields.SESSION_USERNAME,
-                    username,
+                    SessionFields.SESSION_USERNAME, username,
                     SessionInputValidator.Username.errorIdOrNull(event.input)
                 )
 
                 is SessionInputEvent.Pin -> setStateValue(
-                    SessionFields.SESSION_PIN,
-                    pin,
+                    SessionFields.SESSION_PIN, pin,
                     SessionInputValidator.Pin.errorIdOrNull(event.input)
                 )
 
                 is SessionInputEvent.ConfirmPin -> setStateValue(
-                    SessionFields.SESSION_CONFIRM_PIN,
-                    confirmPin,
+                    SessionFields.SESSION_CONFIRM_PIN, confirmPin,
                     SessionInputValidator.ConfirmPin.errorIdOrNull(event.input)
                 )
             }

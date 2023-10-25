@@ -13,15 +13,24 @@ data class SessionUi(
     val roles: List<RolesListItem> = emptyList(),
     val lastDestination: String? = null
 ) : ModelUi() {
-    val route = when (isSigned && isLogged) {
+    val rootRoute = when (isSigned && isLogged) {
         true -> Graph.MAIN  // navigate to MainScreen()
         else -> Graph.AUTH // navigate to SignupScreen or LoginScreen
     }
 
-    val startDestination = when (isSigned) {
+    val authStartDestination = when (isSigned) {
+        true -> when (isLogged) {
+            true -> Graph.MAIN  // navigate to MainScreen()
+            else -> NavRoutes.Login.route // navigate to LoginScreen
+        }
+
+        else -> NavRoutes.Signup.route // navigate to SignupScreen
+    }
+
+    val mainStartDestination = when (isSigned) {
         true -> when (isLogged) {
             true -> when (lastDestination) {
-                null -> NavRoutes.Home.route  // navigate to MainScreen()
+                null -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
                 else -> lastDestination // navigate to previous startDestination
             }
 
@@ -31,7 +40,18 @@ data class SessionUi(
         else -> NavRoutes.Signup.route // navigate to SignupScreen
     }
 
+    val mainRoute = when {
+        lastDestination == null -> NavRoutes.Home.route  // navigate to DashboardingScreen()
+        listOf(
+            NavRoutes.Dashboarding.route,
+            NavRoutes.Congregating.route,
+            NavRoutes.Territoring.route
+        ).contains(lastDestination) -> NavRoutes.Home.route
+
+        else -> NavRoutes.Home.route
+    }
+
     override fun toString(): String {
-        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', route='$route', startDestination='$startDestination')"
+        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', rootRoute='$rootRoute', authStartDestination='$authStartDestination', mainRoute='$mainRoute', mainStartDestination='$mainStartDestination')"
     }
 }

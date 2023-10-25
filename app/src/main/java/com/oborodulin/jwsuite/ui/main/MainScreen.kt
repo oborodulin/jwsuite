@@ -90,7 +90,6 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
 
     JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
-            appState = appState,
             nestedScrollConnection = nestedScrollConnection,
             isNestedScrollConnection = isNestedScrollConnection,
             topBarNavImageVector = topBarNavImageVector,

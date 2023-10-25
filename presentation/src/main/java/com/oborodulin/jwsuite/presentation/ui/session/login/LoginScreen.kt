@@ -8,19 +8,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Presentation.LoginScreen"
 
 @Composable
-fun LoginScreen(viewModel: SessionViewModelImpl = hiltViewModel()) {
+fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     Timber.tag(TAG).d("LoginScreen(...) called")
     val appState = LocalAppState.current
     /*if (session == null) {
@@ -33,10 +32,7 @@ fun LoginScreen(viewModel: SessionViewModelImpl = hiltViewModel()) {
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
-            ScaffoldComponent(
-                appState = appState,
-                topBarSubtitle = dialogTitleResId?.let { stringResource(it) }
-            ) { innerPadding ->
+            ScaffoldComponent(topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
                 CommonScreen(paddingValues = innerPadding, state = state) {
                     Column(
                         modifier = Modifier

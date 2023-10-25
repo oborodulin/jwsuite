@@ -38,6 +38,9 @@
     <string name="nav_item_room">Квартира</string>
 
     <!--BUTTONS:-->
+    <string name="btn_signup_lbl">Зарегистрировать</string>
+    <string name="btn_login_lbl">Войти</string>
+
     <!--FAB:-->
 
     <!--МЕНЮ:-->

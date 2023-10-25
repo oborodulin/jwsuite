@@ -6,18 +6,15 @@ import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSes
 import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.model.session.AuthData
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.OffsetDateTime
-import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by o.borodulin on 08.August.2022
  */
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LocalSessionManagerDataSourceImpl @Inject constructor(
     private val dataStore: DataStore<AuthData>,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -73,8 +70,8 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
         Unit
     }
 
-    override suspend fun logout() = withContext(dispatcher) {
-        dataStore.updateData { it.copy(isLogged = false) }
+    override suspend fun logout(lastDestination: String?) = withContext(dispatcher) {
+        dataStore.updateData { it.copy(isLogged = false, lastDestination = lastDestination) }
         Unit
     }
 }

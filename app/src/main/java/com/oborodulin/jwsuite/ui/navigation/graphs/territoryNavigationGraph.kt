@@ -27,13 +27,17 @@ private const val TAG = "App.Navigation.territoryNavGraph"
 
 fun NavGraphBuilder.territoryNavGraph(
     appState: AppState,
+    startDestination: String? = null,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    navigation(route = Graph.TERRITORY, startDestination = NavRoutes.Congregation.route) {
+    navigation(
+        route = Graph.TERRITORY,
+        startDestination = startDestination ?: NavRoutes.HandOutTerritoriesConfirmation.route
+    ) {
         composable(route = NavRoutes.HandOutTerritoriesConfirmation.route) {
             Timber.tag(TAG)
                 .d(
@@ -43,7 +47,7 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             HandOutTerritoriesConfirmationScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
@@ -63,7 +67,7 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             AtWorkTerritoriesConfirmationScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,

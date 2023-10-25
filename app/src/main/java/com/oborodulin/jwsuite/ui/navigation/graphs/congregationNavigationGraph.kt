@@ -18,13 +18,15 @@ private const val TAG = "App.Navigation.congregationNavGraph"
 
 fun NavGraphBuilder.congregationNavGraph(
     appState: AppState,
+    startDestination: String? = null,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     navigation(
-        route = Graph.CONGREGATION, startDestination = NavRoutes.Congregation.route
+        route = Graph.CONGREGATION,
+        startDestination = startDestination ?: NavRoutes.Congregation.route
     ) {
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments

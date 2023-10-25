@@ -22,8 +22,8 @@ private const val TAG = "Presentation.AppState"
 fun rememberAppState(
     //accountingScaffoldState: ScaffoldState = rememberScaffoldState(),
     //payerScaffoldState: ScaffoldState = rememberScaffoldState(),
-    commonNavController: NavHostController = rememberNavController(),
-    navBarNavController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController(),
+    mainNavController: NavHostController = rememberNavController(),
     sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
         mutableStateOf(null)
     },
@@ -34,27 +34,27 @@ fun rememberAppState(
     appName: String = "",
     actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") }
 ) = remember(
+    //accountingScaffoldState,
+    //payerScaffoldState,
+    navController,
+    mainNavController,
+    sharedViewModel,
+//        fab,
+    resources,
+    coroutineScope,
+    actionBarSubtitle
+) {
+    AppState(
         //accountingScaffoldState,
         //payerScaffoldState,
-        commonNavController,
-        //navBarNavController,
+        navController,
+        mainNavController,
         sharedViewModel,
-//        fab,
-        resources,
-        coroutineScope,
-        actionBarSubtitle
-    ) {
-        AppState(
-            //accountingScaffoldState,
-            //payerScaffoldState,
-            commonNavController,
-            commonNavController, //navBarNavController,
-            sharedViewModel,
 //            fab,
-            appName,
-            actionBarSubtitle
-        )
-    }
+        appName,
+        actionBarSubtitle
+    )
+}
 
 /**
  * Responsible for holding state related to [App] and containing UI-related logic.
@@ -65,7 +65,7 @@ val LocalAppState = compositionLocalOf<AppState> { error("No App state found!") 
 @Stable
 class AppState(
     val commonNavController: NavHostController,
-    val navBarNavController: NavHostController,
+    val mainNavController: NavHostController,
     val sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
 //    val fab: MutableState<@Composable () -> Unit>,
     val appName: String,
@@ -85,7 +85,7 @@ class AppState(
     // Атрибут отображения навигационного меню bottomBar
     // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
     val shouldShowBottomNavBar: Boolean
-        @Composable get() = commonNavController
+        @Composable get() = mainNavController
             .currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes
 
     // ----------------------------------------------------------
@@ -93,9 +93,9 @@ class AppState(
     // ----------------------------------------------------------
 
     val navBarCurrentRoute: String?
-        get() = this.navBarNavController.currentDestination?.route
+        get() = this.mainNavController.currentDestination?.route
 
-    fun navBarUpPress() = this.navBarNavController.navigateUp()
+    fun navBarUpPress() = this.mainNavController.navigateUp()
 
     fun commonNavigateUp() = this.commonNavController.navigateUp()
 
@@ -128,14 +128,15 @@ class AppState(
 
     // Клик по навигационному меню, вкладке.
     fun navigateToBottomBarRoute(route: String) {
+        Timber.tag(TAG).d("navigateToBottomBarRoute(...) called: route = %s", route)
         if (route != this.navBarCurrentRoute) {
-            this.navBarNavController.navigate(route) {
+            this.mainNavController.navigate(route) {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
                 // on the back stack AS users select items
                 //Возвращаем выбранный экран,
                 //иначе если backstack не пустой то показываем ранее открытое состяние
-                navBarNavController.graph.startDestinationRoute?.let { route ->
+                mainNavController.graph.startDestinationRoute?.let { route ->
                     popUpTo(route) {
                         saveState = true
                     }

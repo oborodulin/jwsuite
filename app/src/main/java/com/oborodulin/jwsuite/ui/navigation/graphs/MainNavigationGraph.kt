@@ -21,6 +21,7 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.MainNavigationGraph"
 
 // https://medium.com/@mathroda/nested-navigation-graph-in-jetpack-compose-with-bottom-navigation-d983c2d4119f
+// https://stackoverflow.com/questions/69738397/jetpackcompose-navigation-nested-graphs-cause-viewmodelstore-should-be-set-befo
 @Composable
 fun MainNavigationGraph(
     appState: AppState,
@@ -37,16 +38,18 @@ fun MainNavigationGraph(
 ) {
     Timber.tag(TAG).d("MainNavigationGraph() called")
     val context = LocalContext.current
+    val session = LocalSession.current
     NavHost(
-        navController = LocalAppState.current.commonNavController,
+        navController = LocalAppState.current.mainNavController,
         route = Graph.MAIN,
-        startDestination = LocalSession.current.startDestination
+        startDestination = session.mainRoute
     ) {
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         areUsingNestedScrollConnection(false)
         areUsingBottomNavigation(false)
         congregationNavGraph(
             appState = appState,
+            startDestination = session.mainStartDestination,
             paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
@@ -54,6 +57,7 @@ fun MainNavigationGraph(
         )
         territoryNavGraph(
             appState = appState,
+            startDestination = session.mainStartDestination,
             paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
@@ -62,6 +66,7 @@ fun MainNavigationGraph(
         )
         geoNavGraph(
             appState = appState,
+            startDestination = session.mainStartDestination,
             paddingValues = paddingValues,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
@@ -71,6 +76,7 @@ fun MainNavigationGraph(
         )
         housingNavGraph(
             appState = appState,
+            startDestination = session.mainStartDestination,
             paddingValues = paddingValues,
             onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
@@ -86,6 +92,7 @@ fun MainNavigationGraph(
             areUsingBottomNavigation(true)
             bottomBarNavGraph(
                 appState = appState,
+                startDestination = session.mainStartDestination,
                 paddingValues = paddingValues,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

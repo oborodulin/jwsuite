@@ -22,14 +22,19 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.bottomBarNavGraph"
 
 fun NavGraphBuilder.bottomBarNavGraph(
-    appState: AppState, paddingValues: PaddingValues,
+    appState: AppState,
+    startDestination: String? = null,
+    paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    navigation(route = Graph.BOTTOM_BAR, startDestination = NavRoutes.Dashboarding.route) {
+    navigation(
+        route = Graph.BOTTOM_BAR,
+        startDestination = startDestination ?: NavRoutes.Dashboarding.route
+    ) {
         // DashboardingScreen:
         composable(NavRoutes.Dashboarding.route) {
             // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
@@ -38,9 +43,9 @@ fun NavGraphBuilder.bottomBarNavGraph(
             // https://stackoverflow.com/questions/68857820/how-to-share-a-viewmodel-between-two-or-more-jetpack-composables-inside-a-compos
             // https://proandroiddev.com/jetpack-navigation-component-manual-implementation-of-multiple-back-stacks-62b33e95795c
             val parentEntry =
-                remember(it) { appState.navBarNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
+                remember(it) { appState.mainNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
             val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             appState.sharedViewModel.value = sharedViewModel
             DashboardingScreen(
                 appState = appState, paddingValues = paddingValues,
@@ -73,7 +78,7 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 .d("Navigation Graph: to TerritoringScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             TerritoringScreen(
                 appState = appState, paddingValues = paddingValues,
                 //sharedViewModel = sharedViewModel,
@@ -90,7 +95,7 @@ fun NavGraphBuilder.bottomBarNavGraph(
             Timber.tag(TAG)
                 .d("Navigation Graph: to MinistringScreen [route = '%s']", it.destination.route)
             val sharedViewModel =
-                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+                hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             //MinistringScreen(appState = appState, paddingValues = paddingValues,
             //                onActionBarTitleChange = onActionBarTitleChange,
             //                onTopBarActionsChange = onTopBarActionsChange)
