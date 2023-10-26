@@ -506,6 +506,7 @@ sealed class NavRoutes constructor(
         }
     }
 
+    // Territory:
     data object TerritoryCategory : NavRoutes(
         route = String.format(
             ROUTE_TERRITORY_CATEGORY, "$ARG_TERRITORY_CATEGORY_ID={$ARG_TERRITORY_CATEGORY_ID}"
@@ -779,6 +780,7 @@ sealed class NavRoutes constructor(
         }
     }
 
+    // Housing:
     data object House : NavRoutes(
         route = String.format(ROUTE_HOUSE, "$ARG_HOUSE_ID={$ARG_HOUSE_ID}"),
         iconImageVector = Icons.Outlined.Home,
@@ -925,21 +927,64 @@ sealed class NavRoutes constructor(
 
     companion object {
         fun bottomNavBarRoutes() = listOf(Dashboarding, Congregating, Territoring, Ministring)
+        fun geoRoutes() =
+            listOf(
+                Geo,
+                Region,
+                RegionDistrict,
+                Locality,
+                LocalityDistrict,
+                Microdistrict,
+                Street,
+                StreetLocalityDistrict,
+                StreetMicrodistrict
+            )
+
+        fun congregationRoutes() = listOf(Congregation, Group, Member)
+        fun territoryRoutes() = listOf(
+            TerritoryCategory,
+            Territory,
+            TerritoryDetails,
+            TerritoryStreet,
+            TerritoryHouse,
+            TerritoryEntrance,
+            TerritoryFloor,
+            TerritoryRoom,
+            HandOutTerritoriesConfirmation,
+            AtWorkTerritoriesConfirmation
+        )
+
+        fun housingRoutes() = listOf(Housing, House, Entrance, Floor, Room)
+
+        fun mainRouteByDestination(destination: String? = null) = when {
+            destination == null -> Home.route  // navigate to DashboardingScreen()
+            bottomNavBarRoutes().map { it.route }.contains(destination) -> Home.route
+            congregationRoutes().map { it.route }.contains(destination) -> Graph.CONGREGATION
+            geoRoutes().map { it.route }.contains(destination) -> Graph.GEO
+            else -> Home.route
+        }
 
         fun isShowBackButton(route: String?) = when (route) {
             Congregation.route -> true
             else -> false
         }
 
-        fun titleByRoute(context: Context, route: String): String {
-            return when (route) {
-                Dashboarding.route -> context.getString(Dashboarding.titleResId)
-                Congregating.route -> context.getString(Congregating.titleResId)
-                Territoring.route -> context.getString(Territoring.titleResId)
-                Ministring.route -> context.getString(Ministring.titleResId)
-                Congregation.route -> context.getString(Congregation.titleResId)
-                else -> ""
-            }
+        // https://stackoverflow.com/questions/58351219/kotlin-get-declared-member-property-value
+        // https://stackoverflow.com/questions/59743974/kotlin-reflection-get-instance-of-a-member-property
+        fun titleByRoute(ctx: Context, route: String, vararg formatArgs: Any): String {
+            val routes =
+                bottomNavBarRoutes() + geoRoutes() + congregationRoutes() + territoryRoutes() + housingRoutes()
+            return routes.find { it.route == route }?.titleResId?.let {
+                ctx.getString(it, formatArgs)
+            } ?: ""
+            /*
+            val subclasses: List<KClass<*>> = NavRoutes::class.sealedSubclasses
+            val titleResId =
+                subclasses.find {
+                    it.members.find { member -> member.name == "route" }?.call() == route
+                }?.members?.find { member -> member.name == "titleResId" }?.call() as? Int
+            return titleResId?.let { context.getString(it) } ?: ""
+             */
         }
     }
 }

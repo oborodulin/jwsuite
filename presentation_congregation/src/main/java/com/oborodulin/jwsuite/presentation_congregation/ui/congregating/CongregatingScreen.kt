@@ -65,7 +65,7 @@ fun CongregatingScreen(
     var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
     val onTabChange: (CongregatingTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
-        appState.commonNavController.navigate(
+        appState.mainNavController.navigate(
             when (CongregatingTabType.valueOf(tabType)) {
                 CongregatingTabType.CONGREGATIONS -> NavRoutes.Congregation.routeForCongregation()
                 CongregatingTabType.GROUPS -> NavRoutes.Group.routeForGroup()

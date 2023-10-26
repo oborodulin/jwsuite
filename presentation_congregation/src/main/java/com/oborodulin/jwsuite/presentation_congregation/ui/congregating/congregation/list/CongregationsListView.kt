@@ -88,7 +88,7 @@ fun CongregationsListView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is CongregationsListUiSingleEvent.OpenCongregationScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }

@@ -144,7 +144,7 @@ fun TerritoriesGridView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoriesGridUiSingleEvent.OpenTerritoryScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }

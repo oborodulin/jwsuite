@@ -89,7 +89,7 @@ fun TerritoryDetailsScreen(
         onClick = { onTabChange(TerritoryDetailsTabType.STREETS) }
     ) {
         TerritoryStreetsListView(
-            navController = appState.commonNavController,
+            navController = appState.mainNavController,
             territoryInput = territoryInput
         )
     }
@@ -98,7 +98,7 @@ fun TerritoryDetailsScreen(
         onClick = { onTabChange(TerritoryDetailsTabType.HOUSES) }
     ) {
         HousesListView(
-            navController = appState.commonNavController,
+            navController = appState.mainNavController,
             territoryInput = territoryInput
         )
     }
@@ -158,23 +158,23 @@ fun TerritoryDetailsScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryStreetScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryHouseScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryEntranceScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryFloorScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryRoomScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }

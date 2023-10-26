@@ -83,7 +83,7 @@ fun MembersListView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is MembersListUiSingleEvent.OpenMemberScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }

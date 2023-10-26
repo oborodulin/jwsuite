@@ -20,10 +20,9 @@ private const val TAG = "Presentation.AppState"
 
 @Composable
 fun rememberAppState(
-    //accountingScaffoldState: ScaffoldState = rememberScaffoldState(),
-    //payerScaffoldState: ScaffoldState = rememberScaffoldState(),
-    navController: NavHostController = rememberNavController(),
+    rootNavController: NavHostController = rememberNavController(),
     mainNavController: NavHostController = rememberNavController(),
+    barNavController: NavHostController = rememberNavController(),
     sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
         mutableStateOf(null)
     },
@@ -34,10 +33,9 @@ fun rememberAppState(
     appName: String = "",
     actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") }
 ) = remember(
-    //accountingScaffoldState,
-    //payerScaffoldState,
-    navController,
+    rootNavController,
     mainNavController,
+    barNavController,
     sharedViewModel,
 //        fab,
     resources,
@@ -47,8 +45,9 @@ fun rememberAppState(
     AppState(
         //accountingScaffoldState,
         //payerScaffoldState,
-        navController,
+        rootNavController,
         mainNavController,
+        barNavController,
         sharedViewModel,
 //            fab,
         appName,
@@ -64,8 +63,9 @@ val LocalAppState = compositionLocalOf<AppState> { error("No App state found!") 
 
 @Stable
 class AppState(
-    val commonNavController: NavHostController,
+    val rootNavController: NavHostController,
     val mainNavController: NavHostController,
+    val barNavController: NavHostController,
     val sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
 //    val fab: MutableState<@Composable () -> Unit>,
     val appName: String,
@@ -85,26 +85,26 @@ class AppState(
     // Атрибут отображения навигационного меню bottomBar
     // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
     val shouldShowBottomNavBar: Boolean
-        @Composable get() = mainNavController
+        @Composable get() = barNavController
             .currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes
 
     // ----------------------------------------------------------
     // Источник состояния навигации
     // ----------------------------------------------------------
 
-    val navBarCurrentRoute: String?
-        get() = this.mainNavController.currentDestination?.route
+    val barNavCurrentRoute: String?
+        get() = this.barNavController.currentDestination?.route
 
-    fun navBarUpPress() = this.mainNavController.navigateUp()
+    fun navBarUpPress() = this.barNavController.navigateUp()
 
-    fun commonNavigateUp() = this.commonNavController.navigateUp()
+    fun commonNavigateUp() = this.mainNavController.navigateUp()
 
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen() {
         Timber.tag(TAG).d("backToBottomBarScreen() called")
-        this.commonNavController.popBackStack()
-        this.commonNavController.navigate(NavRoutes.Home.route) {
-            popUpTo(commonNavController.graph.startDestinationId)
+        this.mainNavController.popBackStack()
+        this.mainNavController.navigate(NavRoutes.Home.route) {
+            popUpTo(mainNavController.graph.startDestinationId)
             launchSingleTop = true
         }
     }
@@ -119,7 +119,7 @@ class AppState(
                 route,
                 skippedPrevRoute
             )
-        this.commonNavController.navigate(route) {
+        this.mainNavController.navigate(route) {
             skippedPrevRoute?.let {
                 popUpTo(it) { inclusive = true }
             }
@@ -127,16 +127,16 @@ class AppState(
     }
 
     // Клик по навигационному меню, вкладке.
-    fun navigateToBottomBarRoute(route: String) {
+    fun navigateToBarRoute(route: String) {
         Timber.tag(TAG).d("navigateToBottomBarRoute(...) called: route = %s", route)
-        if (route != this.navBarCurrentRoute) {
-            this.mainNavController.navigate(route) {
+        if (route != this.barNavCurrentRoute) {
+            this.barNavController.navigate(route) {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
                 // on the back stack AS users select items
                 //Возвращаем выбранный экран,
                 //иначе если backstack не пустой то показываем ранее открытое состяние
-                mainNavController.graph.startDestinationRoute?.let { route ->
+                barNavController.graph.startDestinationRoute?.let { route ->
                     popUpTo(route) {
                         saveState = true
                     }

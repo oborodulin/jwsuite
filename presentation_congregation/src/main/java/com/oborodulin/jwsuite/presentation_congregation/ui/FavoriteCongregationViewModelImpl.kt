@@ -13,9 +13,7 @@ private const val SHARED_ITEM_ID_KEY = "SHARED_CONGREGATION_ID"
 private const val SHARED_HEAD_LINE_KEY = "SHARED_CONGREGATION_NAME"
 
 @HiltViewModel
-class FavoriteCongregationViewModelImpl @Inject constructor(
-    private val state: SavedStateHandle
-) :
+class FavoriteCongregationViewModelImpl @Inject constructor(private val state: SavedStateHandle) :
     SharedViewModeled<ListItemModel?>, SharedViewModel<ListItemModel?>() {
     companion object {
         val previewModel = object : SharedViewModeled<ListItemModel?> {

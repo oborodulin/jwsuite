@@ -27,31 +27,14 @@ data class SessionUi(
         else -> NavRoutes.Signup.route // navigate to SignupScreen
     }
 
-    val mainStartDestination = when (isSigned) {
-        true -> when (isLogged) {
-            true -> when (lastDestination) {
-                null -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
-                else -> lastDestination // navigate to previous startDestination
-            }
+    val mainRoute = NavRoutes.mainRouteByDestination(lastDestination)
 
-            else -> NavRoutes.Login.route // navigate to LoginScreen
-        }
-
-        else -> NavRoutes.Signup.route // navigate to SignupScreen
-    }
-
-    val mainRoute = when {
-        lastDestination == null -> NavRoutes.Home.route  // navigate to DashboardingScreen()
-        listOf(
-            NavRoutes.Dashboarding.route,
-            NavRoutes.Congregating.route,
-            NavRoutes.Territoring.route
-        ).contains(lastDestination) -> NavRoutes.Home.route
-
-        else -> NavRoutes.Home.route
+    val startDestination = when (lastDestination) {
+        null -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
+        else -> lastDestination // navigate to previous startDestination
     }
 
     override fun toString(): String {
-        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', rootRoute='$rootRoute', authStartDestination='$authStartDestination', mainRoute='$mainRoute', mainStartDestination='$mainStartDestination')"
+        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', rootRoute='$rootRoute', authStartDestination='$authStartDestination', mainRoute='$mainRoute', mainStartDestination='$startDestination')"
     }
 }

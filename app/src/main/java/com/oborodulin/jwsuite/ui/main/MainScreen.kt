@@ -28,8 +28,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.ui.navigation.NavBarNavigationHost
-import com.oborodulin.jwsuite.ui.navigation.graphs.MainNavigationGraph
+import com.oborodulin.jwsuite.ui.navigation.MainNavigationHost
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -116,8 +115,7 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
             isBottomNavigation = isBottomNavigation,
             floatingActionButton = floatingActionButton
         ) { innerPadding ->
-            MainNavigationGraph(
-                appState = appState,
+            MainNavigationHost(
                 paddingValues = innerPadding,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
@@ -140,7 +138,7 @@ private fun HomeNavigationHost(
     bottomBar: @Composable () -> Unit
 ) {
     Timber.tag(TAG).d("HomeNavigationHost(...) called")
-    NavHost(appState.commonNavController, startDestination = NavRoutes.Signup.route) {
+    NavHost(appState.mainNavController, startDestination = NavRoutes.Signup.route) {
         // Congregation:
         // Territory:
         // Geo:
@@ -152,11 +150,11 @@ private fun HomeNavigationHost(
                     "Navigation Graph: to NavBarNavigationHost [route = '%s']",
                     it.destination.route
                 )
-            NavBarNavigationHost(
-                appState = appState,
-                nestedScrollConnection = nestedScrollConnection,
-                bottomBar = bottomBar
-            )
+            /* BarNavigationHost(
+                 appState = appState,
+                 nestedScrollConnection = nestedScrollConnection,
+                 bottomBar = bottomBar
+             )*/
         }
     }
 }

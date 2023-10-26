@@ -99,7 +99,7 @@ fun HousingScreen(
     var tabType by rememberSaveable { mutableStateOf(HousingTabType.HOUSES.name) }
     val onTabChange: (HousingTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
-        appState.commonNavController.navigate(
+        appState.mainNavController.navigate(
             when (HousingTabType.valueOf(tabType)) {
                 HousingTabType.HOUSES -> NavRoutes.House.routeForHouse()
                 HousingTabType.ENTRANCES -> NavRoutes.Entrance.routeForEntrance()
@@ -214,7 +214,7 @@ fun HousingScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is HousingUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }
@@ -250,7 +250,7 @@ fun HousesEntrancesFloorsRoomsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            HousesListView(navController = appState.commonNavController, streetInput = streetInput)
+            HousesListView(navController = appState.mainNavController, streetInput = streetInput)
         }
         Box(
             modifier = Modifier
@@ -272,7 +272,7 @@ fun HousesEntrancesFloorsRoomsView(
                     TabRowItem(title = stringResource(R.string.houses_tab_floors)) {
                     },
                     TabRowItem(title = stringResource(R.string.houses_tab_rooms)) {
-                        RoomsListView(navController = appState.commonNavController)
+                        RoomsListView(navController = appState.mainNavController)
                     }
                 )
             )
@@ -305,7 +305,7 @@ fun RoomsView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            RoomsListView(navController = appState.commonNavController)
+            RoomsListView(navController = appState.mainNavController)
         }
     }
 }

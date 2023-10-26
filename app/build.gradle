@@ -87,6 +87,9 @@ dependencies {
     ksp deps.dagger.compiler
     implementation deps.hilt.navigationCompose
 
+    // JSON
+    implementation deps.json.kotlinx
+
     implementation deps.androidx.coreKtx
     implementation deps.lifecycle.runtimeKtx
     implementation deps.lifecycle.extensions

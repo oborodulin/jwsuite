@@ -37,7 +37,7 @@ fun BottomNavigationComponent(modifier: Modifier, appState: AppState) {
         contentColor = Color.White //MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.background)
          */
     ) {
-        val navBackStackEntry by appState.mainNavController.currentBackStackEntryAsState()
+        val navBackStackEntry by appState.barNavController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         NavRoutes.bottomNavBarRoutes().forEach { item ->
             NavigationBarItem(
@@ -63,7 +63,7 @@ fun BottomNavigationComponent(modifier: Modifier, appState: AppState) {
                 //unselectedContentColor = Color.White.copy(0.4f),
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
-                onClick = { appState.navigateToBottomBarRoute(item.route) }
+                onClick = { appState.navigateToBarRoute(item.route) }
             )
         }
     }

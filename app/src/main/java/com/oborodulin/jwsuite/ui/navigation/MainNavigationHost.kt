@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.ui.navigation.graphs
+package com.oborodulin.jwsuite.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -13,18 +13,20 @@ import androidx.navigation.compose.composable
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
+import com.oborodulin.jwsuite.ui.navigation.graphs.congregationNavGraph
+import com.oborodulin.jwsuite.ui.navigation.graphs.geoNavGraph
+import com.oborodulin.jwsuite.ui.navigation.graphs.housingNavGraph
+import com.oborodulin.jwsuite.ui.navigation.graphs.territoryNavGraph
 import timber.log.Timber
 
-private const val TAG = "App.Navigation.MainNavigationGraph"
+private const val TAG = "App.Navigation.MainNavigationHost"
 
 // https://medium.com/@mathroda/nested-navigation-graph-in-jetpack-compose-with-bottom-navigation-d983c2d4119f
 // https://stackoverflow.com/questions/69738397/jetpackcompose-navigation-nested-graphs-cause-viewmodelstore-should-be-set-befo
 @Composable
-fun MainNavigationGraph(
-    appState: AppState,
+fun MainNavigationHost(
     paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
@@ -36,11 +38,12 @@ fun MainNavigationGraph(
     areUsingBottomNavigation: (Boolean) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    Timber.tag(TAG).d("MainNavigationGraph() called")
-    val context = LocalContext.current
+    Timber.tag(TAG).d("MainNavigationHost(...) called")
+    val appState = LocalAppState.current
     val session = LocalSession.current
+    val context = LocalContext.current
     NavHost(
-        navController = LocalAppState.current.mainNavController,
+        navController = appState.mainNavController,
         route = Graph.MAIN,
         startDestination = session.mainRoute
     ) {
@@ -49,7 +52,7 @@ fun MainNavigationGraph(
         areUsingBottomNavigation(false)
         congregationNavGraph(
             appState = appState,
-            startDestination = session.mainStartDestination,
+            startDestination = session.startDestination,
             paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
@@ -57,7 +60,7 @@ fun MainNavigationGraph(
         )
         territoryNavGraph(
             appState = appState,
-            startDestination = session.mainStartDestination,
+            startDestination = session.startDestination,
             paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
@@ -66,7 +69,7 @@ fun MainNavigationGraph(
         )
         geoNavGraph(
             appState = appState,
-            startDestination = session.mainStartDestination,
+            startDestination = session.startDestination,
             paddingValues = paddingValues,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
@@ -76,7 +79,7 @@ fun MainNavigationGraph(
         )
         housingNavGraph(
             appState = appState,
-            startDestination = session.mainStartDestination,
+            startDestination = session.startDestination,
             paddingValues = paddingValues,
             onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
@@ -85,14 +88,13 @@ fun MainNavigationGraph(
             onTopBarActionsChange = onTopBarActionsChange
         )
         composable(NavRoutes.Home.route) {
+            Timber.tag(TAG).d("MainNavigationHost(...) -> Home.route called")
             onTopBarNavImageVectorChange(Icons.Outlined.Menu)
             onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
             onActionBarSubtitleChange(appState.actionBarSubtitle.value)
             areUsingNestedScrollConnection(true)
             areUsingBottomNavigation(true)
-            bottomBarNavGraph(
-                appState = appState,
-                startDestination = session.mainStartDestination,
+            BarNavigationHost(
                 paddingValues = paddingValues,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

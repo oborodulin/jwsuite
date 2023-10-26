@@ -47,7 +47,7 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             HandOutTerritoriesConfirmationScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
@@ -67,7 +67,7 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             AtWorkTerritoriesConfirmationScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
@@ -87,7 +87,7 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             TerritoryScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
@@ -109,7 +109,7 @@ fun NavGraphBuilder.territoryNavGraph(
                     it.destination.route, NavRoutes.TerritoryDetails.arguments.firstOrNull()
                 )
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             TerritoryDetailsScreen(
                 appState = appState,
                 territoryViewModel = territoryViewModel,
@@ -151,7 +151,7 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             TerritoryStreetScreen(
                 appState = appState,
                 //sharedViewModel = sharedViewModel,
@@ -173,7 +173,7 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             TerritoryHouseScreen(
                 appState = appState,
                 territoryViewModel = territoryViewModel,
@@ -195,7 +195,7 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
             TerritoryRoomScreen(
                 appState = appState,
                 territoryViewModel = territoryViewModel,

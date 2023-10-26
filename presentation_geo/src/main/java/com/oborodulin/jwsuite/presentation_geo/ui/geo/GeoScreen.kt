@@ -67,7 +67,7 @@ fun GeoScreen(
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
     val onTabChange: (GeoTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
-        appState.commonNavController.navigate(
+        appState.mainNavController.navigate(
             when (GeoTabType.valueOf(tabType)) {
                 GeoTabType.REGIONS -> NavRoutes.Region.routeForRegion()
                 GeoTabType.REGION_DISTRICTS -> NavRoutes.RegionDistrict.routeForRegionDistrict()
@@ -90,7 +90,7 @@ fun GeoScreen(
                             imageVector = Icons.Outlined.Add,
                             textResId = R.string.fab_street_locality_district_text
                         ) {
-                            appState.commonNavController.navigate(
+                            appState.mainNavController.navigate(
                                 NavRoutes.StreetLocalityDistrict.routeForStreetLocalityDistrict()
                             )
                         }
@@ -100,7 +100,7 @@ fun GeoScreen(
                             imageVector = Icons.Outlined.Add,
                             textResId = R.string.fab_street_microdistrict_text
                         ) {
-                            appState.commonNavController.navigate(
+                            appState.mainNavController.navigate(
                                 NavRoutes.StreetMicrodistrict.routeForStreetMicrodistrict()
                             )
                         }
@@ -214,7 +214,7 @@ fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            RegionsListView(navController = appState.commonNavController)
+            RegionsListView(navController = appState.mainNavController)
         }
         Box(
             modifier = Modifier
@@ -231,10 +231,10 @@ fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
             CustomScrollableTabRow(
                 listOf(
                     TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
-                        RegionDistrictsListView(navController = appState.commonNavController)
+                        RegionDistrictsListView(navController = appState.mainNavController)
                     },
                     TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
-                        LocalitiesListView(navController = appState.commonNavController)
+                        LocalitiesListView(navController = appState.mainNavController)
                     }
                 )
             )
@@ -269,7 +269,7 @@ fun RegionDistrictsLocalitiesView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            RegionDistrictsListView(navController = appState.commonNavController)
+            RegionDistrictsListView(navController = appState.mainNavController)
         }
         Box(
             modifier = Modifier
@@ -283,7 +283,7 @@ fun RegionDistrictsLocalitiesView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            LocalitiesListView(navController = appState.commonNavController)
+            LocalitiesListView(navController = appState.mainNavController)
         }
     }
 }
@@ -314,7 +314,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            LocalitiesListView(navController = appState.commonNavController)
+            LocalitiesListView(navController = appState.mainNavController)
         }
         Box(
             modifier = Modifier
@@ -331,13 +331,13 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(appState: AppState) {
             CustomScrollableTabRow(
                 listOf(
                     TabRowItem(title = stringResource(R.string.geo_tab_locality_districts)) {
-                        LocalityDistrictsListView(navController = appState.commonNavController)
+                        LocalityDistrictsListView(navController = appState.mainNavController)
                     },
                     TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
-                        MicrodistrictsListView(navController = appState.commonNavController)
+                        MicrodistrictsListView(navController = appState.mainNavController)
                     },
                     TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
-                        StreetsListView(navController = appState.commonNavController)
+                        StreetsListView(navController = appState.mainNavController)
                     }
                 )
             )
@@ -376,7 +376,7 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            LocalityDistrictsListView(navController = appState.commonNavController)
+            LocalityDistrictsListView(navController = appState.mainNavController)
         }
         Box(
             modifier = Modifier
@@ -393,10 +393,10 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
             CustomScrollableTabRow(
                 listOf(
                     TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
-                        MicrodistrictsListView(navController = appState.commonNavController)
+                        MicrodistrictsListView(navController = appState.mainNavController)
                     },
                     TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
-                        StreetsListView(navController = appState.commonNavController)
+                        StreetsListView(navController = appState.mainNavController)
                     }
                 )
             )
@@ -435,7 +435,7 @@ fun MicrodistrictsStreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MicrodistrictsListView(navController = appState.commonNavController)
+            MicrodistrictsListView(navController = appState.mainNavController)
         }
         Box(
             modifier = Modifier
@@ -449,7 +449,7 @@ fun MicrodistrictsStreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            StreetsListView(navController = appState.commonNavController)
+            StreetsListView(navController = appState.mainNavController)
         }
     }
 }
@@ -485,7 +485,7 @@ fun StreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            StreetsListView(navController = appState.commonNavController)
+            StreetsListView(navController = appState.mainNavController)
         }
         Box(
             modifier = Modifier
@@ -504,12 +504,12 @@ fun StreetsView(
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_locality_districts),
                         onClick = { onStreetTabChange(GeoStreetDistrictTabType.LOCALITY_DISTRICTS) }) {
-                        LocalityDistrictsListView(navController = appState.commonNavController)
+                        LocalityDistrictsListView(navController = appState.mainNavController)
                     },
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_microdistricts),
                         onClick = { onStreetTabChange(GeoStreetDistrictTabType.MICRODISTRICTS) }) {
-                        MicrodistrictsListView(navController = appState.commonNavController)
+                        MicrodistrictsListView(navController = appState.mainNavController)
                     }
                 )
             )

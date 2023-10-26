@@ -92,6 +92,8 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.sqlcipher.database.SupportFactory
@@ -174,7 +176,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         @Synchronized
         fun getInstance(
             ctx: Context, jsonLogger: Json? = Json,
-            localSessionManagerDataSource: LocalSessionManagerDataSource? = null
+            localSessionManagerDataSource: LocalSessionManagerDataSource
         ): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
@@ -186,13 +188,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             var databasePassphrase = ""
             // If instance is `null` make a new database instance.
             if (instance == null) {
-                localSessionManagerDataSource?.let {
-                    runBlocking {
-                        localSessionManagerDataSource.databasePassphrase().collect {
-                            databasePassphrase = it
-                        }
-                    }
+                Timber.tag(TAG).d("databasePassphrase getting")
+                runBlocking {
+                    // https://stackoverflow.com/questions/57088428/kotlin-flow-how-to-unsubscribe-stop
+                    //.takeWhile { it.isNotEmpty() }.collect {= it}
+                    databasePassphrase = localSessionManagerDataSource.databasePassphrase().first()
                 }
+                Timber.tag(TAG).d("databasePassphrase got")
                 val roomBuilder = Room.databaseBuilder(
                     ctx,
                     JwSuiteDatabase::class.java,
@@ -204,10 +206,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     //.fallbackToDestructiveMigration()
                     .addCallback(DatabaseCallback(ctx, jsonLogger))
                 if (databasePassphrase.isNotEmpty()) {
+                    Timber.tag(TAG).d("databasePassphrase isNotEmpty")
                     roomBuilder.openHelperFactory(SupportFactory(databasePassphrase.toByteArray()))
                 }
                 // Assign INSTANCE to the newly created database.
                 instance = roomBuilder.build()
+                Timber.tag(TAG).d("Room database built")
                 INSTANCE = instance
             }
             // Return instance; smart cast to be non-null.

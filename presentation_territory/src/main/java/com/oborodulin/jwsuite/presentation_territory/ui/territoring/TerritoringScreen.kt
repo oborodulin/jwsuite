@@ -153,10 +153,10 @@ fun TerritoringScreen(
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
         onTopBarActionsChange {
-            IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
+            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
                 Icon(Icons.Outlined.Add, null)
             }
-            IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Housing.route) }) {
+            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Housing.route) }) {
                 Icon(Icons.Outlined.Home, null)
             }
             /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
@@ -296,7 +296,7 @@ fun TerritoringScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoringUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }

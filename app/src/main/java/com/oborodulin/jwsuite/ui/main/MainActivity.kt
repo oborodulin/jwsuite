@@ -17,13 +17,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.R
+import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
+import com.oborodulin.jwsuite.data.util.dbVersion
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.ui.navigation.graphs.RootNavigationGraph
+import com.oborodulin.jwsuite.ui.navigation.RootNavigationHost
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,6 +39,9 @@ private const val TAG = "App.MainActivity"
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var workerProviderRepository: WorkerProviderRepository
+
+    @Inject
+    lateinit var localSessionManagerDataSource: LocalSessionManagerDataSource
 
     // https://stackoverflow.com/questions/53665470/wait-until-kotlin-coroutine-finishes-in-oncreateview?rq=4
     private var job: Job = Job()
@@ -67,12 +72,23 @@ class MainActivity : ComponentActivity() {
                             Timber.tag(TAG).d("mainActivity: session = %s", session)
                             CompositionLocalProvider(
                                 LocalAppState provides appState, LocalSession provides session
-                            ) { RootNavigationGraph(viewModel = viewModel) }
+                            ) { RootNavigationHost(activity = this, viewModel = viewModel) }
                         }
                     }
                 }
             }
         }
+    }
+
+    // https://stackoverflow.com/questions/47619718/room-database-not-created
+    // Under the covers, by default, Room uses SQLiteOpenHelper, much as you might use it directly.
+    // SQLiteOpenHelper does not create the database when you create the SQLiteOpenHelper instance.
+    // It will do so once you call getReadableDatabase() or getWriteableDatabase().
+    // From a Room standpoint, that means until you perform some concrete operation,
+    // such as invoking a @Dao method that hits the database, your database will not be created.
+    fun initDatabase() {
+        Timber.tag(TAG).d("initDatabase() called")
+        Timber.tag(TAG).i("JwSuiteDatabase v.%s", dbVersion(localSessionManagerDataSource))
     }
 
     // https://stackoverflow.com/questions/65182773/what-does-androidconfigchanges-do

@@ -61,10 +61,10 @@ fun DashboardingScreen(
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
         onTopBarActionsChange {
-            IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
+            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
                 Icon(Icons.Outlined.Add, null)
             }
-            IconButton(onClick = { appState.commonNavController.navigate(NavRoutes.Geo.route) }) {
+            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Geo.route) }) {
                 Icon(painterResource(R.drawable.ic_geo_24), null)
             }
             IconButton(onClick = { context.toast("Settings button clicked...") }) {
@@ -91,7 +91,7 @@ fun DashboardingScreen(
                             )
                         }
                         CongregationSection(
-                            navController = appState.commonNavController,
+                            navController = appState.mainNavController,
                             congregation = dashboardingUi.favoriteCongregation
                         )
                     }
@@ -106,7 +106,7 @@ fun DashboardingScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is DashboardingUiSingleEvent.OpenCongregationScreen -> {
-                    appState.commonNavController.navigate(it.navRoute)
+                    appState.mainNavController.navigate(it.navRoute)
                 }
             }
         }

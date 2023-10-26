@@ -1,17 +1,17 @@
-package com.oborodulin.jwsuite.ui.navigation.graphs
+package com.oborodulin.jwsuite.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
@@ -19,11 +19,10 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringS
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import timber.log.Timber
 
-private const val TAG = "App.Navigation.bottomBarNavGraph"
+private const val TAG = "App.navigation.BarNavigationHost"
 
-fun NavGraphBuilder.bottomBarNavGraph(
-    appState: AppState,
-    startDestination: String? = null,
+@Composable
+fun BarNavigationHost(
     paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
@@ -31,9 +30,13 @@ fun NavGraphBuilder.bottomBarNavGraph(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    navigation(
+    Timber.tag(TAG).d("BarNavigationHost(...) called")
+    val appState = LocalAppState.current
+    val session = LocalSession.current
+    NavHost(
+        navController = appState.barNavController,
         route = Graph.BOTTOM_BAR,
-        startDestination = startDestination ?: NavRoutes.Dashboarding.route
+        startDestination = session.startDestination
     ) {
         // DashboardingScreen:
         composable(NavRoutes.Dashboarding.route) {
@@ -46,15 +49,18 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 remember(it) { appState.barNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
             val sharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+            Timber.tag(TAG).d("Navigation Graph: get sharedViewModel")
             if (appState.sharedViewModel.value == null) {
                 appState.sharedViewModel.value = sharedViewModel
             }
+            Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
             DashboardingScreen(
-                appState = appState, paddingValues = paddingValues,
+                appState = appState,
+                paddingValues = paddingValues,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange
-            )//setFabOnClick = setFabOnClick
+            )
         }
         // CongregatingScreen:
         composable(
@@ -65,7 +71,8 @@ fun NavGraphBuilder.bottomBarNavGraph(
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             CongregatingScreen(
-                appState = appState, paddingValues = paddingValues,
+                appState = appState,
+                paddingValues = paddingValues,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange
@@ -82,7 +89,8 @@ fun NavGraphBuilder.bottomBarNavGraph(
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             TerritoringScreen(
-                appState = appState, paddingValues = paddingValues,
+                appState = appState,
+                paddingValues = paddingValues,
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 onActionBarChange = onActionBarChange,
