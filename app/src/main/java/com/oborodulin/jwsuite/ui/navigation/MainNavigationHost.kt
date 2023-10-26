@@ -47,9 +47,12 @@ fun MainNavigationHost(
         route = Graph.MAIN,
         startDestination = session.mainRoute
     ) {
+        onActionBarChange(null)
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         areUsingNestedScrollConnection(false)
         areUsingBottomNavigation(false)
+        onTopBarActionsChange {}
+        onFabChange {}
         congregationNavGraph(
             appState = appState,
             startDestination = session.startDestination,
