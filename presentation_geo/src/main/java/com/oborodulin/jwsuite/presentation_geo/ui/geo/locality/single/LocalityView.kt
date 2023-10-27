@@ -124,6 +124,7 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             },
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )
+        val pattern = remember { Regex("^\\d+\$") }
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_CODE]!!.focusRequester)
@@ -142,7 +143,10 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             },
             inputWrapper = localityCode,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityCode(it))
+                //https://stackoverflow.com/questions/73400126/restrict-only-numbers-in-textfield-in-jetpack-compose
+                if (it.isEmpty() || it.matches(pattern)) {
+                    localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityCode(it))
+                }
             },
             onImeKeyAction = localityViewModel::moveFocusImeAction
         )

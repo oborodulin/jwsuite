@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.ui.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,7 +32,7 @@ fun MainNavigationHost(
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    areUsingNestedScrollConnection: (Boolean) -> Unit,
+    shouldUseNestedScrollConnection: (Boolean) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     areUsingBottomNavigation: (Boolean) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
@@ -48,8 +47,7 @@ fun MainNavigationHost(
         startDestination = session.mainRoute
     ) {
         onActionBarChange(null)
-        onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        areUsingNestedScrollConnection(false)
+        shouldUseNestedScrollConnection(false)
         areUsingBottomNavigation(false)
         onTopBarActionsChange {}
         onFabChange {}
@@ -58,6 +56,7 @@ fun MainNavigationHost(
             startDestination = session.startDestination,
             paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange
         )
@@ -66,6 +65,7 @@ fun MainNavigationHost(
             startDestination = session.startDestination,
             paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange,
             onFabChange = onFabChange
@@ -76,6 +76,7 @@ fun MainNavigationHost(
             paddingValues = paddingValues,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange,
             onFabChange = onFabChange
@@ -87,6 +88,7 @@ fun MainNavigationHost(
             onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange
         )
@@ -95,7 +97,7 @@ fun MainNavigationHost(
             onTopBarNavImageVectorChange(Icons.Outlined.Menu)
             onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
             onActionBarSubtitleChange(appState.actionBarSubtitle.value)
-            areUsingNestedScrollConnection(true)
+            shouldUseNestedScrollConnection(true)
             areUsingBottomNavigation(true)
             BarNavigationHost(
                 paddingValues = paddingValues,

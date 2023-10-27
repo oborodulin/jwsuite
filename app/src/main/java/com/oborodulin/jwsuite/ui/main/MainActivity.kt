@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -71,7 +72,9 @@ class MainActivity : ComponentActivity() {
                         CommonScreen(state = state) { session ->
                             Timber.tag(TAG).d("mainActivity: session = %s", session)
                             CompositionLocalProvider(
-                                LocalAppState provides appState, LocalSession provides session
+                                LocalAppState provides appState,
+                                LocalSession provides session,
+                                //LocalSessionState provides viewModel
                             ) { RootNavigationHost(activity = this, viewModel = viewModel) }
                         }
                     }
@@ -121,5 +124,6 @@ class MainActivity : ComponentActivity() {
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun DefaultPreview() {
-    JWSuiteTheme { Surface { MainScreen() } } // rememberAppState()
+    // rememberAppState()
+    JWSuiteTheme { Surface { MainScreen(SessionViewModelImpl.previewModel(LocalContext.current)) } }
 }

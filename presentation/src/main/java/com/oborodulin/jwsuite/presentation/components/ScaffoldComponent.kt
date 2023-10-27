@@ -10,10 +10,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
 
 private const val TAG = "Presentation.ScaffoldComponent"
@@ -65,10 +65,11 @@ fun ScaffoldComponent(
                             ) {
                                 if (actionBar == null) {
                                     Text(
-                                        text = topBarTitle ?: LocalAppState.current.appName.plus(
-                                            topBarTitleResId?.let {
-                                                " - ${stringResource(it)}"
-                                            } ?: ""),
+                                        text = topBarTitle ?: //LocalAppState.current.appName.plus(
+                                        topBarTitleResId?.let {
+                                            stringResource(it) // " - ${stringResource(it)}"
+                                        }.orEmpty(),
+                                        fontWeight = FontWeight.Bold,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     topBarSubtitle?.let {
@@ -84,6 +85,7 @@ fun ScaffoldComponent(
                             }
                         },
                         navigationIcon = {
+                            // check icons for auth screens: Signup and Login
                             if (topBarNavImageVector != null || topBarNavPainterResId != null) {
                                 IconButton(onClick = onTopBarNavClick) {
                                     IconComponent(
@@ -109,7 +111,7 @@ fun ScaffoldComponent(
         },
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingActionButton = floatingActionButton,
-        bottomBar = { if (isBottomNavigation) bottomBar() }
+        bottomBar = bottomBar
     ) {
         content(it)
     }

@@ -177,7 +177,7 @@ class SessionViewModelImpl @Inject constructor(
                 }
 
                 is SessionInputEvent.ConfirmPin -> when (SessionInputValidator.ConfirmPin.errorIdOrNull(
-                    event.input
+                    event.input, pin.value.value
                 )) {
                     null -> setStateValue(
                         SessionFields.SESSION_CONFIRM_PIN, confirmPin, event.input, true
@@ -202,7 +202,7 @@ class SessionViewModelImpl @Inject constructor(
 
                 is SessionInputEvent.ConfirmPin -> setStateValue(
                     SessionFields.SESSION_CONFIRM_PIN, confirmPin,
-                    SessionInputValidator.ConfirmPin.errorIdOrNull(event.input)
+                    SessionInputValidator.ConfirmPin.errorIdOrNull(event.input, pin.value.value)
                 )
             }
         }
@@ -222,30 +222,27 @@ class SessionViewModelImpl @Inject constructor(
                 InputError(fieldName = SessionFields.SESSION_PIN.name, errorId = it)
             )
         }
-        SessionInputValidator.ConfirmPin.errorIdOrNull(confirmPin.value.value)?.let {
-            inputErrors.add(
-                InputError(fieldName = SessionFields.SESSION_CONFIRM_PIN.name, errorId = it)
-            )
-        }
+        SessionInputValidator.ConfirmPin.errorIdOrNull(confirmPin.value.value, pin.value.value)
+            ?.let {
+                inputErrors.add(
+                    InputError(fieldName = SessionFields.SESSION_CONFIRM_PIN.name, errorId = it)
+                )
+            }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
 
     // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
     override fun displayInputErrors(inputErrors: List<InputError>) {
         Timber.tag(TAG).d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
-        val res = ctx.resources
         for (error in inputErrors) {
             state[error.fieldName] = when (SessionFields.valueOf(error.fieldName)) {
                 SessionFields.SESSION_USERNAME -> username.value.copy(errorId = error.errorId)
                 SessionFields.SESSION_PIN -> pin.value.copy(
                     errorId = error.errorId,
-                    errorMsg = res.getString(error.errorId!!, PASS_MIN_LENGTH)
+                    errorMsg = error.errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
                 )
 
-                SessionFields.SESSION_CONFIRM_PIN -> confirmPin.value.copy(
-                    errorId = error.errorId
-                )
-
+                SessionFields.SESSION_CONFIRM_PIN -> confirmPin.value.copy(errorId = error.errorId)
             }
         }
     }
@@ -274,6 +271,7 @@ class SessionViewModelImpl @Inject constructor(
             override val areSignupInputsValid = MutableStateFlow(true)
             override val areLoginInputsValid = MutableStateFlow(true)
 
+            override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             override fun submitAction(action: SessionUiAction): Job? = null
             override fun onTextFieldEntered(inputEvent: Inputable) {}
             override fun onTextFieldFocusChanged(

@@ -32,7 +32,8 @@ sealed class SessionInputValidator : Validatable {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {
                 inputs[0].isNullOrEmpty() -> R.string.signup_confirm_pin_empty_error
-                inputs[0]?.let { it != inputs[0].orEmpty() }
+                inputs.size != 2 || inputs[1].isNullOrEmpty() -> R.string.signup_confirm_pin_ctrl_error
+                inputs[0]?.let { it.length == inputs[1].orEmpty().length && it != inputs[1].orEmpty() }
                     ?: true -> R.string.signup_confirm_pin_error
 
                 else -> null

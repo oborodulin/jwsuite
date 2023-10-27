@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
@@ -36,6 +38,7 @@ fun AtWorkTerritoriesConfirmationScreen(
     viewModel: TerritoriesGridViewModel,//Impl = hiltViewModel()
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
@@ -80,6 +83,7 @@ fun AtWorkTerritoriesConfirmationScreen(
         )
         // Scaffold Hoisting:
         onActionBarSubtitleChange(stringResource(dialogTitleResId))
+        onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
             if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
         }

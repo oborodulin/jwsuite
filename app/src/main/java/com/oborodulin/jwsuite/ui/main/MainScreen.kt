@@ -4,11 +4,16 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExitToApp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -16,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -27,6 +33,9 @@ import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.MainNavigationHost
 import timber.log.Timber
@@ -38,9 +47,10 @@ import kotlin.math.roundToInt
 private const val TAG = "App.ui.MainScreen"
 
 @Composable
-fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
+fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
     Timber.tag(TAG).d("MainScreen() called")
     val appState = LocalAppState.current
+    val coroutineScope = rememberCoroutineScope()
     val bottomBarHeight = 72.dp
     val bottomBarHeightPx = with(LocalDensity.current) {
         bottomBarHeight.roundToPx().toFloat()
@@ -59,17 +69,32 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
             }
         }
     }
+    val handleLogoutActionClick = {
+        viewModel.onContinueClick {
+            Timber.tag(TAG).d("MainScreen(...): Logout Button onClick...")
+            viewModel.handleActionJob(
+                { viewModel.submitAction(SessionUiAction.Logout) },
+                {
+                    appState.rootNavController.navigate(NavRoutes.Login.route) {
+                        popUpTo(appState.rootNavController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
+                })
+        }
+    }
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
     val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
 
-    var actionBarTitle by rememberSaveable { mutableStateOf(appState.appName) }
-    val onActionBarTitleChange: (String) -> Unit = { actionBarTitle = "${appState.appName} - $it" }
+    var actionBarTitle by rememberSaveable { mutableStateOf("") } //appState.appName
+    val onActionBarTitleChange: (String) -> Unit =
+        { actionBarTitle = it } //"${appState.appName} - $it"
 
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
 
     var isNestedScrollConnection by rememberSaveable { mutableStateOf(false) }
-    val areUsingNestedScrollConnection: (Boolean) -> Unit =
+    val shouldUseNestedScrollConnection: (Boolean) -> Unit =
         { isNestedScrollConnection = it }
 
     var topBarNavImageVector: ImageVector? by remember { mutableStateOf(null) }
@@ -79,7 +104,14 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
     val onTopBarNavClickChange: (() -> Unit) -> Unit = { onTopBarNavClick = it }
 
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf({}) }
-    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = {
+        topBarActions = {
+            it()
+            IconButton(onClick = handleLogoutActionClick) {
+                Icon(Icons.Outlined.ExitToApp, null)
+            }
+        }
+    }
 
     var isBottomNavigation by rememberSaveable { mutableStateOf(false) }
     val areUsingBottomNavigation: (Boolean) -> Unit = { isBottomNavigation = it }
@@ -98,7 +130,7 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
             actionBar = actionBar,
             topBarActions = topBarActions,
             bottomBar = {
-                if (true) {//appState.shouldShowBottomNavBar
+                if (appState.shouldShowBottomNavBar) {
                     BottomNavigationComponent(
                         modifier = Modifier
                             .height(bottomBarHeight)
@@ -122,7 +154,7 @@ fun MainScreen() { //viewModel: SessionViewModelImpl = hiltViewModel()
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
-                areUsingNestedScrollConnection = areUsingNestedScrollConnection,
+                shouldUseNestedScrollConnection = shouldUseNestedScrollConnection,
                 onTopBarActionsChange = onTopBarActionsChange,
                 areUsingBottomNavigation = areUsingBottomNavigation,
                 onFabChange = onFabChange
@@ -163,5 +195,5 @@ private fun HomeNavigationHost(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewMainScreen() {
-    JWSuiteTheme { Surface { MainScreen() } }
+    JWSuiteTheme { Surface { MainScreen(SessionViewModelImpl.previewModel(LocalContext.current)) } }
 }

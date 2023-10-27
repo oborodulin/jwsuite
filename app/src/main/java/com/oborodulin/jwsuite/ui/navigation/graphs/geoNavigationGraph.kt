@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -28,6 +29,7 @@ fun NavGraphBuilder.geoNavGraph(
     paddingValues: PaddingValues,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
@@ -43,6 +45,7 @@ fun NavGraphBuilder.geoNavGraph(
             GeoScreen(
                 appState = appState, paddingValues = paddingValues,
                 onActionBarTitleChange = onActionBarTitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
@@ -60,6 +63,7 @@ fun NavGraphBuilder.geoNavGraph(
                 regionInput = NavRoutes.Region.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -78,6 +82,7 @@ fun NavGraphBuilder.geoNavGraph(
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -94,6 +99,7 @@ fun NavGraphBuilder.geoNavGraph(
                 localityInput = NavRoutes.Locality.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -113,6 +119,7 @@ fun NavGraphBuilder.geoNavGraph(
                 localityDistrictInput = NavRoutes.LocalityDistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -131,6 +138,7 @@ fun NavGraphBuilder.geoNavGraph(
                 microdistrictInput = NavRoutes.Microdistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -147,6 +155,7 @@ fun NavGraphBuilder.geoNavGraph(
                 streetInput = NavRoutes.Street.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -165,6 +174,7 @@ fun NavGraphBuilder.geoNavGraph(
                 streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
@@ -183,6 +193,7 @@ fun NavGraphBuilder.geoNavGraph(
                 streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )

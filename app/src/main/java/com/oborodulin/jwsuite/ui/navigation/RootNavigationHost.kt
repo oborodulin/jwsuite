@@ -32,7 +32,7 @@ fun RootNavigationHost(
         composable(Graph.MAIN) {
             Timber.tag(TAG).d("NavHost.composable(Graph.MAIN) called")
             activity.initDatabase()
-            MainScreen()
+            MainScreen(viewModel = viewModel)
         }
     }
 }

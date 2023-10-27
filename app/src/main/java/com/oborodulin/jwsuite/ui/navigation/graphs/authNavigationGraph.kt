@@ -6,7 +6,6 @@ import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
-import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.session.login.LoginScreen
 import com.oborodulin.jwsuite.presentation.ui.session.signup.SignupScreen
 import timber.log.Timber

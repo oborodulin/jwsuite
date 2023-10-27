@@ -2,7 +2,10 @@ package com.oborodulin.jwsuite.ui.navigation.graphs
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -21,6 +24,7 @@ fun NavGraphBuilder.congregationNavGraph(
     startDestination: String? = null,
     paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
@@ -31,25 +35,28 @@ fun NavGraphBuilder.congregationNavGraph(
         composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
         ) {
-            Timber.tag(TAG)
-                .d(
+            Timber.tag(TAG).d(
                     "Navigation Graph: to CongregationScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Congregation.arguments.firstOrNull()
+                    it.destination.route,
+                    NavRoutes.Congregation.arguments.firstOrNull()
                 )
             CongregationScreen(
-                appState = appState, congregationInput = NavRoutes.Congregation.fromEntry(it),
+                appState = appState,
+                congregationInput = NavRoutes.Congregation.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(route = NavRoutes.Group.route, arguments = NavRoutes.Group.arguments) {
-            Timber.tag(TAG)
-                .d(
+            Timber.tag(TAG).d(
                     "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Group.arguments.firstOrNull()
+                    it.destination.route,
+                    NavRoutes.Group.arguments.firstOrNull()
                 )
+            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             GroupScreen(
                 appState = appState,
@@ -57,16 +64,18 @@ fun NavGraphBuilder.congregationNavGraph(
                 groupInput = NavRoutes.Group.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
         composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
-            Timber.tag(TAG)
-                .d(
+            Timber.tag(TAG).d(
                     "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
-                    it.destination.route, NavRoutes.Member.arguments.firstOrNull()
+                    it.destination.route,
+                    NavRoutes.Member.arguments.firstOrNull()
                 )
+            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             MemberScreen(
                 appState = appState,
@@ -74,6 +83,7 @@ fun NavGraphBuilder.congregationNavGraph(
                 memberInput = NavRoutes.Member.fromEntry(it),
                 paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
