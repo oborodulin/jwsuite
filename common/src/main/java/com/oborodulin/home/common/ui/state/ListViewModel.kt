@@ -1,9 +1,6 @@
 package com.oborodulin.home.common.ui.state
 
-import androidx.compose.ui.text.input.TextFieldValue
 import com.oborodulin.home.common.ui.model.ListItemModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 private const val TAG = "Common.ListViewModel"

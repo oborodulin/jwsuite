@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.state
 
 import androidx.compose.ui.text.input.TextFieldValue
+import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,6 +19,9 @@ interface MviViewModeled<T : Any, A : UiAction, E : UiSingleEvent> {
     val searchText: StateFlow<TextFieldValue>
     val isSearching: StateFlow<Boolean>
 
+    val checkedListItems: StateFlow<List<ListItemModel>>
+
     fun onSearchTextChange(text: TextFieldValue)
+    fun observeCheckedListItems()
     fun submitAction(action: A): Job?
 }

@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components.items
+package com.oborodulin.home.common.ui.components.list.items
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
@@ -53,7 +53,7 @@ import java.util.Locale
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Common.UI"
+private const val TAG = "Common.ui"
 private val EMPTY: OnListItemEvent = {}
 
 // https://m3.material.io/components/lists/specs

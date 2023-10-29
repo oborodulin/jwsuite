@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.localitydistrict
+package com.oborodulin.home.common.ui.components.list.items
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
@@ -21,27 +21,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.ComponentUiAction
-import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
+import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.home.common.util.OnCheckedChange
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
-import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictsListItem
 
 /**
  * Created by tfakioglu on 12.December.2021
  */
-private const val TAG = "Geo.ForStreetLocalityDistrictsListItemComponent"
+private const val TAG = "Common.ui.CheckedListItemComponent"
 private val _EMPTY: OnListItemEvent = {}
 
 @Composable
-fun ForStreetLocalityDistrictsListItemComponent(
+fun CheckedListItemComponent(
     @DrawableRes iconResId: Int? = null,
-    item: LocalityDistrictsListItem,
+    item: ListItemModel,
     selected: Boolean = false,
     itemActions: List<ComponentUiAction> = emptyList(),
-    onChecked: OnCheckedChange = {},
+    onChecked: (Boolean) -> Unit = {},
     onClick: OnListItemEvent
 ) {
     ListItemComponent(
@@ -90,12 +87,12 @@ fun ForStreetLocalityDistrictsListItemComponent(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewForStreetLocalityDistrictsListItemComponent() {
-    JWSuiteTheme {
+fun PreviewCheckedListItemComponent() {
+    HomeComposableTheme {
         Surface {
-            ForStreetLocalityDistrictsListItemComponent(
+            CheckedListItemComponent(
                 //iconResId = R.drawable.outline_photo_24,
-                item = LocalityDistrictsListViewModelImpl.previewList(LocalContext.current).first(),
+                item = ListItemModel.defaultListItemModel(LocalContext.current),
                 itemActions = listOf(
                     ComponentUiAction.EditListItem { println() },
                     ComponentUiAction.DeleteListItem { println() }),

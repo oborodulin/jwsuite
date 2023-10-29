@@ -2,14 +2,8 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.terri
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,17 +23,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.EmptyListTextComponent
-import com.oborodulin.home.common.ui.components.buttons.AddIconButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.components.search.SearchComponent
+import com.oborodulin.home.common.ui.components.list.SearchMultiCheckViewComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHousesUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseUiAction
@@ -78,7 +69,6 @@ fun TerritoryHouseView(
     }
     Timber.tag(TAG).d("Territory House: CollectAsStateWithLifecycle for all fields")
     val territory by territoryHouseViewModel.territory.collectAsStateWithLifecycle()
-    val searchText by territoryHouseViewModel.searchText.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory House: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -122,8 +112,7 @@ fun TerritoryHouseView(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -142,60 +131,18 @@ fun TerritoryHouseView(
             inputWrapper = territory,
             onImeKeyAction = territoryHouseViewModel::moveFocusImeAction
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            SearchComponent(
-                searchText,
-                modifier = Modifier.weight(2.8f),
-                onValueChange = territoryHouseViewModel::onSearchTextChange
-            )
-            AddIconButtonComponent { houseViewModel.onOpenDialogClicked() }
-        }
-        Spacer(modifier = Modifier.width(width = 8.dp))
         territoryHousesUiModel?.let {
-            ForTerritoryHousesList(
-                searchedText = searchText.text,
-                houses = it.houses,
-                onChecked = { territoryHouseViewModel.observeCheckedListItems() }
+            SearchMultiCheckViewComponent(
+                listViewModel = territoryHouseViewModel,
+                loadListUiAction = TerritoryHouseUiAction.Load(it.territory.id!!),
+                items = it.houses,
+                singleViewModel = houseViewModel,
+                loadUiAction = HouseUiAction.Load(),
+                confirmUiAction = HouseUiAction.Save,
+                emptyListTextResId = R.string.for_territory_houses_list_empty_text,
+                dialogView = { HouseView(sharedViewModel = sharedViewModel) }
             )
         }
-    }
-}
-
-@Composable
-fun ForTerritoryHousesList(
-    searchedText: String = "",
-    houses: List<HousesListItem>,
-    onChecked: (Boolean) -> Unit,
-    onClick: (HousesListItem) -> Unit = {}
-) {
-    Timber.tag(TAG).d("ForTerritoryHousesList(...) called: size = %d", houses.size)
-    if (houses.isNotEmpty()) {
-        val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
-                .getOrNull(0)?.let { houses.indexOf(it) } ?: 0)
-        var filteredItems: List<HousesListItem>
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .padding(8.dp)
-                .focusable(enabled = true)
-        ) {
-            filteredItems = if (searchedText.isEmpty()) {
-                houses
-            } else {
-                houses.filter { it.doesMatchSearchQuery(searchedText) }
-            }
-            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, house ->
-                ForTerritoryHousesListItemComponent(
-                    item = house,
-                    //selected = house.selected,
-                    onChecked = onChecked,
-                    onClick = { onClick(house) }
-                )
-            }
-        }
-    } else {
-        EmptyListTextComponent(R.string.for_territory_houses_list_empty_text)
     }
 }
 

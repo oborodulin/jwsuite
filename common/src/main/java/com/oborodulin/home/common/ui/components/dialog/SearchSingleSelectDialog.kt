@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.AddIconButtonComponent
-import com.oborodulin.home.common.ui.components.items.SingleSelectListItemComponent
+import com.oborodulin.home.common.ui.components.list.items.SingleSelectListItemComponent
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen

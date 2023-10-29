@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import com.oborodulin.home.common.ui.components.items.ShimmerGridItem
-import com.oborodulin.home.common.ui.components.items.ShimmerRowItem
+import com.oborodulin.home.common.ui.components.list.items.ShimmerGridItem
+import com.oborodulin.home.common.ui.components.list.items.ShimmerRowItem
 import com.oborodulin.home.common.ui.theme.ShimmerColorShades
 
 @Composable

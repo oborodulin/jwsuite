@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.ComponentUiAction
-import com.oborodulin.home.common.ui.components.items.ListItemComponent
+import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem

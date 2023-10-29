@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.oborodulin.home.common.R
-import com.oborodulin.home.common.ui.components.items.OptionSelectRadioButtonComponent
+import com.oborodulin.home.common.ui.components.list.items.OptionSelectRadioButtonComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.toast
 

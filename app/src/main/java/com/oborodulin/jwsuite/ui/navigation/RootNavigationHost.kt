@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.ui.main.MainActivity
 import com.oborodulin.jwsuite.ui.main.MainScreen
-import com.oborodulin.jwsuite.ui.navigation.graphs.authNavGraph
+import com.oborodulin.jwsuite.presentation.navigation.authNavGraph
 import timber.log.Timber
 
 private const val TAG = "App.Navigation.RootNavigationHost"

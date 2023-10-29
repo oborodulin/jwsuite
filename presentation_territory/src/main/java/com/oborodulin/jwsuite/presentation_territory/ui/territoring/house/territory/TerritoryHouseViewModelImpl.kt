@@ -14,7 +14,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
-import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHousesUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryHousesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
@@ -45,9 +44,6 @@ class TerritoryHouseViewModelImpl @Inject constructor(
             TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY.name, InputListItemWrapper()
         )
     }
-    private val _checkedListItems: MutableStateFlow<List<HousesListItem>> =
-        MutableStateFlow(emptyList())
-    override val checkedListItems = _checkedListItems.asStateFlow()
 
     override val areInputsValid = flow { emit(checkedListItems.value.isNotEmpty()) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
@@ -92,7 +88,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     }
 
     private fun saveTerritoryHouses(): Job {
-        val houseIds = _checkedListItems.value.map { it.id }
+        val houseIds = _checkedListItems.value.map { it.itemId }
         Timber.tag(TAG).d(
             "saveTerritoryHouses() called: territoryId = %s; houseIds.size = %d",
             territory.value.item?.itemId, houseIds.size

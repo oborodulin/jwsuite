@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components.items
+package com.oborodulin.home.common.ui.components.list.items
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable

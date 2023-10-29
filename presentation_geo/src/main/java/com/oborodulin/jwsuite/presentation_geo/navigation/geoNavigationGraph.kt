@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.ui.navigation.graphs
+package com.oborodulin.jwsuite.presentation_geo.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope

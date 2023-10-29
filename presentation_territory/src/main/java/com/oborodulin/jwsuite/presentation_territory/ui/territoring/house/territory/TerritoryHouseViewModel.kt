@@ -16,11 +16,9 @@ interface TerritoryHouseViewModel :
     val events: Flow<ScreenEvent>
 
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>
-    val checkedListItems: StateFlow<List<HousesListItem>>
 
     val areInputsValid: StateFlow<Boolean>
 
-    fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoryHouseFields, isFocused: Boolean)
     fun moveFocusImeAction()

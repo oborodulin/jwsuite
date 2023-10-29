@@ -14,10 +14,10 @@ import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
-import com.oborodulin.jwsuite.ui.navigation.graphs.congregationNavGraph
-import com.oborodulin.jwsuite.ui.navigation.graphs.geoNavGraph
-import com.oborodulin.jwsuite.ui.navigation.graphs.housingNavGraph
-import com.oborodulin.jwsuite.ui.navigation.graphs.territoryNavGraph
+import com.oborodulin.jwsuite.presentation_congregation.navigation.congregationNavGraph
+import com.oborodulin.jwsuite.presentation_geo.navigation.geoNavGraph
+import com.oborodulin.jwsuite.presentation_territory.navigation.housingNavGraph
+import com.oborodulin.jwsuite.presentation_territory.navigation.territoryNavGraph
 import timber.log.Timber
 
 private const val TAG = "App.Navigation.MainNavigationHost"

@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components.items
+package com.oborodulin.home.common.ui.components.list.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
