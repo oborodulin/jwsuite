@@ -32,8 +32,6 @@ interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingle
     val movementDate: StateFlow<InputWrapper>
     val loginExpiredDate: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun getPseudonym(
         surname: String? = null, memberName: String? = null, groupNum: Int? = null,
         memberNum: String? = null

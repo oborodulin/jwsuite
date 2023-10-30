@@ -148,7 +148,7 @@ fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
             floatingActionButton = floatingActionButton
         ) { innerPadding ->
             MainNavigationHost(
-                paddingValues = innerPadding,
+                innerPadding = innerPadding,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,

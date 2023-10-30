@@ -40,8 +40,6 @@ interface HouseViewModel :
     val isPrivateSector: StateFlow<InputWrapper>
     val houseDesc: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: HouseFields, isFocused: Boolean)
     fun moveFocusImeAction()

@@ -12,6 +12,7 @@ import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territory.TerritoryRoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
@@ -27,9 +28,7 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.territoryNavGraph"
 
 fun NavGraphBuilder.territoryNavGraph(
-    appState: AppState,
     startDestination: String? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -49,12 +48,10 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(LocalAppState.current.barNavController))
             HandOutTerritoriesConfirmationScreen(
-                appState = appState,
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel,
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -70,12 +67,10 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(LocalAppState.current.barNavController))
             AtWorkTerritoriesConfirmationScreen(
-                appState = appState,
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoriesGridViewModel,
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -91,13 +86,11 @@ fun NavGraphBuilder.territoryNavGraph(
             // https://developer.android.com/jetpack/compose/libraries#hilt
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryScreen(
-                appState = appState,
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -114,12 +107,10 @@ fun NavGraphBuilder.territoryNavGraph(
                     it.destination.route, NavRoutes.TerritoryDetails.arguments.firstOrNull()
                 )
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryDetailsScreen(
-                appState = appState,
                 territoryViewModel = territoryViewModel,
                 territoryInput = NavRoutes.TerritoryDetails.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -137,9 +128,7 @@ fun NavGraphBuilder.territoryNavGraph(
                     it.destination.route, NavRoutes.TerritoryCategory.arguments.firstOrNull()
                 )
             TerritoryCategoryScreen(
-                appState = appState,
                 territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -158,13 +147,11 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryStreetScreen(
-                appState = appState,
                 //sharedViewModel = sharedViewModel,
                 territoryViewModel = territoryViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -181,12 +168,10 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryHouseScreen(
-                appState = appState,
                 territoryViewModel = territoryViewModel,
                 territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -204,12 +189,10 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoryViewModel =
-                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.mainNavController))
+                hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryRoomScreen(
-                appState = appState,
                 territoryViewModel = territoryViewModel,
                 territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,

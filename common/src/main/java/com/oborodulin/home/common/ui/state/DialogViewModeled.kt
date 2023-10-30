@@ -9,6 +9,9 @@ interface DialogViewModeled<T : Any, A : UiAction, E : UiSingleEvent> : SingleVi
     val dialogTitleResId: StateFlow<Int?>
     val savedListItem: StateFlow<ListItemModel>
     val showDialog: StateFlow<Boolean>
+
+    val areInputsValid: StateFlow<Boolean>
+
     fun setDialogTitleResId(@StringRes dialogTitleResId: Int)
     fun setSavedListItem(savedListItem: ListItemModel)
     fun onOpenDialogClicked()

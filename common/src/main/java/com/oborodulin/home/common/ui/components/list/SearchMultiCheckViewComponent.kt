@@ -40,12 +40,12 @@ private const val TAG = "Common.ui"
 
 @Composable
 fun <T : Any, L : List<ListItemModel>, LA : UiAction, SA : UiAction, E : UiSingleEvent> SearchMultiCheckViewComponent(
-    listViewModel: MviViewModeled<L, LA, E>,        // territoryHouseViewModel
-    loadListUiAction: LA,                            // TerritoryHouseUiAction.Load(it.territoryId)
+    listViewModel: MviViewModeled<L, LA, E>,
+    loadListUiAction: LA,
     items: List<ListItemModel>,
-    singleViewModel: DialogViewModeled<T, SA, E>,    // houseViewModel
-    loadUiAction: SA,                                // HouseUiAction.Load()
-    confirmUiAction: SA,                             // HouseUiAction.Save
+    singleViewModel: DialogViewModeled<T, SA, E>,
+    loadUiAction: SA,
+    confirmUiAction: SA,
     @StringRes emptyListTextResId: Int,
     dialogView: @Composable (T) -> Unit
 ) {

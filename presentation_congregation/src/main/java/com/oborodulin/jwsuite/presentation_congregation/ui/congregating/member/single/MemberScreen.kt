@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,7 +29,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,17 +39,16 @@ private const val TAG = "Congregating.MemberScreen"
 
 @Composable
 fun MemberScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: groupInput = %s", memberInput)
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         Timber.tag(TAG).d("MemberScreen(...): Save Button onClick...")
@@ -102,20 +99,16 @@ fun MemberScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 MemberView(appState.sharedViewModel.value)
                 Spacer(Modifier.height(8.dp))
-                SaveButtonComponent(
-                    enabled = areInputsValid,
-                    onClick = handleSaveButtonClick
-                )
+                SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
             }
         }
     }

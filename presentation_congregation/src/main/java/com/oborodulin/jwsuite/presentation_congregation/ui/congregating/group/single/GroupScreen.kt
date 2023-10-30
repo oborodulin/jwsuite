@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -30,6 +28,7 @@ import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfir
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -39,17 +38,16 @@ private const val TAG = "Congregating.GroupScreen"
 
 @Composable
 fun GroupScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: GroupViewModelImpl = hiltViewModel(),
     groupInput: GroupInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         Timber.tag(TAG).d("GroupScreen(...): Save Button onClick...")
@@ -107,11 +105,9 @@ fun GroupScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GroupView(appState.sharedViewModel.value)

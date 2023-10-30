@@ -2,15 +2,11 @@ package com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -26,10 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
@@ -42,8 +37,6 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 
 @Composable
 fun DashboardingScreen(
-    appState: AppState,
-    paddingValues: PaddingValues,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
     onActionBarTitleChange: (String) -> Unit,
@@ -51,6 +44,7 @@ fun DashboardingScreen(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -61,10 +55,10 @@ fun DashboardingScreen(
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
         onTopBarActionsChange {
-            /*IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Congregation.routeForCongregation()) }) {
+            /*IconButton(onClick = { appState.mainNavigate(NavRoutes.Congregation.routeForCongregation()) }) {
                 Icon(Icons.Outlined.Add, null)
             }*/
-            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Geo.route) }) {
+            IconButton(onClick = { appState.mainNavigate(NavRoutes.Geo.route) }) {
                 Icon(painterResource(R.drawable.ic_geo_24), null)
             }
             /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
@@ -72,9 +66,7 @@ fun DashboardingScreen(
             }*/
         }
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier = Modifier.fillMaxSize()
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column {
@@ -106,7 +98,7 @@ fun DashboardingScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is DashboardingUiSingleEvent.OpenCongregationScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
             }
         }

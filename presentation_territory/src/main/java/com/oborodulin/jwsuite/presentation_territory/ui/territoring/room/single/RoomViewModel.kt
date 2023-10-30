@@ -29,8 +29,6 @@ interface RoomViewModel : DialogViewModeled<RoomUi, RoomUiAction, UiSingleEvent>
     val isForeignLanguage: StateFlow<InputWrapper>
     val roomDesc: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: RoomFields, isFocused: Boolean)
     fun moveFocusImeAction()

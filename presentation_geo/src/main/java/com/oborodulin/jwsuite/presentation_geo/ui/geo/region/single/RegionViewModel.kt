@@ -16,8 +16,6 @@ interface RegionViewModel : DialogViewModeled<RegionUi, RegionUiAction, UiSingle
     val regionCode: StateFlow<InputWrapper>
     val regionName: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun viewModelScope(): CoroutineScope
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: RegionFields, isFocused: Boolean)

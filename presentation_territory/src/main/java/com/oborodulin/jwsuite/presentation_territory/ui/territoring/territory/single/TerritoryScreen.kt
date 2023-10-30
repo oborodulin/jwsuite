@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -30,7 +28,7 @@ import com.oborodulin.home.common.ui.components.buttons.NextButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,17 +39,16 @@ private const val TAG = "Territoring.TerritoryScreen"
 
 @Composable
 fun TerritoryScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoryViewModel,
     territoryInput: TerritoryInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val territoryId by viewModel.id.collectAsStateWithLifecycle()
     val handleNextButtonClick = {
@@ -109,11 +106,10 @@ fun TerritoryScreen(
                 Icon(Icons.Outlined.ArrowForward, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -130,7 +126,7 @@ fun TerritoryScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoryUiSingleEvent.OpenTerritoryDetailsScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
             }
         }

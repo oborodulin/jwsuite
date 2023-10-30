@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.presentation_congregation.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -20,9 +19,7 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.congregationNavGraph"
 
 fun NavGraphBuilder.congregationNavGraph(
-    appState: AppState,
     startDestination: String? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -36,14 +33,12 @@ fun NavGraphBuilder.congregationNavGraph(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
         ) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to CongregationScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Congregation.arguments.firstOrNull()
-                )
+                "Navigation Graph: to CongregationScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Congregation.arguments.firstOrNull()
+            )
             CongregationScreen(
-                appState = appState,
                 congregationInput = NavRoutes.Congregation.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -52,17 +47,15 @@ fun NavGraphBuilder.congregationNavGraph(
         }
         composable(route = NavRoutes.Group.route, arguments = NavRoutes.Group.arguments) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Group.arguments.firstOrNull()
-                )
+                "Navigation Graph: to GroupScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Group.arguments.firstOrNull()
+            )
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             GroupScreen(
-                appState = appState,
                 //sharedViewModel = sharedViewModel,
                 groupInput = NavRoutes.Group.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -71,17 +64,15 @@ fun NavGraphBuilder.congregationNavGraph(
         }
         composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
             Timber.tag(TAG).d(
-                    "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
-                    it.destination.route,
-                    NavRoutes.Member.arguments.firstOrNull()
-                )
+                "Navigation Graph: to MemberScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.Member.arguments.firstOrNull()
+            )
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             MemberScreen(
-                appState = appState,
                 //sharedViewModel = sharedViewModel,
                 memberInput = NavRoutes.Member.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,

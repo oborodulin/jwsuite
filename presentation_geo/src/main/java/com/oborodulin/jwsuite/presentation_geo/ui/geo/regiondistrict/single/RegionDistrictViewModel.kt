@@ -20,8 +20,6 @@ interface RegionDistrictViewModel :
     val districtShortName: StateFlow<InputWrapper>
     val districtName: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun viewModelScope(): CoroutineScope
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: RegionDistrictFields, isFocused: Boolean)

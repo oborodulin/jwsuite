@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +36,7 @@ import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
@@ -52,8 +52,6 @@ private const val TAG = "Congregating.CongregatingScreen"
 
 @Composable
 fun CongregatingScreen(
-    appState: AppState,
-    paddingValues: PaddingValues,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     onActionBarTitleChange: (String) -> Unit,
@@ -61,11 +59,12 @@ fun CongregatingScreen(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
+    val appState = LocalAppState.current
     val context = LocalContext.current
     var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
     val onTabChange: (CongregatingTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
-        appState.mainNavController.navigate(
+        appState.mainNavigate(
             when (CongregatingTabType.valueOf(tabType)) {
                 CongregatingTabType.CONGREGATIONS -> NavRoutes.Congregation.routeForCongregation()
                 CongregatingTabType.GROUPS -> NavRoutes.Group.routeForGroup()
@@ -89,43 +88,41 @@ fun CongregatingScreen(
             Icon(Icons.Outlined.Settings, null)
         }
     }
-    Column(modifier = Modifier.padding(paddingValues)) {
-        CustomScrollableTabRow(
-            listOf(
-                TabRowItem(
-                    title = stringResource(R.string.congregation_tab_congregations),
-                    onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
-                ) {
-                    CongregationMembersView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel,
-                        onActionBarSubtitleChange = onActionBarSubtitleChange
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.congregation_tab_groups),
-                    onClick = { onTabChange(CongregatingTabType.GROUPS) }
-                ) {
-                    GroupMembersView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.congregation_tab_members),
-                    onClick = { onTabChange(CongregatingTabType.MEMBERS) }
-                ) {
-                    MembersView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel
-                    )
-                }
-            )
+    CustomScrollableTabRow(
+        listOf(
+            TabRowItem(
+                title = stringResource(R.string.congregation_tab_congregations),
+                onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
+            ) {
+                CongregationMembersView(
+                    appState = appState,
+                    //sharedViewModel = sharedViewModel,
+                    membersListViewModel = membersListViewModel,
+                    onActionBarSubtitleChange = onActionBarSubtitleChange
+                )
+            },
+            TabRowItem(
+                title = stringResource(R.string.congregation_tab_groups),
+                onClick = { onTabChange(CongregatingTabType.GROUPS) }
+            ) {
+                GroupMembersView(
+                    appState = appState,
+                    //sharedViewModel = sharedViewModel,
+                    membersListViewModel = membersListViewModel
+                )
+            },
+            TabRowItem(
+                title = stringResource(R.string.congregation_tab_members),
+                onClick = { onTabChange(CongregatingTabType.MEMBERS) }
+            ) {
+                MembersView(
+                    appState = appState,
+                    //sharedViewModel = sharedViewModel,
+                    membersListViewModel = membersListViewModel
+                )
+            }
         )
-    }
+    )
 // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback
     /*    LaunchedEffect(pagerState) {

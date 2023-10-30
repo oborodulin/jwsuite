@@ -96,7 +96,7 @@ fun GroupsListView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is GroupsListUiSingleEvent.OpenGroupScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
             }
         }

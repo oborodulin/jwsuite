@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -28,7 +26,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import timber.log.Timber
 
@@ -36,18 +34,17 @@ private const val TAG = "Territoring.HouseScreen"
 
 @Composable
 fun HouseScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     //territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: HouseViewModelImpl = hiltViewModel(),
     houseInput: HouseInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
+    val appState = LocalAppState.current
     val backNavigation = { appState.backToBottomBarScreen() }
     val handleSaveButtonClick = {
         Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
@@ -88,11 +85,9 @@ fun HouseScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HouseView(sharedViewModel = appState.sharedViewModel.value)

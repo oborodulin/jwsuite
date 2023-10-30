@@ -97,7 +97,7 @@ class AppState(
 
     fun navBarUpPress() = this.barNavController.navigateUp()
 
-    fun commonNavigateUp() = this.mainNavController.navigateUp()
+    fun mainNavigateUp() = this.mainNavController.navigateUp()
 
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen() {
@@ -109,15 +109,19 @@ class AppState(
         }
     }
 
+    fun mainNavigate(route: String) {
+        Timber.tag(TAG).d("mainNavigate(...) called: route = %s", route)
+        this.mainNavController.navigate(route)
+    }
+
     // Переход по маршруту с пропуском предыдущего экрана.
     // https://stackoverflow.com/questions/66845899/compose-navigation-remove-previous-composable-from-stack-before-navigating
     // https://stackoverflow.com/questions/75978612/skip-back-stack-items-on-jetpack-compose-navigation
-    fun navigateToRoute(route: String, skippedPrevRoute: String? = null) {
+    fun mainNavigateToRoute(route: String, skippedPrevRoute: String? = null) {
         Timber.tag(TAG)
             .d(
-                "navigateToRoute(...) called: route = %s; skippedPrevRoute = %s",
-                route,
-                skippedPrevRoute
+                "mainNavigateToRoute(...) called: route = %s; skippedPrevRoute = %s",
+                route, skippedPrevRoute
             )
         this.mainNavController.navigate(route) {
             skippedPrevRoute?.let {

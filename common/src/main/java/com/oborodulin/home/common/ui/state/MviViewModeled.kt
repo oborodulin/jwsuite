@@ -22,6 +22,6 @@ interface MviViewModeled<T : Any, A : UiAction, E : UiSingleEvent> {
     val checkedListItems: StateFlow<List<ListItemModel>>
 
     fun onSearchTextChange(text: TextFieldValue)
-    fun observeCheckedListItems()
+    fun observeCheckedListItems(items: List<ListItemModel> = emptyList())
     fun submitAction(action: A): Job?
 }

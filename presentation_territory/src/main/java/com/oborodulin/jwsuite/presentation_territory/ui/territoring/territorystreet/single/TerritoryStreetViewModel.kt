@@ -22,8 +22,6 @@ interface TerritoryStreetViewModel :
     val isEvenSide: StateFlow<InputWrapper>
     val estimatedHouses: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoryStreetFields, isFocused: Boolean)
     fun moveFocusImeAction()

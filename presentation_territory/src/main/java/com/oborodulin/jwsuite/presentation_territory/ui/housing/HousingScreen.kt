@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +52,7 @@ import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.BarLocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.BarStreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -70,10 +70,8 @@ private const val TAG = "Housing.HousingScreen"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HousingScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     housesViewModel: HousingViewModelImpl = hiltViewModel(),
-    paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
@@ -81,6 +79,7 @@ fun HousingScreen(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("HousingScreen(...) called")
+    val appState = LocalAppState.current
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -102,7 +101,7 @@ fun HousingScreen(
     var tabType by rememberSaveable { mutableStateOf(HousingTabType.HOUSES.name) }
     val onTabChange: (HousingTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
-        appState.mainNavController.navigate(
+        appState.mainNavigate(
             when (HousingTabType.valueOf(tabType)) {
                 HousingTabType.HOUSES -> NavRoutes.House.routeForHouse()
                 HousingTabType.ENTRANCES -> NavRoutes.Entrance.routeForEntrance()
@@ -130,7 +129,7 @@ fun HousingScreen(
         // Scaffold Hoisting:
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing))
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        onTopBarNavClickChange { appState.commonNavigateUp() }
+        onTopBarNavClickChange { appState.mainNavigateUp() }
         onTopBarActionsChange {
             IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
             IconButton(onClick = { context.toast("Settings action button clicked...") }) {
@@ -182,35 +181,33 @@ fun HousingScreen(
                 }
             }
         }
-        Column(modifier = Modifier.padding(paddingValues)) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(
-                        title = stringResource(R.string.houses_tab_houses),
-                        onClick = { onTabChange(HousingTabType.HOUSES) }
-                    ) {
-                        street.item?.itemId?.let {
-                            HousesEntrancesFloorsRoomsView(
-                                appState = appState,
-                                streetInput = NavigationInput.StreetInput(it)
-                            )
-                        }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.houses_tab_entrances),
-                        onClick = { onTabChange(HousingTabType.ENTRANCES) }
-                    ) {},
-                    TabRowItem(
-                        title = stringResource(R.string.houses_tab_floors),
-                        onClick = { onTabChange(HousingTabType.FLOORS) }
-                    ) {},
-                    TabRowItem(
-                        title = stringResource(R.string.houses_tab_rooms),
-                        onClick = { onTabChange(HousingTabType.ROOMS) }
-                    ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
-                )
+        CustomScrollableTabRow(
+            listOf(
+                TabRowItem(
+                    title = stringResource(R.string.houses_tab_houses),
+                    onClick = { onTabChange(HousingTabType.HOUSES) }
+                ) {
+                    street.item?.itemId?.let {
+                        HousesEntrancesFloorsRoomsView(
+                            appState = appState,
+                            streetInput = NavigationInput.StreetInput(it)
+                        )
+                    }
+                },
+                TabRowItem(
+                    title = stringResource(R.string.houses_tab_entrances),
+                    onClick = { onTabChange(HousingTabType.ENTRANCES) }
+                ) {},
+                TabRowItem(
+                    title = stringResource(R.string.houses_tab_floors),
+                    onClick = { onTabChange(HousingTabType.FLOORS) }
+                ) {},
+                TabRowItem(
+                    title = stringResource(R.string.houses_tab_rooms),
+                    onClick = { onTabChange(HousingTabType.ROOMS) }
+                ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
             )
-        }
+        )
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("HousingScreen: LaunchedEffect() AFTER collect single Event Flow")
@@ -218,7 +215,7 @@ fun HousingScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is HousingUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
             }
         }

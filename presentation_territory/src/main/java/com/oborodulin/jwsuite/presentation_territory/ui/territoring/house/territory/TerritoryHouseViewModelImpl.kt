@@ -45,14 +45,15 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         )
     }
 
-    override val areInputsValid = flow { emit(checkedListItems.value.isNotEmpty()) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    override val areInputsValid = flow { emit(checkedListItems.value.isNotEmpty()) }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        false
+    )
 
-    override fun observeCheckedListItems() {
-        Timber.tag(TAG).d("observeCheckedListItems() called")
+    override fun observeCheckedListItems(items: List<ListItemModel>) {
         uiState()?.let { uiState ->
-            _checkedListItems.value = uiState.houses.filter { it.checked }
-            Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
+            super.observeCheckedListItems(uiState.houses)
         }
     }
 
@@ -76,22 +77,21 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getHousesForTerritoryUseCase.execute(
                 GetHousesForTerritoryUseCase.Request(territoryId)
-            )
-                .map {
-                    converter.convert(it)
-                }
-                .collect {
-                    submitState(it)
-                }
+            ).map {
+                converter.convert(it)
+            }.collect {
+                submitState(it)
+            }
         }
         return job
     }
 
     private fun saveTerritoryHouses(): Job {
-        val houseIds = _checkedListItems.value.map { it.itemId }
+        val houseIds = _checkedListItems.value.mapNotNull { it.itemId }
         Timber.tag(TAG).d(
             "saveTerritoryHouses() called: territoryId = %s; houseIds.size = %d",
-            territory.value.item?.itemId, houseIds.size
+            territory.value.item?.itemId,
+            houseIds.size
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryHousesUseCase.execute(
@@ -107,13 +107,12 @@ class TerritoryHouseViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: TerritoryHousesUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
-            .d(
-                "initFieldStatesByUiModel(TerritoryHousesUiModel) called: uiModel = %s",
-                uiModel
-            )
+        Timber.tag(TAG).d(
+            "initFieldStatesByUiModel(TerritoryHousesUiModel) called: uiModel = %s", uiModel
+        )
         initStateValue(
-            TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY, territory,
+            TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY,
+            territory,
             uiModel.territory.toTerritoriesListItem()
         )
         return null
@@ -121,23 +120,19 @@ class TerritoryHouseViewModelImpl @Inject constructor(
 
     override suspend fun observeInputEvents() {
         Timber.tag(TAG).d("observeInputEvents() called")
-        inputEvents.receiveAsFlow()
-            .onEach { event ->
-                when (event) {
-                    is TerritoryHouseInputEvent.Territory -> setStateValue(
-                        TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY, territory, event.input,
-                        true
-                    )
-                }
+        inputEvents.receiveAsFlow().onEach { event ->
+            when (event) {
+                is TerritoryHouseInputEvent.Territory -> setStateValue(
+                    TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY, territory, event.input, true
+                )
             }
-            .debounce(350)
-            .collect { event ->
-                when (event) {
-                    is TerritoryHouseInputEvent.Territory -> setStateValue(
-                        TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY, territory, null
-                    )
-                }
+        }.debounce(350).collect { event ->
+            when (event) {
+                is TerritoryHouseInputEvent.Territory -> setStateValue(
+                    TerritoryHouseFields.TERRITORY_HOUSE_TERRITORY, territory, null
+                )
             }
+        }
     }
 
     override fun performValidation() {}
@@ -147,50 +142,49 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     override fun displayInputErrors(inputErrors: List<InputError>) {}
 
     companion object {
-        fun previewModel(ctx: Context) =
-            object : TerritoryHouseViewModel {
-                override val uiStateErrorMsg = MutableStateFlow("")
-                override val isUiStateChanged = MutableStateFlow(true)
-                override val dialogTitleResId =
-                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
-                override val savedListItem = MutableStateFlow(ListItemModel())
-                override val showDialog = MutableStateFlow(true)
+        fun previewModel(ctx: Context) = object : TerritoryHouseViewModel {
+            override val uiStateErrorMsg = MutableStateFlow("")
+            override val isUiStateChanged = MutableStateFlow(true)
+            override val dialogTitleResId =
+                MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+            override val savedListItem = MutableStateFlow(ListItemModel())
+            override val showDialog = MutableStateFlow(true)
 
-                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
-                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
-                override val events = Channel<ScreenEvent>().receiveAsFlow()
-                override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+            override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+            override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+            override val events = Channel<ScreenEvent>().receiveAsFlow()
+            override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
+            override val searchText = MutableStateFlow(TextFieldValue(""))
+            override val isSearching = MutableStateFlow(false)
+            override fun onSearchTextChange(text: TextFieldValue) {}
 
-                override val checkedListItems =
-                    MutableStateFlow(HousesListViewModelImpl.previewList(ctx))
+            override val checkedListItems =
+                MutableStateFlow(HousesListViewModelImpl.previewList(ctx))
 
-                override fun observeCheckedListItems() {}
+            override fun observeCheckedListItems(items: List<ListItemModel>) {}
 
-                override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+            override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
-                override val areInputsValid = MutableStateFlow(true)
+            override val areInputsValid = MutableStateFlow(true)
 
-                override fun submitAction(action: TerritoryHouseUiAction): Job? = null
-                override fun onTextFieldEntered(inputEvent: Inputable) {}
-                override fun onTextFieldFocusChanged(
-                    focusedField: TerritoryHouseFields, isFocused: Boolean
-                ) {
-                }
-
-                override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
-                }
-
-                override fun setDialogTitleResId(dialogTitleResId: Int) {}
-                override fun setSavedListItem(savedListItem: ListItemModel) {}
-                override fun onOpenDialogClicked() {}
-                override fun onDialogConfirm(onConfirm: () -> Unit) {}
-                override fun onDialogDismiss(onDismiss: () -> Unit) {}
+            override fun submitAction(action: TerritoryHouseUiAction): Job? = null
+            override fun onTextFieldEntered(inputEvent: Inputable) {}
+            override fun onTextFieldFocusChanged(
+                focusedField: TerritoryHouseFields, isFocused: Boolean
+            ) {
             }
+
+            override fun moveFocusImeAction() {}
+            override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
+            }
+
+            override fun setDialogTitleResId(dialogTitleResId: Int) {}
+            override fun setSavedListItem(savedListItem: ListItemModel) {}
+            override fun onOpenDialogClicked() {}
+            override fun onDialogConfirm(onConfirm: () -> Unit) {}
+            override fun onDialogDismiss(onDismiss: () -> Unit) {}
+        }
 
         fun previewUiModel(ctx: Context) = TerritoryHousesUiModel(
             territory = TerritoryViewModelImpl.previewUiModel(ctx),

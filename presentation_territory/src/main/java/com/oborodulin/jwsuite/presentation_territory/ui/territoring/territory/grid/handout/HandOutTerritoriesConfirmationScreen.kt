@@ -1,11 +1,10 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -24,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
@@ -37,16 +36,15 @@ private const val TAG = "Territoring.HandOutTerritoriesConfirmationScreen"
 
 @Composable
 fun HandOutTerritoriesConfirmationScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel,//Impl = hiltViewModel()
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("HandOutTerritoriesConfirmationScreen(...) called")
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleHandOutButtonClick = {
         Timber.tag(TAG)
@@ -98,12 +96,11 @@ fun HandOutTerritoriesConfirmationScreen(
             }
         }
         Column(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HandOutTerritoriesConfirmationView(
-                sharedViewModel = appState.sharedViewModel.value,
-                viewModel = viewModel
+                sharedViewModel = appState.sharedViewModel.value, viewModel = viewModel
             )
             Spacer(Modifier.height(8.dp))
             HandOutButtonComponent(enabled = areInputsValid, onClick = handleHandOutButtonClick)

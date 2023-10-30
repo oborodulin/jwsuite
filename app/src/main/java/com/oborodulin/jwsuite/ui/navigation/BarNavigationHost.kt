@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.ui.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,7 +22,6 @@ private const val TAG = "App.navigation.BarNavigationHost"
 
 @Composable
 fun BarNavigationHost(
-    paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -55,8 +53,6 @@ fun BarNavigationHost(
             }
             Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
             DashboardingScreen(
-                appState = appState,
-                paddingValues = paddingValues,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange
@@ -71,8 +67,6 @@ fun BarNavigationHost(
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             CongregatingScreen(
-                appState = appState,
-                paddingValues = paddingValues,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange
@@ -89,8 +83,6 @@ fun BarNavigationHost(
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             TerritoringScreen(
-                appState = appState,
-                paddingValues = paddingValues,
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
                 onActionBarChange = onActionBarChange,

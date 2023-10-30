@@ -28,8 +28,6 @@ interface TerritoryViewModel : DialogViewModeled<TerritoryUi, TerritoryUiAction,
     val isActive: StateFlow<InputWrapper>
     val territoryDesc: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun onInsert(block: () -> Unit)
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoryFields, isFocused: Boolean)

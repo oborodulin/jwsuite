@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.presentation_geo.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -9,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictScreen
@@ -24,9 +22,7 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.geoNavGraph"
 
 fun NavGraphBuilder.geoNavGraph(
-    appState: AppState,
     startDestination: String,
-    paddingValues: PaddingValues,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
@@ -43,7 +39,6 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.Geo.arguments
             )
             GeoScreen(
-                appState = appState, paddingValues = paddingValues,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -59,9 +54,7 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.Region.arguments
             )
             RegionScreen(
-                appState = appState,
                 regionInput = NavRoutes.Region.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -78,9 +71,7 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.RegionDistrict.arguments
             )
             RegionDistrictScreen(
-                appState = appState,
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -95,9 +86,7 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.Locality.arguments
             )
             LocalityScreen(
-                appState = appState,
                 localityInput = NavRoutes.Locality.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -115,9 +104,7 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.LocalityDistrict.arguments
             )
             LocalityDistrictScreen(
-                appState = appState,
                 localityDistrictInput = NavRoutes.LocalityDistrict.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -134,9 +121,7 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.Microdistrict.arguments
             )
             MicrodistrictScreen(
-                appState = appState,
                 microdistrictInput = NavRoutes.Microdistrict.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -151,9 +136,7 @@ fun NavGraphBuilder.geoNavGraph(
                 NavRoutes.Street.arguments
             )
             StreetScreen(
-                appState = appState,
                 streetInput = NavRoutes.Street.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -170,9 +153,7 @@ fun NavGraphBuilder.geoNavGraph(
                 it.destination.route, NavRoutes.StreetLocalityDistrict.arguments
             )
             StreetLocalityDistrictScreen(
-                appState = appState,
                 streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -189,9 +170,7 @@ fun NavGraphBuilder.geoNavGraph(
                 it.destination.route, NavRoutes.StreetMicrodistrict.arguments
             )
             StreetMicrodistrictScreen(
-                appState = appState,
                 streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,

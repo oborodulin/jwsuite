@@ -18,8 +18,6 @@ interface StreetLocalityDistrictViewModel :
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>
     val checkedListItems: StateFlow<List<LocalityDistrictsListItem>>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: StreetLocalityDistrictFields, isFocused: Boolean)

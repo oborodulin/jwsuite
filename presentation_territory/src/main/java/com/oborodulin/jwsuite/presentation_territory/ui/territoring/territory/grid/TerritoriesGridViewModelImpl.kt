@@ -390,7 +390,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override val areHandOutInputsValid = MutableStateFlow(true)
                 override val areAtWorkProcessInputsValid = MutableStateFlow(true)
 
-                override fun observeCheckedListItems() {}
+                override fun observeCheckedListItems(items: List<ListItemModel>) {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}

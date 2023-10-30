@@ -1,8 +1,9 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -25,7 +27,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,10 +36,8 @@ private const val TAG = "Territoring.TerritoryCategoryScreen"
 
 @Composable
 fun TerritoryCategoryScreen(
-    appState: AppState,
     viewModel: TerritoryCategoryViewModelImpl = hiltViewModel(),
     territoryCategoryInput: TerritoryCategoryInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -48,6 +48,7 @@ fun TerritoryCategoryScreen(
             "TerritoryCategoryScreen(...) called: territoryCategoryInput = %s",
             territoryCategoryInput
         )
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
@@ -97,10 +98,15 @@ fun TerritoryCategoryScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
-            TerritoryCategoryView(viewModel)
-            Spacer(Modifier.height(8.dp))
-            SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
+        CommonScreen(state = state) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TerritoryCategoryView(viewModel)
+                Spacer(Modifier.height(8.dp))
+                SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
+            }
         }
     }
 }

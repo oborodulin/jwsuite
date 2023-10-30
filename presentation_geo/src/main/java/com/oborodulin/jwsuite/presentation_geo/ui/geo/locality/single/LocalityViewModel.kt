@@ -24,8 +24,6 @@ interface LocalityViewModel : DialogViewModeled<LocalityUi, LocalityUiAction, Ui
     val localityType: StateFlow<InputWrapper>
     val localityName: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun viewModelScope(): CoroutineScope
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: LocalityFields, isFocused: Boolean)

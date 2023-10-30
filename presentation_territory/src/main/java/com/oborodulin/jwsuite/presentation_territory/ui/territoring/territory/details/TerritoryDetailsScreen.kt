@@ -1,10 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -18,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +26,7 @@ import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
@@ -46,11 +42,9 @@ private const val TAG = "Territoring.TerritoryDetailsScreen"
 
 @Composable
 fun TerritoryDetailsScreen(
-    appState: AppState,
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -58,6 +52,7 @@ fun TerritoryDetailsScreen(
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called: territoryInput = %s", territoryInput)
+    val appState = LocalAppState.current
     LaunchedEffect(territoryInput.territoryId) {
         Timber.tag(TAG).d("TerritoryDetailsScreen: LaunchedEffect() BEFORE collect ui state flow")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
@@ -133,7 +128,7 @@ fun TerritoryDetailsScreen(
                     territory.cardNum
                 )
             )
-            val backNavigation = { appState.commonNavigateUp() }
+            val backNavigation = { appState.mainNavigateUp() }
             // Scaffold Hoisting:
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             onTopBarNavClickChange { backNavigation() }
@@ -150,9 +145,7 @@ fun TerritoryDetailsScreen(
                     onClick = handleActionAdd
                 )
             }
-            Column(modifier = Modifier.padding(paddingValues)) {
-                CustomScrollableTabRow(tabs)
-            }
+            CustomScrollableTabRow(tabs)
         }
     }
     LaunchedEffect(Unit) {
@@ -162,23 +155,23 @@ fun TerritoryDetailsScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryStreetScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryHouseScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryEntranceScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryFloorScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
 
                 is TerritoryDetailsUiSingleEvent.OpenTerritoryRoomScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
             }
         }

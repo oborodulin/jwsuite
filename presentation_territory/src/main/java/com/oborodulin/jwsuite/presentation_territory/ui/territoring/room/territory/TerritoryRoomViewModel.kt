@@ -16,9 +16,6 @@ interface TerritoryRoomViewModel :
     val events: Flow<ScreenEvent>
 
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>
-    val checkedListItems: StateFlow<List<RoomsListItem>>
-
-    val areInputsValid: StateFlow<Boolean>
 
     fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)

@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.presentation_territory.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -9,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single.RoomScreen
@@ -18,9 +16,7 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.housingNavGraph"
 
 fun NavGraphBuilder.housingNavGraph(
-    appState: AppState,
     startDestination: String? = null,
-    paddingValues: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -39,8 +35,6 @@ fun NavGraphBuilder.housingNavGraph(
                     it.destination.route, NavRoutes.Housing.arguments
                 )
             HousingScreen(
-                appState = appState,
-                paddingValues = paddingValues,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
@@ -59,10 +53,8 @@ fun NavGraphBuilder.housingNavGraph(
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             //val territoryViewModel = hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             HouseScreen(
-                appState = appState,
                 //territoryViewModel = territoryViewModel,
                 houseInput = NavRoutes.House.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -80,10 +72,8 @@ fun NavGraphBuilder.housingNavGraph(
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             //val territoryViewModel = hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(appState.commonNavController))
             RoomScreen(
-                appState = appState,
                 //territoryViewModel = territoryViewModel,
                 roomInput = NavRoutes.Room.fromEntry(it),
-                paddingValues = paddingValues,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,

@@ -1,9 +1,8 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -21,7 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -33,16 +32,15 @@ private const val TAG = "Territoring.AtWorkTerritoriesConfirmationScreen"
 
 @Composable
 fun AtWorkTerritoriesConfirmationScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel,//Impl = hiltViewModel()
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("AtWorkTerritoriesConfirmationScreen(...) called")
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleProcessButtonClick = {
         Timber.tag(TAG)
@@ -94,7 +92,7 @@ fun AtWorkTerritoriesConfirmationScreen(
             }
         }
         Column(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AtWorkTerritoriesConfirmationView(

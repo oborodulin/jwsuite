@@ -18,8 +18,6 @@ interface StreetMicrodistrictViewModel :
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>
     val checkedListItems: StateFlow<List<MicrodistrictsListItem>>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun observeCheckedListItems()
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: StreetMicrodistrictFields, isFocused: Boolean)

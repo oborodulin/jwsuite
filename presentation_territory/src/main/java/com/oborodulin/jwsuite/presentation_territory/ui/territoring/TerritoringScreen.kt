@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +50,7 @@ import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.BarMemberComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.components.AtWorkProcessMultiFabComponent
@@ -72,8 +72,6 @@ private const val TAG = "Territoring.TerritoringScreen"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TerritoringScreen(
-    appState: AppState,
-    paddingValues: PaddingValues,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
@@ -84,6 +82,7 @@ fun TerritoringScreen(
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
+    val appState = LocalAppState.current
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
@@ -153,10 +152,10 @@ fun TerritoringScreen(
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
         onTopBarActionsChange {
-            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Territory.routeForTerritory()) }) {
+            IconButton(onClick = { appState.mainNavigate(NavRoutes.Territory.routeForTerritory()) }) {
                 Icon(Icons.Outlined.Add, null)
             }
-            IconButton(onClick = { appState.mainNavController.navigate(NavRoutes.Housing.route) }) {
+            IconButton(onClick = { appState.mainNavigate(NavRoutes.Housing.route) }) {
                 Icon(Icons.Outlined.Home, null)
             }
             /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
@@ -221,74 +220,72 @@ fun TerritoringScreen(
                 }
             }
         }
-        Column(modifier = Modifier.padding(paddingValues)) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_hand_out),
-                        onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
-                    ) {
-                        location.item?.let {
-                            HandOutTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                enableAction = areHandOutInputsValid,
-                                territoringViewModel = territoringViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_at_work),
-                        onClick = { onTabChange(TerritoringTabType.AT_WORK) }
-                    ) {
-                        location.item?.let {
-                            AtWorkTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_idle),
-                        onClick = { onTabChange(TerritoringTabType.IDLE) }
-                    ) {
-                        location.item?.let {
-                            IdleTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_all),
-                        onClick = { onTabChange(TerritoringTabType.ALL) }
-                    ) {
-                        location.item?.let {
-                            AllTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
+        CustomScrollableTabRow(
+            listOf(
+                TabRowItem(
+                    title = stringResource(R.string.territory_tab_hand_out),
+                    onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
+                ) {
+                    location.item?.let {
+                        HandOutTerritoriesView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                            enableAction = areHandOutInputsValid,
+                            territoringViewModel = territoringViewModel,
+                            territoriesGridViewModel = territoriesGridViewModel,
+                            territoryLocationType = it.territoryLocationType,
+                            locationId = it.locationId,
+                            isPrivateSector = isPrivateSector.value.toBoolean()
+                        )
                     }
-                )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.territory_tab_at_work),
+                    onClick = { onTabChange(TerritoringTabType.AT_WORK) }
+                ) {
+                    location.item?.let {
+                        AtWorkTerritoriesView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                            territoriesGridViewModel = territoriesGridViewModel,
+                            territoryLocationType = it.territoryLocationType,
+                            locationId = it.locationId,
+                            isPrivateSector = isPrivateSector.value.toBoolean()
+                        )
+                    }
+                },
+                TabRowItem(
+                    title = stringResource(R.string.territory_tab_idle),
+                    onClick = { onTabChange(TerritoringTabType.IDLE) }
+                ) {
+                    location.item?.let {
+                        IdleTerritoriesView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                            territoriesGridViewModel = territoriesGridViewModel,
+                            territoryLocationType = it.territoryLocationType,
+                            locationId = it.locationId,
+                            isPrivateSector = isPrivateSector.value.toBoolean()
+                        )
+                    }
+                },
+                TabRowItem(
+                    title = stringResource(R.string.territory_tab_all),
+                    onClick = { onTabChange(TerritoringTabType.ALL) }
+                ) {
+                    location.item?.let {
+                        AllTerritoriesView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                            territoriesGridViewModel = territoriesGridViewModel,
+                            territoryLocationType = it.territoryLocationType,
+                            locationId = it.locationId,
+                            isPrivateSector = isPrivateSector.value.toBoolean()
+                        )
+                    }
+                }
             )
-        }
+        )
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("TerritoringScreen: LaunchedEffect() AFTER collect single Event Flow")
@@ -296,7 +293,7 @@ fun TerritoringScreen(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoringUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    appState.mainNavController.navigate(it.navRoute)
+                    appState.mainNavigate(it.navRoute)
                 }
             }
         }

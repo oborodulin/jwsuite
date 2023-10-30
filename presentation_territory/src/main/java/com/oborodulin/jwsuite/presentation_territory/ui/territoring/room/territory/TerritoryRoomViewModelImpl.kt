@@ -172,7 +172,7 @@ class TerritoryRoomViewModelImpl @Inject constructor(
                 override val checkedListItems =
                     MutableStateFlow(RoomsListViewModelImpl.previewList(ctx))
 
-                override fun observeCheckedListItems() {}
+                override fun observeCheckedListItems(items: List<ListItemModel>) {}
 
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 

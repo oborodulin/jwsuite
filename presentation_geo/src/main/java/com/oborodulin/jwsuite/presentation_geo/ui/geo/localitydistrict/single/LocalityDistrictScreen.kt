@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -29,7 +27,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.R
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,10 +36,8 @@ private const val TAG = "Geo.LocalityDistrictScreen"
 
 @Composable
 fun LocalityDistrictScreen(
-    appState: AppState,
     viewModel: LocalityDistrictViewModelImpl = hiltViewModel(),
     localityDistrictInput: LocalityDistrictInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -49,6 +45,7 @@ fun LocalityDistrictScreen(
 ) {
     Timber.tag(TAG)
         .d("LocalityDistrictScreen(...) called: localityInput = %s", localityDistrictInput)
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
@@ -100,11 +97,9 @@ fun LocalityDistrictScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LocalityDistrictView()

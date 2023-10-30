@@ -2,9 +2,11 @@ package com.oborodulin.jwsuite.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
@@ -26,7 +28,7 @@ private const val TAG = "App.Navigation.MainNavigationHost"
 // https://stackoverflow.com/questions/69738397/jetpackcompose-navigation-nested-graphs-cause-viewmodelstore-should-be-set-befo
 @Composable
 fun MainNavigationHost(
-    paddingValues: PaddingValues,
+    innerPadding: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -44,7 +46,8 @@ fun MainNavigationHost(
     NavHost(
         navController = appState.mainNavController,
         route = Graph.MAIN,
-        startDestination = session.mainRoute
+        startDestination = session.mainRoute,
+        modifier = Modifier.padding(innerPadding)
     ) {
         onActionBarChange(null)
         shouldUseNestedScrollConnection(false)
@@ -52,18 +55,14 @@ fun MainNavigationHost(
         onTopBarActionsChange {}
         onFabChange {}
         congregationNavGraph(
-            appState = appState,
             startDestination = session.startDestination,
-            paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange
         )
         territoryNavGraph(
-            appState = appState,
             startDestination = session.startDestination,
-            paddingValues = paddingValues,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
@@ -71,9 +70,7 @@ fun MainNavigationHost(
             onFabChange = onFabChange
         )
         geoNavGraph(
-            appState = appState,
             startDestination = session.startDestination,
-            paddingValues = paddingValues,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
@@ -82,9 +79,7 @@ fun MainNavigationHost(
             onFabChange = onFabChange
         )
         housingNavGraph(
-            appState = appState,
             startDestination = session.startDestination,
-            paddingValues = paddingValues,
             onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
@@ -100,7 +95,6 @@ fun MainNavigationHost(
             shouldUseNestedScrollConnection(true)
             areUsingBottomNavigation(true)
             BarNavigationHost(
-                paddingValues = paddingValues,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,

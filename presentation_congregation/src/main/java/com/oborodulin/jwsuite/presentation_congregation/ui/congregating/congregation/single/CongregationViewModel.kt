@@ -21,8 +21,6 @@ interface CongregationViewModel :
     val territoryMark: StateFlow<InputWrapper>
     val isFavorite: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: CongregationFields, isFocused: Boolean)
     fun moveFocusImeAction()

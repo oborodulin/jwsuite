@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -28,7 +26,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.R
 import timber.log.Timber
 
@@ -36,10 +34,8 @@ private const val TAG = "Territoring.StreetMicrodistrictScreen"
 
 @Composable
 fun StreetMicrodistrictScreen(
-    appState: AppState,
     viewModel: StreetMicrodistrictViewModelImpl = hiltViewModel(),
     streetMicrodistrictInput: NavigationInput.StreetMicrodistrictInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -50,7 +46,8 @@ fun StreetMicrodistrictScreen(
             "StreetMicrodistrictScreen(...) called: streetMicrodistrictInput = %s",
             streetMicrodistrictInput
         )
-    val backNavigation: () -> Unit = { appState.commonNavigateUp() }
+    val appState = LocalAppState.current
+    val backNavigation: () -> Unit = { appState.mainNavigateUp() }
     val handleSaveButtonClick = {
         // checks all errors
         viewModel.onContinueClick {
@@ -93,11 +90,9 @@ fun StreetMicrodistrictScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 StreetMicrodistrictView(
@@ -105,10 +100,7 @@ fun StreetMicrodistrictScreen(
                     streetMicrodistrictViewModel = viewModel
                 )
                 Spacer(Modifier.height(8.dp))
-                SaveButtonComponent(
-                    enabled = areInputsValid,
-                    onClick = handleSaveButtonClick
-                )
+                SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
             }
         }
     }

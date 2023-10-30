@@ -80,9 +80,11 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         _searchText.value = text
     }
 
-    override fun observeCheckedListItems() {
-        Timber.tag(TAG).d("observeCheckedListItems() called")
-        uiState()?.let { uiState ->
+    override fun observeCheckedListItems(items: List<ListItemModel>) {
+        Timber.tag(TAG).d("observeCheckedListItems(items) called: items.size = %d", items.size)
+        if (items.isNotEmpty()) {
+            _checkedListItems.value = items.filter { it.checked }
+        } else uiState()?.let { uiState ->
             if (uiState is List<*>) {
                 _checkedListItems.value = (uiState as List<ListItemModel>).filter { it.checked }
                 Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)

@@ -18,8 +18,6 @@ interface GroupViewModel : DialogViewModeled<GroupUi, GroupUiAction, UiSingleEve
     val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>>
     val groupNum: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: GroupFields, isFocused: Boolean)
     fun moveFocusImeAction()

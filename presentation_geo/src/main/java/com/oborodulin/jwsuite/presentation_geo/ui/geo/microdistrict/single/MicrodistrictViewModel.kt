@@ -25,8 +25,6 @@ interface MicrodistrictViewModel :
     val microdistrictType: StateFlow<InputWrapper>
     val microdistrictName: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun viewModelScope(): CoroutineScope
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: MicrodistrictFields, isFocused: Boolean)

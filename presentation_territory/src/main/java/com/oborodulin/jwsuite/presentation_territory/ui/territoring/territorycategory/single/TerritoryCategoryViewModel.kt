@@ -18,8 +18,6 @@ interface TerritoryCategoryViewModel :
     val territoryCategoryMark: StateFlow<InputWrapper>
     val territoryCategoryName: StateFlow<InputWrapper>
 
-    val areInputsValid: StateFlow<Boolean>
-
     fun viewModelScope(): CoroutineScope
     fun onTextFieldEntered(inputEvent: Inputable)
     fun onTextFieldFocusChanged(focusedField: TerritoryCategoryFields, isFocused: Boolean)

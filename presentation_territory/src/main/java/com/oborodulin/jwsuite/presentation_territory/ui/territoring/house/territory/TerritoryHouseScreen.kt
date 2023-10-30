@@ -1,12 +1,10 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
@@ -28,7 +26,7 @@ import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryHouseInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
@@ -37,12 +35,10 @@ private const val TAG = "Territoring.TerritoryHouseScreen"
 
 @Composable
 fun TerritoryHouseScreen(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
     territoryHouseViewModel: TerritoryHouseViewModelImpl = hiltViewModel(),
     territoryHouseInput: TerritoryHouseInput? = null,
-    paddingValues: PaddingValues,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -50,7 +46,7 @@ fun TerritoryHouseScreen(
 ) {
     Timber.tag(TAG)
         .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
-
+    val appState = LocalAppState.current
     val handleSaveButtonClick = {
         // checks all errors
         territoryHouseViewModel.onContinueClick {
@@ -58,7 +54,7 @@ fun TerritoryHouseScreen(
             // if success, save then backToBottomBarScreen
             territoryHouseViewModel.handleActionJob(
                 { territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Save) },
-                { appState.commonNavigateUp() })
+                { appState.mainNavigateUp() })
         }
     }
     LaunchedEffect(territoryHouseInput?.territoryId) {
@@ -72,7 +68,7 @@ fun TerritoryHouseScreen(
         territoryHouseViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val backNavigation: () -> Unit = { appState.commonNavigateUp() }
+        val backNavigation: () -> Unit = { appState.mainNavigateUp() }
         // Cancel Changes Confirm:
         val isUiStateChanged by territoryHouseViewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
@@ -92,11 +88,9 @@ fun TerritoryHouseScreen(
                 Icon(Icons.Outlined.Done, null)
             }
         }
-        CommonScreen(paddingValues = paddingValues, state = state) {
+        CommonScreen(state = state) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TerritoryHouseView(
