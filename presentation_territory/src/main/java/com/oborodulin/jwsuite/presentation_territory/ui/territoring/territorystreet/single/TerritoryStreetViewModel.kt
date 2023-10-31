@@ -2,27 +2,18 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territoryst
 
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
-import com.oborodulin.home.common.ui.components.field.util.Inputable
-import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface TerritoryStreetViewModel :
-    DialogViewModeled<TerritoryStreetUiModel, TerritoryStreetUiAction, UiSingleEvent> {
-    val events: Flow<ScreenEvent>
-
+    DialogViewModeled<TerritoryStreetUiModel, TerritoryStreetUiAction, UiSingleEvent, TerritoryStreetFields> {
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>
     val isPrivateSector: StateFlow<InputWrapper>
     val isEvenSide: StateFlow<InputWrapper>
     val estimatedHouses: StateFlow<InputWrapper>
-
-    fun onTextFieldEntered(inputEvent: Inputable)
-    fun onTextFieldFocusChanged(focusedField: TerritoryStreetFields, isFocused: Boolean)
-    fun moveFocusImeAction()
 }

@@ -75,19 +75,19 @@ fun RegionDistrictScreen(
         regionDistrictViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val backNavigation = { appState.backToBottomBarScreen() }
+        val upNavigation: () -> Unit = { appState.mainNavigateUp() }
         // Cancel Changes Confirm:
         val isUiStateChanged by regionDistrictViewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_region_district),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Scaffold Hoisting:
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by regionDistrictViewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {

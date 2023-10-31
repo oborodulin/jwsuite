@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -45,7 +45,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     private val territoryStreetUiMapper: TerritoryStreetUiToTerritoryStreetMapper,
     private val territoryStreetMapper: TerritoryStreetToTerritoryStreetsListItemMapper
 ) : TerritoryStreetViewModel,
-    DialogSingleViewModel<TerritoryStreetUiModel, UiState<TerritoryStreetUiModel>, TerritoryStreetUiAction, UiSingleEvent, TerritoryStreetFields, InputWrapper>(
+    DialogViewModel<TerritoryStreetUiModel, UiState<TerritoryStreetUiModel>, TerritoryStreetUiAction, UiSingleEvent, TerritoryStreetFields, InputWrapper>(
         state, TerritoryStreetFields.TERRITORY_STREET_ID.name,
         TerritoryStreetFields.TERRITORY_STREET_TERRITORY
     ) {
@@ -303,6 +303,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street =
                     MutableStateFlow(InputListItemWrapper<StreetsListItem>())

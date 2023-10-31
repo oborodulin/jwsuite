@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_congregation.R
@@ -44,7 +44,7 @@ class GroupViewModelImpl @Inject constructor(
     private val groupUiMapper: GroupUiToGroupMapper,
     private val groupMapper: GroupToGroupsListItemMapper
 ) : GroupViewModel,
-    DialogSingleViewModel<GroupUi, UiState<GroupUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
+    DialogViewModel<GroupUi, UiState<GroupUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
         state, GroupFields.GROUP_ID.name, GroupFields.GROUP_NUM
     ) {
     override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
@@ -223,6 +223,7 @@ class GroupViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val groupNum = MutableStateFlow(InputWrapper())

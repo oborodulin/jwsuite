@@ -72,19 +72,19 @@ fun LocalityScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val backNavigation = { appState.backToBottomBarScreen() }
+        val upNavigation: () -> Unit = { appState.mainNavigateUp() }
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_locality),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Scaffold Hoisting:
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {

@@ -9,8 +9,8 @@ import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.single.RoomScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomScreen
 import timber.log.Timber
 
 private const val TAG = "App.Navigation.housingNavGraph"

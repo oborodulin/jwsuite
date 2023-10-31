@@ -10,7 +10,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
@@ -45,7 +45,7 @@ class StreetViewModelImpl @Inject constructor(
     private val streetUiMapper: StreetUiToStreetMapper,
     private val streetMapper: StreetToStreetsListItemMapper
 ) : StreetViewModel,
-    DialogSingleViewModel<StreetUi, UiState<StreetUi>, StreetUiAction, UiSingleEvent, StreetFields, InputWrapper>(
+    DialogViewModel<StreetUi, UiState<StreetUi>, StreetUiAction, UiSingleEvent, StreetFields, InputWrapper>(
         state, StreetFields.STREET_ID.name, StreetFields.STREET_LOCALITY
     ) {
     private val _roadTypes: MutableStateFlow<MutableMap<RoadType, String>> =
@@ -336,6 +336,7 @@ class StreetViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 //override val localityDistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
@@ -347,7 +348,6 @@ class StreetViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: StreetUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -356,10 +356,7 @@ class StreetViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean,
-                    onSuccess: () -> Unit
-                ) {
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
                 }
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}

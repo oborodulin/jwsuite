@@ -10,7 +10,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
@@ -46,7 +46,7 @@ class LocalityViewModelImpl @Inject constructor(
     private val localityUiMapper: LocalityUiToLocalityMapper,
     private val localityMapper: LocalityToLocalitiesListItemMapper
 ) : LocalityViewModel,
-    DialogSingleViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
+    DialogViewModel<LocalityUi, UiState<LocalityUi>, LocalityUiAction, UiSingleEvent, LocalityFields, InputWrapper>(
         state, LocalityFields.LOCALITY_ID.name, LocalityFields.LOCALITY_REGION
     ) {
     private val _localityTypes: MutableStateFlow<MutableMap<LocalityType, String>> =
@@ -345,6 +345,7 @@ class LocalityViewModelImpl @Inject constructor(
 
                 override val localityTypes = MutableStateFlow(mutableMapOf<LocalityType, String>())
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val regionDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

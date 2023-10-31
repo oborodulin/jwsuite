@@ -31,8 +31,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     private val state: SavedStateHandle,
     private val idFieldName: String? = null,
     initFocusedTextField: Focusable? = null
-) : MviViewModel<T, S, A, E>(), SingleViewModeled<T, A, E> {
-    val id: StateFlow<InputWrapper> by lazy {
+) : MviViewModel<T, S, A, E>(), SingleViewModeled<T, A, E, F> {
+    override val id: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(idFieldName.orEmpty(), InputWrapper())
     }
     private val _isUiStateChanged: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -47,7 +47,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
 
     private val _events = Channel<ScreenEvent>()
-    val events = _events.receiveAsFlow()
+    override val events = _events.receiveAsFlow()
     val inputEvents = Channel<Inputable>(Channel.CONFLATED)
 
     init {
@@ -216,18 +216,18 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         _isUiStateChanged.value = true
     }
 
-    fun onTextFieldEntered(inputEvent: Inputable) {
+    override fun onTextFieldEntered(inputEvent: Inputable) {
         Timber.tag(TAG).d("onTextFieldEntered: %s", inputEvent.javaClass.name)
         inputEvents.trySend(inputEvent)
     }
 
-    fun onTextFieldFocusChanged(focusedField: F, isFocused: Boolean) {
+    override fun onTextFieldFocusChanged(focusedField: F, isFocused: Boolean) {
         Timber.tag(TAG)
             .d("onTextFieldFocusChanged: %s - %s", focusedField.key(), isFocused)
         focusedTextField.key = if (isFocused) focusedField.key() else null
     }
 
-    fun moveFocusImeAction() {
+    override fun moveFocusImeAction() {
         Timber.tag(TAG).d("moveFocusImeAction() called")
         _events.trySend(ScreenEvent.MoveFocus())
     }

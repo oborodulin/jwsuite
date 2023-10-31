@@ -10,7 +10,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
@@ -53,7 +53,7 @@ class MemberViewModelImpl @Inject constructor(
     private val memberUiMapper: MemberUiToMemberMapper,
     private val memberMapper: MemberToMembersListItemMapper
 ) : MemberViewModel,
-    DialogSingleViewModel<MemberUi, UiState<MemberUi>, MemberUiAction, UiSingleEvent, MemberFields, InputWrapper>(
+    DialogViewModel<MemberUi, UiState<MemberUi>, MemberUiAction, UiSingleEvent, MemberFields, InputWrapper>(
         state, MemberFields.MEMBER_ID.name, MemberFields.MEMBER_NUM
     ) {
     private val _memberTypes: MutableStateFlow<MutableMap<MemberType, String>> =
@@ -573,6 +573,7 @@ class MemberViewModelImpl @Inject constructor(
 
                 override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val group = MutableStateFlow(InputListItemWrapper<ListItemModel>())

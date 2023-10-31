@@ -74,20 +74,20 @@ fun HandOutTerritoriesConfirmationScreen(
     }
     viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { dialogTitleResId ->
         Timber.tag(TAG).d("Collect ui state flow")
-        val backNavigation = { appState.backToBottomBarScreen() }
+        val upNavigation = { appState.backToBottomBarScreen() }
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_hand_out),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Scaffold Hoisting:
         onActionBarSubtitleChange(stringResource(dialogTitleResId))
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {

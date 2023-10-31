@@ -8,7 +8,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_congregation.R
@@ -40,7 +40,7 @@ class CongregationViewModelImpl @Inject constructor(
     private val saveCongregationConverter: SaveCongregationConverter,
     private val mapper: CongregationUiToCongregationMapper
 ) : CongregationViewModel,
-    DialogSingleViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
+    DialogViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
         state, CongregationFields.CONGREGATION_ID.name, CongregationFields.CONGREGATION_LOCALITY
     ) {
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -322,6 +322,7 @@ class CongregationViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val congregationNum = MutableStateFlow(InputWrapper())
                 override val congregationName = MutableStateFlow(InputWrapper())

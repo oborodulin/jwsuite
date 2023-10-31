@@ -94,7 +94,7 @@ fun TerritoringScreen(
     val checkedTerritories by territoriesGridViewModel.checkedListItems.collectAsStateWithLifecycle()
 
     val areHandOutInputsValid by territoriesGridViewModel.areHandOutInputsValid.collectAsStateWithLifecycle()
-    val areTerritoriesChecked by territoriesGridViewModel.areListItemsChecked.collectAsStateWithLifecycle()
+    val areTerritoriesChecked by territoriesGridViewModel.areInputsValid.collectAsStateWithLifecycle()
 
     var multiFloatingProcessState by remember { mutableStateOf(MultiFloatingState.Collapsed) }
     var multiFloatingAddState by remember { mutableStateOf(MultiFloatingState.Collapsed) }

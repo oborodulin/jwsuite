@@ -8,7 +8,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetLocalityDistrictsForStreetUseCase
@@ -39,7 +39,7 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
     private val streetUseCases: StreetUseCases,
     private val converter: StreetLocalityDistrictConverter
 ) : StreetLocalityDistrictViewModel,
-    DialogSingleViewModel<StreetLocalityDistrictsUiModel, UiState<StreetLocalityDistrictsUiModel>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
+    DialogViewModel<StreetLocalityDistrictsUiModel, UiState<StreetLocalityDistrictsUiModel>, StreetLocalityDistrictUiAction, UiSingleEvent, StreetLocalityDistrictFields, InputWrapper>(
         state, initFocusedTextField = StreetLocalityDistrictFields.STREET_LOCALITY_DISTRICT_STREET
     ) {
     override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
@@ -178,8 +178,9 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
                 override val checkedListItems =
                     MutableStateFlow(LocalityDistrictsListViewModelImpl.previewList(ctx))
 
-                override fun observeCheckedListItems(items: List<ListItemModel>) {}
+                override fun observeCheckedListItems() {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val street = MutableStateFlow(InputListItemWrapper<StreetsListItem>())
                 override val areInputsValid = MutableStateFlow(true)
 

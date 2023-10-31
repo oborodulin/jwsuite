@@ -90,19 +90,19 @@ fun TerritoryStreetScreen(
         territoryStreetViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val backNavigation: () -> Unit = { appState.mainNavigateUp() }
+        val upNavigation: () -> Unit = { appState.mainNavigateUp() }
         // Cancel Changes Confirm:
         val isUiStateChanged by territoryStreetViewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_territory_category),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Scaffold Hoisting:
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by territoryStreetViewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {

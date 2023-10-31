@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.field.util.Focusable
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
@@ -46,9 +47,9 @@ private const val TAG = "Common.ui.FullScreenDialog"
 // https://stackoverflow.com/questions/70622649/full-screen-dialog-in-android-compose-does-not-take-full-screen-height
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : Any, A : UiAction, E : UiSingleEvent> FullScreenDialog(
+fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
     isShow: Boolean,
-    viewModel: DialogViewModeled<T, A, E>,
+    viewModel: DialogViewModeled<T, A, E, F>,
     loadUiAction: A,
     confirmUiAction: A,
     dialogView: @Composable (T) -> Unit,

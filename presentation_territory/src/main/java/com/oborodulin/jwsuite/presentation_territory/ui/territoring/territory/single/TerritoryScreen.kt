@@ -86,19 +86,19 @@ fun TerritoryScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val backNavigation = { appState.backToBottomBarScreen() }
+        val upNavigation = { appState.backToBottomBarScreen() }
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_territory),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Scaffold Hoisting:
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {

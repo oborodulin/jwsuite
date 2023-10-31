@@ -54,14 +54,14 @@ fun CongregationScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val backNavigation = { appState.backToBottomBarScreen() }
+        val upNavigation = { appState.backToBottomBarScreen() }
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_congregation),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Error Alert:
         val errorMessage by viewModel.uiStateErrorMsg.collectAsStateWithLifecycle()
@@ -86,7 +86,7 @@ fun CongregationScreen(
         // Scaffold Hoisting:
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {
@@ -100,6 +100,7 @@ fun CongregationScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CongregationView()
+                // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                 Spacer(Modifier.height(8.dp))
                 SaveButtonComponent(
                     enabled = areInputsValid, onClick = handleSaveButtonClick

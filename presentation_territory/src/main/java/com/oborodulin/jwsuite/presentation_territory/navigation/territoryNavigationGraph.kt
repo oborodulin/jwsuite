@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.presentation_territory.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -11,10 +10,9 @@ import androidx.navigation.navigation
 import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.territory.TerritoryHouseScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.territory.TerritoryRoomScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.TerritoryHouseScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.TerritoryRoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen

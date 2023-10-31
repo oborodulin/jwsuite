@@ -150,6 +150,7 @@ class HousingViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
@@ -161,7 +162,11 @@ class HousingViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
             }
     }
 }

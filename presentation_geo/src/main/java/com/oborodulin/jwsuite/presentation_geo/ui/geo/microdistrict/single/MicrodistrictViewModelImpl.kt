@@ -10,7 +10,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
@@ -47,7 +47,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
     private val microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper,
     private val microdistrictMapper: MicrodistrictToMicrodistrictsListItemMapper
 ) : MicrodistrictViewModel,
-    DialogSingleViewModel<MicrodistrictUi, UiState<MicrodistrictUi>, MicrodistrictUiAction, UiSingleEvent, MicrodistrictFields, InputWrapper>(
+    DialogViewModel<MicrodistrictUi, UiState<MicrodistrictUi>, MicrodistrictUiAction, UiSingleEvent, MicrodistrictFields, InputWrapper>(
         state, MicrodistrictFields.MICRODISTRICT_ID.name, MicrodistrictFields.MICRODISTRICT_LOCALITY
     ) {
     private val _microdistrictTypes: MutableStateFlow<MutableMap<VillageType, String>> =
@@ -374,6 +374,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
@@ -383,7 +384,6 @@ class MicrodistrictViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: MicrodistrictUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

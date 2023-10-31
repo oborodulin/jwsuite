@@ -47,7 +47,7 @@ fun StreetMicrodistrictScreen(
             streetMicrodistrictInput
         )
     val appState = LocalAppState.current
-    val backNavigation: () -> Unit = { appState.mainNavigateUp() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     val handleSaveButtonClick = {
         // checks all errors
         viewModel.onContinueClick {
@@ -55,7 +55,7 @@ fun StreetMicrodistrictScreen(
             // if success, save then commonNavigateUp
             viewModel.handleActionJob(
                 { viewModel.submitAction(StreetMicrodistrictUiAction.Save) },
-                afterAction = backNavigation
+                afterAction = upNavigation
             )
         }
     }
@@ -77,12 +77,12 @@ fun StreetMicrodistrictScreen(
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(R.string.dlg_confirm_cancel_changes_street_microdistrict),
-            onConfirm = backNavigation
+            onConfirm = upNavigation
         )
         // Scaffold Hoisting:
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
-            if (isUiStateChanged) isCancelChangesShowAlert.value = true else backNavigation()
+            if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {

@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
@@ -46,7 +46,7 @@ class SessionViewModelImpl @Inject constructor(
     private val signupConverter: SignupSessionConverter,
     private val loginConverter: LoginSessionConverter
 ) : SessionViewModel,
-    DialogSingleViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, UiSingleEvent, SessionFields, InputWrapper>(
+    DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, UiSingleEvent, SessionFields, InputWrapper>(
         state, initFocusedTextField = SessionFields.SESSION_USERNAME
     ) {
     override val username: StateFlow<InputWrapper> by lazy {
@@ -64,7 +64,7 @@ class SessionViewModelImpl @Inject constructor(
             username.errorId == null && pin.errorId == null && confirmPin.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override val areLoginInputsValid = flow { emit(pin.value.errorId == null) }.stateIn(
+    override val areInputsValid = flow { emit(pin.value.errorId == null) }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         false
@@ -264,12 +264,13 @@ class SessionViewModelImpl @Inject constructor(
             override val isSearching = MutableStateFlow(false)
             override fun onSearchTextChange(text: TextFieldValue) {}
 
+            override val id = MutableStateFlow(InputWrapper())
             override val username = MutableStateFlow(InputWrapper())
             override val pin = MutableStateFlow(InputWrapper())
             override val confirmPin = MutableStateFlow(InputWrapper())
 
             override val areSignupInputsValid = MutableStateFlow(true)
-            override val areLoginInputsValid = MutableStateFlow(true)
+            override val areInputsValid = MutableStateFlow(true)
 
             override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             override fun submitAction(action: SessionUiAction): Job? = null

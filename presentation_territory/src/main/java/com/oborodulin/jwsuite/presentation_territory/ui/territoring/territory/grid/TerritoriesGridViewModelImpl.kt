@@ -10,7 +10,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
@@ -62,7 +62,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     private val useCases: TerritoryUseCases,
     private val listConverter: TerritoriesGridConverter
 ) : TerritoriesGridViewModel,
-    DialogSingleViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
+    DialogViewModel<List<TerritoriesListItem>, UiState<List<TerritoriesListItem>>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, InputWrapper>(
         state//, TerritoriesFields.TERRITORY_GRID_ID.name
         //TerritoriesFields.TERRITORY_MEMBER
     ) {
@@ -110,7 +110,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         MutableStateFlow(emptyList())
     override val checkedListItems = _checkedListItems.asStateFlow()
 
-    override val areListItemsChecked =
+    override val areInputsValid =
         flow { emit(checkedListItems.value.isNotEmpty()) }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
@@ -382,15 +382,16 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override fun onAtWorkSearchTextChange(text: TextFieldValue) {}
                 override fun onIdleSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val receivingDate = MutableStateFlow(InputWrapper())
                 override val deliveryDate = MutableStateFlow(InputWrapper())
 
-                override val areListItemsChecked = MutableStateFlow(true)
+                override val areInputsValid = MutableStateFlow(true)
                 override val areHandOutInputsValid = MutableStateFlow(true)
                 override val areAtWorkProcessInputsValid = MutableStateFlow(true)
 
-                override fun observeCheckedListItems(items: List<ListItemModel>) {}
+                override fun observeCheckedListItems() {}
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
@@ -401,7 +402,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}

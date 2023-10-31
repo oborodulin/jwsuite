@@ -56,8 +56,8 @@ import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.BarLocalityComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.BarStreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListView
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.list.RoomsListView
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListView
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.list.RoomsListView
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.EnumMap
@@ -129,7 +129,7 @@ fun HousingScreen(
         // Scaffold Hoisting:
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing))
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        onTopBarNavClickChange { appState.mainNavigateUp() }
+        onTopBarNavClickChange { appState.backToBottomBarScreen() }
         onTopBarActionsChange {
             IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
             IconButton(onClick = { context.toast("Settings action button clicked...") }) {

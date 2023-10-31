@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_territory.R
@@ -40,7 +40,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
     private val territoryCategoryUiMapper: TerritoryCategoryUiToTerritoryCategoryMapper,
     private val territoryCategoryMapper: TerritoryCategoryToTerritoryCategoriesListItemMapper
 ) : TerritoryCategoryViewModel,
-    DialogSingleViewModel<TerritoryCategoryUi, UiState<TerritoryCategoryUi>, TerritoryCategoryUiAction, UiSingleEvent, TerritoryCategoryFields, InputWrapper>(
+    DialogViewModel<TerritoryCategoryUi, UiState<TerritoryCategoryUi>, TerritoryCategoryUiAction, UiSingleEvent, TerritoryCategoryFields, InputWrapper>(
         state, TerritoryCategoryFields.TERRITORY_CATEGORY_ID.name,
         TerritoryCategoryFields.TERRITORY_CATEGORY_CODE
     ) {
@@ -311,13 +311,14 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val territoryCategoryCode = MutableStateFlow(InputWrapper())
                 override val territoryCategoryMark = MutableStateFlow(InputWrapper())
                 override val territoryCategoryName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
+                //override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: TerritoryCategoryUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -326,7 +327,9 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

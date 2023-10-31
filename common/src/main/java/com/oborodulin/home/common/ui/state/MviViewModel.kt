@@ -3,7 +3,6 @@ package com.oborodulin.home.common.ui.state
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.model.ListItemModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -40,10 +39,6 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _isSearching = MutableStateFlow(false)
     override val isSearching = _isSearching.asStateFlow()
 
-    protected val _checkedListItems: MutableStateFlow<List<ListItemModel>> =
-        MutableStateFlow(emptyList())
-    override val checkedListItems = _checkedListItems.asStateFlow()
-
     val errorHandler = CoroutineExceptionHandler { _, exception ->
         Timber.tag(TAG).e(exception)
         //_uiState.value = _uiState.value.copy(error = exception.message, isLoading = false)
@@ -78,18 +73,6 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     override fun onSearchTextChange(text: TextFieldValue) {
         _searchText.value = text
-    }
-
-    override fun observeCheckedListItems(items: List<ListItemModel>) {
-        Timber.tag(TAG).d("observeCheckedListItems(items) called: items.size = %d", items.size)
-        if (items.isNotEmpty()) {
-            _checkedListItems.value = items.filter { it.checked }
-        } else uiState()?.let { uiState ->
-            if (uiState is List<*>) {
-                _checkedListItems.value = (uiState as List<ListItemModel>).filter { it.checked }
-                Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
-            }
-        }
     }
 
     abstract suspend fun handleAction(action: A): Job?

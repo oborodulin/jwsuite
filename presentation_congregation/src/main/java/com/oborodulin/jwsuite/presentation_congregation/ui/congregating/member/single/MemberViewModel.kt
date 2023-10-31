@@ -2,20 +2,16 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.
 
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
-import com.oborodulin.home.common.ui.components.field.util.Inputable
-import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingleEvent> {
-    val events: Flow<ScreenEvent>
-
+interface MemberViewModel :
+    DialogViewModeled<MemberUi, MemberUiAction, UiSingleEvent, MemberFields> {
     val memberTypes: StateFlow<MutableMap<MemberType, String>>
 
     val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>>
@@ -36,8 +32,4 @@ interface MemberViewModel : DialogViewModeled<MemberUi, MemberUiAction, UiSingle
         surname: String? = null, memberName: String? = null, groupNum: Int? = null,
         memberNum: String? = null
     ): String
-
-    fun onTextFieldEntered(inputEvent: Inputable)
-    fun onTextFieldFocusChanged(focusedField: MemberFields, isFocused: Boolean)
-    fun moveFocusImeAction()
 }

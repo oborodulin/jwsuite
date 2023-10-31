@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
@@ -39,7 +39,7 @@ class RegionViewModelImpl @Inject constructor(
     private val regionUiMapper: RegionUiToRegionMapper,
     private val regionMapper: RegionToRegionsListItemMapper
 ) : RegionViewModel,
-    DialogSingleViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
+    DialogViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
         state, RegionFields.REGION_ID.name, RegionFields.REGION_CODE
     ) {
     override val regionCode: StateFlow<InputWrapper> by lazy {
@@ -228,12 +228,12 @@ class RegionViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val regionCode = MutableStateFlow(InputWrapper())
                 override val regionName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: RegionUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -242,10 +242,7 @@ class RegionViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean,
-                    onSuccess: () -> Unit
-                ) {
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
                 }
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}

@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
@@ -41,7 +41,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
     private val localityDistrictMapper: LocalityDistrictToLocalityDistrictsListItemMapper
 ) : LocalityDistrictViewModel,
-    DialogSingleViewModel<LocalityDistrictUi, UiState<LocalityDistrictUi>, LocalityDistrictUiAction, UiSingleEvent, LocalityDistrictFields, InputWrapper>(
+    DialogViewModel<LocalityDistrictUi, UiState<LocalityDistrictUi>, LocalityDistrictUiAction, UiSingleEvent, LocalityDistrictFields, InputWrapper>(
         state, LocalityDistrictFields.LOCALITY_DISTRICT_ID.name,
         LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY
     ) {
@@ -296,13 +296,13 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: LocalityDistrictUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -311,10 +311,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean,
-                    onSuccess: () -> Unit
-                ) {
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
                 }
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}

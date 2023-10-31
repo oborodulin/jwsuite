@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
@@ -57,7 +57,7 @@ class TerritoryViewModelImpl @Inject constructor(
     private val territoryMapper: TerritoryToTerritoryUiMapper,
     private val territoryListItemMapper: TerritoryToTerritoriesListItemMapper
 ) : TerritoryViewModel,
-    DialogSingleViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
+    DialogViewModel<TerritoryUi, UiState<TerritoryUi>, TerritoryUiAction, UiSingleEvent, TerritoryFields, InputWrapper>(
         state, TerritoryFields.TERRITORY_ID.name, TerritoryFields.TERRITORY_NUM
     ) {
     override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
@@ -469,7 +469,12 @@ class TerritoryViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

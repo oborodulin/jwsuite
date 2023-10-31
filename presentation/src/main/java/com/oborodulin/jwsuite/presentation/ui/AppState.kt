@@ -95,8 +95,6 @@ class AppState(
     val barNavCurrentRoute: String?
         get() = this.barNavController.currentDestination?.route
 
-    fun navBarUpPress() = this.barNavController.navigateUp()
-
     fun mainNavigateUp() = this.mainNavController.navigateUp()
 
     // Возврат к экрану из главного меню нижней панели.

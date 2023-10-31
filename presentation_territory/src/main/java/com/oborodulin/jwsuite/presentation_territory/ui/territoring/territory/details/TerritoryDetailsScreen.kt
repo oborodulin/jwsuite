@@ -28,7 +28,7 @@ import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.list.HousesListView
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListView
@@ -128,10 +128,10 @@ fun TerritoryDetailsScreen(
                     territory.cardNum
                 )
             )
-            val backNavigation = { appState.mainNavigateUp() }
+            val upNavigation = { appState.backToBottomBarScreen() }
             // Scaffold Hoisting:
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-            onTopBarNavClickChange { backNavigation() }
+            onTopBarNavClickChange { upNavigation() }
             onTopBarActionsChange {
                 IconButton(onClick = { appState.backToBottomBarScreen() }) {
                     Icon(Icons.Outlined.Done, null)

@@ -2,11 +2,7 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.microdistrict
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,19 +25,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.EmptyListTextComponent
-import com.oborodulin.home.common.ui.components.buttons.AddIconButtonComponent
-import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.components.search.SearchComponent
+import com.oborodulin.home.common.ui.components.list.SearchMultiCheckViewComponent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
-import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetMicrodistrictsUiModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import timber.log.Timber
@@ -75,7 +67,6 @@ fun StreetMicrodistrictView(
     }
     Timber.tag(TAG).d("Street Microdistrict: CollectAsStateWithLifecycle for all fields")
     val street by streetMicrodistrictViewModel.street.collectAsStateWithLifecycle()
-    val searchText by streetMicrodistrictViewModel.searchText.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Street Microdistrict: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -90,20 +81,6 @@ fun StreetMicrodistrictView(
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
-    val isShowNewSingleDialog by microdistrictViewModel.showDialog.collectAsStateWithLifecycle()
-    FullScreenDialog(
-        isShow = isShowNewSingleDialog,
-        viewModel = microdistrictViewModel,
-        loadUiAction = MicrodistrictUiAction.Load(),
-        confirmUiAction = MicrodistrictUiAction.Save,
-        dialogView = { MicrodistrictView() },
-        onValueChange = {
-            streetMicrodistrictsUiModel?.let {
-                streetMicrodistrictViewModel.submitAction(StreetMicrodistrictUiAction.Load(it.street.id!!))
-            }
-        },
-        //onShowListDialog = onShowListDialog
-    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,61 +108,18 @@ fun StreetMicrodistrictView(
             enabled = false,
             inputWrapper = street
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            SearchComponent(
-                searchText,
-                modifier = Modifier.weight(2.8f),
-                onValueChange = streetMicrodistrictViewModel::onSearchTextChange
-            )
-            AddIconButtonComponent { microdistrictViewModel.onOpenDialogClicked() }
-        }
-        Spacer(modifier = Modifier.width(width = 8.dp))
-        streetMicrodistrictsUiModel?.let {
-            ForStreetMicrodistrictsList(
-                searchedText = searchText.text,
-                microdistricts = it.microdistricts,
-                onChecked = { streetMicrodistrictViewModel.observeCheckedListItems() }
+        streetMicrodistrictsUiModel?.let { streetMicrodistricts ->
+            SearchMultiCheckViewComponent(
+                listViewModel = streetMicrodistrictViewModel,
+                loadListUiAction = StreetMicrodistrictUiAction.Load(streetMicrodistricts.street.id!!),
+                items = streetMicrodistricts.microdistricts,
+                singleViewModel = microdistrictViewModel,
+                loadUiAction = MicrodistrictUiAction.Load(),
+                confirmUiAction = MicrodistrictUiAction.Save,
+                emptyListTextResId = R.string.for_streets_microdistricts_list_empty_text,
+                dialogView = { MicrodistrictView() }
             )
         }
-    }
-}
-
-@Composable
-fun ForStreetMicrodistrictsList(
-    searchedText: String = "",
-    microdistricts: List<MicrodistrictsListItem>,
-    onChecked: (Boolean) -> Unit,
-    onClick: (MicrodistrictsListItem) -> Unit = {}
-) {
-    Timber.tag(TAG)
-        .d("ForStreetMicrodistrictsList(...) called: size = %d", microdistricts.size)
-    if (microdistricts.isNotEmpty()) {
-        val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = microdistricts.filter { it.selected }
-                .getOrNull(0)?.let { microdistricts.indexOf(it) } ?: 0)
-        var filteredItems: List<MicrodistrictsListItem>
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .padding(8.dp)
-                .focusable(enabled = true)
-        ) {
-            filteredItems = if (searchedText.isEmpty()) {
-                microdistricts
-            } else {
-                microdistricts.filter { it.doesMatchSearchQuery(searchedText) }
-            }
-            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, microdistrict ->
-                ForStreetMicrodistrictsListItemComponent(
-                    item = microdistrict,
-                    //selected = microdistrict.selected,
-                    onChecked = onChecked,
-                    onClick = { onClick(microdistrict) }
-                )
-            }
-        }
-    } else {
-        EmptyListTextComponent(R.string.for_streets_microdistricts_list_empty_text)
     }
 }
 

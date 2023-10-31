@@ -26,11 +26,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.buttons.AddIconButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.FullScreenDialog
+import com.oborodulin.home.common.ui.components.field.util.Focusable
 import com.oborodulin.home.common.ui.components.list.items.CheckedListItemComponent
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.ui.state.CheckedListDialogViewModeled
 import com.oborodulin.home.common.ui.state.DialogViewModeled
-import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
@@ -39,15 +40,15 @@ import timber.log.Timber
 private const val TAG = "Common.ui"
 
 @Composable
-fun <T : Any, L : List<ListItemModel>, LA : UiAction, SA : UiAction, E : UiSingleEvent> SearchMultiCheckViewComponent(
-    listViewModel: MviViewModeled<L, LA, E>,
+fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : Focusable, SF : Focusable> SearchMultiCheckViewComponent(
+    listViewModel: CheckedListDialogViewModeled<LT, LA, E, LF>,
     loadListUiAction: LA,
     items: List<ListItemModel>,
-    singleViewModel: DialogViewModeled<T, SA, E>,
+    singleViewModel: DialogViewModeled<ST, SA, E, SF>,
     loadUiAction: SA,
     confirmUiAction: SA,
     @StringRes emptyListTextResId: Int,
-    dialogView: @Composable (T) -> Unit
+    dialogView: @Composable (ST) -> Unit
 ) {
     Timber.tag(TAG).d("SearchMultiCheckViewComponent(...) called")
     val searchText by listViewModel.searchText.collectAsStateWithLifecycle()
@@ -58,9 +59,7 @@ fun <T : Any, L : List<ListItemModel>, LA : UiAction, SA : UiAction, E : UiSingl
         loadUiAction = loadUiAction,
         confirmUiAction = confirmUiAction,
         dialogView = dialogView,
-        onValueChange = {
-            listViewModel.submitAction(loadListUiAction)
-        },
+        onValueChange = { listViewModel.submitAction(loadListUiAction) },
         //onShowListDialog = onShowListDialog
     )
     Column(

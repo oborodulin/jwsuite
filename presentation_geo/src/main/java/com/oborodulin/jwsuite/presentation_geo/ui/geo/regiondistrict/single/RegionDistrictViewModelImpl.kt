@@ -9,7 +9,7 @@ import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.DialogSingleViewModel
+import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
@@ -41,7 +41,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
     private val regionDistrictUiMapper: RegionDistrictUiToRegionDistrictMapper,
     private val regionDistrictMapper: RegionDistrictToRegionDistrictsListItemMapper
 ) : RegionDistrictViewModel,
-    DialogSingleViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
+    DialogViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
         state, RegionDistrictFields.REGION_DISTRICT_ID.name,
         RegionDistrictFields.REGION_DISTRICT_REGION
     ) {
@@ -280,13 +280,13 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: RegionDistrictUiAction): Job? = null
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
@@ -295,10 +295,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean,
-                    onSuccess: () -> Unit
-                ) {
+                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
                 }
 
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}

@@ -41,7 +41,6 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiA
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.single.HouseFields
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
 import timber.log.Timber
