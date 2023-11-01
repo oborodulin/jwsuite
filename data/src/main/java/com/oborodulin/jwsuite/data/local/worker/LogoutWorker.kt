@@ -23,7 +23,7 @@ class LogoutWorker @AssistedInject constructor(
     // https://stackoverflow.com/questions/63537972/android-workmanager-setforegroundinfo
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         return@withContext try {
-            val isSuccess = sessionUseCases.logoutUseCase.execute(LogoutUseCase.Request).first()
+            val isSuccess = sessionUseCases.logoutUseCase.execute(LogoutUseCase.Request()).first()
             Result.success()
         } catch (exception: Exception) {
             Result.failure()

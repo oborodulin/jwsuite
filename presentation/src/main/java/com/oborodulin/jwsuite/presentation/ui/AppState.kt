@@ -95,6 +95,9 @@ class AppState(
     val barNavCurrentRoute: String?
         get() = this.barNavController.currentDestination?.route
 
+    val mainNavCurrentRoute: String?
+        get() = this.mainNavController.currentDestination?.route
+
     fun mainNavigateUp() = this.mainNavController.navigateUp()
 
     // Возврат к экрану из главного меню нижней панели.

@@ -163,6 +163,7 @@ class TerritoringViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
+                override val id = MutableStateFlow(InputWrapper())
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val location =
                     MutableStateFlow(InputListItemWrapper<TerritoryLocationsListItem>())

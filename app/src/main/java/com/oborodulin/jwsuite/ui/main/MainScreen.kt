@@ -70,18 +70,17 @@ fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
         }
     }
     val handleLogoutActionClick = {
-        viewModel.onContinueClick {
-            Timber.tag(TAG).d("MainScreen(...): Logout Button onClick...")
-            viewModel.handleActionJob(
-                { viewModel.submitAction(SessionUiAction.Logout) },
-                {
-                    appState.rootNavController.navigate(NavRoutes.Login.route) {
-                        popUpTo(appState.rootNavController.graph.startDestinationId) {
-                            inclusive = true
-                        }
+        Timber.tag(TAG).d("MainScreen(...): Logout Button onClick...")
+        viewModel.handleActionJob(
+            { viewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) },
+            {
+                appState.rootNavController.popBackStack(NavRoutes.Login.route, false)
+                /*navigate(NavRoutes.Login.route) {
+                    popUpTo(appState.rootNavController.graph.startDestinationId) {
+                        inclusive = true
                     }
-                })
-        }
+                }*/
+            })
     }
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
     val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }

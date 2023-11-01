@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListIte
 import kotlinx.coroutines.flow.StateFlow
 
 interface TerritoriesGridViewModel :
-    CheckedListDialogViewModeled<List<TerritoriesListItem>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields> {
+    CheckedListDialogViewModeled<List<TerritoriesListItem>, TerritoriesGridUiAction, TerritoriesGridUiSingleEvent, TerritoriesFields, List<TerritoriesListItem>> {
     // search
     val handOutSearchText: StateFlow<TextFieldValue>
     val atWorkSearchText: StateFlow<TextFieldValue>

@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SessionUseCases
 import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.LogoutSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.RoleToRolesListItemMapper
@@ -51,6 +52,11 @@ object SessionModule {
     @Provides
     fun provideLoginSessionConverter(mapper: SessionToSessionUiMapper): LoginSessionConverter =
         LoginSessionConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideLogoutSessionConverter(mapper: SessionToSessionUiMapper): LogoutSessionConverter =
+        LogoutSessionConverter(mapper = mapper)
 
     // USE CASES:
     @Singleton

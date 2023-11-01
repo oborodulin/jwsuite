@@ -40,8 +40,8 @@ import timber.log.Timber
 private const val TAG = "Common.ui"
 
 @Composable
-fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : Focusable, SF : Focusable> SearchMultiCheckViewComponent(
-    listViewModel: CheckedListDialogViewModeled<LT, LA, E, LF>,
+fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : Focusable, SF : Focusable, CT : List<ListItemModel>> SearchMultiCheckViewComponent(
+    listViewModel: CheckedListDialogViewModeled<LT, LA, E, LF, CT>,
     loadListUiAction: LA,
     items: List<ListItemModel>,
     singleViewModel: DialogViewModeled<ST, SA, E, SF>,
