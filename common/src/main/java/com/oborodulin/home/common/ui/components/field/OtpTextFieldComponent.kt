@@ -43,11 +43,12 @@ fun OtpTextFieldComponent(
     otpCount: Int = 6,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
-    Timber.tag(TAG).d("TextFieldComponent(...) called")
+    Timber.tag(TAG).d("OtpTextFieldComponent(...) called")
     var otpValue by remember {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     otpValue = otpValue.copy(text = inputWrapper.value) // make sure to keep the value updated
+    Timber.tag(TAG).d("OtpTextFieldComponent(...): otpValue = %s", otpValue)
     LaunchedEffect(Unit) {
         if (otpValue.text.length > otpCount) {
             throw IllegalArgumentException("Otp text value must not have more than otpCount: $otpCount characters")
@@ -59,17 +60,14 @@ fun OtpTextFieldComponent(
         value = otpValue,
         onValueChange = {
             if (it.text.length <= otpCount) {
-                onOtpTextChange.invoke(it.text, it.text.length == otpCount)
+                otpValue = it; onOtpTextChange.invoke(it.text, it.text.length == otpCount)
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {
                 repeat(otpCount) { index ->
-                    CharView(
-                        index = index,
-                        text = otpValue.text
-                    )
+                    CharView(index = index, text = otpValue.text)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }
@@ -85,11 +83,12 @@ private fun CharView(index: Int, text: String) {
         index > text.length -> ""
         else -> text[index].toString()
     }
+    Timber.tag(TAG).d("CharView(...) called: index = %s; char = %s", index, char)
     Text(
         modifier = Modifier
             .width(40.dp)
             .border(
-                1.dp, when {
+                2.dp, when {
                     isFocused -> MaterialTheme.colorScheme.primary
                     else -> MaterialTheme.colorScheme.secondary
                 }, RoundedCornerShape(8.dp)

@@ -54,6 +54,7 @@ private const val TAG = "Congregating.CongregatingScreen"
 fun CongregatingScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
@@ -81,6 +82,7 @@ fun CongregatingScreen(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
+    onActionBarChange(null)
     onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
     onTopBarActionsChange {
         IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }

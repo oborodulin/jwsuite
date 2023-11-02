@@ -94,6 +94,7 @@ fun MainNavigationHost(
             onActionBarSubtitleChange(appState.actionBarSubtitle.value)
             shouldUseNestedScrollConnection(true)
             areUsingBottomNavigation(true)
+            onFabChange {}
             BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

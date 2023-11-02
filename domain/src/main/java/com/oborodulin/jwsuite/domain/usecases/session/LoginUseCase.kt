@@ -16,9 +16,15 @@ class LoginUseCase(
             combine(
                 sessionManagerRepository.isSigned(),
                 sessionManagerRepository.isLogged(),
+                sessionManagerRepository.lastDestination(),
                 sessionManagerRepository.roles()
-            ) { isSigned, isLogged, roles ->
-                Response(Session(isSigned = isSigned, isLogged = isLogged, roles = roles))
+            ) { isSigned, isLogged, lastDestination, roles ->
+                Response(
+                    Session(
+                        isSigned = isSigned, isLogged = isLogged, lastDestination = lastDestination,
+                        roles = roles
+                    )
+                )
             }
         }
 

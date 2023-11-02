@@ -39,6 +39,7 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 fun DashboardingScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
@@ -53,6 +54,7 @@ fun DashboardingScreen(
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        onActionBarChange(null)
         onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
         onTopBarActionsChange {
             /*IconButton(onClick = { appState.mainNavigate(NavRoutes.Congregation.routeForCongregation()) }) {
@@ -65,9 +67,7 @@ fun DashboardingScreen(
                 Icon(Icons.Outlined.Settings, null)
             }*/
         }
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column {
                     CommonScreen(state = state) { dashboardingUi ->

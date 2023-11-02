@@ -74,7 +74,7 @@ fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
         viewModel.handleActionJob(
             { viewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) },
             {
-                appState.rootNavController.popBackStack(NavRoutes.Login.route, false)
+                appState.rootNavController.popBackStack(NavRoutes.Login.route, true)
                 /*navigate(NavRoutes.Login.route) {
                     popUpTo(appState.rootNavController.graph.startDestinationId) {
                         inclusive = true

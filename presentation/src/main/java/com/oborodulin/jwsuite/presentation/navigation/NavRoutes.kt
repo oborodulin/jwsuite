@@ -961,6 +961,8 @@ sealed class NavRoutes constructor(
             bottomNavBarRoutes().map { it.route }.contains(destination) -> Home.route
             congregationRoutes().map { it.route }.contains(destination) -> Graph.CONGREGATION
             geoRoutes().map { it.route }.contains(destination) -> Graph.GEO
+            territoryRoutes().map { it.route }.contains(destination) -> Graph.TERRITORY
+            housingRoutes().map { it.route }.contains(destination) -> Graph.HOUSING
             else -> Home.route
         }
 

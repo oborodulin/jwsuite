@@ -53,6 +53,7 @@ fun BarNavigationHost(
             }
             Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
             DashboardingScreen(
+                onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange
@@ -67,6 +68,7 @@ fun BarNavigationHost(
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             CongregatingScreen(
+                onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange

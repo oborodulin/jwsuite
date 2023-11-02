@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface SessionManagerRepository {
     fun isSigned(): Flow<Boolean>
     fun isLogged(): Flow<Boolean>
+    fun lastDestination(): Flow<String?>
     fun roles(): Flow<List<Role>>
     fun signup(username: String, password: String): Flow<Boolean>
     fun signout(): Flow<Boolean>

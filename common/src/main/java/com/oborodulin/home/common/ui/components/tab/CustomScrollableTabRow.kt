@@ -56,9 +56,7 @@ fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>) {
                 onClick = {
                     tab.onClick()
                     coroutineScope.launch {
-                        pagerState.animateScrollToPage(
-                            tabIndex
-                        )
+                        pagerState.animateScrollToPage(tabIndex)
                     }
                 },
                 icon = tab.icon?.let { icon ->
@@ -84,7 +82,5 @@ fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>) {
     HorizontalPager(
         pageCount = tabRowItems.size,
         state = pagerState,
-    ) {
-        tabRowItems[pagerState.currentPage].view()
-    }
+    ) { tabRowItems[pagerState.currentPage].view() }
 }

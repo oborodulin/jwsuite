@@ -30,11 +30,12 @@ data class SessionUi(
     val mainRoute = NavRoutes.mainRouteByDestination(lastDestination)
 
     val startDestination = when (lastDestination) {
-        null -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
+        null,
+        NavRoutes.Home.route -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
         else -> lastDestination // navigate to previous startDestination
     }
 
     override fun toString(): String {
-        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', rootRoute='$rootRoute', authStartDestination='$authStartDestination', mainRoute='$mainRoute', mainStartDestination='$startDestination')"
+        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', rootRoute='$rootRoute', authStartDestination='$authStartDestination', mainRoute='$mainRoute', startDestination='$startDestination')"
     }
 }

@@ -1,17 +1,11 @@
 package com.oborodulin.jwsuite.data.local.datastore.repositories
 
 
-import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
-import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SessionManagerRepositoryImpl @Inject constructor(
@@ -22,6 +16,7 @@ class SessionManagerRepositoryImpl @Inject constructor(
 ) : SessionManagerRepository {
     override fun isSigned() = localSessionManagerDataSource.isSigned()
     override fun isLogged() = localSessionManagerDataSource.isLogged()
+    override fun lastDestination() = localSessionManagerDataSource.lastDestination()
     override fun roles() = localSessionManagerDataSource.roles()
 
     override fun signup(username: String, password: String) = flow {

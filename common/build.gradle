@@ -97,6 +97,8 @@ dependencies {
     // Compose preview
     debugImplementation deps.androidx.poolingcontainer
 
+    implementation 'com.lambdapioneer.argon2kt:argon2kt:1.4.0'
+
     // Coil
     implementation deps.coil.compose
     // Lottie

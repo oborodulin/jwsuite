@@ -27,6 +27,7 @@ import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
+import com.oborodulin.jwsuite.presentation.ui.session.SessionModeType
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
@@ -45,6 +46,7 @@ fun LoginView(viewModel: SessionViewModel) {
     val appState = LocalAppState.current
     val session = LocalSession.current
     val coroutineScope = rememberCoroutineScope()
+
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -80,6 +82,7 @@ fun LoginView(viewModel: SessionViewModel) {
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LoginView(...): LaunchedEffect()")
+        viewModel.setSessionMode(SessionModeType.LOGIN)
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -99,6 +102,8 @@ fun LoginView(viewModel: SessionViewModel) {
         OtpTextFieldComponent(inputWrapper = pin,
             otpCount = PASS_MIN_LENGTH,
             onOtpTextChange = { value, otpInputFilled ->
+                Timber.tag(TAG)
+                    .d("LoginView(...): value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
                 if (otpInputFilled) handleLogin()
             })

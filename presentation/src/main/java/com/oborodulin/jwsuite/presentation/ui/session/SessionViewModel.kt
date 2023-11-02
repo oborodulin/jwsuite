@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface SessionViewModel :
     DialogViewModeled<SessionUi, SessionUiAction, UiSingleEvent, SessionFields> {
-    val mode: StateFlow<InputWrapper>
     val username: StateFlow<InputWrapper>
     val pin: StateFlow<InputWrapper>
     val confirmPin: StateFlow<InputWrapper>
 
     val areSignupInputsValid: StateFlow<Boolean>
 
+    fun setSessionMode(mode: SessionModeType)
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

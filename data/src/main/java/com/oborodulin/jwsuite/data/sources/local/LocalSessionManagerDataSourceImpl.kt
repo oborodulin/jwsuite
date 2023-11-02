@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data.sources.local
 
 import androidx.datastore.core.DataStore
 import com.oborodulin.home.common.di.IoDispatcher
+import com.oborodulin.home.common.secure.AesCipherProvider
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.model.session.AuthData
@@ -28,6 +29,8 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
             authData.username.takeIf { authData.password?.let { it == password } ?: false }
         }
 
+    override fun lastDestination() = dataStore.data.map { authData -> authData.lastDestination }
+
     override fun databasePassphrase() =
         dataStore.data.map { authData -> authData.databasePassphrase }
 
@@ -36,10 +39,11 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override suspend fun signup(username: String, password: String) = withContext(dispatcher) {
         dataStore.updateData {
             if (it.databasePassphrase.isEmpty()) {
+                val databasePassphrase = AesCipherProvider.argon2(password.toByteArray())
                 it.copy(
                     username = username,
                     password = password,
-                    databasePassphrase = password,
+                    databasePassphrase = databasePassphrase,
                     lastLoginTime = OffsetDateTime.now(),
                     isLogged = true
                 )

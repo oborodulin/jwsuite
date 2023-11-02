@@ -37,6 +37,7 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
+import com.oborodulin.jwsuite.presentation.ui.session.SessionModeType
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -72,6 +73,7 @@ fun SignupView(viewModel: SessionViewModel) {
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("SignupView(...): LaunchedEffect()")
+        viewModel.setSessionMode(SessionModeType.SIGNUP)
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

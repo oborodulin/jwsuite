@@ -51,9 +51,9 @@ class SessionViewModelImpl @Inject constructor(
     DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, UiSingleEvent, SessionFields, InputWrapper>(
         state//, initFocusedTextField = SessionFields.SESSION_PIN
     ) {
-    override val mode: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(SessionFields.SESSION_MODE.name, InputWrapper())
-    }
+    private val _sessionMode = MutableStateFlow(SessionModeType.SIGNUP)
+    private val sessionMode = _sessionMode.asStateFlow()
+
     override val username: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(SessionFields.SESSION_USERNAME.name, InputWrapper())
     }
@@ -81,6 +81,10 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     override fun initState(): UiState<SessionUi> = UiState.Loading
+
+    override fun setSessionMode(mode: SessionModeType) {
+        _sessionMode.value = mode
+    }
 
     override suspend fun handleAction(action: SessionUiAction): Job {
         Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
@@ -217,22 +221,37 @@ class SessionViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
-        SessionInputValidator.Username.errorIdOrNull(username.value.value)?.let {
-            inputErrors.add(
-                InputError(fieldName = SessionFields.SESSION_USERNAME.name, errorId = it)
-            )
-        }
-        SessionInputValidator.Pin.errorIdOrNull(pin.value.value)?.let {
-            inputErrors.add(
-                InputError(fieldName = SessionFields.SESSION_PIN.name, errorId = it)
-            )
-        }
-        SessionInputValidator.ConfirmPin.errorIdOrNull(confirmPin.value.value, pin.value.value)
-            ?.let {
-                inputErrors.add(
-                    InputError(fieldName = SessionFields.SESSION_CONFIRM_PIN.name, errorId = it)
-                )
+        when (sessionMode.value) {
+            SessionModeType.SIGNUP -> {
+                SessionInputValidator.Username.errorIdOrNull(username.value.value)?.let {
+                    inputErrors.add(
+                        InputError(fieldName = SessionFields.SESSION_USERNAME.name, errorId = it)
+                    )
+                }
+                SessionInputValidator.Pin.errorIdOrNull(pin.value.value)?.let {
+                    inputErrors.add(
+                        InputError(fieldName = SessionFields.SESSION_PIN.name, errorId = it)
+                    )
+                }
+                SessionInputValidator.ConfirmPin.errorIdOrNull(
+                    confirmPin.value.value, pin.value.value
+                )?.let {
+                    inputErrors.add(
+                        InputError(
+                            fieldName = SessionFields.SESSION_CONFIRM_PIN.name, errorId = it
+                        )
+                    )
+                }
             }
+
+            SessionModeType.LOGIN -> {
+                SessionInputValidator.Pin.errorIdOrNull(pin.value.value)?.let {
+                    inputErrors.add(
+                        InputError(fieldName = SessionFields.SESSION_PIN.name, errorId = it)
+                    )
+                }
+            }
+        }
         return if (inputErrors.isEmpty()) null else inputErrors
     }
 
@@ -240,14 +259,28 @@ class SessionViewModelImpl @Inject constructor(
     override fun displayInputErrors(inputErrors: List<InputError>) {
         Timber.tag(TAG).d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (SessionFields.valueOf(error.fieldName)) {
-                SessionFields.SESSION_USERNAME -> username.value.copy(errorId = error.errorId)
-                SessionFields.SESSION_PIN -> pin.value.copy(
-                    errorId = error.errorId,
-                    errorMsg = error.errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
-                )
+            when (sessionMode.value) {
+                SessionModeType.SIGNUP -> {
+                    state[error.fieldName] = when (SessionFields.valueOf(error.fieldName)) {
+                        SessionFields.SESSION_USERNAME -> username.value.copy(errorId = error.errorId)
+                        SessionFields.SESSION_PIN -> pin.value.copy(
+                            errorId = error.errorId,
+                            errorMsg =
+                            error.errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
+                        )
 
-                SessionFields.SESSION_CONFIRM_PIN -> confirmPin.value.copy(errorId = error.errorId)
+                        SessionFields.SESSION_CONFIRM_PIN -> confirmPin.value.copy(errorId = error.errorId)
+                    }
+                }
+
+                SessionModeType.LOGIN -> {
+                    if (SessionFields.valueOf(error.fieldName) == SessionFields.SESSION_PIN)
+                        state[error.fieldName] = pin.value.copy(
+                            errorId = error.errorId,
+                            errorMsg =
+                            error.errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
+                        )
+                }
             }
         }
     }
@@ -270,7 +303,6 @@ class SessionViewModelImpl @Inject constructor(
             override fun onSearchTextChange(text: TextFieldValue) {}
 
             override val id = MutableStateFlow(InputWrapper())
-            override val mode = MutableStateFlow(InputWrapper())
             override val username = MutableStateFlow(InputWrapper())
             override val pin = MutableStateFlow(InputWrapper())
             override val confirmPin = MutableStateFlow(InputWrapper())
@@ -278,6 +310,7 @@ class SessionViewModelImpl @Inject constructor(
             override val areSignupInputsValid = MutableStateFlow(true)
             override val areInputsValid = MutableStateFlow(true)
 
+            override fun setSessionMode(mode: SessionModeType) {}
             override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             override fun submitAction(action: SessionUiAction): Job? = null
             override fun onTextFieldEntered(inputEvent: Inputable) {}
