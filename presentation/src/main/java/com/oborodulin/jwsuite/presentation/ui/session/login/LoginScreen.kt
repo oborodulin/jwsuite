@@ -32,7 +32,9 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
-            ScaffoldComponent(topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
+            ScaffoldComponent(
+                topBarTitle = appState.appName,
+                topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
                 CommonScreen(paddingValues = innerPadding, state = state) {
                     Column(
                         modifier = Modifier

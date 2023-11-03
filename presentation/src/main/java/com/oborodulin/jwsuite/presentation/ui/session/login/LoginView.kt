@@ -74,7 +74,7 @@ fun LoginView(viewModel: SessionViewModel) {
                         "LoginView(...): Start actionsJobFlow.collect [job = %s]", it?.toString()
                     )
                     it?.join()
-                    appState.barNavController.navigate(session.authStartDestination)
+                    appState.mainNavigate(session.startDestination)
                 }
             }
             viewModel.submitAction(SessionUiAction.Login)

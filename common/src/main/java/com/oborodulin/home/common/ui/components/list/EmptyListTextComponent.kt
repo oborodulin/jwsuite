@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.ui.components
+package com.oborodulin.home.common.ui.components.list
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes

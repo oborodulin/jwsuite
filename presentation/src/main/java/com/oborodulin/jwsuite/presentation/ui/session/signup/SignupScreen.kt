@@ -17,6 +17,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.components.SignupButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -40,9 +41,11 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
         JWSuiteTheme { //(darkTheme = true)
-            ScaffoldComponent(topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
+            ScaffoldComponent(
+                topBarTitle = appState.appName,
+                topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
                 CommonScreen(paddingValues = innerPadding, state = state) { session ->
-                    val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
+                    val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -64,7 +67,8 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
                                                 it?.toString()
                                             )
                                             it?.join()
-                                            appState.barNavController.navigate(session.authStartDestination)
+                                            viewModel.onTextFieldEntered(SessionInputEvent.Pin(""))
+                                            appState.rootNavController.navigate(session.authStartDestination)
                                         }
                                     }
                                     viewModel.submitAction(SessionUiAction.Signup)
