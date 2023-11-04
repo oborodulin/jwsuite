@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.OffsetDateTime
-import java.util.Base64
 import javax.inject.Inject
 
 /**
@@ -40,8 +39,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override suspend fun signup(username: String, password: String) = withContext(dispatcher) {
         dataStore.updateData {
             if (it.databasePassphrase.isEmpty()) {
-                val databasePassphrase = Base64.getEncoder()
-                    .encodeToString(AesCipherProvider.argon2(password.toByteArray()))
+                val databasePassphrase = AesCipherProvider.pbkdf2(password.toCharArray())
                 it.copy(
                     username = username,
                     password = password,

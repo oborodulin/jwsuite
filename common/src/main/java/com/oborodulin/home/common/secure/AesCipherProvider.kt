@@ -66,16 +66,24 @@ class AesCipherProvider @Inject constructor(
 
         // https://www.danielhugenroth.com/posts/2021_06_password_hashing_on_android/
         fun pbkdf2(
-            password: CharArray, salt: ByteArray, iterationCount: Int = 4096, keyLength: Int = 256
-        ): SecretKey {
+            password: CharArray,
+            salt: ByteArray? = null,
+            iterationCount: Int = 4096,
+            keyLength: Int = 256
+        ): String {
+            val bytes = ByteArray(512)
+            if (salt == null) {
+                val random = SecureRandom()
+                random.nextBytes(bytes)
+            }
+            val saltBytes: ByteArray = salt ?: bytes
             val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
-            val spec =
-                PBEKeySpec(password, Base64.decode(salt, Base64.DEFAULT), iterationCount, keyLength)
-            return factory.generateSecret(spec)!!
+            val spec = PBEKeySpec(password, saltBytes, iterationCount, keyLength)
+            return Base64.encodeToString(factory.generateSecret(spec)!!.encoded, Base64.DEFAULT)
         }
 
         // https://github.com/lambdapioneer/argon2kt
-        fun argon2(password: ByteArray, salt: ByteArray? = null): ByteArray {
+        fun argon2(password: ByteArray, salt: ByteArray? = null): String {
             // https://stackoverflow.com/questions/46261055/how-to-generate-a-securerandom-string-of-length-n-in-java
             val bytes = ByteArray(512)
             if (salt == null) {
@@ -88,7 +96,7 @@ class AesCipherProvider @Inject constructor(
                 mode = Argon2Mode.ARGON2_ID,
                 password = password, salt = saltBytes,
                 tCostInIterations = 1, mCostInKibibyte = 37888
-            ).encodedOutputAsByteArray() //rawHashAsByteArray()
+            ).encodedOutputAsString() //rawHashAsByteArray()
         }
     }
 }

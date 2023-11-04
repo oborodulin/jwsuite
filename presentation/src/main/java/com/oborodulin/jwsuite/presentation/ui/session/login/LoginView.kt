@@ -87,6 +87,7 @@ fun LoginView(viewModel: SessionViewModel) {
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
+        viewModel.onTextFieldEntered(SessionInputEvent.Pin(""))
     }
     Column(
         modifier = Modifier

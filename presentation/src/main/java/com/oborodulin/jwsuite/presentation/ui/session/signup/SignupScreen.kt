@@ -67,7 +67,6 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
                                                 it?.toString()
                                             )
                                             it?.join()
-                                            viewModel.onTextFieldEntered(SessionInputEvent.Pin(""))
                                             appState.rootNavController.navigate(session.authStartDestination)
                                         }
                                     }
