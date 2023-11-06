@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -24,6 +25,7 @@ import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.rememberAppState
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.RootNavigationHost
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
     private val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private val viewModel: SessionViewModelImpl by viewModels()
+    private val sessionViewModel: SessionViewModelImpl by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,10 @@ class MainActivity : ComponentActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Make to run your application only in LANDSCAPE mode
         setContent {
+            LaunchedEffect(Unit) {
+                Timber.tag(TAG).d("MainActivity: LaunchedEffect(Unit)")
+                sessionViewModel.submitAction(SessionUiAction.Load)
+            }
             Timber.tag(TAG).d("onCreate(): setContent called")
             JWSuiteTheme {
                 // A surface container using the 'background' color from the theme
@@ -67,15 +73,18 @@ class MainActivity : ComponentActivity() {
                     val appState = rememberAppState(appName = stringResource(R.string.app_name))
                     Timber.tag(TAG).d("onCreate(): rememberAppState called")
                     // https://foso.github.io/Jetpack-Compose-Playground/general/compositionlocal/
-                    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+                    sessionViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
                         Timber.tag(TAG).d("onCreate(): collectAsStateWithLifecycle called")
                         CommonScreen(state = state) { session ->
-                            Timber.tag(TAG).d("mainActivity: session = %s", session)
                             CompositionLocalProvider(
                                 LocalAppState provides appState,
                                 LocalSession provides session,
-                                //LocalSessionState provides viewModel
-                            ) { RootNavigationHost(activity = this, viewModel = viewModel) }
+                                //LocalSessionState provides sessionViewModel
+                            ) {
+                                RootNavigationHost(
+                                    activity = this, sessionViewModel = sessionViewModel
+                                )
+                            }
                         }
                     }
                 }

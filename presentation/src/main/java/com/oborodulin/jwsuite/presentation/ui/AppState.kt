@@ -26,8 +26,6 @@ fun rememberAppState(
     sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
         mutableStateOf(null)
     },
-
-//    fab: MutableState<@Composable () -> Unit> = remember { mutableStateOf({ }) },
     resources: Resources = LocalContext.current.resources,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     appName: String = "",
@@ -37,21 +35,17 @@ fun rememberAppState(
     mainNavController,
     barNavController,
     sharedViewModel,
-//        fab,
     resources,
     coroutineScope,
     actionBarSubtitle
 ) {
     AppState(
-        //accountingScaffoldState,
-        //payerScaffoldState,
-        rootNavController,
-        mainNavController,
-        barNavController,
-        sharedViewModel,
-//            fab,
-        appName,
-        actionBarSubtitle
+        rootNavController = rootNavController,
+        mainNavController = mainNavController,
+        barNavController = barNavController,
+        sharedViewModel = sharedViewModel,
+        appName = appName,
+        actionBarSubtitle = actionBarSubtitle
     )
 }
 
@@ -67,7 +61,6 @@ class AppState(
     val mainNavController: NavHostController,
     val barNavController: NavHostController,
     val sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
-//    val fab: MutableState<@Composable () -> Unit>,
     val appName: String,
     val actionBarSubtitle: MutableState<String>
 ) {
@@ -113,6 +106,27 @@ class AppState(
     fun mainNavigate(route: String) {
         Timber.tag(TAG).d("mainNavigate(...) called: route = %s", route)
         this.mainNavController.navigate(route)
+    }
+
+    fun navigateByDestination(destination: String) {
+        Timber.tag(TAG).d("navigateByRoute(...) called: destination = %s", destination)
+        when {
+            NavRoutes.rootRoutes().map { it.route }
+                .contains(destination) -> this.rootNavController.navigate(destination) {
+                popUpTo(destination) {
+                    inclusive = true
+                }
+            }
+
+            NavRoutes.bottomNavBarRoutes().map { it.route }
+                .contains(destination) -> this.barNavController.navigate(destination) {
+                popUpTo(destination) {
+                    inclusive = true
+                }
+            }
+
+            else -> this.mainNavController.navigate(destination)
+        }
     }
 
     // Переход по маршруту с пропуском предыдущего экрана.

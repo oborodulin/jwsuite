@@ -286,6 +286,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
-    override fun submitState(state: S) =
-        super.submitStateWithErrorStateMessageRedirection(state, true)
+    override fun submitState(state: S): Job {
+        Timber.tag(TAG).d("submitState(S) called")
+        return super.submitStateWithErrorStateMessageRedirection(state, true)
+    }
 }

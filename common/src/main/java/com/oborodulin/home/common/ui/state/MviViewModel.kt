@@ -17,8 +17,8 @@ import timber.log.Timber
 
 private const val TAG = "Common.MviViewModel"
 
-abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent> :
-    ViewModel(), MviViewModeled<T, A, E> {
+abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleEvent> : ViewModel(),
+    MviViewModeled<T, A, E> {
     private val _uiStateFlow: MutableStateFlow<S> by lazy { MutableStateFlow(initState()) }
     override val uiStateFlow = _uiStateFlow
 
@@ -62,12 +62,12 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     abstract fun initState(): S
 
     private fun redirectUiStateErrorMessage(errorMessage: String?) {
-        Timber.tag(TAG)
-            .d("redirectUiStateErrorMessage() called: errorMessage = %s", errorMessage)
+        Timber.tag(TAG).d("redirectUiStateErrorMessage(...) called: errorMessage = %s", errorMessage)
         _uiStateErrorMsg.value = errorMessage
     }
 
     private fun clearUiStateErrorMessage() {
+        Timber.tag(TAG).d("clearUiStateErrorMessage() called")
         redirectUiStateErrorMessage(null)
     }
 
@@ -108,8 +108,10 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         return job
     }
 
-    open fun submitState(state: S) =
-        submitStateWithErrorStateMessageRedirection(state, false)
+    open fun submitState(state: S): Job {
+        Timber.tag(TAG).d("submitState(S): ui state = %s", state.javaClass.name)
+        return submitStateWithErrorStateMessageRedirection(state, false)
+    }
 
     fun submitStateWithErrorStateMessageRedirection(
         state: S, redirectErrorStateMessage: Boolean
@@ -137,6 +139,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     }
 
     fun uiState(state: S? = null): T? {
+        Timber.tag(TAG).d("uiState(S?) called")
         clearUiStateErrorMessage()
         return when (val uiState = state ?: _uiStateFlow.value) {
             is UiState.Success<*> -> (uiState as UiState.Success<*>).data as T

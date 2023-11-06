@@ -57,7 +57,8 @@ fun CongregatingScreen(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val appState = LocalAppState.current
@@ -90,41 +91,44 @@ fun CongregatingScreen(
             Icon(Icons.Outlined.Settings, null)
         }
     }
-    CustomScrollableTabRow(
-        listOf(
-            TabRowItem(
-                title = stringResource(R.string.congregation_tab_congregations),
-                onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
-            ) {
-                CongregationMembersView(
-                    appState = appState,
-                    //sharedViewModel = sharedViewModel,
-                    membersListViewModel = membersListViewModel,
-                    onActionBarSubtitleChange = onActionBarSubtitleChange
-                )
-            },
-            TabRowItem(
-                title = stringResource(R.string.congregation_tab_groups),
-                onClick = { onTabChange(CongregatingTabType.GROUPS) }
-            ) {
-                GroupMembersView(
-                    appState = appState,
-                    //sharedViewModel = sharedViewModel,
-                    membersListViewModel = membersListViewModel
-                )
-            },
-            TabRowItem(
-                title = stringResource(R.string.congregation_tab_members),
-                onClick = { onTabChange(CongregatingTabType.MEMBERS) }
-            ) {
-                MembersView(
-                    appState = appState,
-                    //sharedViewModel = sharedViewModel,
-                    membersListViewModel = membersListViewModel
-                )
-            }
+    onFabChange {}
+    Column(modifier = Modifier.fillMaxSize()) {
+        CustomScrollableTabRow(
+            listOf(
+                TabRowItem(
+                    title = stringResource(R.string.congregation_tab_congregations),
+                    onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
+                ) {
+                    CongregationMembersView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                        membersListViewModel = membersListViewModel,
+                        onActionBarSubtitleChange = onActionBarSubtitleChange
+                    )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.congregation_tab_groups),
+                    onClick = { onTabChange(CongregatingTabType.GROUPS) }
+                ) {
+                    GroupMembersView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                        membersListViewModel = membersListViewModel
+                    )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.congregation_tab_members),
+                    onClick = { onTabChange(CongregatingTabType.MEMBERS) }
+                ) {
+                    MembersView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                        membersListViewModel = membersListViewModel
+                    )
+                }
+            )
         )
-    )
+    }
 // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback
     /*    LaunchedEffect(pagerState) {

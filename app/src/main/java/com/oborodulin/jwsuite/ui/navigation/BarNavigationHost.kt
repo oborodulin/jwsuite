@@ -28,13 +28,15 @@ fun BarNavigationHost(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    Timber.tag(TAG).d("BarNavigationHost(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
+    Timber.tag(TAG)
+        .d("BarNavigationHost(...) called: session.startDestination = %s", session.startDestination)
     NavHost(
         navController = appState.barNavController,
         route = Graph.BOTTOM_BAR,
-        startDestination = session.startDestination
+        startDestination = session.startDestination //NavRoutes.Dashboarding.route,
+        //modifier = Modifier.padding(innerPadding)
     ) {
         // DashboardingScreen:
         composable(NavRoutes.Dashboarding.route) {
@@ -56,7 +58,8 @@ fun BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // CongregatingScreen:
@@ -71,7 +74,8 @@ fun BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // TerritoringScreen:

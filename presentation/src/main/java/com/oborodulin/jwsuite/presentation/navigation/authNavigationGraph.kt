@@ -10,23 +10,27 @@ import timber.log.Timber
 
 private const val TAG = "App.Navigation.authNavGraph"
 
-fun NavGraphBuilder.authNavGraph(startDestination: String, viewModel: SessionViewModel) {
+fun NavGraphBuilder.authNavGraph(startDestination: String, sessionViewModel: SessionViewModel) {
     Timber.tag(TAG).d("authNavGraph() called")
-    navigation(route = Graph.AUTH, startDestination = startDestination) {
-        Timber.tag(TAG).d("authNavGraph.navigation(...) called")
-        composable(route = NavRoutes.Signup.route) {
-            Timber.tag(TAG)
-                .d(
-                    "Navigation Graph: to SignupScreen [route = '%s']", it.destination.route
-                )
-            SignupScreen(viewModel)
-        }
+    navigation(
+        route = Graph.AUTH,
+        startDestination = startDestination //NavRoutes.Login.route
+    ) {
+        Timber.tag(TAG)
+            .d("authNavGraph.navigation(...) called: startDestination = %s", startDestination)
         composable(route = NavRoutes.Login.route) {
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to LoginScreen [route = '%s']", it.destination.route
                 )
-            LoginScreen(viewModel)
+            LoginScreen(sessionViewModel)
+        }
+        composable(route = NavRoutes.Signup.route) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to SignupScreen [route = '%s']", it.destination.route
+                )
+            SignupScreen(sessionViewModel)
         }
         Timber.tag(TAG).d("authNavGraph.navigation(...) ended")
     }

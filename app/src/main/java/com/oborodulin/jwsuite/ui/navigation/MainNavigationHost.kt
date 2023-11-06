@@ -43,12 +43,14 @@ fun MainNavigationHost(
     val appState = LocalAppState.current
     val session = LocalSession.current
     val context = LocalContext.current
+    Timber.tag(TAG).d("MainNavigationHost(...): session.mainRoute = %s", session.mainRoute)
     NavHost(
-        navController = appState.mainNavController,
+        navController = appState.mainNavController,// .rootNavController,
         route = Graph.MAIN,
-        startDestination = session.mainRoute,
+        startDestination = session.mainRoute, //NavRoutes.Home.route,
         modifier = Modifier.padding(innerPadding)
     ) {
+        Timber.tag(TAG).d("MainNavigationHost(...) -> NavHost(...)")
         onActionBarChange(null)
         shouldUseNestedScrollConnection(false)
         areUsingBottomNavigation(false)
@@ -88,13 +90,12 @@ fun MainNavigationHost(
             onTopBarActionsChange = onTopBarActionsChange
         )
         composable(NavRoutes.Home.route) {
-            Timber.tag(TAG).d("MainNavigationHost(...) -> Home.route called")
+            Timber.tag(TAG).d("MainNavigationHost(...) -> composable(Home.route) called")
             onTopBarNavImageVectorChange(Icons.Outlined.Menu)
             onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
             onActionBarSubtitleChange(appState.actionBarSubtitle.value)
             shouldUseNestedScrollConnection(true)
             areUsingBottomNavigation(true)
-            onFabChange {}
             BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

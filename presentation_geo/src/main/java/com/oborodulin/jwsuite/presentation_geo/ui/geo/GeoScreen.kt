@@ -132,50 +132,52 @@ fun GeoScreen(
             Icon(Icons.Outlined.Settings, null)
         }*/
     }
-    CustomScrollableTabRow(
-        listOf(
-            TabRowItem(
-                title = stringResource(R.string.geo_tab_regions),
-                onClick = { onTabChange(GeoTabType.REGIONS) }
-            ) { RegionRegionDistrictsLocalitiesView(appState = appState) },
-            TabRowItem(
-                title = stringResource(R.string.geo_tab_region_districts),
-                onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
-            ) { RegionDistrictsLocalitiesView(appState = appState) },
-            TabRowItem(
-                title = stringResource(R.string.geo_tab_localities),
-                onClick = { onTabChange(GeoTabType.LOCALITIES) }
-            ) {},
-            TabRowItem(
-                title = stringResource(R.string.geo_tab_locality_districts),
-                onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
-            ) {
-                LocalitiesDistrictsMicrodistrictsStreetsView(
-                    appState = appState,
-                    //sharedViewModel = sharedViewModel,
-                )
-            },
-            TabRowItem(
-                title = stringResource(R.string.geo_tab_microdistricts),
-                onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
-            ) {
-                MicrodistrictsStreetsView(
-                    appState = appState,
-                    //sharedViewModel = sharedViewModel,
-                )
-            },
-            TabRowItem(
-                title = stringResource(R.string.geo_tab_streets),
-                onClick = { onTabChange(GeoTabType.STREETS) }
-            ) {
-                StreetsView(
-                    appState = appState,
-                    onStreetTabChange = onStreetTabChange
-                    //sharedViewModel = sharedViewModel,
-                )
-            }
+    Column(modifier = Modifier.fillMaxSize()) {
+        CustomScrollableTabRow(
+            listOf(
+                TabRowItem(
+                    title = stringResource(R.string.geo_tab_regions),
+                    onClick = { onTabChange(GeoTabType.REGIONS) }
+                ) { RegionRegionDistrictsLocalitiesView(appState = appState) },
+                TabRowItem(
+                    title = stringResource(R.string.geo_tab_region_districts),
+                    onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
+                ) { RegionDistrictsLocalitiesView(appState = appState) },
+                TabRowItem(
+                    title = stringResource(R.string.geo_tab_localities),
+                    onClick = { onTabChange(GeoTabType.LOCALITIES) }
+                ) {},
+                TabRowItem(
+                    title = stringResource(R.string.geo_tab_locality_districts),
+                    onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
+                ) {
+                    LocalitiesDistrictsMicrodistrictsStreetsView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                    )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.geo_tab_microdistricts),
+                    onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
+                ) {
+                    MicrodistrictsStreetsView(
+                        appState = appState,
+                        //sharedViewModel = sharedViewModel,
+                    )
+                },
+                TabRowItem(
+                    title = stringResource(R.string.geo_tab_streets),
+                    onClick = { onTabChange(GeoTabType.STREETS) }
+                ) {
+                    StreetsView(
+                        appState = appState,
+                        onStreetTabChange = onStreetTabChange
+                        //sharedViewModel = sharedViewModel,
+                    )
+                }
+            )
         )
-    )
+    }
 // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback
     /*    LaunchedEffect(pagerState) {
@@ -229,16 +231,18 @@ fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
-                        RegionDistrictsListView(navController = appState.mainNavController)
-                    },
-                    TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
-                        LocalitiesListView(navController = appState.mainNavController)
-                    }
+            Column(modifier = Modifier.fillMaxSize()) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
+                            RegionDistrictsListView(navController = appState.mainNavController)
+                        },
+                        TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
+                            LocalitiesListView(navController = appState.mainNavController)
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -329,19 +333,21 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(title = stringResource(R.string.geo_tab_locality_districts)) {
-                        LocalityDistrictsListView(navController = appState.mainNavController)
-                    },
-                    TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
-                        MicrodistrictsListView(navController = appState.mainNavController)
-                    },
-                    TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
-                        StreetsListView(navController = appState.mainNavController)
-                    }
+            Column(modifier = Modifier.fillMaxSize()) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(title = stringResource(R.string.geo_tab_locality_districts)) {
+                            LocalityDistrictsListView(navController = appState.mainNavController)
+                        },
+                        TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
+                            MicrodistrictsListView(navController = appState.mainNavController)
+                        },
+                        TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
+                            StreetsListView(navController = appState.mainNavController)
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -391,16 +397,18 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
-                        MicrodistrictsListView(navController = appState.mainNavController)
-                    },
-                    TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
-                        StreetsListView(navController = appState.mainNavController)
-                    }
+            Column(modifier = Modifier.fillMaxSize()) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
+                            MicrodistrictsListView(navController = appState.mainNavController)
+                        },
+                        TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
+                            StreetsListView(navController = appState.mainNavController)
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -500,20 +508,22 @@ fun StreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(
-                        title = stringResource(R.string.geo_tab_locality_districts),
-                        onClick = { onStreetTabChange(GeoStreetDistrictTabType.LOCALITY_DISTRICTS) }) {
-                        LocalityDistrictsListView(navController = appState.mainNavController)
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.geo_tab_microdistricts),
-                        onClick = { onStreetTabChange(GeoStreetDistrictTabType.MICRODISTRICTS) }) {
-                        MicrodistrictsListView(navController = appState.mainNavController)
-                    }
+            Column(modifier = Modifier.fillMaxSize()) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_locality_districts),
+                            onClick = { onStreetTabChange(GeoStreetDistrictTabType.LOCALITY_DISTRICTS) }) {
+                            LocalityDistrictsListView(navController = appState.mainNavController)
+                        },
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_microdistricts),
+                            onClick = { onStreetTabChange(GeoStreetDistrictTabType.MICRODISTRICTS) }) {
+                            MicrodistrictsListView(navController = appState.mainNavController)
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 }

@@ -926,6 +926,7 @@ sealed class NavRoutes constructor(
     fun baseRoute() = this.route.substringBefore('/').substringBefore('?')
 
     companion object {
+        fun rootRoutes() = listOf(Signup, Login)
         fun bottomNavBarRoutes() = listOf(Dashboarding, Congregating, Territoring, Ministring)
         fun geoRoutes() =
             listOf(

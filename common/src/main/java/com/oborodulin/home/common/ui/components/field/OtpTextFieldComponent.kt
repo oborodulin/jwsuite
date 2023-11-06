@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +49,7 @@ fun OtpTextFieldComponent(
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     otpValue = otpValue.copy(text = inputWrapper.value) // make sure to keep the value updated
-    Timber.tag(TAG).d("OtpTextFieldComponent(...): otpValue = %s", otpValue)
+    //Timber.tag(TAG).d("OtpTextFieldComponent(...): otpValue = %s", otpValue)
     LaunchedEffect(Unit) {
         if (otpValue.text.length > otpCount) {
             throw IllegalArgumentException("Otp text value must not have more than otpCount: $otpCount characters")
@@ -63,7 +64,9 @@ fun OtpTextFieldComponent(
                 otpValue = it; onOtpTextChange.invoke(it.text, it.text.length == otpCount)
             }
         },
+        singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        visualTransformation = PasswordVisualTransformation(),
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {
                 repeat(otpCount) { index ->
@@ -81,9 +84,9 @@ private fun CharView(index: Int, text: String) {
     val char = when {
         index == text.length -> "0"
         index > text.length -> ""
-        else -> text[index].toString()
+        else -> "*"//text[index].toString()
     }
-    Timber.tag(TAG).d("CharView(...) called: index = %s; char = %s", index, char)
+    //Timber.tag(TAG).d("CharView(...) called: index = %s; char = %s", index, char)
     Text(
         modifier = Modifier
             .width(40.dp)

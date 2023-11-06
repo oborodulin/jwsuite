@@ -181,33 +181,35 @@ fun HousingScreen(
                 }
             }
         }
-        CustomScrollableTabRow(
-            listOf(
-                TabRowItem(
-                    title = stringResource(R.string.houses_tab_houses),
-                    onClick = { onTabChange(HousingTabType.HOUSES) }
-                ) {
-                    street.item?.itemId?.let {
-                        HousesEntrancesFloorsRoomsView(
-                            appState = appState,
-                            streetInput = NavigationInput.StreetInput(it)
-                        )
-                    }
-                },
-                TabRowItem(
-                    title = stringResource(R.string.houses_tab_entrances),
-                    onClick = { onTabChange(HousingTabType.ENTRANCES) }
-                ) {},
-                TabRowItem(
-                    title = stringResource(R.string.houses_tab_floors),
-                    onClick = { onTabChange(HousingTabType.FLOORS) }
-                ) {},
-                TabRowItem(
-                    title = stringResource(R.string.houses_tab_rooms),
-                    onClick = { onTabChange(HousingTabType.ROOMS) }
-                ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
+        Column(modifier = Modifier.fillMaxSize()) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_houses),
+                        onClick = { onTabChange(HousingTabType.HOUSES) }
+                    ) {
+                        street.item?.itemId?.let {
+                            HousesEntrancesFloorsRoomsView(
+                                appState = appState,
+                                streetInput = NavigationInput.StreetInput(it)
+                            )
+                        }
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_entrances),
+                        onClick = { onTabChange(HousingTabType.ENTRANCES) }
+                    ) {},
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_floors),
+                        onClick = { onTabChange(HousingTabType.FLOORS) }
+                    ) {},
+                    TabRowItem(
+                        title = stringResource(R.string.houses_tab_rooms),
+                        onClick = { onTabChange(HousingTabType.ROOMS) }
+                    ) { street.item?.itemId?.let { RoomsView(appState = appState) } }
+                )
             )
-        )
+        }
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("HousingScreen: LaunchedEffect() AFTER collect single Event Flow")
@@ -265,18 +267,20 @@ fun HousesEntrancesFloorsRoomsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(title = stringResource(R.string.houses_tab_entrances)) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(title = stringResource(R.string.houses_tab_entrances)) {
 
-                    },
-                    TabRowItem(title = stringResource(R.string.houses_tab_floors)) {
-                    },
-                    TabRowItem(title = stringResource(R.string.houses_tab_rooms)) {
-                        RoomsListView(navController = appState.mainNavController)
-                    }
+                        },
+                        TabRowItem(title = stringResource(R.string.houses_tab_floors)) {
+                        },
+                        TabRowItem(title = stringResource(R.string.houses_tab_rooms)) {
+                            RoomsListView(navController = appState.mainNavController)
+                        }
+                    )
                 )
-            )
+            }
         }
     }
 }

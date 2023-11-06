@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.ui.main
 
+import android.app.Activity
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
@@ -10,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +36,12 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.MainNavigationHost
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -47,9 +51,10 @@ import kotlin.math.roundToInt
 private const val TAG = "App.ui.MainScreen"
 
 @Composable
-fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
-    Timber.tag(TAG).d("MainScreen() called")
+fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
+    Timber.tag(TAG).d("MainScreen(...) called")
     val appState = LocalAppState.current
+    val activity = (LocalContext.current as? Activity)
     val coroutineScope = rememberCoroutineScope()
     val bottomBarHeight = 72.dp
     val bottomBarHeightPx = with(LocalDensity.current) {
@@ -69,12 +74,14 @@ fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
             }
         }
     }
-    val handleLogoutActionClick = {
+    val handleLogoutActionClick: () -> Unit = {
         Timber.tag(TAG).d("MainScreen(...): Logout Button onClick...")
-        viewModel.handleActionJob(
-            { viewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) },
+        sessionViewModel.handleActionJob(
+            { sessionViewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) },
             {
-                appState.rootNavController.popBackStack(NavRoutes.Login.route, true)
+                //sessionViewModel.submitAction(SessionUiAction.EnterPin)
+                activity?.finish()
+                //appState.rootNavController.popBackStack(NavRoutes.Login.route, true)
                 /*navigate(NavRoutes.Login.route) {
                     popUpTo(appState.rootNavController.graph.startDestinationId) {
                         inclusive = true
@@ -158,6 +165,19 @@ fun MainScreen(viewModel: SessionViewModel) { // Impl = hiltViewModel()
                 areUsingBottomNavigation = areUsingBottomNavigation,
                 onFabChange = onFabChange
             )
+        }
+    }
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG).d("MainScreen: LaunchedEffect() BEFORE collect ui state flow")
+        sessionViewModel.singleEventFlow.collectLatest {
+            Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
+            when (it) {
+                is SessionUiSingleEvent.OpenLoginScreen -> {
+                    appState.rootNavController.navigate(it.navRoute)
+                }
+
+                else -> {}
+            }
         }
     }
 }

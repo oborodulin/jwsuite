@@ -1,7 +1,9 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -15,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -145,7 +148,9 @@ fun TerritoryDetailsScreen(
                     onClick = handleActionAdd
                 )
             }
-            CustomScrollableTabRow(tabs)
+            Column(modifier = Modifier.fillMaxSize()) {
+                CustomScrollableTabRow(tabs)
+            }
         }
     }
     LaunchedEffect(Unit) {

@@ -220,72 +220,74 @@ fun TerritoringScreen(
                 }
             }
         }
-        CustomScrollableTabRow(
-            listOf(
-                TabRowItem(
-                    title = stringResource(R.string.territory_tab_hand_out),
-                    onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
-                ) {
-                    location.item?.let {
-                        HandOutTerritoriesView(
-                            appState = appState,
-                            //sharedViewModel = sharedViewModel,
-                            enableAction = areHandOutInputsValid,
-                            territoringViewModel = territoringViewModel,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(
+                        title = stringResource(R.string.territory_tab_hand_out),
+                        onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
+                    ) {
+                        location.item?.let {
+                            HandOutTerritoriesView(
+                                appState = appState,
+                                //sharedViewModel = sharedViewModel,
+                                enableAction = areHandOutInputsValid,
+                                territoringViewModel = territoringViewModel,
+                                territoriesGridViewModel = territoriesGridViewModel,
+                                territoryLocationType = it.territoryLocationType,
+                                locationId = it.locationId,
+                                isPrivateSector = isPrivateSector.value.toBoolean()
+                            )
+                        }
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.territory_tab_at_work),
+                        onClick = { onTabChange(TerritoringTabType.AT_WORK) }
+                    ) {
+                        location.item?.let {
+                            AtWorkTerritoriesView(
+                                appState = appState,
+                                //sharedViewModel = sharedViewModel,
+                                territoriesGridViewModel = territoriesGridViewModel,
+                                territoryLocationType = it.territoryLocationType,
+                                locationId = it.locationId,
+                                isPrivateSector = isPrivateSector.value.toBoolean()
+                            )
+                        }
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.territory_tab_idle),
+                        onClick = { onTabChange(TerritoringTabType.IDLE) }
+                    ) {
+                        location.item?.let {
+                            IdleTerritoriesView(
+                                appState = appState,
+                                //sharedViewModel = sharedViewModel,
+                                territoriesGridViewModel = territoriesGridViewModel,
+                                territoryLocationType = it.territoryLocationType,
+                                locationId = it.locationId,
+                                isPrivateSector = isPrivateSector.value.toBoolean()
+                            )
+                        }
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.territory_tab_all),
+                        onClick = { onTabChange(TerritoringTabType.ALL) }
+                    ) {
+                        location.item?.let {
+                            AllTerritoriesView(
+                                appState = appState,
+                                //sharedViewModel = sharedViewModel,
+                                territoriesGridViewModel = territoriesGridViewModel,
+                                territoryLocationType = it.territoryLocationType,
+                                locationId = it.locationId,
+                                isPrivateSector = isPrivateSector.value.toBoolean()
+                            )
+                        }
                     }
-                },
-                TabRowItem(
-                    title = stringResource(R.string.territory_tab_at_work),
-                    onClick = { onTabChange(TerritoringTabType.AT_WORK) }
-                ) {
-                    location.item?.let {
-                        AtWorkTerritoriesView(
-                            appState = appState,
-                            //sharedViewModel = sharedViewModel,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                },
-                TabRowItem(
-                    title = stringResource(R.string.territory_tab_idle),
-                    onClick = { onTabChange(TerritoringTabType.IDLE) }
-                ) {
-                    location.item?.let {
-                        IdleTerritoriesView(
-                            appState = appState,
-                            //sharedViewModel = sharedViewModel,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                },
-                TabRowItem(
-                    title = stringResource(R.string.territory_tab_all),
-                    onClick = { onTabChange(TerritoringTabType.ALL) }
-                ) {
-                    location.item?.let {
-                        AllTerritoriesView(
-                            appState = appState,
-                            //sharedViewModel = sharedViewModel,
-                            territoriesGridViewModel = territoriesGridViewModel,
-                            territoryLocationType = it.territoryLocationType,
-                            locationId = it.locationId,
-                            isPrivateSector = isPrivateSector.value.toBoolean()
-                        )
-                    }
-                }
+                )
             )
-        )
+        }
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("TerritoringScreen: LaunchedEffect() AFTER collect single Event Flow")

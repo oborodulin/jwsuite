@@ -24,7 +24,6 @@ import com.oborodulin.home.common.ui.components.field.OtpTextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionModeType
@@ -33,7 +32,6 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -44,7 +42,7 @@ private const val TAG = "Presentation.LoginView"
 fun LoginView(viewModel: SessionViewModel) {
     Timber.tag(TAG).d("LoginView(...) called")
     val appState = LocalAppState.current
-    val session = LocalSession.current
+    //val session = LocalSession.current
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
@@ -56,10 +54,10 @@ fun LoginView(viewModel: SessionViewModel) {
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Session: CollectAsStateWithLifecycle for all fields")
+    Timber.tag(TAG).d("LoginView: CollectAsStateWithLifecycle for pin field")
     val pin by viewModel.pin.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Session: Init Focus Requesters for all fields")
+    Timber.tag(TAG).d("LoginView: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<SessionFields, InputFocusRequester>(SessionFields::class.java)
     enumValues<SessionFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
@@ -68,16 +66,17 @@ fun LoginView(viewModel: SessionViewModel) {
     val handleLogin = {
         viewModel.onContinueClick {
             Timber.tag(TAG).d("LoginView(...): Start coroutineScope.launch")
-            coroutineScope.launch {
-                viewModel.actionsJobFlow.collect {
-                    Timber.tag(TAG).d(
-                        "LoginView(...): Start actionsJobFlow.collect [job = %s]", it?.toString()
-                    )
-                    it?.join()
-                    appState.mainNavigate(session.startDestination)
-                }
-            }
+            /*            coroutineScope.launch {
+                            viewModel.actionsJobFlow.collectLatest {
+                                Timber.tag(TAG).d(
+                                    "LoginView(...): Start actionsJobFlow.collect [job = %s]", it?.toString()
+                                )
+                                it?.join()
+                                //appState.navigateByDestination(session.startDestination)
+                            }
+                        }*/
             viewModel.submitAction(SessionUiAction.Login)
+            viewModel.submitAction(SessionUiAction.StartSession)
         }
     }
     LaunchedEffect(Unit) {
@@ -87,7 +86,6 @@ fun LoginView(viewModel: SessionViewModel) {
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
-        viewModel.onTextFieldEntered(SessionInputEvent.Pin(""))
     }
     Column(
         modifier = Modifier
@@ -103,8 +101,7 @@ fun LoginView(viewModel: SessionViewModel) {
         OtpTextFieldComponent(inputWrapper = pin,
             otpCount = PASS_MIN_LENGTH,
             onOtpTextChange = { value, otpInputFilled ->
-                Timber.tag(TAG)
-                    .d("LoginView(...): value = %s; otpInputFilled = %s", value, otpInputFilled)
+                //Timber.tag(TAG).d("LoginView(...): value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
                 if (otpInputFilled) handleLogin()
             })

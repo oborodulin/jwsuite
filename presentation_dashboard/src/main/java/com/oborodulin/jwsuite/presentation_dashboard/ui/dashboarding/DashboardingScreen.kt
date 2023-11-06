@@ -42,7 +42,8 @@ fun DashboardingScreen(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
     val appState = LocalAppState.current
@@ -67,6 +68,7 @@ fun DashboardingScreen(
                 Icon(Icons.Outlined.Settings, null)
             }*/
         }
+        onFabChange {}
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column {

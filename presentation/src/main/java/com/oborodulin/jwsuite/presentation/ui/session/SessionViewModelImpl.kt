@@ -10,7 +10,6 @@ import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
-import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
@@ -21,10 +20,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
-import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
-import com.oborodulin.jwsuite.presentation.ui.model.converters.LogoutSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
-import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -44,11 +40,11 @@ class SessionViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: SessionUseCases,
     private val sessionConverter: SessionConverter,
-    private val signupConverter: SignupSessionConverter,
-    private val loginConverter: LoginSessionConverter,
-    private val logoutConverter: LogoutSessionConverter
+    //private val signupConverter: SignupSessionConverter,
+    //private val loginConverter: LoginSessionConverter,
+    //private val logoutConverter: LogoutSessionConverter
 ) : SessionViewModel,
-    DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, UiSingleEvent, SessionFields, InputWrapper>(
+    DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, SessionUiSingleEvent, SessionFields, InputWrapper>(
         state//, initFocusedTextField = SessionFields.SESSION_PIN
     ) {
     private val _sessionMode = MutableStateFlow(SessionModeType.SIGNUP)
@@ -75,10 +71,10 @@ class SessionViewModelImpl @Inject constructor(
         false
     )
 
-    init {
+    /*init {
         Timber.tag(TAG).d("init called")
         loadSession()
-    }
+    }*/
 
     override fun initState(): UiState<SessionUi> = UiState.Loading
 
@@ -86,36 +82,55 @@ class SessionViewModelImpl @Inject constructor(
         _sessionMode.value = mode
     }
 
-    override suspend fun handleAction(action: SessionUiAction): Job {
-        Timber.tag(TAG).d("handleAction(SignupUiAction) called: %s", action.javaClass.name)
+    override suspend fun handleAction(action: SessionUiAction): Job? {
+        Timber.tag(TAG).d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
             is SessionUiAction.Signup -> signup()
             is SessionUiAction.Signout -> signout()
             is SessionUiAction.Login -> login()
             is SessionUiAction.Logout -> logout(action.lastDestination)
+            is SessionUiAction.StartSession -> {
+                submitSingleEvent(SessionUiSingleEvent.OpenMainScreen(NavRoutes.Home.route))
+            }
+
+            is SessionUiAction.EnterPin -> {
+                setDialogTitleResId(R.string.session_login_subheader)
+                submitSingleEvent(SessionUiSingleEvent.OpenLoginScreen(NavRoutes.Login.route))
+            }
+
+            is SessionUiAction.Registration -> {
+                setDialogTitleResId(R.string.session_signup_subheader)
+                submitSingleEvent(SessionUiSingleEvent.OpenSignupScreen(NavRoutes.Signup.route))
+            }
         }
         return job
     }
 
-    private fun loadSession(): Job {
+    private suspend fun loadSession(): Job? {
         Timber.tag(TAG).d("loadSession(...) called")
-        val job = viewModelScope.launch(errorHandler) {
-            useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
-                .map { sessionConverter.convert(it) }.collect { state ->
-                    uiState(state)?.let { session ->
-                        when (session.isSigned) {
-                            false -> setDialogTitleResId(R.string.session_signup_subheader)
-                            true -> when (session.isLogged) {
-                                false -> setDialogTitleResId(R.string.session_login_subheader)
-                                true -> {}
-                            }
-                        }
-                    }
-                    submitState(state)
+        //val job = viewModelScope.launch(errorHandler) {
+        val state = useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
+            .map { sessionConverter.convert(it) }.first()
+        uiState(state)?.let { session ->
+            when (session.isSigned) {
+                false -> setDialogTitleResId(R.string.session_signup_subheader)
+                true -> when (session.isLogged) {
+                    false -> setDialogTitleResId(R.string.session_login_subheader)
+                    true -> {}
                 }
+            }
         }
-        return job
+        submitState(state)
+        /*useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
+            .map { sessionConverter.convert(it) }.collect { state ->
+                Timber.tag(TAG).d("loadSession: GetSessionUseCase")
+                submitState(state)
+            }
+        this.cancel()
+    }
+    return job*/
+        return null
     }
 
     private fun signup(): Job {
@@ -123,7 +138,8 @@ class SessionViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.signupUseCase.execute(
                 SignupUseCase.Request(username.value.value, pin.value.value)
-            ).map { signupConverter.convert(it) }.collect { submitState(it) }
+            ).collect {}
+            //.map { signupConverter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
@@ -131,8 +147,8 @@ class SessionViewModelImpl @Inject constructor(
     private fun signout(): Job {
         Timber.tag(TAG).d("signout(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.signoutUseCase.execute(SignoutUseCase.Request)
-                .collect { submitState(UiState.Success(SessionUi(lastDestination = NavRoutes.Signup.route))) }
+            useCases.signoutUseCase.execute(SignoutUseCase.Request).collect {}
+            //.collect { submitState(UiState.Success(SessionUi(lastDestination = NavRoutes.Signup.route))) }
         }
         return job
     }
@@ -140,8 +156,8 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
-                .map { loginConverter.convert(it) }.collect { submitState(it) }
+            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value)).collect {}
+            //.map { loginConverter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
@@ -149,8 +165,8 @@ class SessionViewModelImpl @Inject constructor(
     private fun logout(lastDestination: String? = null): Job {
         Timber.tag(TAG).d("logout(...) called: lastDestination = %s", lastDestination)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.logoutUseCase.execute(LogoutUseCase.Request(lastDestination))
-                .map { logoutConverter.convert(it) }.collect { submitState(it) }
+            useCases.logoutUseCase.execute(LogoutUseCase.Request(lastDestination)).collect {}
+            //.map { logoutConverter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
@@ -294,7 +310,7 @@ class SessionViewModelImpl @Inject constructor(
             override val savedListItem = MutableStateFlow(ListItemModel())
             override val showDialog = MutableStateFlow(true)
             override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
-            override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+            override val singleEventFlow = Channel<SessionUiSingleEvent>().receiveAsFlow()
             override val events = Channel<ScreenEvent>().receiveAsFlow()
             override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 

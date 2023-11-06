@@ -22,7 +22,7 @@ import timber.log.Timber
 private const val TAG = "App.Navigation.geoNavGraph"
 
 fun NavGraphBuilder.geoNavGraph(
-    startDestination: String,
+    startDestination: String? = null,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
@@ -30,7 +30,7 @@ fun NavGraphBuilder.geoNavGraph(
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
-    navigation(route = Graph.GEO, startDestination = startDestination) {
+    navigation(route = Graph.GEO, startDestination = startDestination ?: NavRoutes.Geo.route) {
         // GeoScreen:
         composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
             Timber.tag(TAG).d(

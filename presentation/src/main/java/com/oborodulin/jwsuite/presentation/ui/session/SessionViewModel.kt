@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import kotlinx.coroutines.flow.StateFlow
 
 interface SessionViewModel :
-    DialogViewModeled<SessionUi, SessionUiAction, UiSingleEvent, SessionFields> {
+    DialogViewModeled<SessionUi, SessionUiAction, SessionUiSingleEvent, SessionFields> {
     val username: StateFlow<InputWrapper>
     val pin: StateFlow<InputWrapper>
     val confirmPin: StateFlow<InputWrapper>
