@@ -71,10 +71,10 @@ class SessionViewModelImpl @Inject constructor(
         false
     )
 
-    /*init {
+    init {
         Timber.tag(TAG).d("init called")
         loadSession()
-    }*/
+    }
 
     override fun initState(): UiState<SessionUi> = UiState.Loading
 
@@ -82,7 +82,7 @@ class SessionViewModelImpl @Inject constructor(
         _sessionMode.value = mode
     }
 
-    override suspend fun handleAction(action: SessionUiAction): Job? {
+    override suspend fun handleAction(action: SessionUiAction): Job {
         Timber.tag(TAG).d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
@@ -107,10 +107,9 @@ class SessionViewModelImpl @Inject constructor(
         return job
     }
 
-    private suspend fun loadSession(): Job? {
+    private fun loadSession(): Job {
         Timber.tag(TAG).d("loadSession(...) called")
-        //val job = viewModelScope.launch(errorHandler) {
-        val state = useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
+        /*val state = useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
             .map { sessionConverter.convert(it) }.first()
         uiState(state)?.let { session ->
             when (session.isSigned) {
@@ -121,16 +120,25 @@ class SessionViewModelImpl @Inject constructor(
                 }
             }
         }
-        submitState(state)
-        /*useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
-            .map { sessionConverter.convert(it) }.collect { state ->
-                Timber.tag(TAG).d("loadSession: GetSessionUseCase")
-                submitState(state)
-            }
-        this.cancel()
-    }
-    return job*/
-        return null
+        submitState(state)*/
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
+                .map { sessionConverter.convert(it) }.collect { state ->
+                    Timber.tag(TAG).d("loadSession: state = %s", state)
+                    uiState(state)?.let { session ->
+                        when (session.isSigned) {
+                            false -> setDialogTitleResId(R.string.session_signup_subheader)
+                            true -> when (session.isLogged) {
+                                false -> setDialogTitleResId(R.string.session_login_subheader)
+                                true -> {}
+                            }
+                        }
+                    }
+                    submitState(state)
+                }
+        }
+        return job
+        //return null
     }
 
     private fun signup(): Job {

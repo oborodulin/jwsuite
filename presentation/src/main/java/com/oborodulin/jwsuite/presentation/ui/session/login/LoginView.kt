@@ -32,6 +32,8 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -65,18 +67,19 @@ fun LoginView(viewModel: SessionViewModel) {
 
     val handleLogin = {
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("LoginView(...): Start coroutineScope.launch")
-            /*            coroutineScope.launch {
-                            viewModel.actionsJobFlow.collectLatest {
-                                Timber.tag(TAG).d(
-                                    "LoginView(...): Start actionsJobFlow.collect [job = %s]", it?.toString()
-                                )
-                                it?.join()
-                                //appState.navigateByDestination(session.startDestination)
-                            }
-                        }*/
+            Timber.tag(TAG).d("LoginView: Start coroutineScope.launch")
+            coroutineScope.launch {
+                viewModel.actionsJobFlow.collectLatest {
+                    Timber.tag(TAG).d(
+                        "LoginView: Start actionsJobFlow.collect [job = %s]", it?.toString()
+                    )
+                    it?.join()
+                    Timber.tag(TAG).d("LoginView: StartSession")
+                    viewModel.submitAction(SessionUiAction.StartSession)
+                    //appState.navigateByDestination(session.startDestination)
+                }
+            }
             viewModel.submitAction(SessionUiAction.Login)
-            viewModel.submitAction(SessionUiAction.StartSession)
         }
     }
     LaunchedEffect(Unit) {
