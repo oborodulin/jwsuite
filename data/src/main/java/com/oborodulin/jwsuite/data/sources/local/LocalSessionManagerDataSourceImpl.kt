@@ -22,13 +22,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
 ) : LocalSessionManagerDataSource {
     //first()[KEY_USERNAME] != null
     override fun isSigned() = dataStore.data.map { authData -> !authData.username.isNullOrEmpty() }
-    override fun isLogged() = dataStore.data.map { authData -> authData.isLogged }
     override fun username() = dataStore.data.map { authData -> authData.username }
-    override fun isPasswordValid(password: String) =
-        dataStore.data.map { authData ->
-            authData.username.takeIf { authData.password?.let { it == password } ?: false }
-        }
-
     override fun lastDestination() = dataStore.data.map { authData -> authData.lastDestination }
 
     override fun databasePassphrase() =
@@ -44,15 +38,13 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
                     username = username,
                     password = password,
                     databasePassphrase = databasePassphrase,
-                    lastLoginTime = OffsetDateTime.now(),
-                    isLogged = true
+                    lastLoginTime = OffsetDateTime.now()
                 )
             } else {
                 it.copy(
                     username = username,
                     password = password,
-                    lastLoginTime = OffsetDateTime.now(),
-                    isLogged = true
+                    lastLoginTime = OffsetDateTime.now()
                 )
             }
         }
@@ -60,14 +52,12 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     }
 
     override suspend fun signout() = withContext(dispatcher) {
-        dataStore.updateData { it.copy(username = null, password = null, isLogged = false) }
+        dataStore.updateData { it.copy(username = null, password = null) }
         Unit
     }
 
-    override suspend fun login() = withContext(dispatcher) {
-        dataStore.updateData { it.copy(isLogged = true, lastLoginTime = OffsetDateTime.now()) }
-        Unit
-    }
+    override fun login(password: String) =
+        dataStore.data.map { authData -> authData.password?.let { it == password } ?: false }
 
     override suspend fun updateRoles(roles: List<Role>) = withContext(dispatcher) {
         dataStore.updateData { it.copy(roles = roles) }
@@ -75,7 +65,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     }
 
     override suspend fun logout(lastDestination: String?) = withContext(dispatcher) {
-        dataStore.updateData { it.copy(isLogged = false, lastDestination = lastDestination) }
+        dataStore.updateData { it.copy(lastDestination = lastDestination) }
         Unit
     }
 }

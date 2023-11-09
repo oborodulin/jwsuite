@@ -10,7 +10,7 @@ class LoginUseCase(
 ) : UseCase<LoginUseCase.Request, LoginUseCase.Response>(configuration) {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun process(request: Request) =
-        sessionManagerRepository.login(request.password).map { Response }
+        sessionManagerRepository.login(request.password).map { Response(it) }
     /*.flatMapLatest {
     combine(
         sessionManagerRepository.isSigned(),
@@ -28,6 +28,6 @@ class LoginUseCase(
 }*/
 
     data class Request(val password: String) : UseCase.Request
-    data object Response : UseCase.Response
+    data class Response(val isLogged: Boolean) : UseCase.Response
     //data class Response(val session: Session) : UseCase.Response
 }

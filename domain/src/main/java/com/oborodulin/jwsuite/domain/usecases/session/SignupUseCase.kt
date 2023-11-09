@@ -15,10 +15,15 @@ class SignupUseCase(
         sessionManagerRepository.signup(request.username, request.password).flatMapLatest {
             combine(
                 sessionManagerRepository.isSigned(),
-                sessionManagerRepository.isLogged(),
+                //sessionManagerRepository.isLogged(),
                 sessionManagerRepository.roles()
-            ) { isSigned, isLogged, roles ->
-                Response(Session(isSigned = isSigned, isLogged = isLogged, roles = roles))
+            ) { isSigned, roles -> //isLogged, roles ->
+                Response(
+                    Session(
+                        isSigned = isSigned, //isLogged = isLogged,
+                        roles = roles
+                    )
+                )
             }
         }
 

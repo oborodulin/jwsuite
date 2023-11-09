@@ -20,6 +20,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
+import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +42,7 @@ class SessionViewModelImpl @Inject constructor(
     private val useCases: SessionUseCases,
     private val sessionConverter: SessionConverter,
     //private val signupConverter: SignupSessionConverter,
-    //private val loginConverter: LoginSessionConverter,
+    private val loginConverter: LoginSessionConverter,
     //private val logoutConverter: LogoutSessionConverter
 ) : SessionViewModel,
     DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, SessionUiSingleEvent, SessionFields, InputWrapper>(
@@ -49,6 +50,9 @@ class SessionViewModelImpl @Inject constructor(
     ) {
     private val _sessionMode = MutableStateFlow(SessionModeType.SIGNUP)
     private val sessionMode = _sessionMode.asStateFlow()
+
+    private val _isLogged = MutableStateFlow(false)
+    override val isLogged = _isLogged.asStateFlow()
 
     override val username: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(SessionFields.SESSION_USERNAME.name, InputWrapper())
@@ -82,7 +86,7 @@ class SessionViewModelImpl @Inject constructor(
         _sessionMode.value = mode
     }
 
-    override suspend fun handleAction(action: SessionUiAction): Job {
+    override suspend fun handleAction(action: SessionUiAction): Job? {
         Timber.tag(TAG).d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
@@ -91,7 +95,13 @@ class SessionViewModelImpl @Inject constructor(
             is SessionUiAction.Login -> login()
             is SessionUiAction.Logout -> logout(action.lastDestination)
             is SessionUiAction.StartSession -> {
-                submitSingleEvent(SessionUiSingleEvent.OpenMainScreen(NavRoutes.Home.route))
+                if (_isLogged.value) {
+                    submitSingleEvent(SessionUiSingleEvent.OpenMainScreen(NavRoutes.Home.route))
+                } else {
+
+                }
+                setDialogTitleResId(R.string.session_login_subheader)
+                submitSingleEvent(SessionUiSingleEvent.OpenLoginScreen(NavRoutes.Login.route))
             }
 
             is SessionUiAction.EnterPin -> {
@@ -164,8 +174,11 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value)).collect {}
-            //.map { loginConverter.convert(it) }.collect { submitState(it) }
+            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+                .map { loginConverter.convert(it) }.collect { state ->
+                    uiState(state)?.let { session -> _isLogged.value = session.isLogged }
+                }
+            //.collect { submitState(it) }
         }
         return job
     }
@@ -326,6 +339,7 @@ class SessionViewModelImpl @Inject constructor(
             override val isSearching = MutableStateFlow(false)
             override fun onSearchTextChange(text: TextFieldValue) {}
 
+            override val isLogged = MutableStateFlow(false)
             override val id = MutableStateFlow(InputWrapper())
             override val username = MutableStateFlow(InputWrapper())
             override val pin = MutableStateFlow(InputWrapper())

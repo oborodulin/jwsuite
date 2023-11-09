@@ -11,13 +11,13 @@ class GetSessionUseCase(
     override fun process(request: Request) =
         combine(
             sessionManagerRepository.isSigned(),
-            sessionManagerRepository.isLogged(),
+            //sessionManagerRepository.isLogged(),
             sessionManagerRepository.lastDestination(),
             sessionManagerRepository.roles()
-        ) { isSigned, isLogged, lastDestination, roles ->
+        ) { isSigned, lastDestination, roles -> //isLogged, lastDestination, roles ->
             Response(
                 Session(
-                    isSigned = isSigned, isLogged = isLogged,
+                    isSigned = isSigned, //isLogged = isLogged,
                     lastDestination = lastDestination, roles = roles
                 )
             )

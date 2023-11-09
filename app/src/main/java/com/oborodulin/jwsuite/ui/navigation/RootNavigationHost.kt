@@ -21,14 +21,13 @@ fun RootNavigationHost(activity: MainActivity, sessionViewModel: SessionViewMode
     Timber.tag(TAG).d("RootNavigationHost(...) called")
     val session = LocalSession.current
     Timber.tag(TAG).d(
-        "RootNavigationHost(...): session.rootRoute = %s; session.authStartDestination = %s",
-        session.rootRoute,
+        "RootNavigationHost(...): session.authStartDestination = %s",
         session.authStartDestination
     )
     NavHost(
         navController = LocalAppState.current.rootNavController,
         route = Graph.ROOT,
-        startDestination = session.rootRoute // Graph.AUTH
+        startDestination = Graph.AUTH //session.rootRoute
     ) {
         Timber.tag(TAG).d("RootNavigationHost(...) -> NavHost()")
         authNavGraph(

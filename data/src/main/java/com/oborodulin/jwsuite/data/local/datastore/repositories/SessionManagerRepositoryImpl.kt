@@ -4,7 +4,6 @@ package com.oborodulin.jwsuite.data.local.datastore.repositories
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -15,7 +14,6 @@ class SessionManagerRepositoryImpl @Inject constructor(
     //@IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : SessionManagerRepository {
     override fun isSigned() = localSessionManagerDataSource.isSigned()
-    override fun isLogged() = localSessionManagerDataSource.isLogged()
     override fun lastDestination() = localSessionManagerDataSource.lastDestination()
     override fun roles() = localSessionManagerDataSource.roles()
 
@@ -24,7 +22,7 @@ class SessionManagerRepositoryImpl @Inject constructor(
         //val roles = localMemberDataSource.getMemberRoles(username)
         //    .map(mappers.roleEntityListToRolesListMapper::map).first()
         //localSessionManagerDataSource.updateRoles(roles)
-        localSessionManagerDataSource.login()
+        //localSessionManagerDataSource.login()
         emit(true)
     }
 
@@ -34,19 +32,19 @@ class SessionManagerRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun login(password: String) =
-        localSessionManagerDataSource.isPasswordValid(password).flatMapLatest { username ->
-            when (username) {
-                null -> flow { emit(false) }
-                else -> {
-                    //val roles = localMemberDataSource.getMemberRoles(username)
-                    //    .map(mappers.roleEntityListToRolesListMapper::map).first()
-                    //localSessionManagerDataSource.updateRoles(roles)
-                    localSessionManagerDataSource.login()
-                    flow { emit(true) }
-                }
-            }
+    override fun login(password: String) = localSessionManagerDataSource.login(password)
+    /*.flatMapLatest { username ->
+    when (username) {
+        null -> flow { emit(false) }
+        else -> {
+            //val roles = localMemberDataSource.getMemberRoles(username)
+            //    .map(mappers.roleEntityListToRolesListMapper::map).first()
+            //localSessionManagerDataSource.updateRoles(roles)
+            localSessionManagerDataSource.login()
+            flow { emit(true) }
         }
+    }
+}*/
 
     override fun logout(lastDestination: String?) = flow {
         localSessionManagerDataSource.logout(lastDestination)

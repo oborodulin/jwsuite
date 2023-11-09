@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Session(
     val isSigned: Boolean = false,
-    val isLogged: Boolean = false,
     val roles: List<Role> = emptyList(),
     val lastDestination: String? = null
 )

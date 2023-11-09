@@ -12,7 +12,6 @@ data class AuthData(
     val databasePassphrase: String = "",
     @Serializable(with = OffsetDateTimeSerializer::class)
     val lastLoginTime: OffsetDateTime = OffsetDateTime.now(),
-    val isLogged: Boolean = false,
     val roles: List<Role> = emptyList(),
     val lastDestination: String? = null
 )
