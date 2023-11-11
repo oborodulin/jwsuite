@@ -32,8 +32,6 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -67,23 +65,29 @@ fun LoginView(viewModel: SessionViewModel) {
 
     val handleLogin = {
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("LoginView: Start coroutineScope.launch")
+            viewModel.handleActionJob(
+                { viewModel.submitAction(SessionUiAction.Login) },
+                { viewModel.submitAction(SessionUiAction.StartSession) }
+            )
+            /*Timber.tag(TAG).d("LoginView: Start coroutineScope.launch")
             coroutineScope.launch {
-                viewModel.actionsJobFlow.collectLatest {
+                viewModel.actionsJobFlow.collect { job ->
                     Timber.tag(TAG).d(
-                        "LoginView: Start actionsJobFlow.collect [job = %s]", it?.toString()
+                        "LoginView: Start actionsJobFlow.collect [job = %s]", job?.toString()
                     )
-                    it?.join()
+                    job?.let {
+                        if (it.isActive) it.join()
+                    }
                     Timber.tag(TAG).d("LoginView: StartSession")
                     viewModel.submitAction(SessionUiAction.StartSession)
                     //appState.navigateByDestination(session.startDestination)
                 }
             }
-            viewModel.submitAction(SessionUiAction.Login)
+            viewModel.submitAction(SessionUiAction.Login)*/
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("LoginView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("LoginView: LaunchedEffect(Unit)")
         viewModel.setSessionMode(SessionModeType.LOGIN)
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
@@ -101,10 +105,11 @@ fun LoginView(viewModel: SessionViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        OtpTextFieldComponent(inputWrapper = pin,
+        OtpTextFieldComponent(
+            inputWrapper = pin,
             otpCount = PASS_MIN_LENGTH,
             onOtpTextChange = { value, otpInputFilled ->
-                //Timber.tag(TAG).d("LoginView(...): value = %s; otpInputFilled = %s", value, otpInputFilled)
+                //Timber.tag(TAG).d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
                 if (otpInputFilled) handleLogin()
             })

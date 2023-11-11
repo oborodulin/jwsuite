@@ -52,7 +52,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                 val job = handleAction(it)
                 if (it.isEmitJob) {
                     _actionsJobFlow.emit(job)
-                    Timber.tag(TAG).d("actionFlow.collect: emitted job = %s", job)
+                    Timber.tag(TAG).d("init -> actionFlow.collect: emitted job = %s", job)
                 }
             }
         }
@@ -62,7 +62,8 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     abstract fun initState(): S
 
     private fun redirectUiStateErrorMessage(errorMessage: String?) {
-        Timber.tag(TAG).d("redirectUiStateErrorMessage(...) called: errorMessage = %s", errorMessage)
+        Timber.tag(TAG)
+            .d("redirectUiStateErrorMessage(...) called: errorMessage = %s", errorMessage)
         _uiStateErrorMsg.value = errorMessage
     }
 
@@ -88,7 +89,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         viewModelScope.launch(errorHandler) {
             _actionsJobFlow.collectLatest { job ->
                 Timber.tag(TAG).d(
-                    "handleActionJob(...): Start actionsJobFlow.collectLatest [job = %s]",
+                    "handleActionJob: Start actionsJobFlow.collectLatest [job = %s]",
                     job?.toString()
                 )
                 job?.join()

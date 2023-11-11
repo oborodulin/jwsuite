@@ -99,6 +99,7 @@ class MainActivity : ComponentActivity() {
     fun initDatabase() {
         Timber.tag(TAG).d("initDatabase() called")
         Timber.tag(TAG).i("JwSuiteDatabase v.%s", dbVersion(localSessionManagerDataSource))
+        Timber.tag(TAG).d("initDatabase() ended")
     }
 
     // https://stackoverflow.com/questions/65182773/what-does-androidconfigchanges-do
@@ -112,18 +113,19 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         Timber.tag(TAG).d("onStop() called")
-        workerProviderRepository.createLogoutWork()/*        val logoutJob = lifecycleScope.launch {
-                    viewModel.actionsJobFlow.collectLatest { job ->
-                        Timber.tag(TAG).d(
-                            "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
-                            job?.toString()
-                        )
-                        job?.join()
+        //workerProviderRepository.createLogoutWork()
+        /*        val logoutJob = lifecycleScope.launch {
+                        viewModel.actionsJobFlow.collectLatest { job ->
+                            Timber.tag(TAG).d(
+                                "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                job?.toString()
+                            )
+                            job?.join()
+                        }
                     }
-                }
-                // logout
-                viewModel.submitAction(SessionUiAction.Logout)
-                //logoutJob.join()*/
+                    // logout
+                    viewModel.submitAction(SessionUiAction.Logout)
+                    //logoutJob.join()*/
     }
 }
 

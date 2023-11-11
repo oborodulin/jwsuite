@@ -75,7 +75,7 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
         }
     }
     val handleLogoutActionClick: () -> Unit = {
-        Timber.tag(TAG).d("MainScreen(...): Logout Button onClick...")
+        Timber.tag(TAG).d("MainScreen: Logout Button onClick...")
         sessionViewModel.handleActionJob(
             { sessionViewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) },
             {

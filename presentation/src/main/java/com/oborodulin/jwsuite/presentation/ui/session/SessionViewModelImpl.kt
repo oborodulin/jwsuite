@@ -18,6 +18,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SessionUseCases
 import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
@@ -69,11 +70,10 @@ class SessionViewModelImpl @Inject constructor(
             username.errorId == null && pin.errorId == null && confirmPin.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override val areInputsValid = flow { emit(pin.value.errorId == null) }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        false
-    )
+    override val areInputsValid = //flow { emit(pin.value.errorId == null)
+        combine(pin, isLogged) { pin, isLogged -> pin.errorId == null && isLogged }.stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), false
+        )
 
     init {
         Timber.tag(TAG).d("init called")
@@ -96,12 +96,11 @@ class SessionViewModelImpl @Inject constructor(
             is SessionUiAction.Logout -> logout(action.lastDestination)
             is SessionUiAction.StartSession -> {
                 if (_isLogged.value) {
-                    submitSingleEvent(SessionUiSingleEvent.OpenMainScreen(NavRoutes.Home.route))
+                    submitSingleEvent(SessionUiSingleEvent.OpenMainScreen(Graph.MAIN))
                 } else {
-
+                    setDialogTitleResId(R.string.session_login_subheader)
+                    submitSingleEvent(SessionUiSingleEvent.OpenLoginScreen(Graph.AUTH))
                 }
-                setDialogTitleResId(R.string.session_login_subheader)
-                submitSingleEvent(SessionUiSingleEvent.OpenLoginScreen(NavRoutes.Login.route))
             }
 
             is SessionUiAction.EnterPin -> {
@@ -157,6 +156,7 @@ class SessionViewModelImpl @Inject constructor(
             useCases.signupUseCase.execute(
                 SignupUseCase.Request(username.value.value, pin.value.value)
             ).collect {}
+            _isLogged.value = true
             //.map { signupConverter.convert(it) }.collect { submitState(it) }
         }
         return job
@@ -174,10 +174,13 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
-                .map { loginConverter.convert(it) }.collect { state ->
-                    uiState(state)?.let { session -> _isLogged.value = session.isLogged }
-                }
+            val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+                .map { loginConverter.convert(it) }.first()
+            uiState(state)?.let { session ->
+                Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
+                _isLogged.value = session.isLogged
+            }
+            //collect { state ->}
             //.collect { submitState(it) }
         }
         return job

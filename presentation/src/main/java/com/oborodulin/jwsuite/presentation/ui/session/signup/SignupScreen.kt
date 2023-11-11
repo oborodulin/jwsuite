@@ -36,13 +36,22 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     }*/
     //viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
     //    Timber.tag(TAG).d("Collect ui state flow: %s", state)
+    val handleSignup = {
+        viewModel.onContinueClick {
+            viewModel.handleActionJob(
+                { viewModel.submitAction(SessionUiAction.Signup) },
+                { viewModel.submitAction(SessionUiAction.StartSession) }
+            )
+        }
+    }
     val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
     JWSuiteTheme { //(darkTheme = true)
         ScaffoldComponent(
             topBarTitle = appState.appName,
             topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
             //            CommonScreen(paddingValues = innerPadding, state = state) { //session ->
-            val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
+            val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
+            Timber.tag(TAG).d("SignupScreen: areInputsValid = %s", areInputsValid)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -51,27 +60,7 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
             ) {
                 SignupView(viewModel)
                 Spacer(Modifier.height(8.dp))
-                SignupButtonComponent(
-                    enabled = areInputsValid,
-                    onClick = {
-                        viewModel.onContinueClick {
-                            /*Timber.tag(TAG)
-                                .d("SignupScreen(...): Start coroutineScope.launch")
-                            coroutineScope.launch {
-                                viewModel.actionsJobFlow.collect {
-                                    Timber.tag(TAG).d(
-                                        "SignupScreen(...): Start actionsJobFlow.collect [job = %s]",
-                                        it?.toString()
-                                    )
-                                    it?.join()
-                                    appState.mainNavigate(NavRoutes.Home.route)// .rootNavController.navigate(session.authStartDestination)
-                                }
-                            }*/
-                            viewModel.submitAction(SessionUiAction.Signup)
-                            Timber.tag(TAG).d("SignupScreen(...): onSubmit() executed")
-                        }
-                    }
-                )
+                SignupButtonComponent(enabled = areInputsValid, onClick = handleSignup)
             }
             //}
             //}

@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
@@ -34,7 +33,14 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is SessionUiSingleEvent.OpenMainScreen -> {
-                    appState.mainNavigate(it.navRoute)
+                    appState.rootNavController.navigate(it.navRoute)
+                }
+                is SessionUiSingleEvent.OpenLoginScreen -> {
+                    appState.rootNavController.navigate(it.navRoute){
+                        popUpTo(it.navRoute){
+                            inclusive = true
+                        }
+                    }
                 }
 
                 else -> {}
