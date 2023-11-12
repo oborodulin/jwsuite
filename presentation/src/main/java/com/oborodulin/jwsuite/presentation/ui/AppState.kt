@@ -29,15 +29,14 @@ fun rememberAppState(
     resources: Resources = LocalContext.current.resources,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     appName: String = "",
-    actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") }
+    actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") },
+    handleTopBarNavClick: MutableState<() -> Unit> = remember { mutableStateOf({}) }
 ) = remember(
-    rootNavController,
-    mainNavController,
-    barNavController,
+    rootNavController, mainNavController, barNavController,
     sharedViewModel,
     resources,
     coroutineScope,
-    actionBarSubtitle
+    actionBarSubtitle, handleTopBarNavClick
 ) {
     AppState(
         rootNavController = rootNavController,
@@ -45,7 +44,8 @@ fun rememberAppState(
         barNavController = barNavController,
         sharedViewModel = sharedViewModel,
         appName = appName,
-        actionBarSubtitle = actionBarSubtitle
+        actionBarSubtitle = actionBarSubtitle,
+        handleTopBarNavClick = handleTopBarNavClick
     )
 }
 
@@ -62,7 +62,8 @@ class AppState(
     val barNavController: NavHostController,
     val sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
     val appName: String,
-    val actionBarSubtitle: MutableState<String>
+    val actionBarSubtitle: MutableState<String>,
+    val handleTopBarNavClick: MutableState<() -> Unit>
 ) {
     // ----------------------------------------------------------
     // Источник состояния TopAppBar
@@ -78,8 +79,8 @@ class AppState(
     // Атрибут отображения навигационного меню bottomBar
     // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
     val shouldShowBottomNavBar: Boolean
-        @Composable get() = barNavController
-            .currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes
+        @Composable get() = barNavController.currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes &&
+                mainNavController.currentBackStackEntryAsState().value?.destination?.route == NavRoutes.Home.route
 
     // ----------------------------------------------------------
     // Источник состояния навигации

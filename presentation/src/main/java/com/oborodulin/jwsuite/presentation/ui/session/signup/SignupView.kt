@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -131,7 +132,7 @@ fun SignupView(viewModel: SessionViewModel) {
                     keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next
                 )
             },
-            //  visualTransformation = ::creditCardFilter,
+            visualTransformation = PasswordVisualTransformation(),
             inputWrapper = pin,
             maxLength = Constants.PASS_MIN_LENGTH,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.Pin(it)) },
@@ -153,7 +154,7 @@ fun SignupView(viewModel: SessionViewModel) {
                     keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done
                 )
             },
-            //  visualTransformation = ::creditCardFilter,
+            visualTransformation = PasswordVisualTransformation(),
             inputWrapper = confirmPin,
             maxLength = Constants.PASS_MIN_LENGTH,
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.ConfirmPin(it)) },

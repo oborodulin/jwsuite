@@ -62,7 +62,7 @@ fun RegionView(viewModel: RegionViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("RegionView: LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

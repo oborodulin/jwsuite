@@ -89,9 +89,11 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
                 }*/
             })
     }
+    // Action Bar:
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
     val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
 
+    // Action Bar -> Titles:
     var actionBarTitle by rememberSaveable { mutableStateOf("") } //appState.appName
     val onActionBarTitleChange: (String) -> Unit =
         { actionBarTitle = it } //"${appState.appName} - $it"
@@ -99,16 +101,17 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
 
-    var isNestedScrollConnection by rememberSaveable { mutableStateOf(false) }
-    val shouldUseNestedScrollConnection: (Boolean) -> Unit =
-        { isNestedScrollConnection = it }
-
+    // Action Bar -> Navigation Icon:
     var topBarNavImageVector: ImageVector? by remember { mutableStateOf(null) }
     val onTopBarNavImageVectorChange: (ImageVector) -> Unit = { topBarNavImageVector = it }
 
-    var onTopBarNavClick: () -> Unit by remember { mutableStateOf({ }) }
+    var onTopBarNavClick: () -> Unit by remember { mutableStateOf({}) }
     val onTopBarNavClickChange: (() -> Unit) -> Unit = { onTopBarNavClick = it }
 
+    var navIcon: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
+    val onNavIconChange: (@Composable (() -> Unit)?) -> Unit = { navIcon = it }
+
+    // Action Bar -> Actions:
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf({}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = {
         topBarActions = {
@@ -119,9 +122,15 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
         }
     }
 
+    // Bottom Navigation:
+    var isNestedScrollConnection by rememberSaveable { mutableStateOf(false) }
+    val shouldUseNestedScrollConnection: (Boolean) -> Unit =
+        { isNestedScrollConnection = it }
+
     var isBottomNavigation by rememberSaveable { mutableStateOf(false) }
     val areUsingBottomNavigation: (Boolean) -> Unit = { isBottomNavigation = it }
 
+    // FAB:
     var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
     val onFabChange: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
 
@@ -158,6 +167,7 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onNavIconChange = onNavIconChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 shouldUseNestedScrollConnection = shouldUseNestedScrollConnection,

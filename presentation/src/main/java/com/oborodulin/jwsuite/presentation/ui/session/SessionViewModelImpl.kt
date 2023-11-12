@@ -35,6 +35,8 @@ import javax.inject.Inject
 
 private const val TAG = "Presentation.SessionViewModelImpl"
 
+// Todo: split session viewModel to signup and login viewModels
+
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class SessionViewModelImpl @Inject constructor(

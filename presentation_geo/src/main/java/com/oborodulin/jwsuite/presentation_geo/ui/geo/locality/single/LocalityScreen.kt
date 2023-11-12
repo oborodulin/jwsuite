@@ -48,11 +48,11 @@ fun LocalityScreen(
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("LocalityScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("LocalityScreen: Save Button click...")
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(
-                        "LocalityScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "LocalityScreen: Start actionsJobFlow.collect [job = %s]",
                         it?.toString()
                     )
                     it?.join()
@@ -60,7 +60,7 @@ fun LocalityScreen(
                 }
             }
             viewModel.submitAction(LocalityUiAction.Save)
-            Timber.tag(TAG).d("RegionScreen(...): onSubmit() executed")
+            Timber.tag(TAG).d("RegionScreen: onSubmit() executed")
         }
     }
     LaunchedEffect(localityInput?.localityId) {

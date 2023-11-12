@@ -51,7 +51,7 @@ fun StreetMicrodistrictScreen(
     val handleSaveButtonClick = {
         // checks all errors
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("StreetMicrodistrictScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("StreetMicrodistrictScreen: Save Button click...")
             // if success, save then commonNavigateUp
             viewModel.handleActionJob(
                 { viewModel.submitAction(StreetMicrodistrictUiAction.Save) },

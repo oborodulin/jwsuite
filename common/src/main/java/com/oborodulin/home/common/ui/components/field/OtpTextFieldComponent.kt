@@ -76,6 +76,7 @@ fun OtpTextFieldComponent(
             }
         }
     )
+    // Todo: OtpText Supporting text (numbers of logging attempt) and error message
 }
 
 @Composable

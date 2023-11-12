@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.Typography
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
 
 private const val TAG = "Presentation.ScaffoldComponent"
@@ -31,6 +32,7 @@ fun ScaffoldComponent(
     @DrawableRes topBarNavPainterResId: Int? = null,
     @StringRes topBarNavCntDescResId: Int? = null,
     onTopBarNavClick: () -> Unit = {},
+    navigationIcon: @Composable (() -> Unit)? = null,
     topBarActions: @Composable RowScope.() -> Unit = {},
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable () -> Unit = {},
@@ -39,7 +41,8 @@ fun ScaffoldComponent(
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    Timber.tag(TAG).d("ScaffoldComponent() called")
+    Timber.tag(TAG).d("ScaffoldComponent(...) called")
+    val appState = LocalAppState.current
     /*    LaunchedEffect(appState.navBarNavController) {
             appState.navBarNavController.currentBackStackEntryFlow.collect { backStackEntry ->
                 // You can map the title based on the route using:
@@ -84,10 +87,10 @@ fun ScaffoldComponent(
                                 actionBar?.let { it() }
                             }
                         },
-                        navigationIcon = {
+                        navigationIcon = navigationIcon?.let { { it() } } ?: {
                             // check icons for auth screens: Signup and Login
                             if (topBarNavImageVector != null || topBarNavPainterResId != null) {
-                                IconButton(onClick = onTopBarNavClick) {
+                                IconButton(onClick = appState.handleTopBarNavClick.value) { // onTopBarNavClick
                                     IconComponent(
                                         imageVector = topBarNavImageVector,
                                         painterResId = topBarNavPainterResId,

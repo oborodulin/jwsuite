@@ -50,11 +50,11 @@ fun MicrodistrictScreen(
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG)
-                .d("MicrodistrictScreen(...): Save Button onClick...")
+                .d("MicrodistrictScreen: Save Button click...")
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(
-                        "MicrodistrictScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "MicrodistrictScreen: Start actionsJobFlow.collect [job = %s]",
                         it?.toString()
                     )
                     it?.join()
@@ -62,7 +62,7 @@ fun MicrodistrictScreen(
                 }
             }
             viewModel.submitAction(MicrodistrictUiAction.Save)
-            Timber.tag(TAG).d("MicrodistrictScreen(...): onSubmit() executed")
+            Timber.tag(TAG).d("MicrodistrictScreen: onSubmit() executed")
         }
     }
     LaunchedEffect(microdistrictInput?.microdistrictId) {

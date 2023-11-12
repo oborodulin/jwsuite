@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +28,6 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.R
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Geo.RegionScreen"
@@ -39,28 +37,20 @@ fun RegionScreen(
     viewModel: RegionViewModelImpl = hiltViewModel(),
     regionInput: RegionInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
+    onNavIconChange: (@Composable (() -> Unit)?) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     val appState = LocalAppState.current
-    val coroutineScope = rememberCoroutineScope()
+    val upNavigation: () -> Unit = { appState.mainNavController.popBackStack() }
     val handleSaveButtonClick = {
+        Timber.tag(TAG).d("RegionScreen: Save Button click...")
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("RegionScreen(...): Start coroutineScope.launch")
-            coroutineScope.launch {
-                viewModel.actionsJobFlow.collect {
-                    Timber.tag(TAG).d(
-                        "RegionScreen(...): Start actionsJobFlow.collect [job = %s]",
-                        it?.toString()
-                    )
-                    it?.join()
-                    appState.backToBottomBarScreen()
-                }
-            }
-            viewModel.submitAction(RegionUiAction.Save)
-            Timber.tag(TAG).d("RegionScreen(...): onSubmit() executed")
+            viewModel.handleActionJob(
+                { viewModel.submitAction(RegionUiAction.Save) }, afterAction = upNavigation
+            )
         }
     }
     LaunchedEffect(regionInput?.regionId) {
@@ -72,7 +62,6 @@ fun RegionScreen(
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
-        val upNavigation: () -> Unit = { appState.mainNavigateUp() }
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
@@ -81,9 +70,24 @@ fun RegionScreen(
             text = stringResource(R.string.dlg_confirm_cancel_changes_region),
             onConfirm = upNavigation
         )
-        // Scaffold Hoisting:
+        Timber.tag(TAG).d("Scaffold Hoisting")
+        onNavIconChange {
+            IconButton(onClick = {
+                Timber.tag(TAG).d(
+                    "RegionScreen -> onTopBarNavClickChange(): isUiStateChanged = %s",
+                    isUiStateChanged
+                )
+                if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
+            }) { Icon(Icons.Outlined.ArrowBack, null) }
+        }
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+        appState.handleTopBarNavClick.value =
+            { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
         onTopBarNavClickChange {
+            Timber.tag(TAG).d(
+                "RegionScreen -> onTopBarNavClickChange(): isUiStateChanged = %s",
+                isUiStateChanged
+            )
             if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()

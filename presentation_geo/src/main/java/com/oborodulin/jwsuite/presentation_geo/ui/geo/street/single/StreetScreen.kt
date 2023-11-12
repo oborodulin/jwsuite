@@ -48,11 +48,11 @@ fun StreetScreen(
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
-            Timber.tag(TAG).d("StreetScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("StreetScreen: Save Button click...")
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(
-                        "StreetScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "StreetScreen: Start actionsJobFlow.collect [job = %s]",
                         it?.toString()
                     )
                     it?.join()
@@ -60,7 +60,7 @@ fun StreetScreen(
                 }
             }
             viewModel.submitAction(StreetUiAction.Save)
-            Timber.tag(TAG).d("StreetScreen(...): onSubmit() executed")
+            Timber.tag(TAG).d("StreetScreen: onSubmit() executed")
         }
     }
     LaunchedEffect(streetInput?.streetId) {

@@ -25,6 +25,7 @@ fun NavGraphBuilder.geoNavGraph(
     startDestination: String? = null,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
+    onNavIconChange: (@Composable (() -> Unit)?) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
@@ -35,8 +36,7 @@ fun NavGraphBuilder.geoNavGraph(
         composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
             Timber.tag(TAG).d(
                 "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
-                it.destination.route,
-                NavRoutes.Geo.arguments
+                it.destination.route, NavRoutes.Geo.arguments
             )
             GeoScreen(
                 onActionBarTitleChange = onActionBarTitleChange,
@@ -50,12 +50,12 @@ fun NavGraphBuilder.geoNavGraph(
         composable(route = NavRoutes.Region.route, arguments = NavRoutes.Region.arguments) {
             Timber.tag(TAG).d(
                 "Navigation Graph: to RegionScreen [route = '%s', arguments = '%s']",
-                it.destination.route,
-                NavRoutes.Region.arguments
+                it.destination.route, NavRoutes.Region.arguments
             )
             RegionScreen(
                 regionInput = NavRoutes.Region.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onNavIconChange = onNavIconChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
@@ -67,8 +67,7 @@ fun NavGraphBuilder.geoNavGraph(
         ) {
             Timber.tag(TAG).d(
                 "Navigation Graph: to RegionDistrictScreen [route = '%s', arguments = '%s']",
-                it.destination.route,
-                NavRoutes.RegionDistrict.arguments
+                it.destination.route, NavRoutes.RegionDistrict.arguments
             )
             RegionDistrictScreen(
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),

@@ -49,11 +49,11 @@ fun RegionDistrictScreen(
     val handleSaveButtonClick = {
         regionDistrictViewModel.onContinueClick {
             Timber.tag(TAG)
-                .d("RegionDistrictScreen(...): Start coroutineScope.launch")
+                .d("RegionDistrictScreen: Start coroutineScope.launch")
             coroutineScope.launch {
                 regionDistrictViewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(
-                        "RegionDistrictScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "RegionDistrictScreen: Start actionsJobFlow.collect [job = %s]",
                         it?.toString()
                     )
                     it?.join()
@@ -61,7 +61,7 @@ fun RegionDistrictScreen(
                 }
             }
             regionDistrictViewModel.submitAction(RegionDistrictUiAction.Save)
-            Timber.tag(TAG).d("RegionDistrictScreen(...): onSubmit() executed")
+            Timber.tag(TAG).d("RegionDistrictScreen: onSubmit() executed")
         }
     }
     LaunchedEffect(regionDistrictInput?.regionDistrictId) {

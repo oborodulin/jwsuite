@@ -3,15 +3,12 @@ package com.oborodulin.jwsuite.ui.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -32,6 +29,7 @@ fun MainNavigationHost(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
+    onNavIconChange: (@Composable (() -> Unit)?) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     shouldUseNestedScrollConnection: (Boolean) -> Unit,
@@ -50,12 +48,13 @@ fun MainNavigationHost(
         startDestination = session.mainRoute, //NavRoutes.Home.route,
         modifier = Modifier.padding(innerPadding)
     ) {
-        Timber.tag(TAG).d("MainNavigationHost(...) -> NavHost(...)")
-        onActionBarChange(null)
+        Timber.tag(TAG).d("MainNavigationHost -> NavHost(...)")
+        /*onActionBarChange(null)
         shouldUseNestedScrollConnection(false)
         areUsingBottomNavigation(false)
+        onNavIconChange(null)
         onTopBarActionsChange {}
-        onFabChange {}
+        onFabChange {}*/
         congregationNavGraph(
             startDestination = session.startDestination,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
@@ -75,6 +74,7 @@ fun MainNavigationHost(
             startDestination = session.startDestination,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onNavIconChange = onNavIconChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange,
@@ -90,12 +90,12 @@ fun MainNavigationHost(
             onTopBarActionsChange = onTopBarActionsChange
         )
         composable(NavRoutes.Home.route) {
-            Timber.tag(TAG).d("MainNavigationHost(...) -> composable(Home.route) called")
-            onTopBarNavImageVectorChange(Icons.Outlined.Menu)
-            onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
+            Timber.tag(TAG).d("MainNavigationHost -> composable(Home.route) called")
             onActionBarSubtitleChange(appState.actionBarSubtitle.value)
+            /*onTopBarNavImageVectorChange(Icons.Outlined.Menu)
+            onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
             shouldUseNestedScrollConnection(true)
-            areUsingBottomNavigation(true)
+            areUsingBottomNavigation(true)*/
             BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

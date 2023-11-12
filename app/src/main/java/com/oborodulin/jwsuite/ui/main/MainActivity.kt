@@ -127,6 +127,7 @@ class MainActivity : ComponentActivity() {
                     viewModel.submitAction(SessionUiAction.Logout)
                     //logoutJob.join()*/
     }
+
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
