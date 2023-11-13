@@ -54,7 +54,7 @@ fun StreetsListView(
         microdistrictInput?.microdistrictId,
         isPrivateSector
     ) {
-        Timber.tag(TAG).d("StreetsListView: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("StreetsListView -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(
             StreetsListUiAction.Load(
                 localityInput?.localityId,
@@ -79,7 +79,7 @@ fun StreetsListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("StreetsListView: LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("StreetsListView -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

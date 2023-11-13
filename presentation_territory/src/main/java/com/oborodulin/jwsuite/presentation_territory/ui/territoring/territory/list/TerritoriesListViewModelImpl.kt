@@ -79,11 +79,13 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
                 override val uiStateErrorMsg = MutableStateFlow("")
 
+                override fun redirectedErrorMessage() = null
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun submitAction(action: TerritoriesListUiAction): Job? = null
+                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             }
 
         fun previewList(ctx: Context) = listOf(

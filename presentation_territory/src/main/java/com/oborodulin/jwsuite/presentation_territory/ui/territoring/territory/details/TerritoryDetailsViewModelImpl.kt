@@ -104,6 +104,7 @@ class TerritoryDetailsViewModelImpl @Inject constructor() : TerritoryDetailsView
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
                 override val uiStateErrorMsg = MutableStateFlow("")
 
+                override fun redirectedErrorMessage() = null
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}

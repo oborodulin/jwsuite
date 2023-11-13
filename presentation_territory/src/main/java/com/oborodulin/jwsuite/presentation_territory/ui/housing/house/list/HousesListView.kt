@@ -47,7 +47,7 @@ fun HousesListView(
     )
     LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId) {
         Timber.tag(TAG)
-            .d("HousesListView: LaunchedEffect() BEFORE collect ui state flow")
+            .d("HousesListView -> LaunchedEffect() BEFORE collect ui state flow")
         housesListViewModel.submitAction(
             HousesListUiAction.Load(streetInput?.streetId, territoryInput?.territoryId)
         )
@@ -87,7 +87,7 @@ fun HousesListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("HousesListView: LaunchedEffect() AFTER collect single Event Flow")
+            .d("HousesListView -> LaunchedEffect() AFTER collect single Event Flow")
         housesListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

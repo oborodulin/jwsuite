@@ -53,7 +53,7 @@ fun TerritoryScreen(
     val territoryId by viewModel.id.collectAsStateWithLifecycle()
     val handleNextButtonClick = {
         Timber.tag(TAG)
-            .d("TerritoryScreen(...): Start coroutineScope.launch")
+            .d("TerritoryScreen: Start coroutineScope.launch")
         // checks all errors
         viewModel.onContinueClick {
             // if success,
@@ -61,7 +61,7 @@ fun TerritoryScreen(
                 // wait wile actionsJob executed
                 viewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "TerritoryScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "TerritoryScreen: Start actionsJobFlow.collect [job = %s]",
                         job?.toString()
                     )
                     job?.join()
@@ -78,7 +78,7 @@ fun TerritoryScreen(
         }
     }
     LaunchedEffect(territoryInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoryUiAction.Load(territoryInput?.territoryId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -121,7 +121,7 @@ fun TerritoryScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryScreen: LaunchedEffect() AFTER collect single Event Flow")
+            .d("TerritoryScreen -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

@@ -4,6 +4,4 @@ import com.oborodulin.home.common.ui.state.ListViewModeled
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 
 interface StreetsListViewModel :
-    ListViewModeled<List<StreetsListItem>, StreetsListUiAction, StreetsListUiSingleEvent> {
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
-}
+    ListViewModeled<List<StreetsListItem>, StreetsListUiAction, StreetsListUiSingleEvent>

@@ -49,7 +49,7 @@ fun OtpTextFieldComponent(
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     otpValue = otpValue.copy(text = inputWrapper.value) // make sure to keep the value updated
-    //Timber.tag(TAG).d("OtpTextFieldComponent(...): otpValue = %s", otpValue)
+    //Timber.tag(TAG).d("OtpTextFieldComponent: otpValue = %s", otpValue)
     LaunchedEffect(Unit) {
         if (otpValue.text.length > otpCount) {
             throw IllegalArgumentException("Otp text value must not have more than otpCount: $otpCount characters")

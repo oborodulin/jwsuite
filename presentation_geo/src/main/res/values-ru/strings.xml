@@ -17,6 +17,8 @@
     <string name="street_microdistricts_list_empty_text">Микрорайонов улиц пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="for_streets_locality_districts_list_empty_text">Районы, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие районы</string>
     <string name="for_streets_microdistricts_list_empty_text">Микрорайоны, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие микрорайоны</string>
+    <!--Поиск:-->
+    <string name="region_search_placeholder">Найти область...</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <string name="geo_tab_regions">ОБЛАСТИ</string>
@@ -104,6 +106,7 @@
     <!--формы области-->
     <string name="region_code_empty_error">Укажите, пожалуйста, код области!</string>
     <string name="region_name_empty_error">Укажите, пожалуйста, наименование области!</string>
+    <string name="region_unique_constraint_error">Область с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (изменённые данные не будут сохранены)</string>
     <!--формы района области-->
     <string name="region_district_short_name_empty_error">Укажите, пожалуйста, короткое наименование района области!</string>
     <string name="region_district_name_empty_error">Укажите, пожалуйста, наименование района области!</string>

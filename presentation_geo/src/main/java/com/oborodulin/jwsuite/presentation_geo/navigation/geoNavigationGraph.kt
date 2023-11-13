@@ -23,9 +23,9 @@ private const val TAG = "App.Navigation.geoNavGraph"
 
 fun NavGraphBuilder.geoNavGraph(
     startDestination: String? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onNavIconChange: (@Composable (() -> Unit)?) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
@@ -39,7 +39,9 @@ fun NavGraphBuilder.geoNavGraph(
                 it.destination.route, NavRoutes.Geo.arguments
             )
             GeoScreen(
+                onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange,
@@ -55,9 +57,7 @@ fun NavGraphBuilder.geoNavGraph(
             RegionScreen(
                 regionInput = NavRoutes.Region.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onNavIconChange = onNavIconChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

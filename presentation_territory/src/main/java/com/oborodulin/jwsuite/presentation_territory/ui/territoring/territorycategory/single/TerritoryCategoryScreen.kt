@@ -53,11 +53,11 @@ fun TerritoryCategoryScreen(
     val handleSaveButtonClick = {
         viewModel.onContinueClick {
             Timber.tag(TAG)
-                .d("TerritoryCategoryScreen(...): Start coroutineScope.launch")
+                .d("TerritoryCategoryScreen: Start coroutineScope.launch")
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collect {
                     Timber.tag(TAG).d(
-                        "TerritoryCategoryScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "TerritoryCategoryScreen: Start actionsJobFlow.collect [job = %s]",
                         it?.toString()
                     )
                     it?.join()
@@ -66,11 +66,11 @@ fun TerritoryCategoryScreen(
             }
             viewModel.submitAction(TerritoryCategoryUiAction.Save)
             Timber.tag(TAG)
-                .d("TerritoryCategoryScreen(...): onSubmit() executed")
+                .d("TerritoryCategoryScreen: onSubmit() executed")
         }
     }
     LaunchedEffect(territoryCategoryInput?.territoryCategoryId) {
-        Timber.tag(TAG).d("TerritoryCategoryScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryCategoryScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoryCategoryUiAction.Load(territoryCategoryInput?.territoryCategoryId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

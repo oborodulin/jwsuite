@@ -178,7 +178,7 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MainScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MainScreen -> LaunchedEffect() BEFORE collect ui state flow")
         sessionViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

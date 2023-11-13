@@ -46,7 +46,7 @@ fun TerritoryStreetsListView(
     )
     LaunchedEffect(territoryInput.territoryId) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView: LaunchedEffect() BEFORE collect ui state flow")
+            .d("TerritoryStreetsListView -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoryStreetsListUiAction.Load(territoryInput.territoryId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -71,7 +71,7 @@ fun TerritoryStreetsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView: LaunchedEffect() AFTER collect single Event Flow")
+            .d("TerritoryStreetsListView -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

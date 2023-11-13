@@ -50,7 +50,7 @@ fun DashboardingScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("DashboardingScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("DashboardingScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(DashboardingUiAction.Init)
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -95,7 +95,7 @@ fun DashboardingScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("DashboardingScreen: LaunchedEffect() AFTER collect single Event Flow")
+            .d("DashboardingScreen -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

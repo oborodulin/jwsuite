@@ -55,7 +55,7 @@ fun MembersListView(
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
 
     LaunchedEffect(congregationId, groupInput?.groupId) {
-        Timber.tag(TAG).d("MembersListView: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MembersListView -> LaunchedEffect() BEFORE collect ui state flow")
         when (groupInput?.groupId) {
             null -> viewModel.submitAction(MembersListUiAction.LoadByCongregation(congregationId))
             else -> viewModel.submitAction(MembersListUiAction.LoadByGroup(groupInput.groupId))
@@ -78,7 +78,7 @@ fun MembersListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MembersListView: LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("MembersListView -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

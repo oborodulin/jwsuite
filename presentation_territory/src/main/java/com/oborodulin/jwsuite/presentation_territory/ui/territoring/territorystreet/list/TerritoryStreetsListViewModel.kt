@@ -5,6 +5,4 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
 
 interface TerritoryStreetsListViewModel :
-    ListViewModeled<List<TerritoryStreetsListItem>, TerritoryStreetsListUiAction, UiSingleEvent> {
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
-}
+    ListViewModeled<List<TerritoryStreetsListItem>, TerritoryStreetsListUiAction, UiSingleEvent>

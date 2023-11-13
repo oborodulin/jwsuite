@@ -4,6 +4,4 @@ import com.oborodulin.home.common.ui.state.ListViewModeled
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 
 interface CongregationsListViewModel :
-    ListViewModeled<List<CongregationsListItem>, CongregationsListUiAction, CongregationsListUiSingleEvent> {
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
-}
+    ListViewModeled<List<CongregationsListItem>, CongregationsListUiAction, CongregationsListUiSingleEvent>

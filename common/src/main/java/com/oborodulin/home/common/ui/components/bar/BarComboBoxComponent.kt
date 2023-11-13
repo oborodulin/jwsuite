@@ -88,7 +88,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     /*    if (fieldValue.text != inputWrapper.item?.headline.orEmpty()) fieldValue =
             TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
         Timber.tag(TAG).d(
-            "BarComboBoxComponent(...): fieldValue = %s; inputWrapper = %s",
+            "BarComboBoxComponent: fieldValue = %s; inputWrapper = %s",
             fieldValue,
             inputWrapper
         )*/

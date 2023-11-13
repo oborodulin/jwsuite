@@ -49,6 +49,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionConvert
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictsListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.SaveRegionConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetLocalityDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetMicrodistrictConverter
@@ -257,6 +258,11 @@ object GeoModule {
     @Provides
     fun provideRegionConverter(mapper: RegionToRegionUiMapper): RegionConverter =
         RegionConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideSaveRegionConverter(mapper: RegionToRegionUiMapper): SaveRegionConverter =
+        SaveRegionConverter(mapper = mapper)
 
     // RegionDistricts:
     @Singleton

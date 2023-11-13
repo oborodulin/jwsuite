@@ -66,7 +66,7 @@ fun MicrodistrictScreen(
         }
     }
     LaunchedEffect(microdistrictInput?.microdistrictId) {
-        Timber.tag(TAG).d("MicrodistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MicrodistrictScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(MicrodistrictUiAction.Load(microdistrictInput?.microdistrictId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

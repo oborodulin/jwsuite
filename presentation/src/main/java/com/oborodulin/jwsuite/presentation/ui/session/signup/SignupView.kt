@@ -73,7 +73,7 @@ fun SignupView(viewModel: SessionViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("SignupView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("SignupView -> LaunchedEffect()")
         viewModel.setSessionMode(SessionModeType.SIGNUP)
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)

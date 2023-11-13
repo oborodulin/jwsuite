@@ -61,13 +61,13 @@ fun SwitchComponent(
     Timber.tag(TAG).d("SwitchComponent(...) called")
     var isChecked by remember { mutableStateOf(inputWrapper.value.toBoolean()) } // boolean
     Timber.tag(TAG).d(
-        "SwitchComponent(...): isChecked = %s; inputWrapper.value = %s",
+        "SwitchComponent: isChecked = %s; inputWrapper.value = %s",
         isChecked,
         inputWrapper.value
     )
     /*    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
         Timber.tag(TAG).d(
-            "SwitchComponent(...): isChecked = %s; inputWrapper = %s",
+            "SwitchComponent: isChecked = %s; inputWrapper = %s",
             isChecked,
             inputWrapper
         )*/

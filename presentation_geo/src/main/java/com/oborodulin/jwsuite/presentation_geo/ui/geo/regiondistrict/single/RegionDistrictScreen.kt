@@ -65,7 +65,7 @@ fun RegionDistrictScreen(
         }
     }
     LaunchedEffect(regionDistrictInput?.regionDistrictId) {
-        Timber.tag(TAG).d("RegionDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("RegionDistrictScreen -> LaunchedEffect() BEFORE collect ui state flow")
         regionDistrictViewModel.submitAction(
             RegionDistrictUiAction.Load(regionDistrictInput?.regionDistrictId)
         )

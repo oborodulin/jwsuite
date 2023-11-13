@@ -84,9 +84,9 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     //InputWrapper:
     fun initStateValue(field: F, property: StateFlow<InputWrapper>, value: String) {
         Timber.tag(TAG)
-            .d("initStateValue(...): exist state %s = '%s'", field.key(), state[field.key()])
+            .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
         if (property.value.isEmpty) {
-            Timber.tag(TAG).d("initStateValue(...): %s = '%s'", field.key(), value)
+            Timber.tag(TAG).d("initStateValue: %s = '%s'", field.key(), value)
             setStateValue(field, property, value)
             _isUiStateChanged.value = false
         }
@@ -96,7 +96,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputWrapper>, value: String, isValid: Boolean = false
     ) {
         Timber.tag(TAG)
-            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), value, isValid)
+            .d("setStateValue: %s = '%s' [valid = %s]", field.key(), value, isValid)
         if (isValid) {
             state[field.key()] = property.value.copy(value = value, errorId = null, isEmpty = false)
         } else {
@@ -108,7 +108,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     @JvmName("setInputWrapperStateValue")
     fun setStateValue(field: F, property: StateFlow<InputWrapper>, @StringRes errorId: Int?) {
         Timber.tag(TAG)
-            .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
+            .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
         _isUiStateChanged.value = true
     }
@@ -118,22 +118,22 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, properties: StateFlow<InputsWrapper>, value: String, key: String
     ) {
         Timber.tag(TAG)
-            .d("initStateValue(...): exist state %s = '%s'", field.key(), state[field.key()])
+            .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
         Timber.tag(TAG)
             .d(
-                "initStateValue(...): properties.value.inputs[%s] = '%s'",
+                "initStateValue: properties.value.inputs[%s] = '%s'",
                 key, properties.value.inputs[key]
             )
         if (state.get<T>(field.key()) == null || properties.value.inputs[key] == null || properties.value.inputs[key]?.isEmpty == true) {
             properties.value.inputs[key] = InputWrapper(value = value, isEmpty = false)
             Timber.tag(TAG)
                 .d(
-                    "initStateValue(...): add init value %s = '%s'",
+                    "initStateValue: add init value %s = '%s'",
                     field.key(),
                     properties.value.inputs[key]
                 )
             Timber.tag(TAG)
-                .d("initStateValue(...): copy %s = '%s'", field.key(), properties.value.inputs)
+                .d("initStateValue: copy %s = '%s'", field.key(), properties.value.inputs)
             state[field.key()] =
                 properties.value.copy(inputs = properties.value.inputs.toMutableMap())
         }
@@ -145,7 +145,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     ) {
         Timber.tag(TAG)
             .d(
-                "setStateValue(...): %s = '%s' [valid = %s; isSaved = %s]", field.key(),
+                "setStateValue: %s = '%s' [valid = %s; isSaved = %s]", field.key(),
                 value, isValid, isSaved
             )
         if (isValid) {
@@ -165,7 +165,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, properties: StateFlow<InputsWrapper>, key: String, @StringRes errorId: Int?
     ) {
         Timber.tag(TAG)
-            .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
+            .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         val property = properties.value.inputs.getValue(key)
         properties.value.inputs[key] =
             InputWrapper(
@@ -183,9 +183,9 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputListItemWrapper<T>>, item: T
     ) {
         Timber.tag(TAG)
-            .d("initStateValue(...): exist state %s = '%s'", field.key(), state[field.key()])
+            .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
         if (property.value.isEmpty) {
-            Timber.tag(TAG).d("initStateValue(...): %s = '%s'", field.key(), item)
+            Timber.tag(TAG).d("initStateValue: %s = '%s'", field.key(), item)
             setStateValue(field, property, item)
             _isUiStateChanged.value = false
         }
@@ -196,7 +196,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     ) {
         //val listItem = if (item.headline.isEmpty()) ListItemModel() else item
         Timber.tag(TAG)
-            .d("setStateValue(...): %s = '%s' [valid = %s]", field.key(), item, isValid)
+            .d("setStateValue: %s = '%s' [valid = %s]", field.key(), item, isValid)
         if (isValid) {
             state[field.key()] =
                 property.value.copy(item = item, errorId = null, isEmpty = false)
@@ -211,7 +211,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputListItemWrapper<T>>, @StringRes errorId: Int?
     ) {
         Timber.tag(TAG)
-            .d("setStateValue(...): Validate (debounce) %s - ERR[%s]", field.key(), errorId)
+            .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
         _isUiStateChanged.value = true
     }

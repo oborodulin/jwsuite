@@ -51,7 +51,7 @@ fun TerritoryRoomScreen(
     val handleSaveButtonClick = {
         // checks all errors
         territoryRoomViewModel.onContinueClick {
-            Timber.tag(TAG).d("TerritoryRoomScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("TerritoryRoomScreen: Save Button onClick...")
             // if success, save then backToBottomBarScreen
             territoryRoomViewModel.handleActionJob(
                 { territoryRoomViewModel.submitAction(TerritoryRoomUiAction.Save) },
@@ -60,7 +60,7 @@ fun TerritoryRoomScreen(
         }
     }
     LaunchedEffect(territoryRoomInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryRoomScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryRoomScreen -> LaunchedEffect() BEFORE collect ui state flow")
         territoryRoomInput?.let {
             territoryRoomViewModel.submitAction(TerritoryRoomUiAction.Load(it.territoryId))
         }

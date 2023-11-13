@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -18,8 +17,9 @@ import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionConverter
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionToRegionsListItemMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.SaveRegionConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionUiToRegionMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -35,37 +35,24 @@ private const val TAG = "Geo.RegionViewModelImpl"
 class RegionViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: RegionUseCases,
-    private val converter: RegionConverter,
+    private val getConverter: RegionConverter,
+    private val saveConverter: SaveRegionConverter,
     private val regionUiMapper: RegionUiToRegionMapper,
-    private val regionMapper: RegionToRegionsListItemMapper
+    //private val regionMapper: RegionToRegionsListItemMapper
 ) : RegionViewModel,
     DialogViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
         state, RegionFields.REGION_ID.name, RegionFields.REGION_CODE
     ) {
     override val regionCode: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.REGION_CODE.name,
-            InputWrapper()
-        )
+        state.getStateFlow(RegionFields.REGION_CODE.name, InputWrapper())
     }
     override val regionName: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(
-            RegionFields.REGION_NAME.name,
-            InputWrapper()
-        )
+        state.getStateFlow(RegionFields.REGION_NAME.name, InputWrapper())
     }
 
-    override val areInputsValid =
-        combine(
-            regionCode,
-            regionName
-        ) { regionCode, regionName ->
-            regionCode.errorId == null && regionName.errorId == null
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+    override val areInputsValid = combine(regionCode, regionName) { regionCode, regionName ->
+        regionCode.errorId == null && regionName.errorId == null
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState(): UiState<RegionUi> = UiState.Loading
 
@@ -84,9 +71,7 @@ class RegionViewModelImpl @Inject constructor(
                 }
             }
 
-            is RegionUiAction.Save -> {
-                saveRegion()
-            }
+            is RegionUiAction.Save -> saveRegion()
         }
         return job
     }
@@ -96,7 +81,7 @@ class RegionViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionUseCase.execute(GetRegionUseCase.Request(regionId))
                 .map {
-                    converter.convert(it)
+                    getConverter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -116,11 +101,13 @@ class RegionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(regionUiMapper.map(regionUi)))
+                .map { saveConverter.convert(it) }
                 .collect {
                     Timber.tag(TAG).d("saveRegion() collect: %s", it)
-                    if (it is Result.Success) {
-                        setSavedListItem(regionMapper.map(it.data.region))
+                    if (it is UiState.Success) {
+                        setSavedListItem(it.data.toListItemModel())
                     }
+                    submitState(it)
                 }
         }
         return job
@@ -224,6 +211,7 @@ class RegionViewModelImpl @Inject constructor(
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
+                override fun redirectedErrorMessage() = null
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
@@ -235,6 +223,7 @@ class RegionViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: RegionUiAction): Job? = null
+                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: RegionFields, isFocused: Boolean

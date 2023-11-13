@@ -64,7 +64,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryCategoryView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("TerritoryCategoryView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

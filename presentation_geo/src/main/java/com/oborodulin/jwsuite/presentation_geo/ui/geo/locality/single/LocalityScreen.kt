@@ -64,7 +64,7 @@ fun LocalityScreen(
         }
     }
     LaunchedEffect(localityInput?.localityId) {
-        Timber.tag(TAG).d("LocalityScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("LocalityScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(LocalityUiAction.Load(localityInput?.localityId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

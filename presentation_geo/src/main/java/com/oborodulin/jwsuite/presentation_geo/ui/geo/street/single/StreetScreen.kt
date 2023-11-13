@@ -64,7 +64,7 @@ fun StreetScreen(
         }
     }
     LaunchedEffect(streetInput?.streetId) {
-        Timber.tag(TAG).d("StreetScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("StreetScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(StreetUiAction.Load(streetInput?.streetId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

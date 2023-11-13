@@ -57,7 +57,7 @@ fun TerritoryDetailsScreen(
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
     LaunchedEffect(territoryInput.territoryId) {
-        Timber.tag(TAG).d("TerritoryDetailsScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryDetailsScreen -> LaunchedEffect() BEFORE collect ui state flow")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
     }
     var tabType by rememberSaveable { mutableStateOf(TerritoryDetailsTabType.STREETS.name) }
@@ -155,7 +155,7 @@ fun TerritoryDetailsScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryDetailsScreen: LaunchedEffect() AFTER collect single Event Flow")
+            .d("TerritoryDetailsScreen -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

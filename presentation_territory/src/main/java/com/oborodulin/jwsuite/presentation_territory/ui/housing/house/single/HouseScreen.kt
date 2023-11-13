@@ -47,7 +47,7 @@ fun HouseScreen(
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     val handleSaveButtonClick = {
-        Timber.tag(TAG).d("HouseScreen(...): Save Button onClick...")
+        Timber.tag(TAG).d("HouseScreen: Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
             // if success, save then backToBottomBarScreen
@@ -58,7 +58,7 @@ fun HouseScreen(
         }
     }
     LaunchedEffect(houseInput?.houseId) {
-        Timber.tag(TAG).d("HouseScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("HouseScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(HouseUiAction.Load(houseInput?.houseId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

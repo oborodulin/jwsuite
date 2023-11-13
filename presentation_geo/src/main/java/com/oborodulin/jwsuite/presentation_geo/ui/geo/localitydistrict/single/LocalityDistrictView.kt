@@ -67,7 +67,7 @@ fun LocalityDistrictView(localityDistrictViewModel: LocalityDistrictViewModelImp
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("LocalityDistrictView: LaunchedEffect()")
+        Timber.tag(TAG).d("LocalityDistrictView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

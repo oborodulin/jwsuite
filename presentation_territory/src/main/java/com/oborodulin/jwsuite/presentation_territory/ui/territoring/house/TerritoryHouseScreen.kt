@@ -51,7 +51,7 @@ fun TerritoryHouseScreen(
     val handleSaveButtonClick = {
         // checks all errors
         territoryHouseViewModel.onContinueClick {
-            Timber.tag(TAG).d("TerritoryHouseScreen(...): Save Button onClick...")
+            Timber.tag(TAG).d("TerritoryHouseScreen: Save Button onClick...")
             // if success, save then backToBottomBarScreen
             territoryHouseViewModel.handleActionJob(
                 { territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Save) },
@@ -60,7 +60,7 @@ fun TerritoryHouseScreen(
         }
     }
     LaunchedEffect(territoryHouseInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryHouseScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryHouseScreen -> LaunchedEffect() BEFORE collect ui state flow")
         territoryHouseInput?.let {
             territoryHouseViewModel.submitAction(TerritoryHouseUiAction.Load(it.territoryId))
         }

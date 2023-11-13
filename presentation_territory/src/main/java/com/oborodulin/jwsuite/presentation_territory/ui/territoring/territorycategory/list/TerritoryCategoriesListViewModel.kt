@@ -4,6 +4,4 @@ import com.oborodulin.home.common.ui.state.ListViewModeled
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoriesListItem
 
 interface TerritoryCategoriesListViewModel :
-    ListViewModeled<List<TerritoryCategoriesListItem>, TerritoryCategoriesListUiAction, TerritoryCategoriesListUiSingleEvent> {
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
-}
+    ListViewModeled<List<TerritoryCategoriesListItem>, TerritoryCategoriesListUiAction, TerritoryCategoriesListUiSingleEvent>

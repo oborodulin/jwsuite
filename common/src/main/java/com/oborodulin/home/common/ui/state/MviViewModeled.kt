@@ -18,6 +18,8 @@ interface MviViewModeled<T : Any, A : UiAction, E : UiSingleEvent> {
     val searchText: StateFlow<TextFieldValue>
     val isSearching: StateFlow<Boolean>
 
+    fun redirectedErrorMessage(): String?
     fun onSearchTextChange(text: TextFieldValue)
     fun submitAction(action: A): Job?
+    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

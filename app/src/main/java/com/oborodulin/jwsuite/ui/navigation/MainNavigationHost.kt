@@ -41,7 +41,7 @@ fun MainNavigationHost(
     val appState = LocalAppState.current
     val session = LocalSession.current
     val context = LocalContext.current
-    Timber.tag(TAG).d("MainNavigationHost(...): session.mainRoute = %s", session.mainRoute)
+    Timber.tag(TAG).d("MainNavigationHost: session.mainRoute = %s", session.mainRoute)
     NavHost(
         navController = appState.mainNavController,// .rootNavController,
         route = Graph.MAIN,
@@ -72,9 +72,9 @@ fun MainNavigationHost(
         )
         geoNavGraph(
             startDestination = session.startDestination,
+            onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
-            onNavIconChange = onNavIconChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange,

@@ -82,7 +82,7 @@ fun TextFieldComponent(
     }
     fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
     Timber.tag(TAG).d(
-        "TextFieldComponent(...): fieldValue.text = %s; inputWrapper.value = %s",
+        "TextFieldComponent: fieldValue.text = %s; inputWrapper.value = %s",
         fieldValue.text,
         inputWrapper.value
     )
@@ -92,7 +92,7 @@ fun TextFieldComponent(
     /*    if (fieldValue.text != inputWrapper.value) fieldValue =
             TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length))
         Timber.tag(TAG).d(
-            "TextFieldComponent(...): fieldValue = %s; inputWrapper = %s",
+            "TextFieldComponent: fieldValue = %s; inputWrapper = %s",
             fieldValue,
             inputWrapper
         )*/

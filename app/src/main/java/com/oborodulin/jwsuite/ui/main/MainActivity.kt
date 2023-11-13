@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Timber.tag(TAG).d("onCreate(): setContent called")
             /*LaunchedEffect(Unit) {
-                Timber.tag(TAG).d("MainActivity: LaunchedEffect(Unit)")
+                Timber.tag(TAG).d("MainActivity -> LaunchedEffect(Unit)")
                 sessionViewModel.submitAction(SessionUiAction.Load)
             }*/
             JWSuiteTheme {
@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
         /*        val logoutJob = lifecycleScope.launch {
                         viewModel.actionsJobFlow.collectLatest { job ->
                             Timber.tag(TAG).d(
-                                "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
+                                "MemberScreen: Start actionsJobFlow.collect [job = %s]",
                                 job?.toString()
                             )
                             job?.join()

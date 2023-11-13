@@ -47,7 +47,7 @@ fun RoomScreen(
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     val handleSaveButtonClick = {
-        Timber.tag(TAG).d("RoomScreen(...): Save Button onClick...")
+        Timber.tag(TAG).d("RoomScreen: Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
             // if success, save then backToBottomBarScreen
@@ -58,7 +58,7 @@ fun RoomScreen(
         }
     }
     LaunchedEffect(roomInput?.roomId) {
-        Timber.tag(TAG).d("RoomScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("RoomScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(RoomUiAction.Load(roomInput?.roomId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

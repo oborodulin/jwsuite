@@ -42,7 +42,7 @@ fun CongregationsListView(
 ) {
     Timber.tag(TAG).d("CongregationsListView(...) called")
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect() BEFORE collect ui state flow")
         congregationsListViewModel.submitAction(CongregationsListUiAction.Load)
     }
     congregationsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -83,7 +83,7 @@ fun CongregationsListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView: LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect() AFTER collect single Event Flow")
         congregationsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

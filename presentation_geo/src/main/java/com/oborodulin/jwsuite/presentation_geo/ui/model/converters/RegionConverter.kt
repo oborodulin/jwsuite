@@ -7,6 +7,5 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionToR
 
 class RegionConverter(private val mapper: RegionToRegionUiMapper) :
     CommonResultConverter<GetRegionUseCase.Response, RegionUi>() {
-    override fun convertSuccess(data: GetRegionUseCase.Response) =
-        mapper.map(data.region)
+    override fun convertSuccess(data: GetRegionUseCase.Response) = mapper.map(data.region)
 }

@@ -16,5 +16,4 @@ interface SessionViewModel :
     val areSignupInputsValid: StateFlow<Boolean>
 
     fun setSessionMode(mode: SessionModeType)
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

@@ -44,7 +44,7 @@ fun AtWorkTerritoriesConfirmationScreen(
     val coroutineScope = rememberCoroutineScope()
     val handleProcessButtonClick = {
         Timber.tag(TAG)
-            .d("AtWorkTerritoriesConfirmationScreen(...): Hand Out Territory Button onClick...")
+            .d("AtWorkTerritoriesConfirmationScreen: Hand Out Territory Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
             // if success, backToBottomBarScreen
@@ -52,7 +52,7 @@ fun AtWorkTerritoriesConfirmationScreen(
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "AtWorkTerritoriesConfirmationScreen(...): Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
+                        "AtWorkTerritoriesConfirmationScreen: Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
                         job?.toString()
                     )
                     job?.join()
@@ -65,7 +65,7 @@ fun AtWorkTerritoriesConfirmationScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("AtWorkTerritoriesConfirmationScreen: LaunchedEffect() BEFORE collect ui state flow")
+            .d("AtWorkTerritoriesConfirmationScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoriesGridUiAction.ProcessConfirmation)
     }
     viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { dialogTitleResId ->

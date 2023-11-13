@@ -24,6 +24,4 @@ interface TerritoriesGridViewModel :
 
     val areHandOutInputsValid: StateFlow<Boolean>
     val areAtWorkProcessInputsValid: StateFlow<Boolean>
-
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

@@ -100,6 +100,7 @@ class RoomsListViewModelImpl @Inject constructor(
                 override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
+                override fun redirectedErrorMessage() = null
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}

@@ -42,7 +42,7 @@ fun TerritoryCategoriesListView(
     )
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryCategoriesListView: LaunchedEffect() BEFORE collect ui state flow")
+            .d("TerritoryCategoriesListView -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoryCategoriesListUiAction.Load)
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -65,7 +65,7 @@ fun TerritoryCategoriesListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryCategoriesListView: LaunchedEffect() AFTER collect single Event Flow")
+            .d("TerritoryCategoriesListView -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

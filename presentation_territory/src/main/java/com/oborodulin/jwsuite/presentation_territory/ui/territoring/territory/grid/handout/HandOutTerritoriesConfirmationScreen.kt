@@ -48,7 +48,7 @@ fun HandOutTerritoriesConfirmationScreen(
     val coroutineScope = rememberCoroutineScope()
     val handleHandOutButtonClick = {
         Timber.tag(TAG)
-            .d("HandOutTerritoriesConfirmationScreen(...): Hand Out Territory Button onClick...")
+            .d("HandOutTerritoriesConfirmationScreen: Hand Out Territory Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
             // if success, backToBottomBarScreen
@@ -56,7 +56,7 @@ fun HandOutTerritoriesConfirmationScreen(
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "HandOutTerritoriesConfirmationScreen(...): Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
+                        "HandOutTerritoriesConfirmationScreen: Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
                         job?.toString()
                     )
                     job?.join()
@@ -69,7 +69,7 @@ fun HandOutTerritoriesConfirmationScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("HandOutTerritoriesConfirmationScreen: LaunchedEffect() BEFORE collect ui state flow")
+            .d("HandOutTerritoriesConfirmationScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(TerritoriesGridUiAction.HandOutConfirmation)
     }
     viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let { dialogTitleResId ->

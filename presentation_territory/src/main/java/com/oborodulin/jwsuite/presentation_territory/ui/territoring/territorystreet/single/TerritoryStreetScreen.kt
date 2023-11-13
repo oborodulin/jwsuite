@@ -55,7 +55,7 @@ fun TerritoryStreetScreen(
     val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
-        Timber.tag(TAG).d("TerritoryStreetScreen(...): Save Button onClick...")
+        Timber.tag(TAG).d("TerritoryStreetScreen: Save Button onClick...")
         // checks all errors
         territoryStreetViewModel.onContinueClick {
             // if success, backToBottomBarScreen
@@ -63,7 +63,7 @@ fun TerritoryStreetScreen(
             coroutineScope.launch {
                 territoryStreetViewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "TerritoryStreetScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "TerritoryStreetScreen: Start actionsJobFlow.collect [job = %s]",
                         job?.toString()
                     )
                     job?.join()
@@ -75,7 +75,7 @@ fun TerritoryStreetScreen(
         }
     }
     LaunchedEffect(territoryStreetInput?.territoryStreetId) {
-        Timber.tag(TAG).d("TerritoryStreetScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryStreetScreen -> LaunchedEffect() BEFORE collect ui state flow")
         territoryStreetViewModel.submitAction(
             TerritoryStreetUiAction.Load(
                 territoryStreetInput?.territoryId, territoryStreetInput?.territoryStreetId

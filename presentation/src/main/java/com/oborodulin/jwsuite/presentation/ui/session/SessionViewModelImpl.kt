@@ -340,6 +340,7 @@ class SessionViewModelImpl @Inject constructor(
             override val events = Channel<ScreenEvent>().receiveAsFlow()
             override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
+            override fun redirectedErrorMessage() = null
             override val searchText = MutableStateFlow(TextFieldValue(""))
             override val isSearching = MutableStateFlow(false)
             override fun onSearchTextChange(text: TextFieldValue) {}
@@ -354,8 +355,8 @@ class SessionViewModelImpl @Inject constructor(
             override val areInputsValid = MutableStateFlow(true)
 
             override fun setSessionMode(mode: SessionModeType) {}
-            override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             override fun submitAction(action: SessionUiAction): Job? = null
+            override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             override fun onTextFieldEntered(inputEvent: Inputable) {}
             override fun onTextFieldFocusChanged(
                 focusedField: SessionFields, isFocused: Boolean

@@ -76,7 +76,7 @@ fun CongregatingScreen(
     }
     /*
         LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("CongregatingScreen: LaunchedEffect() BEFORE collect ui state flow")
+            Timber.tag(TAG).d("CongregatingScreen -> LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(CongregatingUiAction.Init)
         }
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

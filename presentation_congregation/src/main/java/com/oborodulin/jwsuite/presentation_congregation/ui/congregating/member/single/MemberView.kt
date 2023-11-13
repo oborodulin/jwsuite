@@ -89,7 +89,7 @@ fun MemberView(
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MemberView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("MemberView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

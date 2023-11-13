@@ -51,7 +51,7 @@ fun MemberScreen(
     val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
-        Timber.tag(TAG).d("MemberScreen(...): Save Button onClick...")
+        Timber.tag(TAG).d("MemberScreen: Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
             // if success, backToBottomBarScreen
@@ -59,7 +59,7 @@ fun MemberScreen(
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "MemberScreen(...): Start actionsJobFlow.collect [job = %s]",
+                        "MemberScreen: Start actionsJobFlow.collect [job = %s]",
                         job?.toString()
                     )
                     job?.join()
@@ -71,7 +71,7 @@ fun MemberScreen(
         }
     }
     LaunchedEffect(memberInput?.memberId) {
-        Timber.tag(TAG).d("MemberScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MemberScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(MemberUiAction.Load(memberInput?.memberId))
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

@@ -76,7 +76,7 @@ fun TerritoryHouseView(
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("TerritoryHouseView(...): LaunchedEffect()")
+        Timber.tag(TAG).d("TerritoryHouseView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

@@ -50,7 +50,7 @@ fun GroupScreen(
     val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val handleSaveButtonClick = {
-        Timber.tag(TAG).d("GroupScreen(...): Save Button onClick...")
+        Timber.tag(TAG).d("GroupScreen: Save Button onClick...")
         // checks all errors
         viewModel.onContinueClick {
             // if success, backToBottomBarScreen
@@ -58,7 +58,7 @@ fun GroupScreen(
             coroutineScope.launch {
                 viewModel.actionsJobFlow.collectLatest { job ->
                     Timber.tag(TAG).d(
-                        "GroupScreen(...): Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
+                        "GroupScreen: Start actionsJobFlow.collect [job = %s] for backToBottomBarScreen()",
                         job?.toString()
                     )
                     job?.join()
@@ -72,7 +72,7 @@ fun GroupScreen(
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(groupInput?.groupId) {
-        Timber.tag(TAG).d("GroupScreen: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("GroupScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(GroupUiAction.Load(groupInput?.groupId))
         currentCongregation?.itemId?.let { congregationId ->
             viewModel.onInsert {

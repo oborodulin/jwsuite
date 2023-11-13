@@ -4,6 +4,4 @@ import com.oborodulin.home.common.ui.state.ListViewModeled
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictsListItem
 
 interface RegionDistrictsListViewModel :
-    ListViewModeled<List<RegionDistrictsListItem>, RegionDistrictsListUiAction, RegionDistrictsListUiSingleEvent> {
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
-}
+    ListViewModeled<List<RegionDistrictsListItem>, RegionDistrictsListUiAction, RegionDistrictsListUiSingleEvent>

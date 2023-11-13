@@ -44,7 +44,7 @@ fun RegionsListView(
 ) {
     Timber.tag(TAG).d("RegionsListView(...) called: regionInput = %s", regionInput)
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionsListView: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("RegionsListView -> LaunchedEffect() BEFORE collect ui state flow")
         regionsListViewModel.submitAction(RegionsListUiAction.Load)
     }
     regionsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -66,7 +66,7 @@ fun RegionsListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionsListView: LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("RegionsListView -> LaunchedEffect() AFTER collect single Event Flow")
         regionsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

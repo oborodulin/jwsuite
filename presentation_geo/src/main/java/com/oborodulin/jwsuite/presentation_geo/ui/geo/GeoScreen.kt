@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +30,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.fab.FabComponent
+import com.oborodulin.home.common.ui.components.search.SearchBarComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -37,11 +40,17 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import timber.log.Timber
 
 /**
@@ -55,7 +64,15 @@ fun GeoScreen(
     //membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     //nestedScrollConnection: NestedScrollConnection,
     //bottomBar: @Composable () -> Unit
+    regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
+    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
+    localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
+    localityDistrictsListViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
+    microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
+    streetsListViewModel: StreetsListViewModelImpl = hiltViewModel(),
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
+    onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
@@ -78,6 +95,47 @@ fun GeoScreen(
             }
         )
     }
+    var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
+    when (isShowSearchBar) {
+        true ->
+            onActionBarChange {
+                when (GeoTabType.valueOf(tabType)) {
+                    GeoTabType.REGIONS -> SearchBarComponent(
+                        viewModel = regionsListViewModel,
+                        placeholderResId = R.string.region_search_placeholder
+                    )
+
+                    GeoTabType.REGION_DISTRICTS -> SearchBarComponent(
+                        viewModel = regionDistrictsListViewModel,
+                        placeholderResId = R.string.region_search_placeholder
+                    )
+
+                    GeoTabType.LOCALITIES -> SearchBarComponent(
+                        viewModel = localitiesListViewModel,
+                        placeholderResId = R.string.region_search_placeholder
+                    )
+
+                    GeoTabType.LOCALITY_DISTRICTS -> SearchBarComponent(
+                        viewModel = localityDistrictsListViewModel,
+                        placeholderResId = R.string.region_search_placeholder
+                    )
+
+                    GeoTabType.MICRODISTRICTS -> SearchBarComponent(
+                        viewModel = microdistrictsListViewModel,
+                        placeholderResId = R.string.region_search_placeholder
+                    )
+
+                    GeoTabType.STREETS -> SearchBarComponent(
+                        viewModel = streetsListViewModel,
+                        placeholderResId = R.string.region_search_placeholder
+                    )
+                }
+            }
+
+        false -> onActionBarChange(null)
+    }
+
+    val handleActionSearch = { isShowSearchBar = true }
     var streetTabType by rememberSaveable { mutableStateOf(GeoStreetDistrictTabType.LOCALITY_DISTRICTS.name) }
     val onStreetTabChange: (GeoStreetDistrictTabType) -> Unit = { streetTabType = it.name }
     onFabChange {
@@ -113,7 +171,7 @@ fun GeoScreen(
     }
     /*
         LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("GeoScreen: LaunchedEffect() BEFORE collect ui state flow")
+            Timber.tag(TAG).d("GeoScreen -> LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(GeoUiAction.Init)
         }
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -122,13 +180,16 @@ fun GeoScreen(
      */
     // Scaffold Hoisting:
     onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo))
+    onActionBarSubtitleChange("")
     onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-    appState.handleTopBarNavClick.value = { appState.backToBottomBarScreen() }
+    appState.handleTopBarNavClick.value =
+        { if (isShowSearchBar) isShowSearchBar = false else appState.backToBottomBarScreen() }
     onTopBarNavClickChange {
         Timber.tag(TAG).d("GeoScreen -> onTopBarNavClickChange()")
         appState.mainNavigateUp()// .backToBottomBarScreen()
     }
     onTopBarActionsChange {
+        IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
         IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
         /*IconButton(onClick = { context.toast("Settings action button clicked...") }) {
             Icon(Icons.Outlined.Settings, null)

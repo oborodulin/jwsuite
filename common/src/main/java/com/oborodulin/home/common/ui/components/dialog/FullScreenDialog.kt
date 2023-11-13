@@ -65,7 +65,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
         val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             Timber.tag(TAG)
-                .d("SearchSingleSelectDialog: LaunchedEffect() BEFORE collect ui state flow")
+                .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(loadUiAction)
         }
         Dialog(
@@ -111,7 +111,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                                 // wait wile actionsJob executed
                                                 viewModel.actionsJobFlow.collectLatest { job ->
                                                     Timber.tag(TAG).d(
-                                                        "FullScreenDialog(...): Start actionsJobFlow.collect [job = %s]",
+                                                        "FullScreenDialog: Start actionsJobFlow.collect [job = %s]",
                                                         job?.toString()
                                                     )
                                                     job?.join()

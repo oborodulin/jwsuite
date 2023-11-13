@@ -67,6 +67,8 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         _uiStateErrorMsg.value = errorMessage
     }
 
+    override fun redirectedErrorMessage() = _uiStateErrorMsg.value
+
     private fun clearUiStateErrorMessage() {
         Timber.tag(TAG).d("clearUiStateErrorMessage() called")
         redirectUiStateErrorMessage(null)
@@ -82,7 +84,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     fun viewModelScope() = viewModelScope
 
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {
+    override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {
         Timber.tag(TAG).d("handleActionJob(...) called")
         //viewModelScope.launch(Dispatchers.Main) {
         // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
@@ -119,8 +121,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     ): Job {
         Timber.tag(TAG).d(
             "submitStateWithErrorStateMessageRedirection(S): redirectErrorStateMessage = %s; change ui state = %s",
-            redirectErrorStateMessage,
-            state.javaClass.name
+            redirectErrorStateMessage, state.javaClass.name
         )
         val job = viewModelScope.launch(errorHandler) {
             if (!redirectErrorStateMessage) {
@@ -141,7 +142,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     fun uiState(state: S? = null): T? {
         Timber.tag(TAG).d("uiState(S?) called")
-        clearUiStateErrorMessage()
+        //clearUiStateErrorMessage()
         return when (val uiState = state ?: _uiStateFlow.value) {
             is UiState.Success<*> -> (uiState as UiState.Success<*>).data as T
 

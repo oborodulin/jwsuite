@@ -132,7 +132,7 @@ interface CongregationDao {
             }
             update(updatedCongregation)
             Timber.tag(TAG)
-                .d("updateWithFavorite(...): updatedCongregation = %s", updatedCongregation)
+                .d("updateWithFavorite: updatedCongregation = %s", updatedCongregation)
         }
         Timber.tag(TAG).d("updateWithFavorite(...) ending")
     }

@@ -47,7 +47,7 @@ fun MicrodistrictsListView(
         localityDistrictInput
     )
     LaunchedEffect(localityInput?.localityId, localityDistrictInput?.localityDistrictId) {
-        Timber.tag(TAG).d("MicrodistrictsListView: LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MicrodistrictsListView -> LaunchedEffect() BEFORE collect ui state flow")
         microdistrictsListViewModel.submitAction(
             MicrodistrictsListUiAction.Load(
                 localityInput?.localityId, localityDistrictInput?.localityDistrictId
@@ -77,7 +77,7 @@ fun MicrodistrictsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("MicrodistrictsListView: LaunchedEffect() AFTER collect single Event Flow")
+            .d("MicrodistrictsListView -> LaunchedEffect() AFTER collect single Event Flow")
         microdistrictsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

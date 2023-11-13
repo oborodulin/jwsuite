@@ -61,7 +61,7 @@ fun StreetMicrodistrictScreen(
     }
     LaunchedEffect(streetMicrodistrictInput?.streetId) {
         Timber.tag(TAG)
-            .d("StreetMicrodistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
+            .d("StreetMicrodistrictScreen -> LaunchedEffect() BEFORE collect ui state flow")
         streetMicrodistrictInput?.let {
             viewModel.submitAction(StreetMicrodistrictUiAction.Load(it.streetId))
         }

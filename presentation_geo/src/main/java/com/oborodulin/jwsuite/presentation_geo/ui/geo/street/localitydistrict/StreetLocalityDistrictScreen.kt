@@ -61,7 +61,7 @@ fun StreetLocalityDistrictScreen(
     }
     LaunchedEffect(streetLocalityDistrictInput?.streetId) {
         Timber.tag(TAG)
-            .d("StreetLocalityDistrictScreen: LaunchedEffect() BEFORE collect ui state flow")
+            .d("StreetLocalityDistrictScreen -> LaunchedEffect() BEFORE collect ui state flow")
         streetLocalityDistrictInput?.let {
             viewModel.submitAction(StreetLocalityDistrictUiAction.Load(it.streetId))
         }

@@ -36,7 +36,7 @@ fun HandOutFabComponent(
         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
         textResId = R.string.fab_territory_hand_out_text
     ) {
-        Timber.tag(TAG).d("HandOutFabComponent(...): FAB onClick...")
+        Timber.tag(TAG).d("HandOutFabComponent: FAB onClick...")
         // checks all errors
         territoriesGridViewModel.onContinueClick {
             // if success, then go to Hand Out Confirmation
