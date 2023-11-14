@@ -74,6 +74,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryS
 import timber.log.Timber
 import java.util.UUID
 
+// ic_launcher - https://www.flaticon.com/authors/manshagraphics
 // ic_street_pin - https://www.flaticon.com/authors/srip
 // ic_district - https://www.flaticon.com/authors/orvipixel
 // ic_map_pins - https://www.flaticon.com/authors/itim2101

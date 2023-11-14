@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.ErrorAlertDialogComponent
@@ -102,7 +103,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {
             IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
-                Icon(Icons.Outlined.Done, null)
+                Icon(Icons.Outlined.Done, stringResource(R.string.dlg_done_cnt_desc))
             }
         }
         CommonScreen(state = state) {

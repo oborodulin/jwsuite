@@ -1,32 +1,21 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list
 
 import android.content.res.Configuration
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.oborodulin.home.common.ui.ComponentUiAction
-import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
-import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
+import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -41,27 +30,33 @@ fun RegionDistrictsListView(
 ) {
     Timber.tag(TAG).d("RegionDistrictsListView(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
-        Timber.tag(TAG).d("RegionDistrictsListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG)
+            .d("RegionDistrictsListView -> LaunchedEffect() BEFORE collect ui state flow")
         regionDistrictsListViewModel.submitAction(RegionDistrictsListUiAction.Load(regionInput?.regionId))
     }
+    val searchText by regionDistrictsListViewModel.searchText.collectAsStateWithLifecycle()
     regionDistrictsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            RegionDistrictsList(
-                regionDistricts = it,
+            EditableListViewComponent(
+                items = it,
+                searchedText = searchText.text,
+                dlgConfirmDelResId = R.string.dlg_confirm_del_region_district,
+                emptyListResId = R.string.region_districts_list_empty_text,
+                isEmptyListTextOutput = regionInput?.regionId != null,
                 onEdit = { regionDistrict ->
                     regionDistrictsListViewModel.submitAction(
-                        RegionDistrictsListUiAction.EditRegionDistrict(regionDistrict.id)
+                        RegionDistrictsListUiAction.EditRegionDistrict(regionDistrict.itemId!!)
                     )
                 },
                 onDelete = { regionDistrict ->
                     regionDistrictsListViewModel.submitAction(
-                        RegionDistrictsListUiAction.DeleteRegionDistrict(regionDistrict.id)
+                        RegionDistrictsListUiAction.DeleteRegionDistrict(regionDistrict.itemId!!)
                     )
                 }
             ) { regionDistrict ->
                 regionDistrictsListViewModel.singleSelectItem(regionDistrict)
-                localitiesListViewModel.submitAction(LocalitiesListUiAction.Load(regionDistrictId = regionDistrict.id))
+                localitiesListViewModel.submitAction(LocalitiesListUiAction.Load(regionDistrictId = regionDistrict.itemId!!))
             }
         }
     }
@@ -79,64 +74,12 @@ fun RegionDistrictsListView(
     }
 }
 
-@Composable
-fun RegionDistrictsList(
-    regionDistricts: List<RegionDistrictsListItem>,
-    onEdit: (RegionDistrictsListItem) -> Unit,
-    onDelete: (RegionDistrictsListItem) -> Unit,
-    onClick: (RegionDistrictsListItem) -> Unit
-) {
-    Timber.tag(TAG).d("RegionDistrictsList(...) called: size = %d", regionDistricts.size)
-    //var selectedIndex by remember { mutableStateOf(-1) } // by
-    if (regionDistricts.isNotEmpty()) {
-        val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = regionDistricts.filter { it.selected }
-                .getOrNull(0)?.let { regionDistricts.indexOf(it) } ?: 0)
-        LazyColumn(
-            state = listState, //rememberLazyListState(),
-            modifier = Modifier
-                .padding(8.dp)
-                .focusable(enabled = true)
-        ) {
-            //items(regionDistricts.size) { index ->
-            //    regionDistricts[index].let { regionDistrict ->
-            //        val isSelected = (selectedIndex == index)
-            itemsIndexed(regionDistricts, key = { _, item -> item.id }) { _, regionDistrict ->
-                ListItemComponent(
-                    item = regionDistrict,
-                    itemActions = listOf(
-                        ComponentUiAction.EditListItem { onEdit(regionDistrict) },
-                        ComponentUiAction.DeleteListItem(
-                            stringResource(
-                                R.string.dlg_confirm_del_region_district,
-                                regionDistrict.districtName
-                            )
-                        ) { onDelete(regionDistrict) }),
-                    selected = regionDistrict.selected, //isSelected,
-                    //background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    onClick = {
-                        //if (selectedIndex != index) selectedIndex = index
-                        onClick(regionDistrict)
-                    }
-                )
-            }
-        }
-    } else {
-        EmptyListTextComponent(R.string.region_districts_list_empty_text)
-    }
-}
-
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewRegionDistrictsList() {
     JWSuiteTheme {
         Surface {
-            RegionDistrictsList(
-                regionDistricts = RegionDistrictsListViewModelImpl.previewList(LocalContext.current),
-                onEdit = {},
-                onDelete = {},
-                onClick = {})
         }
     }
 }

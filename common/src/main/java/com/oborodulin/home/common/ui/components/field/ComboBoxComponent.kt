@@ -32,6 +32,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.dialog.SearchSingleSelectDialog
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -141,13 +142,13 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> ComboBoxCo
                     if (fieldValue.text.isEmpty()) {
                         Icon(
                             Icons.Outlined.ArrowDropDown,
-                            contentDescription = "",
+                            contentDescription = stringResource(R.string.cmb_drop_down_cnt_desc),
                             modifier = Modifier.offset(x = 10.dp)
                         )
                     } else {
                         Icon(
                             Icons.Outlined.Clear,
-                            contentDescription = "",
+                            contentDescription = stringResource(R.string.cmb_clear_cnt_desc),
                             modifier = Modifier
                                 .offset(x = 10.dp)
                                 .clickable {

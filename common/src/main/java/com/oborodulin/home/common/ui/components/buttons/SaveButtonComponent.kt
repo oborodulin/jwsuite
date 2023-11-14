@@ -1,7 +1,6 @@
 package com.oborodulin.home.common.ui.components.buttons
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Surface
@@ -17,7 +16,6 @@ private const val TAG = "Common.ui.SaveButtonComponent"
 fun SaveButtonComponent(
     modifier: Modifier = Modifier,
     enabled: Boolean = false,
-    @StringRes contentDescriptionResId: Int? = null,
     onClick: () -> Unit = {}
 ) {
     ButtonComponent(
@@ -25,7 +23,7 @@ fun SaveButtonComponent(
         enabled = enabled,
         imageVector = Icons.Outlined.Done,
         textResId = R.string.btn_save_lbl,
-        contentDescriptionResId = contentDescriptionResId,
+        contentDescriptionResId = R.string.btn_save_cnt_desc,
         onClick = onClick
     )
 }

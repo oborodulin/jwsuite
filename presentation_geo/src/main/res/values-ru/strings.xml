@@ -18,7 +18,13 @@
     <string name="for_streets_locality_districts_list_empty_text">Районы, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие районы</string>
     <string name="for_streets_microdistricts_list_empty_text">Микрорайоны, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие микрорайоны</string>
     <!--Поиск:-->
-    <string name="region_search_placeholder">Найти область...</string>
+    <string name="region_search_placeholder">Поиск области…</string>
+    <string name="region_district_search_placeholder">Поиск района области…</string>
+    <string name="locality_search_placeholder">Поиск населённого пункта…</string>
+    <string name="locality_district_search_placeholder">Поиск района НП…</string>
+    <string name="microdistrict_search_placeholder">Поиск микрорайона…</string>
+    <string name="street_search_placeholder">Поиск улицы…</string>
+
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <string name="geo_tab_regions">ОБЛАСТИ</string>
@@ -106,10 +112,11 @@
     <!--формы области-->
     <string name="region_code_empty_error">Укажите, пожалуйста, код области!</string>
     <string name="region_name_empty_error">Укажите, пожалуйста, наименование области!</string>
-    <string name="region_unique_constraint_error">Область с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (изменённые данные не будут сохранены)</string>
+    <string name="region_unique_constraint_error">Область с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы района области-->
     <string name="region_district_short_name_empty_error">Укажите, пожалуйста, короткое наименование района области!</string>
     <string name="region_district_name_empty_error">Укажите, пожалуйста, наименование района области!</string>
+    <string name="region_district_unique_constraint_error">Район области с таким коротким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы населённого пункта-->
     <string name="locality_code_empty_error">Укажите, пожалуйста, код!</string>
     <string name="locality_short_name_empty_error">Укажите, пожалуйста, короткое наименование!</string>

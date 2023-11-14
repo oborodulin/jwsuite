@@ -19,26 +19,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.Focusable
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.OnListItemEvent
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "Common.ui.FullScreenDialog"
@@ -62,7 +56,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
 ) {
     Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
     if (isShow) {
-        val coroutineScope = rememberCoroutineScope()
+        //val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             Timber.tag(TAG)
                 .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
@@ -101,13 +95,35 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                     IconButton(onClick = {
                                         viewModel.onDialogDismiss(onDismissRequest)
                                         onShowListDialog()
-                                    }) { Icon(Icons.Outlined.Close, null) }
+                                    }) {
+                                        Icon(
+                                            Icons.Outlined.Close,
+                                            stringResource(R.string.dlg_close_cnt_desc)
+                                        )
+                                    }
                                 }, actions = {
                                     IconButton(onClick = {
                                         // check for errors
                                         viewModel.onContinueClick {
                                             // if success,
-                                            coroutineScope.launch {
+                                            viewModel.handleActionJob({
+                                                // execute viewModel.Save()
+                                                viewModel.submitAction(confirmUiAction)
+                                            }) {
+                                                // wait wile actionsJob executed
+                                                // hide single dialog and onConfirmButtonClick
+                                                viewModel.onDialogConfirm(onConfirmButtonClick)
+                                                val savedListItem = viewModel.savedListItem.value
+                                                Timber.tag(TAG)
+                                                    .d(
+                                                        "Done: savedListItem = %s",
+                                                        savedListItem.itemId
+                                                    )
+                                                onValueChange(savedListItem)
+                                                // show list dialog (option)
+                                                onShowListDialog()
+                                            }
+                                            /*coroutineScope.launch {
                                                 // wait wile actionsJob executed
                                                 viewModel.actionsJobFlow.collectLatest { job ->
                                                     Timber.tag(TAG).d(
@@ -130,9 +146,14 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                                 }
                                             }
                                             // execute viewModel.Save()
-                                            viewModel.submitAction(confirmUiAction)
+                                            viewModel.submitAction(confirmUiAction)*/
                                         }
-                                    }) { Icon(Icons.Outlined.Done, null) }
+                                    }) {
+                                        Icon(
+                                            Icons.Outlined.Done,
+                                            stringResource(R.string.dlg_done_cnt_desc)
+                                        )
+                                    }
                                 })
                             Spacer(modifier = Modifier.height(8.dp))
                             dialogView(it)
@@ -148,10 +169,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewFullScreenDialog() {
-    val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
+    /*val items = listOf(ListItemModel.defaultListItemModel(LocalContext.current))
     val isShowDialog = remember { mutableStateOf(true) }
 
-    /*   FullScreenDialog(
+       FullScreenDialog(
            isShow = isShowDialog,
            viewModel =
        ) { item -> println(item.headline) }

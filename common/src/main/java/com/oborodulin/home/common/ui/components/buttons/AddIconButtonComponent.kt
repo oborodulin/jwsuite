@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.components.buttons
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,7 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 private const val TAG = "Common.ui.AddIconButtonComponent"
 
 @Composable
-fun AddIconButtonComponent(onClick: () -> Unit) {
+fun AddIconButtonComponent(@StringRes contentDescriptionResId: Int? = null, onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -35,7 +36,7 @@ fun AddIconButtonComponent(onClick: () -> Unit) {
                     .size(36.dp)
                     .weight(2.5f),
                 imageVector = Icons.Outlined.Add,
-                contentDescription = ""
+                contentDescription = contentDescriptionResId?.let { stringResource(it) }
             )
             Spacer(
                 modifier = Modifier

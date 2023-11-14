@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -102,10 +103,16 @@ fun MembersList(
 ) {
     Timber.tag(TAG).d("MembersList(...) called: size = %d", members.size)
     if (members.isNotEmpty()) {
-        var filteredItems: List<MembersListItem>
+        val filteredItems = remember(members, searchedText) {
+            if (searchedText.isEmpty()) {
+                members
+            } else {
+                members.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+        }
         val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = members.filter { it.selected }
-                .getOrNull(0)?.let { members.indexOf(it) } ?: 0)
+            rememberLazyListState(initialFirstVisibleItemIndex = filteredItems.filter { it.selected }
+                .getOrNull(0)?.let { filteredItems.indexOf(it) } ?: 0)
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -113,11 +120,6 @@ fun MembersList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            filteredItems = if (searchedText.isEmpty()) {
-                members
-            } else {
-                members.filter { it.doesMatchSearchQuery(searchedText) }
-            }
             itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, member ->
                 ListItemComponent(
                     item = member,

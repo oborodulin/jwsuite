@@ -3,12 +3,9 @@ package com.oborodulin.home.common.ui.components.search
 import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
@@ -47,6 +43,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> SearchBarComponent(
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
+            //.padding(4.dp)
             .then(modifier),
         query = searchText.text,
         onQueryChange = { viewModel.onSearchTextChange(TextFieldValue(it, TextRange(it.length))) },
@@ -65,7 +62,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> SearchBarComponent(
                 Icon(
                     modifier = Modifier.clickable {
                         if (searchText.text.isNotEmpty()) {
-                            viewModel.onSearchTextChange(TextFieldValue("", TextRange("".length)))
+                            viewModel.onSearchTextChange(TextFieldValue("", TextRange(0)))
                         } else {
                             searchActive = false
                         }
@@ -74,18 +71,18 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> SearchBarComponent(
                     contentDescription = "Close Icon"
                 )
             }
-        }) {
-        searchItems.forEach {
-            Row(modifier = Modifier.padding(all = 14.dp)) {
-                Icon(
-                    modifier = Modifier.padding(end = 10.dp),
-                    imageVector = Icons.Outlined.History,
-                    contentDescription = "History Icon"
-                )
-                Text(it)
-            }
+        }) {}
+    /*searchItems.forEach {
+        Row(modifier = Modifier.padding(all = 14.dp)) {
+            Icon(
+                modifier = Modifier.padding(end = 10.dp),
+                imageVector = Icons.Outlined.History,
+                contentDescription = "History Icon"
+            )
+            Text(it)
         }
     }
+}*/
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

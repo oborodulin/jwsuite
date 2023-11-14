@@ -1,7 +1,6 @@
 package com.oborodulin.home.common.ui.components.buttons
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.Surface
@@ -15,17 +14,14 @@ private const val TAG = "Common.ui.NextButtonComponent"
 
 @Composable
 fun NextButtonComponent(
-    modifier: Modifier = Modifier,
-    enabled: Boolean = false,
-    @StringRes contentDescriptionResId: Int? = null,
-    onClick: () -> Unit = {}
+    modifier: Modifier = Modifier, enabled: Boolean = false, onClick: () -> Unit = {}
 ) {
     ButtonComponent(
         modifier = modifier,
         enabled = enabled,
         imageVector = Icons.Outlined.ArrowForward,
         textResId = R.string.btn_next_lbl,
-        contentDescriptionResId = contentDescriptionResId,
+        contentDescriptionResId = R.string.btn_next_cnt_desc,
         onClick = onClick
     )
 }

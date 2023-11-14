@@ -28,11 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.fab.FabComponent
-import com.oborodulin.home.common.ui.components.search.SearchBarComponent
+import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -81,6 +82,9 @@ fun GeoScreen(
     Timber.tag(TAG).d("GeoScreen(...) called")
     val appState = LocalAppState.current
     val context = LocalContext.current
+    //var viewModel: ListViewModeled<List<ListItemModel>, UiAction, UiSingleEvent>
+    //var placeholderResId: Int
+    val emptySearchText = TextFieldValue("")
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
     val onTabChange: (GeoTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
@@ -96,46 +100,56 @@ fun GeoScreen(
         )
     }
     var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
+    val handleActionSearch = { isShowSearchBar = true }
     when (isShowSearchBar) {
-        true ->
+        true -> {
             onActionBarChange {
                 when (GeoTabType.valueOf(tabType)) {
-                    GeoTabType.REGIONS -> SearchBarComponent(
+                    GeoTabType.REGIONS -> SearchViewModelComponent(
                         viewModel = regionsListViewModel,
                         placeholderResId = R.string.region_search_placeholder
                     )
 
-                    GeoTabType.REGION_DISTRICTS -> SearchBarComponent(
+                    GeoTabType.REGION_DISTRICTS -> SearchViewModelComponent(
                         viewModel = regionDistrictsListViewModel,
-                        placeholderResId = R.string.region_search_placeholder
+                        placeholderResId = R.string.region_district_search_placeholder
                     )
 
-                    GeoTabType.LOCALITIES -> SearchBarComponent(
+                    GeoTabType.LOCALITIES -> SearchViewModelComponent(
                         viewModel = localitiesListViewModel,
-                        placeholderResId = R.string.region_search_placeholder
+                        placeholderResId = R.string.locality_search_placeholder
                     )
 
-                    GeoTabType.LOCALITY_DISTRICTS -> SearchBarComponent(
+                    GeoTabType.LOCALITY_DISTRICTS -> SearchViewModelComponent(
                         viewModel = localityDistrictsListViewModel,
-                        placeholderResId = R.string.region_search_placeholder
+                        placeholderResId = R.string.locality_district_search_placeholder
                     )
 
-                    GeoTabType.MICRODISTRICTS -> SearchBarComponent(
+                    GeoTabType.MICRODISTRICTS -> SearchViewModelComponent(
                         viewModel = microdistrictsListViewModel,
-                        placeholderResId = R.string.region_search_placeholder
+                        placeholderResId = R.string.microdistrict_search_placeholder
                     )
 
-                    GeoTabType.STREETS -> SearchBarComponent(
+                    GeoTabType.STREETS -> SearchViewModelComponent(
                         viewModel = streetsListViewModel,
-                        placeholderResId = R.string.region_search_placeholder
+                        placeholderResId = R.string.street_search_placeholder
                     )
                 }
             }
+            onTopBarActionsChange {}
+        }
 
-        false -> onActionBarChange(null)
+        false -> {
+            onActionBarChange(null)
+            onTopBarActionsChange {
+                IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
+                IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
+                /*IconButton(onClick = { context.toast("Settings action button clicked...") }) {
+                    Icon(Icons.Outlined.Settings, null)
+                }*/
+            }
+        }
     }
-
-    val handleActionSearch = { isShowSearchBar = true }
     var streetTabType by rememberSaveable { mutableStateOf(GeoStreetDistrictTabType.LOCALITY_DISTRICTS.name) }
     val onStreetTabChange: (GeoStreetDistrictTabType) -> Unit = { streetTabType = it.name }
     onFabChange {
@@ -183,17 +197,35 @@ fun GeoScreen(
     onActionBarSubtitleChange("")
     onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
     appState.handleTopBarNavClick.value =
-        { if (isShowSearchBar) isShowSearchBar = false else appState.backToBottomBarScreen() }
+        {
+            if (isShowSearchBar) {
+                isShowSearchBar = false
+                when (GeoTabType.valueOf(tabType)) {
+                    GeoTabType.REGIONS -> regionsListViewModel.onSearchTextChange(emptySearchText)
+
+                    GeoTabType.REGION_DISTRICTS -> regionDistrictsListViewModel.onSearchTextChange(
+                        emptySearchText
+                    )
+
+                    GeoTabType.LOCALITIES -> localitiesListViewModel.onSearchTextChange(
+                        emptySearchText
+                    )
+
+                    GeoTabType.LOCALITY_DISTRICTS -> localityDistrictsListViewModel.onSearchTextChange(
+                        emptySearchText
+                    )
+
+                    GeoTabType.MICRODISTRICTS -> microdistrictsListViewModel.onSearchTextChange(
+                        emptySearchText
+                    )
+
+                    GeoTabType.STREETS -> streetsListViewModel.onSearchTextChange(emptySearchText)
+                }
+            } else appState.backToBottomBarScreen()
+        }
     onTopBarNavClickChange {
         Timber.tag(TAG).d("GeoScreen -> onTopBarNavClickChange()")
         appState.mainNavigateUp()// .backToBottomBarScreen()
-    }
-    onTopBarActionsChange {
-        IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
-        IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
-        /*IconButton(onClick = { context.toast("Settings action button clicked...") }) {
-            Icon(Icons.Outlined.Settings, null)
-        }*/
     }
     Column(modifier = Modifier.fillMaxSize()) {
         CustomScrollableTabRow(

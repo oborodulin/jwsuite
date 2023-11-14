@@ -28,6 +28,16 @@
     <!--значения-->
     <string name="all_items_val">ВСЕ</string>
 
+    <!--ОПИСАНИЕ КОНТЕНТА-->
+    <string name="search_cnt_desc">Поиск</string>
+    <string name="search_clear_cnt_desc">Очистить строку поиска</string>
+    <string name="dlg_close_cnt_desc">Закрыть диалог</string>
+    <string name="dlg_done_cnt_desc">Готово</string>
+    <string name="btn_next_cnt_desc">Далее</string>
+    <string name="btn_save_cnt_desc">Сохранить</string>
+    <string name="cmb_drop_down_cnt_desc">Раскрыть выпадающий список</string>
+    <string name="cmb_clear_cnt_desc">Очистить значение выпадающего списка</string>
+
     <!--ЕДИНИЦЫ ИЗМЕРЕНИЯ-->
     <string name="day_unit">д.</string>
     <string name="month_unit">мес.</string>
