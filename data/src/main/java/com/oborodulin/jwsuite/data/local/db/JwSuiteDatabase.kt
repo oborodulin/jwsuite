@@ -93,7 +93,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.sqlcipher.database.SupportFactory
@@ -1044,14 +1043,14 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(congregationTerritory)
                 )
-                Timber.tag(TAG).i("TERRITORY: Default territory imported")
-                jsonLogger?.let {
-                    Timber.tag(TAG).i(
-                        ": {\"territory\": {%s}, \"congregationTerritory\": {%s}}",
-                        it.encodeToString(territory), it.encodeToString(congregationTerritory)
-                    )
-                }
                 territories.add(territory)
+            }
+            Timber.tag(TAG).i("TERRITORIES: Default territories imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"territories\": {\"count\": %s, \"congregation\": {%s}}}",
+                    territories.size, it.encodeToString(congregation)
+                )
             }
             return territories
         }
