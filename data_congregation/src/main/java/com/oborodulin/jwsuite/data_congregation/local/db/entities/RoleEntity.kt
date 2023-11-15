@@ -63,7 +63,7 @@ data class RoleEntity(
     override fun key() = this.roleType.hashCode()
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Role Entity '").append(roleName).append("' ").append(roleName)
+        str.append("Role Entity '").append(roleType).append("' ").append(roleName)
             .append(" roleId = ").append(roleId)
         return str.toString()
     }

@@ -57,7 +57,9 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     }
 
     override fun login(password: String) =
-        dataStore.data.map { authData -> authData.password?.let { it == password } ?: false }
+        dataStore.data.map { authData ->
+            if (authData.password?.let { it == password } == true) authData.username else null
+        }
 
     override suspend fun updateRoles(roles: List<Role>) = withContext(dispatcher) {
         dataStore.updateData { it.copy(roles = roles) }

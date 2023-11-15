@@ -44,6 +44,7 @@ import com.oborodulin.home.common.ui.components.dialog.alert.DeleteConfirmDialog
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.ui.theme.Typography
+import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 import java.math.RoundingMode
@@ -54,7 +55,6 @@ import java.util.Locale
  * Created by o.borodulin 10.June.2023
  */
 private const val TAG = "Common.ui"
-private val EMPTY: OnListItemEvent = {}
 
 // https://m3.material.io/components/lists/specs
 @Composable
@@ -64,7 +64,7 @@ fun ListItemComponent(
     selected: Boolean = false,
     background: Color = Color.Transparent,
     itemActions: List<ComponentUiAction> = emptyList(),
-    onClick: OnListItemEvent = EMPTY,
+    onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     content: @Composable (() -> Unit)? = null
 ) {
     Timber.tag(TAG)
@@ -76,13 +76,25 @@ fun ListItemComponent(
             item.supportingText,
             item.value
         )
+    // https://m3.material.io/components/lists/specs
+    // https://stackoverflow.com/questions/69707827/jetpack-compose-find-how-many-lines-a-text-will-take-before-composition
+    val cardHeight = when {
+        itemActions.size <= 1 && item.supportingText.isNullOrEmpty() -> 56.dp
+        itemActions.size <= 1 && (!item.supportingText.isNullOrEmpty() && !item.supportingText.contains(
+            "\n"
+        )) -> 72.dp
+
+        else -> 88.dp
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(88.dp)
+            .height(cardHeight)
             .clip(RoundedCornerShape(8.dp))
             .background(if (selected) Color.LightGray else Color.Transparent)
-            .selectable(selected = selected, onClick = { if (onClick !== EMPTY) onClick(item) })
+            .selectable(
+                selected = selected,
+                onClick = { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(item) })
             .padding(horizontal = 4.dp, vertical = 4.dp),
         //.background(color = MaterialTheme.colorScheme.background)
         //.clickable {}

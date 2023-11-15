@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
+import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
 private const val TAG = "Common.ui.EditableListViewComponent"
@@ -28,9 +30,9 @@ fun EditableListViewComponent(
     @StringRes dlgConfirmDelResId: Int,
     @StringRes emptyListResId: Int,
     isEmptyListTextOutput: Boolean = true,
-    onEdit: (ListItemModel) -> Unit,
-    onDelete: (ListItemModel) -> Unit,
-    onClick: (ListItemModel) -> Unit
+    onEdit: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
+    onDelete: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
+    onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT
 ) {
     Timber.tag(TAG).d("EditableListViewComponent(...) called: size = %d", items.size)
     if (items.isNotEmpty()) {
@@ -46,7 +48,7 @@ fun EditableListViewComponent(
         LaunchedEffect(firstVisibleItem) {
             Timber.tag(TAG)
                 .d("EditableListViewComponent -> LaunchedEffect() BEFORE collect ui state flow")
-            firstVisibleItem?.let { onClick(it) }
+            firstVisibleItem?.let { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(it) }
         }
         val listState = rememberLazyListState(initialFirstVisibleItemIndex = firstVisibleItem?.let {
             filteredItems.indexOf(it)
@@ -63,14 +65,16 @@ fun EditableListViewComponent(
             itemsIndexed(filteredItems, key = { _, item -> item.itemId!! }) { _, item ->
                 ListItemComponent(
                     item = item,
-                    itemActions = listOf(
-                        ComponentUiAction.EditListItem { onEdit(item) },
-                        ComponentUiAction.DeleteListItem(
+                    itemActions = listOfNotNull(
+                        if (onEdit !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.EditListItem {
+                            onEdit(item)
+                        } else null,
+                        if (onDelete !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.DeleteListItem(
                             stringResource(dlgConfirmDelResId, item.headline)
-                        ) { onDelete(item) }),
+                        ) { onDelete(item) } else null),
                     selected = item.selected,  //isSelected,
                     //background = (if (isSelected) Color.LightGray else Color.Transparent),
-                    onClick = { onClick(item) } //if (selectedIndex != index) selectedIndex = index
+                    onClick = { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(item) } //if (selectedIndex != index) selectedIndex = index
                 )
             }
         }

@@ -2,15 +2,22 @@ package com.oborodulin.jwsuite.data.local.datastore.repositories
 
 
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
+import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SessionManagerRepositoryImpl @Inject constructor(
     private val localSessionManagerDataSource: LocalSessionManagerDataSource,
-    //private val localMemberDataSource: LocalMemberDataSource,
-    //private val mappers: MemberMappers,
+    private val localMemberDataSource: LocalMemberDataSource,
+    private val mappers: MemberMappers,
     //@IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : SessionManagerRepository {
     override fun isSigned() = localSessionManagerDataSource.isSigned()
@@ -32,19 +39,18 @@ class SessionManagerRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun login(password: String) = localSessionManagerDataSource.login(password)
-    /*.flatMapLatest { username ->
-    when (username) {
-        null -> flow { emit(false) }
-        else -> {
-            //val roles = localMemberDataSource.getMemberRoles(username)
-            //    .map(mappers.roleEntityListToRolesListMapper::map).first()
-            //localSessionManagerDataSource.updateRoles(roles)
-            localSessionManagerDataSource.login()
-            flow { emit(true) }
+    override fun login(password: String) =
+        localSessionManagerDataSource.login(password).flatMapLatest { username ->
+            when (username) {
+                null -> flow { emit(false) }
+                else -> {
+                    val roles = localMemberDataSource.getMemberRoles(username)
+                        .map(mappers.roleEntityListToRolesListMapper::map).first()
+                    localSessionManagerDataSource.updateRoles(roles.ifEmpty { listOf(Role(roleType = MemberRoleType.ADMIN)) })
+                    flow { emit(true) }
+                }
+            }
         }
-    }
-}*/
 
     override fun logout(lastDestination: String?) = flow {
         localSessionManagerDataSource.logout(lastDestination)

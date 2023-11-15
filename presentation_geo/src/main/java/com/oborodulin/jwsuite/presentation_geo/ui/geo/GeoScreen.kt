@@ -144,9 +144,6 @@ fun GeoScreen(
             onTopBarActionsChange {
                 IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
                 IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
-                /*IconButton(onClick = { context.toast("Settings action button clicked...") }) {
-                    Icon(Icons.Outlined.Settings, null)
-                }*/
             }
         }
     }
@@ -330,7 +327,10 @@ fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
-                            RegionDistrictsListView(navController = appState.mainNavController)
+                            RegionDistrictsListView(
+                                navController = appState.mainNavController,
+                                isEditableList = false
+                            )
                         },
                         TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
                             LocalitiesListView(navController = appState.mainNavController)

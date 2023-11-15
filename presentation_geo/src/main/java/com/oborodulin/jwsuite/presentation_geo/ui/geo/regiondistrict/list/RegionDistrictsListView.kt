@@ -26,7 +26,8 @@ fun RegionDistrictsListView(
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
     localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    regionInput: RegionInput? = null
+    regionInput: RegionInput? = null,
+    isEditableList: Boolean = true
 ) {
     Timber.tag(TAG).d("RegionDistrictsListView(...) called: regionInput = %s", regionInput)
     LaunchedEffect(regionInput?.regionId) {
@@ -38,25 +39,41 @@ fun RegionDistrictsListView(
     regionDistrictsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            EditableListViewComponent(
-                items = it,
-                searchedText = searchText.text,
-                dlgConfirmDelResId = R.string.dlg_confirm_del_region_district,
-                emptyListResId = R.string.region_districts_list_empty_text,
-                isEmptyListTextOutput = regionInput?.regionId != null,
-                onEdit = { regionDistrict ->
-                    regionDistrictsListViewModel.submitAction(
-                        RegionDistrictsListUiAction.EditRegionDistrict(regionDistrict.itemId!!)
-                    )
-                },
-                onDelete = { regionDistrict ->
-                    regionDistrictsListViewModel.submitAction(
-                        RegionDistrictsListUiAction.DeleteRegionDistrict(regionDistrict.itemId!!)
+            when (isEditableList) {
+                true -> {
+                    EditableListViewComponent(
+                        items = it,
+                        searchedText = searchText.text,
+                        dlgConfirmDelResId = R.string.dlg_confirm_del_region_district,
+                        emptyListResId = R.string.region_districts_list_empty_text,
+                        isEmptyListTextOutput = regionInput?.regionId != null,
+                        onEdit = { regionDistrict ->
+                            regionDistrictsListViewModel.submitAction(
+                                RegionDistrictsListUiAction.EditRegionDistrict(regionDistrict.itemId!!)
+                            )
+                        },
+                        onDelete = { regionDistrict ->
+                            regionDistrictsListViewModel.submitAction(
+                                RegionDistrictsListUiAction.DeleteRegionDistrict(regionDistrict.itemId!!)
+                            )
+                        }
+                    ) { regionDistrict ->
+                        regionDistrictsListViewModel.singleSelectItem(regionDistrict)
+                        localitiesListViewModel.submitAction(
+                            LocalitiesListUiAction.Load(regionDistrictId = regionDistrict.itemId!!)
+                        )
+                    }
+                }
+
+                false -> {
+                    EditableListViewComponent(
+                        items = it,
+                        searchedText = searchText.text,
+                        dlgConfirmDelResId = R.string.dlg_confirm_del_region_district,
+                        emptyListResId = R.string.region_districts_list_empty_text,
+                        isEmptyListTextOutput = regionInput?.regionId != null
                     )
                 }
-            ) { regionDistrict ->
-                regionDistrictsListViewModel.singleSelectItem(regionDistrict)
-                localitiesListViewModel.submitAction(LocalitiesListUiAction.Load(regionDistrictId = regionDistrict.itemId!!))
             }
         }
     }

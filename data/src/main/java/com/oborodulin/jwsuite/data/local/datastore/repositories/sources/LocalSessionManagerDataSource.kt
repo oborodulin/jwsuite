@@ -12,6 +12,6 @@ interface LocalSessionManagerDataSource {
     suspend fun updateRoles(roles: List<Role> = emptyList())
     suspend fun signup(username: String, password: String)
     suspend fun signout()
-    fun login(password: String): Flow<Boolean>
+    fun login(password: String): Flow<String?>
     suspend fun logout(lastDestination: String? = null)
 }
