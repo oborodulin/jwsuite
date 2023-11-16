@@ -65,4 +65,10 @@
     <string name="def_role_name_territories">Служитель участков</string>
     <string name="def_role_name_bills">Служитель счетов</string>
     <string name="def_role_name_reports">Разъездной служитель</string>
+
+    <!--Объекты передачи-->
+    <string name="def_trans_obj_name_all">Всё</string>
+    <string name="def_trans_obj_name_members">Возвещатели</string>
+    <string name="def_trans_obj_name_territories">Участки</string>
+    <string name="def_trans_obj_name_bills">Счета</string>
 </resources>

@@ -45,7 +45,7 @@ class SessionManagerRepositoryImpl @Inject constructor(
                 null -> flow { emit(false) }
                 else -> {
                     val roles = localMemberDataSource.getMemberRoles(username)
-                        .map(mappers.roleEntityListToRolesListMapper::map).first()
+                        .map(mappers.memberRoleViewListToRolesListMapper::map).first()
                     localSessionManagerDataSource.updateRoles(roles.ifEmpty { listOf(Role(roleType = MemberRoleType.ADMIN)) })
                     flow { emit(true) }
                 }

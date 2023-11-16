@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.congrega
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberToMemberMovementEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleToMemberRoleEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewListToMemberRolesListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewListToRolesListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.RoleEntityListToRolesListMapper
 
 data class MemberMappers(
@@ -14,6 +15,7 @@ data class MemberMappers(
     val memberToMemberCongregationCrossRefEntityMapper: MemberToMemberCongregationCrossRefEntityMapper,
     val roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
     val memberRoleViewListToMemberRolesListMapper: MemberRoleViewListToMemberRolesListMapper,
+    val memberRoleViewListToRolesListMapper: MemberRoleViewListToRolesListMapper,
     val memberRoleToMemberRoleEntityMapper: MemberRoleToMemberRoleEntityMapper,
     val memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper
 )

@@ -2,6 +2,8 @@ package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.jwsuite.data.local.datastore.repositories.SessionManagerRepositoryImpl
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
@@ -17,13 +19,13 @@ object SessionManagerRepositoriesModule {
     @Provides
     fun provideSessionManagerRepository(
         localSessionManagerDataSource: LocalSessionManagerDataSource,
-        //localMemberDataSource: LocalMemberDataSource,
-        //mappers: MemberMappers,
+        localMemberDataSource: LocalMemberDataSource,
+        mappers: MemberMappers,
         //@IoDispatcher dispatcher: CoroutineDispatcher
     ): SessionManagerRepository = SessionManagerRepositoryImpl(
         localSessionManagerDataSource,
-        //localMemberDataSource,
-        //mappers,
+        localMemberDataSource,
+        mappers,
         //dispatcher
     )
 }

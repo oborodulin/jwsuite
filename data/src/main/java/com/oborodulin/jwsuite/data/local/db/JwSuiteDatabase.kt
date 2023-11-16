@@ -23,6 +23,8 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
@@ -91,6 +93,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNames
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.jwsuite.domain.util.TransferObjectType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
@@ -117,6 +120,7 @@ private const val TAG = "JwSuiteDatabase"
         CongregationEntity::class, GroupEntity::class, MemberEntity::class, MemberMovementEntity::class,
         MemberRoleEntity::class, MemberCongregationCrossRefEntity::class, MemberMinistryEntity::class,
         TerritoryCategoryEntity::class, TerritoryEntity::class, TerritoryStreetEntity::class,
+        TransferObjectEntity::class, RoleTransferObjectEntity::class,
         TerritoryMemberCrossRefEntity::class,
         HouseEntity::class, EntranceEntity::class, FloorEntity::class, RoomEntity::class,
         TerritoryMemberReportEntity::class,
@@ -575,6 +579,21 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 4 }, petrov)
                 // sidorov
                 insertDefTerritoryMember(db, houseTerrs1.first { it.territoryNum == 2 }, sidorov)
+
+                // ==============================
+                // TRANSFERS:
+                // Default transfer objects:
+                val allTransferObject = insertDefTransferObject(db, TransferObjectType.ALL)
+                val membersTransferObject = insertDefTransferObject(db, TransferObjectType.MEMBERS)
+                val territoriesTransferObject =
+                    insertDefTransferObject(db, TransferObjectType.TERRITORIES)
+                val billsTransferObject = insertDefTransferObject(db, TransferObjectType.BILLS)
+
+                insertDefRoleTransferObject(db, adminRole, allTransferObject, false)
+                insertDefRoleTransferObject(db, reportsRole, allTransferObject, false)
+                insertDefRoleTransferObject(db, userRole, territoriesTransferObject, true)
+                insertDefRoleTransferObject(db, territoriesRole, territoriesTransferObject, false)
+                insertDefRoleTransferObject(db, billsRole, billsTransferObject, true)
 
                 // ==============================
                 db.setTransactionSuccessful()
@@ -1115,6 +1134,50 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             )
             Timber.tag(TAG).i("TERRITORY: Default territory street imported")
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryStreet)) }
+        }
+
+        private fun insertDefTransferObject(
+            db: SupportSQLiteDatabase, transferObjectType: TransferObjectType
+        ): TransferObjectEntity {
+            val transferObject = when (transferObjectType) {
+                TransferObjectType.ALL -> TransferObjectEntity.allTransferObject(context)
+                TransferObjectType.MEMBERS -> TransferObjectEntity.membersTransferObject(context)
+                TransferObjectType.TERRITORIES -> TransferObjectEntity.territoriesTransferObject(
+                    context
+                )
+
+                TransferObjectType.BILLS -> TransferObjectEntity.billsTransferObject(context)
+            }
+            db.insert(
+                TransferObjectEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(transferObject)
+            )
+            Timber.tag(TAG).i("Default transfer object imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(": {\"transferObject\": {%s}}", it.encodeToString(transferObject))
+            }
+            return transferObject
+        }
+
+        private fun insertDefRoleTransferObject(
+            db: SupportSQLiteDatabase, role: RoleEntity, transferObject: TransferObjectEntity,
+            isPersonalData: Boolean
+        ): RoleTransferObjectEntity {
+            val roleTransferObject = RoleTransferObjectEntity.defaultRoleTransferObject(
+                roleId = role.roleId, transferObjectId = transferObject.transferObjectId,
+                isPersonalData = isPersonalData
+            )
+            db.insert(
+                RoleTransferObjectEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(roleTransferObject)
+            )
+            Timber.tag(TAG).i("TRANSFERS: Default Role Transfer Object imported")
+            jsonLogger?.let { logger ->
+                Timber.tag(TAG).i(
+                    ": {\"roleTransferObject\": {%s}}", logger.encodeToString(roleTransferObject)
+                )
+            }
+            return roleTransferObject
         }
     }
 }
