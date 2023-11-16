@@ -81,6 +81,7 @@
     <string name="member_num_empty_error">Укажите, пожалуйста, номер в группе!</string>
     <string name="member_pseudonym_empty_error">Укажите, пожалуйста, псевдоним!</string>
     <string name="member_movement_date_empty_error">Укажите, пожалуйста, дату назначения!</string>
+    <string name="member_unique_constraint_error">Возвещатель с таким псевдонимом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
 </resources>

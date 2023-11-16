@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single
+package com.oborodulin.jwsuite.presentation.ui.appsetting
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -19,7 +19,7 @@ private const val TAG = "Congregating.MemberScreen"
 @Composable
 fun MemberScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    viewModel: MemberViewModelImpl = hiltViewModel(),
+    viewModel: AppSettingViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
@@ -36,8 +36,8 @@ fun MemberScreen(
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = memberInput?.memberId,
-        loadUiAction = MemberUiAction.Load(memberInput?.memberId),
-        saveUiAction = MemberUiAction.Save,
+        loadUiAction = AppSettingUiAction.Load(memberInput?.memberId),
+        saveUiAction = AppSettingUiAction.Save,
         upNavigation = upNavigation,
         isCancelChangesShowAlert = isCancelChangesShowAlert,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_member,

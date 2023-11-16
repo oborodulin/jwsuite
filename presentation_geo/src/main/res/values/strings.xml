@@ -112,7 +112,7 @@
     <!--формы области-->
     <string name="region_code_empty_error">Укажите, пожалуйста, код области!</string>
     <string name="region_name_empty_error">Укажите, пожалуйста, наименование области!</string>
-    <string name="region_unique_constraint_error">Область с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (изменённые данные не будут сохранены)</string>
+    <string name="region_unique_constraint_error">Область с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы района области-->
     <string name="region_district_short_name_empty_error">Укажите, пожалуйста, короткое наименование района области!</string>
     <string name="region_district_name_empty_error">Укажите, пожалуйста, наименование района области!</string>

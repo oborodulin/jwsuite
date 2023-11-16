@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.model
 
 import androidx.compose.runtime.compositionLocalOf
 import com.oborodulin.home.common.ui.model.ModelUi
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 
 val LocalSession = compositionLocalOf<SessionUi> { error("No session found!") }
@@ -30,7 +31,12 @@ data class SessionUi(
         else -> lastDestination // navigate to previous startDestination
     }
 
+    fun containsRole(roleType: MemberRoleType) = roles.map { it.roleType }.contains(roleType)
+
+    fun containsRoles(roleTypes: List<MemberRoleType>) =
+        roles.map { it.roleType }.containsAll(roleTypes)
+
     override fun toString(): String {
-        return "SessionUi(isSigned=$isSigned, roles=$roles, lastDestination='$lastDestination', authStartDestination='$authStartDestination', mainRoute='$mainRoute', startDestination='$startDestination')"
+        return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', authStartDestination='$authStartDestination', mainRoute='$mainRoute', startDestination='$startDestination')"
     }
 }
