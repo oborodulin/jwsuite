@@ -11,6 +11,22 @@
     <!--Признаки -->
     <string name="territory_business_mark">д</string>
 
+    <!--ПАРАМЕТРЫ ПРИЛОЖЕНИЯ-->
+    <string name="param_name_lang">Язык</string>
+    <string name="param_name_currency_code">Код валюты</string>
+    <string name="param_name_all_items">Значение для всех элементов списка</string>
+    <string name="param_name_day_mu">Обозначение для "день"</string>
+    <string name="param_name_month_mu">Обозначение для "месяц"</string>
+    <string name="param_name_year_mu">Обозначение для "год"</string>
+    <string name="param_name_person_mu">Обозначение для "человек"</string>
+    <!--Участки-->
+    <string name="param_name_territory_business_mark">Признак деловой территории</string>
+    <string name="param_name_territory_processing_period">Период обработки всех участков, мес.</string>
+    <string name="param_name_territory_at_hand_period">Период обработки одного участка, мес.</string>
+    <string name="param_name_territory_idle_period">Период отстоя участка, мес.</string>
+    <string name="param_name_territory_rooms_limit">Макс. кол-во квартир участка, кв.</string>
+    <string name="param_name_territory_max_rooms">Макс. кол-во квартир в доме, кв.</string>
+
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>
     <string name="lang_name_en">Английский</string>

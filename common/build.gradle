@@ -5,6 +5,9 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
+    // https://medium.com/@ruchiram4/android-create-a-library-project-and-publish-to-local-maven-repository-2141621dff1c
+    // https://github.com/codepath/android_guides/wiki/Building-your-own-Android-library
+    //id 'maven-publish'
 }
 
 android {
@@ -80,7 +83,7 @@ dependencies {
 
     implementation deps.compose.uiBom
     implementation deps.compose.material3Bom
-    implementation deps.compose.iconsExtendedBom
+    //implementation deps.compose.iconsExtendedBom
     implementation deps.compose.uiToolingBom
     implementation deps.compose.uiPreviewBom
     // Compose lifecycle
@@ -98,12 +101,13 @@ dependencies {
     // Compose preview
     debugImplementation deps.androidx.poolingcontainer
 
-    implementation 'com.lambdapioneer.argon2kt:argon2kt:1.4.0'
+    // Secure
+    //implementation deps.secure.argon2kt
 
     // Coil
-    implementation deps.coil.compose
+    //implementation deps.coil.compose
     // Lottie
-    implementation deps.lottie.compose
+    //implementation deps.lottie.compose
 
     // Desugaring
     //coreLibraryDesugaring deps.tools.desugar

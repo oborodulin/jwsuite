@@ -47,15 +47,15 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.si
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Congregating.MemberView"
+private const val TAG = "Presentation.AppSettingView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MemberView(
+fun AppSettingView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     viewModel: AppSettingViewModelImpl = hiltViewModel()
 ) {
-    Timber.tag(TAG).d("MemberView(...) called")
+    Timber.tag(TAG).d("AppSettingView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -68,11 +68,11 @@ fun MemberView(
     Timber.tag(TAG).d("Member: CollectAsStateWithLifecycle for all fields")
     val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val group by viewModel.group.collectAsStateWithLifecycle()
-    val memberNum by viewModel.processingPeriod.collectAsStateWithLifecycle()
-    val memberName by viewModel.memberName.collectAsStateWithLifecycle()
-    val surname by viewModel.surname.collectAsStateWithLifecycle()
-    val patronymic by viewModel.patronymic.collectAsStateWithLifecycle()
-    val pseudonym by viewModel.pseudonym.collectAsStateWithLifecycle()
+    val memberNum by viewModel.territoryProcessingPeriod.collectAsStateWithLifecycle()
+    val memberName by viewModel.territoryAtHandPeriod.collectAsStateWithLifecycle()
+    val surname by viewModel.territoryIdlePeriod.collectAsStateWithLifecycle()
+    val patronymic by viewModel.territoryRoomsLimit.collectAsStateWithLifecycle()
+    val pseudonym by viewModel.territoryMaxRooms.collectAsStateWithLifecycle()
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
     val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
     val dateOfBaptism by viewModel.dateOfBaptism.collectAsStateWithLifecycle()
@@ -83,13 +83,14 @@ fun MemberView(
     val memberTypes by viewModel.memberTypes.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Member: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<AppSettingFields, InputFocusRequester>(AppSettingFields::class.java)
+    val focusRequesters =
+        EnumMap<AppSettingFields, InputFocusRequester>(AppSettingFields::class.java)
     enumValues<AppSettingFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MemberView -> LaunchedEffect()")
+        Timber.tag(TAG).d("AppSettingView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -130,7 +131,8 @@ fun MemberView(
                 .focusRequester(focusRequesters[AppSettingFields.MEMBER_GROUP]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_GROUP, isFocused = focusState.isFocused
+                        focusedField = AppSettingFields.MEMBER_GROUP,
+                        isFocused = focusState.isFocused
                     )
                 },
             inputWrapper = group,
@@ -178,7 +180,8 @@ fun MemberView(
                 .focusRequester(focusRequesters[AppSettingFields.MEMBER_SURNAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_SURNAME, isFocused = focusState.isFocused
+                        focusedField = AppSettingFields.MEMBER_SURNAME,
+                        isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.member_surname_hint,
@@ -387,7 +390,7 @@ fun PreviewGroupView() {
     //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            AppSettingView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

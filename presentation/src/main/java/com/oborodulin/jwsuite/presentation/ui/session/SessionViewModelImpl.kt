@@ -86,6 +86,18 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun setSessionMode(mode: SessionModeType) {
         _sessionMode.value = mode
+        focusedTextField = when (mode) {
+            SessionModeType.SIGNUP -> FocusedTextField(
+                textField = SessionFields.SESSION_USERNAME,
+                key = SessionFields.SESSION_USERNAME.key()
+            )
+
+            SessionModeType.LOGIN -> FocusedTextField(
+                textField = SessionFields.SESSION_PIN,
+                key = SessionFields.SESSION_PIN.key()
+            )
+        }
+        focusOnLastSelectedTextField()
     }
 
     override suspend fun handleAction(action: SessionUiAction): Job? {

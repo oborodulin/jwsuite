@@ -6,30 +6,25 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import kotlinx.coroutines.flow.StateFlow
 
 interface AppSettingViewModel :
-    DialogViewModeled<MemberUi, AppSettingUiAction, UiSingleEvent, AppSettingFields> {
+    DialogViewModeled<AppSettingsUiModel, AppSettingUiAction, UiSingleEvent, AppSettingFields> {
     val memberTypes: StateFlow<MutableMap<MemberType, String>>
 
     val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>>
     val group: StateFlow<InputListItemWrapper<ListItemModel>>
-    val processingPeriod: StateFlow<InputWrapper>
-    val memberName: StateFlow<InputWrapper>
-    val surname: StateFlow<InputWrapper>
-    val patronymic: StateFlow<InputWrapper>
-    val pseudonym: StateFlow<InputWrapper>
+    val territoryProcessingPeriod: StateFlow<InputWrapper>
+    val territoryAtHandPeriod: StateFlow<InputWrapper>
+    val territoryIdlePeriod: StateFlow<InputWrapper>
+    val territoryRoomsLimit: StateFlow<InputWrapper>
+    val territoryMaxRooms: StateFlow<InputWrapper>
     val phoneNumber: StateFlow<InputWrapper>
     val dateOfBirth: StateFlow<InputWrapper>
     val dateOfBaptism: StateFlow<InputWrapper>
     val memberType: StateFlow<InputWrapper>
     val movementDate: StateFlow<InputWrapper>
     val loginExpiredDate: StateFlow<InputWrapper>
-
-    fun getPseudonym(
-        surname: String? = null, memberName: String? = null, groupNum: Int? = null,
-        memberNum: String? = null
-    ): String
 }

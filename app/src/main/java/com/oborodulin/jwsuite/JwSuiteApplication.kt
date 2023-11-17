@@ -10,9 +10,9 @@ import com.oborodulin.home.common.BuildConfig
 import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.ReleaseTree
 import com.oborodulin.home.common.util.ResourcesHelper
+import com.oborodulin.home.common.util.getAppVersion
 import com.oborodulin.home.common.util.setLocale
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
-import com.oborodulin.jwsuite.data.util.dbVersion
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -69,10 +69,11 @@ class JwSuiteApplication : Application(), Configuration.Provider {
         }
         val languages =
             ResourcesHelper.getHashMapResource(this, com.oborodulin.home.common.R.xml.languages)
+        val version = this.getAppVersion()
         Timber.tag(TAG)
             .i(
                 "App version %s is starting [%s]",
-                1, //BuildConfig.VERSION_NAME,
+                version?.versionName, //BuildConfig.VERSION_NAME,
                 Locale.getDefault().language
             )
         Timber.tag(TAG).i("Framework (API %s)", android.os.Build.VERSION.SDK_INT)

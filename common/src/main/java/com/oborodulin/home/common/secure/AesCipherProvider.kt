@@ -3,8 +3,6 @@ package com.oborodulin.home.common.secure
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import com.lambdapioneer.argon2kt.Argon2Kt
-import com.lambdapioneer.argon2kt.Argon2Mode
 import com.oborodulin.home.common.di.SecurityModule
 import java.security.KeyStore
 import java.security.SecureRandom
@@ -83,7 +81,7 @@ class AesCipherProvider @Inject constructor(
         }
 
         // https://github.com/lambdapioneer/argon2kt
-        fun argon2(password: ByteArray, salt: ByteArray? = null): String {
+        /*fun argon2(password: ByteArray, salt: ByteArray? = null): String {
             // https://stackoverflow.com/questions/46261055/how-to-generate-a-securerandom-string-of-length-n-in-java
             val bytes = ByteArray(512)
             if (salt == null) {
@@ -97,6 +95,6 @@ class AesCipherProvider @Inject constructor(
                 password = password, salt = saltBytes,
                 tCostInIterations = 1, mCostInKibibyte = 37888
             ).encodedOutputAsString() //rawHashAsByteArray()
-        }
+        }*/
     }
 }

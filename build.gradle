@@ -5,6 +5,7 @@ buildscript {
         versions = [
                 accompanist            : '0.31.4-beta',
                 appCompat              : '1.6.1',
+                argon2kt               : '1.4.0',
                 compose                : '1.4.3',
                 composeActivity        : '1.7.1',
                 composeBom             : '2023.06.01',
@@ -195,6 +196,7 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                                        ktx     : "androidx.room:room-ktx:$versions.room"],
                 sql                 : [sqlcipher: "net.zetetic:android-database-sqlcipher:$versions.sqlcipher",
                                        sqlite   : "androidx.sqlite:sqlite:$versions.sqlite"],
+                secure              : [argon2kt: "com.lambdapioneer.argon2kt:argon2kt:$versions.argon2kt"],
                 // Sweet Toast
                 TalhaFaki           : [composableSweetToast: "com.github.tfaki:ComposableSweetToast:$versions.composableSweetToast"],
                 test                : [junit          : "junit:junit:$versions.junit",

@@ -20,14 +20,14 @@ import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
 import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.AppSettingUiModelToMemberMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberToMembersListItemMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberUiToMemberMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -41,7 +41,7 @@ import java.time.format.FormatStyle
 import java.util.*
 import javax.inject.Inject
 
-private const val TAG = "Congregating.MemberViewModelImpl"
+private const val TAG = "Presentation.AppSettingViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
@@ -50,10 +50,10 @@ class AppSettingViewModelImpl @Inject constructor(
     private val resHelper: ResourcesHelper,
     private val useCases: MemberUseCases,
     private val converter: MemberConverter,
-    private val memberUiMapper: MemberUiToMemberMapper,
+    private val memberUiMapper: AppSettingUiModelToMemberMapper,
     private val memberMapper: MemberToMembersListItemMapper
 ) : AppSettingViewModel,
-    DialogViewModel<MemberUi, UiState<MemberUi>, AppSettingUiAction, UiSingleEvent, AppSettingFields, InputWrapper>(
+    DialogViewModel<AppSettingsUiModel, UiState<AppSettingsUiModel>, AppSettingUiAction, UiSingleEvent, AppSettingFields, InputWrapper>(
         state, AppSettingFields.MEMBER_ID.name, AppSettingFields.MEMBER_NUM
     ) {
     private val _memberTypes: MutableStateFlow<MutableMap<MemberType, String>> =
@@ -68,19 +68,19 @@ class AppSettingViewModelImpl @Inject constructor(
         state.getStateFlow(AppSettingFields.MEMBER_GROUP.name, InputListItemWrapper())
     }
 
-    override val processingPeriod: StateFlow<InputWrapper> by lazy {
+    override val territoryProcessingPeriod: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(AppSettingFields.MEMBER_NUM.name, InputWrapper())
     }
-    override val memberName: StateFlow<InputWrapper> by lazy {
+    override val territoryAtHandPeriod: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(AppSettingFields.MEMBER_NAME.name, InputWrapper())
     }
-    override val surname: StateFlow<InputWrapper> by lazy {
+    override val territoryIdlePeriod: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(AppSettingFields.MEMBER_SURNAME.name, InputWrapper())
     }
-    override val patronymic: StateFlow<InputWrapper> by lazy {
+    override val territoryRoomsLimit: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(AppSettingFields.MEMBER_PATRONYMIC.name, InputWrapper())
     }
-    override val pseudonym: StateFlow<InputWrapper> by lazy {
+    override val territoryMaxRooms: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(AppSettingFields.MEMBER_PSEUDONYM.name, InputWrapper())
     }
     override val phoneNumber: StateFlow<InputWrapper> by lazy {
@@ -105,9 +105,9 @@ class AppSettingViewModelImpl @Inject constructor(
     override val areInputsValid =
         combine(
             //group, memberNum, memberName,
-            surname,
-            patronymic,
-            pseudonym,
+            territoryIdlePeriod,
+            territoryRoomsLimit,
+            territoryMaxRooms,
             phoneNumber,
             memberType,
             dateOfBirth,
@@ -130,15 +130,15 @@ class AppSettingViewModelImpl @Inject constructor(
         for (type in MemberType.values()) _memberTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<MemberUi> = UiState.Loading
+    override fun initState(): UiState<AppSettingsUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: AppSettingUiAction): Job {
-        Timber.tag(TAG).d("handleAction(MemberUiAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(AppSettingUiModelAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is AppSettingUiAction.Load -> when (action.memberId) {
                 null -> {
                     setDialogTitleResId(com.oborodulin.jwsuite.presentation_congregation.R.string.member_new_subheader)
-                    submitState(UiState.Success(MemberUi()))
+                    submitState(UiState.Success(AppSettingsUiModel()))
                 }
 
                 else -> {
@@ -184,14 +184,14 @@ class AppSettingViewModelImpl @Inject constructor(
             dateOfBirth.value.value,
             dateOfBirthOffsetDateTime
         )
-        val memberUi = MemberUi(
+        val memberUi = AppSettingsUiModel(
             congregation = congregationUi,
             group = groupUi,
-            memberNum = processingPeriod.value.value,
-            memberName = memberName.value.value,
-            surname = surname.value.value,
-            patronymic = patronymic.value.value,
-            pseudonym = pseudonym.value.value,
+            memberNum = territoryProcessingPeriod.value.value,
+            memberName = territoryAtHandPeriod.value.value,
+            surname = territoryIdlePeriod.value.value,
+            patronymic = territoryRoomsLimit.value.value,
+            pseudonym = territoryMaxRooms.value.value,
             phoneNumber = phoneNumber.value.value,
             memberType = MemberType.valueOf(memberType.value.value),
             dateOfBirth = dateOfBirthOffsetDateTime,
@@ -239,7 +239,7 @@ class AppSettingViewModelImpl @Inject constructor(
             memberNum?.let { ".$it" }.orEmpty()
         }"
 
-    override fun initFieldStatesByUiModel(uiModel: MemberUi): Job? {
+    override fun initFieldStatesByUiModel(uiModel: AppSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
@@ -252,12 +252,12 @@ class AppSettingViewModelImpl @Inject constructor(
             AppSettingFields.MEMBER_GROUP, group,
             ListItemModel(uiModel.group?.id, uiModel.group?.groupNum?.toString().orEmpty())
         )
-        initStateValue(AppSettingFields.MEMBER_NUM, processingPeriod, uiModel.memberNum.orEmpty())
-        initStateValue(AppSettingFields.MEMBER_NAME, memberName, uiModel.memberName.orEmpty())
-        initStateValue(AppSettingFields.MEMBER_SURNAME, surname, uiModel.surname.orEmpty())
-        initStateValue(AppSettingFields.MEMBER_PATRONYMIC, patronymic, uiModel.patronymic.orEmpty())
+        initStateValue(AppSettingFields.MEMBER_NUM, territoryProcessingPeriod, uiModel.memberNum.orEmpty())
+        initStateValue(AppSettingFields.MEMBER_NAME, territoryAtHandPeriod, uiModel.memberName.orEmpty())
+        initStateValue(AppSettingFields.MEMBER_SURNAME, territoryIdlePeriod, uiModel.surname.orEmpty())
+        initStateValue(AppSettingFields.MEMBER_PATRONYMIC, territoryRoomsLimit, uiModel.patronymic.orEmpty())
         initStateValue(
-            AppSettingFields.MEMBER_PSEUDONYM, pseudonym,
+            AppSettingFields.MEMBER_PSEUDONYM, territoryMaxRooms,
             uiModel.pseudonym.ifEmpty {
                 getPseudonym(
                     surname = uiModel.surname,
@@ -318,31 +318,36 @@ class AppSettingViewModelImpl @Inject constructor(
                     is AppSettingInputEvent.AppSettingNum ->
                         when (AppSettingInputValidator.AppSettingNum.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                AppSettingFields.MEMBER_NUM, processingPeriod, event.input, true
+                                AppSettingFields.MEMBER_NUM, territoryProcessingPeriod, event.input, true
                             )
 
                             else -> setStateValue(
-                                AppSettingFields.MEMBER_NUM, processingPeriod, event.input
+                                AppSettingFields.MEMBER_NUM, territoryProcessingPeriod, event.input
                             )
                         }
 
                     is AppSettingInputEvent.Surname ->
-                        setStateValue(AppSettingFields.MEMBER_SURNAME, surname, event.input, true)
+                        setStateValue(AppSettingFields.MEMBER_SURNAME, territoryIdlePeriod, event.input, true)
 
                     is AppSettingInputEvent.AppSettingName ->
-                        setStateValue(AppSettingFields.MEMBER_NAME, memberName, event.input, true)
+                        setStateValue(AppSettingFields.MEMBER_NAME, territoryAtHandPeriod, event.input, true)
 
                     is AppSettingInputEvent.Patronymic ->
-                        setStateValue(AppSettingFields.MEMBER_PATRONYMIC, patronymic, event.input, true)
+                        setStateValue(
+                            AppSettingFields.MEMBER_PATRONYMIC,
+                            territoryRoomsLimit,
+                            event.input,
+                            true
+                        )
 
                     is AppSettingInputEvent.Pseudonym ->
                         when (AppSettingInputValidator.Pseudonym.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                AppSettingFields.MEMBER_PSEUDONYM, pseudonym, event.input, true
+                                AppSettingFields.MEMBER_PSEUDONYM, territoryMaxRooms, event.input, true
                             )
 
                             else -> setStateValue(
-                                AppSettingFields.MEMBER_PSEUDONYM, pseudonym, event.input
+                                AppSettingFields.MEMBER_PSEUDONYM, territoryMaxRooms, event.input
                             )
                         }
 
@@ -360,7 +365,10 @@ class AppSettingViewModelImpl @Inject constructor(
                     is AppSettingInputEvent.DateOfBirth ->
                         when (AppSettingInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                AppSettingFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input, true
+                                AppSettingFields.MEMBER_DATE_OF_BIRTH,
+                                dateOfBirth,
+                                event.input,
+                                true
                             )
 
                             else -> setStateValue(
@@ -394,7 +402,10 @@ class AppSettingViewModelImpl @Inject constructor(
                     is AppSettingInputEvent.MovementDate ->
                         when (AppSettingInputValidator.MovementDate.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                AppSettingFields.MEMBER_MOVEMENT_DATE, movementDate, event.input, true
+                                AppSettingFields.MEMBER_MOVEMENT_DATE,
+                                movementDate,
+                                event.input,
+                                true
                             )
 
                             else -> setStateValue(
@@ -433,22 +444,22 @@ class AppSettingViewModelImpl @Inject constructor(
 
                     is AppSettingInputEvent.AppSettingNum ->
                         setStateValue(
-                            AppSettingFields.MEMBER_NUM, processingPeriod,
+                            AppSettingFields.MEMBER_NUM, territoryProcessingPeriod,
                             AppSettingInputValidator.AppSettingNum.errorIdOrNull(event.input)
                         )
 
                     is AppSettingInputEvent.Surname ->
-                        setStateValue(AppSettingFields.MEMBER_SURNAME, surname, null)
+                        setStateValue(AppSettingFields.MEMBER_SURNAME, territoryIdlePeriod, null)
 
                     is AppSettingInputEvent.AppSettingName ->
-                        setStateValue(AppSettingFields.MEMBER_NAME, memberName, null)
+                        setStateValue(AppSettingFields.MEMBER_NAME, territoryAtHandPeriod, null)
 
                     is AppSettingInputEvent.Patronymic ->
-                        setStateValue(AppSettingFields.MEMBER_PATRONYMIC, patronymic, null)
+                        setStateValue(AppSettingFields.MEMBER_PATRONYMIC, territoryRoomsLimit, null)
 
                     is AppSettingInputEvent.Pseudonym ->
                         setStateValue(
-                            AppSettingFields.MEMBER_PSEUDONYM, pseudonym,
+                            AppSettingFields.MEMBER_PSEUDONYM, territoryMaxRooms,
                             AppSettingInputValidator.Pseudonym.errorIdOrNull(event.input)
                         )
 
@@ -499,12 +510,17 @@ class AppSettingViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         AppSettingInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
-            inputErrors.add(InputError(fieldName = AppSettingFields.MEMBER_GROUP.name, errorId = it))
+            inputErrors.add(
+                InputError(
+                    fieldName = AppSettingFields.MEMBER_GROUP.name,
+                    errorId = it
+                )
+            )
         }
-        AppSettingInputValidator.AppSettingNum.errorIdOrNull(processingPeriod.value.value)?.let {
+        AppSettingInputValidator.AppSettingNum.errorIdOrNull(territoryProcessingPeriod.value.value)?.let {
             inputErrors.add(InputError(fieldName = AppSettingFields.MEMBER_NUM.name, errorId = it))
         }
-        AppSettingInputValidator.Pseudonym.errorIdOrNull(pseudonym.value.value)?.let {
+        AppSettingInputValidator.Pseudonym.errorIdOrNull(territoryMaxRooms.value.value)?.let {
             inputErrors.add(
                 InputError(fieldName = AppSettingFields.MEMBER_PSEUDONYM.name, errorId = it)
             )
@@ -541,8 +557,8 @@ class AppSettingViewModelImpl @Inject constructor(
         for (error in inputErrors) {
             state[error.fieldName] = when (AppSettingFields.valueOf(error.fieldName)) {
                 AppSettingFields.MEMBER_GROUP -> group.value.copy(errorId = error.errorId)
-                AppSettingFields.MEMBER_NUM -> processingPeriod.value.copy(errorId = error.errorId)
-                AppSettingFields.MEMBER_PSEUDONYM -> pseudonym.value.copy(errorId = error.errorId)
+                AppSettingFields.MEMBER_NUM -> territoryProcessingPeriod.value.copy(errorId = error.errorId)
+                AppSettingFields.MEMBER_PSEUDONYM -> territoryMaxRooms.value.copy(errorId = error.errorId)
                 AppSettingFields.MEMBER_PHONE_NUMBER -> phoneNumber.value.copy(errorId = error.errorId)
                 AppSettingFields.MEMBER_TYPE -> memberType.value.copy(errorId = error.errorId)
                 AppSettingFields.MEMBER_DATE_OF_BIRTH -> dateOfBirth.value.copy(errorId = error.errorId)
@@ -578,11 +594,11 @@ class AppSettingViewModelImpl @Inject constructor(
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val group = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val processingPeriod = MutableStateFlow(InputWrapper())
-                override val memberName = MutableStateFlow(InputWrapper())
-                override val surname = MutableStateFlow(InputWrapper())
-                override val patronymic = MutableStateFlow(InputWrapper())
-                override val pseudonym = MutableStateFlow(InputWrapper())
+                override val territoryProcessingPeriod = MutableStateFlow(InputWrapper())
+                override val territoryAtHandPeriod = MutableStateFlow(InputWrapper())
+                override val territoryIdlePeriod = MutableStateFlow(InputWrapper())
+                override val territoryRoomsLimit = MutableStateFlow(InputWrapper())
+                override val territoryMaxRooms = MutableStateFlow(InputWrapper())
                 override val phoneNumber = MutableStateFlow(InputWrapper())
                 override val dateOfBirth = MutableStateFlow(InputWrapper())
                 override val dateOfBaptism = MutableStateFlow(InputWrapper())
@@ -618,8 +634,8 @@ class AppSettingViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): MemberUi {
-            val memberUi = MemberUi(
+        fun previewUiModel(ctx: Context): AppSettingsUiModel {
+            val memberUi = AppSettingsUiModel(
                 group = GroupViewModelImpl.previewUiModel(ctx),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
                 memberName = ctx.resources.getString(R.string.def_ivanov_member_name),

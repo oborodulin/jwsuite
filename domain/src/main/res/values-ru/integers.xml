@@ -1,7 +1,7 @@
 <resources>
     <!--Параметры приложения -->
     <!--год -->
-    <integer name="territory_processing_period">1</integer>
+    <integer name="territory_processing_period">12</integer>
     <!--мес -->
     <integer name="territory_at_hand_period">4</integer>
     <!--кв -->

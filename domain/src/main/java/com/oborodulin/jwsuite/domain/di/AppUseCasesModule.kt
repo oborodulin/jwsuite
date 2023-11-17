@@ -1,7 +1,9 @@
 package com.oborodulin.jwsuite.domain.di
 
+import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
+import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.appsetting.CheckpointUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.DeleteAppSettingUseCase
@@ -11,6 +13,7 @@ import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -27,8 +30,12 @@ object AppUseCasesModule {
     @Singleton
     @Provides
     fun provideGetAppSettingsUseCase(
-        configuration: UseCase.Configuration, appSettingsRepository: AppSettingsRepository
-    ): GetAppSettingsUseCase = GetAppSettingsUseCase(configuration, appSettingsRepository)
+        @ApplicationContext ctx: Context,
+        configuration: UseCase.Configuration,
+        appSettingsRepository: AppSettingsRepository,
+        sessionManagerRepository: SessionManagerRepository
+    ): GetAppSettingsUseCase =
+        GetAppSettingsUseCase(ctx, configuration, appSettingsRepository, sessionManagerRepository)
 
     @Singleton
     @Provides

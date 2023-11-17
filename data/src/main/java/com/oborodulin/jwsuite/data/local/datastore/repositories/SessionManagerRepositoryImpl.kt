@@ -21,6 +21,7 @@ class SessionManagerRepositoryImpl @Inject constructor(
     //@IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : SessionManagerRepository {
     override fun isSigned() = localSessionManagerDataSource.isSigned()
+    override fun username() = localSessionManagerDataSource.username()
     override fun lastDestination() = localSessionManagerDataSource.lastDestination()
     override fun roles() = localSessionManagerDataSource.roles()
 

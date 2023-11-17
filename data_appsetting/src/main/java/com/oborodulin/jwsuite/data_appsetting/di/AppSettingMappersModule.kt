@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_appsetting.di
 
+import android.content.Context
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingEntityListToAppSettingListMapper
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingEntityToAppSettingMapper
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingMappers
@@ -8,6 +9,7 @@ import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -16,8 +18,8 @@ import javax.inject.Singleton
 object AppSettingMappersModule {
     @Singleton
     @Provides
-    fun provideAppSettingEntityToAppSettingMapper(): AppSettingEntityToAppSettingMapper =
-        AppSettingEntityToAppSettingMapper()
+    fun provideAppSettingEntityToAppSettingMapper(@ApplicationContext ctx: Context): AppSettingEntityToAppSettingMapper =
+        AppSettingEntityToAppSettingMapper(ctx = ctx)
 
     @Singleton
     @Provides

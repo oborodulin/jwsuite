@@ -16,6 +16,10 @@ android {
         targetSdk cfg.sdk.targetVersion
         versionCode cfg.app.versionCode
         versionName cfg.app.versionName
+        // https://issuetracker.google.com/issues/158695880
+        /*ndkVersion rootProject.ndkVersion
+        buildConfigField 'int', 'VERSION_CODE', "${rootProject.versionCode}"
+        buildConfigField 'String', 'VERSION_NAME', "${rootProject.versionName}"*/
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
@@ -95,7 +99,7 @@ dependencies {
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.livedataKtx
     implementation deps.lifecycle.viewmodelKtx
-    implementation deps.glide.glide
+    //implementation deps.glide.glide
 
     // Coroutines
     implementation deps.coroutines.android

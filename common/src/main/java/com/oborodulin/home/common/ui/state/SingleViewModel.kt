@@ -37,7 +37,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
     private val _isUiStateChanged: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val isUiStateChanged = _isUiStateChanged.asStateFlow()
-    private var focusedTextField = FocusedTextField(
+    protected var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
         key = state[FOCUSED_FIELD_KEY] ?: initFocusedTextField?.key()
     )
@@ -275,7 +275,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
-    private fun focusOnLastSelectedTextField() {
+    protected fun focusOnLastSelectedTextField() {
         Timber.tag(TAG).d("focusOnLastSelectedTextField() called")
         viewModelScope.launch(Dispatchers.Default) {
             focusedTextField.textField?.let {
