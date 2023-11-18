@@ -357,7 +357,7 @@ class AppSettingViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): AppSettingsUiModel {
+        fun previewUiModel(ctx: Context): AppSettingsUiModel  {
             val memberUi = AppSettingsUiModel (
                 group = GroupViewModelImpl.previewUiModel(ctx),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
