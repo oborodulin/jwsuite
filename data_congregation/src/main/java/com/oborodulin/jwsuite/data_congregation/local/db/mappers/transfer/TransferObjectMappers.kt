@@ -1,0 +1,11 @@
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer
+
+data class TransferObjectMappers(
+    val transferObjectEntityToTransferObjectMapper: TransferObjectEntityToTransferObjectMapper,
+    val transferObjectListToTransferObjectsListMapper: TransferObjectListToTransferObjectsListMapper,
+    val roleTransferObjectToRoleTransferObjectEntityMapper: RoleTransferObjectToRoleTransferObjectEntityMapper,
+    val memberRoleTransferObjectViewToTransferObjectMapper: MemberRoleTransferObjectViewToTransferObjectMapper,
+    val memberRoleTransferObjectViewListToTransferObjectsListMapper: MemberRoleTransferObjectViewListToTransferObjectsListMapper,
+    val memberRoleTransferObjectViewToRoleTransferObjectMapper: MemberRoleTransferObjectViewToRoleTransferObjectMapper,
+    val memberRoleTransferObjectViewListToRoleTransferObjectsListMapper: MemberRoleTransferObjectViewListToRoleTransferObjectsListMapper
+)

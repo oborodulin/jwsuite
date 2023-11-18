@@ -132,9 +132,6 @@ fun HousingScreen(
         onTopBarNavClickChange { appState.backToBottomBarScreen() }
         onTopBarActionsChange {
             IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
-            IconButton(onClick = { context.toast("Settings action button clicked...") }) {
-                Icon(Icons.Outlined.Settings, null)
-            }
         }
         onActionBarChange {
             Row(verticalAlignment = Alignment.CenterVertically) {

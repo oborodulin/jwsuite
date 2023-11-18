@@ -188,14 +188,21 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+            /*val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
                 .map { loginConverter.convert(it) }.first()
             uiState(state)?.let { session ->
                 Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
                 _isLogged.value = session.isLogged
-            }
+            }*/
             //collect { state ->}
-            //.collect { submitState(it) }
+            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+                .map { loginConverter.convert(it) }.collect { state ->
+                    uiState(state)?.let { session ->
+                        Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
+                        _isLogged.value = session.isLogged
+                    }
+                    if (_isLogged.value) submitState(state)
+                }
         }
         return job
     }

@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,9 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
@@ -47,8 +49,7 @@ fun DashboardingScreen(
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
     val appState = LocalAppState.current
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val session = LocalSession.current
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardingScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(DashboardingUiAction.Init)
@@ -58,15 +59,15 @@ fun DashboardingScreen(
         onActionBarChange(null)
         onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
         onTopBarActionsChange {
-            /*IconButton(onClick = { appState.mainNavigate(NavRoutes.Congregation.routeForCongregation()) }) {
-                Icon(Icons.Outlined.Add, null)
-            }*/
             IconButton(onClick = { appState.mainNavigate(NavRoutes.Geo.route) }) {
-                Icon(painterResource(R.drawable.ic_geo_24), null)
+                Icon(
+                    painterResource(R.drawable.ic_geo_24), stringResource(NavRoutes.Geo.titleResId)
+                )
             }
-            /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
-                Icon(Icons.Outlined.Settings, null)
-            }*/
+            // context.toast("Settings button clicked...")
+            IconButton(onClick = { appState.mainNavigate(NavRoutes.Settings.route) }) {
+                Icon(Icons.Outlined.Settings, stringResource(NavRoutes.Settings.titleResId))
+            }
         }
         onFabChange {}
         Column(modifier = Modifier.fillMaxSize()) {
@@ -84,10 +85,15 @@ fun DashboardingScreen(
                                 appState.sharedViewModel.value, currentCongregation
                             )
                         }
-                        CongregationSection(
-                            navController = appState.mainNavController,
-                            congregation = dashboardingUi.favoriteCongregation
-                        )
+                        when {
+                            session.containsRole(MemberRoleType.REPORTS) ->
+                                CongregationSection(
+                                    navController = appState.mainNavController,
+                                    congregation = dashboardingUi.favoriteCongregation
+                                )
+
+                            else -> {}
+                        }
                     }
                 }
             }

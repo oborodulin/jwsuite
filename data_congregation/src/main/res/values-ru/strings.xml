@@ -57,7 +57,7 @@
     <!--Сервисные члены собрания-->
     <!--Администратор-->
     <string name="def_admin_member_name">admin</string>
-    <string name="def_admin_member_pseudonym">AD00</string>
+    <string name="def_admin_member_pseudonym">ADM</string>
 
     <!--Роли членов собрания-->
     <string name="def_role_name_admin">Администратор</string>

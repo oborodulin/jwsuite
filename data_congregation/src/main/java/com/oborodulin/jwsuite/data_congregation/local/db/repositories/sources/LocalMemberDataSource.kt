@@ -5,20 +5,35 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalMemberDataSource {
+    // Members by Congregation:
     fun getFavoriteCongregationMembers(): Flow<List<MemberView>>
     fun getCongregationMembers(congregationId: UUID): Flow<List<MemberView>>
     fun getFavoriteCongregationGroupMembers(): Flow<List<MemberView>>
+
+    // Members by Groups:
     fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
     fun getEmptyGroupMembers(congregationId: UUID? = null): Flow<List<MemberView>>
+
+    // Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
     fun getMemberRoles(pseudonym: String): Flow<List<MemberRoleView>>
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
+
+    // Transfer Objects:
+    fun getMemberTransferObjects(pseudonym: String): Flow<List<MemberRoleTransferObjectView>>
+    fun getRoleTransferObjects(roleId: UUID): Flow<List<MemberRoleTransferObjectView>>
+    fun getTransferObjectsForRole(roleId: UUID): Flow<List<TransferObjectEntity>>
+
+    // Member:
     fun getMember(memberId: UUID): Flow<MemberView>
     suspend fun insertMember(
         member: MemberEntity,
@@ -45,4 +60,9 @@ interface LocalMemberDataSource {
 
     // Movements:
     suspend fun deleteMovementById(memberMovementId: UUID)
+
+    // Transfer Objects:
+    suspend fun insertRoleTransferObject(roleTransferObject: RoleTransferObjectEntity)
+    suspend fun updateRoleTransferObject(roleTransferObject: RoleTransferObjectEntity)
+    suspend fun deleteRoleTransferObjectById(roleTransferObjectId: UUID)
 }

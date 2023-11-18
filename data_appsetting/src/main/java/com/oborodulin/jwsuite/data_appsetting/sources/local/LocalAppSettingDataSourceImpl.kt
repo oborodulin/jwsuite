@@ -5,6 +5,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
+import com.oborodulin.jwsuite.domain.util.AppSettingParam
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -30,6 +31,11 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
     override suspend fun updateAppSetting(setting: AppSettingEntity) = withContext(dispatcher) {
         appSettingDao.update(setting)
     }
+
+    override suspend fun updateAppSetting(paramName: AppSettingParam, paramValue: String) =
+        withContext(dispatcher) {
+            appSettingDao.updateByParamName(paramName, paramValue)
+        }
 
     override suspend fun deleteAppSetting(setting: AppSettingEntity) = withContext(dispatcher) {
         appSettingDao.delete(setting)

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,7 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -158,9 +160,6 @@ fun TerritoringScreen(
             IconButton(onClick = { appState.mainNavigate(NavRoutes.Housing.route) }) {
                 Icon(Icons.Outlined.Home, null)
             }
-            /*IconButton(onClick = { context.toast("Settings button clicked...") }) {
-                Icon(Icons.Outlined.Settings, null)
-            }*/
         }
         onActionBarChange {
             CommonScreen(state = state) { territoringUi ->

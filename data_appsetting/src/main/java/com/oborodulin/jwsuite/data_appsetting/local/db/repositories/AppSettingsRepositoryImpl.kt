@@ -34,6 +34,11 @@ class AppSettingsRepositoryImpl @Inject constructor(
         emit(setting)
     }
 
+    override fun save(settings: List<AppSetting>) = flow {
+        settings.forEach { localAppSettingDataSource.updateAppSetting(it.paramName, it.paramValue) }
+        emit(settings)
+    }
+
     override fun delete(setting: AppSetting) = flow {
         localAppSettingDataSource.deleteAppSetting(
             mappers.appSettingToAppSettingEntityMapper.map(

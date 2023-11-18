@@ -9,6 +9,7 @@ class SessionToSessionUiMapper(private val mapper: RolesListToRolesListItemMappe
     Mapper<Session, SessionUi>, NullableMapper<Session, SessionUi> {
     override fun map(input: Session) = SessionUi(
         isSigned = input.isSigned,
+        isLogged = input.isLogged,
         roles = mapper.map(input.roles),
         lastDestination = input.lastDestination
     )

@@ -30,6 +30,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberMovementView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
@@ -93,6 +94,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNames
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.TransferObjectType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -137,7 +139,7 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
-        //TerritoryInfoView::class
+        MemberRoleTransferObjectView::class //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true
 )
@@ -158,6 +160,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     abstract fun congregationDao(): CongregationDao
     abstract fun groupDao(): GroupDao
     abstract fun memberDao(): MemberDao
+    abstract fun transferDao(): TransferDao
 
     // Territory:
     abstract fun territoryCategoryDao(): TerritoryCategoryDao
@@ -197,7 +200,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     //.takeWhile { it.isNotEmpty() }.collect {= it}
                     databasePassphrase = localSessionManagerDataSource.databasePassphrase().first()
                 }
-                Timber.tag(TAG).d("databasePassphrase got")
+                Timber.tag(TAG).d("databasePassphrase got: %s", databasePassphrase)
                 val roomBuilder = Room.databaseBuilder(
                     ctx,
                     JwSuiteDatabase::class.java,
@@ -496,6 +499,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 val territoriesRole = insertDefMemberRole(db, MemberRoleType.TERRITORIES)
                 val billsRole = insertDefMemberRole(db, MemberRoleType.BILLS)
                 val reportsRole = insertDefMemberRole(db, MemberRoleType.REPORTS)
+
+                // Default Administrator:
+                val adminMember = insertDefAdminMember(db, adminRole)
 
                 // Default congregations:
                 // 1
@@ -814,6 +820,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     MemberCongregationCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                     Mapper.toContentValues(memberCongregation)
                 )
+                val memberMovement = MemberMovementEntity.defaultMemberMovement(
+                    memberId = it.memberId, memberType = MemberType.PREACHER
+                )
+                db.insert(
+                    MemberMovementEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                    Mapper.toContentValues(memberMovement)
+                )
                 val memberRole = MemberRoleEntity.defaultMemberRole(
                     memberId = it.memberId, roleId = role.roleId
                 )
@@ -824,14 +837,49 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Timber.tag(TAG).i("CONGREGATION: Default member imported")
                 jsonLogger?.let { logger ->
                     Timber.tag(TAG).i(
-                        ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberRole\": {%s}}",
+                        ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
                         logger.encodeToString(it),
                         logger.encodeToString(memberCongregation),
+                        logger.encodeToString(memberMovement),
                         logger.encodeToString(memberRole)
                     )
                 }
             }
             return member!!
+        }
+
+        private fun insertDefAdminMember(
+            db: SupportSQLiteDatabase, role: RoleEntity
+        ): MemberEntity {
+            val member = MemberEntity.adminMember(context)
+            db.insert(
+                MemberEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(member)
+            )
+            val memberMovement = MemberMovementEntity.defaultMemberMovement(
+                memberId = member.memberId, memberType = MemberType.SERVICE
+            )
+            db.insert(
+                MemberMovementEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(memberMovement)
+            )
+            val memberRole = MemberRoleEntity.defaultMemberRole(
+                memberId = member.memberId, roleId = role.roleId
+            )
+            db.insert(
+                MemberRoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(memberRole)
+            )
+            Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
+            jsonLogger?.let { logger ->
+                Timber.tag(TAG).i(
+                    ": {\"member\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
+                    logger.encodeToString(member),
+                    logger.encodeToString(memberMovement),
+                    logger.encodeToString(memberRole)
+                )
+            }
+            return member
         }
 
         private fun insertDefRegion(db: SupportSQLiteDatabase, region: GeoRegionEntity):

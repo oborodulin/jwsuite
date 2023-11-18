@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NamedNavArgument
@@ -36,6 +37,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MIN
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ROOM
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SIGNUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET_LOCALITY_DISTRICT
@@ -143,6 +145,7 @@ sealed class NavRoutes constructor(
     @StringRes open val titleResId: Int,
     val arguments: List<NamedNavArgument> = emptyList()
 ) {
+    // Bottom Navigation:
     data object Home : NavRoutes(
         route = ROUTE_HOME,
         iconPainterResId = R.drawable.ic_dashboard_24,
@@ -173,6 +176,7 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_ministring
     )
 
+    // Auth Navigation:
     data object Signup : NavRoutes(
         route = ROUTE_SIGNUP,
         iconImageVector = Icons.Outlined.AccountBox,
@@ -185,10 +189,17 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_login
     )
 
+    // Service Navigation:
     data object Geo : NavRoutes(
         route = ROUTE_GEO,
         iconPainterResId = R.drawable.ic_geo_24,
         titleResId = R.string.nav_item_geo
+    )
+
+    data object Settings : NavRoutes(
+        route = ROUTE_SETTINGS,
+        iconImageVector = Icons.Outlined.Settings,
+        titleResId = R.string.nav_item_settings
     )
 
     data object Housing : NavRoutes(
@@ -197,6 +208,7 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_housing
     )
 
+    // Main Navigation:
     // Geo:
     data object Region : NavRoutes(
         route = String.format(ROUTE_REGION, "$ARG_REGION_ID={$ARG_REGION_ID}"),

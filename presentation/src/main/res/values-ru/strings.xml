@@ -9,6 +9,7 @@
     <string name="nav_item_signup">Регистрация</string>
     <string name="nav_item_login">Вход</string>
     <string name="nav_item_geo">География</string>
+    <string name="nav_item_settings">Настройки</string>
     <string name="nav_item_housing">Дома</string>
     <!--дополнительная-->
     <string name="nav_item_congregation">Собрание</string>
@@ -65,6 +66,20 @@
     <string name="session_username_hint">Логин</string>
     <string name="session_pin_hint">PIN</string>
     <string name="session_confirm_pin_hint">Подтвердите PIN</string>
+    <!--настройки-->
+    <string name="authorization_subheader">АВТОРИЗАЦИЯ</string>
+    <string name="username_hint">Логин</string>
+    <string name="roles_hint">Роли</string>
+    <string name="transfer_subheader">ПОЛУЧЕНИЕ ДАННЫХ</string>
+    <string name="transfer_objects_hint">Получаемые объекты</string>
+    <string name="territory_subheader">УЧАСТКИ</string>
+    <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
+    <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
+    <string name="territory_idle_period_hint">Период отстоя участка, мес.</string>
+    <string name="territory_rooms_limit_hint">Макс. кол-во квартир участка, кв.</string>
+    <string name="territory_max_rooms_hint">Макс. кол-во квартир в доме, кв.</string>
+    <string name="about_subheader">О ПРОГРАММЕ</string>
+    <string name="version_hint">Версия</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->
@@ -85,6 +100,12 @@
     <string name="signup_confirm_pin_error">ПИН-коды не совпадают! Пожалуйста, подтвердите ПИН-код ещё раз</string>
     <!--формы логина-->
     <string name="login_pin_error">Неверный ПИН-код! Пожалуйста, введите ПИН-код ещё раз</string>
+    <!--формы настроек-->
+    <string name="territory_processing_period_empty_error">Укажите, пожалуйста, период обработки всех участков</string>
+    <string name="territory_at_hand_period_empty_error">Укажите, пожалуйста, период обработки одного участка</string>
+    <string name="territory_idle_period_empty_error">Укажите, пожалуйста, период ериод отстоя участка</string>
+    <string name="territory_rooms_limit_empty_error">Укажите, пожалуйста, макс. кол-во квартир участка</string>
+    <string name="territory_max_rooms_empty_error">Укажите, пожалуйста, макс. кол-во квартир в доме</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
 </resources>

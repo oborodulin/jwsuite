@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.di
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.CongregationsRepositoryImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.GroupsRepositoryImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.MembersRepositoryImpl
@@ -39,6 +40,8 @@ object CongregationRepositoriesModule {
     @Singleton
     @Provides
     fun provideMembersRepository(
-        localMemberDataSource: LocalMemberDataSource, mappers: MemberMappers
-    ): MembersRepository = MembersRepositoryImpl(localMemberDataSource, mappers)
+        localMemberDataSource: LocalMemberDataSource, memberMappers: MemberMappers,
+        transferObjectMappers: TransferObjectMappers
+    ): MembersRepository =
+        MembersRepositoryImpl(localMemberDataSource, memberMappers, transferObjectMappers)
 }

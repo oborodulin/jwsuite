@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,18 +31,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.field.DatePickerComponent
-import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupComboBox
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -52,7 +44,7 @@ private const val TAG = "Presentation.AppSettingView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppSettingView(
-    sharedViewModel: SharedViewModeled<ListItemModel?>?,
+    appSettingsUiModel: AppSettingsUiModel,
     viewModel: AppSettingViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("AppSettingView(...) called")
@@ -65,24 +57,14 @@ fun AppSettingView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Member: CollectAsStateWithLifecycle for all fields")
-    val congregation by viewModel.congregation.collectAsStateWithLifecycle()
-    val group by viewModel.group.collectAsStateWithLifecycle()
-    val memberNum by viewModel.territoryProcessingPeriod.collectAsStateWithLifecycle()
-    val memberName by viewModel.territoryAtHandPeriod.collectAsStateWithLifecycle()
-    val surname by viewModel.territoryIdlePeriod.collectAsStateWithLifecycle()
-    val patronymic by viewModel.territoryRoomsLimit.collectAsStateWithLifecycle()
-    val pseudonym by viewModel.territoryMaxRooms.collectAsStateWithLifecycle()
-    val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
-    val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
-    val dateOfBaptism by viewModel.dateOfBaptism.collectAsStateWithLifecycle()
-    val memberType by viewModel.memberType.collectAsStateWithLifecycle()
-    val movementDate by viewModel.movementDate.collectAsStateWithLifecycle()
-    val loginExpiredDate by viewModel.loginExpiredDate.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("AppSetting: CollectAsStateWithLifecycle for all fields")
+    val territoryProcessingPeriod by viewModel.territoryProcessingPeriod.collectAsStateWithLifecycle()
+    val territoryAtHandPeriod by viewModel.territoryAtHandPeriod.collectAsStateWithLifecycle()
+    val territoryIdlePeriod by viewModel.territoryIdlePeriod.collectAsStateWithLifecycle()
+    val territoryRoomsLimit by viewModel.territoryRoomsLimit.collectAsStateWithLifecycle()
+    val territoryMaxRooms by viewModel.territoryMaxRooms.collectAsStateWithLifecycle()
 
-    val memberTypes by viewModel.memberTypes.collectAsStateWithLifecycle()
-
-    Timber.tag(TAG).d("Member: Init Focus Requesters for all fields")
+    Timber.tag(TAG).d("AppSetting: Init Focus Requesters for all fields")
     val focusRequesters =
         EnumMap<AppSettingFields, InputFocusRequester>(AppSettingFields::class.java)
     enumValues<AppSettingFields>().forEach {
@@ -111,50 +93,13 @@ fun AppSettingView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CongregationComboBox(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_CONGREGATION]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_CONGREGATION,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            enabled = false,
-            sharedViewModel = sharedViewModel,
-            inputWrapper = congregation,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.Congregation(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        GroupComboBox(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_GROUP]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_GROUP,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            inputWrapper = group,
-            sharedViewModel = sharedViewModel,
-            onValueChange = { groupNum ->
-                viewModel.onTextFieldEntered(AppSettingInputEvent.Group(groupNum))
-                viewModel.onInsert {
-                    val pseudonymVal = viewModel.getPseudonym(
-                        surname.value, memberName.value, groupNum.headline.toIntOrNull(),
-                        memberNum.value
-                    )
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.Pseudonym(pseudonymVal))
-                }
-            },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_NUM]!!.focusRequester)
+                .focusRequester(focusRequesters[AppSettingFields.TERRITORY_PROCESSING_PERIOD]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_NUM, isFocused = focusState.isFocused
+                        focusedField = AppSettingFields.TERRITORY_PROCESSING_PERIOD,
+                        isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.member_num_hint,
@@ -162,25 +107,31 @@ fun AppSettingView(
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
-            inputWrapper = memberNum,
+            inputWrapper = territoryProcessingPeriod,
             onValueChange = { numInGroup ->
-                viewModel.onTextFieldEntered(AppSettingInputEvent.AppSettingNum(numInGroup))
-                viewModel.onInsert {
-                    val pseudonymVal = viewModel.getPseudonym(
-                        surname.value, memberName.value, group.item?.headline?.toIntOrNull(),
+                viewModel.onTextFieldEntered(
+                    AppSettingInputEvent.TerritoryProcessingPeriod(
                         numInGroup
                     )
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.Pseudonym(pseudonymVal))
+                )
+                viewModel.onInsert {
+                    val pseudonymVal = viewModel.getPseudonym(
+                        territoryIdlePeriod.value,
+                        territoryAtHandPeriod.value,
+                        group.item?.headline?.toIntOrNull(),
+                        numInGroup
+                    )
+                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_SURNAME]!!.focusRequester)
+                .focusRequester(focusRequesters[AppSettingFields.TERRITORY_IDLE_PERIOD]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_SURNAME,
+                        focusedField = AppSettingFields.TERRITORY_IDLE_PERIOD,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -192,25 +143,25 @@ fun AppSettingView(
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = surname,
+            inputWrapper = territoryIdlePeriod,
             onValueChange = { value ->
-                viewModel.onTextFieldEntered(AppSettingInputEvent.Surname(value))
+                viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryIdlePeriod(value))
                 viewModel.onInsert {
                     val pseudonymVal = viewModel.getPseudonym(
-                        value, memberName.value, group.item?.headline?.toIntOrNull(),
-                        memberNum.value
+                        value, territoryAtHandPeriod.value, group.item?.headline?.toIntOrNull(),
+                        territoryProcessingPeriod.value
                     )
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.Pseudonym(pseudonymVal))
+                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_NAME]!!.focusRequester)
+                .focusRequester(focusRequesters[AppSettingFields.TERRITORY_AT_HAND_PERIOD]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_NAME,
+                        focusedField = AppSettingFields.TERRITORY_AT_HAND_PERIOD,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -221,25 +172,25 @@ fun AppSettingView(
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = memberName,
+            inputWrapper = territoryAtHandPeriod,
             onValueChange = { name ->
-                viewModel.onTextFieldEntered(AppSettingInputEvent.AppSettingName(name))
+                viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryAtHandPeriod(name))
                 viewModel.onInsert {
                     val pseudonymVal = viewModel.getPseudonym(
-                        surname.value, name, group.item?.headline?.toIntOrNull(),
-                        memberNum.value
+                        territoryIdlePeriod.value, name, group.item?.headline?.toIntOrNull(),
+                        territoryProcessingPeriod.value
                     )
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.Pseudonym(pseudonymVal))
+                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(pseudonymVal))
                 }
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_PATRONYMIC]!!.focusRequester)
+                .focusRequester(focusRequesters[AppSettingFields.TERRITORY_ROOMS_LIMIT]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_PATRONYMIC,
+                        focusedField = AppSettingFields.TERRITORY_ROOMS_LIMIT,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -250,16 +201,22 @@ fun AppSettingView(
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = patronymic,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.Patronymic(it)) },
+            inputWrapper = territoryRoomsLimit,
+            onValueChange = {
+                viewModel.onTextFieldEntered(
+                    AppSettingInputEvent.TerritoryRoomsLimit(
+                        it
+                    )
+                )
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_PSEUDONYM]!!.focusRequester)
+                .focusRequester(focusRequesters[AppSettingFields.TERRITORY_MAX_ROOMS]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_PSEUDONYM,
+                        focusedField = AppSettingFields.TERRITORY_MAX_ROOMS,
                         isFocused = focusState.isFocused
                     )
                 },
@@ -270,114 +227,8 @@ fun AppSettingView(
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = pseudonym,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.Pseudonym(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_PHONE_NUMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_phone_number_hint,
-            leadingImageVector = Icons.Outlined.Call,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-            },
-            inputWrapper = phoneNumber,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.PhoneNumber(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_DATE_OF_BIRTH]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_DATE_OF_BIRTH,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_date_of_birth_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = dateOfBirth,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.DateOfBirth(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_DATE_OF_BAPTISM]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_DATE_OF_BAPTISM,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_date_of_baptism_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = dateOfBaptism,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.DateOfBaptism(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        ExposedDropdownMenuBoxComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_PHONE_NUMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_type_hint,
-            leadingPainterResId = R.drawable.ic_badge_36,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = memberType,
-            values = memberTypes.values.toList(), // resolve Enums to Resource
-            keys = memberTypes.keys.map { it.name }, // Enums
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.AppSettingType(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_MOVEMENT_DATE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_MOVEMENT_DATE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_movement_date_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = movementDate,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.MovementDate(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[AppSettingFields.MEMBER_LOGIN_EXPIRED_DATE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = AppSettingFields.MEMBER_LOGIN_EXPIRED_DATE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_login_expired_date_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
-            },
-            inputWrapper = loginExpiredDate,
-            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.LoginExpiredDate(it)) },
+            inputWrapper = territoryMaxRooms,
+            onValueChange = { viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }
@@ -390,7 +241,7 @@ fun PreviewGroupView() {
     //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            AppSettingView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            //AppSettingView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

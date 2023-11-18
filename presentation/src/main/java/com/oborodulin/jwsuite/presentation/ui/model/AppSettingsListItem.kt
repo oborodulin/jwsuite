@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.domain.util.AppSettingParam
 import java.util.UUID
 
 data class AppSettingsListItem(
-    val id: UUID,
+    val id: UUID? = null,
     val paramName: AppSettingParam,
     val paramValue: String = "",
     val paramFullName: String = ""

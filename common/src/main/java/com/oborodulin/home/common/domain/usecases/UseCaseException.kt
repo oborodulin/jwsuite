@@ -2,6 +2,7 @@ package com.oborodulin.home.common.domain.usecases
 
 sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class AppSettingSaveException(cause: Throwable) : UseCaseException(cause)
+    class AppSettingsSaveException(cause: Throwable) : UseCaseException(cause)
 
     // GEO:
     class GeoRegionSaveException(cause: Throwable) : UseCaseException(cause)

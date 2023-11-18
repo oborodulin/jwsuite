@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import java.util.UUID
 
 data class RolesListItem(
-    val id: UUID,
+    val id: UUID? = null,
     val roleType: MemberRoleType = MemberRoleType.USER,
-    val roleName: String
+    val roleName: String = ""
 ) : Parcelable, ListItemModel(itemId = id, headline = roleName)

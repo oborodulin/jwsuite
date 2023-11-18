@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation.ui.model.mappers
+package com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper

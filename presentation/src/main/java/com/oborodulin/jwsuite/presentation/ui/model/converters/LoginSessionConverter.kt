@@ -7,6 +7,6 @@ import com.oborodulin.jwsuite.presentation.ui.model.mappers.SessionToSessionUiMa
 
 class LoginSessionConverter(private val mapper: SessionToSessionUiMapper) :
     CommonResultConverter<LoginUseCase.Response, SessionUi>() {
-    override fun convertSuccess(data: LoginUseCase.Response) =
-        SessionUi(isLogged = data.isLogged)//mapper.map(data.session)
+    override fun convertSuccess(data: LoginUseCase.Response) = mapper.map(data.session)
+    //SessionUi(isLogged = data.isLogged)
 }

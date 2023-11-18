@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.di
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
+import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.appsetting.CheckpointUseCase
@@ -10,6 +11,7 @@ import com.oborodulin.jwsuite.domain.usecases.appsetting.DeleteAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingUseCase
+import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,9 +35,15 @@ object AppUseCasesModule {
         @ApplicationContext ctx: Context,
         configuration: UseCase.Configuration,
         appSettingsRepository: AppSettingsRepository,
-        sessionManagerRepository: SessionManagerRepository
-    ): GetAppSettingsUseCase =
-        GetAppSettingsUseCase(ctx, configuration, appSettingsRepository, sessionManagerRepository)
+        sessionManagerRepository: SessionManagerRepository,
+        membersRepository: MembersRepository
+    ): GetAppSettingsUseCase = GetAppSettingsUseCase(
+        ctx,
+        configuration,
+        appSettingsRepository,
+        sessionManagerRepository,
+        membersRepository
+    )
 
     @Singleton
     @Provides
@@ -48,6 +56,12 @@ object AppUseCasesModule {
     fun provideSaveAppSettingUseCase(
         configuration: UseCase.Configuration, appSettingsRepository: AppSettingsRepository
     ): SaveAppSettingUseCase = SaveAppSettingUseCase(configuration, appSettingsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveAppSettingsUseCase(
+        configuration: UseCase.Configuration, appSettingsRepository: AppSettingsRepository
+    ): SaveAppSettingsUseCase = SaveAppSettingsUseCase(configuration, appSettingsRepository)
 
     @Singleton
     @Provides
