@@ -358,7 +358,7 @@ class AppSettingViewModelImpl @Inject constructor(
             }
 
         fun previewUiModel(ctx: Context): AppSettingsUiModel {
-            val memberUi = AppSettingsUiModel(
+            val memberUi = AppSettingsUiModel (
                 group = GroupViewModelImpl.previewUiModel(ctx),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
                 memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
