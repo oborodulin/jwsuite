@@ -48,11 +48,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     upNavigation: () -> Unit,
     isCancelChangesShowAlert: MutableState<Boolean>,
     @StringRes cancelChangesConfirmResId: Int,
-    @StringRes uniqueConstraintFailedResId: Int,
+    @StringRes uniqueConstraintFailedResId: Int? = null,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
-    dialogView: @Composable () -> Unit
+    dialogView: @Composable (T) -> Unit
 ) {
     Timber.tag(TAG).d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
     val ctx = LocalContext.current
@@ -69,9 +69,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 } else {
                     isErrorShowAlert.value = true
                     errorMessage = when {
-                        errorMessage!!.contains("SQLiteConstraintException: error code 19 (extended error code 2067)") -> ctx.resources.getString(
-                            uniqueConstraintFailedResId
-                        )
+                        errorMessage!!.contains("SQLiteConstraintException: error code 19 (extended error code 2067)") -> uniqueConstraintFailedResId?.let {
+                            ctx.resources.getString(it)
+                        }.orEmpty()
 
                         else -> errorMessage
                     }
@@ -111,7 +111,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                dialogView.invoke()
+                dialogView.invoke(it)
                 // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                 Spacer(Modifier.height(8.dp))
                 SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)

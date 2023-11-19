@@ -7,6 +7,7 @@ object Graph {
     const val CONGREGATION = "congregation_graph"
     const val TERRITORY = "territory_graph"
     const val GEO = "geo_graph"
+    const val SETTINGS = "settings_graph"
     const val HOUSING = "housing_graph"
     const val BOTTOM_BAR = "bottom_bar_graph"
 }

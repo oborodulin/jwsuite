@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.appSettingNavigationGraph
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_congregation.navigation.congregationNavGraph
@@ -84,6 +85,13 @@ fun MainNavigationHost(
             startDestination = session.startDestination,
             onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+            onTopBarNavClickChange = onTopBarNavClickChange,
+            onTopBarActionsChange = onTopBarActionsChange
+        )
+        appSettingNavigationGraph(
+            startDestination = session.startDestination,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,

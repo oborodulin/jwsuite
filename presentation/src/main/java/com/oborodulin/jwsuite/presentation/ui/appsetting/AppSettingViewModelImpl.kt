@@ -11,28 +11,19 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
-import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.util.AppSettingParam
-import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.converters.AppSettingUiModelConverter
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberToMembersListItemMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 import javax.inject.Inject
 
@@ -44,8 +35,7 @@ class AppSettingViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: AppSettingUseCases,
     private val converter: AppSettingUiModelConverter,
-    private val appSettingsUiMapper: AppSettingsListItemToAppSettingsListMapper,
-    private val memberMapper: MemberToMembersListItemMapper
+    private val appSettingsUiMapper: AppSettingsListItemToAppSettingsListMapper
 ) : AppSettingViewModel,
     DialogViewModel<AppSettingsUiModel, UiState<AppSettingsUiModel>, AppSettingUiAction, UiSingleEvent, AppSettingFields, InputWrapper>(
         state, //AppSettingFields.MEMBER_ID.name, AppSettingFields.TERRITORY_PROCESSING_PERIOD
@@ -227,7 +217,7 @@ class AppSettingViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                       is AppSettingInputEvent.TerritoryProcessingPeriod ->
+                    is AppSettingInputEvent.TerritoryProcessingPeriod ->
                         setStateValue(
                             AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
                             AppSettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(event.input)
@@ -260,7 +250,7 @@ class AppSettingViewModelImpl @Inject constructor(
                             AppSettingInputValidator.TerritoryMaxRooms.errorIdOrNull(event.input)
                         )
 
-                       }
+                }
             }
     }
 
@@ -287,7 +277,7 @@ class AppSettingViewModelImpl @Inject constructor(
                     InputError(fieldName = AppSettingFields.TERRITORY_MAX_ROOMS.name, errorId = it)
                 )
             }
-          return if (inputErrors.isEmpty()) null else inputErrors
+        return if (inputErrors.isEmpty()) null else inputErrors
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
@@ -295,7 +285,7 @@ class AppSettingViewModelImpl @Inject constructor(
             .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (AppSettingFields.valueOf(error.fieldName)) {
-                  AppSettingFields.TERRITORY_PROCESSING_PERIOD -> territoryProcessingPeriod.value.copy(
+                AppSettingFields.TERRITORY_PROCESSING_PERIOD -> territoryProcessingPeriod.value.copy(
                     errorId = error.errorId
                 )
 
@@ -323,8 +313,6 @@ class AppSettingViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
-
-                override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 
                 override val id = MutableStateFlow(InputWrapper())
                 override val territoryProcessingPeriod = MutableStateFlow(InputWrapper())
@@ -357,21 +345,16 @@ class AppSettingViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): AppSettingsUiModel  {
-            val memberUi = AppSettingsUiModel (
-                group = GroupViewModelImpl.previewUiModel(ctx),
-                memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
-                surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
-                patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
-                pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
-                phoneNumber = "+79493851487",
-                memberType = MemberType.PREACHER,
-                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00"),
-                dateOfBaptism = Utils.toOffsetDateTime("1994-06-14T14:29:10.212+03:00")
+        fun previewUiModel(ctx: Context): AppSettingsUiModel {
+            val appSettingsUiModel = AppSettingsUiModel(
+                settings = emptyList(),
+                username = "ADM",
+                roles = emptyList(),
+                transferObjects = emptyList(),
+                versionName = "1.1"
             )
-            memberUi.id = UUID.randomUUID()
-            return memberUi
+            appSettingsUiModel.id = UUID.randomUUID()
+            return appSettingsUiModel
         }
     }
 }

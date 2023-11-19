@@ -124,6 +124,8 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                         // Animations
                         animationBom    : "androidx.compose.animation:animation",
                         animationVer    : "androidx.compose.animation:animation:$versions.compose",
+                        foundationBom : "androidx.compose.foundation:foundation-android",
+                        foundationVer : "androidx.compose.foundation:foundation-android:$versions.compose",
                         // Optional - Included automatically by material, only add when you need
                         // the icons but not the material library (e.g. when using Material3 or a
                         // custom design system based on Foundation)

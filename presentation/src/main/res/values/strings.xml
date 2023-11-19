@@ -69,9 +69,11 @@
     <!--настройки-->
     <string name="authorization_subheader">АВТОРИЗАЦИЯ</string>
     <string name="username_hint">Логин</string>
-    <string name="roles_hint">Роли</string>
+    <string name="role_header_hint">Роль</string>
+    <string name="expired_header_hint">Истекает</string>
     <string name="transfer_subheader">ПОЛУЧЕНИЕ ДАННЫХ</string>
-    <string name="transfer_objects_hint">Получаемые объекты</string>
+    <string name="transfer_objects_header_hint">Получаемые объекты</string>
+    <string name="is_personal_header_hint">Персонально?</string>
     <string name="territory_subheader">УЧАСТКИ</string>
     <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
     <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
@@ -85,6 +87,9 @@
     <!--заголовки-->
     <string name="dlg_title_signup">Регистрация</string>
     <string name="dlg_title_login">Вход</string>
+    <!--Подтверждения-->
+    <!--отмена изменений-->
+    <string name="dlg_confirm_cancel_changes_settings">Изменённые настройки не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->

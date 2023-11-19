@@ -84,6 +84,7 @@ dependencies {
     implementation deps.compose.uiBom
     implementation deps.compose.material3Bom
     //implementation deps.compose.iconsExtendedBom
+    //implementation deps.compose.foundationBom
     implementation deps.compose.uiToolingBom
     implementation deps.compose.uiPreviewBom
     // Compose lifecycle
