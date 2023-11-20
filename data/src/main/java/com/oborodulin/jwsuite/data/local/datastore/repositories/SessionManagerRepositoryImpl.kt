@@ -1,12 +1,9 @@
 package com.oborodulin.jwsuite.data.local.datastore.repositories
 
-
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
-import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest

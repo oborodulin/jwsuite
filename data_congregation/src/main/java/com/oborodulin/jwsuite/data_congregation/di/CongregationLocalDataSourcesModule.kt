@@ -4,6 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalGroupDataSource
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
@@ -36,6 +37,8 @@ object CongregationLocalDataSourcesModule {
     @Singleton
     @Provides
     fun provideLocalMemberDataSource(
-        memberDao: MemberDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalMemberDataSource = LocalMemberDataSourceImpl(memberDao, dispatcher)
+        memberDao: MemberDao,
+        transferDao: TransferDao,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalMemberDataSource = LocalMemberDataSourceImpl(memberDao, transferDao, dispatcher)
 }

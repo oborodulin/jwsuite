@@ -3,7 +3,6 @@ package com.oborodulin.jwsuite.presentation.ui.appsetting
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 
 enum class AppSettingFields : Focusable {
-    MEMBER_ID,
     TERRITORY_PROCESSING_PERIOD,
     TERRITORY_AT_HAND_PERIOD,
     TERRITORY_IDLE_PERIOD,

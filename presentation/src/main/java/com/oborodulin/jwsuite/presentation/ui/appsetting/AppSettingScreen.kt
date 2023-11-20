@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
@@ -13,11 +14,12 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
 
-private const val TAG = "Congregating.AppSettingScreen"
+private const val TAG = "Presentation.AppSettingScreen"
 
 @Composable
 fun AppSettingScreen(
     viewModel: AppSettingViewModelImpl = hiltViewModel(),
+    onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -30,6 +32,7 @@ fun AppSettingScreen(
     val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
     appState.handleTopBarNavClick.value =
         { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
+    onActionBarTitleChange(stringResource(R.string.nav_item_settings))
     SaveDialogScreenComponent(
         viewModel = viewModel,
         loadUiAction = AppSettingUiAction.Load,
@@ -40,5 +43,5 @@ fun AppSettingScreen(
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarActionsChange = onTopBarActionsChange
-    ) { AppSettingView(appSettingsUiModel = it) }
+    ) { AppSettingView(appSettingsUiModel = it, viewModel) }
 }

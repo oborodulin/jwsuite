@@ -16,6 +16,7 @@ import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity

@@ -10,7 +10,7 @@ class MemberRoleTransferObjectViewToRoleTransferObjectMapper(private val mapper:
     Mapper<MemberRoleTransferObjectView, RoleTransferObject> {
     override fun map(input: MemberRoleTransferObjectView): RoleTransferObject {
         val member = RoleTransferObject(
-            memberId = input.member.memberId,
+            memberId = input.memberRole.member.memberId,
             roleId = input.roleTransferObject.rtoRolesId,
             isPersonalData = input.roleTransferObject.isPersonalData,
             transferObject = mapper.map(input.transferObject),

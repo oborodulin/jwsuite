@@ -3,10 +3,8 @@ package com.oborodulin.jwsuite.presentation.ui.appsetting
 import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,12 +19,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -39,6 +39,7 @@ import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
+import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.time.format.DateTimeFormatter
@@ -50,7 +51,7 @@ private const val TAG = "Presentation.AppSettingView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppSettingView(
-    appSettingsUiModel: AppSettingsUiModel, viewModel: AppSettingViewModelImpl = hiltViewModel()
+    appSettingsUiModel: AppSettingsUiModel, viewModel: AppSettingViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("AppSettingView(...) called")
     val session = LocalSession.current
@@ -87,30 +88,40 @@ fun AppSettingView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
-            .height(IntrinsicSize.Min)
+            .padding(8.dp)
+            //.height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp)
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
+        //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start
     ) {
         Text(
             text = stringResource(R.string.authorization_subheader),
-            style = Typography.displaySmall,
-            modifier = Modifier.padding(vertical = 4.dp)
+            style = Typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
         )
-        Box(modifier = Modifier.padding(vertical = 4.dp)) {
-            Text(stringResource(R.string.username_hint))
+        Text(buildAnnotatedString {
+            append(stringResource(R.string.username_hint))
+            withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                append("\n${appSettingsUiModel.username}")
+            }
+        }, modifier = Modifier.padding(8.dp))
+        /*
+        // https://stackoverflow.com/questions/71476719/android-compose-text-can-we-have-two-different-texts-set-to-the-start-and-to-the
+        Row(modifier = Modifier.padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(stringResource(R.string.username_hint), Modifier.weight(1f))
             Text(text = appSettingsUiModel.username, style = Typography.bodySmall)
-        }
+        }*/
         // https://alexzh.com/jetpack-compose-building-grids/
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp)
+                .padding(8.dp)
         ) {
             val roles = MutableList(appSettingsUiModel.roles.size) { emptyList<String>() }
             appSettingsUiModel.roles.forEach {
@@ -147,20 +158,22 @@ fun AppSettingView(
         Divider(Modifier.fillMaxWidth())
         Text(
             text = stringResource(R.string.transfer_subheader),
-            style = Typography.displaySmall,
-            modifier = Modifier.padding(vertical = 4.dp)
+            style = Typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
         )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp)
+                .padding(8.dp)
         ) {
             val transferObjects =
                 MutableList(appSettingsUiModel.transferObjects.size) { emptyList<String>() }
             appSettingsUiModel.transferObjects.forEach {
                 transferObjects.add(
                     listOf(
-                        it.transferObject.transferObjectName, if (it.isPersonalData) "Да" else "Нет"
+                        it.transferObject.transferObjectName,
+                        if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
+                        else stringResource(com.oborodulin.home.common.R.string.no_expr)
                     )
                 )
             }
@@ -175,10 +188,8 @@ fun AppSettingView(
         if (session.containsRole(MemberRoleType.TERRITORIES)) {
             Text(
                 text = stringResource(R.string.territory_subheader),
-                style = Typography.displaySmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(vertical = 4.dp)
+                style = Typography.titleMedium,
+                modifier = Modifier.padding(8.dp)
             )
             TextFieldComponent(
                 modifier = Modifier
@@ -280,13 +291,17 @@ fun AppSettingView(
         }
         Text(
             text = stringResource(R.string.about_subheader),
-            style = Typography.displaySmall,
-            modifier = Modifier.padding(vertical = 4.dp)
+            style = Typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
         )
-        Box(modifier = Modifier.padding(vertical = 4.dp)) {
-            Text(stringResource(R.string.version_hint))
-            Text(text = appSettingsUiModel.versionName, style = Typography.bodySmall)
-        }
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.version_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${appSettingsUiModel.versionName}")
+                }
+            }, modifier = Modifier.padding(8.dp)
+        )
     }
 }
 
@@ -294,10 +309,18 @@ fun AppSettingView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    //val ctx = LocalContext.current
+    val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            //AppSettingView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            // https://jkprajapati.medium.com/preview-was-unable-to-find-a-compositionlocal-d65e55bdee3e
+            CompositionLocalProvider(
+                LocalSession provides SessionUi()
+            ) {
+                AppSettingView(
+                    appSettingsUiModel = AppSettingViewModelImpl.previewUiModel(ctx),
+                    viewModel = AppSettingViewModelImpl.previewModel(ctx)
+                )
+            }
         }
     }
 }

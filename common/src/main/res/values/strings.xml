@@ -1,5 +1,9 @@
 <resources>
     <!--string name="app_name">Home-Common</string-->
+    <!--Строковые выражения -->
+    <string name="yes_expr">Да</string>
+    <string name="no_expr">Нет</string>
+
     <!--ОБЩИЕ СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <string name="success">success</string>
     <string name="number_negative_error">Укажите, пожалуйста, положительное число!</string>

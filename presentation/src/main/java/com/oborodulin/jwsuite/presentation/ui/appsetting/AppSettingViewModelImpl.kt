@@ -11,12 +11,20 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.Utils
+import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.jwsuite.domain.util.TransferObjectType
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
+import com.oborodulin.jwsuite.presentation.ui.model.MemberRolesListItem
+import com.oborodulin.jwsuite.presentation.ui.model.RoleTransferObjectsListItem
+import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
+import com.oborodulin.jwsuite.presentation.ui.model.TransferObjectsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.converters.AppSettingUiModelConverter
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -174,37 +182,50 @@ class AppSettingViewModelImpl @Inject constructor(
                             )
                         }
 
-                    is AppSettingInputEvent.TerritoryIdlePeriod ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_IDLE_PERIOD,
-                            territoryIdlePeriod,
-                            event.input,
-                            true
-                        )
-
                     is AppSettingInputEvent.TerritoryAtHandPeriod ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_AT_HAND_PERIOD,
-                            territoryAtHandPeriod,
-                            event.input,
-                            true
-                        )
+                        when (AppSettingInputValidator.TerritoryAtHandPeriod.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
+                                event.input
+                            )
+                        }
+
+                    is AppSettingInputEvent.TerritoryIdlePeriod ->
+                        when (AppSettingInputValidator.TerritoryIdlePeriod.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
+                                event.input
+                            )
+                        }
 
                     is AppSettingInputEvent.TerritoryRoomsLimit ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_ROOMS_LIMIT,
-                            territoryRoomsLimit,
-                            event.input,
-                            true
-                        )
+                        when (AppSettingInputValidator.TerritoryRoomsLimit.errorIdOrNull(event.input)) {
+                            null -> setStateValue(
+                                AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
+                                event.input, true
+                            )
+
+                            else -> setStateValue(
+                                AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
+                                event.input
+                            )
+                        }
 
                     is AppSettingInputEvent.TerritoryMaxRooms ->
                         when (AppSettingInputValidator.TerritoryMaxRooms.errorIdOrNull(event.input)) {
                             null -> setStateValue(
-                                AppSettingFields.TERRITORY_MAX_ROOMS,
-                                territoryMaxRooms,
-                                event.input,
-                                true
+                                AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms,
+                                event.input, true
                             )
 
                             else -> setStateValue(
@@ -223,25 +244,23 @@ class AppSettingViewModelImpl @Inject constructor(
                             AppSettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(event.input)
                         )
 
-                    is AppSettingInputEvent.TerritoryIdlePeriod ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_IDLE_PERIOD,
-                            territoryIdlePeriod,
-                            null
-                        )
-
                     is AppSettingInputEvent.TerritoryAtHandPeriod ->
                         setStateValue(
                             AppSettingFields.TERRITORY_AT_HAND_PERIOD,
                             territoryAtHandPeriod,
-                            null
+                            AppSettingInputValidator.TerritoryAtHandPeriod.errorIdOrNull(event.input)
+                        )
+
+                    is AppSettingInputEvent.TerritoryIdlePeriod ->
+                        setStateValue(
+                            AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
+                            AppSettingInputValidator.TerritoryIdlePeriod.errorIdOrNull(event.input)
                         )
 
                     is AppSettingInputEvent.TerritoryRoomsLimit ->
                         setStateValue(
-                            AppSettingFields.TERRITORY_ROOMS_LIMIT,
-                            territoryRoomsLimit,
-                            null
+                            AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
+                            AppSettingInputValidator.TerritoryRoomsLimit.errorIdOrNull(event.input)
                         )
 
                     is AppSettingInputEvent.TerritoryMaxRooms ->
@@ -254,9 +273,7 @@ class AppSettingViewModelImpl @Inject constructor(
             }
     }
 
-    override fun performValidation() {
-
-    }
+    override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
         Timber.tag(TAG).d("getInputErrorsOrNull() called")
@@ -266,8 +283,31 @@ class AppSettingViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = AppSettingFields.TERRITORY_PROCESSING_PERIOD.name,
-                        errorId = it
+                        fieldName = AppSettingFields.TERRITORY_PROCESSING_PERIOD.name, errorId = it
+                    )
+                )
+            }
+        AppSettingInputValidator.TerritoryAtHandPeriod.errorIdOrNull(territoryAtHandPeriod.value.value)
+            ?.let {
+                inputErrors.add(
+                    InputError(
+                        fieldName = AppSettingFields.TERRITORY_AT_HAND_PERIOD.name, errorId = it
+                    )
+                )
+            }
+        AppSettingInputValidator.TerritoryIdlePeriod.errorIdOrNull(territoryIdlePeriod.value.value)
+            ?.let {
+                inputErrors.add(
+                    InputError(
+                        fieldName = AppSettingFields.TERRITORY_IDLE_PERIOD.name, errorId = it
+                    )
+                )
+            }
+        AppSettingInputValidator.TerritoryRoomsLimit.errorIdOrNull(territoryRoomsLimit.value.value)
+            ?.let {
+                inputErrors.add(
+                    InputError(
+                        fieldName = AppSettingFields.TERRITORY_ROOMS_LIMIT.name, errorId = it
                     )
                 )
             }
@@ -289,6 +329,12 @@ class AppSettingViewModelImpl @Inject constructor(
                     errorId = error.errorId
                 )
 
+                AppSettingFields.TERRITORY_AT_HAND_PERIOD -> territoryAtHandPeriod.value.copy(
+                    errorId = error.errorId
+                )
+
+                AppSettingFields.TERRITORY_IDLE_PERIOD -> territoryIdlePeriod.value.copy(errorId = error.errorId)
+                AppSettingFields.TERRITORY_ROOMS_LIMIT -> territoryRoomsLimit.value.copy(errorId = error.errorId)
                 AppSettingFields.TERRITORY_MAX_ROOMS -> territoryMaxRooms.value.copy(errorId = error.errorId)
                 else -> null
             }
@@ -348,13 +394,67 @@ class AppSettingViewModelImpl @Inject constructor(
         fun previewUiModel(ctx: Context): AppSettingsUiModel {
             val appSettingsUiModel = AppSettingsUiModel(
                 settings = emptyList(),
-                username = "ADM",
-                roles = emptyList(),
-                transferObjects = emptyList(),
+                username = ctx.resources.getString(R.string.def_admin_member_pseudonym),
+                roles = rolesList(ctx),
+                transferObjects = transferObjectsList(ctx),
                 versionName = "1.1"
             )
             appSettingsUiModel.id = UUID.randomUUID()
             return appSettingsUiModel
         }
+
+        private fun rolesList(ctx: Context) = listOf(
+            MemberRolesListItem(
+                id = UUID.randomUUID(),
+                role = RolesListItem(
+                    id = UUID.randomUUID(),
+                    roleType = MemberRoleType.ADMIN,
+                    roleName = ctx.resources.getString(R.string.def_role_name_admin)
+                )
+            ), MemberRolesListItem(
+                id = UUID.randomUUID(),
+                role = RolesListItem(
+                    id = UUID.randomUUID(),
+                    roleType = MemberRoleType.USER,
+                    roleName = ctx.resources.getString(R.string.def_role_name_user)
+                )
+            ), MemberRolesListItem(
+                id = UUID.randomUUID(),
+                role = RolesListItem(
+                    id = UUID.randomUUID(),
+                    roleType = MemberRoleType.TERRITORIES,
+                    roleName = ctx.resources.getString(R.string.def_role_name_territories)
+                ),
+                roleExpiredDate = Utils.toOffsetDateTime("2023-12-01T14:29:10.212+03:00")
+            )
+        )
+
+        private fun transferObjectsList(ctx: Context) = listOf(
+            RoleTransferObjectsListItem(
+                id = UUID.randomUUID(),
+                isPersonalData = false,
+                transferObject = TransferObjectsListItem(
+                    id = UUID.randomUUID(),
+                    transferObjectType = TransferObjectType.ALL,
+                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_all)
+                )
+            ), RoleTransferObjectsListItem(
+                id = UUID.randomUUID(),
+                isPersonalData = false,
+                transferObject = TransferObjectsListItem(
+                    id = UUID.randomUUID(),
+                    transferObjectType = TransferObjectType.TERRITORIES,
+                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_territories)
+                )
+            ), RoleTransferObjectsListItem(
+                id = UUID.randomUUID(),
+                isPersonalData = true,
+                transferObject = TransferObjectsListItem(
+                    id = UUID.randomUUID(),
+                    transferObjectType = TransferObjectType.BILLS,
+                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_bills)
+                )
+            )
+        )
     }
 }

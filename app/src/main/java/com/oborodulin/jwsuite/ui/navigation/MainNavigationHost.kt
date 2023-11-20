@@ -92,6 +92,7 @@ fun MainNavigationHost(
         )
         appSettingNavigationGraph(
             startDestination = session.startDestination,
+            onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
