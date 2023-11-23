@@ -121,14 +121,18 @@
     <string name="locality_code_empty_error">Укажите, пожалуйста, код!</string>
     <string name="locality_short_name_empty_error">Укажите, пожалуйста, короткое наименование!</string>
     <string name="locality_name_empty_error">Укажите, пожалуйста, наименование!</string>
+    <string name="locality_unique_constraint_error">Населённый пункт с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы района населённого пункта-->
     <string name="locality_district_short_name_empty_error">Укажите, пожалуйста, короткое наименование района населённого пункта!</string>
     <string name="locality_district_name_empty_error">Укажите, пожалуйста, наименование района населённого пункта!</string>
+    <string name="locality_district_unique_constraint_error">Район населённого пункта с таким коротким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы микрорайона пункта-->
     <string name="microdistrict_short_name_empty_error">Укажите, пожалуйста, короткое наименование микрорайона!</string>
     <string name="microdistrict_name_empty_error">Укажите, пожалуйста, наименование микрорайона!</string>
+    <string name="microdistrict_unique_constraint_error">Микрорайон с таким коротким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы улицы-->
     <string name="street_name_empty_error">Укажите, пожалуйста, наименование улицы!</string>
+    <string name="street_unique_constraint_error">Улица такого типа и с таким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
 

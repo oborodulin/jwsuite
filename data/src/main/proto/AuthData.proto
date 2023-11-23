@@ -5,6 +5,14 @@ option java_multiple_files = true;
 
 message AuthData {
   string username = 1;
+  string password: String? = null,
+    val databasePassphrase: String = "",
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val lastLoginTime: OffsetDateTime = OffsetDateTime.now(),
+    val roles: List<Role> = emptyList(),
+    val lastDestination: String? = null
+    
+  string username = 1;
   string password = 2;
   int64 last_login_time = 3;
   bool is_login = 4;

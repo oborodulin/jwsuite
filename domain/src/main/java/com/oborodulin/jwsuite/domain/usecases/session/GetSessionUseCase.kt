@@ -12,13 +12,13 @@ class GetSessionUseCase(
         combine(
             sessionManagerRepository.isSigned(),
             //sessionManagerRepository.isLogged(),
-            sessionManagerRepository.lastDestination(),
-            sessionManagerRepository.roles()
-        ) { isSigned, lastDestination, roles -> //isLogged, lastDestination, roles ->
+            sessionManagerRepository.lastDestination()//,
+            //sessionManagerRepository.roles()
+        ) { isSigned, lastDestination -> //isLogged, lastDestination, roles ->
             Response(
                 Session(
                     isSigned = isSigned, //isLogged = isLogged,
-                    lastDestination = lastDestination, roles = roles
+                    lastDestination = lastDestination//, roles = roles
                 )
             )
         }

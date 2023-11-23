@@ -27,7 +27,7 @@ private const val TAG = "Common.ui.EditableListViewComponent"
 fun EditableListViewComponent(
     items: List<ListItemModel>,
     searchedText: String = "",
-    @StringRes dlgConfirmDelResId: Int,
+    @StringRes dlgConfirmDelResId: Int? = null,
     @StringRes emptyListResId: Int,
     isEmptyListTextOutput: Boolean = true,
     onEdit: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
@@ -70,7 +70,7 @@ fun EditableListViewComponent(
                             onEdit(item)
                         } else null,
                         if (onDelete !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.DeleteListItem(
-                            stringResource(dlgConfirmDelResId, item.headline)
+                            dlgConfirmDelResId?.let { stringResource(it, item.headline) }.orEmpty()
                         ) { onDelete(item) } else null),
                     selected = item.selected,  //isSelected,
                     //background = (if (isSelected) Color.LightGray else Color.Transparent),

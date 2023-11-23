@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
+import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -66,10 +67,8 @@ fun RegionDistrictsListView(
                 }
 
                 false -> {
-                    EditableListViewComponent(
+                    ListViewComponent(
                         items = it,
-                        searchedText = searchText.text,
-                        dlgConfirmDelResId = R.string.dlg_confirm_del_region_district,
                         emptyListResId = R.string.region_districts_list_empty_text,
                         isEmptyListTextOutput = regionInput?.regionId != null
                     )

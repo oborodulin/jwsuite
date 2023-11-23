@@ -73,7 +73,6 @@ fun NavGraphBuilder.geoNavGraph(
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -88,7 +87,6 @@ fun NavGraphBuilder.geoNavGraph(
                 localityInput = NavRoutes.Locality.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -106,7 +104,6 @@ fun NavGraphBuilder.geoNavGraph(
                 localityDistrictInput = NavRoutes.LocalityDistrict.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -123,7 +120,6 @@ fun NavGraphBuilder.geoNavGraph(
                 microdistrictInput = NavRoutes.Microdistrict.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -138,7 +134,6 @@ fun NavGraphBuilder.geoNavGraph(
                 streetInput = NavRoutes.Street.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -155,7 +150,6 @@ fun NavGraphBuilder.geoNavGraph(
                 streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -172,7 +166,6 @@ fun NavGraphBuilder.geoNavGraph(
                 streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

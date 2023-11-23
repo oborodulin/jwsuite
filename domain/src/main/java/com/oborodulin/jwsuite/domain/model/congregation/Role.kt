@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Role(
+    //@Serializable(with = MemberRoleTypeSerializer::class)
     val roleType: MemberRoleType = MemberRoleType.USER,
     val roleName: String = ""
 ) : DomainModel()

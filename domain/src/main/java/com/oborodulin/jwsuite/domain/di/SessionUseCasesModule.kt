@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.di
 
 import com.oborodulin.home.common.domain.usecases.UseCase
+import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
@@ -26,8 +27,9 @@ object SessionUseCasesModule {
     @Singleton
     @Provides
     fun provideSignupUseCase(
-        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository
-    ): SignupUseCase = SignupUseCase(configuration, sessionManagerRepository)
+        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository,
+        membersRepository: MembersRepository
+    ): SignupUseCase = SignupUseCase(configuration, sessionManagerRepository, membersRepository)
 
     @Singleton
     @Provides
@@ -38,8 +40,9 @@ object SessionUseCasesModule {
     @Singleton
     @Provides
     fun provideLoginUseCase(
-        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository
-    ): LoginUseCase = LoginUseCase(configuration, sessionManagerRepository)
+        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository,
+        membersRepository: MembersRepository
+    ): LoginUseCase = LoginUseCase(configuration, sessionManagerRepository, membersRepository)
 
     @Singleton
     @Provides

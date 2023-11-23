@@ -1,10 +1,11 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    //https://proandroiddev.com/welcome-datastore-good-bye-sharedpreferences-fdeb831a1e58
+    //id "com.google.protobuf" version "0.9.4"
     id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'com.google.devtools.ksp'
-    //id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -89,6 +90,7 @@ dependencies {
     implementation deps.datastore.core
     implementation deps.datastore.preferences
     //implementation deps.datastore.proto
+    //implementation deps.datastore.protobuf
 
     // Hilt
     implementation deps.dagger.hilt
@@ -142,3 +144,24 @@ dependencies {
 
  */
 }
+// https://proandroiddev.com/welcome-datastore-good-bye-sharedpreferences-fdeb831a1e58
+/*
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        // Download from repositories
+        artifact = 'com.google.protobuf:protoc:3.25.1'
+    }
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}*/

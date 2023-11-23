@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.appsetting
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,6 +34,10 @@ fun AppSettingScreen(
     appState.handleTopBarNavClick.value =
         { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
     onActionBarTitleChange(stringResource(R.string.nav_item_settings))
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect(Unit)")
+        viewModel.submitAction(AppSettingUiAction.Load)
+    }
     SaveDialogScreenComponent(
         viewModel = viewModel,
         loadUiAction = AppSettingUiAction.Load,

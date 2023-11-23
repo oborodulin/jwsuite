@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.home.common.secure.AesCipherProvider
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
-import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.model.session.AuthData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
@@ -28,7 +27,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override fun databasePassphrase() =
         dataStore.data.map { authData -> authData.databasePassphrase }
 
-    override fun roles() = dataStore.data.map { authData -> authData.roles }
+    //override fun roles() = dataStore.data.map { authData -> decodeFromString<List<Role>>(authData.roles) }
 
     override suspend fun signup(username: String, password: String) = withContext(dispatcher) {
         dataStore.updateData {
@@ -61,10 +60,10 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
             if (authData.password?.let { it == password } == true) authData.username else null
         }
 
-    override suspend fun updateRoles(roles: List<Role>) = withContext(dispatcher) {
+    /*override suspend fun updateRoles(roles: List<Role>) = withContext(dispatcher) {
         dataStore.updateData { it.copy(roles = roles) }
         Unit
-    }
+    }*/
 
     override suspend fun logout(lastDestination: String?) = withContext(dispatcher) {
         dataStore.updateData { it.copy(lastDestination = lastDestination) }

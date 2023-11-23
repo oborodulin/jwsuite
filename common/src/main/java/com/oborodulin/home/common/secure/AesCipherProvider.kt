@@ -25,14 +25,15 @@ class AesCipherProvider @Inject constructor(
     private val keyStore: KeyStore,
     @Named(SecurityModule.KEY_STORE_NAME) private val keyStoreName: String
 ) : CipherProvider {
+    private val cipher by lazy { Cipher.getInstance(TRANSFORMATION) }
 
     override val encryptCipher: Cipher
-        get() = Cipher.getInstance(TRANSFORMATION).apply {
+        get() = cipher.apply {// Cipher.getInstance(TRANSFORMATION)
             init(Cipher.ENCRYPT_MODE, getOrCreateKey())
         }
 
     override fun decryptCipher(iv: ByteArray): Cipher =
-        Cipher.getInstance(TRANSFORMATION).apply {
+        cipher.apply {// Cipher.getInstance(TRANSFORMATION)
             init(Cipher.DECRYPT_MODE, getOrCreateKey(), IvParameterSpec(iv))
         }
 

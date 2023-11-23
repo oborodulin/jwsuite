@@ -23,7 +23,6 @@ fun MemberScreen(
     memberInput: MemberInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)

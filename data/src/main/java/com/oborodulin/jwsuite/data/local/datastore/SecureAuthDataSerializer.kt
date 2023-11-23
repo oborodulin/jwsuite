@@ -28,6 +28,8 @@ class SecureAuthDataSerializer @Inject constructor(private val crypto: Crypto) :
     }
 
     override suspend fun writeTo(t: AuthData, output: OutputStream) {
+        Timber.tag(TAG).d("writeTo: %s", t)
+        Timber.tag(TAG).d("Json<AuthData> : %s", Json.encodeToString(t))
         crypto.encrypt(rawBytes = Json.encodeToString(t).encodeToByteArray(), outputStream = output)
     }
 }

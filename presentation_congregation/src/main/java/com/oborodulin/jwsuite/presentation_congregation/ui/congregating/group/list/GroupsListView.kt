@@ -1,25 +1,14 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list
 
 import android.content.res.Configuration
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.ComponentUiAction
-import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
-import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
+import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
@@ -28,10 +17,8 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.util.UUID
 
 private const val TAG = "Congregating.GroupsListView"
 
@@ -70,22 +57,27 @@ fun GroupsListView(
             else -> groupsListViewModel.submitAction(GroupsListUiAction.Load(congregationId))
         }
     }
+    val searchText by groupsListViewModel.searchText.collectAsStateWithLifecycle()
     groupsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            GroupsList(
-                congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId,
-                groups = it,
+            EditableListViewComponent(
+                items = it,
+                searchedText = searchText.text,
+                dlgConfirmDelResId = R.string.dlg_confirm_del_group,
+                emptyListResId = R.string.groups_list_empty_text,
+                isEmptyListTextOutput = (congregationInput?.congregationId
+                    ?: currentCongregation?.itemId) != null,
                 onEdit = { group ->
-                    groupsListViewModel.submitAction(GroupsListUiAction.EditGroup(group.id))
+                    groupsListViewModel.submitAction(GroupsListUiAction.EditGroup(group.itemId!!))
                 },
                 onDelete = { group ->
-                    groupsListViewModel.submitAction(GroupsListUiAction.DeleteGroup(group.id))
+                    groupsListViewModel.submitAction(GroupsListUiAction.DeleteGroup(group.itemId!!))
                 }
             ) { group ->
                 groupsListViewModel.singleSelectItem(group)
                 with(membersListViewModel) {
-                    submitAction(MembersListUiAction.LoadByGroup(groupId = group.id))
+                    submitAction(MembersListUiAction.LoadByGroup(groupId = group.itemId!!))
                 }
             }
         }
@@ -103,65 +95,19 @@ fun GroupsListView(
     }
 }
 
-@Composable
-fun GroupsList(
-    congregationId: UUID?,
-    groups: List<GroupsListItem>,
-    onEdit: (GroupsListItem) -> Unit,
-    onDelete: (GroupsListItem) -> Unit,
-    onClick: (GroupsListItem) -> Unit
-) {
-    Timber.tag(TAG).d("GroupsList(...) called: size = %d", groups.size)
-    // https://stackoverflow.com/questions/72531840/how-to-select-only-one-item-in-a-list-lazycolumn
-    //var selectedIndex by remember { mutableStateOf(-1) }
-    if (groups.isNotEmpty()) {
-        val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = groups.filter { it.selected }
-                .getOrNull(0)?.let { groups.indexOf(it) } ?: 0)
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .selectableGroup() // Optional, for accessibility purpose
-                .padding(8.dp)
-                .focusable(enabled = true)
-        ) {
-            itemsIndexed(groups, key = { _, item -> item.id }) { _, group ->
-                ListItemComponent(
-                    item = group,
-                    itemActions = listOf(
-                        ComponentUiAction.EditListItem { onEdit(group) },
-                        ComponentUiAction.DeleteListItem(
-                            stringResource(R.string.dlg_confirm_del_group, group.groupNum)
-                        ) { onDelete(group) }),
-                    selected = group.selected, //((selectedIndex == -1) && group.selected) || selectedIndex == index,
-                    onClick = {
-                        //if (selectedIndex != index) selectedIndex = index
-                        // allow deselection: selectedIndex = if (selectedIndex == index) -1 else index
-                        onClick(group)
-                    }
-                )
-            }
-        }
-    } else {
-        congregationId?.let {
-            EmptyListTextComponent(R.string.groups_list_empty_text)
-        }
-    }
-}
-
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupsCongregating() {
     JWSuiteTheme {
         Surface {
-            GroupsList(
+            /*GroupsList(
                 congregationId = UUID.randomUUID(),
                 groups = GroupsListViewModelImpl.previewList(LocalContext.current),
                 onClick = {},
                 onEdit = {},
                 onDelete = {}
-            )
+            )*/
         }
     }
 }

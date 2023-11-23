@@ -99,20 +99,28 @@ interface MemberDao {
         findByFavoriteCongregationGroup().distinctUntilChanged()
 
     //-----------------------------
+    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId ORDER BY roleName")
+    fun findMemberRolesByMemberId(memberId: UUID): Flow<List<MemberRoleView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctRolesByMemberId(memberId: UUID) =
+        findMemberRolesByMemberId(memberId).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT mrv.* FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym")
-    fun findRolesByPseudonym(pseudonym: String): Flow<List<MemberRoleView>>
+    fun findMemberRolesByPseudonym(pseudonym: String): Flow<List<MemberRoleView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctMemberRolesByPseudonym(pseudonym: String) =
+        findMemberRolesByPseudonym(pseudonym).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT mrv.roleId, mrv.roleType, mrv.roleName FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym")
+    fun findRolesByPseudonym(pseudonym: String): Flow<List<RoleEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctRolesByPseudonym(pseudonym: String) =
         findRolesByPseudonym(pseudonym).distinctUntilChanged()
-
-    //-----------------------------
-    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId ORDER BY roleName")
-    fun findRolesByMemberId(memberId: UUID): Flow<List<MemberRoleView>>
-
-    @ExperimentalCoroutinesApi
-    fun findDistinctRolesByMemberId(memberId: UUID) =
-        findRolesByMemberId(memberId).distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT * FROM ${RoleEntity.TABLE_NAME} WHERE roleId NOT IN (SELECT mrRolesId FROM ${MemberRoleEntity.TABLE_NAME} WHERE mrMembersId = :memberId) ORDER BY roleName")

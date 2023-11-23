@@ -23,6 +23,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -44,7 +45,7 @@ class SessionViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: SessionUseCases,
     private val sessionConverter: SessionConverter,
-    //private val signupConverter: SignupSessionConverter,
+    private val signupConverter: SignupSessionConverter,
     private val loginConverter: LoginSessionConverter,
     //private val logoutConverter: LogoutSessionConverter
 ) : SessionViewModel,
@@ -86,18 +87,20 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun setSessionMode(mode: SessionModeType) {
         _sessionMode.value = mode
-        focusedTextField = when (mode) {
-            SessionModeType.SIGNUP -> FocusedTextField(
-                textField = SessionFields.SESSION_USERNAME,
-                key = SessionFields.SESSION_USERNAME.key()
-            )
+        /* focusedTextField = when (mode) {
+             SessionModeType.SIGNUP -> FocusedTextField(
+                 textField = SessionFields.SESSION_USERNAME,
+                 key = SessionFields.SESSION_USERNAME.key()
+             )
 
-            SessionModeType.LOGIN -> FocusedTextField(
-                textField = SessionFields.SESSION_PIN,
-                key = SessionFields.SESSION_PIN.key()
-            )
-        }
-        focusOnLastSelectedTextField()
+             SessionModeType.LOGIN -> FocusedTextField(
+                 textField = SessionFields.SESSION_PIN,
+                 key = SessionFields.SESSION_PIN.key()
+             )
+         }
+         focusOnLastSelectedTextField()
+
+         */
     }
 
     override suspend fun handleAction(action: SessionUiAction): Job? {
@@ -169,9 +172,12 @@ class SessionViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.signupUseCase.execute(
                 SignupUseCase.Request(username.value.value, pin.value.value)
-            ).collect {}
-            _isLogged.value = true
-            //.map { signupConverter.convert(it) }.collect { submitState(it) }
+            ).map { signupConverter.convert(it) }
+                .collect {
+                    _isLogged.value = true
+                    submitState(it)
+                }
+            //.collect {}
         }
         return job
     }
@@ -188,21 +194,21 @@ class SessionViewModelImpl @Inject constructor(
     private fun login(): Job {
         Timber.tag(TAG).d("login(...) called")
         val job = viewModelScope.launch(errorHandler) {
-            /*val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+            val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
                 .map { loginConverter.convert(it) }.first()
             uiState(state)?.let { session ->
                 Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
                 _isLogged.value = session.isLogged
-            }*/
-            //collect { state ->}
-            useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
+                if (_isLogged.value) submitState(state)
+            }
+            /*useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
                 .map { loginConverter.convert(it) }.collect { state ->
                     uiState(state)?.let { session ->
                         Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
                         _isLogged.value = session.isLogged
                     }
                     if (_isLogged.value) submitState(state)
-                }
+                }*/
         }
         return job
     }
@@ -218,7 +224,17 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<SessionFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: SessionUi) = null
+    override fun initFieldStatesByUiModel(uiModel: SessionUi): Job? {
+        super.initFieldStatesByUiModel(uiModel)
+        Timber.tag(TAG)
+            .d("initFieldStatesByUiModel(MemberModel) called: SessionUi = %s", uiModel)
+        initStateValue(
+            SessionFields.SESSION_USERNAME,
+            username,
+            ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_admin_member_pseudonym)
+        )
+        return null
+    }
 
     override suspend fun observeInputEvents() {
         Timber.tag(TAG).d("observeInputEvents() called")

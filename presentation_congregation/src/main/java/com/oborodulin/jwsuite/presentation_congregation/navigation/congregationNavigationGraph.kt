@@ -57,7 +57,6 @@ fun NavGraphBuilder.congregationNavGraph(
                 groupInput = NavRoutes.Group.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -74,7 +73,6 @@ fun NavGraphBuilder.congregationNavGraph(
                 memberInput = NavRoutes.Member.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

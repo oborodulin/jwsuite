@@ -8,9 +8,9 @@ interface SessionManagerRepository {
     fun isSigned(): Flow<Boolean>
     fun username(): Flow<String?>
     fun lastDestination(): Flow<String?>
-    fun roles(): Flow<List<Role>>
+    //fun roles(): Flow<List<Role>>
     fun signup(username: String, password: String): Flow<Boolean>
     fun signout(): Flow<Boolean>
-    fun login(password: String): Flow<Boolean>
+    fun login(password: String): Flow<String?>
     fun logout(lastDestination: String? = null): Flow<Boolean>
 }
