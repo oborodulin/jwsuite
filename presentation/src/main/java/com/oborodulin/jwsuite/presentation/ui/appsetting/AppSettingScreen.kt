@@ -23,7 +23,6 @@ fun AppSettingScreen(
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("AppSettingScreen(...) called")
@@ -34,6 +33,7 @@ fun AppSettingScreen(
     appState.handleTopBarNavClick.value =
         { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
     onActionBarTitleChange(stringResource(R.string.nav_item_settings))
+    onActionBarSubtitleChange("")
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect(Unit)")
         viewModel.submitAction(AppSettingUiAction.Load)

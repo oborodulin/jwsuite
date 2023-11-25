@@ -214,7 +214,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     .addCallback(DatabaseCallback(ctx, jsonLogger))
                 if (databasePassphrase.isNotEmpty()) {
                     Timber.tag(TAG).d("databasePassphrase isNotEmpty")
-                    roomBuilder.openHelperFactory(SupportFactory(databasePassphrase.toByteArray()))
+                    //roomBuilder.openHelperFactory(SupportFactory(DATABASE_PASSPHRASE.toByteArray())) //databasePassphrase.toByteArray()
                 }
                 // Assign INSTANCE to the newly created database.
                 instance = roomBuilder.build()

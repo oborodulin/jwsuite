@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.R
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
+import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.util.dbVersion
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -128,6 +129,11 @@ class MainActivity : ComponentActivity() {
                     //logoutJob.join()*/
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.tag(TAG).d("onDestroy() called")
+        JwSuiteDatabase.close()
+    }
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

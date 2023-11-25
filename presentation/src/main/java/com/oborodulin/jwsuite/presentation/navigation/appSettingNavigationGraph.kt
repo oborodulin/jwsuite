@@ -16,7 +16,6 @@ fun NavGraphBuilder.appSettingNavigationGraph(
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
 ) {
     navigation(
@@ -35,7 +34,6 @@ fun NavGraphBuilder.appSettingNavigationGraph(
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

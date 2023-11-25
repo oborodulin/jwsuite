@@ -95,13 +95,12 @@ fun MainNavigationHost(
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-            onTopBarNavClickChange = onTopBarNavClickChange,
             onTopBarActionsChange = onTopBarActionsChange
         )
         composable(NavRoutes.Home.route) {
             Timber.tag(TAG).d("MainNavigationHost -> composable(Home.route) called")
-            onActionBarSubtitleChange(appState.actionBarSubtitle.value)
-            /*onTopBarNavImageVectorChange(Icons.Outlined.Menu)
+            /*onActionBarSubtitleChange(appState.actionBarSubtitle.value)
+            onTopBarNavImageVectorChange(Icons.Outlined.Menu)
             onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
             shouldUseNestedScrollConnection(true)
             areUsingBottomNavigation(true)*/
