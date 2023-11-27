@@ -180,7 +180,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: JwSuiteDatabase? = null
 
-        @Synchronized
+        //@Synchronized
         fun getInstance(
             ctx: Context, jsonLogger: Json? = Json,
             localSessionManagerDataSource: LocalSessionManagerDataSource
@@ -188,47 +188,56 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
-            // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
-            // Smart cast is only available to local variables.
-            var instance = INSTANCE
-            // DATABASE_PASSPHRASE.toByteArray()
-            var databasePassphrase = ""
-            // If instance is `null` make a new database instance.
-            if (instance == null) {
-                Timber.tag(TAG).d("databasePassphrase getting")
-                runBlocking {
-                    // https://stackoverflow.com/questions/57088428/kotlin-flow-how-to-unsubscribe-stop
-                    //.takeWhile { it.isNotEmpty() }.collect {= it}
-                    databasePassphrase = localSessionManagerDataSource.databasePassphrase().first()
-                }
-                Timber.tag(TAG).d("databasePassphrase got: %s", databasePassphrase)
-                val roomBuilder = Room.databaseBuilder(
-                    ctx,
-                    JwSuiteDatabase::class.java,
-                    Constants.DATABASE_NAME
-                )// Wipes and rebuilds instead of migrating if no Migration object.
-                    // Migration is not part of this lesson. You can learn more about
-                    // migration with Room in this blog post:
-                    // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                    //.fallbackToDestructiveMigration()
-                    .addCallback(DatabaseCallback(ctx, jsonLogger))
-                if (databasePassphrase.isNotEmpty()) {
-                    Timber.tag(TAG).d("databasePassphrase isNotEmpty")
-                    roomBuilder.openHelperFactory(
-                        SupportFactory(
-                            net.sqlcipher.database.SQLiteDatabase.getBytes(
-                                databasePassphrase.toCharArray()
+            synchronized(this) {
+                // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
+                // Smart cast is only available to local variables.
+                var instance = INSTANCE
+                // DATABASE_PASSPHRASE.toByteArray()
+                var databasePassphrase = ""
+                // If instance is `null` make a new database instance.
+                if (instance == null) {
+                    Timber.tag(TAG).d("databasePassphrase getting")
+                    runBlocking {
+                        // https://stackoverflow.com/questions/57088428/kotlin-flow-how-to-unsubscribe-stop
+                        //.takeWhile { it.isNotEmpty() }.collect {= it}
+                        databasePassphrase =
+                            localSessionManagerDataSource.databasePassphrase().first()
+                    }
+                    Timber.tag(TAG).d("databasePassphrase got: %s", databasePassphrase)
+                    val roomBuilder = Room.databaseBuilder(
+                        ctx,
+                        JwSuiteDatabase::class.java,
+                        Constants.DATABASE_NAME
+                    )// Wipes and rebuilds instead of migrating if no Migration object.
+                        // Migration is not part of this lesson. You can learn more about
+                        // migration with Room in this blog post:
+                        // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
+                        //.fallbackToDestructiveMigration()
+                        .addCallback(
+                            DatabaseCallback(
+                                ctx,
+                                jsonLogger,
+                                localSessionManagerDataSource
                             )
                         )
-                    ) //DATABASE_PASSPHRASE.toByteArray()
+                    if (databasePassphrase.isNotEmpty()) {
+                        Timber.tag(TAG).d("databasePassphrase isNotEmpty")
+                        roomBuilder.openHelperFactory(
+                            SupportFactory(
+                                net.sqlcipher.database.SQLiteDatabase.getBytes(
+                                    databasePassphrase.toCharArray()
+                                )
+                            )
+                        ) //DATABASE_PASSPHRASE.toByteArray()
+                    }
+                    // Assign INSTANCE to the newly created database.
+                    instance = roomBuilder.build()
+                    Timber.tag(TAG).d("Room database built")
+                    INSTANCE = instance
                 }
-                // Assign INSTANCE to the newly created database.
-                instance = roomBuilder.build()
-                Timber.tag(TAG).d("Room database built")
-                INSTANCE = instance
+                // Return instance; smart cast to be non-null.
+                return instance
             }
-            // Return instance; smart cast to be non-null.
-            return instance
         }
 
         @Synchronized
@@ -249,7 +258,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
         // https://androidexplained.github.io/android/room/2020/10/03/room-backup-restore.html
         @Synchronized
-        fun getBackupInstance(context: Context, jsonLogger: Json? = Json): JwSuiteDatabase {
+        fun getBackupInstance(
+            context: Context, jsonLogger: Json? = Json,
+            localSessionManagerDataSource: LocalSessionManagerDataSource
+        ): JwSuiteDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -269,7 +281,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         //.fallbackToDestructiveMigration()
-                        .addCallback(DatabaseCallback(context, jsonLogger))
+                        .addCallback(
+                            DatabaseCallback(
+                                context,
+                                jsonLogger,
+                                localSessionManagerDataSource
+                            )
+                        )
                         .setJournalMode(JournalMode.TRUNCATE)
                         .build()
                 // Assign INSTANCE to the newly created database.
@@ -280,14 +298,16 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         }
 
         // https://stackoverflow.com/questions/2421189/version-of-sqlite-used-in-android
-        fun sqliteVersion(): String? = SQLiteDatabase.create(null).use {
-            android.database.DatabaseUtils.stringForQuery(it, "SELECT sqlite_version()", null)
-        }
+        fun sqliteVersion(): String? = "3.22"
+        //SQLiteDatabase.create(null).use {
+        //    android.database.DatabaseUtils.stringForQuery(it, "SELECT sqlite_version()", null)
+        //}
 
-        @Synchronized
         fun close() {
-            INSTANCE?.close()
-            INSTANCE = null
+            synchronized(this) {
+                INSTANCE?.close()
+                INSTANCE = null
+            }
         }
         /*fun export(fileName: String){
             val exportDir = File(Environment.getExternalStorageDirectory(), "")
@@ -318,12 +338,26 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     /**
      * https://stackoverflow.com/questions/5955202/how-to-remove-database-from-emulator
      */
-    class DatabaseCallback(private val context: Context, private val jsonLogger: Json? = null) :
+    class DatabaseCallback(
+        private val ctx: Context, private val jsonLogger: Json? = null,
+        private val localSessionManagerDataSource: LocalSessionManagerDataSource
+    ) :
         Callback() {
         private val currentDateTime: OffsetDateTime = OffsetDateTime.now()
 
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
+            Timber.tag(TAG).i("onCreate(...) called")
+            // https://developermemos.com/posts/prepopulate-android-room-data
+            val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
+            Timber.tag(TAG).i("onCreate -> database: getInstance(...)")
+            database.runInTransaction(Runnable {
+                CoroutineScope(Dispatchers.Main).launch {
+                    Timber.tag(TAG).i("onCreate -> CoroutineScope(Dispatchers.Main).launch")
+                    prePopulateDbWithDao(database)
+                }
+            })
+            /*
             isImportExecute = true
             Timber.tag(TAG)
                 .i("Database onCreate() called on thread '%s':", Thread.currentThread().name)
@@ -339,8 +373,756 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             }
             Timber.tag(TAG)
                 .i("Database onCreate() ended on thread '%s':", Thread.currentThread().name)
+             */
         }
 
+        // ================================= DAO =================================
+        private suspend fun prePopulateDbWithDao(db: JwSuiteDatabase) {
+            Timber.tag(TAG).i("prePopulateDbWithDao(...) called")
+            // Default settings:
+            insertDefAppSettings(db)
+            // ==============================
+            // GEO:
+            // Default regions:
+            val donRegion = insertDefRegion(db, GeoRegionEntity.donetskRegion(ctx))
+            val lugRegion = insertDefRegion(db, GeoRegionEntity.luganskRegion(ctx))
+
+            // DON districts:
+            val maryinskyDistrict = insertDefRegionDistrict(
+                db, GeoRegionDistrictEntity.maryinskyRegionDistrict(ctx, donRegion.regionId)
+            )
+
+            val donetskyDistrict = insertDefRegionDistrict(
+                db, GeoRegionDistrictEntity.donetskyRegionDistrict(ctx, donRegion.regionId)
+            )
+
+            // DON localities:
+            val donetsk = insertDeftLocality(
+                db, GeoLocalityEntity.donetskLocality(ctx, donRegion.regionId)
+            )
+            val makeevka = insertDeftLocality(
+                db, GeoLocalityEntity.makeevkaLocality(ctx, donRegion.regionId)
+            )
+            val marinka = insertDeftLocality(
+                db, GeoLocalityEntity.marinkaLocality(
+                    ctx, donRegion.regionId, maryinskyDistrict.regionDistrictId
+                )
+            )
+            val mospino = insertDeftLocality(
+                db, GeoLocalityEntity.mospinoLocality(
+                    ctx, donRegion.regionId, donetskyDistrict.regionDistrictId
+                )
+            )
+            // LUG localities:
+            val lugansk = insertDeftLocality(
+                db, GeoLocalityEntity.luganskLocality(ctx, lugRegion.regionId)
+            )
+
+            // Donetsk districts:
+            val budyonovsky = insertDeftLocalityDistrict(
+                db,
+                GeoLocalityDistrictEntity.bdnLocalityDistrict(ctx, donetsk.localityId)
+            )
+            val kievsky = insertDeftLocalityDistrict(
+                db,
+                GeoLocalityDistrictEntity.kvkLocalityDistrict(ctx, donetsk.localityId)
+            )
+            val kuybyshevsky = insertDeftLocalityDistrict(
+                db,
+                GeoLocalityDistrictEntity.kbshLocalityDistrict(ctx, donetsk.localityId)
+            )
+            val voroshilovsky = insertDeftLocalityDistrict(
+                db,
+                GeoLocalityDistrictEntity.vrshLocalityDistrict(ctx, donetsk.localityId)
+            )
+
+            // Donetsk microdistricts:
+            val donskoy = insertDefMicrodistrict(
+                db,
+                GeoMicrodistrictEntity.donskoyMicrodistrict(
+                    ctx, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
+                )
+            )
+            val cvetochny = insertDefMicrodistrict(
+                db,
+                GeoMicrodistrictEntity.cvetochnyMicrodistrict(
+                    ctx, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
+                )
+            )
+
+            // Donetsk streets:
+            val strelkovojDivizii = insertDefStreet(
+                db, GeoStreetEntity.strelkovojDiviziiStreet(ctx, donetsk.localityId)
+            )
+            insertDefStreetDistrict(db, strelkovojDivizii, budyonovsky, donskoy)
+            insertDefStreetDistrict(db, strelkovojDivizii, budyonovsky, cvetochny)
+            val nezavisimosti = insertDefStreet(
+                db, GeoStreetEntity.nezavisimostiStreet(ctx, donetsk.localityId)
+            )
+            insertDefStreetDistrict(db, nezavisimosti, budyonovsky, donskoy)
+            val baratynskogo = insertDefStreet(
+                db, GeoStreetEntity.baratynskogoStreet(ctx, donetsk.localityId)
+            )
+            insertDefStreetDistrict(db, baratynskogo, budyonovsky)
+            val patorgynskogo = insertDefStreet(
+                db, GeoStreetEntity.patorgynskogoStreet(ctx, donetsk.localityId)
+            )
+            insertDefStreetDistrict(db, patorgynskogo, budyonovsky)
+            val belogorodskaya = insertDefStreet(
+                db, GeoStreetEntity.belogorodskayaStreet(ctx, donetsk.localityId)
+            )
+            insertDefStreetDistrict(db, belogorodskaya, budyonovsky)
+
+            // ==============================
+            // Houses strelkovoj divizii:
+            val sd7b = insertDefHouse(
+                db, HouseEntity.defaultHouse(
+                    streetId = strelkovojDivizii.streetId,
+                    localityDistrictId = budyonovsky.localityDistrictId,
+                    houseNum = 7, houseLetter = "б", buildingNum = 1,
+                )
+            )
+            val sd9a = insertDefHouse(
+                db, HouseEntity.defaultHouse(
+                    streetId = strelkovojDivizii.streetId,
+                    localityDistrictId = budyonovsky.localityDistrictId,
+                    microdistrictId = donskoy.microdistrictId,
+                    houseNum = 9, houseLetter = "а", isBusiness = true
+                )
+            )
+            val sd21 = insertDefHouse(
+                db, HouseEntity.defaultHouse(
+                    streetId = strelkovojDivizii.streetId,
+                    localityDistrictId = budyonovsky.localityDistrictId,
+                    microdistrictId = cvetochny.microdistrictId,
+                    houseNum = 21
+                )
+            )
+            // Houses nezavisimosti:
+            val n8 = insertDefHouse(
+                db, HouseEntity.defaultHouse(
+                    streetId = nezavisimosti.streetId,
+                    localityDistrictId = budyonovsky.localityDistrictId,
+                    microdistrictId = donskoy.microdistrictId,
+                    houseNum = 8
+                )
+            )
+            val n14 = insertDefHouse(
+                db, HouseEntity.defaultHouse(
+                    streetId = strelkovojDivizii.streetId,
+                    localityDistrictId = budyonovsky.localityDistrictId,
+                    microdistrictId = donskoy.microdistrictId,
+                    houseNum = 14
+                )
+            )
+            val n29v = insertDefHouse(
+                db, HouseEntity.defaultHouse(
+                    streetId = strelkovojDivizii.streetId,
+                    localityDistrictId = budyonovsky.localityDistrictId,
+                    microdistrictId = cvetochny.microdistrictId,
+                    houseNum = 29, houseLetter = "в", isBusiness = true
+                )
+            )
+
+            // Mospino streets:
+            val novomospino = insertDefStreet(
+                db, GeoStreetEntity.novomospinoStreet(ctx, mospino.localityId)
+            )
+            val gertsena =
+                insertDefStreet(db, GeoStreetEntity.gertsenaStreet(ctx, mospino.localityId))
+
+
+            // ==============================
+            // CONGREGATION:
+            // Default member roles:
+            val adminRole = insertDefMemberRole(db, MemberRoleType.ADMIN)
+            val userRole = insertDefMemberRole(db, MemberRoleType.USER)
+            val territoriesRole = insertDefMemberRole(db, MemberRoleType.TERRITORIES)
+            val billsRole = insertDefMemberRole(db, MemberRoleType.BILLS)
+            val reportsRole = insertDefMemberRole(db, MemberRoleType.REPORTS)
+
+            // Default Administrator:
+            val adminMember = insertDefAdminMember(db, adminRole)
+
+            // Default congregations:
+            val congregationDao = db.congregationDao()
+            // 1
+            val congregation1 = CongregationEntity.favoriteCongregation(
+                ctx, donetsk.localityId
+            )
+            congregationDao.insert(congregation1)
+            Timber.tag(TAG).i("CONGREGATION: Default 1 Congregation imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
+            // 2
+            val congregation2 = CongregationEntity.secondCongregation(
+                ctx, donetsk.localityId
+            )
+            congregationDao.insert(congregation2)
+            Timber.tag(TAG).i("CONGREGATION: Default 2 Congregation imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation2)) }
+
+            // Default Groups:
+            val group11 = insertDefGroup(db, 1, congregation1)
+            val group12 = insertDefGroup(db, 2, congregation1)
+            val group13 = insertDefGroup(db, 3, congregation1)
+            val group14 = insertDefGroup(db, 4, congregation1)
+            val group15 = insertDefGroup(db, 5, congregation1)
+            val group16 = insertDefGroup(db, 6, congregation1)
+            val group17 = insertDefGroup(db, 7, congregation1)
+
+            // Group members:
+            val ivanov = insertDefMember(db, 1, congregation1, group11, adminRole)
+            val petrov = insertDefMember(db, 2, congregation1, group11, userRole)
+            val sidorov = insertDefMember(db, 1, congregation1, group12, territoriesRole)
+
+            // ==============================
+            // TERRITORY:
+            // Categories:
+            val houseTerritoryCategory = insertDefTerritoryCategory(
+                db, TerritoryCategoryEntity.houseTerritoryCategory(ctx)
+            )
+            val floorTerritoryCategory = insertDefTerritoryCategory(
+                db, TerritoryCategoryEntity.floorTerritoryCategory(ctx)
+            )
+            val roomTerritoryCategory = insertDefTerritoryCategory(
+                db, TerritoryCategoryEntity.roomTerritoryCategory(ctx)
+            )
+            // Room territories:
+            val roomTerrs1 = insertDefTerritories(
+                db, roomTerritoryCategory, congregation1, mospino, budyonovsky, donskoy
+            )
+
+            // House territories (private sector):
+            val houseTerrs1 = insertDefTerritories(
+                db, houseTerritoryCategory, congregation1, mospino, budyonovsky, cvetochny
+            )
+            insertDefTerritoryStreet(
+                db, houseTerrs1.first { it.territoryNum == 1 }, baratynskogo
+            )
+            insertDefTerritoryStreet(
+                db, houseTerrs1.first { it.territoryNum == 1 }, patorgynskogo, isEven = false
+            )
+            insertDefTerritoryStreet(
+                db, houseTerrs1.first { it.territoryNum == 2 }, belogorodskaya, isEven = true
+            )
+
+            // Territory members:
+            // ivanov
+            insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 1 }, ivanov)
+            // receive & delivery
+            val roomTerrNum2 = roomTerrs1.first { it.territoryNum == 2 }
+            insertDefTerritoryMember(db, roomTerrNum2, ivanov)
+            val territoryMember = insertDefTerritoryMember(db, roomTerrNum2, ivanov)
+            deliveryDefTerritoryMember(db, roomTerrNum2, territoryMember)
+
+            insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 3 }, ivanov)
+            insertDefTerritoryMember(db, houseTerrs1.first { it.territoryNum == 1 }, ivanov)
+            // petrov
+            insertDefTerritoryMember(db, roomTerrs1.first { it.territoryNum == 4 }, petrov)
+            // sidorov
+            insertDefTerritoryMember(db, houseTerrs1.first { it.territoryNum == 2 }, sidorov)
+
+            // ==============================
+            // TRANSFERS:
+            // Default transfer objects:
+            val allTransferObject = insertDefTransferObject(db, TransferObjectType.ALL)
+            val membersTransferObject = insertDefTransferObject(db, TransferObjectType.MEMBERS)
+            val territoriesTransferObject =
+                insertDefTransferObject(db, TransferObjectType.TERRITORIES)
+            val billsTransferObject = insertDefTransferObject(db, TransferObjectType.BILLS)
+
+            insertDefRoleTransferObject(db, adminRole, allTransferObject, false)
+            insertDefRoleTransferObject(db, reportsRole, allTransferObject, false)
+            insertDefRoleTransferObject(db, userRole, territoriesTransferObject, true)
+            insertDefRoleTransferObject(db, territoriesRole, territoriesTransferObject, false)
+            insertDefRoleTransferObject(db, billsRole, billsTransferObject, true)
+
+            // ==============================
+            Timber.tag(TAG).i("prePopulateDbWithDao(...) successful ended")
+        }
+
+        // App Settings:
+        private suspend fun insertDefAppSettings(db: JwSuiteDatabase) {
+            val appSettingDao = db.appSettingDao()
+            // Lang
+            val lang = AppSettingEntity.langParam()
+            appSettingDao.insert(lang)
+            // Currency Code
+            val currencyCode = AppSettingEntity.currencyCodeParam()
+            appSettingDao.insert(currencyCode)
+            // All Items
+            val allItems = AppSettingEntity.allItemsParam(ctx)
+            appSettingDao.insert(allItems)
+            // Day Mu
+            val dayMu = AppSettingEntity.dayMuParam(ctx)
+            appSettingDao.insert(dayMu)
+            // Month Mu
+            val monthMu = AppSettingEntity.monthMuParam(ctx)
+            appSettingDao.insert(monthMu)
+            // Year Mu
+            val yearMu = AppSettingEntity.yearMuParam(ctx)
+            appSettingDao.insert(yearMu)
+            // Person Num MU
+            val personNumMu = AppSettingEntity.personNumMuParam(ctx)
+            appSettingDao.insert(personNumMu)
+            // Territory Business Mark
+            val territoryBusinessMark = AppSettingEntity.territoryBusinessMarkParam(ctx)
+            appSettingDao.insert(territoryBusinessMark)
+            // Territory Processing Period
+            val territoryProcessingPeriod = AppSettingEntity.territoryProcessingPeriodParam(ctx)
+            appSettingDao.insert(territoryProcessingPeriod)
+            // Territory At Hand Period
+            val territoryAtHandPeriod = AppSettingEntity.territoryAtHandPeriodParam(ctx)
+            appSettingDao.insert(territoryAtHandPeriod)
+            // Territory Rooms Limit
+            val territoryRoomsLimit = AppSettingEntity.territoryRoomsLimitParam(ctx)
+            appSettingDao.insert(territoryRoomsLimit)
+            // Territory Max Rooms
+            val territoryMaxRoomsParam = AppSettingEntity.territoryMaxRoomsParam(ctx)
+            appSettingDao.insert(territoryMaxRoomsParam)
+            // Territory Idle Period
+            val territoryIdlePeriod = AppSettingEntity.territoryIdlePeriodParam(ctx)
+            appSettingDao.insert(territoryIdlePeriod)
+            Timber.tag(TAG).i("Default app parameters imported")
+            jsonLogger?.let {
+                Timber.tag(TAG)
+                    .i(
+                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryBusinessMark\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
+                        it.encodeToString(lang),
+                        it.encodeToString(currencyCode),
+                        it.encodeToString(allItems),
+                        it.encodeToString(dayMu),
+                        it.encodeToString(monthMu),
+                        it.encodeToString(yearMu),
+                        it.encodeToString(personNumMu),
+                        it.encodeToString(territoryBusinessMark),
+                        it.encodeToString(territoryProcessingPeriod),
+                        it.encodeToString(territoryAtHandPeriod),
+                        it.encodeToString(territoryRoomsLimit),
+                        it.encodeToString(territoryMaxRoomsParam),
+                        it.encodeToString(territoryIdlePeriod)
+                    )
+            }
+        }
+
+        // GEO:
+        private suspend fun insertDefRegion(db: JwSuiteDatabase, region: GeoRegionEntity):
+                GeoRegionEntity {
+            val regionDao = db.geoRegionDao()
+            val textContent =
+                GeoRegionTlEntity.regionTl(ctx, region.regionCode, region.regionId)
+            regionDao.insert(region, textContent)
+            Timber.tag(TAG).i("GEO: Default region imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"region\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(region),
+                    it.encodeToString(textContent)
+                )
+            }
+            return region
+        }
+
+        private suspend fun insertDefRegionDistrict(
+            db: JwSuiteDatabase, regionDistrict: GeoRegionDistrictEntity
+        ): GeoRegionDistrictEntity {
+            val regionDistrictDao = db.geoRegionDistrictDao()
+            val textContent =
+                GeoRegionDistrictTlEntity.regionDistrictTl(
+                    ctx,
+                    regionDistrict.regDistrictShortName, regionDistrict.regionDistrictId
+                )
+            regionDistrictDao.insert(regionDistrict, textContent)
+            Timber.tag(TAG).i("GEO: Default region District imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"regionDistrict\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(regionDistrict), it.encodeToString(textContent)
+                )
+            }
+            return regionDistrict
+        }
+
+        private suspend fun insertDeftLocality(db: JwSuiteDatabase, locality: GeoLocalityEntity):
+                GeoLocalityEntity {
+            val localityDao = db.geoLocalityDao()
+            val textContent =
+                GeoLocalityTlEntity.localityTl(ctx, locality.localityCode, locality.localityId)
+            localityDao.insert(locality, textContent)
+            Timber.tag(TAG).i("GEO: Default locality imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"locality\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(locality), it.encodeToString(textContent)
+                )
+            }
+            return locality
+        }
+
+        private suspend fun insertDeftLocalityDistrict(
+            db: JwSuiteDatabase, localityDistrict: GeoLocalityDistrictEntity
+        ): GeoLocalityDistrictEntity {
+            val localityDistrictDao = db.geoLocalityDistrictDao()
+            val textContent =
+                GeoLocalityDistrictTlEntity.localityDistrictTl(
+                    ctx,
+                    localityDistrict.locDistrictShortName, localityDistrict.localityDistrictId
+                )
+            localityDistrictDao.insert(localityDistrict, textContent)
+            Timber.tag(TAG).i("GEO: Default locality district imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"localityDistrict\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(localityDistrict), it.encodeToString(textContent)
+                )
+            }
+            return localityDistrict
+        }
+
+        private suspend fun insertDefMicrodistrict(
+            db: JwSuiteDatabase, microdistrict: GeoMicrodistrictEntity
+        ): GeoMicrodistrictEntity {
+            val microdistrictDao = db.geoMicrodistrictDao()
+            val textContent = GeoMicrodistrictTlEntity.microdistrictTl(
+                ctx,
+                microdistrict.microdistrictShortName, microdistrict.microdistrictId
+            )
+            microdistrictDao.insert(microdistrict, textContent)
+            Timber.tag(TAG).i("GEO: Default locality microdistrict imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"microdistrict\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(microdistrict), it.encodeToString(textContent)
+                )
+            }
+            return microdistrict
+        }
+
+        private suspend fun insertDefStreet(db: JwSuiteDatabase, street: GeoStreetEntity):
+                GeoStreetEntity {
+            val streetDao = db.geoStreetDao()
+            val textContent = GeoStreetTlEntity.streetTl(
+                ctx, street.streetHashCode, street.streetId
+            )
+            streetDao.insert(street, textContent)
+            Timber.tag(TAG).i("GEO: Default street imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"street\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(street), it.encodeToString(textContent)
+                )
+            }
+            return street
+        }
+
+        private suspend fun insertDefStreetDistrict(
+            db: JwSuiteDatabase, street: GeoStreetEntity,
+            localityDistrict: GeoLocalityDistrictEntity,
+            microdistrict: GeoMicrodistrictEntity? = null
+        ) {
+            val streetDao = db.geoStreetDao()
+            val streetDistrict = GeoStreetDistrictEntity.defaultDistrictStreet(
+                streetId = street.streetId,
+                localityDistrictId = localityDistrict.localityDistrictId,
+                microdistrictId = microdistrict?.microdistrictId
+            )
+            streetDao.insert(streetDistrict)
+            Timber.tag(TAG).i("GEO: Default street district imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(streetDistrict)) }
+        }
+
+        private suspend fun insertDefHouse(db: JwSuiteDatabase, house: HouseEntity): HouseEntity {
+            val houseDao = db.houseDao()
+            houseDao.insert(house)
+            Timber.tag(TAG).i("GEO: Default house imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(house)) }
+            return house
+        }
+
+        // CONGREGATION:
+        private suspend fun insertDefMemberRole(db: JwSuiteDatabase, roleType: MemberRoleType):
+                RoleEntity {
+            val memberDao = db.memberDao()
+            val role = when (roleType) {
+                MemberRoleType.ADMIN -> RoleEntity.adminRole(ctx)
+                MemberRoleType.USER -> RoleEntity.userRole(ctx)
+                MemberRoleType.TERRITORIES -> RoleEntity.territoriesRole(ctx)
+                MemberRoleType.BILLS -> RoleEntity.billsRole(ctx)
+                MemberRoleType.REPORTS -> RoleEntity.reportsRole(ctx)
+            }
+            memberDao.insert(role)
+            Timber.tag(TAG).i("Default role imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(": {\"role\": {%s}}", it.encodeToString(role))
+            }
+            return role
+        }
+
+        private suspend fun insertDefGroup(
+            db: JwSuiteDatabase, groupNum: Int, congregation: CongregationEntity
+        ): GroupEntity {
+            val groupDao = db.groupDao()
+            val group = when (groupNum) {
+                1 -> GroupEntity.group1(ctx, congregation.congregationId)
+                2 -> GroupEntity.group2(ctx, congregation.congregationId)
+                3 -> GroupEntity.group3(ctx, congregation.congregationId)
+                4 -> GroupEntity.group4(ctx, congregation.congregationId)
+                5 -> GroupEntity.group5(ctx, congregation.congregationId)
+                6 -> GroupEntity.group6(ctx, congregation.congregationId)
+                7 -> GroupEntity.group7(ctx, congregation.congregationId)
+                8 -> GroupEntity.group8(ctx, congregation.congregationId)
+                9 -> GroupEntity.group9(ctx, congregation.congregationId)
+                10 -> GroupEntity.group10(ctx, congregation.congregationId)
+                11 -> GroupEntity.group11(ctx, congregation.congregationId)
+                12 -> GroupEntity.group12(ctx, congregation.congregationId)
+                else -> null
+            }
+            group?.let {
+                groupDao.insert(it)
+                Timber.tag(TAG).i("CONGREGATION: Default group imported")
+                jsonLogger?.let { logger ->
+                    Timber.tag(TAG).i(": {\"group\": {%s}}", logger.encodeToString(it))
+                }
+            }
+            return group!!
+        }
+
+        private suspend fun insertDefMember(
+            db: JwSuiteDatabase, memberNumInGroup: Int,
+            congregation: CongregationEntity, group: GroupEntity, role: RoleEntity
+        ): MemberEntity {
+            val memberDao = db.memberDao()
+            val member = when (congregation.congregationNum) {
+                "1" -> when (group.groupNum) {
+                    1 -> when (memberNumInGroup) {
+                        1 -> MemberEntity.ivanovMember11(ctx, group.groupId)
+                        2 -> MemberEntity.petrovMember12(ctx, group.groupId)
+                        else -> null
+                    }
+
+                    2 -> when (memberNumInGroup) {
+                        1 -> MemberEntity.sidorovMember21(ctx, group.groupId)
+                        else -> null
+                    }
+
+                    else -> null
+                }
+
+                "2" -> when (group.groupNum) {
+                    1 -> when (memberNumInGroup) {
+                        1 -> MemberEntity.tarasovaMember11(ctx, group.groupId)
+                        2 -> MemberEntity.shevchukMember12(ctx, group.groupId)
+                        else -> null
+                    }
+
+                    2 -> when (memberNumInGroup) {
+                        1 -> MemberEntity.matveychukMember21(ctx, group.groupId)
+                        else -> null
+                    }
+
+                    else -> null
+                }
+
+                else -> null
+            }
+            member?.let {
+                memberDao.insert(it)
+                val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
+                    congregationId = congregation.congregationId, memberId = it.memberId
+                )
+                memberDao.insert(memberCongregation)
+                val memberMovement = MemberMovementEntity.defaultMemberMovement(
+                    memberId = it.memberId, memberType = MemberType.PREACHER
+                )
+                memberDao.insert(memberMovement)
+                val memberRole = MemberRoleEntity.defaultMemberRole(
+                    memberId = it.memberId, roleId = role.roleId
+                )
+                memberDao.insert(memberRole)
+                Timber.tag(TAG).i("CONGREGATION: Default member imported")
+                jsonLogger?.let { logger ->
+                    Timber.tag(TAG).i(
+                        ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
+                        logger.encodeToString(it),
+                        logger.encodeToString(memberCongregation),
+                        logger.encodeToString(memberMovement),
+                        logger.encodeToString(memberRole)
+                    )
+                }
+            }
+            return member!!
+        }
+
+        private suspend fun insertDefAdminMember(db: JwSuiteDatabase, role: RoleEntity):
+                MemberEntity {
+            val memberDao = db.memberDao()
+            val member = MemberEntity.adminMember(ctx)
+            memberDao.insert(member)
+            val memberMovement = MemberMovementEntity.defaultMemberMovement(
+                memberId = member.memberId, memberType = MemberType.SERVICE
+            )
+            memberDao.insert(memberMovement)
+            val memberRole = MemberRoleEntity.defaultMemberRole(
+                memberId = member.memberId, roleId = role.roleId
+            )
+            memberDao.insert(memberRole)
+            Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
+            jsonLogger?.let { logger ->
+                Timber.tag(TAG).i(
+                    ": {\"member\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
+                    logger.encodeToString(member),
+                    logger.encodeToString(memberMovement),
+                    logger.encodeToString(memberRole)
+                )
+            }
+            return member
+        }
+
+        // TERRITORIES:
+        private suspend fun insertDefTerritoryCategory(
+            db: JwSuiteDatabase, territoryCategory: TerritoryCategoryEntity
+        ): TerritoryCategoryEntity {
+            val territoryCategoryDao = db.territoryCategoryDao()
+            territoryCategoryDao.insert(territoryCategory)
+            Timber.tag(TAG).i("TERRITORY: Default territory category imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryCategory)) }
+            return territoryCategory
+        }
+
+        private suspend fun insertDefTerritories(
+            db: JwSuiteDatabase, territoryCategory: TerritoryCategoryEntity,
+            congregation: CongregationEntity,
+            locality: GeoLocalityEntity, localityDistrict: GeoLocalityDistrictEntity,
+            microdistrict: GeoMicrodistrictEntity
+        ): MutableList<TerritoryEntity> {
+            val territoryDao = db.territoryDao()
+            val territories = mutableListOf<TerritoryEntity>()
+            for (num in 1..144) {
+                val territory = TerritoryEntity.defaultTerritory(
+                    territoryCategoryId = territoryCategory.territoryCategoryId,
+                    congregationId = congregation.congregationId,
+                    localityId = when (num % 2) {
+                        0 -> congregation.cLocalitiesId
+                        else -> locality.localityId
+                    },
+                    localityDistrictId = when (num % 4) {
+                        0 -> localityDistrict.localityDistrictId
+                        else -> null
+                    },
+                    microdistrictId = when (num % 6) {
+                        0 -> microdistrict.microdistrictId
+                        else -> null
+                    },
+                    isBusiness = num % 8 == 0,
+                    //isInPerimeter = num % 10 == 0,
+                    isGroupMinistry = num % 20 == 0,
+                    territoryNum = num
+                )
+                territoryDao.insert(territory)
+                val congregationTerritory =
+                    CongregationTerritoryCrossRefEntity.defaultCongregationTerritory(
+                        congregationId = congregation.congregationId,
+                        territoryId = territory.territoryId
+                    )
+                territoryDao.insert(congregationTerritory)
+                territories.add(territory)
+            }
+            Timber.tag(TAG).i("TERRITORIES: Default territories imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"territories\": {\"count\": %s, \"congregation\": {%s}}}",
+                    territories.size, it.encodeToString(congregation)
+                )
+            }
+            return territories
+        }
+
+        private suspend fun insertDefTerritoryMember(
+            db: JwSuiteDatabase, territory: TerritoryEntity, member: MemberEntity
+        ): TerritoryMemberCrossRefEntity {
+            val territoryDao = db.territoryDao()
+            val territoryMember = TerritoryMemberCrossRefEntity.defaultTerritoryMember(
+                territoryId = territory.territoryId, memberId = member.memberId,
+            )
+            territoryDao.insert(territoryMember)
+            val handOutTerritory = territory.copy(isProcessed = false)
+            territoryDao.update(handOutTerritory)
+            Timber.tag(TAG).i("TERRITORY: Default territory member imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryMember)) }
+            Timber.tag(TAG).i("TERRITORY: Default hand out territory imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(handOutTerritory)) }
+            return territoryMember
+        }
+
+        private suspend fun deliveryDefTerritoryMember(
+            db: JwSuiteDatabase, territory: TerritoryEntity,
+            territoryMember: TerritoryMemberCrossRefEntity
+        ) {
+            val territoryDao = db.territoryDao()
+            val deliveryTerritoryMember = territoryMember.copy(deliveryDate = OffsetDateTime.now())
+            territoryDao.update(deliveryTerritoryMember)
+            val idleTerritory = territory.copy(isProcessed = true)
+            territoryDao.update(idleTerritory)
+            Timber.tag(TAG).i("TERRITORY: Delivery imported territory member")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(": {%s}", it.encodeToString(deliveryTerritoryMember))
+            }
+            Timber.tag(TAG).i("TERRITORY: Delivery imported territory")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(idleTerritory)) }
+        }
+
+        private suspend fun insertDefTerritoryStreet(
+            db: JwSuiteDatabase, territory: TerritoryEntity, street: GeoStreetEntity,
+            isEven: Boolean? = null, isPrivateSector: Boolean? = null
+        ) {
+            val territoryDao = db.territoryDao()
+            val territoryStreet = TerritoryStreetEntity.privateSectorTerritoryStreet(
+                territoryId = territory.territoryId, streetId = street.streetId, isEven = isEven
+            )
+            territoryDao.insert(territoryStreet)
+            Timber.tag(TAG).i("TERRITORY: Default territory street imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryStreet)) }
+        }
+
+        // TRANSFERS:
+        private suspend fun insertDefTransferObject(
+            db: JwSuiteDatabase, transferObjectType: TransferObjectType
+        ): TransferObjectEntity {
+            val transferDao = db.transferDao()
+            val transferObject = when (transferObjectType) {
+                TransferObjectType.ALL -> TransferObjectEntity.allTransferObject(ctx)
+                TransferObjectType.MEMBERS -> TransferObjectEntity.membersTransferObject(ctx)
+                TransferObjectType.TERRITORIES -> TransferObjectEntity.territoriesTransferObject(ctx)
+                TransferObjectType.BILLS -> TransferObjectEntity.billsTransferObject(ctx)
+            }
+            transferDao.insert(transferObject)
+            Timber.tag(TAG).i("Default transfer object imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(": {\"transferObject\": {%s}}", it.encodeToString(transferObject))
+            }
+            return transferObject
+        }
+
+        private suspend fun insertDefRoleTransferObject(
+            db: JwSuiteDatabase, role: RoleEntity, transferObject: TransferObjectEntity,
+            isPersonalData: Boolean
+        ): RoleTransferObjectEntity {
+            val transferDao = db.transferDao()
+            val roleTransferObject = RoleTransferObjectEntity.defaultRoleTransferObject(
+                roleId = role.roleId, transferObjectId = transferObject.transferObjectId,
+                isPersonalData = isPersonalData
+            )
+            transferDao.insert(roleTransferObject)
+            Timber.tag(TAG).i("TRANSFERS: Default Role Transfer Object imported")
+            jsonLogger?.let { logger ->
+                Timber.tag(TAG).i(
+                    ": {\"roleTransferObject\": {%s}}", logger.encodeToString(roleTransferObject)
+                )
+            }
+            return roleTransferObject
+        }
+
+        // ================================= SupportSQLiteDatabase =================================
         private fun prePopulateDb(db: SupportSQLiteDatabase) {
             Timber.tag(TAG).i("prePopulateDb(...) called")
             db.beginTransaction()
@@ -350,92 +1132,92 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 // ==============================
                 // GEO:
                 // Default regions:
-                val donRegion = insertDefRegion(db, GeoRegionEntity.donetskRegion(context))
-                val lugRegion = insertDefRegion(db, GeoRegionEntity.luganskRegion(context))
+                val donRegion = insertDefRegion(db, GeoRegionEntity.donetskRegion(ctx))
+                val lugRegion = insertDefRegion(db, GeoRegionEntity.luganskRegion(ctx))
 
                 // DON districts:
                 val maryinskyDistrict = insertDefRegionDistrict(
-                    db, GeoRegionDistrictEntity.maryinskyRegionDistrict(context, donRegion.regionId)
+                    db, GeoRegionDistrictEntity.maryinskyRegionDistrict(ctx, donRegion.regionId)
                 )
 
                 val donetskyDistrict = insertDefRegionDistrict(
-                    db, GeoRegionDistrictEntity.donetskyRegionDistrict(context, donRegion.regionId)
+                    db, GeoRegionDistrictEntity.donetskyRegionDistrict(ctx, donRegion.regionId)
                 )
 
                 // DON localities:
                 val donetsk = insertDeftLocality(
-                    db, GeoLocalityEntity.donetskLocality(context, donRegion.regionId)
+                    db, GeoLocalityEntity.donetskLocality(ctx, donRegion.regionId)
                 )
                 val makeevka = insertDeftLocality(
-                    db, GeoLocalityEntity.makeevkaLocality(context, donRegion.regionId)
+                    db, GeoLocalityEntity.makeevkaLocality(ctx, donRegion.regionId)
                 )
                 val marinka = insertDeftLocality(
                     db, GeoLocalityEntity.marinkaLocality(
-                        context, donRegion.regionId, maryinskyDistrict.regionDistrictId
+                        ctx, donRegion.regionId, maryinskyDistrict.regionDistrictId
                     )
                 )
                 val mospino = insertDeftLocality(
                     db, GeoLocalityEntity.mospinoLocality(
-                        context, donRegion.regionId, donetskyDistrict.regionDistrictId
+                        ctx, donRegion.regionId, donetskyDistrict.regionDistrictId
                     )
                 )
                 // LUG localities:
                 val lugansk = insertDeftLocality(
-                    db, GeoLocalityEntity.luganskLocality(context, lugRegion.regionId)
+                    db, GeoLocalityEntity.luganskLocality(ctx, lugRegion.regionId)
                 )
 
                 // Donetsk districts:
                 val budyonovsky = insertDeftLocalityDistrict(
                     db,
-                    GeoLocalityDistrictEntity.bdnLocalityDistrict(context, donetsk.localityId)
+                    GeoLocalityDistrictEntity.bdnLocalityDistrict(ctx, donetsk.localityId)
                 )
                 val kievsky = insertDeftLocalityDistrict(
                     db,
-                    GeoLocalityDistrictEntity.kvkLocalityDistrict(context, donetsk.localityId)
+                    GeoLocalityDistrictEntity.kvkLocalityDistrict(ctx, donetsk.localityId)
                 )
                 val kuybyshevsky = insertDeftLocalityDistrict(
                     db,
-                    GeoLocalityDistrictEntity.kbshLocalityDistrict(context, donetsk.localityId)
+                    GeoLocalityDistrictEntity.kbshLocalityDistrict(ctx, donetsk.localityId)
                 )
                 val voroshilovsky = insertDeftLocalityDistrict(
                     db,
-                    GeoLocalityDistrictEntity.vrshLocalityDistrict(context, donetsk.localityId)
+                    GeoLocalityDistrictEntity.vrshLocalityDistrict(ctx, donetsk.localityId)
                 )
 
                 // Donetsk microdistricts:
                 val donskoy = insertDefMicrodistrict(
                     db,
                     GeoMicrodistrictEntity.donskoyMicrodistrict(
-                        context, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
+                        ctx, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
                     )
                 )
                 val cvetochny = insertDefMicrodistrict(
                     db,
                     GeoMicrodistrictEntity.cvetochnyMicrodistrict(
-                        context, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
+                        ctx, budyonovsky.ldLocalitiesId, budyonovsky.localityDistrictId
                     )
                 )
 
                 // Donetsk streets:
                 val strelkovojDivizii = insertDefStreet(
-                    db, GeoStreetEntity.strelkovojDiviziiStreet(context, donetsk.localityId)
+                    db, GeoStreetEntity.strelkovojDiviziiStreet(ctx, donetsk.localityId)
                 )
                 insertDefStreetDistrict(db, strelkovojDivizii, budyonovsky, donskoy)
                 insertDefStreetDistrict(db, strelkovojDivizii, budyonovsky, cvetochny)
                 val nezavisimosti = insertDefStreet(
-                    db, GeoStreetEntity.nezavisimostiStreet(context, donetsk.localityId)
+                    db, GeoStreetEntity.nezavisimostiStreet(ctx, donetsk.localityId)
                 )
                 insertDefStreetDistrict(db, nezavisimosti, budyonovsky, donskoy)
                 val baratynskogo = insertDefStreet(
-                    db, GeoStreetEntity.baratynskogoStreet(context, donetsk.localityId)
+                    db, GeoStreetEntity.baratynskogoStreet(ctx, donetsk.localityId)
                 )
                 insertDefStreetDistrict(db, baratynskogo, budyonovsky)
                 val patorgynskogo = insertDefStreet(
-                    db, GeoStreetEntity.patorgynskogoStreet(context, donetsk.localityId)
+                    db, GeoStreetEntity.patorgynskogoStreet(ctx, donetsk.localityId)
                 )
                 insertDefStreetDistrict(db, patorgynskogo, budyonovsky)
                 val belogorodskaya = insertDefStreet(
-                    db, GeoStreetEntity.belogorodskayaStreet(context, donetsk.localityId)
+                    db, GeoStreetEntity.belogorodskayaStreet(ctx, donetsk.localityId)
                 )
                 insertDefStreetDistrict(db, belogorodskaya, budyonovsky)
 
@@ -492,10 +1274,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
                 // Mospino streets:
                 val novomospino = insertDefStreet(
-                    db, GeoStreetEntity.novomospinoStreet(context, mospino.localityId)
+                    db, GeoStreetEntity.novomospinoStreet(ctx, mospino.localityId)
                 )
                 val gertsena =
-                    insertDefStreet(db, GeoStreetEntity.gertsenaStreet(context, mospino.localityId))
+                    insertDefStreet(db, GeoStreetEntity.gertsenaStreet(ctx, mospino.localityId))
 
 
                 // ==============================
@@ -513,7 +1295,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 // Default congregations:
                 // 1
                 val congregation1 = CongregationEntity.favoriteCongregation(
-                    context, donetsk.localityId
+                    ctx, donetsk.localityId
                 )
                 db.insert(
                     CongregationEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
@@ -523,7 +1305,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
                 // 2
                 val congregation2 = CongregationEntity.secondCongregation(
-                    context, donetsk.localityId
+                    ctx, donetsk.localityId
                 )
                 db.insert(
                     CongregationEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
@@ -550,13 +1332,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 // TERRITORY:
                 // Categories:
                 val houseTerritoryCategory = insertDefTerritoryCategory(
-                    db, TerritoryCategoryEntity.houseTerritoryCategory(context)
+                    db, TerritoryCategoryEntity.houseTerritoryCategory(ctx)
                 )
                 val floorTerritoryCategory = insertDefTerritoryCategory(
-                    db, TerritoryCategoryEntity.floorTerritoryCategory(context)
+                    db, TerritoryCategoryEntity.floorTerritoryCategory(ctx)
                 )
                 val roomTerritoryCategory = insertDefTerritoryCategory(
-                    db, TerritoryCategoryEntity.roomTerritoryCategory(context)
+                    db, TerritoryCategoryEntity.roomTerritoryCategory(ctx)
                 )
                 // Room territories:
                 val roomTerrs1 = insertDefTerritories(
@@ -640,67 +1422,67 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 Mapper.toContentValues(currencyCode)
             )
             // All Items
-            val allItems = AppSettingEntity.allItemsParam(context)
+            val allItems = AppSettingEntity.allItemsParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(allItems)
             )
             // Day Mu
-            val dayMu = AppSettingEntity.dayMuParam(context)
+            val dayMu = AppSettingEntity.dayMuParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(dayMu)
             )
             // Month Mu
-            val monthMu = AppSettingEntity.monthMuParam(context)
+            val monthMu = AppSettingEntity.monthMuParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
             // Year Mu
-            val yearMu = AppSettingEntity.yearMuParam(context)
+            val yearMu = AppSettingEntity.yearMuParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(monthMu)
             )
             // Person Num MU
-            val personNumMu = AppSettingEntity.personNumMuParam(context)
+            val personNumMu = AppSettingEntity.personNumMuParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(personNumMu)
             )
             // Territory Business Mark
-            val territoryBusinessMark = AppSettingEntity.territoryBusinessMarkParam(context)
+            val territoryBusinessMark = AppSettingEntity.territoryBusinessMarkParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryBusinessMark)
             )
             // Territory Processing Period
-            val territoryProcessingPeriod = AppSettingEntity.territoryProcessingPeriodParam(context)
+            val territoryProcessingPeriod = AppSettingEntity.territoryProcessingPeriodParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryProcessingPeriod)
             )
             // Territory At Hand Period
-            val territoryAtHandPeriod = AppSettingEntity.territoryAtHandPeriodParam(context)
+            val territoryAtHandPeriod = AppSettingEntity.territoryAtHandPeriodParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryAtHandPeriod)
             )
             // Territory Rooms Limit
-            val territoryRoomsLimit = AppSettingEntity.territoryRoomsLimitParam(context)
+            val territoryRoomsLimit = AppSettingEntity.territoryRoomsLimitParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryRoomsLimit)
             )
             // Territory Max Rooms
-            val territoryMaxRoomsParam = AppSettingEntity.territoryMaxRoomsParam(context)
+            val territoryMaxRoomsParam = AppSettingEntity.territoryMaxRoomsParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryMaxRoomsParam)
             )
             // Territory Idle Period
-            val territoryIdlePeriod = AppSettingEntity.territoryIdlePeriodParam(context)
+            val territoryIdlePeriod = AppSettingEntity.territoryIdlePeriodParam(ctx)
             db.insert(
                 AppSettingEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(territoryIdlePeriod)
@@ -727,14 +1509,190 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             }
         }
 
+        // GEO:
+        private fun insertDefRegion(db: SupportSQLiteDatabase, region: GeoRegionEntity):
+                GeoRegionEntity {
+            val textContent =
+                GeoRegionTlEntity.regionTl(ctx, region.regionCode, region.regionId)
+            db.insert(
+                GeoRegionEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(region)
+            )
+            db.insert(
+                GeoRegionTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(textContent)
+            )
+            Timber.tag(TAG).i("GEO: Default region imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"region\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(region),
+                    it.encodeToString(textContent)
+                )
+            }
+            return region
+        }
+
+        private fun insertDefRegionDistrict(
+            db: SupportSQLiteDatabase, regionDistrict: GeoRegionDistrictEntity
+        ): GeoRegionDistrictEntity {
+            val textContent =
+                GeoRegionDistrictTlEntity.regionDistrictTl(
+                    ctx,
+                    regionDistrict.regDistrictShortName, regionDistrict.regionDistrictId
+                )
+            db.insert(
+                GeoRegionDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(regionDistrict)
+            )
+            db.insert(
+                GeoRegionDistrictTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(textContent)
+            )
+            Timber.tag(TAG).i("GEO: Default region District imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"regionDistrict\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(regionDistrict), it.encodeToString(textContent)
+                )
+            }
+            return regionDistrict
+        }
+
+        private fun insertDeftLocality(db: SupportSQLiteDatabase, locality: GeoLocalityEntity):
+                GeoLocalityEntity {
+            val textContent =
+                GeoLocalityTlEntity.localityTl(ctx, locality.localityCode, locality.localityId)
+            db.insert(
+                GeoLocalityEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(locality)
+            )
+            db.insert(
+                GeoLocalityTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(textContent)
+            )
+            Timber.tag(TAG).i("GEO: Default locality imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"locality\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(locality), it.encodeToString(textContent)
+                )
+            }
+            return locality
+        }
+
+        private fun insertDeftLocalityDistrict(
+            db: SupportSQLiteDatabase, localityDistrict: GeoLocalityDistrictEntity
+        ):
+                GeoLocalityDistrictEntity {
+            val textContent =
+                GeoLocalityDistrictTlEntity.localityDistrictTl(
+                    ctx,
+                    localityDistrict.locDistrictShortName, localityDistrict.localityDistrictId
+                )
+            db.insert(
+                GeoLocalityDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(localityDistrict)
+            )
+            db.insert(
+                GeoLocalityDistrictTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(textContent)
+            )
+            Timber.tag(TAG).i("GEO: Default locality district imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"localityDistrict\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(localityDistrict), it.encodeToString(textContent)
+                )
+            }
+            return localityDistrict
+        }
+
+        private fun insertDefMicrodistrict(
+            db: SupportSQLiteDatabase, microdistrict: GeoMicrodistrictEntity
+        ): GeoMicrodistrictEntity {
+            val textContent = GeoMicrodistrictTlEntity.microdistrictTl(
+                ctx,
+                microdistrict.microdistrictShortName, microdistrict.microdistrictId
+            )
+            db.insert(
+                GeoMicrodistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(microdistrict)
+            )
+            db.insert(
+                GeoMicrodistrictTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(textContent)
+            )
+            Timber.tag(TAG).i("GEO: Default locality microdistrict imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"microdistrict\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(microdistrict), it.encodeToString(textContent)
+                )
+            }
+            return microdistrict
+        }
+
+        private fun insertDefStreet(db: SupportSQLiteDatabase, street: GeoStreetEntity):
+                GeoStreetEntity {
+            val textContent = GeoStreetTlEntity.streetTl(
+                ctx, street.streetHashCode, street.streetId
+            )
+            db.insert(
+                GeoStreetEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(street)
+            )
+            db.insert(
+                GeoStreetTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(textContent)
+            )
+            Timber.tag(TAG).i("GEO: Default street imported")
+            jsonLogger?.let {
+                Timber.tag(TAG).i(
+                    ": {\"street\": {%s}, \"tl\": {%s}}",
+                    it.encodeToString(street), it.encodeToString(textContent)
+                )
+            }
+            return street
+        }
+
+        private fun insertDefStreetDistrict(
+            db: SupportSQLiteDatabase, street: GeoStreetEntity,
+            localityDistrict: GeoLocalityDistrictEntity,
+            microdistrict: GeoMicrodistrictEntity? = null
+        ) {
+            val streetDistrict = GeoStreetDistrictEntity.defaultDistrictStreet(
+                streetId = street.streetId,
+                localityDistrictId = localityDistrict.localityDistrictId,
+                microdistrictId = microdistrict?.microdistrictId
+            )
+            db.insert(
+                GeoStreetDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(streetDistrict)
+            )
+            Timber.tag(TAG).i("GEO: Default street district imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(streetDistrict)) }
+        }
+
+        private fun insertDefHouse(db: SupportSQLiteDatabase, house: HouseEntity): HouseEntity {
+            db.insert(
+                HouseEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+                Mapper.toContentValues(house)
+            )
+            Timber.tag(TAG).i("GEO: Default house imported")
+            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(house)) }
+            return house
+        }
+
+        // CONGREGATION:
         private fun insertDefMemberRole(db: SupportSQLiteDatabase, roleType: MemberRoleType):
                 RoleEntity {
             val role = when (roleType) {
-                MemberRoleType.ADMIN -> RoleEntity.adminRole(context)
-                MemberRoleType.USER -> RoleEntity.userRole(context)
-                MemberRoleType.TERRITORIES -> RoleEntity.territoriesRole(context)
-                MemberRoleType.BILLS -> RoleEntity.billsRole(context)
-                MemberRoleType.REPORTS -> RoleEntity.reportsRole(context)
+                MemberRoleType.ADMIN -> RoleEntity.adminRole(ctx)
+                MemberRoleType.USER -> RoleEntity.userRole(ctx)
+                MemberRoleType.TERRITORIES -> RoleEntity.territoriesRole(ctx)
+                MemberRoleType.BILLS -> RoleEntity.billsRole(ctx)
+                MemberRoleType.REPORTS -> RoleEntity.reportsRole(ctx)
             }
             db.insert(
                 RoleEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
@@ -751,18 +1709,18 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             db: SupportSQLiteDatabase, groupNum: Int, congregation: CongregationEntity
         ): GroupEntity {
             val group = when (groupNum) {
-                1 -> GroupEntity.group1(context, congregation.congregationId)
-                2 -> GroupEntity.group2(context, congregation.congregationId)
-                3 -> GroupEntity.group3(context, congregation.congregationId)
-                4 -> GroupEntity.group4(context, congregation.congregationId)
-                5 -> GroupEntity.group5(context, congregation.congregationId)
-                6 -> GroupEntity.group6(context, congregation.congregationId)
-                7 -> GroupEntity.group7(context, congregation.congregationId)
-                8 -> GroupEntity.group8(context, congregation.congregationId)
-                9 -> GroupEntity.group9(context, congregation.congregationId)
-                10 -> GroupEntity.group10(context, congregation.congregationId)
-                11 -> GroupEntity.group11(context, congregation.congregationId)
-                12 -> GroupEntity.group12(context, congregation.congregationId)
+                1 -> GroupEntity.group1(ctx, congregation.congregationId)
+                2 -> GroupEntity.group2(ctx, congregation.congregationId)
+                3 -> GroupEntity.group3(ctx, congregation.congregationId)
+                4 -> GroupEntity.group4(ctx, congregation.congregationId)
+                5 -> GroupEntity.group5(ctx, congregation.congregationId)
+                6 -> GroupEntity.group6(ctx, congregation.congregationId)
+                7 -> GroupEntity.group7(ctx, congregation.congregationId)
+                8 -> GroupEntity.group8(ctx, congregation.congregationId)
+                9 -> GroupEntity.group9(ctx, congregation.congregationId)
+                10 -> GroupEntity.group10(ctx, congregation.congregationId)
+                11 -> GroupEntity.group11(ctx, congregation.congregationId)
+                12 -> GroupEntity.group12(ctx, congregation.congregationId)
                 else -> null
             }
             group?.let {
@@ -785,13 +1743,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             val member = when (congregation.congregationNum) {
                 "1" -> when (group.groupNum) {
                     1 -> when (memberNumInGroup) {
-                        1 -> MemberEntity.ivanovMember11(context, group.groupId)
-                        2 -> MemberEntity.petrovMember12(context, group.groupId)
+                        1 -> MemberEntity.ivanovMember11(ctx, group.groupId)
+                        2 -> MemberEntity.petrovMember12(ctx, group.groupId)
                         else -> null
                     }
 
                     2 -> when (memberNumInGroup) {
-                        1 -> MemberEntity.sidorovMember21(context, group.groupId)
+                        1 -> MemberEntity.sidorovMember21(ctx, group.groupId)
                         else -> null
                     }
 
@@ -800,13 +1758,13 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
                 "2" -> when (group.groupNum) {
                     1 -> when (memberNumInGroup) {
-                        1 -> MemberEntity.tarasovaMember11(context, group.groupId)
-                        2 -> MemberEntity.shevchukMember12(context, group.groupId)
+                        1 -> MemberEntity.tarasovaMember11(ctx, group.groupId)
+                        2 -> MemberEntity.shevchukMember12(ctx, group.groupId)
                         else -> null
                     }
 
                     2 -> when (memberNumInGroup) {
-                        1 -> MemberEntity.matveychukMember21(context, group.groupId)
+                        1 -> MemberEntity.matveychukMember21(ctx, group.groupId)
                         else -> null
                     }
 
@@ -858,7 +1816,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         private fun insertDefAdminMember(
             db: SupportSQLiteDatabase, role: RoleEntity
         ): MemberEntity {
-            val member = MemberEntity.adminMember(context)
+            val member = MemberEntity.adminMember(ctx)
             db.insert(
                 MemberEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
                 Mapper.toContentValues(member)
@@ -889,180 +1847,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             return member
         }
 
-        private fun insertDefRegion(db: SupportSQLiteDatabase, region: GeoRegionEntity):
-                GeoRegionEntity {
-            val textContent =
-                GeoRegionTlEntity.regionTl(context, region.regionCode, region.regionId)
-            db.insert(
-                GeoRegionEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(region)
-            )
-            db.insert(
-                GeoRegionTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(textContent)
-            )
-            Timber.tag(TAG).i("GEO: Default region imported")
-            jsonLogger?.let {
-                Timber.tag(TAG).i(
-                    ": {\"region\": {%s}, \"tl\": {%s}}",
-                    it.encodeToString(region),
-                    it.encodeToString(textContent)
-                )
-            }
-            return region
-        }
-
-        private fun insertDefRegionDistrict(
-            db: SupportSQLiteDatabase, regionDistrict: GeoRegionDistrictEntity
-        ): GeoRegionDistrictEntity {
-            val textContent =
-                GeoRegionDistrictTlEntity.regionDistrictTl(
-                    context,
-                    regionDistrict.regDistrictShortName, regionDistrict.regionDistrictId
-                )
-            db.insert(
-                GeoRegionDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(regionDistrict)
-            )
-            db.insert(
-                GeoRegionDistrictTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(textContent)
-            )
-            Timber.tag(TAG).i("GEO: Default region District imported")
-            jsonLogger?.let {
-                Timber.tag(TAG).i(
-                    ": {\"regionDistrict\": {%s}, \"tl\": {%s}}",
-                    it.encodeToString(regionDistrict), it.encodeToString(textContent)
-                )
-            }
-            return regionDistrict
-        }
-
-        private fun insertDeftLocality(db: SupportSQLiteDatabase, locality: GeoLocalityEntity):
-                GeoLocalityEntity {
-            val textContent =
-                GeoLocalityTlEntity.localityTl(context, locality.localityCode, locality.localityId)
-            db.insert(
-                GeoLocalityEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(locality)
-            )
-            db.insert(
-                GeoLocalityTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(textContent)
-            )
-            Timber.tag(TAG).i("GEO: Default locality imported")
-            jsonLogger?.let {
-                Timber.tag(TAG).i(
-                    ": {\"locality\": {%s}, \"tl\": {%s}}",
-                    it.encodeToString(locality), it.encodeToString(textContent)
-                )
-            }
-            return locality
-        }
-
-        private fun insertDeftLocalityDistrict(
-            db: SupportSQLiteDatabase, localityDistrict: GeoLocalityDistrictEntity
-        ):
-                GeoLocalityDistrictEntity {
-            val textContent =
-                GeoLocalityDistrictTlEntity.localityDistrictTl(
-                    context,
-                    localityDistrict.locDistrictShortName, localityDistrict.localityDistrictId
-                )
-            db.insert(
-                GeoLocalityDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(localityDistrict)
-            )
-            db.insert(
-                GeoLocalityDistrictTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(textContent)
-            )
-            Timber.tag(TAG).i("GEO: Default locality district imported")
-            jsonLogger?.let {
-                Timber.tag(TAG).i(
-                    ": {\"localityDistrict\": {%s}, \"tl\": {%s}}",
-                    it.encodeToString(localityDistrict), it.encodeToString(textContent)
-                )
-            }
-            return localityDistrict
-        }
-
-        private fun insertDefMicrodistrict(
-            db: SupportSQLiteDatabase, microdistrict: GeoMicrodistrictEntity
-        ): GeoMicrodistrictEntity {
-            val textContent = GeoMicrodistrictTlEntity.microdistrictTl(
-                context,
-                microdistrict.microdistrictShortName, microdistrict.microdistrictId
-            )
-            db.insert(
-                GeoMicrodistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(microdistrict)
-            )
-            db.insert(
-                GeoMicrodistrictTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(textContent)
-            )
-            Timber.tag(TAG).i("GEO: Default locality microdistrict imported")
-            jsonLogger?.let {
-                Timber.tag(TAG).i(
-                    ": {\"microdistrict\": {%s}, \"tl\": {%s}}",
-                    it.encodeToString(microdistrict), it.encodeToString(textContent)
-                )
-            }
-            return microdistrict
-        }
-
-        private fun insertDefStreet(db: SupportSQLiteDatabase, street: GeoStreetEntity):
-                GeoStreetEntity {
-            val textContent = GeoStreetTlEntity.streetTl(
-                context, street.streetHashCode, street.streetId
-            )
-            db.insert(
-                GeoStreetEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(street)
-            )
-            db.insert(
-                GeoStreetTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(textContent)
-            )
-            Timber.tag(TAG).i("GEO: Default street imported")
-            jsonLogger?.let {
-                Timber.tag(TAG).i(
-                    ": {\"street\": {%s}, \"tl\": {%s}}",
-                    it.encodeToString(street), it.encodeToString(textContent)
-                )
-            }
-            return street
-        }
-
-        private fun insertDefStreetDistrict(
-            db: SupportSQLiteDatabase, street: GeoStreetEntity,
-            localityDistrict: GeoLocalityDistrictEntity,
-            microdistrict: GeoMicrodistrictEntity? = null
-        ) {
-            val streetDistrict = GeoStreetDistrictEntity.defaultDistrictStreet(
-                streetId = street.streetId,
-                localityDistrictId = localityDistrict.localityDistrictId,
-                microdistrictId = microdistrict?.microdistrictId
-            )
-            db.insert(
-                GeoStreetDistrictEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(streetDistrict)
-            )
-            Timber.tag(TAG).i("GEO: Default street district imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(streetDistrict)) }
-        }
-
-        private fun insertDefHouse(db: SupportSQLiteDatabase, house: HouseEntity): HouseEntity {
-            db.insert(
-                HouseEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-                Mapper.toContentValues(house)
-            )
-            Timber.tag(TAG).i("GEO: Default house imported")
-            jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(house)) }
-            return house
-        }
-
+        // TERRITORIES:
         private fun insertDefTerritoryCategory(
             db: SupportSQLiteDatabase, territoryCategory: TerritoryCategoryEntity
         ): TerritoryCategoryEntity {
@@ -1191,17 +1976,18 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(territoryStreet)) }
         }
 
+        // TRANSFERS:
         private fun insertDefTransferObject(
             db: SupportSQLiteDatabase, transferObjectType: TransferObjectType
         ): TransferObjectEntity {
             val transferObject = when (transferObjectType) {
-                TransferObjectType.ALL -> TransferObjectEntity.allTransferObject(context)
-                TransferObjectType.MEMBERS -> TransferObjectEntity.membersTransferObject(context)
+                TransferObjectType.ALL -> TransferObjectEntity.allTransferObject(ctx)
+                TransferObjectType.MEMBERS -> TransferObjectEntity.membersTransferObject(ctx)
                 TransferObjectType.TERRITORIES -> TransferObjectEntity.territoriesTransferObject(
-                    context
+                    ctx
                 )
 
-                TransferObjectType.BILLS -> TransferObjectEntity.billsTransferObject(context)
+                TransferObjectType.BILLS -> TransferObjectEntity.billsTransferObject(ctx)
             }
             db.insert(
                 TransferObjectEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,

@@ -159,6 +159,9 @@ interface MemberDao {
     suspend fun insert(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg roles: RoleEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberRoles: MemberRoleEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
