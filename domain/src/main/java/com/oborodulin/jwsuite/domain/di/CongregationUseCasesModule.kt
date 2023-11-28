@@ -21,6 +21,10 @@ import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -131,5 +135,30 @@ object CongregationUseCasesModule {
     fun provideSaveMemberUseCase(
         configuration: UseCase.Configuration, membersRepository: MembersRepository
     ): SaveMemberUseCase = SaveMemberUseCase(configuration, membersRepository)
+
+    // Member Roles:
+    @Singleton
+    @Provides
+    fun provideGetMemberRoleUseCase(
+        configuration: UseCase.Configuration, membersRepository: MembersRepository
+    ): GetMemberRoleUseCase = GetMemberRoleUseCase(configuration, membersRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetMemberRolesUseCase(
+        configuration: UseCase.Configuration, membersRepository: MembersRepository
+    ): GetMemberRolesUseCase = GetMemberRolesUseCase(configuration, membersRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteMemberRoleUseCase(
+        configuration: UseCase.Configuration, membersRepository: MembersRepository
+    ): DeleteMemberRoleUseCase = DeleteMemberRoleUseCase(configuration, membersRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveMemberRoleUseCase(
+        configuration: UseCase.Configuration, membersRepository: MembersRepository
+    ): SaveMemberRoleUseCase = SaveMemberRoleUseCase(configuration, membersRepository)
 
 }

@@ -37,6 +37,7 @@ import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.R
@@ -230,15 +231,30 @@ fun GeoScreen(
                 TabRowItem(
                     title = stringResource(R.string.geo_tab_regions),
                     onClick = { onTabChange(GeoTabType.REGIONS) }
-                ) { RegionRegionDistrictsLocalitiesView(appState = appState) },
+                ) {
+                    RegionRegionDistrictsLocalitiesView(
+                        appState = appState,
+                        regionsListViewModel = regionsListViewModel
+                    )
+                },
                 TabRowItem(
                     title = stringResource(R.string.geo_tab_region_districts),
                     onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
-                ) { RegionDistrictsLocalitiesView(appState = appState) },
+                ) {
+                    RegionDistrictsLocalitiesView(
+                        appState = appState,
+                        regionDistrictsListViewModel = regionDistrictsListViewModel
+                    )
+                },
                 TabRowItem(
                     title = stringResource(R.string.geo_tab_localities),
                     onClick = { onTabChange(GeoTabType.LOCALITIES) }
-                ) {},
+                ) {
+                    LocalitiesLocalitiesDistrictsMicrodistrictsView(
+                        appState = appState,
+                        localitiesListViewModel = localitiesListViewModel
+                    )
+                },
                 TabRowItem(
                     title = stringResource(R.string.geo_tab_locality_districts),
                     onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
@@ -284,8 +300,12 @@ fun GeoScreen(
 }
 
 @Composable
-fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
+fun RegionRegionDistrictsLocalitiesView(
+    appState: AppState,
+    regionsListViewModel: RegionsListViewModelImpl
+) {
     Timber.tag(TAG).d("RegionRegionDistrictsLocalitiesView(...) called")
+    val selectedRegionId = regionsListViewModel.singleSelectedItem()?.itemId
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -329,11 +349,16 @@ fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
                         TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
                             RegionDistrictsListView(
                                 navController = appState.mainNavController,
+                                regionInput = selectedRegionId?.let { NavigationInput.RegionInput(it) },
                                 isEditableList = false
                             )
                         },
                         TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
-                            LocalitiesListView(navController = appState.mainNavController)
+                            LocalitiesListView(
+                                navController = appState.mainNavController,
+                                regionInput = selectedRegionId?.let { NavigationInput.RegionInput(it) },
+                                isEditableList = false
+                            )
                         }
                     )
                 )
@@ -343,8 +368,12 @@ fun RegionRegionDistrictsLocalitiesView(appState: AppState) {
 }
 
 @Composable
-fun RegionDistrictsLocalitiesView(appState: AppState) {
+fun RegionDistrictsLocalitiesView(
+    appState: AppState,
+    regionDistrictsListViewModel: RegionDistrictsListViewModelImpl
+) {
     Timber.tag(TAG).d("RegionDistrictsLocalitiesView(...) called")
+    val selectedRegionDistrictId = regionDistrictsListViewModel.singleSelectedItem()?.itemId
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -383,14 +412,24 @@ fun RegionDistrictsLocalitiesView(appState: AppState) {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            LocalitiesListView(navController = appState.mainNavController)
+            LocalitiesListView(
+                navController = appState.mainNavController,
+                regionDistrictInput = selectedRegionDistrictId?.let {
+                    NavigationInput.RegionDistrictInput(it)
+                },
+                isEditableList = false
+            )
         }
     }
 }
 
 @Composable
-fun LocalitiesLocalitiesDistrictsMicrodistrictsView(appState: AppState) {
+fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
+    appState: AppState,
+    localitiesListViewModel: LocalitiesListViewModelImpl
+) {
     Timber.tag(TAG).d("LocalitiesLocalitiesDistrictsMicrodistrictsView(...) called")
+    val selectedLocalityId = localitiesListViewModel.singleSelectedItem()?.itemId
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -432,13 +471,31 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(appState: AppState) {
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(title = stringResource(R.string.geo_tab_locality_districts)) {
-                            LocalityDistrictsListView(navController = appState.mainNavController)
+                            LocalityDistrictsListView(
+                                navController = appState.mainNavController,
+                                localityInput = selectedLocalityId?.let {
+                                    NavigationInput.LocalityInput(it)
+                                },
+                                isEditableList = false
+                            )
                         },
                         TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
-                            MicrodistrictsListView(navController = appState.mainNavController)
+                            MicrodistrictsListView(
+                                navController = appState.mainNavController,
+                                localityInput = selectedLocalityId?.let {
+                                    NavigationInput.LocalityInput(it)
+                                },
+                                isEditableList = false
+                            )
                         },
                         TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
-                            StreetsListView(navController = appState.mainNavController)
+                            StreetsListView(
+                                navController = appState.mainNavController,
+                                localityInput = selectedLocalityId?.let {
+                                    NavigationInput.LocalityInput(it)
+                                },
+                                isEditableList = false
+                            )
                         }
                     )
                 )
@@ -496,10 +553,16 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
-                            MicrodistrictsListView(navController = appState.mainNavController)
+                            MicrodistrictsListView(
+                                navController = appState.mainNavController,
+                                isEditableList = false
+                            )
                         },
                         TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
-                            StreetsListView(navController = appState.mainNavController)
+                            StreetsListView(
+                                navController = appState.mainNavController,
+                                isEditableList = false
+                            )
                         }
                     )
                 )
@@ -553,7 +616,10 @@ fun MicrodistrictsStreetsView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            StreetsListView(navController = appState.mainNavController)
+            StreetsListView(
+                navController = appState.mainNavController,
+                isEditableList = false
+            )
         }
     }
 }
@@ -609,12 +675,18 @@ fun StreetsView(
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_locality_districts),
                             onClick = { onStreetTabChange(GeoStreetDistrictTabType.LOCALITY_DISTRICTS) }) {
-                            LocalityDistrictsListView(navController = appState.mainNavController)
+                            LocalityDistrictsListView(
+                                navController = appState.mainNavController,
+                                isEditableList = false
+                            )
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_microdistricts),
                             onClick = { onStreetTabChange(GeoStreetDistrictTabType.MICRODISTRICTS) }) {
-                            MicrodistrictsListView(navController = appState.mainNavController)
+                            MicrodistrictsListView(
+                                navController = appState.mainNavController,
+                                isEditableList = false
+                            )
                         }
                     )
                 )

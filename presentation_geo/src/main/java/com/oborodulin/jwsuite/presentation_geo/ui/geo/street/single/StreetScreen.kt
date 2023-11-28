@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_geo.R
@@ -26,7 +27,7 @@ fun StreetScreen(
 ) {
     Timber.tag(TAG).d("StreetScreen(...) called: streetInput = %s", streetInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp(NavRoutes.Geo.route) }
     val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
     val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
     appState.handleTopBarNavClick.value =

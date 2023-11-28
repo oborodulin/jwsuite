@@ -55,9 +55,10 @@ interface LocalMemberDataSource {
 
     // Congregations:
     // Roles:
+    fun getMemberRole(memberRoleId: UUID): Flow<MemberRoleView>
     suspend fun insertMemberRole(memberRole: MemberRoleEntity)
     suspend fun updateMemberRole(memberRole: MemberRoleEntity)
-    suspend fun deleteRoleById(memberRoleId: UUID)
+    suspend fun deleteMemberRoleById(memberRoleId: UUID)
 
     // Movements:
     suspend fun deleteMovementById(memberMovementId: UUID)

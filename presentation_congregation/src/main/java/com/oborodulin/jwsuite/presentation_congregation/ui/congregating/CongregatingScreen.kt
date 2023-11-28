@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,15 +31,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
+import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.list.MemberRolesListView
 import timber.log.Timber
 
 /**
@@ -60,7 +65,7 @@ fun CongregatingScreen(
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val appState = LocalAppState.current
-    val context = LocalContext.current
+    val session = LocalSession.current
     var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
     val onTabChange: (CongregatingTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
@@ -115,11 +120,17 @@ fun CongregatingScreen(
                     title = stringResource(R.string.congregation_tab_members),
                     onClick = { onTabChange(CongregatingTabType.MEMBERS) }
                 ) {
-                    MembersView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel
-                    )
+                    if (session.containsRole(MemberRoleType.ADMIN)) {
+                        MemberRolesView(
+                            appState = appState, membersListViewModel = membersListViewModel
+                        )
+                    } else {
+                        MembersView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                            membersListViewModel = membersListViewModel
+                        )
+                    }
                 }
             )
         )
@@ -141,10 +152,12 @@ fun CongregatingScreen(
 fun CongregationMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+    congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModel,
     onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
+    val selectedCongregationId = congregationsListViewModel.singleSelectedItem()?.itemId
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -187,7 +200,13 @@ fun CongregationMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            MembersListView(
+                appState = appState,
+                congregationInput = selectedCongregationId?.let {
+                    NavigationInput.CongregationInput(it)
+                },
+                isEditableList = false
+            )//, sharedViewModel = sharedViewModel)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
@@ -197,9 +216,11 @@ fun CongregationMembersView(
 fun GroupMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+    groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
+    val selectedGroupId = groupsListViewModel.singleSelectedItem()?.itemId
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -239,9 +260,63 @@ fun GroupMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            MembersListView(
+                appState = appState,
+                groupInput = selectedGroupId?.let { NavigationInput.GroupInput(it) },
+                isEditableList = false
+            )//, sharedViewModel = sharedViewModel)
         }
         SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
+    }
+}
+
+@Composable
+fun MemberRolesView(appState: AppState, membersListViewModel: MembersListViewModel) {
+    Timber.tag(TAG).d("MemberRolesView(...) called")
+    val selectedMemberId = membersListViewModel.singleSelectedItem()?.itemId
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
+                .weight(3.82f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(6.18f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            MemberRolesListView(
+                appState = appState,
+                memberInput = selectedMemberId?.let { NavigationInput.MemberInput(it) }
+            )
+        }
     }
 }
 

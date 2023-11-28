@@ -101,6 +101,7 @@ class GroupsListViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
+                override fun singleSelectedItem() = null
 
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}

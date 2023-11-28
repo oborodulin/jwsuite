@@ -397,7 +397,8 @@ class AppSettingViewModelImpl @Inject constructor(
                 username = ctx.resources.getString(R.string.def_admin_member_pseudonym),
                 roles = rolesList(ctx),
                 transferObjects = transferObjectsList(ctx),
-                versionName = "1.1"
+                appVersionName = "1.1",
+                frameworkVersion = "28"
             )
             appSettingsUiModel.id = UUID.randomUUID()
             return appSettingsUiModel

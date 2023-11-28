@@ -87,6 +87,8 @@ class LocalMemberDataSourceImpl @Inject constructor(
     }
 
     // Roles:
+    override fun getMemberRole(memberRoleId: UUID) = memberDao.findMemberRoleById(memberRoleId)
+
     override suspend fun insertMemberRole(memberRole: MemberRoleEntity) =
         withContext(dispatcher) {
             memberDao.insert(memberRole)
@@ -97,7 +99,7 @@ class LocalMemberDataSourceImpl @Inject constructor(
             memberDao.update(memberRole)
         }
 
-    override suspend fun deleteRoleById(memberRoleId: UUID) = withContext(dispatcher) {
+    override suspend fun deleteMemberRoleById(memberRoleId: UUID) = withContext(dispatcher) {
         memberDao.deleteRoleById(memberRoleId)
     }
 

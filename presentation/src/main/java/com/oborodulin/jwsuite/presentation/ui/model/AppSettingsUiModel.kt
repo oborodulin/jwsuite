@@ -7,5 +7,6 @@ data class AppSettingsUiModel(
     val username: String,
     val roles: List<MemberRolesListItem> = emptyList(),
     val transferObjects: List<RoleTransferObjectsListItem> = emptyList(),
-    val versionName: String
+    val appVersionName: String,
+    val frameworkVersion: String
 ) : ModelUi()

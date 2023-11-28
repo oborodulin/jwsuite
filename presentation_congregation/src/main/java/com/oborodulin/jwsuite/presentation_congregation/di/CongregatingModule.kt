@@ -19,11 +19,17 @@ import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRolesListToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationsListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupsListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRolesListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationToCongregationUiMapper
@@ -148,7 +154,7 @@ object CongregatingModule {
     fun provideGroupConverter(mapper: GroupToGroupUiMapper): GroupConverter =
         GroupConverter(mapper = mapper)
 
-    // Group:
+    // Member:
     @Singleton
     @Provides
     fun provideMembersListConverter(mapper: MembersListToMembersListItemMapper): MembersListConverter =
@@ -158,6 +164,12 @@ object CongregatingModule {
     @Provides
     fun provideMemberConverter(mapper: MemberToMemberUiMapper): MemberConverter =
         MemberConverter(mapper = mapper)
+
+    // Member Role:
+    @Singleton
+    @Provides
+    fun provideMemberRolesListConverter(mapper: MemberRolesListToMemberRolesListItemMapper): MemberRolesListConverter =
+        MemberRolesListConverter(mapper = mapper)
 
     // USE CASES:
     // Congregation:
@@ -203,11 +215,19 @@ object CongregatingModule {
         getMembersUseCase: GetMembersUseCase,
         getMemberUseCase: GetMemberUseCase,
         saveMemberUseCase: SaveMemberUseCase,
-        deleteMemberUseCase: DeleteMemberUseCase
+        deleteMemberUseCase: DeleteMemberUseCase,
+        getMemberRolesUseCase: GetMemberRolesUseCase,
+        getMemberRoleUseCase: GetMemberRoleUseCase,
+        deleteMemberRoleUseCase: DeleteMemberRoleUseCase,
+        saveMemberRoleUseCase: SaveMemberRoleUseCase
     ): MemberUseCases = MemberUseCases(
         getMembersUseCase,
         getMemberUseCase,
         saveMemberUseCase,
-        deleteMemberUseCase
+        deleteMemberUseCase,
+        getMemberRolesUseCase,
+        getMemberRoleUseCase,
+        deleteMemberRoleUseCase,
+        saveMemberRoleUseCase
     )
 }

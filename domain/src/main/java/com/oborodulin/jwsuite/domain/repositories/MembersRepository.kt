@@ -28,13 +28,18 @@ interface MembersRepository {
     fun getRoleTransferObjects(roleId: UUID): Flow<List<RoleTransferObject>>
     fun getTransferObjectsForRole(roleId: UUID): Flow<List<TransferObject>>
 
+    // Member:
     fun get(memberId: UUID): Flow<Member>
     fun save(member: Member): Flow<Member>
-    fun saveRole(role: MemberRole): Flow<MemberRole>
     fun delete(member: Member): Flow<Member>
     fun deleteById(memberId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
-    fun deleteRoleById(memberRoleId: UUID): Flow<UUID>
+    // Roles:
+    fun getMemberRole(memberRoleId: UUID): Flow<MemberRole>
+    fun saveMemberRole(role: MemberRole): Flow<MemberRole>
+    fun deleteMemberRoleById(memberRoleId: UUID): Flow<UUID>
+
+    // Movements:
     fun deleteMovementById(memberMovementId: UUID): Flow<UUID>
 }

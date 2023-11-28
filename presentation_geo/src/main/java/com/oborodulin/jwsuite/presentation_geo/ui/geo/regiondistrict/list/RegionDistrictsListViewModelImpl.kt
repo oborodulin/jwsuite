@@ -103,6 +103,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
+                override fun singleSelectedItem() = null
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: RegionDistrictsListUiAction): Job? = null
             }

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.domain.usecases.member
+package com.oborodulin.jwsuite.domain.usecases.member.role
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
@@ -6,14 +6,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
-class DeleteMemberUseCase(
+class DeleteMemberRoleUseCase(
     configuration: Configuration, private val membersRepository: MembersRepository
-) : UseCase<DeleteMemberUseCase.Request, DeleteMemberUseCase.Response>(configuration) {
-
+) : UseCase<DeleteMemberRoleUseCase.Request, DeleteMemberRoleUseCase.Response>(
+    configuration
+) {
     override fun process(request: Request): Flow<Response> {
-        return membersRepository.deleteById(request.memberId).map { Response }
+        return membersRepository.deleteMemberRoleById(request.memberRoleId)
+            .map { Response }
     }
 
-    data class Request(val memberId: UUID) : UseCase.Request
+    data class Request(val memberRoleId: UUID) : UseCase.Request
     object Response : UseCase.Response
 }

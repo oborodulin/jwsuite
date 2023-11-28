@@ -15,6 +15,7 @@
     <string name="nav_item_congregation">Собрание</string>
     <string name="nav_item_group">Группа</string>
     <string name="nav_item_member">Возвещатель</string>
+    <string name="nav_item_member_role">Роль возвещателя</string>
     <string name="nav_item_territory">Участок</string>
     <string name="nav_item_territory_street">Улица участка</string>
     <string name="nav_item_territory_details">Содержимое участка №%1$s</string>
@@ -74,14 +75,15 @@
     <string name="transfer_subheader">ПОЛУЧЕНИЕ ДАННЫХ</string>
     <string name="transfer_objects_header_hint">Получаемые объекты</string>
     <string name="is_personal_header_hint">Персонально?</string>
+    <string name="about_subheader">О ПРОГРАММЕ</string>
+    <string name="app_version_hint">Версия ПО</string>
+    <string name="famework_api_hint">Framework API</string>
     <string name="territory_subheader">УЧАСТКИ</string>
     <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
     <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
     <string name="territory_idle_period_hint">Период отстоя участка, мес.</string>
     <string name="territory_rooms_limit_hint">Макс. кол-во квартир участка, кв.</string>
     <string name="territory_max_rooms_hint">Макс. кол-во квартир в доме, кв.</string>
-    <string name="about_subheader">О ПРОГРАММЕ</string>
-    <string name="version_hint">Версия</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

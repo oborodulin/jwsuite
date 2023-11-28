@@ -99,6 +99,14 @@ interface MemberDao {
         findByFavoriteCongregationGroup().distinctUntilChanged()
 
     //-----------------------------
+    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE memberRoleId = :memberRoleId")
+    fun findMemberRoleById(memberRoleId: UUID): Flow<MemberRoleView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctMemberRoleById(memberRoleId: UUID) =
+        findMemberRoleById(memberRoleId).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId ORDER BY roleName")
     fun findMemberRolesByMemberId(memberId: UUID): Flow<List<MemberRoleView>>
 

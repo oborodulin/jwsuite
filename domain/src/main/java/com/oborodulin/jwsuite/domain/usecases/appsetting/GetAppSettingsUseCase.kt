@@ -31,7 +31,8 @@ class GetAppSettingsUseCase(
                 username = username.orEmpty(),
                 roles = roles,
                 transferObjects = transferObjects,
-                versionName = version?.versionName.orEmpty()
+                appVersionName = version?.versionName.orEmpty(),
+                frameworkVersion = "${android.os.Build.VERSION.SDK_INT}"
             )
         )
     }

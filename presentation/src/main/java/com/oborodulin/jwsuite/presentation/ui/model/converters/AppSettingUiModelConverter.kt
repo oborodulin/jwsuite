@@ -3,8 +3,8 @@ package com.oborodulin.jwsuite.presentation.ui.model.converters
 import com.oborodulin.home.common.ui.state.CommonResultConverter
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListToAppSettingsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRolesListToMemberRolesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListToAppSettingsListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.transfer.RoleTransferObjectsListToRoleTransferObjectsListItemMapper
 
 class AppSettingUiModelConverter(
@@ -19,6 +19,7 @@ class AppSettingUiModelConverter(
             username = data.appSettingsWithSession.username,
             roles = rolesMapper.map(data.appSettingsWithSession.roles),
             transferObjects = transferObjectsMapper.map(data.appSettingsWithSession.transferObjects),
-            versionName = data.appSettingsWithSession.versionName
+            appVersionName = data.appSettingsWithSession.appVersionName,
+            frameworkVersion = data.appSettingsWithSession.frameworkVersion
         )
 }

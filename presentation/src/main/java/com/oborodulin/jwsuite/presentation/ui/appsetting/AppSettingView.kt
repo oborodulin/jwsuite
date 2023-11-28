@@ -185,6 +185,28 @@ fun AppSettingView(
             )
         }
         Divider(Modifier.fillMaxWidth())
+        Text(
+            text = stringResource(R.string.about_subheader),
+            style = Typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.app_version_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${appSettingsUiModel.appVersionName}")
+                }
+            }, modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.famework_api_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${appSettingsUiModel.frameworkVersion}")
+                }
+            }, modifier = Modifier.padding(8.dp)
+        )
+        Divider(Modifier.fillMaxWidth())
         if (session.containsRole(MemberRoleType.TERRITORIES)) {
             Text(
                 text = stringResource(R.string.territory_subheader),
@@ -289,19 +311,6 @@ fun AppSettingView(
             )
             Divider(Modifier.fillMaxWidth())
         }
-        Text(
-            text = stringResource(R.string.about_subheader),
-            style = Typography.titleMedium,
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.version_hint))
-                withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                    append("\n${appSettingsUiModel.versionName}")
-                }
-            }, modifier = Modifier.padding(8.dp)
-        )
     }
 }
 

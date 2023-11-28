@@ -84,6 +84,7 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
+                override fun singleSelectedItem() = null
                 override fun submitAction(action: TerritoriesListUiAction): Job? = null
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
             }

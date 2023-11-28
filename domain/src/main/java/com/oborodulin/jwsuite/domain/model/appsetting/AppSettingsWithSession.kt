@@ -9,5 +9,6 @@ data class AppSettingsWithSession(
     val username: String,
     val roles: List<MemberRole> = emptyList(),
     val transferObjects: List<RoleTransferObject> = emptyList(),
-    val versionName: String
+    val appVersionName: String,
+    val frameworkVersion: String
 ) : ModelUi()

@@ -214,11 +214,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         //.fallbackToDestructiveMigration()
                         .addCallback(
-                            DatabaseCallback(
-                                ctx,
-                                jsonLogger,
-                                localSessionManagerDataSource
-                            )
+                            DatabaseCallback(ctx, jsonLogger, localSessionManagerDataSource)
                         )
                     if (databasePassphrase.isNotEmpty()) {
                         Timber.tag(TAG).d("databasePassphrase isNotEmpty")
@@ -282,11 +278,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         //.fallbackToDestructiveMigration()
                         .addCallback(
-                            DatabaseCallback(
-                                context,
-                                jsonLogger,
-                                localSessionManagerDataSource
-                            )
+                            DatabaseCallback(context, jsonLogger, localSessionManagerDataSource)
                         )
                         .setJournalMode(JournalMode.TRUNCATE)
                         .build()
@@ -341,26 +333,31 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     class DatabaseCallback(
         private val ctx: Context, private val jsonLogger: Json? = null,
         private val localSessionManagerDataSource: LocalSessionManagerDataSource
-    ) :
-        Callback() {
+    ) : Callback() {
         private val currentDateTime: OffsetDateTime = OffsetDateTime.now()
 
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
-            Timber.tag(TAG).i("onCreate(...) called")
-            // https://developermemos.com/posts/prepopulate-android-room-data
-            val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
-            Timber.tag(TAG).i("onCreate -> database: getInstance(...)")
-            database.runInTransaction(Runnable {
-                CoroutineScope(Dispatchers.Main).launch {
-                    Timber.tag(TAG).i("onCreate -> CoroutineScope(Dispatchers.Main).launch")
-                    prePopulateDbWithDao(database)
-                }
-            })
-            /*
-            isImportExecute = true
+            Timber.tag(TAG).d("onCreate(...) called")
             Timber.tag(TAG)
                 .i("Database onCreate() called on thread '%s':", Thread.currentThread().name)
+            // https://developermemos.com/posts/prepopulate-android-room-data
+            //database.runInTransaction(Runnable {
+            //Timber.tag(TAG).d("onCreate -> database.runInTransaction -> run()")
+            //CoroutineScope(Dispatchers.Main).launch {
+            //GlobalScope.launch(Dispatchers.Main) {
+            isImportDone = CoroutineScope(Dispatchers.IO).async {
+                Timber.tag(TAG).d("onCreate -> CoroutineScope(Dispatchers.IO).async")
+                val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
+                Timber.tag(TAG).d("onCreate -> database: getInstance(...)")
+                Timber.tag(TAG)
+                    .i("Start thread '%s': prePopulateDbWithDao(...)", Thread.currentThread().name)
+                prePopulateDbWithDao(database)
+                true
+            }
+            //})
+            /*
+            isImportExecute = true
             // moving to a new thread
             // Executors.newSingleThreadExecutor().execute{f}
             //GlobalScope.launch(Dispatchers.Main)
@@ -370,10 +367,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     .i("Start thread '%s': prePopulateDb(...)", Thread.currentThread().name)
                 prePopulateDb(db)
                 true
-            }
+            }*/
             Timber.tag(TAG)
                 .i("Database onCreate() ended on thread '%s':", Thread.currentThread().name)
-             */
         }
 
         // ================================= DAO =================================

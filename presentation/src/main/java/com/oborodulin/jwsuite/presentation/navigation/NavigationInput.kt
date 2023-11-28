@@ -20,6 +20,7 @@ sealed class NavigationInput(val id: UUID) {
     data class CongregationInput(val congregationId: UUID) : NavigationInput(congregationId)
     data class GroupInput(val groupId: UUID) : NavigationInput(groupId)
     data class MemberInput(val memberId: UUID) : NavigationInput(memberId)
+    data class MemberRoleInput(val memberRoleId: UUID) : NavigationInput(memberRoleId)
 
     // Territory:
     data class TerritoryCategoryInput(val territoryCategoryId: UUID) :

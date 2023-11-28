@@ -1,7 +1,6 @@
 package com.oborodulin.home.common.ui.state
 
 import com.oborodulin.home.common.ui.model.ListItemModel
-import kotlinx.coroutines.flow.StateFlow
 
 interface ListViewModeled<T : List<ListItemModel>, A : UiAction, E : UiSingleEvent> :
     MviViewModeled<T, A, E> {
@@ -10,6 +9,6 @@ interface ListViewModeled<T : List<ListItemModel>, A : UiAction, E : UiSingleEve
     fun addItem*/
 
     fun singleSelectItem(selectedItem: ListItemModel)
-
+    fun singleSelectedItem(): ListItemModel?
     //fun checkItem(checkedItem: ListItemModel, checkValue: Boolean)
 }

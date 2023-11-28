@@ -35,12 +35,26 @@ abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiActi
 
     // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
     override fun singleSelectItem(selectedItem: ListItemModel) {
-        Timber.tag(TAG).d("observeSelection(...) called")
+        Timber.tag(TAG).d("singleSelectItem(...) called")
         uiState()?.let { uiState ->
             uiState.forEach { it.selected = false }
             uiState.find { it.itemId == selectedItem.itemId }?.selected = true
             Timber.tag(TAG).d("selected %s list item", selectedItem)
         }
+    }
+
+    override fun singleSelectedItem(): ListItemModel? {
+        Timber.tag(TAG).d("singleSelectedItem() called")
+        var selectedItem: ListItemModel? = null
+        try {
+            uiState()?.let { uiState ->
+                selectedItem = uiState.first { it.selected }
+                Timber.tag(TAG).d("selected %s list item", selectedItem)
+            }
+        } catch (e: NoSuchElementException) {
+            Timber.tag(TAG).e(e)
+        }
+        return selectedItem
     }
 
     /*override fun checkItem(checkedItem: ListItemModel, checkValue: Boolean) {

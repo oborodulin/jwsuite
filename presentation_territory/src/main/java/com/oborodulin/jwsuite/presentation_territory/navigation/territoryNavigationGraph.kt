@@ -172,7 +172,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -193,7 +192,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

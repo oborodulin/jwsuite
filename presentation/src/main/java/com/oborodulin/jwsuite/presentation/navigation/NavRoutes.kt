@@ -32,6 +32,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOC
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOGIN
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER_ROLE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
@@ -59,6 +60,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberRoleInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
@@ -125,6 +127,7 @@ private const val ARG_STREET_ID = "streetId"
 private const val ARG_CONGREGATION_ID = "congregationId"
 private const val ARG_GROUP_ID = "groupId"
 private const val ARG_MEMBER_ID = "memberId"
+private const val ARG_MEMBER_ROLE_ID = "memberRoleId"
 
 // Territory:
 private const val ARG_TERRITORY_CATEGORY_ID = "territoryCategoryId"
@@ -516,6 +519,34 @@ sealed class NavRoutes constructor(
                 entry.arguments?.getString(ARG_MEMBER_ID)?.let { MemberInput(UUID.fromString(it)) }
             Timber.tag(TAG).d("Member -> fromEntry: '%s'", memberInput)
             return memberInput
+        }
+    }
+
+    data object MemberRole : NavRoutes(
+        route = String.format(ROUTE_MEMBER_ROLE, "$ARG_MEMBER_ROLE_ID={$ARG_MEMBER_ROLE_ID}"),
+        iconImageVector = Icons.Outlined.Lock,
+        titleResId = R.string.nav_item_member_role,
+        arguments = listOf(navArgument(ARG_MEMBER_ROLE_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForMemberRole(memberRoleInput: MemberRoleInput? = null): String {
+            val route = String.format(
+                ROUTE_MEMBER_ROLE,
+                memberRoleInput?.let { "$ARG_MEMBER_ROLE_ID=${it.memberRoleId}" }.orEmpty()
+            )
+            Timber.tag(TAG).d("MemberRole -> routeForMemberRole: '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): MemberRoleInput? {
+            val memberRoleInput =
+                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)
+                    ?.let { MemberRoleInput(UUID.fromString(it)) }
+            Timber.tag(TAG).d("MemberRole -> fromEntry: '%s'", memberRoleInput)
+            return memberRoleInput
         }
     }
 

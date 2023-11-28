@@ -18,6 +18,7 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class CongregationSaveException(cause: Throwable) : UseCaseException(cause)
     class GroupSaveException(cause: Throwable) : UseCaseException(cause)
     class MemberSaveException(cause: Throwable) : UseCaseException(cause)
+    class MemberRoleSaveException(cause: Throwable) : UseCaseException(cause)
 
     // Territory:
     class TerritoryCategorySaveException(cause: Throwable) : UseCaseException(cause)

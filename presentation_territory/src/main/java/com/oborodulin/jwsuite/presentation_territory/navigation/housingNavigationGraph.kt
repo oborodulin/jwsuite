@@ -57,7 +57,6 @@ fun NavGraphBuilder.housingNavGraph(
                 houseInput = NavRoutes.House.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -76,7 +75,6 @@ fun NavGraphBuilder.housingNavGraph(
                 roomInput = NavRoutes.Room.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

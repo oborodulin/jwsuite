@@ -92,7 +92,18 @@ class AppState(
     val mainNavCurrentRoute: String?
         get() = this.mainNavController.currentDestination?.route
 
-    fun mainNavigateUp() = this.mainNavController.navigateUp()
+    fun mainNavigateUp(destination: String? = null) {
+        Timber.tag(TAG).d("mainNavigateUp(...) called: destination = %s", destination)
+        if (!this.mainNavController.navigateUp()) {
+            destination?.let {
+                this.mainNavController.navigate(it) {
+                    Timber.tag(TAG)
+                        .d("mainNavigateUp -> mainNavController.navigate(%s)", destination)
+                    popUpTo(destination) { inclusive = true }
+                }
+            }
+        }
+    }
 
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen() {
