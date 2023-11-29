@@ -26,7 +26,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Geo.LocalityDistrictsListViewModelImpl"
+private const val TAG = "Congregating.RolesListViewModelImpl"
 
 @HiltViewModel
 class RolesListViewModelImpl @Inject constructor(
@@ -46,7 +46,7 @@ class RolesListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadRoles(memberId: UUID): Job {
+    private fun loadRoles(memberId: UUID? = null): Job {
         Timber.tag(TAG).d("loadRoles(...) called: memberId = %s", memberId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRolesUseCase.execute(GetRolesUseCase.Request(memberId))
@@ -102,6 +102,11 @@ class RolesListViewModelImpl @Inject constructor(
                 id = UUID.randomUUID(),
                 roleType = MemberRoleType.BILLS,
                 roleName = ctx.resources.getString(R.string.def_role_name_bills)
+            ),
+            RolesListItem(
+                id = UUID.randomUUID(),
+                roleType = MemberRoleType.REPORTS,
+                roleName = ctx.resources.getString(R.string.def_role_name_reports)
             )
         )
     }

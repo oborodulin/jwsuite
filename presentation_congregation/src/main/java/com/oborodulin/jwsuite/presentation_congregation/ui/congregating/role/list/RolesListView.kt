@@ -18,7 +18,7 @@ import com.oborodulin.jwsuite.presentation_geo.R
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Geo.RolesListView"
+private const val TAG = "Congregating.RolesListView"
 
 @Composable
 fun RolesListView(

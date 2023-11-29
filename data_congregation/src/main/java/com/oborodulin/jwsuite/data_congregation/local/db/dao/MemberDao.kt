@@ -123,12 +123,11 @@ interface MemberDao {
         findMemberRolesByPseudonym(pseudonym).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT mrv.roleId, mrv.roleType, mrv.roleName FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.memberId = :memberId")
-    fun findRolesByMemberId(memberId: UUID): Flow<List<RoleEntity>>
+    @Query("SELECT r.* FROM ${RoleEntity.TABLE_NAME} r ORDER BY roleName")
+    fun findAllRoles(): Flow<List<RoleEntity>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctRolesByMemberId(memberId: UUID) =
-        findRolesByMemberId(memberId).distinctUntilChanged()
+    fun findDistinctAllRoles() = findAllRoles().distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT mrv.roleId, mrv.roleType, mrv.roleName FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym")

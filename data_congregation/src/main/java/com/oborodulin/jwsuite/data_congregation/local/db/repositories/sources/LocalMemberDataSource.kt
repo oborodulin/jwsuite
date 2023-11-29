@@ -26,7 +26,7 @@ interface LocalMemberDataSource {
     // Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
     fun getMemberRoles(pseudonym: String): Flow<List<MemberRoleView>>
-    fun getRoles(memberId: UUID): Flow<List<RoleEntity>>
+    fun getAllRoles(): Flow<List<RoleEntity>>
     fun getRoles(pseudonym: String): Flow<List<RoleEntity>>
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
 

@@ -5,6 +5,7 @@ object Constants {
     const val LANGUAGE_EN = "en"
 
     val EMPTY_LIST_ITEM_EVENT: OnListItemEvent = {}
+    val EMPTY_BLOCK: () -> Unit = {}
 
     // Application constants:
     const val CONV_COEFF_BIGDECIMAL: Long = 100000

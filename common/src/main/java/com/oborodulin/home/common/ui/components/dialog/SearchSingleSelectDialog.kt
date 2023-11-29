@@ -33,6 +33,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.home.common.util.Constants.EMPTY_BLOCK
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
@@ -109,15 +110,17 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Row(
-                        Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        AddIconButtonComponent {
-                            onDismissRequest()
-                            onAddButtonClick()
+                    if (onAddButtonClick !== EMPTY_BLOCK) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(
+                            Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            AddIconButtonComponent {
+                                onDismissRequest()
+                                onAddButtonClick()
+                            }
                         }
                     }
                 }
