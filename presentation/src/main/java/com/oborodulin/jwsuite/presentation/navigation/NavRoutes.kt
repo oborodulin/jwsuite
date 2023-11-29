@@ -110,6 +110,8 @@ import java.util.UUID
 // ic_floor_rooms.png - https://www.flaticon.com/authors/andrejs-kirma
 // ic_language.png - https://www.freepik.com/
 // ic_geo.png - https://www.freepik.com/
+// ic_role.png - <a href="https://www.flaticon.com/free-icons/setting" title="setting icons">Setting icons created by Tanah Basah - Flaticon</a>
+//              https://www.flaticon.com/search?word=role&shape=outline
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -524,7 +526,7 @@ sealed class NavRoutes constructor(
 
     data object MemberRole : NavRoutes(
         route = String.format(ROUTE_MEMBER_ROLE, "$ARG_MEMBER_ROLE_ID={$ARG_MEMBER_ROLE_ID}"),
-        iconImageVector = Icons.Outlined.Lock,
+        iconPainterResId = R.drawable.ic_role_24,
         titleResId = R.string.nav_item_member_role,
         arguments = listOf(navArgument(ARG_MEMBER_ROLE_ID) {
             type = NavType.StringType

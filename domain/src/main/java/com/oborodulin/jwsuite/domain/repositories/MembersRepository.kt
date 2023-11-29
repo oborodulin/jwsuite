@@ -20,6 +20,7 @@ interface MembersRepository {
     // Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRole>>
     fun getMemberRoles(pseudonym: String): Flow<List<MemberRole>>
+    fun getRoles(memberId: UUID): Flow<List<Role>>
     fun getRoles(pseudonym: String): Flow<List<Role>>
     fun getRolesForMember(memberId: UUID): Flow<List<Role>>
 

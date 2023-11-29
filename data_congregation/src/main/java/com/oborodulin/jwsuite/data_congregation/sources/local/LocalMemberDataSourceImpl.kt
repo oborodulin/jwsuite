@@ -39,7 +39,7 @@ class LocalMemberDataSourceImpl @Inject constructor(
     // Roles:
     override fun getMemberRoles(memberId: UUID) = memberDao.findMemberRolesByMemberId(memberId)
     override fun getMemberRoles(pseudonym: String) = memberDao.findMemberRolesByPseudonym(pseudonym)
-
+    override fun getRoles(memberId: UUID) = memberDao.findRolesByMemberId(memberId)
     override fun getRoles(pseudonym: String) = memberDao.findRolesByPseudonym(pseudonym)
     override fun getRolesForMember(memberId: UUID) =
         memberDao.findRolesForMemberByMemberId(memberId)

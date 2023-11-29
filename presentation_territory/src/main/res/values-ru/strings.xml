@@ -154,6 +154,7 @@
     <string name="dlg_confirm_cancel_changes_at_work">Обработка участка не сохранится</string>
     <string name="dlg_confirm_cancel_changes_territory">Изменённые данные участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_category">Изменённые данные категории участка не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_street">Изменённые данные улиц участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_house">Изменённые данные домов участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_room">Изменённые данные квартир участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_house">Изменённые данные дома не сохранятся</string>
@@ -164,9 +165,11 @@
     <string name="territory_category_code_empty_error">Укажите, пожалуйста, метку категории участка!</string>
     <string name="territory_category_mark_empty_error">Укажите, пожалуйста, метку категории участка!</string>
     <string name="territory_category_name_empty_error">Укажите, пожалуйста, наименование категории участка!</string>
+    <string name="territory_category_unique_constraint_error">Категория с таким признаком уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы участка-->
     <string name="territory_category_empty_error">Укажите, пожалуйста, категорию участка!</string>
     <string name="territory_num_empty_error">Укажите, пожалуйста, номер участка!</string>
+    <string name="territory_unique_constraint_error">Участок такой категории и с таким номером на данной территории уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы подтверждения выдачи участка-->
     <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
     <!--формы подтверждения обработки участка-->

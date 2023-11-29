@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
+package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper

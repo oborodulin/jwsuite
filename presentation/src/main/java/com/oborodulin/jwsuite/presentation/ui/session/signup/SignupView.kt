@@ -140,10 +140,10 @@ fun SignupView(viewModel: SessionViewModel) {
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[SessionFields.SESSION_PIN]!!.focusRequester)
+                .focusRequester(focusRequesters[SessionFields.SESSION_CONFIRM_PIN]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = SessionFields.SESSION_PIN,
+                        focusedField = SessionFields.SESSION_CONFIRM_PIN,
                         isFocused = focusState.isFocused
                     )
                 },

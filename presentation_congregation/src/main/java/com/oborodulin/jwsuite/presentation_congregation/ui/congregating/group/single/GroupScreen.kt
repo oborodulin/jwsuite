@@ -3,9 +3,6 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.s
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,10 +26,6 @@ fun GroupScreen(
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
-    val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
-    val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
-    appState.handleTopBarNavClick.value =
-        { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
 
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
@@ -50,7 +43,7 @@ fun GroupScreen(
         loadUiAction = GroupUiAction.Load(groupInput?.groupId),
         saveUiAction = GroupUiAction.Save,
         upNavigation = upNavigation,
-        isCancelChangesShowAlert = isCancelChangesShowAlert,
+        handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_group,
         uniqueConstraintFailedResId = R.string.group_unique_constraint_error,
         onActionBarSubtitleChange = onActionBarSubtitleChange,

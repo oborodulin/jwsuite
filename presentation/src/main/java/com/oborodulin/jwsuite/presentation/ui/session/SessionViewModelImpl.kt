@@ -50,7 +50,7 @@ class SessionViewModelImpl @Inject constructor(
     //private val logoutConverter: LogoutSessionConverter
 ) : SessionViewModel,
     DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, SessionUiSingleEvent, SessionFields, InputWrapper>(
-        state//, initFocusedTextField = SessionFields.SESSION_PIN
+        state, initFocusedTextField = SessionFields.SESSION_PIN
     ) {
     private val _sessionMode = MutableStateFlow(SessionModeType.SIGNUP)
     private val sessionMode = _sessionMode.asStateFlow()

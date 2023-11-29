@@ -11,7 +11,7 @@ class MemberRoleToMemberRoleEntityMapper :
     override fun map(input: MemberRole) = MemberRoleEntity(
         memberRoleId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         roleExpiredDate = input.roleExpiredDate,
-        mrMembersId = input.memberId,
+        mrMembersId = input.member.id!!,
         mrRolesId = input.role.id!!
     )
 

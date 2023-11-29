@@ -171,8 +171,10 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
-    fun provideMemberRoleViewToMemberRoleMapper(mapper: RoleEntityToRoleMapper): MemberRoleViewToMemberRoleMapper =
-        MemberRoleViewToMemberRoleMapper(mapper = mapper)
+    fun provideMemberRoleViewToMemberRoleMapper(
+        memberMapper: MemberViewToMemberMapper, roleMapper: RoleEntityToRoleMapper
+    ): MemberRoleViewToMemberRoleMapper =
+        MemberRoleViewToMemberRoleMapper(memberMapper = memberMapper, roleMapper = roleMapper)
 
     @Singleton
     @Provides

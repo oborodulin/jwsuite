@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
+package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member
 
 import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.domain.model.congregation.Member

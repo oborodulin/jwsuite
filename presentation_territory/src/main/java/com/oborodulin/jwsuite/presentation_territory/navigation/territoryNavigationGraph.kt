@@ -91,7 +91,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryInput = NavRoutes.Territory.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -129,7 +128,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }
@@ -152,7 +150,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange
             )
         }

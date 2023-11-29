@@ -5,7 +5,9 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.Transf
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.model.congregation.MemberRole
+import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -39,6 +41,9 @@ class MembersRepositoryImpl @Inject constructor(
 
     override fun getMemberRoles(pseudonym: String) = localMemberDataSource.getMemberRoles(pseudonym)
         .map(memberMappers.memberRoleViewListToMemberRolesListMapper::map)
+
+    override fun getRoles(memberId: UUID) = localMemberDataSource.getRoles(memberId)
+        .map(memberMappers.roleEntityListToRolesListMapper::map)
 
     override fun getRoles(pseudonym: String) = localMemberDataSource.getRoles(pseudonym)
         .map(memberMappers.roleEntityListToRolesListMapper::map)

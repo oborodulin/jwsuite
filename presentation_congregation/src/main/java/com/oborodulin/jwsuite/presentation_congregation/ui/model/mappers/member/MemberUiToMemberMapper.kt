@@ -1,9 +1,11 @@
-package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
+package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.model.congregation.MemberMovement
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationUiToCongregationMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupUiToGroupMapper
 
 class MemberUiToMemberMapper(
     private val congregationUiMapper: CongregationUiToCongregationMapper,

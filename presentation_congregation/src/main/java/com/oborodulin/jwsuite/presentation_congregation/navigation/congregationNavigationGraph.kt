@@ -12,6 +12,7 @@ import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import timber.log.Timber
 
@@ -71,6 +72,22 @@ fun NavGraphBuilder.congregationNavGraph(
             MemberScreen(
                 //sharedViewModel = sharedViewModel,
                 memberInput = NavRoutes.Member.fromEntry(it),
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarActionsChange = onTopBarActionsChange
+            )
+        }
+        composable(route = NavRoutes.MemberRole.route, arguments = NavRoutes.MemberRole.arguments) {
+            Timber.tag(TAG).d(
+                "Navigation Graph: to MemberRoleScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.MemberRole.arguments.firstOrNull()
+            )
+            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            MemberRoleScreen(
+                //sharedViewModel = sharedViewModel,
+                memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange

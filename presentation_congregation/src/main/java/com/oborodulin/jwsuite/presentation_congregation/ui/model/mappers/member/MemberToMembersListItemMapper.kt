@@ -1,8 +1,9 @@
-package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
+package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupToGroupUiMapper
 import java.util.UUID
 
 class MemberToMembersListItemMapper(private val groupMapper: GroupToGroupUiMapper) :

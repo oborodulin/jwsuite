@@ -28,17 +28,13 @@ fun MemberScreen(
     Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
-    val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
-    val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
-    appState.handleTopBarNavClick.value =
-        { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = memberInput?.memberId,
         loadUiAction = MemberUiAction.Load(memberInput?.memberId),
         saveUiAction = MemberUiAction.Save,
         upNavigation = upNavigation,
-        isCancelChangesShowAlert = isCancelChangesShowAlert,
+        handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_member,
         uniqueConstraintFailedResId = R.string.member_unique_constraint_error,
         onActionBarSubtitleChange = onActionBarSubtitleChange,

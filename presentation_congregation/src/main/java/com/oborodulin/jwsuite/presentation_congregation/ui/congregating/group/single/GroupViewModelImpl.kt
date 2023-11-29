@@ -22,8 +22,8 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupConverter
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.GroupToGroupsListItemMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.GroupUiToGroupMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupToGroupsListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupUiToGroupMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*

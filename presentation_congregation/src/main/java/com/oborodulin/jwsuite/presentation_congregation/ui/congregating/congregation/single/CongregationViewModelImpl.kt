@@ -18,7 +18,7 @@ import com.oborodulin.jwsuite.domain.usecases.congregation.SaveCongregationUseCa
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.CongregationUiToCongregationMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationUiToCongregationMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel

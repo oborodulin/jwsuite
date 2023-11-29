@@ -2,10 +2,9 @@ package com.oborodulin.jwsuite.domain.model.congregation
 
 import com.oborodulin.home.common.domain.model.DomainModel
 import java.time.OffsetDateTime
-import java.util.UUID
 
 data class MemberRole(
-    val memberId: UUID,
+    val member: Member,
     val role: Role,
     val roleExpiredDate: OffsetDateTime? = null
 ) : DomainModel()

@@ -45,8 +45,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     inputId: UUID? = null,
     loadUiAction: A,
     saveUiAction: A,
+    nextUiAction: A? = null,
     upNavigation: () -> Unit,
-    isCancelChangesShowAlert: MutableState<Boolean>,
+    handleTopBarNavClick: MutableState<() -> Unit>,
+    topBarActionImageVector: ImageVector = Icons.Outlined.Done,
+    @StringRes topBarActionCntDescResId: Int = R.string.dlg_done_cnt_desc,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -62,10 +65,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     val handleSaveButtonClick = {
         Timber.tag(TAG).d("SaveDialogScreenComponent: Save Button click...")
         viewModel.onContinueClick {
+            // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
             viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) {
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
-                    upNavigation()
+                    nextUiAction?.let { viewModel.submitAction(it) } ?: upNavigation()
                 } else {
                     isErrorShowAlert.value = true
                     errorMessage = when {
@@ -90,6 +94,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
             onActionBarSubtitleChange(stringResource(it))
         }
         // Cancel Changes Confirm:
+        val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
+        val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
+        handleTopBarNavClick.value =
+            { if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation() }
         CancelChangesConfirmDialogComponent(
             isShow = isCancelChangesShowAlert,
             text = stringResource(cancelChangesConfirmResId),
@@ -103,7 +111,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {
             IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
-                Icon(Icons.Outlined.Done, stringResource(R.string.dlg_done_cnt_desc))
+                Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
             }
         }
         CommonScreen(state = state) {

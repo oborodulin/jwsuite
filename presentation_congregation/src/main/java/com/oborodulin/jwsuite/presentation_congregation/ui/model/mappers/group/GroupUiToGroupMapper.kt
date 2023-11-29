@@ -1,9 +1,10 @@
-package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers
+package com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.congregation.Group
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationUiToCongregationMapper
 
 class GroupUiToGroupMapper(private val congregationUiMapper: CongregationUiToCongregationMapper) :
     Mapper<GroupUi, Group>, NullableMapper<GroupUi, Group> {
