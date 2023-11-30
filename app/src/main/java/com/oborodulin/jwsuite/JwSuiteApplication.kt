@@ -77,7 +77,7 @@ class JwSuiteApplication : Application(), Configuration.Provider {
                 Locale.getDefault().language
             )
         Timber.tag(TAG).i("Framework (API %s)", android.os.Build.VERSION.SDK_INT)
-        Timber.tag(TAG).i("SQLite v.%s", JwSuiteDatabase.sqliteVersion())
+        //Timber.tag(TAG).i("SQLite v.%s", JwSuiteDatabase.sqliteVersion())
 
         initialiseDagger()
         Timber.tag(TAG).i("App Initialized")

@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -37,9 +39,13 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
+import com.oborodulin.jwsuite.presentation.ui.components.SignoutConfirmDialogComponent
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 import java.time.format.DateTimeFormatter
@@ -51,7 +57,9 @@ private const val TAG = "Presentation.AppSettingView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppSettingView(
-    appSettingsUiModel: AppSettingsUiModel, viewModel: AppSettingViewModel//Impl = hiltViewModel()
+    appSettingsUiModel: AppSettingsUiModel,
+    appSettingViewModel: AppSettingViewModel,//Impl = hiltViewModel()
+    sessionViewModel: SessionViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("AppSettingView(...) called")
     val session = LocalSession.current
@@ -60,16 +68,19 @@ fun AppSettingView(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+    val events = remember(appSettingViewModel.events, lifecycleOwner) {
+        appSettingViewModel.events.flowWithLifecycle(
+            lifecycleOwner.lifecycle,
+            Lifecycle.State.STARTED
+        )
     }
 
     Timber.tag(TAG).d("AppSetting: CollectAsStateWithLifecycle for all fields")
-    val territoryProcessingPeriod by viewModel.territoryProcessingPeriod.collectAsStateWithLifecycle()
-    val territoryAtHandPeriod by viewModel.territoryAtHandPeriod.collectAsStateWithLifecycle()
-    val territoryIdlePeriod by viewModel.territoryIdlePeriod.collectAsStateWithLifecycle()
-    val territoryRoomsLimit by viewModel.territoryRoomsLimit.collectAsStateWithLifecycle()
-    val territoryMaxRooms by viewModel.territoryMaxRooms.collectAsStateWithLifecycle()
+    val territoryProcessingPeriod by appSettingViewModel.territoryProcessingPeriod.collectAsStateWithLifecycle()
+    val territoryAtHandPeriod by appSettingViewModel.territoryAtHandPeriod.collectAsStateWithLifecycle()
+    val territoryIdlePeriod by appSettingViewModel.territoryIdlePeriod.collectAsStateWithLifecycle()
+    val territoryRoomsLimit by appSettingViewModel.territoryRoomsLimit.collectAsStateWithLifecycle()
+    val territoryMaxRooms by appSettingViewModel.territoryMaxRooms.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("AppSetting: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -83,6 +94,12 @@ fun AppSettingView(
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
+        }
+    }
+    val handleSignoutButtonClick = {
+        Timber.tag(TAG).d("AppSettingView: Signout Button click...")
+        sessionViewModel.handleActionJob({ sessionViewModel.submitAction(SessionUiAction.Signout) }) {
+            sessionViewModel.submitAction(SessionUiAction.Registration)
         }
     }
     Column(
@@ -103,20 +120,29 @@ fun AppSettingView(
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )
-        Text(buildAnnotatedString {
-            append(stringResource(R.string.username_hint))
-            withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                append("\n${appSettingsUiModel.username}")
-            }
-        }, modifier = Modifier.padding(8.dp))
-        /*
+        val isSignoutShowAlert = rememberSaveable { mutableStateOf(false) }
+        SignoutConfirmDialogComponent(
+            isShow = isSignoutShowAlert,
+            text = stringResource(R.string.dlg_confirm_signout),
+            onConfirm = handleSignoutButtonClick
+        )
         // https://stackoverflow.com/questions/71476719/android-compose-text-can-we-have-two-different-texts-set-to-the-start-and-to-the
-        Row(modifier = Modifier.padding(vertical = 8.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(stringResource(R.string.username_hint), Modifier.weight(1f))
-            Text(text = appSettingsUiModel.username, style = Typography.bodySmall)
-        }*/
+            Text(
+                buildAnnotatedString {
+                    append(stringResource(R.string.username_hint))
+                    withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                        append("\n${appSettingsUiModel.username}")
+                    }
+                }, modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f)
+            )
+            SignoutButtonComponent { isSignoutShowAlert.value = true }
+        }
         // https://alexzh.com/jetpack-compose-building-grids/
         Box(
             modifier = Modifier
@@ -138,7 +164,8 @@ fun AppSettingView(
                     stringResource(R.string.role_header_hint),
                     stringResource(R.string.expired_header_hint)
                 ), rows = roles
-            )/*DataTableComponent(
+            )
+        /*DataTableComponent(
                 modifier = Modifier.matchParentSize(),
                 columnCount = 2,
                 rowCount = appSettingsUiModel.roles.size,
@@ -206,6 +233,22 @@ fun AppSettingView(
                 }
             }, modifier = Modifier.padding(8.dp)
         )
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.sqlite_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${appSettingsUiModel.sqliteVersion}")
+                }
+            }, modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.database_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${appSettingsUiModel.dbVersion}")
+                }
+            }, modifier = Modifier.padding(8.dp)
+        )
         Divider(Modifier.fillMaxWidth())
         if (session.containsRole(MemberRoleType.TERRITORIES)) {
             Text(
@@ -217,7 +260,7 @@ fun AppSettingView(
                 modifier = Modifier
                     .focusRequester(focusRequesters[AppSettingFields.TERRITORY_PROCESSING_PERIOD]!!.focusRequester)
                     .onFocusChanged { focusState ->
-                        viewModel.onTextFieldFocusChanged(
+                        appSettingViewModel.onTextFieldFocusChanged(
                             focusedField = AppSettingFields.TERRITORY_PROCESSING_PERIOD,
                             isFocused = focusState.isFocused
                         )
@@ -228,17 +271,17 @@ fun AppSettingView(
                 },
                 inputWrapper = territoryProcessingPeriod,
                 onValueChange = {
-                    viewModel.onTextFieldEntered(
+                    appSettingViewModel.onTextFieldEntered(
                         AppSettingInputEvent.TerritoryProcessingPeriod(it)
                     )
                 },
-                onImeKeyAction = viewModel::moveFocusImeAction
+                onImeKeyAction = appSettingViewModel::moveFocusImeAction
             )
             TextFieldComponent(
                 modifier = Modifier
                     .focusRequester(focusRequesters[AppSettingFields.TERRITORY_AT_HAND_PERIOD]!!.focusRequester)
                     .onFocusChanged { focusState ->
-                        viewModel.onTextFieldFocusChanged(
+                        appSettingViewModel.onTextFieldFocusChanged(
                             focusedField = AppSettingFields.TERRITORY_AT_HAND_PERIOD,
                             isFocused = focusState.isFocused
                         )
@@ -249,15 +292,19 @@ fun AppSettingView(
                 },
                 inputWrapper = territoryAtHandPeriod,
                 onValueChange = {
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryAtHandPeriod(it))
+                    appSettingViewModel.onTextFieldEntered(
+                        AppSettingInputEvent.TerritoryAtHandPeriod(
+                            it
+                        )
+                    )
                 },
-                onImeKeyAction = viewModel::moveFocusImeAction
+                onImeKeyAction = appSettingViewModel::moveFocusImeAction
             )
             TextFieldComponent(
                 modifier = Modifier
                     .focusRequester(focusRequesters[AppSettingFields.TERRITORY_IDLE_PERIOD]!!.focusRequester)
                     .onFocusChanged { focusState ->
-                        viewModel.onTextFieldFocusChanged(
+                        appSettingViewModel.onTextFieldFocusChanged(
                             focusedField = AppSettingFields.TERRITORY_IDLE_PERIOD,
                             isFocused = focusState.isFocused
                         )
@@ -268,15 +315,19 @@ fun AppSettingView(
                 },
                 inputWrapper = territoryIdlePeriod,
                 onValueChange = {
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryIdlePeriod(it))
+                    appSettingViewModel.onTextFieldEntered(
+                        AppSettingInputEvent.TerritoryIdlePeriod(
+                            it
+                        )
+                    )
                 },
-                onImeKeyAction = viewModel::moveFocusImeAction
+                onImeKeyAction = appSettingViewModel::moveFocusImeAction
             )
             TextFieldComponent(
                 modifier = Modifier
                     .focusRequester(focusRequesters[AppSettingFields.TERRITORY_ROOMS_LIMIT]!!.focusRequester)
                     .onFocusChanged { focusState ->
-                        viewModel.onTextFieldFocusChanged(
+                        appSettingViewModel.onTextFieldFocusChanged(
                             focusedField = AppSettingFields.TERRITORY_ROOMS_LIMIT,
                             isFocused = focusState.isFocused
                         )
@@ -287,15 +338,19 @@ fun AppSettingView(
                 },
                 inputWrapper = territoryRoomsLimit,
                 onValueChange = {
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryRoomsLimit(it))
+                    appSettingViewModel.onTextFieldEntered(
+                        AppSettingInputEvent.TerritoryRoomsLimit(
+                            it
+                        )
+                    )
                 },
-                onImeKeyAction = viewModel::moveFocusImeAction
+                onImeKeyAction = appSettingViewModel::moveFocusImeAction
             )
             TextFieldComponent(
                 modifier = Modifier
                     .focusRequester(focusRequesters[AppSettingFields.TERRITORY_MAX_ROOMS]!!.focusRequester)
                     .onFocusChanged { focusState ->
-                        viewModel.onTextFieldFocusChanged(
+                        appSettingViewModel.onTextFieldFocusChanged(
                             focusedField = AppSettingFields.TERRITORY_MAX_ROOMS,
                             isFocused = focusState.isFocused
                         )
@@ -305,9 +360,9 @@ fun AppSettingView(
                 },
                 inputWrapper = territoryMaxRooms,
                 onValueChange = {
-                    viewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(it))
+                    appSettingViewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(it))
                 },
-                onImeKeyAction = viewModel::moveFocusImeAction
+                onImeKeyAction = appSettingViewModel::moveFocusImeAction
             )
             Divider(Modifier.fillMaxWidth())
         }
@@ -327,7 +382,7 @@ fun PreviewGroupView() {
             ) {
                 AppSettingView(
                     appSettingsUiModel = AppSettingViewModelImpl.previewUiModel(ctx),
-                    viewModel = AppSettingViewModelImpl.previewModel(ctx)
+                    appSettingViewModel = AppSettingViewModelImpl.previewModel(ctx)
                 )
             }
         }

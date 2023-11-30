@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.data_appsetting.di
 
+import com.oborodulin.jwsuite.data_appsetting.local.db.DatabaseVersion
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingMappers
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.AppSettingsRepositoryImpl
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
@@ -17,9 +18,12 @@ object AppSettingRepositoriesModule {
     @Singleton //@ViewModelScoped
     @Provides
     fun provideAppSettingsRepository(
-        localAppSettingDataSource: LocalAppSettingDataSource, mappers: AppSettingMappers
+        localAppSettingDataSource: LocalAppSettingDataSource,
+        databaseVersion: DatabaseVersion,
+        mappers: AppSettingMappers
     ): AppSettingsRepository = AppSettingsRepositoryImpl(
         localAppSettingDataSource,
+        databaseVersion,
         mappers
     )
 }

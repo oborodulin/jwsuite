@@ -27,9 +27,9 @@ object SessionUseCasesModule {
     @Singleton
     @Provides
     fun provideSignupUseCase(
-        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository,
-        membersRepository: MembersRepository
-    ): SignupUseCase = SignupUseCase(configuration, sessionManagerRepository, membersRepository)
+        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository
+        //, membersRepository: MembersRepository
+    ): SignupUseCase = SignupUseCase(configuration, sessionManagerRepository)//, membersRepository)
 
     @Singleton
     @Provides

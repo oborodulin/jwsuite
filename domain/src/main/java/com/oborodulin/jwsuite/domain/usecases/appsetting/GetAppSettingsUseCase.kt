@@ -20,8 +20,10 @@ class GetAppSettingsUseCase(
 
     override fun process(request: Request) = combine(
         appSettingsRepository.getAll(),
-        sessionManagerRepository.username()
-    ) { settings, username ->
+        sessionManagerRepository.username(),
+        appSettingsRepository.sqliteVersion(),
+        appSettingsRepository.dbVersion()
+    ) { settings, username, sqliteVersion, dbVersion ->
         val roles = membersRepository.getMemberRoles(username.orEmpty()).first()
         val transferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
         val version = ctx.getAppVersion()
@@ -32,7 +34,9 @@ class GetAppSettingsUseCase(
                 roles = roles,
                 transferObjects = transferObjects,
                 appVersionName = version?.versionName.orEmpty(),
-                frameworkVersion = "${android.os.Build.VERSION.SDK_INT}"
+                frameworkVersion = "${android.os.Build.VERSION.SDK_INT}",
+                sqliteVersion = sqliteVersion,
+                dbVersion = dbVersion
             )
         )
     }

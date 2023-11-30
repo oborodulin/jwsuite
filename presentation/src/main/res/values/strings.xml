@@ -42,6 +42,9 @@
     <!--BUTTONS:-->
     <string name="btn_signup_lbl">Зарегистрировать</string>
     <string name="btn_login_lbl">Войти</string>
+    <string name="btn_signout_lbl">Выйти</string>
+    <!--диалог-->
+    <string name="dlg_confirm_signout_title">Выйти?</string>
 
     <!--FAB:-->
 
@@ -76,8 +79,10 @@
     <string name="transfer_objects_header_hint">Получаемые объекты</string>
     <string name="is_personal_header_hint">Персонально?</string>
     <string name="about_subheader">О ПРОГРАММЕ</string>
-    <string name="app_version_hint">Версия</string>
-    <string name="famework_api_hint">Framework API</string>
+    <string name="app_version_hint">Версия ПО</string>
+    <string name="famework_api_hint">Версия Framework API</string>
+    <string name="sqlite_hint">Версия SQLite</string>
+    <string name="database_hint">Версия БД</string>
     <string name="territory_subheader">УЧАСТКИ</string>
     <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
     <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
@@ -92,6 +97,7 @@
     <!--Подтверждения-->
     <!--отмена изменений-->
     <string name="dlg_confirm_cancel_changes_settings">Изменённые настройки не сохранятся</string>
+    <string name="dlg_confirm_signout">Выход позволяет сменить ПИН или зарегистрироваться под другим пользователем. Продолжить выход?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->
@@ -115,4 +121,5 @@
     <string name="territory_max_rooms_empty_error">Укажите, пожалуйста, макс. кол-во квартир в доме</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
+    <string name="btn_signout_cnt_desc">Выйти</string>
 </resources>

@@ -62,13 +62,14 @@ class AesCipherProvider @Inject constructor(
         const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
         const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
         const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
+        const val KEY_SIZE = 256
 
         // https://www.danielhugenroth.com/posts/2021_06_password_hashing_on_android/
         fun pbkdf2(
             password: CharArray,
             salt: ByteArray? = null,
             iterationCount: Int = 4096,
-            keyLength: Int = 256
+            keyLength: Int = KEY_SIZE
         ): String {
             val bytes = ByteArray(512)
             if (salt == null) {

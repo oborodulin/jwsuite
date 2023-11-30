@@ -36,7 +36,7 @@ fun RootNavigationHost(activity: MainActivity, sessionViewModel: SessionViewMode
         )
         composable(Graph.MAIN) {
             Timber.tag(TAG).d("RootNavigationHost -> NavHost.composable(Graph.MAIN)")
-            activity.initDatabase()
+            //activity.initDatabase()
             MainScreen(sessionViewModel = sessionViewModel)
         }
     }

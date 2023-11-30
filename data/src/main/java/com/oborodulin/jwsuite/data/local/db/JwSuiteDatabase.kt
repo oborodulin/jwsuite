@@ -290,10 +290,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         }
 
         // https://stackoverflow.com/questions/2421189/version-of-sqlite-used-in-android
-        fun sqliteVersion(): String? = "3.22"
-        //SQLiteDatabase.create(null).use {
-        //    android.database.DatabaseUtils.stringForQuery(it, "SELECT sqlite_version()", null)
-        //}
+        fun sqliteVersion(): String? = SQLiteDatabase.create(null).use {
+            android.database.DatabaseUtils.stringForQuery(it, "SELECT sqlite_version()", null)
+        }
 
         fun close() {
             synchronized(this) {
@@ -537,9 +536,6 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             val billsRole = insertDefMemberRole(db, MemberRoleType.BILLS)
             val reportsRole = insertDefMemberRole(db, MemberRoleType.REPORTS)
 
-            // Default Administrator:
-            val adminMember = insertDefAdminMember(db, adminRole)
-
             // Default congregations:
             val congregationDao = db.congregationDao()
             // 1
@@ -549,6 +545,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             congregationDao.insert(congregation1)
             Timber.tag(TAG).i("CONGREGATION: Default 1 Congregation imported")
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
+
+            // Default Administrator:
+            val adminMember = insertDefAdminMember(db, congregation1, adminRole)
+
             // 2
             val congregation2 = CongregationEntity.secondCongregation(
                 ctx, donetsk.localityId
@@ -949,11 +949,16 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             return member!!
         }
 
-        private suspend fun insertDefAdminMember(db: JwSuiteDatabase, role: RoleEntity):
-                MemberEntity {
+        private suspend fun insertDefAdminMember(
+            db: JwSuiteDatabase, congregation: CongregationEntity, role: RoleEntity
+        ): MemberEntity {
             val memberDao = db.memberDao()
             val member = MemberEntity.adminMember(ctx)
             memberDao.insert(member)
+            val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
+                congregationId = congregation.congregationId, memberId = member.memberId
+            )
+            memberDao.insert(memberCongregation)
             val memberMovement = MemberMovementEntity.defaultMemberMovement(
                 memberId = member.memberId, memberType = MemberType.SERVICE
             )
@@ -965,8 +970,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
             jsonLogger?.let { logger ->
                 Timber.tag(TAG).i(
-                    ": {\"member\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
+                    ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
                     logger.encodeToString(member),
+                    logger.encodeToString(memberCongregation),
                     logger.encodeToString(memberMovement),
                     logger.encodeToString(memberRole)
                 )

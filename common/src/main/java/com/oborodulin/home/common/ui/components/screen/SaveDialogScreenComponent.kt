@@ -86,7 +86,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     LaunchedEffect(inputId) {
         Timber.tag(TAG)
             .d("SaveDialogScreenComponent -> LaunchedEffect(inputId): inputId = %s", inputId)
-        inputId?.let { viewModel.submitAction(loadUiAction) }
+        //inputId?.let {
+            viewModel.submitAction(loadUiAction)
+        //}
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)

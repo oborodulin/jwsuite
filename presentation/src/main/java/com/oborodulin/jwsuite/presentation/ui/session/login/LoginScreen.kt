@@ -28,16 +28,16 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LoginScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.onTextFieldEntered(SessionInputEvent.Pin(""))
-        //viewModel.onTextFieldFocusChanged(SessionFields.SESSION_PIN, true)
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is SessionUiSingleEvent.OpenMainScreen -> {
                     appState.rootNavController.navigate(it.navRoute)
                 }
+
                 is SessionUiSingleEvent.OpenLoginScreen -> {
-                    appState.rootNavController.navigate(it.navRoute){
-                        popUpTo(it.navRoute){
+                    appState.rootNavController.navigate(it.navRoute) {
+                        popUpTo(it.navRoute) {
                             inclusive = true
                         }
                     }

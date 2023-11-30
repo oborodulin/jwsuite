@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data.di
 import android.content.Context
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
+import com.oborodulin.jwsuite.data_appsetting.local.db.DatabaseVersion
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -24,4 +25,12 @@ object PersistenceModule {
     ): JwSuiteDatabase = JwSuiteDatabase.getInstance(
         appContext, jsonLogger, localSessionManagerDataSource
     )
+
+    @Singleton
+    @Provides
+    fun provideDatabaseVersions(db: JwSuiteDatabase): DatabaseVersion {
+        val sqliteVersion = JwSuiteDatabase.sqliteVersion().orEmpty()
+        val dbVersion = db.openHelper.readableDatabase.version.toString()
+        return DatabaseVersion(sqliteVersion = sqliteVersion, dbVersion = dbVersion)
+    }
 }

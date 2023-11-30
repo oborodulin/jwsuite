@@ -9,13 +9,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 private const val TAG = "Presentation.AppSettingScreen"
 
 @Composable
 fun AppSettingScreen(
-    viewModel: AppSettingViewModelImpl = hiltViewModel(),
+    appSettingViewModel: AppSettingViewModelImpl = hiltViewModel(),
+    sessionViewModel: SessionViewModelImpl = hiltViewModel(),
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector) -> Unit,
@@ -28,10 +32,10 @@ fun AppSettingScreen(
     onActionBarSubtitleChange("")
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect(Unit)")
-        viewModel.submitAction(AppSettingUiAction.Load)
+        appSettingViewModel.submitAction(AppSettingUiAction.Load)
     }
     SaveDialogScreenComponent(
-        viewModel = viewModel,
+        viewModel = appSettingViewModel,
         loadUiAction = AppSettingUiAction.Load,
         saveUiAction = AppSettingUiAction.Save,
         upNavigation = upNavigation,
@@ -40,5 +44,24 @@ fun AppSettingScreen(
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarActionsChange = onTopBarActionsChange
-    ) { AppSettingView(appSettingsUiModel = it, viewModel) }
+    ) {
+        AppSettingView(appSettingsUiModel = it, appSettingViewModel)
+    }
+    LaunchedEffect(Unit) {
+        Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect() BEFORE collect ui state flow")
+        sessionViewModel.singleEventFlow.collectLatest {
+            Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
+            when (it) {
+                is SessionUiSingleEvent.OpenSignupScreen -> {
+                    appState.rootNavController.navigate(it.navRoute) {
+                        popUpTo(it.navRoute) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                else -> {}
+            }
+        }
+    }
 }

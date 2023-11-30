@@ -15,5 +15,7 @@ interface AppSettingsRepository {
     suspend fun deleteAll()
 
     // API:
+    fun sqliteVersion(): Flow<String>
+    fun dbVersion(): Flow<String>
     suspend fun checkpoint(): Int
 }

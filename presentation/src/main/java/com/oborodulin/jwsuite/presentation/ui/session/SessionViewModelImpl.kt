@@ -174,7 +174,7 @@ class SessionViewModelImpl @Inject constructor(
                 SignupUseCase.Request(username.value.value, pin.value.value)
             ).map { signupConverter.convert(it) }
                 .collect {
-                    _isLogged.value = true
+                    //_isLogged.value = true
                     submitState(it)
                 }
             //.collect {}
