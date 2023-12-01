@@ -299,32 +299,19 @@ class MemberViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is MemberInputEvent.Congregation ->
-                        setStateValue(
-                            MemberFields.MEMBER_CONGREGATION, congregation, event.input, true
-                        )
+                    is MemberInputEvent.Congregation -> setStateValue(
+                        MemberFields.MEMBER_CONGREGATION, congregation, event.input, true
+                    )
 
-                    is MemberInputEvent.Group ->
-                        when (MemberInputValidator.Group.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_GROUP, group, event.input, true
-                            )
+                    is MemberInputEvent.Group -> setStateValue(
+                        MemberFields.MEMBER_GROUP, group, event.input,
+                        MemberInputValidator.Group.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                MemberFields.MEMBER_GROUP, group, event.input
-                            )
-                        }
-
-                    is MemberInputEvent.MemberNum ->
-                        when (MemberInputValidator.MemberNum.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_NUM, memberNum, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                MemberFields.MEMBER_NUM, memberNum, event.input
-                            )
-                        }
+                    is MemberInputEvent.MemberNum -> setStateValue(
+                        MemberFields.MEMBER_NUM, memberNum, event.input,
+                        MemberInputValidator.MemberNum.isValid(event.input)
+                    )
 
                     is MemberInputEvent.Surname ->
                         setStateValue(MemberFields.MEMBER_SURNAME, surname, event.input, true)
@@ -335,107 +322,59 @@ class MemberViewModelImpl @Inject constructor(
                     is MemberInputEvent.Patronymic ->
                         setStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, event.input, true)
 
-                    is MemberInputEvent.Pseudonym ->
-                        when (MemberInputValidator.Pseudonym.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input, true
-                            )
+                    is MemberInputEvent.Pseudonym -> setStateValue(
+                        MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input,
+                        MemberInputValidator.Pseudonym.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                MemberFields.MEMBER_PSEUDONYM, pseudonym, event.input
-                            )
-                        }
+                    is MemberInputEvent.PhoneNumber -> setStateValue(
+                        MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input,
+                        MemberInputValidator.PhoneNumber.isValid(event.input)
+                    )
 
-                    is MemberInputEvent.PhoneNumber ->
-                        when (MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input, true
-                            )
+                    is MemberInputEvent.DateOfBirth -> setStateValue(
+                        MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input,
+                        MemberInputValidator.DateOfBirth.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                MemberFields.MEMBER_PHONE_NUMBER, phoneNumber, event.input
-                            )
-                        }
+                    is MemberInputEvent.DateOfBaptism -> setStateValue(
+                        MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
+                        MemberInputValidator.DateOfBaptism.isValid(event.input)
+                    )
 
-                    is MemberInputEvent.DateOfBirth ->
-                        when (MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input, true
-                            )
+                    is MemberInputEvent.MemberType -> setStateValue(
+                        MemberFields.MEMBER_TYPE, memberType, event.input,
+                        MemberInputValidator.MemberType.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth, event.input
-                            )
-                        }
+                    is MemberInputEvent.MovementDate -> setStateValue(
+                        MemberFields.MEMBER_MOVEMENT_DATE, movementDate, event.input,
+                        MemberInputValidator.MovementDate.isValid(event.input)
+                    )
 
-                    is MemberInputEvent.DateOfBaptism ->
-                        when (MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input
-                            )
-                        }
-
-                    is MemberInputEvent.MemberType ->
-                        when (MemberInputValidator.MemberType.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_TYPE, memberType, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                MemberFields.MEMBER_TYPE, memberType, event.input
-                            )
-                        }
-
-                    is MemberInputEvent.MovementDate ->
-                        when (MemberInputValidator.MovementDate.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_MOVEMENT_DATE, movementDate, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                MemberFields.MEMBER_MOVEMENT_DATE, movementDate, event.input
-                            )
-                        }
-
-                    is MemberInputEvent.LoginExpiredDate ->
-                        when (MemberInputValidator.LoginExpiredDate.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
-                                event.input
-                            )
-                        }
+                    is MemberInputEvent.LoginExpiredDate -> setStateValue(
+                        MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate, event.input,
+                        MemberInputValidator.LoginExpiredDate.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is MemberInputEvent.Congregation ->
-                        setStateValue(
-                            MemberFields.MEMBER_CONGREGATION, congregation,
-                            MemberInputValidator.Congregation.errorIdOrNull(event.input.headline)
-                        )
+                    is MemberInputEvent.Congregation -> setStateValue(
+                        MemberFields.MEMBER_CONGREGATION, congregation,
+                        MemberInputValidator.Congregation.errorIdOrNull(event.input.headline)
+                    )
 
-                    is MemberInputEvent.Group ->
-                        setStateValue(
-                            MemberFields.MEMBER_GROUP, group,
-                            MemberInputValidator.Group.errorIdOrNull(event.input.headline)
-                        )
+                    is MemberInputEvent.Group -> setStateValue(
+                        MemberFields.MEMBER_GROUP, group,
+                        MemberInputValidator.Group.errorIdOrNull(event.input.headline)
+                    )
 
-                    is MemberInputEvent.MemberNum ->
-                        setStateValue(
-                            MemberFields.MEMBER_NUM, memberNum,
-                            MemberInputValidator.MemberNum.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.MemberNum -> setStateValue(
+                        MemberFields.MEMBER_NUM, memberNum,
+                        MemberInputValidator.MemberNum.errorIdOrNull(event.input)
+                    )
 
                     is MemberInputEvent.Surname ->
                         setStateValue(MemberFields.MEMBER_SURNAME, surname, null)
@@ -446,47 +385,40 @@ class MemberViewModelImpl @Inject constructor(
                     is MemberInputEvent.Patronymic ->
                         setStateValue(MemberFields.MEMBER_PATRONYMIC, patronymic, null)
 
-                    is MemberInputEvent.Pseudonym ->
-                        setStateValue(
-                            MemberFields.MEMBER_PSEUDONYM, pseudonym,
-                            MemberInputValidator.Pseudonym.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.Pseudonym -> setStateValue(
+                        MemberFields.MEMBER_PSEUDONYM, pseudonym,
+                        MemberInputValidator.Pseudonym.errorIdOrNull(event.input)
+                    )
 
-                    is MemberInputEvent.PhoneNumber ->
-                        setStateValue(
-                            MemberFields.MEMBER_PHONE_NUMBER, phoneNumber,
-                            MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.PhoneNumber -> setStateValue(
+                        MemberFields.MEMBER_PHONE_NUMBER, phoneNumber,
+                        MemberInputValidator.PhoneNumber.errorIdOrNull(event.input)
+                    )
 
-                    is MemberInputEvent.DateOfBirth ->
-                        setStateValue(
-                            MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-                            MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.DateOfBirth -> setStateValue(
+                        MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
+                        MemberInputValidator.DateOfBirth.errorIdOrNull(event.input)
+                    )
 
-                    is MemberInputEvent.DateOfBaptism ->
-                        setStateValue(
-                            MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-                            MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.DateOfBaptism -> setStateValue(
+                        MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
+                        MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)
+                    )
 
-                    is MemberInputEvent.MemberType ->
-                        setStateValue(
-                            MemberFields.MEMBER_TYPE, memberType,
-                            MemberInputValidator.MemberType.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.MemberType -> setStateValue(
+                        MemberFields.MEMBER_TYPE, memberType,
+                        MemberInputValidator.MemberType.errorIdOrNull(event.input)
+                    )
 
-                    is MemberInputEvent.MovementDate ->
-                        setStateValue(
-                            MemberFields.MEMBER_MOVEMENT_DATE, movementDate,
-                            MemberInputValidator.MovementDate.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.MovementDate -> setStateValue(
+                        MemberFields.MEMBER_MOVEMENT_DATE, movementDate,
+                        MemberInputValidator.MovementDate.errorIdOrNull(event.input)
+                    )
 
-                    is MemberInputEvent.LoginExpiredDate ->
-                        setStateValue(
-                            MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
-                            MemberInputValidator.LoginExpiredDate.errorIdOrNull(event.input)
-                        )
+                    is MemberInputEvent.LoginExpiredDate -> setStateValue(
+                        MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
+                        MemberInputValidator.LoginExpiredDate.errorIdOrNull(event.input)
+                    )
                 }
             }
     }
@@ -532,7 +464,7 @@ class MemberViewModelImpl @Inject constructor(
                 InputError(fieldName = MemberFields.MEMBER_MOVEMENT_DATE.name, errorId = it)
             )
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

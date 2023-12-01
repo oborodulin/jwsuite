@@ -409,7 +409,7 @@ class TerritoryViewModelImpl @Inject constructor(
                 InputError(fieldName = TerritoryFields.TERRITORY_NUM.name, errorId = it)
             )
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

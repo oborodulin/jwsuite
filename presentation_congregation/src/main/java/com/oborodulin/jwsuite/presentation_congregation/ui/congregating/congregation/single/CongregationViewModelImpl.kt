@@ -171,58 +171,29 @@ class CongregationViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is CongregationInputEvent.Locality -> {
-                        when (CongregationInputValidator.Locality.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                CongregationFields.CONGREGATION_LOCALITY, locality, event.input,
-                                true
-                            )
+                    is CongregationInputEvent.Locality -> setStateValue(
+                        CongregationFields.CONGREGATION_LOCALITY, locality, event.input,
+                        CongregationInputValidator.Locality.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                CongregationFields.CONGREGATION_LOCALITY, locality, event.input
-                            )
-                        }
-                    }
+                    is CongregationInputEvent.CongregationNum -> setStateValue(
+                        CongregationFields.CONGREGATION_NUM, congregationNum, event.input,
+                        CongregationInputValidator.CongregationNum.isValid(event.input)
+                    )
 
-                    is CongregationInputEvent.CongregationNum ->
-                        when (CongregationInputValidator.CongregationNum.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.CONGREGATION_NUM, congregationNum, event.input,
-                                true
-                            )
+                    is CongregationInputEvent.CongregationName -> setStateValue(
+                        CongregationFields.CONGREGATION_NAME, congregationName, event.input,
+                        CongregationInputValidator.CongregationName.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                CongregationFields.CONGREGATION_NUM, congregationNum, event.input
-                            )
-                        }
+                    is CongregationInputEvent.TerritoryMark -> setStateValue(
+                        CongregationFields.TERRITORY_MARK, territoryMark, event.input,
+                        CongregationInputValidator.TerritoryMark.isValid(event.input)
+                    )
 
-                    is CongregationInputEvent.CongregationName ->
-                        when (CongregationInputValidator.CongregationName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.CONGREGATION_NAME, congregationName, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                CongregationFields.CONGREGATION_NAME, congregationName, event.input
-                            )
-                        }
-
-                    is CongregationInputEvent.TerritoryMark ->
-                        when (CongregationInputValidator.TerritoryMark.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                CongregationFields.TERRITORY_MARK, territoryMark, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                CongregationFields.TERRITORY_MARK, territoryMark, event.input
-                            )
-                        }
-
-                    is CongregationInputEvent.IsFavorite ->
-                        setStateValue(
-                            CongregationFields.IS_FAVORITE, isFavorite, event.input.toString(), true
-                        )
+                    is CongregationInputEvent.IsFavorite -> setStateValue(
+                        CongregationFields.IS_FAVORITE, isFavorite, event.input.toString(), true
+                    )
                 }
             }
             .debounce(350)
@@ -286,7 +257,7 @@ class CongregationViewModelImpl @Inject constructor(
                 InputError(fieldName = CongregationFields.TERRITORY_MARK.name, errorId = it)
             )
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

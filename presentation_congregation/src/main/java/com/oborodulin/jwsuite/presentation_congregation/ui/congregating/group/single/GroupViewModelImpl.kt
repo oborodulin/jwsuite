@@ -154,31 +154,23 @@ class GroupViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is GroupInputEvent.Congregation ->
-                        setStateValue(
-                            GroupFields.GROUP_CONGREGATION, congregation, event.input, true
-                        )
+                    is GroupInputEvent.Congregation -> setStateValue(
+                        GroupFields.GROUP_CONGREGATION, congregation, event.input, true
+                    )
 
-                    is GroupInputEvent.GroupNum ->
-                        when (GroupInputValidator.GroupNum.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                GroupFields.GROUP_NUM, groupNum, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                GroupFields.GROUP_NUM, groupNum, event.input
-                            )
-                        }
+                    is GroupInputEvent.GroupNum -> setStateValue(
+                        GroupFields.GROUP_NUM, groupNum, event.input,
+                        GroupInputValidator.GroupNum.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is GroupInputEvent.GroupNum ->
-                        setStateValue(
-                            GroupFields.GROUP_NUM, groupNum,
-                            GroupInputValidator.GroupNum.errorIdOrNull(event.input)
-                        )
+                    is GroupInputEvent.GroupNum -> setStateValue(
+                        GroupFields.GROUP_NUM, groupNum,
+                        GroupInputValidator.GroupNum.errorIdOrNull(event.input)
+                    )
                 }
             }
     }
@@ -191,7 +183,7 @@ class GroupViewModelImpl @Inject constructor(
         GroupInputValidator.GroupNum.errorIdOrNull(groupNum.value.value)?.let {
             inputErrors.add(InputError(fieldName = GroupFields.GROUP_NUM.name, errorId = it))
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

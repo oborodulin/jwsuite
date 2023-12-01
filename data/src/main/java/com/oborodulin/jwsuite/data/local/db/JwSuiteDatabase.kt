@@ -339,14 +339,14 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             super.onCreate(db)
             Timber.tag(TAG).d("onCreate(...) called")
             Timber.tag(TAG)
-                .i("Database onCreate(...) called on thread '%s':", Thread.currentThread().name)
+                .d("Database onCreate(...) called on thread '%s':", Thread.currentThread().name)
             // https://developermemos.com/posts/prepopulate-android-room-data
             //CoroutineScope(Dispatchers.Main).launch {
             //GlobalScope.launch(Dispatchers.Main) {
             isImportDone = CoroutineScope(Dispatchers.IO).async {
                 Timber.tag(TAG).d("onCreate -> CoroutineScope(Dispatchers.IO).async")
                 val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
-                Timber.tag(TAG).i(
+                Timber.tag(TAG).d(
                     "onCreate -> Start thread '%s': database.getInstance(...)",
                     Thread.currentThread().name
                 )
@@ -371,12 +371,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 true
             }*/
             Timber.tag(TAG)
-                .i("Database onCreate() ended on thread '%s':", Thread.currentThread().name)
+                .d("Database onCreate(...) ended on thread '%s':", Thread.currentThread().name)
         }
 
         // ================================= DAO =================================
         private suspend fun prePopulateDbWithDao(db: JwSuiteDatabase) {
-            Timber.tag(TAG).i("prePopulateDbWithDao(...) called")
+            Timber.tag(TAG).d("prePopulateDbWithDao(...) called")
             // Default settings:
             insertDefAppSettings(db)
             // ==============================
@@ -636,8 +636,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             insertDefRoleTransferObject(db, territoriesRole, territoriesTransferObject, false)
             insertDefRoleTransferObject(db, billsRole, billsTransferObject, true)
 
-            // ==============================
-            Timber.tag(TAG).i("prePopulateDbWithDao(...) successful ended")
+            Timber.tag(TAG).d("prePopulateDbWithDao(...) successful ended")
         }
 
         // App Settings:

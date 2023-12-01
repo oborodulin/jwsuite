@@ -337,7 +337,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 InputError(fieldName = TerritoriesFields.TERRITORY_DELIVERY_DATE.name, errorId = it)
             )
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

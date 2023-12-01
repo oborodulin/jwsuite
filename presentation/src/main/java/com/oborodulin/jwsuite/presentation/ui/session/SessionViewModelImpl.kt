@@ -318,7 +318,7 @@ class SessionViewModelImpl @Inject constructor(
                 }
             }
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
@@ -329,23 +329,14 @@ class SessionViewModelImpl @Inject constructor(
                 SessionModeType.SIGNUP -> {
                     state[error.fieldName] = when (SessionFields.valueOf(error.fieldName)) {
                         SessionFields.SESSION_USERNAME -> username.value.copy(errorId = error.errorId)
-                        SessionFields.SESSION_PIN -> pin.value.copy(
-                            errorId = error.errorId,
-                            errorMsg =
-                            error.errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
-                        )
-
+                        SessionFields.SESSION_PIN -> pin.value.copy(errorId = error.errorId)
                         SessionFields.SESSION_CONFIRM_PIN -> confirmPin.value.copy(errorId = error.errorId)
                     }
                 }
 
                 SessionModeType.LOGIN -> {
                     if (SessionFields.valueOf(error.fieldName) == SessionFields.SESSION_PIN)
-                        state[error.fieldName] = pin.value.copy(
-                            errorId = error.errorId,
-                            errorMsg =
-                            error.errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
-                        )
+                        state[error.fieldName] = pin.value.copy(errorId = error.errorId)
                 }
             }
         }

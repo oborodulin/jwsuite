@@ -182,7 +182,7 @@ class RegionViewModelImpl @Inject constructor(
         RegionInputValidator.RegionName.errorIdOrNull(regionName.value.value)?.let {
             inputErrors.add(InputError(fieldName = RegionFields.REGION_NAME.name, errorId = it))
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

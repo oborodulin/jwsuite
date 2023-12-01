@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.components
+package com.oborodulin.jwsuite.presentation_territory.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes

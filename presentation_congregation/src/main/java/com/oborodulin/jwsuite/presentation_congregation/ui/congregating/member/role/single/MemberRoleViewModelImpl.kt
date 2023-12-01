@@ -165,56 +165,37 @@ class MemberRoleViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is MemberRoleInputEvent.Member ->
-                        setStateValue(
-                            MemberRoleFields.MEMBER_ROLE_MEMBER, member, event.input, true
-                        )
+                    is MemberRoleInputEvent.Member -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_MEMBER, member, event.input, true
+                    )
 
-                    is MemberRoleInputEvent.Role ->
-                        when (MemberRoleInputValidator.Role.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                MemberRoleFields.MEMBER_ROLE_ROLE, role, event.input, true
-                            )
+                    is MemberRoleInputEvent.Role -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_ROLE, role, event.input,
+                        MemberRoleInputValidator.Role.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                MemberRoleFields.MEMBER_ROLE_ROLE, role, event.input
-                            )
-                        }
-
-                    is MemberRoleInputEvent.RoleExpiredDate ->
-                        when (MemberRoleInputValidator.RoleExpiredDate.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE, roleExpiredDate,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE, roleExpiredDate,
-                                event.input
-                            )
-                        }
+                    is MemberRoleInputEvent.RoleExpiredDate -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE, roleExpiredDate, event.input,
+                        MemberRoleInputValidator.RoleExpiredDate.isValid(event.input)
+                    )
                 }
-            }
-            .debounce(350)
+            }.debounce(350)
             .collect { event ->
                 when (event) {
-                    is MemberRoleInputEvent.Member ->
-                        setStateValue(
-                            MemberRoleFields.MEMBER_ROLE_MEMBER, member,
-                            MemberRoleInputValidator.Member.errorIdOrNull(event.input.headline)
-                        )
+                    is MemberRoleInputEvent.Member -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_MEMBER, member,
+                        MemberRoleInputValidator.Member.errorIdOrNull(event.input.headline)
+                    )
 
-                    is MemberRoleInputEvent.Role ->
-                        setStateValue(
-                            MemberRoleFields.MEMBER_ROLE_ROLE, role,
-                            MemberRoleInputValidator.Role.errorIdOrNull(event.input.headline)
-                        )
+                    is MemberRoleInputEvent.Role -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_ROLE, role,
+                        MemberRoleInputValidator.Role.errorIdOrNull(event.input.headline)
+                    )
 
-                    is MemberRoleInputEvent.RoleExpiredDate ->
-                        setStateValue(
-                            MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE, roleExpiredDate,
-                            MemberRoleInputValidator.RoleExpiredDate.errorIdOrNull(event.input)
-                        )
+                    is MemberRoleInputEvent.RoleExpiredDate -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE, roleExpiredDate,
+                        MemberRoleInputValidator.RoleExpiredDate.errorIdOrNull(event.input)
+                    )
                 }
             }
     }
@@ -228,9 +209,7 @@ class MemberRoleViewModelImpl @Inject constructor(
         val inputErrors: MutableList<InputError> = mutableListOf()
         MemberRoleInputValidator.Role.errorIdOrNull(role.value.item?.headline)?.let {
             inputErrors.add(
-                InputError(
-                    fieldName = MemberRoleFields.MEMBER_ROLE_ROLE.name, errorId = it
-                )
+                InputError(fieldName = MemberRoleFields.MEMBER_ROLE_ROLE.name, errorId = it)
             )
         }
         MemberRoleInputValidator.RoleExpiredDate.errorIdOrNull(roleExpiredDate.value.value)?.let {
@@ -238,7 +217,7 @@ class MemberRoleViewModelImpl @Inject constructor(
                 InputError(fieldName = MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE.name, errorId = it)
             )
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

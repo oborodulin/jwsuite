@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.components
+package com.oborodulin.jwsuite.presentation_territory.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
@@ -29,7 +29,7 @@ fun HandOutFabComponent(
     Timber.tag(TAG).d("HandOutFabComponent(...) called")
     FabComponent(
         modifier = Modifier.padding(
-            bottom = 88.dp,
+            bottom = 48.dp,
             end = 16.dp
         ),
         enabled = enabled,

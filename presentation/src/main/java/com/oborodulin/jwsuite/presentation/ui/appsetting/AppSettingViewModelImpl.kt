@@ -169,70 +169,32 @@ class AppSettingViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is AppSettingInputEvent.TerritoryProcessingPeriod ->
-                        when (AppSettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                AppSettingFields.TERRITORY_PROCESSING_PERIOD,
-                                territoryProcessingPeriod, event.input, true
-                            )
+                    is AppSettingInputEvent.TerritoryProcessingPeriod -> setStateValue(
+                        AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
+                        event.input,
+                        AppSettingInputValidator.TerritoryProcessingPeriod.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                AppSettingFields.TERRITORY_PROCESSING_PERIOD,
-                                territoryProcessingPeriod, event.input
-                            )
-                        }
+                    is AppSettingInputEvent.TerritoryAtHandPeriod -> setStateValue(
+                        AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
+                        event.input,
+                        AppSettingInputValidator.TerritoryAtHandPeriod.isValid(event.input)
+                    )
 
-                    is AppSettingInputEvent.TerritoryAtHandPeriod ->
-                        when (AppSettingInputValidator.TerritoryAtHandPeriod.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
-                                event.input, true
-                            )
+                    is AppSettingInputEvent.TerritoryIdlePeriod -> setStateValue(
+                        AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod, event.input,
+                        AppSettingInputValidator.TerritoryIdlePeriod.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
-                                event.input
-                            )
-                        }
+                    is AppSettingInputEvent.TerritoryRoomsLimit -> setStateValue(
+                        AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit, event.input,
+                        AppSettingInputValidator.TerritoryRoomsLimit.isValid(event.input)
+                    )
 
-                    is AppSettingInputEvent.TerritoryIdlePeriod ->
-                        when (AppSettingInputValidator.TerritoryIdlePeriod.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
-                                event.input
-                            )
-                        }
-
-                    is AppSettingInputEvent.TerritoryRoomsLimit ->
-                        when (AppSettingInputValidator.TerritoryRoomsLimit.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
-                                event.input
-                            )
-                        }
-
-                    is AppSettingInputEvent.TerritoryMaxRooms ->
-                        when (AppSettingInputValidator.TerritoryMaxRooms.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms, event.input
-                            )
-                        }
-
+                    is AppSettingInputEvent.TerritoryMaxRooms -> setStateValue(
+                        AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms, event.input,
+                        AppSettingInputValidator.TerritoryMaxRooms.isValid(event.input)
+                    )
                 }
             }.debounce(350)
             .collect { event ->
@@ -316,7 +278,7 @@ class AppSettingViewModelImpl @Inject constructor(
                     InputError(fieldName = AppSettingFields.TERRITORY_MAX_ROOMS.name, errorId = it)
                 )
             }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

@@ -511,7 +511,7 @@ class HouseViewModelImpl @Inject constructor(
                 InputError(fieldName = HouseFields.HOUSE_BUILDING_TYPE.name, errorId = it)
             )
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

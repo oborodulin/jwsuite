@@ -1,15 +1,17 @@
 package com.oborodulin.jwsuite.presentation.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.oborodulin.jwsuite.presentation.R
+import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.jwsuite.presentation.R
 
 private const val TAG = "Presentation.SignoutButtonComponent"
 
@@ -20,7 +22,9 @@ fun SignoutButtonComponent(
     onClick: () -> Unit = {}
 ) {
     ButtonComponent(
-        modifier = modifier,
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .then(modifier),
         enabled = enabled,
         imageVector = Icons.Outlined.ExitToApp,
         textResId = R.string.btn_signout_lbl,

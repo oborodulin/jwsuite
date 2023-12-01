@@ -31,6 +31,9 @@
     <string name="dlg_confirm_cancel_changes_title">Отменить изменения?</string>
     <!--значения-->
     <string name="all_items_val">ВСЕ</string>
+    <!--меню-->
+    <string name="mi_add_lbl">Добавить</string>
+    <string name="mi_search_lbl">Найти</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <string name="search_cnt_desc">Поиск</string>

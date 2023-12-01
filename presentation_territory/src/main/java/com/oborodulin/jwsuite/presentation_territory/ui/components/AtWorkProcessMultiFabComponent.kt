@@ -1,5 +1,6 @@
-package com.oborodulin.jwsuite.presentation_territory.components
+package com.oborodulin.jwsuite.presentation_territory.ui.components
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Home
@@ -7,7 +8,9 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.dialog.alert.AlertDialogComponent
 import com.oborodulin.home.common.ui.components.fab.MinFabItem
 import com.oborodulin.home.common.ui.components.fab.MultiFabComponent
@@ -89,6 +92,10 @@ fun AtWorkProcessMultiFabComponent(
     ) { territoriesGridViewModel.submitAction(TerritoriesGridUiAction.Process) }
 
     MultiFabComponent(
+        modifier = Modifier.padding(
+            bottom = 48.dp,
+            end = 16.dp
+        ),
         multiFloatingState = multiFloatingState,
         onMultiFabStateChange = onMultiFabStateChange,
         enabled = enabled,

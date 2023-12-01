@@ -14,6 +14,7 @@
     <string name="fab_territory_process_text">Участок</string>
 
     <!--МЕНЮ участков-->
+    <string name="mi_housing_lbl">Дома</string>
 
     <!--МЕНЮ:-->
     <!--участки-->
@@ -32,6 +33,8 @@
     <string name="entrances_list_empty_text">Подъездов дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="floors_list_empty_text">Этажей дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="rooms_list_empty_text">Квартир дома пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <!--Поиск:-->
+    <string name="territory_search_placeholder">Поиск участка…</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <!--Участки-->
@@ -188,5 +191,6 @@
     <string name="ter_private_sector_cnt_desc">ч/с</string>
     <string name="ter_business_cnt_desc">деловая территория</string>
     <string name="ter_group_ministry_cnt_desc">групповое служение</string>
+    <string name="territory_menu_cnt_desc">Меню участков</string>
 
 </resources>

@@ -11,15 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,22 +33,19 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.bar.BarListItemExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.fab.MultiFloatingState
-import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -55,8 +53,10 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.BarMemberComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.components.AtWorkProcessMultiFabComponent
-import com.oborodulin.jwsuite.presentation_territory.components.HandOutFabComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.components.AtWorkProcessMultiFabComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.components.HandOutFabComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.components.LocationDropdownMenuBoxComponent
+import com.oborodulin.jwsuite.presentation_territory.ui.components.PrivateSectorSwitchComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.list.TerritoryDetailsListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
@@ -80,6 +80,7 @@ fun TerritoringScreen(
 //    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
@@ -88,6 +89,8 @@ fun TerritoringScreen(
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
+
+    val emptySearchText = TextFieldValue("")
 
     Timber.tag(TAG).d("Territoring: CollectAsStateWithLifecycle for all fields")
     val isPrivateSector by territoringViewModel.isPrivateSector.collectAsStateWithLifecycle()
@@ -153,72 +156,119 @@ fun TerritoringScreen(
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
-        onTopBarActionsChange {
-            IconButton(onClick = { appState.mainNavigate(NavRoutes.Territory.routeForTerritory()) }) {
-                Icon(Icons.Outlined.Add, null)
-            }
-            IconButton(onClick = { appState.mainNavigate(NavRoutes.Housing.route) }) {
-                Icon(Icons.Outlined.Home, null)
-            }
-        }
-        onActionBarChange {
-            CommonScreen(state = state) { territoringUi ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier.weight(2.8f)
-                    ) {
-                        SwitchComponent(
-                            componentModifier = Modifier.padding(end = 36.dp)
-                            /*.focusRequester(focusRequesters[TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name]!!.focusRequester)
-                            .onFocusChanged { focusState ->
-                                territoringViewModel.onTextFieldFocusChanged(
-                                    focusedField = TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR,
-                                    isFocused = focusState.isFocused
-                                )
-                            }*/,
-                            labelResId = R.string.territoring_is_private_sector_hint,
-                            inputWrapper = isPrivateSector,
-                            onCheckedChange = {
-                                territoringViewModel.onTextFieldEntered(
-                                    TerritoringInputEvent.IsPrivateSector(it)
-                                )
-                            }
+        // Searching:
+        var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
+        val handOutSearchText by territoriesGridViewModel.handOutSearchText.collectAsStateWithLifecycle()
+        val atWorkSearchText by territoriesGridViewModel.atWorkSearchText.collectAsStateWithLifecycle()
+        val idleSearchText by territoriesGridViewModel.idleSearchText.collectAsStateWithLifecycle()
+        val allSearchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
+        val handleActionSearch = { isShowSearchBar = true }
+        when (isShowSearchBar) {
+            true -> {
+                onActionBarChange {
+                    when (TerritoringTabType.valueOf(tabType)) {
+                        TerritoringTabType.HAND_OUT -> SearchComponent(
+                            fieldValue = handOutSearchText,
+                            placeholderResId = R.string.territory_search_placeholder,
+                            onValueChange = territoriesGridViewModel::onHandOutSearchTextChange
+                        )
+
+                        TerritoringTabType.AT_WORK -> SearchComponent(
+                            fieldValue = atWorkSearchText,
+                            placeholderResId = R.string.territory_search_placeholder,
+                            onValueChange = territoriesGridViewModel::onAtWorkSearchTextChange
+                        )
+
+                        TerritoringTabType.IDLE -> SearchComponent(
+                            fieldValue = idleSearchText,
+                            placeholderResId = R.string.territory_search_placeholder,
+                            onValueChange = territoriesGridViewModel::onIdleSearchTextChange
+                        )
+
+                        TerritoringTabType.ALL -> SearchComponent(
+                            fieldValue = allSearchText,
+                            placeholderResId = R.string.territory_search_placeholder,
+                            onValueChange = territoriesGridViewModel::onSearchTextChange
                         )
                     }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(3f)
-                    ) {
-                        BarListItemExposedDropdownMenuBoxComponent(
-                            /*modifier = Modifier
-                                .focusRequester(focusRequesters[TerritoringFields.TERRITORY_LOCATION.name]!!.focusRequester)
-                                .onFocusChanged { focusState ->
-                                    territoringViewModel.onTextFieldFocusChanged(
-                                        focusedField = TerritoringFields.TERRITORY_LOCATION,
-                                        isFocused = focusState.isFocused
-                                    )
-                                },*/
-                            leadingImageVector = Icons.Outlined.Place,
-                            keyboardOptions = remember {
-                                KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Next
-                                )
-                            },
-                            inputWrapper = location,
-                            items = territoringUi.territoryLocations.distinctBy { it.locationShortName },
-                            onValueChange = {
-                                territoringViewModel.onTextFieldEntered(
-                                    TerritoringInputEvent.Location(it)
-                                )
-                            },
-                            onImeKeyAction = territoringViewModel::moveFocusImeAction,
+                }
+                onTopBarActionsChange {}
+            }
+
+            false -> {
+                onTopBarActionsChange {
+                    var displayMenu by rememberSaveable { mutableStateOf(false) }
+                    IconButton(onClick = { displayMenu = !displayMenu }) {
+                        Icon(
+                            Icons.Outlined.MoreVert,
+                            stringResource(R.string.territory_menu_cnt_desc)
                         )
+                    }
+                    DropdownMenu(
+                        expanded = displayMenu,
+                        onDismissRequest = { displayMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_search_lbl)) },
+                            onClick = handleActionSearch
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_add_lbl)) },
+                            onClick = { appState.mainNavigate(NavRoutes.Territory.routeForTerritory()) })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.mi_housing_lbl)) },
+                            onClick = { appState.mainNavigate(NavRoutes.Housing.route) })
+                    }
+                }
+                onActionBarChange {
+                    CommonScreen(state = state) { territoringUi ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier.weight(2.8f)
+                            ) {
+                                PrivateSectorSwitchComponent(
+                                    viewModel = territoringViewModel, inputWrapper = isPrivateSector
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(3f)
+                            ) {
+                                LocationDropdownMenuBoxComponent(
+                                    viewModel = territoringViewModel, inputWrapper = location,
+                                    items = territoringUi.territoryLocations.distinctBy { it.locationShortName }
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
+        onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else Icons.Outlined.Menu)
+        appState.handleTopBarNavClick.value =
+            {
+                if (isShowSearchBar) {
+                    isShowSearchBar = false
+                    when (TerritoringTabType.valueOf(tabType)) {
+                        TerritoringTabType.HAND_OUT -> territoriesGridViewModel.onHandOutSearchTextChange(
+                            emptySearchText
+                        )
+
+                        TerritoringTabType.AT_WORK -> territoriesGridViewModel.onAtWorkSearchTextChange(
+                            emptySearchText
+                        )
+
+                        TerritoringTabType.IDLE -> territoriesGridViewModel.onIdleSearchTextChange(
+                            emptySearchText
+                        )
+
+                        TerritoringTabType.ALL -> territoriesGridViewModel.onSearchTextChange(
+                            emptySearchText
+                        )
+                    }
+                } else appState.backToBottomBarScreen()
+            }
         Column(modifier = Modifier.fillMaxSize()) {
             CustomScrollableTabRow(
                 listOf(
@@ -318,7 +368,6 @@ fun HandOutTerritoriesView(
         isPrivateSector,
         locationId
     )
-    val searchText by territoriesGridViewModel.handOutSearchText.collectAsStateWithLifecycle()
     val member by territoriesGridViewModel.member.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -368,10 +417,6 @@ fun HandOutTerritoriesView(
         ) {
             TerritoryDetailsListView()
         }
-        SearchComponent(
-            searchText,
-            onValueChange = territoriesGridViewModel::onHandOutSearchTextChange
-        )
         BarMemberComboBox(
             modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
             sharedViewModel = appState.sharedViewModel.value,
@@ -424,7 +469,6 @@ fun AtWorkTerritoriesView(
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("AtWorkTerritoriesView(...) called")
-    val searchText by territoriesGridViewModel.atWorkSearchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -473,10 +517,6 @@ fun AtWorkTerritoriesView(
         ) {
             TerritoryDetailsListView()
         }
-        SearchComponent(
-            searchText,
-            onValueChange = territoriesGridViewModel::onAtWorkSearchTextChange
-        )
     }
 }
 
@@ -490,7 +530,6 @@ fun IdleTerritoriesView(
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("IdleTerritoriesView(...) called")
-    val searchText by territoriesGridViewModel.idleSearchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -539,10 +578,6 @@ fun IdleTerritoriesView(
         ) {
             TerritoryDetailsListView()
         }
-        SearchComponent(
-            searchText,
-            onValueChange = territoriesGridViewModel::onIdleSearchTextChange
-        )
     }
 }
 
@@ -556,7 +591,6 @@ fun AllTerritoriesView(
     isPrivateSector: Boolean = false
 ) {
     Timber.tag(TAG).d("AllTerritoriesView(...) called")
-    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -605,10 +639,6 @@ fun AllTerritoriesView(
         ) {
             TerritoryDetailsListView()
         }
-        SearchComponent(
-            searchText,
-            onValueChange = territoriesGridViewModel::onSearchTextChange
-        )
     }
 }
 

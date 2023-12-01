@@ -375,7 +375,7 @@ class RoomViewModelImpl @Inject constructor(
         RoomInputValidator.RoomNum.errorIdOrNull(roomNum.value.value)?.let {
             inputErrors.add(InputError(fieldName = RoomFields.ROOM_NUM.name, errorId = it))
         }
-        return if (inputErrors.isEmpty()) null else inputErrors
+        return inputErrors.ifEmpty { null }
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {

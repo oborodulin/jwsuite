@@ -45,11 +45,17 @@ class MembersListViewModelImpl @Inject constructor(
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is MembersListUiAction.LoadByCongregation -> {
-                loadMembers(congregationId = action.congregationId, byCongregation = true)
+                loadMembers(
+                    congregationId = action.congregationId, isAlsoService = action.isAlsoService,
+                    byCongregation = true
+                )
             }
 
             is MembersListUiAction.LoadByGroup -> {
-                loadMembers(groupId = action.groupId, byCongregation = false)
+                loadMembers(
+                    groupId = action.groupId, isAlsoService = action.isAlsoService,
+                    byCongregation = false
+                )
             }
 
             is MembersListUiAction.EditMember -> {
@@ -68,12 +74,13 @@ class MembersListViewModelImpl @Inject constructor(
     }
 
     private fun loadMembers(
-        congregationId: UUID? = null, groupId: UUID? = null, byCongregation: Boolean
+        congregationId: UUID? = null, groupId: UUID? = null,
+        isAlsoService: Boolean = false, byCongregation: Boolean
     ): Job {
         Timber.tag(TAG)
             .d(
-                "loadMembers(...) called: congregationId = %s; groupId = %s",
-                congregationId, groupId
+                "loadMembers(...) called: congregationId = %s; groupId = %s, isAlsoService = %s",
+                congregationId, groupId, isAlsoService
             )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(

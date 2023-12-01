@@ -100,6 +100,7 @@ fun GeoScreen(
             }
         )
     }
+    // Searching:
     var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
     val handleActionSearch = { isShowSearchBar = true }
     when (isShowSearchBar) {

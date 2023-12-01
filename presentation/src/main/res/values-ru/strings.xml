@@ -107,10 +107,10 @@
     <string name="pin_empty_error">Укажите, пожалуйста, ПИН-код</string>
     <!--формы регистрации-->
     <string name="signup_username_empty_error">Укажите, пожалуйста, имя пользователя</string>
-    <string name="signup_pin_length_error">ПИН-код слишком короткий! Введите, пожалуйста, %1$d цифр</string>
+    <string name="signup_pin_length_error">ПИН-код слишком короткий!\nВведите, пожалуйста, %1$d цифр</string>
     <string name="signup_confirm_pin_empty_error">Укажите, пожалуйста, ПИН-код ещё раз</string>
     <string name="signup_confirm_pin_ctrl_error">Контроль совпадения не выполняется!</string>
-    <string name="signup_confirm_pin_error">ПИН-коды не совпадают! Пожалуйста, подтвердите ПИН-код ещё раз</string>
+    <string name="signup_confirm_pin_error">ПИН-коды не совпадают!\nПодтвердите, пожалуйста, ПИН-код ещё раз</string>
     <!--формы логина-->
     <string name="login_pin_error">Неверный ПИН-код! Пожалуйста, введите ПИН-код ещё раз</string>
     <!--формы настроек-->
