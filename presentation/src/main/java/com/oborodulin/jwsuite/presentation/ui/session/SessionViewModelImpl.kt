@@ -23,6 +23,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.SignoutSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,6 +47,7 @@ class SessionViewModelImpl @Inject constructor(
     private val useCases: SessionUseCases,
     private val sessionConverter: SessionConverter,
     private val signupConverter: SignupSessionConverter,
+    private val signoutConverter: SignoutSessionConverter,
     private val loginConverter: LoginSessionConverter,
     //private val logoutConverter: LogoutSessionConverter
 ) : SessionViewModel,
@@ -183,9 +185,11 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     private fun signout(): Job {
-        Timber.tag(TAG).d("signout(...) called")
+        Timber.tag(TAG).d("signout() called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.signoutUseCase.execute(SignoutUseCase.Request).collect {}
+            useCases.signoutUseCase.execute(SignoutUseCase.Request)
+                .map { signoutConverter.convert(it) }
+                .collect { submitState(it) }
             //.collect { submitState(UiState.Success(SessionUi(lastDestination = NavRoutes.Signup.route))) }
         }
         return job
@@ -240,58 +244,43 @@ class SessionViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("observeInputEvents() called")
         inputEvents.receiveAsFlow().onEach { event ->
             when (event) {
-                is SessionInputEvent.Username -> when (SessionInputValidator.Username.errorIdOrNull(
-                    event.input
-                )) {
-                    null -> setStateValue(
-                        SessionFields.SESSION_USERNAME, username, event.input, true
-                    )
-
-                    else -> setStateValue(
-                        SessionFields.SESSION_USERNAME, username, event.input
-                    )
-                }
-
-                is SessionInputEvent.Pin -> when (SessionInputValidator.Pin.errorIdOrNull(event.input)) {
-                    null -> setStateValue(
-                        SessionFields.SESSION_PIN, pin, event.input, true
-                    )
-
-                    else -> setStateValue(
-                        SessionFields.SESSION_PIN, pin, event.input
-                    )
-                }
-
-                is SessionInputEvent.ConfirmPin -> when (SessionInputValidator.ConfirmPin.errorIdOrNull(
-                    event.input, pin.value.value
-                )) {
-                    null -> setStateValue(
-                        SessionFields.SESSION_CONFIRM_PIN, confirmPin, event.input, true
-                    )
-
-                    else -> setStateValue(
-                        SessionFields.SESSION_CONFIRM_PIN, confirmPin, event.input
-                    )
-                }
-            }
-        }.debounce(350).collect { event ->
-            when (event) {
                 is SessionInputEvent.Username -> setStateValue(
-                    SessionFields.SESSION_USERNAME, username,
-                    SessionInputValidator.Username.errorIdOrNull(event.input)
+                    SessionFields.SESSION_USERNAME, username, event.input,
+                    SessionInputValidator.Username.isValid(event.input)
                 )
 
                 is SessionInputEvent.Pin -> setStateValue(
-                    SessionFields.SESSION_PIN, pin,
-                    SessionInputValidator.Pin.errorIdOrNull(event.input)
+                    SessionFields.SESSION_PIN, pin, event.input,
+                    SessionInputValidator.Pin.isValid(event.input)
                 )
 
                 is SessionInputEvent.ConfirmPin -> setStateValue(
-                    SessionFields.SESSION_CONFIRM_PIN, confirmPin,
-                    SessionInputValidator.ConfirmPin.errorIdOrNull(event.input, pin.value.value)
+                    SessionFields.SESSION_CONFIRM_PIN, confirmPin, event.input,
+                    SessionInputValidator.ConfirmPin.isValid(event.input, pin.value.value)
                 )
             }
-        }
+        }.debounce(350)
+            .collect { event ->
+                when (event) {
+                    is SessionInputEvent.Username -> setStateValue(
+                        SessionFields.SESSION_USERNAME, username,
+                        SessionInputValidator.Username.errorIdOrNull(event.input)
+                    )
+
+                    is SessionInputEvent.Pin -> {
+                        val errorId = SessionInputValidator.Pin.errorIdOrNull(event.input)
+                        setStateValue(
+                            SessionFields.SESSION_PIN, pin,
+                            errorId, errorId?.let { ctx.resources.getString(it, PASS_MIN_LENGTH) }
+                        )
+                    }
+
+                    is SessionInputEvent.ConfirmPin -> setStateValue(
+                        SessionFields.SESSION_CONFIRM_PIN, confirmPin,
+                        SessionInputValidator.ConfirmPin.errorIdOrNull(event.input, pin.value.value)
+                    )
+                }
+            }
     }
 
     override fun performValidation() {}

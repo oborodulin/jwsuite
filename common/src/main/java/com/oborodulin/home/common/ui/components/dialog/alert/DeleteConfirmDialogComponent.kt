@@ -1,5 +1,6 @@
 package com.oborodulin.home.common.ui.components.dialog.alert
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
@@ -15,12 +16,13 @@ import com.oborodulin.home.common.R
 fun DeleteConfirmDialogComponent(
     isShow: MutableState<Boolean>,
     text: String? = null,
+    @StringRes iconCntDescResId: Int = R.string.ic_delete_cnt_desc,
     onDismiss: (() -> Unit)? = null,
     onConfirm: () -> Unit
 ) {
     if (isShow.value) {
         AlertDialog(
-            icon = { Icon(Icons.Outlined.Delete, null) },
+            icon = { Icon(Icons.Outlined.Delete, stringResource(iconCntDescResId)) },
             title = { Text(stringResource(R.string.dlg_confirm_delete_title)) },
             text = text?.let { { Text(text) } },
             onDismissRequest = onDismiss ?: { isShow.value = false },

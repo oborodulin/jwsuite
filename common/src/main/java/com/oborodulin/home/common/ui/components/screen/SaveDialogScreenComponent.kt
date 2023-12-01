@@ -50,6 +50,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     handleTopBarNavClick: MutableState<() -> Unit>,
     topBarActionImageVector: ImageVector = Icons.Outlined.Done,
     @StringRes topBarActionCntDescResId: Int = R.string.dlg_done_cnt_desc,
+    isControlsShow: Boolean = true,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -87,7 +88,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         Timber.tag(TAG)
             .d("SaveDialogScreenComponent -> LaunchedEffect(inputId): inputId = %s", inputId)
         //inputId?.let {
-            viewModel.submitAction(loadUiAction)
+        viewModel.submitAction(loadUiAction)
         //}
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
@@ -112,8 +113,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange {
-            IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
-                Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
+            if (isControlsShow) {
+                IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
+                    Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
+                }
             }
         }
         CommonScreen(state = state) {
@@ -122,9 +125,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 dialogView.invoke(it)
-                // https://developer.android.com/guide/topics/resources/more-resources#Dimension
-                Spacer(Modifier.height(8.dp))
-                SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
+                if (isControlsShow) {
+                    // https://developer.android.com/guide/topics/resources/more-resources#Dimension
+                    Spacer(Modifier.height(8.dp))
+                    SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
+                }
             }
         }
     }

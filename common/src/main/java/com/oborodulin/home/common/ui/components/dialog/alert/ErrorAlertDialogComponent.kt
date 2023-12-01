@@ -1,5 +1,6 @@
 package com.oborodulin.home.common.ui.components.dialog.alert
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
@@ -15,12 +16,13 @@ import com.oborodulin.home.common.R
 fun ErrorAlertDialogComponent(
     isShow: MutableState<Boolean>,
     text: String? = null,
+    @StringRes iconCntDescResId: Int = R.string.ic_error_cnt_desc,
     onTryAgain: () -> Unit = {},
     onDismiss: (() -> Unit)? = null
 ) {
     if (isShow.value) {
         AlertDialog(
-            icon = { Icon(Icons.Outlined.Warning, null) },
+            icon = { Icon(Icons.Outlined.Warning, stringResource(iconCntDescResId)) },
             title = { Text(stringResource(R.string.dlg_error_title)) },
             text = text?.let { { Text(text) } },
             onDismissRequest = onDismiss ?: { isShow.value = false },

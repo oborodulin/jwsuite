@@ -98,7 +98,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         Timber.tag(TAG)
             .d("setStateValue: %s = '%s' [valid = %s]", field.key(), value, isValid)
         if (isValid) {
-            state[field.key()] = property.value.copy(value = value, errorId = null, isEmpty = false)
+            state[field.key()] =
+                property.value.copy(value = value, errorId = null, errorMsg = null, isEmpty = false)
         } else {
             state[field.key()] = property.value.copy(value = value, isEmpty = false)
         }
@@ -106,10 +107,14 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
 
     @JvmName("setInputWrapperStateValue")
-    fun setStateValue(field: F, property: StateFlow<InputWrapper>, @StringRes errorId: Int?) {
+    fun setStateValue(
+        field: F, property: StateFlow<InputWrapper>,
+        @StringRes errorId: Int?, errorMsg: String? = null
+    ) {
         Timber.tag(TAG)
             .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
-        state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
+        state[field.key()] =
+            property.value.copy(errorId = errorId, errorMsg = errorMsg, isEmpty = false)
         _isUiStateChanged.value = true
     }
 
@@ -150,7 +155,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             )
         if (isValid) {
             properties.value.inputs[key] = InputWrapper(
-                value = value, errorId = null, isEmpty = false, isSaved = isSaved
+                value = value, errorId = null, errorMsg = null, isEmpty = false, isSaved = isSaved
             )
         } else {
             properties.value.inputs[key] = InputWrapper(
@@ -162,7 +167,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
 
     fun setStateValue(
-        field: F, properties: StateFlow<InputsWrapper>, key: String, @StringRes errorId: Int?
+        field: F, properties: StateFlow<InputsWrapper>, key: String,
+        @StringRes errorId: Int?, errorMsg: String? = null
     ) {
         Timber.tag(TAG)
             .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
@@ -171,6 +177,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             InputWrapper(
                 value = property.value,
                 errorId = errorId,
+                errorMsg = errorMsg,
                 isEmpty = false,
                 isSaved = errorId != null
             )
@@ -199,7 +206,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
             .d("setStateValue: %s = '%s' [valid = %s]", field.key(), item, isValid)
         if (isValid) {
             state[field.key()] =
-                property.value.copy(item = item, errorId = null, isEmpty = false)
+                property.value.copy(item = item, errorId = null, errorMsg = null, isEmpty = false)
         } else {
             state[field.key()] = property.value.copy(item = item, isEmpty = false)
         }
@@ -208,11 +215,13 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
 
     @JvmName("setInputListItemWrapperStateValue")
     fun <T : ListItemModel> setStateValue(
-        field: F, property: StateFlow<InputListItemWrapper<T>>, @StringRes errorId: Int?
+        field: F, property: StateFlow<InputListItemWrapper<T>>,
+        @StringRes errorId: Int?, errorMsg: String? = null
     ) {
         Timber.tag(TAG)
             .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
-        state[field.key()] = property.value.copy(errorId = errorId, isEmpty = false)
+        state[field.key()] =
+            property.value.copy(errorId = errorId, errorMsg = errorMsg, isEmpty = false)
         _isUiStateChanged.value = true
     }
 

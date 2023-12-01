@@ -49,9 +49,7 @@ fun Error(modifier: Modifier, errorMessage: String) {
         modifier = modifier,
         verticalArrangement = Arrangement.Bottom
     ) {
-        Snackbar {
-            Text(text = errorMessage)
-        }
+        Snackbar { Text(text = errorMessage) }
     }
 }
 

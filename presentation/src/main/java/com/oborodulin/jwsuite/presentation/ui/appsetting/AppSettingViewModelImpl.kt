@@ -234,8 +234,7 @@ class AppSettingViewModelImpl @Inject constructor(
                         }
 
                 }
-            }
-            .debounce(350)
+            }.debounce(350)
             .collect { event ->
                 when (event) {
                     is AppSettingInputEvent.TerritoryProcessingPeriod ->

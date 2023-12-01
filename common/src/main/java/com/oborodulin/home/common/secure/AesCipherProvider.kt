@@ -4,8 +4,11 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import com.oborodulin.home.common.di.SecurityModule
+import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import java.security.SecureRandom
+import java.util.Arrays
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -98,5 +101,16 @@ class AesCipherProvider @Inject constructor(
                 tCostInIterations = 1, mCostInKibibyte = 37888
             ).encodedOutputAsString() //rawHashAsByteArray()
         }*/
+
+        fun generatePassphrase(): String {
+            // https://github.com/Lenz-K/android-encrypted-room-database-example/blob/main/app/src/main/java/de/krbmr/encryptedroomdb/database/SecretDatabase.kt
+            val keyGenerator = KeyGenerator.getInstance(ALGORITHM)
+            keyGenerator.init(KEY_SIZE)
+            // https://stackoverflow.com/questions/4931854/converting-char-array-into-byte-array-and-back-again
+            val charBuffer =
+                StandardCharsets.UTF_8.decode(ByteBuffer.wrap(keyGenerator.generateKey().encoded))
+            val key = Arrays.copyOf(charBuffer.array(), charBuffer.limit())
+            return pbkdf2(key)
+        }
     }
 }

@@ -37,6 +37,9 @@
     <string name="search_clear_cnt_desc">Очистить строку поиска</string>
     <string name="dlg_close_cnt_desc">Закрыть диалог</string>
     <string name="dlg_done_cnt_desc">Готово</string>
+    <string name="ic_delete_cnt_desc">Удалить</string>
+    <string name="ic_cancel_changes_cnt_desc">Отменить изменения</string>
+    <string name="ic_error_cnt_desc">Ошибка</string>
     <string name="btn_next_cnt_desc">Далее</string>
     <string name="btn_save_cnt_desc">Сохранить</string>
     <string name="cmb_drop_down_cnt_desc">Раскрыть выпадающий список</string>

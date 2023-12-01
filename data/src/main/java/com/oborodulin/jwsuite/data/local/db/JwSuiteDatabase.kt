@@ -339,22 +339,25 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             super.onCreate(db)
             Timber.tag(TAG).d("onCreate(...) called")
             Timber.tag(TAG)
-                .i("Database onCreate() called on thread '%s':", Thread.currentThread().name)
+                .i("Database onCreate(...) called on thread '%s':", Thread.currentThread().name)
             // https://developermemos.com/posts/prepopulate-android-room-data
-            //database.runInTransaction(Runnable {
-            //Timber.tag(TAG).d("onCreate -> database.runInTransaction -> run()")
             //CoroutineScope(Dispatchers.Main).launch {
             //GlobalScope.launch(Dispatchers.Main) {
             isImportDone = CoroutineScope(Dispatchers.IO).async {
                 Timber.tag(TAG).d("onCreate -> CoroutineScope(Dispatchers.IO).async")
                 val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
-                Timber.tag(TAG).d("onCreate -> database: getInstance(...)")
-                Timber.tag(TAG)
-                    .i("Start thread '%s': prePopulateDbWithDao(...)", Thread.currentThread().name)
+                Timber.tag(TAG).i(
+                    "onCreate -> Start thread '%s': database.getInstance(...)",
+                    Thread.currentThread().name
+                )
+                //database.runInTransaction(Runnable {
+                //Timber.tag(TAG).d("onCreate -> database.runInTransaction -> run()")
+                //runBlocking {
                 prePopulateDbWithDao(database)
+                //}
+                //})
                 true
             }
-            //})
             /*
             isImportExecute = true
             // moving to a new thread

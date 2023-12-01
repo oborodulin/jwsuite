@@ -17,7 +17,6 @@ import java.util.Arrays
 import javax.crypto.KeyGenerator
 import javax.inject.Inject
 
-
 /**
  * Created by o.borodulin on 08.August.2022
  */
@@ -34,14 +33,7 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
     override fun databasePassphrase() = flow {
         val databasePassphrase =
             dataStore.data.map { authData -> authData.databasePassphrase }.first().ifEmpty {
-                // https://github.com/Lenz-K/android-encrypted-room-database-example/blob/main/app/src/main/java/de/krbmr/encryptedroomdb/database/SecretDatabase.kt
-                val keyGenerator = KeyGenerator.getInstance(AesCipherProvider.ALGORITHM)
-                keyGenerator.init(AesCipherProvider.KEY_SIZE)
-                // https://stackoverflow.com/questions/4931854/converting-char-array-into-byte-array-and-back-again
-                val charBuffer =
-                    StandardCharsets.UTF_8.decode(ByteBuffer.wrap(keyGenerator.generateKey().encoded))
-                val key = Arrays.copyOf(charBuffer.array(), charBuffer.limit())
-                val passphrase = AesCipherProvider.pbkdf2(key)
+                val passphrase = AesCipherProvider.generatePassphrase()
                 dataStore.updateData { it.copy(databasePassphrase = passphrase) }
                 passphrase
             }
