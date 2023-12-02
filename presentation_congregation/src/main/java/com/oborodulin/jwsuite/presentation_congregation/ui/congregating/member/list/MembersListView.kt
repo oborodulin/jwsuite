@@ -16,6 +16,8 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.list.MemberRolesListUiAction
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.list.MemberRolesListViewModelImpl
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -25,7 +27,8 @@ private const val TAG = "Congregating.MembersListView"
 fun MembersListView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    viewModel: MembersListViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    memberRolesListViewModel: MemberRolesListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
     isService: Boolean? = null,
@@ -45,12 +48,23 @@ fun MembersListView(
     LaunchedEffect(congregationId, groupInput?.groupId, isService) {
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect() BEFORE collect ui state flow")
         when (groupInput?.groupId) {
-            null -> viewModel.submitAction(MembersListUiAction.LoadByCongregation(congregationId, isService))
-            else -> viewModel.submitAction(MembersListUiAction.LoadByGroup(groupInput.groupId, isService))
+            null -> membersListViewModel.submitAction(
+                MembersListUiAction.LoadByCongregation(
+                    congregationId,
+                    isService
+                )
+            )
+
+            else -> membersListViewModel.submitAction(
+                MembersListUiAction.LoadByGroup(
+                    groupInput.groupId,
+                    isService
+                )
+            )
         }
     }
-    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    membersListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             when (isEditableList) {
@@ -62,12 +76,19 @@ fun MembersListView(
                         emptyListResId = R.string.members_list_empty_text,
                         isEmptyListTextOutput = congregationId != null || groupInput?.groupId != null,
                         onEdit = { member ->
-                            viewModel.submitAction(MembersListUiAction.EditMember(member.itemId!!))
+                            membersListViewModel.submitAction(MembersListUiAction.EditMember(member.itemId!!))
                         },
                         onDelete = { member ->
-                            viewModel.submitAction(MembersListUiAction.DeleteMember(member.itemId!!))
+                            membersListViewModel.submitAction(
+                                MembersListUiAction.DeleteMember(member.itemId!!)
+                            )
                         }
-                    ) { member -> viewModel.singleSelectItem(member) }
+                    ) { member ->
+                        membersListViewModel.singleSelectItem(member)
+                        with(memberRolesListViewModel) {
+                            submitAction(MemberRolesListUiAction.Load(member.itemId!!))
+                        }
+                    }
                 }
 
                 false -> {
@@ -82,7 +103,7 @@ fun MembersListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect() AFTER collect single Event Flow")
-        viewModel.singleEventFlow.collectLatest {
+        membersListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is MembersListUiSingleEvent.OpenMemberScreen -> {

@@ -228,7 +228,7 @@ fun CongregationMembersView(
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
     val selectedCongregationId = congregationsListViewModel.singleSelectedItem()?.itemId
-    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -279,7 +279,7 @@ fun CongregationMembersView(
                 isEditableList = false
             )//, sharedViewModel = sharedViewModel)
         }
-        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
+        //SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 
@@ -293,7 +293,7 @@ fun GroupMembersView(
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
     val selectedGroupId = groupsListViewModel.singleSelectedItem()?.itemId
-    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -339,7 +339,7 @@ fun GroupMembersView(
                 isEditableList = false
             )//, sharedViewModel = sharedViewModel)
         }
-        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
+        //SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 
