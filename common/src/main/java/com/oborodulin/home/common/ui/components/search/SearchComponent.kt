@@ -138,6 +138,7 @@ fun SearchComponent(
                 )
          */
     )
+    // https://stackoverflow.com/questions/64181930/request-focus-on-textfield-in-jetpack-compose
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }

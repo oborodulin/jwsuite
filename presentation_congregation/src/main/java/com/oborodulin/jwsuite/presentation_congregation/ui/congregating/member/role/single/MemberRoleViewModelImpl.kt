@@ -17,7 +17,6 @@ import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRoleToMemberRolesListItemMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberFields
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
@@ -54,7 +53,7 @@ class MemberRoleViewModelImpl @Inject constructor(
         state, MemberRoleFields.MEMBER_ROLE_ID.name, MemberRoleFields.MEMBER_ROLE_ROLE
     ) {
     override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
-        state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
+        state.getStateFlow(MemberRoleFields.MEMBER_ROLE_CONGREGATION.name, InputListItemWrapper())
     }
     override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberRoleFields.MEMBER_ROLE_MEMBER.name, InputListItemWrapper())
@@ -156,6 +155,7 @@ class MemberRoleViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: membeRolerUi = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberRoleFields.MEMBER_ROLE_ID, id, it.toString()) }
+        //initStateValue(MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation, ListItemModel())
         initStateValue(
             MemberRoleFields.MEMBER_ROLE_MEMBER, member, uiModel.member.toMembersListItem()
         )
@@ -176,6 +176,10 @@ class MemberRoleViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is MemberRoleInputEvent.Congregation -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation, event.input, true
+                    )
+
                     is MemberRoleInputEvent.Member -> setStateValue(
                         MemberRoleFields.MEMBER_ROLE_MEMBER, member, event.input, true
                     )
@@ -193,6 +197,10 @@ class MemberRoleViewModelImpl @Inject constructor(
             }.debounce(350)
             .collect { event ->
                 when (event) {
+                    is MemberRoleInputEvent.Congregation -> setStateValue(
+                        MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation, null
+                    )
+
                     is MemberRoleInputEvent.Member -> setStateValue(
                         MemberRoleFields.MEMBER_ROLE_MEMBER, member,
                         MemberRoleInputValidator.Member.errorIdOrNull(event.input.headline)

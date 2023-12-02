@@ -58,6 +58,7 @@ fun MainNavigationHost(
         onFabChange {}*/
         congregationNavGraph(
             startDestination = session.startDestination,
+            onActionBarChange = onActionBarChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,

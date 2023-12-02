@@ -20,6 +20,7 @@ private const val TAG = "App.Navigation.congregationNavGraph"
 
 fun NavGraphBuilder.congregationNavGraph(
     startDestination: String? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -88,6 +89,7 @@ fun NavGraphBuilder.congregationNavGraph(
             MemberRoleScreen(
                 //sharedViewModel = sharedViewModel,
                 memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange

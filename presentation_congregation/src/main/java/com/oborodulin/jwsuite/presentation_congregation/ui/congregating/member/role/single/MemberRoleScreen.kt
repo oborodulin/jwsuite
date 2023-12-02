@@ -17,6 +17,7 @@ fun MemberRoleScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberRoleViewModelImpl = hiltViewModel(),
     memberRoleInput: NavigationInput.MemberRoleInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
@@ -24,6 +25,7 @@ fun MemberRoleScreen(
     Timber.tag(TAG).d("MemberRoleScreen(...) called: memberRoleInput = %s", memberRoleInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
+    onActionBarChange(null)
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = memberRoleInput?.memberRoleId,
