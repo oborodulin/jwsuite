@@ -12,13 +12,13 @@ class MemberRoleViewToMemberRoleMapper(
 ) :
     NullableMapper<MemberRoleView, MemberRole>, Mapper<MemberRoleView, MemberRole> {
     override fun map(input: MemberRoleView): MemberRole {
-        val member = MemberRole(
+        val memberRole = MemberRole(
             member = memberMapper.map(input.member),
             role = roleMapper.map(input.role),
             roleExpiredDate = input.memberRole.roleExpiredDate
         )
-        member.id = input.memberRole.memberRoleId
-        return member
+        memberRole.id = input.memberRole.memberRoleId
+        return memberRole
     }
 
     override fun nullableMap(input: MemberRoleView?) = input?.let { map(it) }

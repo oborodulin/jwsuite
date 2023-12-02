@@ -153,9 +153,15 @@ class MemberRoleViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: MemberRoleUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberModel) called: membeRolerUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(MemberRoleUi) called: membeRolerUi = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberRoleFields.MEMBER_ROLE_ID, id, it.toString()) }
-        //initStateValue(MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation, ListItemModel())
+        initStateValue(
+            MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation,
+            CongregationsListItem(
+                id = uiModel.member.congregation.id!!,
+                locality = uiModel.member.congregation.locality
+            )
+        )
         initStateValue(
             MemberRoleFields.MEMBER_ROLE_MEMBER, member, uiModel.member.toMembersListItem()
         )
