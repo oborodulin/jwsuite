@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,8 +27,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -56,6 +58,9 @@ fun SearchComponent(
     // https://stackoverflow.com/questions/69036917/text-field-text-goes-below-the-ime-in-lazycolum-jetpack-compose/69120348#69120348
     val relocation = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
+    // https://stackoverflow.com/questions/64181930/request-focus-on-textfield-in-jetpack-compose
+    // initialize focus reference to be able to request focus programmatically
+    val focusRequester = FocusRequester()
     // https://medium.com/@kamal.lakhani56/search-bar-animation-jetpack-compose-c865e4605c6a
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -72,6 +77,7 @@ fun SearchComponent(
             .onFocusEvent {
                 if (it.isFocused) scope.launch { delay(300); relocation.bringIntoView() }
             }
+            .focusRequester(focusRequester)
             .then(modifier),
         textStyle = TextStyle(fontSize = 18.sp),
         placeholder = {
@@ -132,6 +138,9 @@ fun SearchComponent(
                 )
          */
     )
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }
 
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

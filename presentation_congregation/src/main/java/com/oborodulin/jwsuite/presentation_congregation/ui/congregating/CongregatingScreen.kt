@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -32,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
@@ -146,17 +146,26 @@ fun CongregatingScreen(
     }
     onFabChange {}
     onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
+    val handleCloseAndClearSearch = {
+        isShowSearchBar = false
+        when (CongregatingTabType.valueOf(tabType)) {
+            CongregatingTabType.CONGREGATIONS -> congregationsListViewModel.clearSearchText()
+            CongregatingTabType.GROUPS -> groupsListViewModel.clearSearchText()
+            CongregatingTabType.MEMBERS -> membersListViewModel.clearSearchText()
+        }
+    }
     appState.handleTopBarNavClick.value =
         {
             if (isShowSearchBar) {
-                isShowSearchBar = false
-                when (CongregatingTabType.valueOf(tabType)) {
-                    CongregatingTabType.CONGREGATIONS -> congregationsListViewModel.clearSearchText()
-                    CongregatingTabType.GROUPS -> groupsListViewModel.clearSearchText()
-                    CongregatingTabType.MEMBERS -> membersListViewModel.clearSearchText()
-                }
+                handleCloseAndClearSearch.invoke()
             }
         }
+    // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
+    BackHandler {
+        if (isShowSearchBar) {
+            handleCloseAndClearSearch.invoke()
+        } else appState.mainNavigateUp()
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         val isServiceBool = if (isService.value.isNotEmpty()) isService.value.toBoolean() else null
         CustomScrollableTabRow(

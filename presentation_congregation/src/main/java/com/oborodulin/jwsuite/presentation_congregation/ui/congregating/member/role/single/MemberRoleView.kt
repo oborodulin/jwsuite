@@ -38,6 +38,7 @@ import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.role.single.RoleComboBox
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -60,9 +61,13 @@ fun MemberRoleView(
     }
 
     Timber.tag(TAG).d("MemberRole: CollectAsStateWithLifecycle for all fields")
+    val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val member by viewModel.member.collectAsStateWithLifecycle()
     val role by viewModel.role.collectAsStateWithLifecycle()
     val roleExpiredDate by viewModel.roleExpiredDate.collectAsStateWithLifecycle()
+
+    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("MemberRole: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -93,6 +98,7 @@ fun MemberRoleView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        currentCongregation?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it.toCongregationsListItem())) }
         member.item?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) }
         MemberComboBox(
             modifier = Modifier

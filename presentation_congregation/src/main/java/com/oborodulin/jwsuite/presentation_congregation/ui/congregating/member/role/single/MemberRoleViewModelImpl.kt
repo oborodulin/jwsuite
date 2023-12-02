@@ -17,7 +17,10 @@ import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRoleToMemberRolesListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberFields
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRoleUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.RoleUi
@@ -50,6 +53,9 @@ class MemberRoleViewModelImpl @Inject constructor(
     DialogViewModel<MemberRoleUi, UiState<MemberRoleUi>, MemberRoleUiAction, UiSingleEvent, MemberRoleFields, InputWrapper>(
         state, MemberRoleFields.MEMBER_ROLE_ID.name, MemberRoleFields.MEMBER_ROLE_ROLE
     ) {
+    override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
+    }
     override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberRoleFields.MEMBER_ROLE_MEMBER.name, InputListItemWrapper())
     }
@@ -107,7 +113,12 @@ class MemberRoleViewModelImpl @Inject constructor(
 
     private fun saveMemberRole(): Job {
         //val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
-        val memberUi = MemberUi()
+        val congregationUi = CongregationUi()
+        congregationUi.id = congregation.value.item?.itemId
+        val memberUi = MemberUi(
+            congregation = congregationUi,
+            congregationId = congregation.value.item?.itemId
+        )
         memberUi.id = member.value.item?.itemId
         val roleUi = RoleUi()
         roleUi.id = role.value.item?.itemId
@@ -253,6 +264,8 @@ class MemberRoleViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override val congregation =
+                    MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val role = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val roleExpiredDate = MutableStateFlow(InputWrapper())
