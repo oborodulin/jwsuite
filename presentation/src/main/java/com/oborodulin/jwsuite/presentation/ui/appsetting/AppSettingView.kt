@@ -190,51 +190,43 @@ fun AppSettingView(
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .weight(6.18f)
-            ) {
-                val transferObjects =
-                    MutableList(appSettingsUiModel.transferObjects.size) { emptyList<String>() }
-                appSettingsUiModel.transferObjects.forEach {
-                    transferObjects.add(
-                        listOf(
-                            it.transferObject.transferObjectName,
-                            if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
-                            else stringResource(com.oborodulin.home.common.R.string.no_expr)
-                        )
+            val transferObjects =
+                MutableList(appSettingsUiModel.transferObjects.size) { emptyList<String>() }
+            appSettingsUiModel.transferObjects.forEach {
+                transferObjects.add(
+                    listOf(
+                        it.transferObject.transferObjectName,
+                        if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
+                        else stringResource(com.oborodulin.home.common.R.string.no_expr)
                     )
-                }
-                SimpleDataTableComponent(
-                    columnHeaders = listOf(
-                        stringResource(R.string.transfer_objects_header_hint),
-                        stringResource(R.string.is_personal_header_hint)
-                    ), rows = transferObjects
                 )
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(3.82f),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                if (session.containsRoles(
-                        listOf(
-                            MemberRoleType.TERRITORIES,
-                            MemberRoleType.BILLS
-                        )
-                    )
-                ) {
-                    SendButtonComponent()
-                }
-                ReceiveButtonComponent()
+            SimpleDataTableComponent(
+                columnHeaders = listOf(
+                    stringResource(R.string.transfer_objects_header_hint),
+                    stringResource(R.string.is_personal_header_hint)
+                ), rows = transferObjects
+            )
+        }
+        val isSendButtonShow = session.containsRoles(
+            listOf(
+                MemberRoleType.TERRITORIES,
+                MemberRoleType.BILLS
+            )
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
+        ) {
+            if (isSendButtonShow) {
+                SendButtonComponent(modifier = Modifier.weight(1f))
             }
+            ReceiveButtonComponent()
         }
         Divider(Modifier.fillMaxWidth())
         Text(
