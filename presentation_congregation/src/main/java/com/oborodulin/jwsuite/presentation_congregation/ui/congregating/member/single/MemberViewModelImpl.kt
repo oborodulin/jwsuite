@@ -503,6 +503,7 @@ class MemberViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 

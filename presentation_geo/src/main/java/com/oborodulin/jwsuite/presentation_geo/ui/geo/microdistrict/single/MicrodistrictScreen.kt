@@ -18,8 +18,8 @@ fun MicrodistrictScreen(
     viewModel: MicrodistrictViewModelImpl = hiltViewModel(),
     microdistrictInput: MicrodistrictInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG)
         .d("MicrodistrictScreen(...) called: microdistrictInput = %s", microdistrictInput)

@@ -311,6 +311,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
                 override val territoryCategoryCode = MutableStateFlow(InputWrapper())

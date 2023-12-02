@@ -26,9 +26,9 @@ fun NavGraphBuilder.geoNavGraph(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(route = Graph.GEO, startDestination = startDestination ?: NavRoutes.Geo.route) {

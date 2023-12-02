@@ -20,8 +20,8 @@ fun TerritoryHouseScreen(
     territoryHouseViewModel: TerritoryHouseViewModelImpl = hiltViewModel(),
     territoryHouseInput: TerritoryHouseInput,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG)
         .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)

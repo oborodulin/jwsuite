@@ -21,9 +21,9 @@ private const val TAG = "App.Navigation.congregationNavGraph"
 fun NavGraphBuilder.congregationNavGraph(
     startDestination: String? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     navigation(
         route = Graph.CONGREGATION,

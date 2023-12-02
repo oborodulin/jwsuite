@@ -20,9 +20,9 @@ fun NavGraphBuilder.housingNavGraph(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     navigation(
         route = Graph.HOUSING, startDestination = startDestination ?: NavRoutes.Housing.route

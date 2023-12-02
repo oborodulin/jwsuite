@@ -35,9 +35,9 @@ fun AtWorkTerritoriesConfirmationScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel,//Impl = hiltViewModel()
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("AtWorkTerritoriesConfirmationScreen(...) called")
     val appState = LocalAppState.current
@@ -86,7 +86,7 @@ fun AtWorkTerritoriesConfirmationScreen(
             if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areAtWorkProcessInputsValid.collectAsStateWithLifecycle()
-        onTopBarActionsChange {
+        onTopBarActionsChange (true) {
             IconButton(enabled = areInputsValid, onClick = handleProcessButtonClick) {
                 Icon(Icons.Outlined.Done, null)
             }

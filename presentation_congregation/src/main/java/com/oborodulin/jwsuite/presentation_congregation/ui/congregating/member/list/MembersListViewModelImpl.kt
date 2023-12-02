@@ -46,14 +46,14 @@ class MembersListViewModelImpl @Inject constructor(
         val job = when (action) {
             is MembersListUiAction.LoadByCongregation -> {
                 loadMembers(
-                    congregationId = action.congregationId, isAlsoService = action.isAlsoService,
+                    congregationId = action.congregationId, isService = action.isService,
                     byCongregation = true
                 )
             }
 
             is MembersListUiAction.LoadByGroup -> {
                 loadMembers(
-                    groupId = action.groupId, isAlsoService = action.isAlsoService,
+                    groupId = action.groupId, isService = action.isService,
                     byCongregation = false
                 )
             }
@@ -75,12 +75,12 @@ class MembersListViewModelImpl @Inject constructor(
 
     private fun loadMembers(
         congregationId: UUID? = null, groupId: UUID? = null,
-        isAlsoService: Boolean = false, byCongregation: Boolean
+        isService: Boolean? = null, byCongregation: Boolean
     ): Job {
         Timber.tag(TAG)
             .d(
-                "loadMembers(...) called: congregationId = %s; groupId = %s, isAlsoService = %s",
-                congregationId, groupId, isAlsoService
+                "loadMembers(...) called: congregationId = %s; groupId = %s, isService = %s",
+                congregationId, groupId, isService
             )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(
@@ -121,6 +121,7 @@ class MembersListViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null

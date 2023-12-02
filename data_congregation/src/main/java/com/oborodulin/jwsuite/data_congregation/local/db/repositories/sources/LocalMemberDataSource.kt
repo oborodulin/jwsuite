@@ -15,17 +15,19 @@ import java.util.UUID
 
 interface LocalMemberDataSource {
     // Members by Congregation:
-    fun getFavoriteCongregationMembers(): Flow<List<MemberView>>
-    fun getCongregationMembers(congregationId: UUID): Flow<List<MemberView>>
-    fun getFavoriteCongregationGroupMembers(): Flow<List<MemberView>>
+    fun getFavoriteCongregationMembers(isService: Boolean?): Flow<List<MemberView>>
+    fun getCongregationMembers(congregationId: UUID, isService: Boolean?): Flow<List<MemberView>>
 
     // Members by Groups:
-    fun getGroupMembers(groupId: UUID): Flow<List<MemberView>>
-    fun getEmptyGroupMembers(congregationId: UUID? = null): Flow<List<MemberView>>
+    fun getFavoriteCongregationGroupMembers(isService: Boolean?): Flow<List<MemberView>>
+    fun getGroupMembers(groupId: UUID, isService: Boolean?): Flow<List<MemberView>>
+    fun getEmptyGroupMembers(congregationId: UUID? = null, isService: Boolean?): Flow<List<MemberView>>
 
-    // Roles:
+    // Member Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
     fun getMemberRoles(pseudonym: String): Flow<List<MemberRoleView>>
+
+    // Roles:
     fun getAllRoles(): Flow<List<RoleEntity>>
     fun getRoles(pseudonym: String): Flow<List<RoleEntity>>
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>

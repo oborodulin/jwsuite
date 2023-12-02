@@ -18,6 +18,10 @@
     <string name="groups_list_empty_text">Групп пока нет. Добавьте, пожалуйста, хотя бы одну</string>
     <string name="members_list_empty_text">Возвещателей пока нет. Добавьте, пожалуйста, хотя бы одного</string>
     <string name="member_roles_list_empty_text">Ролей у возвещателя пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <!--Поиск:-->
+    <string name="congregation_search_placeholder">Поиск собрания…</string>
+    <string name="group_search_placeholder">Поиск группы…</string>
+    <string name="member_search_placeholder">Поиск возвещателя…</string>
 
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
     <!--Собрание-->
@@ -26,6 +30,8 @@
     <string name="congregation_tab_members">ВОЗВЕЩАТЕЛИ</string>
 
     <!--ФОРМЫ:-->
+    <!--Панель поиска (ч/с, локация)-->
+    <string name="congregating_is_service_hint">служебные?</string>
     <!--собрание-->
     <string name="congregation_hint">Собрание</string>
     <string name="member_hint">Возвещатель</string>

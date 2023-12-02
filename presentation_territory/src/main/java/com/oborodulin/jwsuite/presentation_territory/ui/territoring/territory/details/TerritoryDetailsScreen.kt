@@ -49,9 +49,9 @@ fun TerritoryDetailsScreen(
     viewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called: territoryInput = %s", territoryInput)
@@ -135,7 +135,7 @@ fun TerritoryDetailsScreen(
             // Scaffold Hoisting:
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             onTopBarNavClickChange { upNavigation() }
-            onTopBarActionsChange {
+            onTopBarActionsChange (true) {
                 IconButton(onClick = { appState.backToBottomBarScreen() }) {
                     Icon(Icons.Outlined.Done, null)
                 }

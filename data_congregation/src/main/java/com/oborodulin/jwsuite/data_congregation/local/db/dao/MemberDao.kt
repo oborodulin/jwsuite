@@ -10,7 +10,10 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
 import com.oborodulin.jwsuite.domain.util.MemberType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -34,71 +37,90 @@ interface MemberDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
-    //-----------------------------
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId ORDER BY surname, memberName, patronymic, pseudonym")
-    fun findByGroupId(groupId: UUID): Flow<List<MemberView>>
-
-    @ExperimentalCoroutinesApi
-    fun findDistinctByGroupId(groupId: UUID) = findByGroupId(groupId).distinctUntilChanged()
-
-    //-----------------------------
+    //----------------------------- Members by Congregation:
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
-        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
-    WHERE cm.mcCongregationsId = ifnull(:congregationId, cm.mcCongregationsId) AND m.mGroupsId IS NULL
-    ORDER BY surname, memberName, patronymic, pseudonym
-        """
-    )
-    fun findByCongregationIdAndGroupIdIsNull(congregationId: UUID? = null): Flow<List<MemberView>>
-
-    @ExperimentalCoroutinesApi
-    fun findDistinctByCongregationIdAndGroupIdIsNull(congregationId: UUID? = null) =
-        findByCongregationIdAndGroupIdIsNull(congregationId).distinctUntilChanged()
-
-    //-----------------------------
-    @Query(
-        """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = mv.memberId 
     WHERE cm.mcCongregationsId = :congregationId
+        AND (:isService IS NULL OR :isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
         """
     )
-    fun findByCongregationId(congregationId: UUID): Flow<List<MemberView>>
+    fun findByCongregationId(
+        congregationId: UUID, isService: Boolean? = null
+    ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByCongregationId(congregationId: UUID) =
-        findByCongregationId(congregationId).distinctUntilChanged()
+    fun findDistinctByCongregationId(congregationId: UUID, isService: Boolean? = null) =
+        findByCongregationId(congregationId, isService).distinctUntilChanged()
 
     //-----------------------------
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
-        JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = mv.memberId 
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = cm.mcCongregationsId
+    WHERE (:isService IS NULL OR :isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByFavoriteCongregation(): Flow<List<MemberView>>
+    fun findByFavoriteCongregation(isService: Boolean? = null): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByFavoriteCongregation() = findByFavoriteCongregation().distinctUntilChanged()
+    fun findDistinctByFavoriteCongregation(isService: Boolean? = null) =
+        findByFavoriteCongregation(isService).distinctUntilChanged()
 
-    //-----------------------------
+    //----------------------------- Members by Groups:
     @Query(
         """
-    SELECT m.* FROM ${MemberView.VIEW_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = m.memberId 
-        JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = cm.mcCongregationsId
-        JOIN (SELECT g.gCongregationsId, MIN(g.groupNum) minGroupNum FROM ${GroupEntity.TABLE_NAME} g) mg ON mg.gCongregationsId = fc.congregationId AND mg.minGroupNum = m.groupNum
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = mv.memberId 
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = cm.mcCongregationsId
+        JOIN (SELECT g.gCongregationsId, MIN(g.groupNum) minGroupNum FROM ${GroupEntity.TABLE_NAME} g GROUP BY g.gCongregationsId) mg 
+            ON mg.gCongregationsId = fcv.congregationId AND mg.minGroupNum = mv.groupNum
+    WHERE (:isService IS NULL OR :isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByFavoriteCongregationGroup(): Flow<List<MemberView>>
+    fun findByFavoriteCongregationGroup(isService: Boolean? = null): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByFavoriteCongregationGroup() =
-        findByFavoriteCongregationGroup().distinctUntilChanged()
+    fun findDistinctByFavoriteCongregationGroup(isService: Boolean? = null) =
+        findByFavoriteCongregationGroup(isService).distinctUntilChanged()
 
     //-----------------------------
+    @Query(
+        """
+    SELECT * FROM ${MemberView.VIEW_NAME}
+    WHERE mGroupsId = :groupId
+        AND (:isService IS NULL OR :isService = $DB_FALSE AND memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND memberType IN ($MT_SERVICE_VAL))
+    ORDER BY surname, memberName, patronymic, pseudonym 
+    """
+    )
+    fun findByGroupId(groupId: UUID, isService: Boolean? = null): Flow<List<MemberView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByGroupId(groupId: UUID, isService: Boolean? = null) =
+        findByGroupId(groupId, isService).distinctUntilChanged()
+
+    //-----------------------------
+    @Query(
+        """
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = mv.memberId 
+        LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = cm.mcCongregationsId
+    WHERE cm.mcCongregationsId = ifnull(:congregationId, cm.mcCongregationsId) AND mv.mGroupsId IS NULL
+        AND (:isService IS NULL OR :isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
+    ORDER BY surname, memberName, patronymic, pseudonym
+    """
+    )
+    fun findByCongregationIdAndGroupIdIsNull(
+        congregationId: UUID? = null, isService: Boolean? = null
+    ): Flow<List<MemberView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByCongregationIdAndGroupIdIsNull(
+        congregationId: UUID? = null, isService: Boolean? = null
+    ) = findByCongregationIdAndGroupIdIsNull(congregationId, isService).distinctUntilChanged()
+
+    //----------------------------- Member Roles:
     @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE memberRoleId = :memberRoleId")
     fun findMemberRoleById(memberRoleId: UUID): Flow<MemberRoleView>
 

@@ -20,6 +20,7 @@ interface MviViewModeled<T : Any, A : UiAction, E : UiSingleEvent> {
 
     fun redirectedErrorMessage(): String?
     fun onSearchTextChange(text: TextFieldValue)
+    fun clearSearchText()
     fun submitAction(action: A): Job?
     fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
 }

@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.ui.navigation
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,7 +26,8 @@ fun BarNavigationHost(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     val appState = LocalAppState.current
@@ -74,6 +76,7 @@ fun BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )
@@ -93,6 +96,7 @@ fun BarNavigationHost(
                 territoriesGridViewModel = territoriesGridViewModel,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )

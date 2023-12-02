@@ -80,8 +80,8 @@ fun TerritoringScreen(
 //    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
@@ -192,34 +192,10 @@ fun TerritoringScreen(
                         )
                     }
                 }
-                onTopBarActionsChange {}
+                onTopBarActionsChange (true) {}
             }
 
             false -> {
-                onTopBarActionsChange {
-                    var displayMenu by rememberSaveable { mutableStateOf(false) }
-                    IconButton(onClick = { displayMenu = !displayMenu }) {
-                        Icon(
-                            Icons.Outlined.MoreVert,
-                            stringResource(R.string.territory_menu_cnt_desc)
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = displayMenu,
-                        onDismissRequest = { displayMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_search_lbl)) },
-                            onClick = handleActionSearch
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_add_lbl)) },
-                            onClick = { appState.mainNavigate(NavRoutes.Territory.routeForTerritory()) })
-                        DropdownMenuItem(
-                            text = { Text(text = stringResource(R.string.mi_housing_lbl)) },
-                            onClick = { appState.mainNavigate(NavRoutes.Housing.route) })
-                    }
-                }
                 onActionBarChange {
                     CommonScreen(state = state) { territoringUi ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -243,9 +219,33 @@ fun TerritoringScreen(
                         }
                     }
                 }
+                onTopBarActionsChange (false) {
+                    var displayMenu by rememberSaveable { mutableStateOf(false) }
+                    IconButton(onClick = { displayMenu = !displayMenu }) {
+                        Icon(
+                            Icons.Outlined.MoreVert,
+                            stringResource(R.string.territory_menu_cnt_desc)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = displayMenu,
+                        onDismissRequest = { displayMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_search_lbl)) },
+                            onClick = handleActionSearch
+                        )
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_add_lbl)) },
+                            onClick = { appState.mainNavigate(NavRoutes.Territory.routeForTerritory()) })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.mi_housing_lbl)) },
+                            onClick = { appState.mainNavigate(NavRoutes.Housing.route) })
+                    }
+                }
             }
         }
-        onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else Icons.Outlined.Menu)
+        onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
         appState.handleTopBarNavClick.value =
             {
                 if (isShowSearchBar) {
@@ -263,11 +263,9 @@ fun TerritoringScreen(
                             emptySearchText
                         )
 
-                        TerritoringTabType.ALL -> territoriesGridViewModel.onSearchTextChange(
-                            emptySearchText
-                        )
+                        TerritoringTabType.ALL -> territoriesGridViewModel.clearSearchText()
                     }
-                } else appState.backToBottomBarScreen()
+                }
             }
         Column(modifier = Modifier.fillMaxSize()) {
             CustomScrollableTabRow(

@@ -93,6 +93,7 @@ class RegionsListViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null

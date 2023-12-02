@@ -18,8 +18,8 @@ fun MemberRoleScreen(
     viewModel: MemberRoleViewModelImpl = hiltViewModel(),
     memberRoleInput: NavigationInput.MemberRoleInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("MemberRoleScreen(...) called: memberRoleInput = %s", memberRoleInput)
     val appState = LocalAppState.current

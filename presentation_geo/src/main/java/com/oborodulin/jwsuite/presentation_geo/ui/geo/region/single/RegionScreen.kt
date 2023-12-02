@@ -20,8 +20,8 @@ fun RegionScreen(
     viewModel: RegionViewModelImpl = hiltViewModel(),
     regionInput: RegionInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     val appState = LocalAppState.current

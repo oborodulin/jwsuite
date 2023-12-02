@@ -78,6 +78,10 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         _searchText.value = text
     }
 
+    override fun clearSearchText() {
+        onSearchTextChange(TextFieldValue(""))
+    }
+
     abstract suspend fun handleAction(action: A): Job?
 
     abstract fun initFieldStatesByUiModel(uiModel: T): Job?

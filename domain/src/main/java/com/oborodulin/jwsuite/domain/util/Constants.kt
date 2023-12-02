@@ -38,5 +38,6 @@ object Constants {
     // MemberType:
     const val MT_PREACHER_VAL = "'PREACHER'"
     const val MT_FULL_TIME_VAL = "'FULL_TIME'"
+    const val MT_SERVICE_VAL = "'SERVICE'"
     const val MT_IN_ACTIVE_VAL = "'IN_ACTIVE'"
 }

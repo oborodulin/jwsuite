@@ -38,9 +38,9 @@ fun CongregationScreen(
     viewModel: CongregationViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
     val appState = LocalAppState.current
@@ -88,7 +88,7 @@ fun CongregationScreen(
             if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()
         }
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-        onTopBarActionsChange {
+        onTopBarActionsChange (true) {
             IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
                 Icon(Icons.Outlined.Done, null)
             }

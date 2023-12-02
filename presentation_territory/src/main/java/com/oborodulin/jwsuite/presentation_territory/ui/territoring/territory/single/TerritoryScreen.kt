@@ -24,8 +24,8 @@ fun TerritoryScreen(
     viewModel: TerritoryViewModel,
     territoryInput: TerritoryInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current

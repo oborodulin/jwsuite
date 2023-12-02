@@ -18,8 +18,8 @@ fun LocalityScreen(
     viewModel: LocalityViewModelImpl = hiltViewModel(),
     localityInput: LocalityInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("LocalityScreen(...) called: localityInput = %s", localityInput)
     val appState = LocalAppState.current

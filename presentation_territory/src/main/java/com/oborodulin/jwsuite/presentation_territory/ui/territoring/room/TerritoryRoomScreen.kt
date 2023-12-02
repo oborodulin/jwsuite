@@ -20,8 +20,8 @@ fun TerritoryRoomScreen(
     territoryRoomViewModel: TerritoryRoomViewModelImpl = hiltViewModel(),
     territoryRoomInput: TerritoryRoomInput,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG)
         .d("TerritoryRoomScreen(...) called: territoryRoomInput = %s", territoryRoomInput)

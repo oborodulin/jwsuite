@@ -15,8 +15,8 @@ fun NavGraphBuilder.appSettingNavigationGraph(
     startDestination: String? = null,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     navigation(
         route = Graph.SETTINGS,

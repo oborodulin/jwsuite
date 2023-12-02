@@ -28,9 +28,9 @@ private const val TAG = "App.Navigation.territoryNavGraph"
 fun NavGraphBuilder.territoryNavGraph(
     startDestination: String? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(

@@ -46,13 +46,14 @@ abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiActi
     override fun singleSelectedItem(): ListItemModel? {
         Timber.tag(TAG).d("singleSelectedItem() called")
         var selectedItem: ListItemModel? = null
-        try {
-            uiState()?.let { uiState ->
-                selectedItem = uiState.first { it.selected }
-                Timber.tag(TAG).d("selected %s list item", selectedItem)
+        uiState()?.let { uiState ->
+            selectedItem = try {
+                uiState.first { it.selected }
+            } catch (e: NoSuchElementException) {
+                uiState.getOrNull(0)
+                //Timber.tag(TAG).e(e)
             }
-        } catch (e: NoSuchElementException) {
-            Timber.tag(TAG).e(e)
+            Timber.tag(TAG).d("selected %s list item", selectedItem)
         }
         return selectedItem
     }

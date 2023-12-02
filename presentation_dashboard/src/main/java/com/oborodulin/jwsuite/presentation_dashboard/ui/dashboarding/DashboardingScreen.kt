@@ -44,7 +44,7 @@ fun DashboardingScreen(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
@@ -58,7 +58,7 @@ fun DashboardingScreen(
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         onActionBarChange(null)
         onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
-        onTopBarActionsChange {
+        onTopBarActionsChange (true) {
             IconButton(onClick = { appState.mainNavigate(NavRoutes.Geo.route) }) {
                 Icon(
                     painterResource(R.drawable.ic_geo_24), stringResource(NavRoutes.Geo.titleResId)

@@ -28,12 +28,12 @@ fun MembersListView(
     viewModel: MembersListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
+    isService: Boolean? = null,
     isEditableList: Boolean = true
 ) {
     Timber.tag(TAG).d(
-        "MembersListView(...) called: congregationInput = %s; groupInput = %s",
-        congregationInput,
-        groupInput
+        "MembersListView(...) called: congregationInput = %s; groupInput = %s; isService = %s",
+        congregationInput, groupInput, isService
     )
     val currentCongregation =
         appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
@@ -42,11 +42,11 @@ fun MembersListView(
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
 
-    LaunchedEffect(congregationId, groupInput?.groupId) {
+    LaunchedEffect(congregationId, groupInput?.groupId, isService) {
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect() BEFORE collect ui state flow")
         when (groupInput?.groupId) {
-            null -> viewModel.submitAction(MembersListUiAction.LoadByCongregation(congregationId))
-            else -> viewModel.submitAction(MembersListUiAction.LoadByGroup(groupInput.groupId))
+            null -> viewModel.submitAction(MembersListUiAction.LoadByCongregation(congregationId, isService))
+            else -> viewModel.submitAction(MembersListUiAction.LoadByGroup(groupInput.groupId, isService))
         }
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
@@ -62,11 +62,7 @@ fun MembersListView(
                         emptyListResId = R.string.members_list_empty_text,
                         isEmptyListTextOutput = congregationId != null || groupInput?.groupId != null,
                         onEdit = { member ->
-                            viewModel.submitAction(
-                                MembersListUiAction.EditMember(
-                                    member.itemId!!
-                                )
-                            )
+                            viewModel.submitAction(MembersListUiAction.EditMember(member.itemId!!))
                         },
                         onDelete = { member ->
                             viewModel.submitAction(MembersListUiAction.DeleteMember(member.itemId!!))

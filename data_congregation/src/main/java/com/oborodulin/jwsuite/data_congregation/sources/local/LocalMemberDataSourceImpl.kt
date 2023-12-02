@@ -25,20 +25,27 @@ class LocalMemberDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalMemberDataSource {
     // Members by Congregation:
-    override fun getFavoriteCongregationMembers() = memberDao.findByFavoriteCongregation()
-    override fun getCongregationMembers(congregationId: UUID) =
-        memberDao.findByCongregationId(congregationId)
+    override fun getFavoriteCongregationMembers(isService: Boolean?) =
+        memberDao.findByFavoriteCongregation(isService)
 
-    override fun getFavoriteCongregationGroupMembers() = memberDao.findByFavoriteCongregationGroup()
+    override fun getCongregationMembers(congregationId: UUID, isService: Boolean?) =
+        memberDao.findByCongregationId(congregationId, isService)
 
     // Members by Groups:
-    override fun getGroupMembers(groupId: UUID) = memberDao.findByGroupId(groupId)
-    override fun getEmptyGroupMembers(congregationId: UUID?) =
-        memberDao.findDistinctByCongregationIdAndGroupIdIsNull(congregationId)
+    override fun getFavoriteCongregationGroupMembers(isService: Boolean?) =
+        memberDao.findByFavoriteCongregationGroup(isService)
 
-    // Roles:
+    override fun getGroupMembers(groupId: UUID, isService: Boolean?) =
+        memberDao.findByGroupId(groupId, isService)
+
+    override fun getEmptyGroupMembers(congregationId: UUID?, isService: Boolean?) =
+        memberDao.findDistinctByCongregationIdAndGroupIdIsNull(congregationId, isService)
+
+    // Member Roles:
     override fun getMemberRoles(memberId: UUID) = memberDao.findMemberRolesByMemberId(memberId)
     override fun getMemberRoles(pseudonym: String) = memberDao.findMemberRolesByPseudonym(pseudonym)
+
+    // Roles:
     override fun getAllRoles() = memberDao.findAllRoles()
     override fun getRoles(pseudonym: String) = memberDao.findRolesByPseudonym(pseudonym)
     override fun getRolesForMember(memberId: UUID) =

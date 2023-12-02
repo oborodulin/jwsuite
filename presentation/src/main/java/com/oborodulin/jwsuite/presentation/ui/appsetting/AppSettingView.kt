@@ -39,6 +39,8 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.components.ReceiveButtonComponent
+import com.oborodulin.jwsuite.presentation.ui.components.SendButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutConfirmDialogComponent
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
@@ -165,22 +167,22 @@ fun AppSettingView(
                     stringResource(R.string.expired_header_hint)
                 ), rows = roles
             )
-        /*DataTableComponent(
-                modifier = Modifier.matchParentSize(),
-                columnCount = 2,
-                rowCount = appSettingsUiModel.roles.size,
-                cellContent = { columnIndex, rowIndex ->
-                    Text(
-                        when (columnIndex) {
-                            0 -> appSettingsUiModel.roles[rowIndex].role.roleName
-                            1 -> appSettingsUiModel.roles[rowIndex].roleExpiredDate?.format(
-                                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                            ).orEmpty()
+            /*DataTableComponent(
+                    modifier = Modifier.matchParentSize(),
+                    columnCount = 2,
+                    rowCount = appSettingsUiModel.roles.size,
+                    cellContent = { columnIndex, rowIndex ->
+                        Text(
+                            when (columnIndex) {
+                                0 -> appSettingsUiModel.roles[rowIndex].role.roleName
+                                1 -> appSettingsUiModel.roles[rowIndex].roleExpiredDate?.format(
+                                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                                ).orEmpty()
 
-                            else -> ""
-                        }
-                    )
-                })*/
+                                else -> ""
+                            }
+                        )
+                    })*/
         }
         Divider(Modifier.fillMaxWidth())
         Text(
@@ -188,28 +190,51 @@ fun AppSettingView(
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            val transferObjects =
-                MutableList(appSettingsUiModel.transferObjects.size) { emptyList<String>() }
-            appSettingsUiModel.transferObjects.forEach {
-                transferObjects.add(
-                    listOf(
-                        it.transferObject.transferObjectName,
-                        if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
-                        else stringResource(com.oborodulin.home.common.R.string.no_expr)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .weight(6.18f)
+            ) {
+                val transferObjects =
+                    MutableList(appSettingsUiModel.transferObjects.size) { emptyList<String>() }
+                appSettingsUiModel.transferObjects.forEach {
+                    transferObjects.add(
+                        listOf(
+                            it.transferObject.transferObjectName,
+                            if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
+                            else stringResource(com.oborodulin.home.common.R.string.no_expr)
+                        )
                     )
+                }
+                SimpleDataTableComponent(
+                    columnHeaders = listOf(
+                        stringResource(R.string.transfer_objects_header_hint),
+                        stringResource(R.string.is_personal_header_hint)
+                    ), rows = transferObjects
                 )
             }
-            SimpleDataTableComponent(
-                columnHeaders = listOf(
-                    stringResource(R.string.transfer_objects_header_hint),
-                    stringResource(R.string.is_personal_header_hint)
-                ), rows = transferObjects
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(3.82f),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                if (session.containsRoles(
+                        listOf(
+                            MemberRoleType.TERRITORIES,
+                            MemberRoleType.BILLS
+                        )
+                    )
+                ) {
+                    SendButtonComponent()
+                }
+                ReceiveButtonComponent()
+            }
         }
         Divider(Modifier.fillMaxWidth())
         Text(

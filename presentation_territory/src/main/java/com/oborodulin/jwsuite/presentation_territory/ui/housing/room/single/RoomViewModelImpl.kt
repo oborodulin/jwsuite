@@ -21,6 +21,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.Micro
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.model.EntranceUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.FloorUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
@@ -29,7 +30,6 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -232,14 +232,10 @@ class RoomViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is RoomInputEvent.Locality ->
-                        when (RoomInputValidator.Locality.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                RoomFields.ROOM_LOCALITY, locality, event.input, true
-                            )
-
-                            else -> setStateValue(RoomFields.ROOM_LOCALITY, locality, event.input)
-                        }
+                    is RoomInputEvent.Locality -> setStateValue(
+                        RoomFields.ROOM_LOCALITY, locality, event.input,
+                        RoomInputValidator.Locality.isValid(event.input.headline)
+                    )
 
                     is RoomInputEvent.LocalityDistrict -> setStateValue(
                         RoomFields.ROOM_LOCALITY_DISTRICT, localityDistrict, event.input,
@@ -250,21 +246,15 @@ class RoomViewModelImpl @Inject constructor(
                         RoomFields.ROOM_MICRODISTRICT, microdistrict, event.input, true
                     )
 
-                    is RoomInputEvent.Street ->
-                        when (RoomInputValidator.Street.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                RoomFields.ROOM_STREET, street, event.input, true
-                            )
+                    is RoomInputEvent.Street -> setStateValue(
+                        RoomFields.ROOM_STREET, street, event.input,
+                        RoomInputValidator.Street.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(RoomFields.ROOM_STREET, street, event.input)
-                        }
-
-                    is RoomInputEvent.House ->
-                        when (RoomInputValidator.House.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(RoomFields.ROOM_HOUSE, house, event.input, true)
-
-                            else -> setStateValue(RoomFields.ROOM_HOUSE, house, event.input)
-                        }
+                    is RoomInputEvent.House -> setStateValue(
+                        RoomFields.ROOM_HOUSE, house, event.input,
+                        RoomInputValidator.House.isValid(event.input.headline)
+                    )
 
                     is RoomInputEvent.Entrance ->
                         setStateValue(RoomFields.ROOM_ENTRANCE, entrance, event.input, true)
@@ -275,15 +265,10 @@ class RoomViewModelImpl @Inject constructor(
                     is RoomInputEvent.Territory ->
                         setStateValue(RoomFields.ROOM_TERRITORY, territory, event.input, true)
 
-                    is RoomInputEvent.RoomNum ->
-                        when (RoomInputValidator.RoomNum.errorIdOrNull(event.input.toString())) {
-                            null -> setStateValue(
-                                RoomFields.ROOM_NUM, roomNum, event.input.toString(), true
-                            )
-
-                            else -> setStateValue(RoomFields.ROOM_NUM, roomNum, event.input)
-                        }
-
+                    is RoomInputEvent.RoomNum -> setStateValue(
+                        RoomFields.ROOM_NUM, roomNum, event.input.toString(),
+                        RoomInputValidator.RoomNum.isValid(event.input.toString())
+                    )
 
                     is RoomInputEvent.IsIntercom -> setStateValue(
                         RoomFields.ROOM_IS_INTERCOM, isIntercom,
@@ -412,6 +397,7 @@ class RoomViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
@@ -441,7 +427,12 @@ class RoomViewModelImpl @Inject constructor(
                 }
 
                 override fun moveFocusImeAction() {}
-                override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {}
+                override fun onContinueClick(
+                    isPartialInputsValid: Boolean,
+                    onSuccess: () -> Unit
+                ) {
+                }
+
                 override fun setDialogTitleResId(dialogTitleResId: Int) {}
                 override fun setSavedListItem(savedListItem: ListItemModel) {}
                 override fun onOpenDialogClicked() {}

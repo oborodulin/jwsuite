@@ -75,9 +75,9 @@ fun GeoScreen(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
@@ -85,7 +85,6 @@ fun GeoScreen(
     val context = LocalContext.current
     //var viewModel: ListViewModeled<List<ListItemModel>, UiAction, UiSingleEvent>
     //var placeholderResId: Int
-    val emptySearchText = TextFieldValue("")
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
     val onTabChange: (GeoTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
@@ -138,12 +137,12 @@ fun GeoScreen(
                     )
                 }
             }
-            onTopBarActionsChange {}
+            onTopBarActionsChange(true) {}
         }
 
         false -> {
             onActionBarChange(null)
-            onTopBarActionsChange {
+            onTopBarActionsChange(true) {
                 IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
                 IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
             }
@@ -200,25 +199,12 @@ fun GeoScreen(
             if (isShowSearchBar) {
                 isShowSearchBar = false
                 when (GeoTabType.valueOf(tabType)) {
-                    GeoTabType.REGIONS -> regionsListViewModel.onSearchTextChange(emptySearchText)
-
-                    GeoTabType.REGION_DISTRICTS -> regionDistrictsListViewModel.onSearchTextChange(
-                        emptySearchText
-                    )
-
-                    GeoTabType.LOCALITIES -> localitiesListViewModel.onSearchTextChange(
-                        emptySearchText
-                    )
-
-                    GeoTabType.LOCALITY_DISTRICTS -> localityDistrictsListViewModel.onSearchTextChange(
-                        emptySearchText
-                    )
-
-                    GeoTabType.MICRODISTRICTS -> microdistrictsListViewModel.onSearchTextChange(
-                        emptySearchText
-                    )
-
-                    GeoTabType.STREETS -> streetsListViewModel.onSearchTextChange(emptySearchText)
+                    GeoTabType.REGIONS -> regionsListViewModel.clearSearchText()
+                    GeoTabType.REGION_DISTRICTS -> regionDistrictsListViewModel.clearSearchText()
+                    GeoTabType.LOCALITIES -> localitiesListViewModel.clearSearchText()
+                    GeoTabType.LOCALITY_DISTRICTS -> localityDistrictsListViewModel.clearSearchText()
+                    GeoTabType.MICRODISTRICTS -> microdistrictsListViewModel.clearSearchText()
+                    GeoTabType.STREETS -> streetsListViewModel.clearSearchText()
                 }
             } else appState.backToBottomBarScreen()
         }

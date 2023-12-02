@@ -10,16 +10,20 @@ import java.util.UUID
 
 interface MembersRepository {
     // Members by Congregation:
-    fun getAllByFavoriteCongregation(): Flow<List<Member>>
-    fun getAllByCongregation(congregationId: UUID): Flow<List<Member>>
-    fun getAllByFavoriteCongregationGroup(): Flow<List<Member>>
+    fun getAllByFavoriteCongregation(isService: Boolean? = null): Flow<List<Member>>
+    fun getAllByCongregation(
+        congregationId: UUID, isService: Boolean? = null
+    ): Flow<List<Member>>
 
     // Members by Groups:
-    fun getAllByGroup(groupId: UUID): Flow<List<Member>>
+    fun getAllByFavoriteCongregationGroup(isService: Boolean? = null): Flow<List<Member>>
+    fun getAllByGroup(groupId: UUID, isService: Boolean? = null): Flow<List<Member>>
 
-    // Roles:
+    // Member Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRole>>
     fun getMemberRoles(pseudonym: String): Flow<List<MemberRole>>
+
+    // Roles:
     fun getAllRoles(): Flow<List<Role>>
     fun getRoles(pseudonym: String): Flow<List<Role>>
     fun getRolesForMember(memberId: UUID): Flow<List<Role>>
@@ -36,7 +40,7 @@ interface MembersRepository {
     fun deleteById(memberId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
-    // Roles:
+    // Member Role:
     fun getMemberRole(memberRoleId: UUID): Flow<MemberRole>
     fun saveMemberRole(role: MemberRole): Flow<MemberRole>
     fun deleteMemberRoleById(memberRoleId: UUID): Flow<UUID>

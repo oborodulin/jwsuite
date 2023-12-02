@@ -298,23 +298,15 @@ class HouseViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is HouseInputEvent.Locality ->
-                        when (HouseInputValidator.Locality.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                HouseFields.HOUSE_LOCALITY, locality, event.input, true
-                            )
+                    is HouseInputEvent.Locality -> setStateValue(
+                        HouseFields.HOUSE_LOCALITY, locality, event.input,
+                        HouseInputValidator.Locality.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(HouseFields.HOUSE_LOCALITY, locality, event.input)
-                        }
-
-                    is HouseInputEvent.Street ->
-                        when (HouseInputValidator.Street.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                HouseFields.HOUSE_STREET, street, event.input, true
-                            )
-
-                            else -> setStateValue(HouseFields.HOUSE_STREET, street, event.input)
-                        }
+                    is HouseInputEvent.Street -> setStateValue(
+                        HouseFields.HOUSE_STREET, street, event.input,
+                        HouseInputValidator.Street.isValid(event.input.headline)
+                    )
 
                     is HouseInputEvent.LocalityDistrict -> setStateValue(
                         HouseFields.HOUSE_LOCALITY_DISTRICT, localityDistrict, event.input,
@@ -331,14 +323,10 @@ class HouseViewModelImpl @Inject constructor(
                     is HouseInputEvent.ZipCode ->
                         setStateValue(HouseFields.HOUSE_ZIP_CODE, zipCode, event.input, true)
 
-                    is HouseInputEvent.HouseNum ->
-                        when (HouseInputValidator.HouseNum.errorIdOrNull(event.input.toString())) {
-                            null -> setStateValue(
-                                HouseFields.HOUSE_NUM, houseNum, event.input.toString(), true
-                            )
-
-                            else -> setStateValue(HouseFields.HOUSE_NUM, houseNum, event.input)
-                        }
+                    is HouseInputEvent.HouseNum -> setStateValue(
+                        HouseFields.HOUSE_NUM, houseNum, event.input.toString(),
+                        HouseInputValidator.HouseNum.isValid(event.input.toString())
+                    )
 
                     is HouseInputEvent.HouseLetter ->
                         setStateValue(HouseFields.HOUSE_LETTER, houseLetter, event.input, true)
@@ -348,17 +336,10 @@ class HouseViewModelImpl @Inject constructor(
                         event.input?.toString().orEmpty(), true
                     )
 
-                    is HouseInputEvent.BuildingType ->
-                        when (HouseInputValidator.BuildingType.errorIdOrNull(event.input.name)) {
-                            null -> setStateValue(
-                                HouseFields.HOUSE_BUILDING_TYPE, buildingType, event.input.name,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                HouseFields.HOUSE_BUILDING_TYPE, buildingType, event.input.name
-                            )
-                        }
+                    is HouseInputEvent.BuildingType -> setStateValue(
+                        HouseFields.HOUSE_BUILDING_TYPE, buildingType, event.input.name,
+                        HouseInputValidator.BuildingType.isValid(event.input.name)
+                    )
 
                     is HouseInputEvent.IsBusiness -> setStateValue(
                         HouseFields.HOUSE_IS_BUSINESS, isBusiness, event.input.toString(), true
@@ -548,6 +529,7 @@ class HouseViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override val buildingTypes = MutableStateFlow(mutableMapOf<BuildingType, String>())
 

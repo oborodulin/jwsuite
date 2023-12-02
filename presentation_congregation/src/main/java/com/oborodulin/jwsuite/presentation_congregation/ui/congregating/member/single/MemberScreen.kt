@@ -22,8 +22,8 @@ fun MemberScreen(
     viewModel: MemberViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)
     val appState = LocalAppState.current

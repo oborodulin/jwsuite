@@ -270,27 +270,15 @@ class TerritoryViewModelImpl @Inject constructor(
                             TerritoryFields.TERRITORY_CONGREGATION, congregation, event.input, true
                         )
 
-                    is TerritoryInputEvent.Category ->
-                        when (TerritoryInputValidator.Category.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                TerritoryFields.TERRITORY_CATEGORY, category, event.input, true
-                            )
+                    is TerritoryInputEvent.Category -> setStateValue(
+                        TerritoryFields.TERRITORY_CATEGORY, category, event.input,
+                        TerritoryInputValidator.Category.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                TerritoryFields.TERRITORY_CATEGORY, category, event.input
-                            )
-                        }
-
-                    is TerritoryInputEvent.Locality ->
-                        when (TerritoryInputValidator.Locality.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                TerritoryFields.TERRITORY_LOCALITY, locality, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryFields.TERRITORY_LOCALITY, locality, event.input
-                            )
-                        }
+                    is TerritoryInputEvent.Locality -> setStateValue(
+                        TerritoryFields.TERRITORY_LOCALITY, locality, event.input,
+                        TerritoryInputValidator.Locality.isValid(event.input.headline)
+                    )
 
                     is TerritoryInputEvent.LocalityDistrict ->
                         setStateValue(
@@ -304,40 +292,29 @@ class TerritoryViewModelImpl @Inject constructor(
                             true
                         )
 
-                    is TerritoryInputEvent.TerritoryNum ->
-                        when (TerritoryInputValidator.TerritoryNum.errorIdOrNull(event.input.toString())) {
-                            null -> setStateValue(
-                                TerritoryFields.TERRITORY_NUM, territoryNum, event.input.toString(),
-                                true
-                            )
+                    is TerritoryInputEvent.TerritoryNum -> setStateValue(
+                        TerritoryFields.TERRITORY_NUM, territoryNum, event.input.toString(),
+                        TerritoryInputValidator.TerritoryNum.isValid(event.input.toString())
+                    )
 
-                            else -> setStateValue(
-                                TerritoryFields.TERRITORY_NUM, territoryNum, event.input
-                            )
-                        }
+                    is TerritoryInputEvent.IsBusiness -> setStateValue(
+                        TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness,
+                        event.input.toString(), true
+                    )
 
-                    is TerritoryInputEvent.IsBusiness ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_IS_BUSINESS, isBusiness,
-                            event.input.toString(), true
-                        )
+                    is TerritoryInputEvent.IsGroupMinistry -> setStateValue(
+                        TerritoryFields.TERRITORY_IS_GROUP_MINISTRY, isGroupMinistry,
+                        event.input.toString(), true
+                    )
 
-                    is TerritoryInputEvent.IsGroupMinistry ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_IS_GROUP_MINISTRY, isGroupMinistry,
-                            event.input.toString(), true
-                        )
+                    is TerritoryInputEvent.IsActive -> setStateValue(
+                        TerritoryFields.TERRITORY_IS_ACTIVE, isActive, event.input.toString(),
+                        true
+                    )
 
-                    is TerritoryInputEvent.IsActive ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_IS_ACTIVE, isActive, event.input.toString(),
-                            true
-                        )
-
-                    is TerritoryInputEvent.TerritoryDesc ->
-                        setStateValue(
-                            TerritoryFields.TERRITORY_DESC, territoryDesc, event.input, true
-                        )
+                    is TerritoryInputEvent.TerritoryDesc -> setStateValue(
+                        TerritoryFields.TERRITORY_DESC, territoryDesc, event.input, true
+                    )
                 }
             }
             .debounce(350)
@@ -443,6 +420,7 @@ class TerritoryViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
                 override val congregation =

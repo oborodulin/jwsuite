@@ -74,9 +74,9 @@ fun HousingScreen(
     housesViewModel: HousingViewModelImpl = hiltViewModel(),
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG).d("HousingScreen(...) called")
     val appState = LocalAppState.current
@@ -130,7 +130,7 @@ fun HousingScreen(
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing))
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange { appState.backToBottomBarScreen() }
-        onTopBarActionsChange {
+        onTopBarActionsChange (true) {
             IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
         }
         onActionBarChange {

@@ -90,12 +90,14 @@ fun ScaffoldComponent(
                         navigationIcon = navigationIcon?.let { { it() } } ?: {
                             // check icons for auth screens: Signup and Login
                             if (topBarNavImageVector != null || topBarNavPainterResId != null) {
-                                IconButton(onClick = appState.handleTopBarNavClick.value) { // onTopBarNavClick
-                                    IconComponent(
-                                        imageVector = topBarNavImageVector,
-                                        painterResId = topBarNavPainterResId,
-                                        contentDescriptionResId = topBarNavCntDescResId
-                                    )
+                                topBarNavImageVector?.let {
+                                    IconButton(onClick = appState.handleTopBarNavClick.value) { // onTopBarNavClick
+                                        IconComponent(
+                                            imageVector = it,
+                                            painterResId = topBarNavPainterResId,
+                                            contentDescriptionResId = topBarNavCntDescResId
+                                        )
+                                    }
                                 }
                             }
                             /*when (topBarNavigationIcon) {

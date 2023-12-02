@@ -17,29 +17,31 @@ class MembersRepositoryImpl @Inject constructor(
     private val transferObjectMappers: TransferObjectMappers
 ) : MembersRepository {
     // Members by Congregation:
-    override fun getAllByFavoriteCongregation() =
-        localMemberDataSource.getFavoriteCongregationMembers()
+    override fun getAllByFavoriteCongregation(isService: Boolean?) =
+        localMemberDataSource.getFavoriteCongregationMembers(isService)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 
-    override fun getAllByCongregation(congregationId: UUID) =
-        localMemberDataSource.getCongregationMembers(congregationId)
-            .map(memberMappers.memberViewListToMembersListMapper::map)
-
-    override fun getAllByFavoriteCongregationGroup() =
-        localMemberDataSource.getFavoriteCongregationGroupMembers()
+    override fun getAllByCongregation(congregationId: UUID, isService: Boolean?) =
+        localMemberDataSource.getCongregationMembers(congregationId, isService)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 
     // Members by Groups:
-    override fun getAllByGroup(groupId: UUID) = localMemberDataSource.getGroupMembers(groupId)
-        .map(memberMappers.memberViewListToMembersListMapper::map)
+    override fun getAllByFavoriteCongregationGroup(isService: Boolean?) =
+        localMemberDataSource.getFavoriteCongregationGroupMembers(isService)
+            .map(memberMappers.memberViewListToMembersListMapper::map)
 
-    // Roles:
+    override fun getAllByGroup(groupId: UUID, isService: Boolean?) =
+        localMemberDataSource.getGroupMembers(groupId, isService)
+            .map(memberMappers.memberViewListToMembersListMapper::map)
+
+    // Member Roles:
     override fun getMemberRoles(memberId: UUID) = localMemberDataSource.getMemberRoles(memberId)
         .map(memberMappers.memberRoleViewListToMemberRolesListMapper::map)
 
     override fun getMemberRoles(pseudonym: String) = localMemberDataSource.getMemberRoles(pseudonym)
         .map(memberMappers.memberRoleViewListToMemberRolesListMapper::map)
 
+    // Roles:
     override fun getAllRoles() = localMemberDataSource.getAllRoles()
         .map(memberMappers.roleEntityListToRolesListMapper::map)
 
@@ -96,7 +98,7 @@ class MembersRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localMemberDataSource.deleteAllMembers()
 
-    // Roles:
+    // Member Role:
     override fun getMemberRole(memberRoleId: UUID) =
         localMemberDataSource.getMemberRole(memberRoleId)
             .map(memberMappers.memberRoleViewToMemberRoleMapper::map)

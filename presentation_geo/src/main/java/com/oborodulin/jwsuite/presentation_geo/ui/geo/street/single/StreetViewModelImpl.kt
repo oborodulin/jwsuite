@@ -336,6 +336,7 @@ class StreetViewModelImpl @Inject constructor(
                 override val searchText = MutableStateFlow(TextFieldValue(""))
                 override val isSearching = MutableStateFlow(false)
                 override fun onSearchTextChange(text: TextFieldValue) {}
+                override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())

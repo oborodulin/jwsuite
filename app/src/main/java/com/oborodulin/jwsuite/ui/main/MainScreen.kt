@@ -103,7 +103,7 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
 
     // Action Bar -> Navigation Icon:
     var topBarNavImageVector: ImageVector? by remember { mutableStateOf(null) }
-    val onTopBarNavImageVectorChange: (ImageVector) -> Unit = { topBarNavImageVector = it }
+    val onTopBarNavImageVectorChange: (ImageVector?) -> Unit = { topBarNavImageVector = it }
 
     var onTopBarNavClick: () -> Unit by remember { mutableStateOf({}) }
     val onTopBarNavClickChange: (() -> Unit) -> Unit = { onTopBarNavClick = it }
@@ -113,14 +113,21 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
 
     // Action Bar -> Actions:
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf({}) }
-    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = {
-        topBarActions = {
-            it()
-            IconButton(onClick = handleLogoutActionClick) {
-                Icon(Icons.Outlined.ExitToApp, null)
+    val onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit =
+        { isActionsLeading, actions ->
+            topBarActions = {
+                val logoutAction = @Composable {
+                    IconButton(onClick = handleLogoutActionClick) {
+                        Icon(Icons.Outlined.ExitToApp, null)
+                    }
+                }
+                if (isActionsLeading) {
+                    actions(); logoutAction()
+                } else {
+                    logoutAction(); actions()
+                }
             }
         }
-    }
 
     // Bottom Navigation:
     var isNestedScrollConnection by rememberSaveable { mutableStateOf(false) }

@@ -41,8 +41,10 @@
 
     <!--BUTTONS:-->
     <string name="btn_signup_lbl">Зарегистрировать</string>
-    <string name="btn_login_lbl">Войти</string>
     <string name="btn_signout_lbl">Выйти</string>
+    <string name="btn_login_lbl">Войти</string>
+    <string name="btn_send_lbl">Передать</string>
+    <string name="btn_receive_lbl">Принять</string>
     <!--диалог-->
     <string name="dlg_confirm_signout_title">Выйти?</string>
 
@@ -122,4 +124,6 @@
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <string name="btn_signout_cnt_desc">Выйти</string>
+    <string name="btn_send_cnt_desc">Передать</string>
+    <string name="btn_receive_cnt_desc">Принять</string>
 </resources>

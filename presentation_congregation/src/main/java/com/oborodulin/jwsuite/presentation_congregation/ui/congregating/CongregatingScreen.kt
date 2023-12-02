@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,12 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.search.SearchComponent
+import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
@@ -38,6 +43,7 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_congregation.R
+import com.oborodulin.jwsuite.presentation_congregation.ui.components.ServiceSwitchComponent
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.list.CongregationsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
@@ -56,16 +62,24 @@ private const val TAG = "Congregating.CongregatingScreen"
 @Composable
 fun CongregatingScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+    congregatingViewModel: CongregatingViewModelImpl = hiltViewModel(),
+    congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
+    groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
+
+    Timber.tag(TAG).d("Territoring: CollectAsStateWithLifecycle for all fields")
+    val isService by congregatingViewModel.isService.collectAsStateWithLifecycle()
+
     var tabType by rememberSaveable { mutableStateOf(CongregatingTabType.CONGREGATIONS.name) }
     val onTabChange: (CongregatingTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
@@ -88,11 +102,63 @@ fun CongregatingScreen(
      */
     onActionBarChange(null)
     onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
-    onTopBarActionsChange {
-        IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
+    // Searching:
+    var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
+    val handleActionSearch = { isShowSearchBar = true }
+    when (isShowSearchBar) {
+        true -> {
+            onActionBarChange {
+                when (CongregatingTabType.valueOf(tabType)) {
+                    CongregatingTabType.CONGREGATIONS -> SearchViewModelComponent(
+                        viewModel = congregationsListViewModel,
+                        placeholderResId = R.string.congregation_search_placeholder
+                    )
+
+                    CongregatingTabType.GROUPS -> SearchViewModelComponent(
+                        viewModel = groupsListViewModel,
+                        placeholderResId = R.string.group_search_placeholder
+                    )
+
+                    CongregatingTabType.MEMBERS -> SearchViewModelComponent(
+                        viewModel = membersListViewModel,
+                        placeholderResId = R.string.member_search_placeholder
+                    )
+                }
+            }
+            onTopBarActionsChange(true) {}
+        }
+
+        false -> {
+            onActionBarChange {
+                if (session.containsRole(MemberRoleType.ADMIN)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        ServiceSwitchComponent(
+                            viewModel = congregatingViewModel, inputWrapper = isService
+                        )
+                    }
+                }
+            }
+            onTopBarActionsChange(true) {
+                IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
+                IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
+            }
+        }
     }
     onFabChange {}
+    onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
+    appState.handleTopBarNavClick.value =
+        {
+            if (isShowSearchBar) {
+                isShowSearchBar = false
+                when (CongregatingTabType.valueOf(tabType)) {
+                    CongregatingTabType.CONGREGATIONS -> congregationsListViewModel.clearSearchText()
+                    CongregatingTabType.GROUPS -> groupsListViewModel.clearSearchText()
+                    CongregatingTabType.MEMBERS -> membersListViewModel.clearSearchText()
+                }
+            }
+        }
     Column(modifier = Modifier.fillMaxSize()) {
+        val isServiceBool = if (isService.value.isNotEmpty()) isService.value.toBoolean() else null
         CustomScrollableTabRow(
             listOf(
                 TabRowItem(
@@ -103,6 +169,7 @@ fun CongregatingScreen(
                         appState = appState,
                         //sharedViewModel = sharedViewModel,
                         membersListViewModel = membersListViewModel,
+                        isService = isServiceBool,
                         onActionBarSubtitleChange = onActionBarSubtitleChange
                     )
                 },
@@ -113,7 +180,8 @@ fun CongregatingScreen(
                     GroupMembersView(
                         appState = appState,
                         //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel
+                        membersListViewModel = membersListViewModel,
+                        isService = isServiceBool
                     )
                 },
                 TabRowItem(
@@ -122,7 +190,8 @@ fun CongregatingScreen(
                 ) {
                     if (session.containsRole(MemberRoleType.ADMIN)) {
                         MemberRolesView(
-                            appState = appState, membersListViewModel = membersListViewModel
+                            appState = appState, membersListViewModel = membersListViewModel,
+                            isService = isServiceBool
                         )
                     } else {
                         MembersView(
@@ -154,6 +223,7 @@ fun CongregationMembersView(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModel,
+    isService: Boolean? = null,
     onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
@@ -205,6 +275,7 @@ fun CongregationMembersView(
                 congregationInput = selectedCongregationId?.let {
                     NavigationInput.CongregationInput(it)
                 },
+                isService = isService,
                 isEditableList = false
             )//, sharedViewModel = sharedViewModel)
         }
@@ -217,7 +288,8 @@ fun GroupMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel
+    membersListViewModel: MembersListViewModel,
+    isService: Boolean? = null
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
     val selectedGroupId = groupsListViewModel.singleSelectedItem()?.itemId
@@ -263,6 +335,7 @@ fun GroupMembersView(
             MembersListView(
                 appState = appState,
                 groupInput = selectedGroupId?.let { NavigationInput.GroupInput(it) },
+                isService = isService,
                 isEditableList = false
             )//, sharedViewModel = sharedViewModel)
         }
@@ -271,7 +344,11 @@ fun GroupMembersView(
 }
 
 @Composable
-fun MemberRolesView(appState: AppState, membersListViewModel: MembersListViewModel) {
+fun MemberRolesView(
+    appState: AppState,
+    membersListViewModel: MembersListViewModel,
+    isService: Boolean? = null
+) {
     Timber.tag(TAG).d("MemberRolesView(...) called")
     val selectedMemberId = membersListViewModel.singleSelectedItem()?.itemId
     Column(
@@ -298,7 +375,10 @@ fun MemberRolesView(appState: AppState, membersListViewModel: MembersListViewMod
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            MembersListView(
+                appState = appState,
+                isService = isService
+            )//, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier
@@ -327,7 +407,7 @@ fun MembersView(
     membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("MembersView(...) called")
-    val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
+    //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -352,7 +432,10 @@ fun MembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            MembersListView(
+                appState = appState,
+                isService = false
+            )//, sharedViewModel = sharedViewModel)
         }
         Box(
             modifier = Modifier
@@ -368,7 +451,7 @@ fun MembersView(
         ) {
 
         }
-        SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
+        //SearchComponent(searchText, onValueChange = membersListViewModel::onSearchTextChange)
     }
 }
 

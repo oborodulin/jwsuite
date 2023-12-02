@@ -31,10 +31,10 @@ fun MainNavigationHost(
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onNavIconChange: (@Composable (() -> Unit)?) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     shouldUseNestedScrollConnection: (Boolean) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     areUsingBottomNavigation: (Boolean) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit
 ) {
@@ -54,7 +54,7 @@ fun MainNavigationHost(
         shouldUseNestedScrollConnection(false)
         areUsingBottomNavigation(false)
         onNavIconChange(null)
-        onTopBarActionsChange {}
+        onTopBarActionsChange (true) {}
         onFabChange {}*/
         congregationNavGraph(
             startDestination = session.startDestination,
@@ -108,6 +108,7 @@ fun MainNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )

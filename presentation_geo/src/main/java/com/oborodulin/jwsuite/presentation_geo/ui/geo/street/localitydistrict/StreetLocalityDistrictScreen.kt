@@ -18,8 +18,8 @@ fun StreetLocalityDistrictScreen(
     viewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
     streetLocalityDistrictInput: NavigationInput.StreetLocalityDistrictInput,
     onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector) -> Unit,
-    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit
+    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
 ) {
     Timber.tag(TAG)
         .d(
