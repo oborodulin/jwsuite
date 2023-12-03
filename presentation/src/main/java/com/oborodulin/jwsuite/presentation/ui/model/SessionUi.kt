@@ -36,6 +36,9 @@ data class SessionUi(
     fun containsRoles(roleTypes: List<MemberRoleType>) =
         roles.map { it.roleType }.containsAll(roleTypes)
 
+    fun existsAnyRoleExcept(roleType: MemberRoleType) =
+        roles.map { it.roleType }.any { it != roleType }
+
     override fun toString(): String {
         return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', authStartDestination='$authStartDestination', mainRoute='$mainRoute', startDestination='$startDestination')"
     }

@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.fab.AddFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
@@ -144,7 +145,29 @@ fun CongregatingScreen(
             }
         }
     }
-    onFabChange {}
+    onFabChange {
+        when (CongregatingTabType.valueOf(tabType)) {
+            CongregatingTabType.CONGREGATIONS -> AddFabComponent(
+                modifier = Modifier.padding(bottom = 48.dp, end = 4.dp)
+            ) { appState.mainNavigate(NavRoutes.Congregation.routeForCongregation()) }
+
+            CongregatingTabType.GROUPS -> AddFabComponent(
+                modifier = Modifier.padding(bottom = 48.dp, end = 4.dp)
+            ) { appState.mainNavigate(NavRoutes.Group.routeForGroup()) }
+
+            CongregatingTabType.MEMBERS ->
+                if (session.containsRole(MemberRoleType.ADMIN)) {
+                    AddFabComponent(
+                        modifier = Modifier.padding(bottom = 48.dp, end = 4.dp),
+                        textResId = R.string.fab_member_role_text
+                    ) { appState.mainNavigate(NavRoutes.MemberRole.routeForMemberRole()) }
+                } else {
+                    AddFabComponent(
+                        modifier = Modifier.padding(bottom = 48.dp, end = 4.dp)
+                    ) { appState.mainNavigate(NavRoutes.Member.routeForMember()) }
+                }
+        }
+    }
     onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
     val handleCloseAndClearSearch = {
         isShowSearchBar = false

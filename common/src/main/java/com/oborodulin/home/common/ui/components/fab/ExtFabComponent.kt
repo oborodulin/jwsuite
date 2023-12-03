@@ -25,7 +25,7 @@ import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 
 @Composable
-fun FabComponent(
+fun ExtFabComponent(
     modifier: Modifier = Modifier,
     enabled: Boolean = false,
     imageVector: ImageVector? = null,
@@ -77,7 +77,7 @@ fun FabComponent(
 fun PreviewFabComponentEnabled() {
     HomeComposableTheme {
         Surface {
-            FabComponent(
+            ExtFabComponent(
                 enabled = true,
                 imageVector = Icons.Rounded.Add,
                 textResId = R.string.preview_blank_fab_text,
@@ -92,7 +92,7 @@ fun PreviewFabComponentEnabled() {
 fun PreviewFabComponentDisabled() {
     HomeComposableTheme {
         Surface {
-            FabComponent(
+            ExtFabComponent(
                 enabled = false,
                 imageVector = Icons.Rounded.Add,
                 textResId = R.string.preview_blank_fab_text,

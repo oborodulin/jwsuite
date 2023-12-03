@@ -15,6 +15,7 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 fun <T : Any, A : UiAction, E : UiSingleEvent> SearchViewModelComponent(
     viewModel: MviViewModeled<T, A, E>,
     @StringRes placeholderResId: Int? = null,
+    isFocused: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
@@ -22,6 +23,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent> SearchViewModelComponent(
         fieldValue = searchText,
         placeholderResId = placeholderResId,
         modifier = modifier,
+        isFocused = isFocused,
         onValueChange = viewModel::onSearchTextChange
     )
 }

@@ -49,17 +49,11 @@ fun MembersListView(
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect() BEFORE collect ui state flow")
         when (groupInput?.groupId) {
             null -> membersListViewModel.submitAction(
-                MembersListUiAction.LoadByCongregation(
-                    congregationId,
-                    isService
-                )
+                MembersListUiAction.LoadByCongregation(congregationId, isService)
             )
 
             else -> membersListViewModel.submitAction(
-                MembersListUiAction.LoadByGroup(
-                    groupInput.groupId,
-                    isService
-                )
+                MembersListUiAction.LoadByGroup(groupInput.groupId, isService)
             )
         }
     }

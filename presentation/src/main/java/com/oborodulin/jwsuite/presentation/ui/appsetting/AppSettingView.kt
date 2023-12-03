@@ -98,11 +98,12 @@ fun AppSettingView(
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
-    val handleSignoutButtonClick = {
+    val handleSignoutButtonClick: () -> Unit = {
         Timber.tag(TAG).d("AppSettingView: Signout Button click...")
-        sessionViewModel.handleActionJob({ sessionViewModel.submitAction(SessionUiAction.Signout) }) {
+        sessionViewModel.submitAction(SessionUiAction.Signout)
+        /*sessionViewModel.handleActionJob({ sessionViewModel.submitAction(SessionUiAction.Signout) }) {
             sessionViewModel.submitAction(SessionUiAction.Registration)
-        }
+        }*/
     }
     Column(
         modifier = Modifier

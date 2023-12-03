@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.geo
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -26,13 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.oborodulin.home.common.ui.components.fab.FabComponent
+import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
@@ -82,7 +81,6 @@ fun GeoScreen(
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
     val appState = LocalAppState.current
-    val context = LocalContext.current
     //var viewModel: ListViewModeled<List<ListItemModel>, UiAction, UiSingleEvent>
     //var placeholderResId: Int
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
@@ -155,7 +153,7 @@ fun GeoScreen(
             GeoTabType.STREETS ->
                 @Composable {
                     when (GeoStreetDistrictTabType.valueOf(streetTabType)) {
-                        GeoStreetDistrictTabType.LOCALITY_DISTRICTS -> FabComponent(
+                        GeoStreetDistrictTabType.LOCALITY_DISTRICTS -> ExtFabComponent(
                             enabled = true,
                             imageVector = Icons.Outlined.Add,
                             textResId = R.string.fab_street_locality_district_text
@@ -165,7 +163,7 @@ fun GeoScreen(
                             )
                         }
 
-                        GeoStreetDistrictTabType.MICRODISTRICTS -> FabComponent(
+                        GeoStreetDistrictTabType.MICRODISTRICTS -> ExtFabComponent(
                             enabled = true,
                             imageVector = Icons.Outlined.Add,
                             textResId = R.string.fab_street_microdistrict_text
@@ -208,10 +206,12 @@ fun GeoScreen(
                 }
             } else appState.backToBottomBarScreen()
         }
-    onTopBarNavClickChange {
+    // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
+    BackHandler { appState.handleTopBarNavClick.value.invoke() }
+    /*onTopBarNavClickChange {
         Timber.tag(TAG).d("GeoScreen -> onTopBarNavClickChange()")
         appState.mainNavigateUp()// .backToBottomBarScreen()
-    }
+    }*/
     Column(modifier = Modifier.fillMaxSize()) {
         CustomScrollableTabRow(
             listOf(

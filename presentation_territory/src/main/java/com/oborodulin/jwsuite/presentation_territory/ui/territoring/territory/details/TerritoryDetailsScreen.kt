@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.fab.FabComponent
+import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
@@ -141,7 +141,7 @@ fun TerritoryDetailsScreen(
                 }
             }
             onFabChange {
-                FabComponent(
+                ExtFabComponent(
                     enabled = true,
                     imageVector = Icons.Outlined.Add,
                     textResId = com.oborodulin.home.common.R.string.btn_add_lbl,

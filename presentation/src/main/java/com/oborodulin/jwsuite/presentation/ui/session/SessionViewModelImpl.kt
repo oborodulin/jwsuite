@@ -187,9 +187,12 @@ class SessionViewModelImpl @Inject constructor(
     private fun signout(): Job {
         Timber.tag(TAG).d("signout() called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.signoutUseCase.execute(SignoutUseCase.Request).collect {}
-            //.map { signoutConverter.convert(it) }
-            //.collect { submitState(it) }
+            useCases.signoutUseCase.execute(SignoutUseCase.Request)
+                .map { signoutConverter.convert(it) }
+                .collect { submitState(it) }
+            /*.collect {
+            _isLogged.value = false
+        }*/
             //.collect { submitState(UiState.Success(SessionUi(lastDestination = NavRoutes.Signup.route))) }
         }
         return job

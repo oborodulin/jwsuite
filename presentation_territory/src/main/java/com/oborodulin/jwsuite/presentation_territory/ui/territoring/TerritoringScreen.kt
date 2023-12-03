@@ -1,8 +1,10 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -170,56 +171,61 @@ fun TerritoringScreen(
                         TerritoringTabType.HAND_OUT -> SearchComponent(
                             fieldValue = handOutSearchText,
                             placeholderResId = R.string.territory_search_placeholder,
+                            isFocused = true,
                             onValueChange = territoriesGridViewModel::onHandOutSearchTextChange
                         )
 
                         TerritoringTabType.AT_WORK -> SearchComponent(
                             fieldValue = atWorkSearchText,
                             placeholderResId = R.string.territory_search_placeholder,
+                            isFocused = true,
                             onValueChange = territoriesGridViewModel::onAtWorkSearchTextChange
                         )
 
                         TerritoringTabType.IDLE -> SearchComponent(
                             fieldValue = idleSearchText,
                             placeholderResId = R.string.territory_search_placeholder,
+                            isFocused = true,
                             onValueChange = territoriesGridViewModel::onIdleSearchTextChange
                         )
 
                         TerritoringTabType.ALL -> SearchComponent(
                             fieldValue = allSearchText,
                             placeholderResId = R.string.territory_search_placeholder,
+                            isFocused = true,
                             onValueChange = territoriesGridViewModel::onSearchTextChange
                         )
                     }
                 }
-                onTopBarActionsChange (true) {}
+                onTopBarActionsChange(true) {}
             }
 
             false -> {
                 onActionBarChange {
                     CommonScreen(state = state) { territoringUi ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Box(
-                                modifier = Modifier.weight(2.8f)
+                                modifier = Modifier.weight(1f)
                             ) {
                                 PrivateSectorSwitchComponent(
                                     viewModel = territoringViewModel, inputWrapper = isPrivateSector
                                 )
                             }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(3f)
-                            ) {
-                                LocationDropdownMenuBoxComponent(
-                                    viewModel = territoringViewModel, inputWrapper = location,
-                                    items = territoringUi.territoryLocations.distinctBy { it.locationShortName }
-                                )
-                            }
+                            //Box(
+                            //    modifier = Modifier.fillMaxWidth().weight(3f)
+                            //) {
+                            LocationDropdownMenuBoxComponent(
+                                viewModel = territoringViewModel, inputWrapper = location,
+                                items = territoringUi.territoryLocations.distinctBy { it.locationShortName }
+                            )
+                            //}
                         }
                     }
                 }
-                onTopBarActionsChange (false) {
+                onTopBarActionsChange(false) {
                     var displayMenu by rememberSaveable { mutableStateOf(false) }
                     IconButton(onClick = { displayMenu = !displayMenu }) {
                         Icon(
@@ -246,27 +252,36 @@ fun TerritoringScreen(
             }
         }
         onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
+        val handleCloseAndClearSearch = {
+            isShowSearchBar = false
+            when (TerritoringTabType.valueOf(tabType)) {
+                TerritoringTabType.HAND_OUT -> territoriesGridViewModel.onHandOutSearchTextChange(
+                    emptySearchText
+                )
+
+                TerritoringTabType.AT_WORK -> territoriesGridViewModel.onAtWorkSearchTextChange(
+                    emptySearchText
+                )
+
+                TerritoringTabType.IDLE -> territoriesGridViewModel.onIdleSearchTextChange(
+                    emptySearchText
+                )
+
+                TerritoringTabType.ALL -> territoriesGridViewModel.clearSearchText()
+            }
+        }
         appState.handleTopBarNavClick.value =
             {
                 if (isShowSearchBar) {
-                    isShowSearchBar = false
-                    when (TerritoringTabType.valueOf(tabType)) {
-                        TerritoringTabType.HAND_OUT -> territoriesGridViewModel.onHandOutSearchTextChange(
-                            emptySearchText
-                        )
-
-                        TerritoringTabType.AT_WORK -> territoriesGridViewModel.onAtWorkSearchTextChange(
-                            emptySearchText
-                        )
-
-                        TerritoringTabType.IDLE -> territoriesGridViewModel.onIdleSearchTextChange(
-                            emptySearchText
-                        )
-
-                        TerritoringTabType.ALL -> territoriesGridViewModel.clearSearchText()
-                    }
+                    handleCloseAndClearSearch.invoke()
                 }
             }
+        // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
+        BackHandler {
+            if (isShowSearchBar) {
+                handleCloseAndClearSearch.invoke()
+            } else appState.mainNavigateUp()
+        }
         Column(modifier = Modifier.fillMaxSize()) {
             CustomScrollableTabRow(
                 listOf(

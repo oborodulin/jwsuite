@@ -52,6 +52,7 @@ fun SearchComponent(
     fieldValue: TextFieldValue,
     @StringRes placeholderResId: Int? = null,
     modifier: Modifier = Modifier,
+    isFocused: Boolean = false,
     onValueChange: OnTextFieldValueChange
 ) {
 //    val containerColor = FilledTextFieldTokens.ContainerColor.toColor()
@@ -140,7 +141,7 @@ fun SearchComponent(
     )
     // https://stackoverflow.com/questions/64181930/request-focus-on-textfield-in-jetpack-compose
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+        if (isFocused) focusRequester.requestFocus()
     }
 }
 

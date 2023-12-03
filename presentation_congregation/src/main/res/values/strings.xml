@@ -2,6 +2,7 @@
     <!--BUTTONS:-->
 
     <!--FAB:-->
+    <string name="fab_member_role_text">Роль</string>
 
     <!--МЕНЮ собрания-->
     <string name="congregation_add">Добавить</string>

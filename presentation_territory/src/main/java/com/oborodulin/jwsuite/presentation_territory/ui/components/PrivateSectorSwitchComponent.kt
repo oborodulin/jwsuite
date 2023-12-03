@@ -1,7 +1,9 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,7 +33,9 @@ fun PrivateSectorSwitchComponent(viewModel: TerritoringViewModel, inputWrapper: 
                 isFocused = focusState.isFocused
             )
         }*/,
+        horizontalArrangement = Arrangement.Start,
         labelResId = R.string.territoring_is_private_sector_hint,
+        lableStyle = MaterialTheme.typography.bodyMedium,
         inputWrapper = inputWrapper,
         onCheckedChange = {
             viewModel.onTextFieldEntered(TerritoringInputEvent.IsPrivateSector(it))
