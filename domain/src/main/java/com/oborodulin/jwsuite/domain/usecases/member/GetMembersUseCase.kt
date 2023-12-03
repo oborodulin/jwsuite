@@ -29,7 +29,7 @@ class GetMembersUseCase(
 
     data class Request(
         val congregationId: UUID? = null, val groupId: UUID? = null,
-        val isService: Boolean? = null, val byCongregation: Boolean
+        val isService: Boolean = false, val byCongregation: Boolean
     ) : UseCase.Request
 
     data class Response(val members: List<Member>) : UseCase.Response

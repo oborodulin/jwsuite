@@ -22,9 +22,9 @@ data class Member(
     val lastMovement: MemberMovement
 ) : DomainModel() {
     val fullName =
-        "${surname.orEmpty()} ${surname.orEmpty()} ${surname.orEmpty()} [$pseudonym]".trim()
-    val shortName = ("$surname "
-        .plus(if (!memberName.isNullOrEmpty()) "${memberName[0]}." else "")
+        "${surname.orEmpty()} ${memberName.orEmpty()} ${patronymic.orEmpty()} [$pseudonym]".trim()
+    val shortName = ("$surname"
+        .plus(if (!memberName.isNullOrEmpty()) " ${memberName[0]}." else "")
         .plus(if (!patronymic.isNullOrEmpty()) "${patronymic[0]}." else "")
         .plus(" [${pseudonym}]")).trim()
 }

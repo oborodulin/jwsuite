@@ -17,20 +17,20 @@ class MembersRepositoryImpl @Inject constructor(
     private val transferObjectMappers: TransferObjectMappers
 ) : MembersRepository {
     // Members by Congregation:
-    override fun getAllByFavoriteCongregation(isService: Boolean?) =
+    override fun getAllByFavoriteCongregation(isService: Boolean) =
         localMemberDataSource.getFavoriteCongregationMembers(isService)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 
-    override fun getAllByCongregation(congregationId: UUID, isService: Boolean?) =
+    override fun getAllByCongregation(congregationId: UUID, isService: Boolean) =
         localMemberDataSource.getCongregationMembers(congregationId, isService)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 
     // Members by Groups:
-    override fun getAllByFavoriteCongregationGroup(isService: Boolean?) =
+    override fun getAllByFavoriteCongregationGroup(isService: Boolean) =
         localMemberDataSource.getFavoriteCongregationGroupMembers(isService)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 
-    override fun getAllByGroup(groupId: UUID, isService: Boolean?) =
+    override fun getAllByGroup(groupId: UUID, isService: Boolean) =
         localMemberDataSource.getGroupMembers(groupId, isService)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 

@@ -37,6 +37,7 @@ private const val TAG = "Congregating.CongregationScreen"
 fun CongregationScreen(
     viewModel: CongregationViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -83,6 +84,7 @@ fun CongregationScreen(
             }
         }
         // Scaffold Hoisting:
+        onActionBarChange(null)
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         onTopBarNavClickChange {
             if (isUiStateChanged) isCancelChangesShowAlert.value = true else upNavigation()

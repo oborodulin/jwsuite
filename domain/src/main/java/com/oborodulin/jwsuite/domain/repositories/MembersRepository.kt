@@ -10,14 +10,14 @@ import java.util.UUID
 
 interface MembersRepository {
     // Members by Congregation:
-    fun getAllByFavoriteCongregation(isService: Boolean? = null): Flow<List<Member>>
+    fun getAllByFavoriteCongregation(isService: Boolean = false): Flow<List<Member>>
     fun getAllByCongregation(
-        congregationId: UUID, isService: Boolean? = null
+        congregationId: UUID, isService: Boolean = false
     ): Flow<List<Member>>
 
     // Members by Groups:
-    fun getAllByFavoriteCongregationGroup(isService: Boolean? = null): Flow<List<Member>>
-    fun getAllByGroup(groupId: UUID, isService: Boolean? = null): Flow<List<Member>>
+    fun getAllByFavoriteCongregationGroup(isService: Boolean = false): Flow<List<Member>>
+    fun getAllByGroup(groupId: UUID, isService: Boolean = false): Flow<List<Member>>
 
     // Member Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRole>>

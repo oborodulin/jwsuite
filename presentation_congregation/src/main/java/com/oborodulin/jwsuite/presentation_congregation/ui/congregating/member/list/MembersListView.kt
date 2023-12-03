@@ -31,7 +31,7 @@ fun MembersListView(
     memberRolesListViewModel: MemberRolesListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
-    isService: Boolean? = null,
+    isService: Boolean = false,
     isEditableList: Boolean = true
 ) {
     Timber.tag(TAG).d(

@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -35,12 +34,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnCheckedChange
 import timber.log.Timber
 
@@ -50,9 +52,11 @@ private const val TAG = "Common.ui.SwitchComponent"
 fun SwitchComponent(
     componentModifier: Modifier = Modifier,
     switchModifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
     @StringRes labelResId: Int? = null,
+    lableStyle: TextStyle = Typography.bodyLarge,
     @StringRes contentDescriptionResId: Int? = null,
     inputWrapper: InputWrapper, // string
     onCheckedChange: OnCheckedChange,
@@ -72,37 +76,46 @@ fun SwitchComponent(
             inputWrapper
         )*/
     Column {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
-                .clickable(
-                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = { onCheckedChange(!isChecked) }
-                )
-                .requiredHeight(ButtonDefaults.MinHeight)
-                .padding(4.dp)
-                .then(componentModifier),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-            IconComponent(
-                imageVector = imageVector,
-                painterResId = painterResId,
-                contentDescriptionResId = contentDescriptionResId,
-                size = 36.dp
+        Row(modifier = Modifier
+            .clip(MaterialTheme.shapes.small)
+            .clickable(
+                indication = rememberRipple(color = MaterialTheme.colorScheme.primary),
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onCheckedChange(!isChecked) }
             )
-            labelResId?.let {
-                Text(
-                    modifier = Modifier
-                        .padding(end = 4.dp)
-                        .weight(4f),
-                    text = stringResource(it)
+            // https://developer.android.com/jetpack/compose/accessibility#merge-elements
+            .semantics(mergeDescendants = true) {}
+            .requiredHeight(ButtonDefaults.MinHeight)
+            .padding(4.dp)
+            .then(componentModifier),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = horizontalArrangement) {
+            val labelRowModifier = when (horizontalArrangement) {
+                Arrangement.Start -> Modifier
+                else -> Modifier.weight(1f)
+            }
+            Row(
+                modifier = labelRowModifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconComponent(
+                    imageVector = imageVector,
+                    painterResId = painterResId,
+                    contentDescriptionResId = contentDescriptionResId,
+                    size = 36.dp
                 )
+                labelResId?.let {
+                    Text(
+                        modifier = Modifier
+                            .padding(end = 4.dp),
+                        text = stringResource(it),
+                        style = lableStyle
+                    )
+                }
             }
             Switch(
-                modifier = switchModifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
-                    .weight(1f),
+                modifier = switchModifier.padding(vertical = 4.dp, horizontal = 8.dp),
                 checked = isChecked, // boolean
                 onCheckedChange = {
                     isChecked = it

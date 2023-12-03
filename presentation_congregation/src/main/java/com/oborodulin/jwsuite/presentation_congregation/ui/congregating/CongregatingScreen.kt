@@ -167,7 +167,6 @@ fun CongregatingScreen(
         } else appState.mainNavigateUp()
     }
     Column(modifier = Modifier.fillMaxSize()) {
-        val isServiceBool = if (isService.value.isNotEmpty()) isService.value.toBoolean() else null
         CustomScrollableTabRow(
             listOf(
                 TabRowItem(
@@ -177,8 +176,8 @@ fun CongregatingScreen(
                     CongregationMembersView(
                         appState = appState,
                         //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel,
-                        isService = isServiceBool,
+                        //membersListViewModel = membersListViewModel,
+                        isService = isService.value.toBoolean(),
                         onActionBarSubtitleChange = onActionBarSubtitleChange
                     )
                 },
@@ -189,8 +188,8 @@ fun CongregatingScreen(
                     GroupMembersView(
                         appState = appState,
                         //sharedViewModel = sharedViewModel,
-                        membersListViewModel = membersListViewModel,
-                        isService = isServiceBool
+                        //membersListViewModel = membersListViewModel,
+                        isService = isService.value.toBoolean()
                     )
                 },
                 TabRowItem(
@@ -200,13 +199,13 @@ fun CongregatingScreen(
                     if (session.containsRole(MemberRoleType.ADMIN)) {
                         MemberRolesView(
                             appState = appState, membersListViewModel = membersListViewModel,
-                            isService = isServiceBool
+                            isService = isService.value.toBoolean()
                         )
                     } else {
                         MembersView(
                             appState = appState,
                             //sharedViewModel = sharedViewModel,
-                            membersListViewModel = membersListViewModel
+                            //membersListViewModel = membersListViewModel
                         )
                     }
                 }
@@ -231,8 +230,8 @@ fun CongregationMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel,
-    isService: Boolean? = null,
+    //membersListViewModel: MembersListViewModel,
+    isService: Boolean = false,
     onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
@@ -297,8 +296,8 @@ fun GroupMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel,
-    isService: Boolean? = null
+    //membersListViewModel: MembersListViewModel,
+    isService: Boolean = false
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
     val selectedGroupId = groupsListViewModel.singleSelectedItem()?.itemId
@@ -356,7 +355,7 @@ fun GroupMembersView(
 fun MemberRolesView(
     appState: AppState,
     membersListViewModel: MembersListViewModel,
-    isService: Boolean? = null
+    isService: Boolean = false
 ) {
     Timber.tag(TAG).d("MemberRolesView(...) called")
     val selectedMemberId = membersListViewModel.singleSelectedItem()?.itemId
@@ -413,7 +412,7 @@ fun MemberRolesView(
 fun MembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel
+    //membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("MembersView(...) called")
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()

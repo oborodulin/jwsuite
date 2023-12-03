@@ -61,13 +61,13 @@ fun MemberRoleView(
     }
 
     Timber.tag(TAG).d("MemberRole: CollectAsStateWithLifecycle for all fields")
-    val congregation by viewModel.congregation.collectAsStateWithLifecycle()
+    //val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val member by viewModel.member.collectAsStateWithLifecycle()
     val role by viewModel.role.collectAsStateWithLifecycle()
     val roleExpiredDate by viewModel.roleExpiredDate.collectAsStateWithLifecycle()
 
-    val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+    //val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    //Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("MemberRole: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -98,7 +98,7 @@ fun MemberRoleView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        currentCongregation?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it.toCongregationsListItem())) }
+        //currentCongregation?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it.toCongregationsListItem())) }
         member.item?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) }
         MemberComboBox(
             modifier = Modifier

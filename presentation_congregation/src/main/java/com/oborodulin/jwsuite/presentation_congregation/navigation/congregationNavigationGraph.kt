@@ -40,6 +40,7 @@ fun NavGraphBuilder.congregationNavGraph(
             )
             CongregationScreen(
                 congregationInput = NavRoutes.Congregation.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
@@ -57,6 +58,7 @@ fun NavGraphBuilder.congregationNavGraph(
             GroupScreen(
                 //sharedViewModel = sharedViewModel,
                 groupInput = NavRoutes.Group.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange
@@ -73,6 +75,7 @@ fun NavGraphBuilder.congregationNavGraph(
             MemberScreen(
                 //sharedViewModel = sharedViewModel,
                 memberInput = NavRoutes.Member.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange

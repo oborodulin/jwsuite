@@ -75,7 +75,7 @@ class MembersListViewModelImpl @Inject constructor(
 
     private fun loadMembers(
         congregationId: UUID? = null, groupId: UUID? = null,
-        isService: Boolean? = null, byCongregation: Boolean
+        isService: Boolean = false, byCongregation: Boolean
     ): Job {
         Timber.tag(TAG)
             .d(

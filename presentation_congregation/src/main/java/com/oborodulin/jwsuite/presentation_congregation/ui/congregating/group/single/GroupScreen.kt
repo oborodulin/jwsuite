@@ -19,6 +19,7 @@ fun GroupScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: GroupViewModelImpl = hiltViewModel(),
     groupInput: GroupInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
@@ -37,6 +38,7 @@ fun GroupScreen(
             }
         }
     }
+    onActionBarChange(null)
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = groupInput?.groupId,

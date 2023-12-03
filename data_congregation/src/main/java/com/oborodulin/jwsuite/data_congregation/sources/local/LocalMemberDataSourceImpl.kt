@@ -25,20 +25,20 @@ class LocalMemberDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalMemberDataSource {
     // Members by Congregation:
-    override fun getFavoriteCongregationMembers(isService: Boolean?) =
+    override fun getFavoriteCongregationMembers(isService: Boolean) =
         memberDao.findByFavoriteCongregation(isService)
 
-    override fun getCongregationMembers(congregationId: UUID, isService: Boolean?) =
+    override fun getCongregationMembers(congregationId: UUID, isService: Boolean) =
         memberDao.findByCongregationId(congregationId, isService)
 
     // Members by Groups:
-    override fun getFavoriteCongregationGroupMembers(isService: Boolean?) =
+    override fun getFavoriteCongregationGroupMembers(isService: Boolean) =
         memberDao.findByFavoriteCongregationGroup(isService)
 
-    override fun getGroupMembers(groupId: UUID, isService: Boolean?) =
+    override fun getGroupMembers(groupId: UUID, isService: Boolean) =
         memberDao.findByGroupId(groupId, isService)
 
-    override fun getEmptyGroupMembers(congregationId: UUID?, isService: Boolean?) =
+    override fun getEmptyGroupMembers(congregationId: UUID?, isService: Boolean) =
         memberDao.findDistinctByCongregationIdAndGroupIdIsNull(congregationId, isService)
 
     // Member Roles:

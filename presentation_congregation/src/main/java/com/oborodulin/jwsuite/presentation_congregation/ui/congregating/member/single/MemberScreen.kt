@@ -21,6 +21,7 @@ fun MemberScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
@@ -28,6 +29,7 @@ fun MemberScreen(
     Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
+    onActionBarChange(null)
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = memberInput?.memberId,

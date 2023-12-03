@@ -187,16 +187,16 @@ class SessionViewModelImpl @Inject constructor(
     private fun signout(): Job {
         Timber.tag(TAG).d("signout() called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.signoutUseCase.execute(SignoutUseCase.Request)
-                .map { signoutConverter.convert(it) }
-                .collect { submitState(it) }
+            useCases.signoutUseCase.execute(SignoutUseCase.Request).collect {}
+            //.map { signoutConverter.convert(it) }
+            //.collect { submitState(it) }
             //.collect { submitState(UiState.Success(SessionUi(lastDestination = NavRoutes.Signup.route))) }
         }
         return job
     }
 
     private fun login(): Job {
-        Timber.tag(TAG).d("login(...) called")
+        Timber.tag(TAG).d("login() called")
         val job = viewModelScope.launch(errorHandler) {
             val state = useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
                 .map { loginConverter.convert(it) }.first()
