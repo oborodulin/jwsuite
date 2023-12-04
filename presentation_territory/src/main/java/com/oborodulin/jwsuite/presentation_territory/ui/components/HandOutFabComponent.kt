@@ -38,8 +38,9 @@ fun HandOutFabComponent(
         territoriesGridViewModel.onContinueClick {
             // if success, then go to Hand Out Confirmation
             Timber.tag(TAG)
-                .d("HandOutFabComponent: submitAction TerritoringUiAction.HandOutTerritoriesConfirmation")
-            territoringViewModel.submitAction(TerritoringUiAction.HandOutTerritoriesConfirmation)
+                .d("HandOutFabComponent: submitAction TerritoriesGridUiAction.HandOutConfirmation")
+            //territoriesGridViewModel.submitAction(TerritoriesGridUiAction.HandOutConfirmation)
+            territoringViewModel.submitAction(TerritoringUiAction.HandOutConfirmation)
         }
     }
 }

@@ -154,7 +154,7 @@
     <string name="dlg_confirm_del_territory_room">Удалить квартиру участка %1$s?</string>
     <!--отмена изменений-->
     <string name="dlg_confirm_cancel_changes_hand_out">Выдача участков не сохранится</string>
-    <string name="dlg_confirm_cancel_changes_at_work">Обработка участка не сохранится</string>
+    <string name="dlg_confirm_cancel_changes_process">Обработка участка не сохранится</string>
     <string name="dlg_confirm_cancel_changes_territory">Изменённые данные участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_category">Изменённые данные категории участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_street">Изменённые данные улиц участка не сохранятся</string>

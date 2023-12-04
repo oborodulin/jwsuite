@@ -50,18 +50,16 @@ class TerritoringViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoringUiAction.LoadLocations -> loadTerritoryLocations(
-                action.congregationId,
-                action.isPrivateSector
+                action.congregationId, action.isPrivateSector
             )
 
-            is TerritoringUiAction.HandOutTerritoriesConfirmation -> {
+            is TerritoringUiAction.HandOutConfirmation -> {
                 submitSingleEvent(
-                    TerritoringUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
-                        NavRoutes.HandOutTerritoriesConfirmation.routeForHandOutTerritoriesConfirmation()
+                    TerritoringUiSingleEvent.OpenHandOutConfirmationScreen(
+                        NavRoutes.HandOutConfirmation.routeForHandOutConfirmation()
                     )
                 )
             }
-
         }
         return job
     }
@@ -70,8 +68,7 @@ class TerritoringViewModelImpl @Inject constructor(
             Job {
         Timber.tag(TAG).d(
             "loadTerritoryLocations(...) called: congregationId = %s; isPrivateSector = %s",
-            congregationId,
-            isPrivateSector
+            congregationId, isPrivateSector
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoryLocationsUseCase.execute(
@@ -117,26 +114,22 @@ class TerritoringViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is TerritoringInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
-                            event.input.toString(), true
-                        )
+                    is TerritoringInputEvent.IsPrivateSector -> setStateValue(
+                        TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector,
+                        event.input.toString(), true
+                    )
 
-                    is TerritoringInputEvent.Location ->
-                        setStateValue(
-                            TerritoringFields.TERRITORY_LOCATION, location, event.input,
-                            true
-                        )
+                    is TerritoringInputEvent.Location -> setStateValue(
+                        TerritoringFields.TERRITORY_LOCATION, location, event.input, true
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is TerritoringInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector, null
-                        )
+                    is TerritoringInputEvent.IsPrivateSector -> setStateValue(
+                        TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR, isPrivateSector, null
+                    )
 
                     is TerritoringInputEvent.Location ->
                         setStateValue(TerritoringFields.TERRITORY_LOCATION, location, null)

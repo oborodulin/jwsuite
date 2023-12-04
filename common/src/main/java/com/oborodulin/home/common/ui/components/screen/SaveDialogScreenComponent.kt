@@ -51,6 +51,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     topBarActionImageVector: ImageVector = Icons.Outlined.Done,
     @StringRes topBarActionCntDescResId: Int = R.string.dlg_done_cnt_desc,
     isControlsShow: Boolean = true,
+    areInputsValid: Boolean = viewModel.areInputsValid.collectAsStateWithLifecycle().value,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
@@ -94,7 +95,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         //}
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        //Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
@@ -114,7 +115,6 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         }
         onActionBarChange(null)
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
         onTopBarActionsChange(true) {
             if (isControlsShow) {
                 IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {

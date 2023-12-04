@@ -17,6 +17,8 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.Congrega
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.ProcessConfirmationScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout.HandOutConfirmationScreen
 import timber.log.Timber
 
 private const val TAG = "App.navigation.BarNavigationHost"
@@ -96,6 +98,46 @@ fun BarNavigationHost(
                 territoriesGridViewModel = territoriesGridViewModel,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
+            )
+        }
+        composable(route = NavRoutes.HandOutConfirmation.route) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to HandOutConfirmationScreen [route = '%s']",
+                    it.destination.route
+                )
+            // https://developer.android.com/jetpack/compose/libraries#hilt
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+            HandOutConfirmationScreen(
+                //sharedViewModel = sharedViewModel,
+                viewModel = territoriesGridViewModel,
+                onActionBarChange = onActionBarChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
+            )
+        }
+        composable(route = NavRoutes.ProcessConfirmation.route) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to ProcessConfirmationScreen [route = '%s']",
+                    it.destination.route
+                )
+            // https://developer.android.com/jetpack/compose/libraries#hilt
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+            ProcessConfirmationScreen(
+                //sharedViewModel = sharedViewModel,
+                viewModel = territoriesGridViewModel,
+                onActionBarChange = onActionBarChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange

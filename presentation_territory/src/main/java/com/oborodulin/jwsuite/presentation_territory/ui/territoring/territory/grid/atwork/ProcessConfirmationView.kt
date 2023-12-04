@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout
+package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
@@ -45,7 +45,6 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesClickableGridItemComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesFields
@@ -56,16 +55,16 @@ import com.oborodulin.jwsuite.presentation_territory.util.Constants.CELL_SIZE
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Territoring.HandOutTerritoriesConfirmationView"
+private const val TAG = "Territoring.ProcessConfirmationView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HandOutTerritoriesConfirmationView(
+fun ProcessConfirmationView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     paddingValues: PaddingValues? = null,
     viewModel: TerritoriesGridViewModel
 ) {
-    Timber.tag(TAG).d("HandOutTerritoriesConfirmationView(...) called")
+    Timber.tag(TAG).d("ProcessConfirmationView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -75,19 +74,18 @@ fun HandOutTerritoriesConfirmationView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Hand Out Territories Confirmation: CollectAsStateWithLifecycle for all fields")
-    val member by viewModel.member.collectAsStateWithLifecycle()
-    val receivingDate by viewModel.receivingDate.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("At Work Territories Confirmation: CollectAsStateWithLifecycle for all fields")
+    val deliveryDate by viewModel.deliveryDate.collectAsStateWithLifecycle()
     val checkedTerritories by viewModel.checkedListItems.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Hand Out Territories Confirmation: Init Focus Requesters for all fields")
+    Timber.tag(TAG).d("At Work Territories Confirmation: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
     enumValues<TerritoriesFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("HandOutTerritoriesConfirmationView -> LaunchedEffect()")
+        Timber.tag(TAG).d("ProcessConfirmationView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -113,39 +111,23 @@ fun HandOutTerritoriesConfirmationView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        member.item?.let { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) }
-        MemberComboBox(
-            modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_MEMBER]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoriesFields.TERRITORY_MEMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            //enabled = false,
-            sharedViewModel = sharedViewModel,
-            inputWrapper = member,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
         DatePickerComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_RECEIVING_DATE]!!.focusRequester)
+                .focusRequester(focusRequesters[TerritoriesFields.TERRITORY_DELIVERY_DATE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = TerritoriesFields.TERRITORY_RECEIVING_DATE,
+                        focusedField = TerritoriesFields.TERRITORY_DELIVERY_DATE,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.territory_receiving_date_hint,
-            datePickerTitleResId = R.string.date_dlg_title_set_territory_receiving,
+            labelResId = R.string.territory_delivery_date_hint,
+            datePickerTitleResId = R.string.date_dlg_title_set_territory_delivery,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
-            inputWrapper = receivingDate,
+            inputWrapper = deliveryDate,
             onValueChange = {
-                viewModel.onTextFieldEntered(TerritoriesInputEvent.ReceivingDate(it))
+                viewModel.onTextFieldEntered(TerritoriesInputEvent.DeliveryDate(it))
             },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
@@ -170,11 +152,11 @@ fun HandOutTerritoriesConfirmationView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewHandOutTerritoriesConfirmationView() {
+fun PreviewProcessConfirmationView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            HandOutTerritoriesConfirmationView(
+            ProcessConfirmationView(
                 //appState = rememberAppState(),
                 sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
                 viewModel = TerritoriesGridViewModelImpl.previewModel(ctx)

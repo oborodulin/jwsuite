@@ -164,6 +164,7 @@ fun CongregatingScreen(
                     session.containsRole(MemberRoleType.ADMIN) -> ExtFabComponent(
                         modifier = Modifier.padding(bottom = 44.dp, end = 24.dp),
                         enabled = true,
+                        imageVector = Icons.Outlined.Add,
                         textResId = R.string.fab_add_member_role_text
                     ) { appState.mainNavigate(NavRoutes.MemberRole.routeForMemberRole()) }
 

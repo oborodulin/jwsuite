@@ -36,7 +36,7 @@ fun <T : Any> CommonScreen(
         }
 
         is UiState.Success -> {
-            Timber.tag(TAG).d("CommonScreen: onSuccess(...) called: %s", state.data)
+            //Timber.tag(TAG).d("CommonScreen: onSuccess(...) called: %s", state.data)
             onSuccess(state.data)
         }
     }

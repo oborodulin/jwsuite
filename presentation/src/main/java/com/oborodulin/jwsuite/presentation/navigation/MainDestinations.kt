@@ -34,8 +34,8 @@ object MainDestinations {
 
     //Territories:
     const val ROUTE_TERRITORY_CATEGORY = "territoryCategory/?%s"
-    const val ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION = "handOutTerritoriesConfirmation"
-    const val ROUTE_AT_WORK_TERRITORIES_CONFIRMATION = "atWorkTerritoriesConfirmation"
+    const val ROUTE_HAND_OUT_CONFIRMATION = "handOutConfirmation"
+    const val ROUTE_PROCESS_CONFIRMATION = "processConfirmation"
     const val ROUTE_TERRITORY = "territory/?%s"
     const val ROUTE_TERRITORY_DETAILS = "territoryDetails/%s"
     const val ROUTE_TERRITORY_STREET = "territoryStreet/%s/?%s"

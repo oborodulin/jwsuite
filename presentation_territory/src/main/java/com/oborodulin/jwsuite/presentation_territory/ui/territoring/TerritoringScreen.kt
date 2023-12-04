@@ -208,35 +208,27 @@ fun TerritoringScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            //Box(
-                            //modifier = Modifier.weight(1f)
-                            //) {
                             PrivateSectorSwitchComponent(
                                 viewModel = territoringViewModel, inputWrapper = isPrivateSector
                             )
-                            //}
-                            //Box(
-                            //    modifier = Modifier.fillMaxWidth().weight(3f)
-                            //) {
                             LocationDropdownMenuBoxComponent(
                                 viewModel = territoringViewModel, inputWrapper = location,
                                 items = territoringUi.territoryLocations.distinctBy { it.locationShortName }
                             )
-                            //}
                         }
                     }
                 }
                 onTopBarActionsChange(false) {
-                    var displayMenu by rememberSaveable { mutableStateOf(false) }
-                    IconButton(onClick = { displayMenu = !displayMenu }) {
+                    var expanded by rememberSaveable { mutableStateOf(false) }
+                    IconButton(onClick = { expanded = expanded.not() }) {
                         Icon(
                             Icons.Outlined.MoreVert,
                             stringResource(R.string.territory_menu_cnt_desc)
                         )
                     }
                     DropdownMenu(
-                        expanded = displayMenu,
-                        onDismissRequest = { displayMenu = false }
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
                     ) {
                         DropdownMenuItem(
                             text = { Text(text = stringResource(com.oborodulin.home.common.R.string.mi_search_lbl)) },
@@ -357,8 +349,9 @@ fun TerritoringScreen(
         territoringViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is TerritoringUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
-                    appState.mainNavigate(it.navRoute)
+                is TerritoringUiSingleEvent.OpenHandOutConfirmationScreen -> {
+                    Timber.tag(TAG).d("navRoute = %s", it.navRoute)
+                    appState.barNavController.navigate(it.navRoute)
                 }
             }
         }

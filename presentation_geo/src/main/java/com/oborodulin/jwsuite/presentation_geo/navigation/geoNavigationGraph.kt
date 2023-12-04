@@ -56,9 +56,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             RegionScreen(
                 regionInput = NavRoutes.Region.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // RegionDistrictScreen:
@@ -71,9 +73,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             RegionDistrictScreen(
                 regionDistrictInput = NavRoutes.RegionDistrict.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // LocalityScreen:
@@ -85,9 +89,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             LocalityScreen(
                 localityInput = NavRoutes.Locality.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // LocalityDistrictScreen:
@@ -102,9 +108,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             LocalityDistrictScreen(
                 localityDistrictInput = NavRoutes.LocalityDistrict.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // MicrodistrictScreen:
@@ -118,9 +126,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             MicrodistrictScreen(
                 microdistrictInput = NavRoutes.Microdistrict.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // StreetScreen:
@@ -132,9 +142,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             StreetScreen(
                 streetInput = NavRoutes.Street.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // StreetLocalityDistrictScreen:
@@ -148,9 +160,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             StreetLocalityDistrictScreen(
                 streetLocalityDistrictInput = NavRoutes.StreetLocalityDistrict.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         // StreetMicrodistrictScreen:
@@ -164,9 +178,11 @@ fun NavGraphBuilder.geoNavGraph(
             )
             StreetMicrodistrictScreen(
                 streetMicrodistrictInput = NavRoutes.StreetMicrodistrict.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
     }

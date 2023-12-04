@@ -85,7 +85,7 @@ class MembersListViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(
                 GetMembersUseCase.Request(
-                    congregationId = congregationId, groupId = groupId,
+                    congregationId = congregationId, groupId = groupId, isService = isService,
                     byCongregation = byCongregation
                 )
             )
@@ -100,7 +100,7 @@ class MembersListViewModelImpl @Inject constructor(
     }
 
     private fun deleteMember(memberId: UUID): Job {
-        Timber.tag(TAG).d("deleteMember() called: memberId = %s", memberId.toString())
+        Timber.tag(TAG).d("deleteMember() called: memberId = %s", memberId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteMemberUseCase.execute(DeleteMemberUseCase.Request(memberId)).collect {}
         }
@@ -125,6 +125,7 @@ class MembersListViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
+
                 override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
                 override fun submitAction(action: MembersListUiAction): Job? = null
             }

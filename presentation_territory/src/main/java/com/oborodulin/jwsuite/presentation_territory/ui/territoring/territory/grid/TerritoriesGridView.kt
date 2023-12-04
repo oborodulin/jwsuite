@@ -90,7 +90,7 @@ fun TerritoriesGridView(
     }
     val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
     territoriesGridViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        //Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             if (listOf(
                     TerritoryProcessType.HAND_OUT,
@@ -144,6 +144,10 @@ fun TerritoriesGridView(
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is TerritoriesGridUiSingleEvent.OpenTerritoryScreen -> {
+                    appState.mainNavigate(it.navRoute)
+                }
+
+                is TerritoriesGridUiSingleEvent.OpenHandOutConfirmationScreen -> {
                     appState.mainNavigate(it.navRoute)
                 }
             }

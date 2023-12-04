@@ -16,7 +16,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.oborodulin.jwsuite.presentation.R
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_AT_WORK_TERRITORIES_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
@@ -24,7 +23,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ENT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_FLOOR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GEO
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GROUP
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HAND_OUT_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOME
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_HOUSING
@@ -35,6 +34,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEM
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER_ROLE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PROCESS_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ROOM
@@ -941,30 +941,25 @@ sealed class NavRoutes constructor(
         }
     }
 
-    data object HandOutTerritoriesConfirmation : NavRoutes(
-        route = ROUTE_HAND_OUT_TERRITORIES_CONFIRMATION,
+    data object HandOutConfirmation : NavRoutes(
+        route = ROUTE_HAND_OUT_CONFIRMATION,
         iconPainterResId = R.drawable.ic_hand_map_24,
         titleResId = R.string.nav_item_territory_hand_out_confirmation
     ) {
-        fun routeForHandOutTerritoriesConfirmation(): String {
-            Timber.tag(TAG).d(
-                "HandOutTerritoriesConfirmation -> routeForHandOutTerritoriesConfirmation: '%s'",
-                this.route
-            )
+        fun routeForHandOutConfirmation(): String {
+            Timber.tag(TAG)
+                .d("HandOutConfirmation -> routeForHandOutConfirmation: '%s'", this.route)
             return this.route
         }
     }
 
-    data object AtWorkTerritoriesConfirmation : NavRoutes(
-        route = ROUTE_AT_WORK_TERRITORIES_CONFIRMATION,
+    data object ProcessConfirmation : NavRoutes(
+        route = ROUTE_PROCESS_CONFIRMATION,
         iconImageVector = Icons.Outlined.ThumbUp,
         titleResId = R.string.nav_item_territory_at_work_confirmation
     ) {
-        fun routeAtWorkTerritoriesConfirmation(): String {
-            Timber.tag(TAG).d(
-                "AtWorkTerritoriesConfirmation - routeAtWorkTerritoriesConfirmation: '%s'",
-                this.route
-            )
+        fun routeProcessConfirmation(): String {
+            Timber.tag(TAG).d("ProcessConfirmation - routeProcessConfirmation: '%s'", this.route)
             return this.route
         }
     }
@@ -997,8 +992,8 @@ sealed class NavRoutes constructor(
             TerritoryEntrance,
             TerritoryFloor,
             TerritoryRoom,
-            HandOutTerritoriesConfirmation,
-            AtWorkTerritoriesConfirmation
+            HandOutConfirmation,
+            ProcessConfirmation
         )
 
         fun housingRoutes() = listOf(Housing, House, Entrance, Floor, Room)

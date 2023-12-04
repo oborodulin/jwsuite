@@ -12,7 +12,6 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Constants
 import com.oborodulin.home.common.util.Utils
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
@@ -48,7 +47,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.UUID
@@ -161,27 +162,29 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 )
             }
 
-            is TerritoriesGridUiAction.DeleteTerritory -> {
-                deleteTerritory(action.territoryId)
-            }
+            is TerritoriesGridUiAction.DeleteTerritory -> deleteTerritory(action.territoryId)
 
-            is TerritoriesGridUiAction.HandOutConfirmation -> {
+            is TerritoriesGridUiAction.HandOutInitConfirmation -> {
                 setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_hand_out_subheader)
                 null
             }
 
-            is TerritoriesGridUiAction.HandOut -> {
-                handOutTerritories()
+            is TerritoriesGridUiAction.HandOutConfirmation -> {
+                submitSingleEvent(
+                    TerritoriesGridUiSingleEvent.OpenHandOutConfirmationScreen(
+                        NavRoutes.HandOutConfirmation.routeForHandOutConfirmation()
+                    )
+                )
             }
 
-            is TerritoriesGridUiAction.ProcessConfirmation -> {
+            is TerritoriesGridUiAction.HandOut -> handOutTerritories()
+
+            is TerritoriesGridUiAction.ProcessInitConfirmation -> {
                 setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_at_work_process_subheader)
                 null
             }
 
-            is TerritoriesGridUiAction.Process -> {
-                processTerritories()
-            }
+            is TerritoriesGridUiAction.Process -> processTerritories()
         }
         return job
     }
@@ -211,7 +214,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     private fun deleteTerritory(territoryId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteTerritory() called: territoryId = %s", territoryId)
+            .d("deleteTerritory(...) called: territoryId = %s", territoryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteTerritoryUseCase.execute(DeleteTerritoryUseCase.Request(territoryId))
                 .collect {}
@@ -220,15 +223,23 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     }
 
     private fun handOutTerritories(): Job {
+        val memberId = member.value.item?.itemId
+        val territoryIds = checkedListItems.value.map { it.id }
+        val receivingDate = LocalDate.parse(
+            receivingDate.value.value,
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+        ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+        Timber.tag(TAG)
+            .d(
+                "handOutTerritories() called: memberId = %s; territoryIds = %s; receivingDate = %s",
+                member.value.item?.itemId,
+                territoryIds,
+                receivingDate
+            )
         val job = viewModelScope.launch(errorHandler) {
-            member.value.item?.itemId?.let { memberId ->
+            memberId?.let { memberId ->
                 useCases.handOutTerritoriesUseCase.execute(
-                    HandOutTerritoriesUseCase.Request(
-                        memberId,
-                        checkedListItems.value.map { it.id },
-                        DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
-                            .parse(receivingDate.value.value, OffsetDateTime::from)
-                    )
+                    HandOutTerritoriesUseCase.Request(memberId, territoryIds, receivingDate)
                 ).collect {}
             }
         }

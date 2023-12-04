@@ -14,9 +14,6 @@ import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.TerritoryRoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.AtWorkTerritoriesConfirmationScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.handout.HandOutTerritoriesConfirmationScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryScreen
@@ -36,46 +33,8 @@ fun NavGraphBuilder.territoryNavGraph(
 ) {
     navigation(
         route = Graph.TERRITORY,
-        startDestination = startDestination ?: NavRoutes.HandOutTerritoriesConfirmation.route
+        startDestination = startDestination ?: NavRoutes.Territory.route
     ) {
-        composable(route = NavRoutes.HandOutTerritoriesConfirmation.route) {
-            Timber.tag(TAG)
-                .d(
-                    "Navigation Graph: to HandOutTerritoriesConfirmationScreen [route = '%s']",
-                    it.destination.route
-                )
-            // https://developer.android.com/jetpack/compose/libraries#hilt
-            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(LocalAppState.current.barNavController))
-            HandOutTerritoriesConfirmationScreen(
-                //sharedViewModel = sharedViewModel,
-                viewModel = territoriesGridViewModel,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange
-            )
-        }
-        composable(route = NavRoutes.AtWorkTerritoriesConfirmation.route) {
-            Timber.tag(TAG)
-                .d(
-                    "Navigation Graph: to AtWorkTerritoriesConfirmationScreen [route = '%s']",
-                    it.destination.route
-                )
-            // https://developer.android.com/jetpack/compose/libraries#hilt
-            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(LocalAppState.current.barNavController))
-            AtWorkTerritoriesConfirmationScreen(
-                //sharedViewModel = sharedViewModel,
-                viewModel = territoriesGridViewModel,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange
-            )
-        }
         composable(route = NavRoutes.Territory.route, arguments = NavRoutes.Territory.arguments) {
             Timber.tag(TAG)
                 .d(

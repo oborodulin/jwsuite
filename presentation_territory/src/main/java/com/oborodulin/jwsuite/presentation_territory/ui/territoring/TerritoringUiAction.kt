@@ -9,5 +9,5 @@ sealed class TerritoringUiAction(override val isEmitJob: Boolean = true) : UiAct
         val isPrivateSector: Boolean = false
     ) : TerritoringUiAction()
 
-    data object HandOutTerritoriesConfirmation : TerritoringUiAction()
+    data object HandOutConfirmation : TerritoringUiAction(false)
 }
