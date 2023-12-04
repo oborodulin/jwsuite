@@ -50,22 +50,17 @@ fun MainNavigationHost(
         modifier = Modifier.padding(innerPadding)
     ) {
         Timber.tag(TAG).d("MainNavigationHost -> NavHost(...)")
-        /*onActionBarChange(null)
-        shouldUseNestedScrollConnection(false)
-        areUsingBottomNavigation(false)
-        onNavIconChange(null)
-        onTopBarActionsChange (true) {}
-        onFabChange {}*/
         congregationNavGraph(
             startDestination = session.startDestination,
             onActionBarChange = onActionBarChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-            onTopBarNavClickChange = onTopBarNavClickChange,
-            onTopBarActionsChange = onTopBarActionsChange
+            onTopBarActionsChange = onTopBarActionsChange,
+            onFabChange = onFabChange
         )
         territoryNavGraph(
             startDestination = session.startDestination,
+            onActionBarChange = onActionBarChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
@@ -89,22 +84,20 @@ fun MainNavigationHost(
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
             onTopBarNavClickChange = onTopBarNavClickChange,
-            onTopBarActionsChange = onTopBarActionsChange
+            onTopBarActionsChange = onTopBarActionsChange,
+            onFabChange = onFabChange
         )
         appSettingNavigationGraph(
             startDestination = session.startDestination,
+            onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-            onTopBarActionsChange = onTopBarActionsChange
+            onTopBarActionsChange = onTopBarActionsChange,
+            onFabChange = onFabChange
         )
         composable(NavRoutes.Home.route) {
             Timber.tag(TAG).d("MainNavigationHost -> composable(Home.route) called")
-            /*onActionBarSubtitleChange(appState.actionBarSubtitle.value)
-            onTopBarNavImageVectorChange(Icons.Outlined.Menu)
-            onTopBarNavClickChange { context.toast("Menu navigation button clicked...") }
-            shouldUseNestedScrollConnection(true)
-            areUsingBottomNavigation(true)*/
             BarNavigationHost(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

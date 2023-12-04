@@ -17,9 +17,11 @@ private const val TAG = "Geo.LocalityDistrictScreen"
 fun LocalityDistrictScreen(
     viewModel: LocalityDistrictViewModelImpl = hiltViewModel(),
     localityDistrictInput: LocalityDistrictInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d("LocalityDistrictScreen(...) called: localityDistrictInput = %s", localityDistrictInput)
@@ -34,8 +36,10 @@ fun LocalityDistrictScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_locality_district,
         uniqueConstraintFailedResId = R.string.locality_district_unique_constraint_error,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) { LocalityDistrictView() }
 }

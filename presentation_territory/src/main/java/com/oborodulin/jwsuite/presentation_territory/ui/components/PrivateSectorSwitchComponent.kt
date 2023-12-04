@@ -2,14 +2,11 @@ package com.oborodulin.jwsuite.presentation_territory.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -25,21 +22,19 @@ private const val TAG = "Territoring.PrivateSectorSwitchComponent"
 fun PrivateSectorSwitchComponent(viewModel: TerritoringViewModel, inputWrapper: InputWrapper) {
     Timber.tag(TAG).d("PrivateSectorSwitchComponent(...) called")
     SwitchComponent(
-        componentModifier = Modifier.padding(end = 36.dp)
+        //componentModifier = Modifier.padding(end = 36.dp),
         /*.focusRequester(focusRequesters[TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR.name]!!.focusRequester)
         .onFocusChanged { focusState ->
             territoringViewModel.onTextFieldFocusChanged(
                 focusedField = TerritoringFields.TERRITORING_IS_PRIVATE_SECTOR,
                 isFocused = focusState.isFocused
             )
-        }*/,
+        }*/
         horizontalArrangement = Arrangement.Start,
         labelResId = R.string.territoring_is_private_sector_hint,
-        lableStyle = MaterialTheme.typography.bodyMedium,
+        lableStyle = MaterialTheme.typography.titleMedium,
         inputWrapper = inputWrapper,
-        onCheckedChange = {
-            viewModel.onTextFieldEntered(TerritoringInputEvent.IsPrivateSector(it))
-        }
+        onCheckedChange = { viewModel.onTextFieldEntered(TerritoringInputEvent.IsPrivateSector(it)) }
     )
 }
 

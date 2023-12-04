@@ -19,9 +19,11 @@ private const val TAG = "Geo.RegionScreen"
 fun RegionScreen(
     viewModel: RegionViewModelImpl = hiltViewModel(),
     regionInput: RegionInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     val appState = LocalAppState.current
@@ -35,8 +37,10 @@ fun RegionScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_region,
         uniqueConstraintFailedResId = R.string.region_unique_constraint_error,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) { RegionView(viewModel) }
 }

@@ -28,7 +28,7 @@ fun HandOutFabComponent(
 ) {
     Timber.tag(TAG).d("HandOutFabComponent(...) called")
     ExtFabComponent(
-        modifier = Modifier.padding(bottom = 48.dp, end = 4.dp),
+        modifier = Modifier.padding(bottom = 44.dp, end = 4.dp),
         enabled = enabled,
         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
         textResId = R.string.fab_territory_hand_out_text

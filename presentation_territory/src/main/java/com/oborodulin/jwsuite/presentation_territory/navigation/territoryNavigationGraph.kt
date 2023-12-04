@@ -27,6 +27,7 @@ private const val TAG = "App.Navigation.territoryNavGraph"
 
 fun NavGraphBuilder.territoryNavGraph(
     startDestination: String? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
@@ -89,9 +90,11 @@ fun NavGraphBuilder.territoryNavGraph(
                 //sharedViewModel = sharedViewModel,
                 viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(
@@ -126,9 +129,11 @@ fun NavGraphBuilder.territoryNavGraph(
                 )
             TerritoryCategoryScreen(
                 territoryCategoryInput = NavRoutes.TerritoryCategory.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
 
@@ -148,9 +153,11 @@ fun NavGraphBuilder.territoryNavGraph(
                 //sharedViewModel = sharedViewModel,
                 territoryViewModel = territoryViewModel,
                 territoryStreetInput = NavRoutes.TerritoryStreet.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(
@@ -167,9 +174,11 @@ fun NavGraphBuilder.territoryNavGraph(
             TerritoryHouseScreen(
                 territoryViewModel = territoryViewModel,
                 territoryHouseInput = NavRoutes.TerritoryHouse.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
 
@@ -187,9 +196,11 @@ fun NavGraphBuilder.territoryNavGraph(
             TerritoryRoomScreen(
                 territoryViewModel = territoryViewModel,
                 territoryRoomInput = NavRoutes.TerritoryRoom.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
     }

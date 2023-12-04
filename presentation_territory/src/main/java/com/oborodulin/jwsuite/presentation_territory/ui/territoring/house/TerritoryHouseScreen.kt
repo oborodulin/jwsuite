@@ -19,9 +19,11 @@ fun TerritoryHouseScreen(
     territoryViewModel: TerritoryViewModel,
     territoryHouseViewModel: TerritoryHouseViewModelImpl = hiltViewModel(),
     territoryHouseInput: TerritoryHouseInput,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d("TerritoryHouseScreen(...) called: territoryHouseInput = %s", territoryHouseInput)
@@ -35,9 +37,11 @@ fun TerritoryHouseScreen(
         upNavigation = upNavigation,
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_house,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) {
         TerritoryHouseView(
             territoryHousesUiModel = it,

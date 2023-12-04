@@ -37,7 +37,7 @@ fun MemberComboBox(
     listViewModel: MembersListViewModelImpl = hiltViewModel(),
     singleViewModel: MemberViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent,
+    onValueChange: OnListItemEvent = {},
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("MemberComboBox(...) called")

@@ -17,9 +17,11 @@ private const val TAG = "Geo.MicrodistrictScreen"
 fun MicrodistrictScreen(
     viewModel: MicrodistrictViewModelImpl = hiltViewModel(),
     microdistrictInput: MicrodistrictInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d("MicrodistrictScreen(...) called: microdistrictInput = %s", microdistrictInput)
@@ -34,8 +36,10 @@ fun MicrodistrictScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_microdistrict,
         uniqueConstraintFailedResId = R.string.microdistrict_unique_constraint_error,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) { MicrodistrictView() }
 }

@@ -19,9 +19,11 @@ fun HouseScreen(
     //territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: HouseViewModelImpl = hiltViewModel(),
     houseInput: HouseInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("HouseScreen(...) called: houseInput = %s", houseInput)
     val appState = LocalAppState.current
@@ -35,8 +37,10 @@ fun HouseScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_house,
         uniqueConstraintFailedResId = R.string.house_unique_constraint_error,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) { HouseView(sharedViewModel = appState.sharedViewModel.value) }
 }

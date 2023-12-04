@@ -2,12 +2,8 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -24,12 +20,12 @@ fun MemberScreen(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
-    onActionBarChange(null)
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = memberInput?.memberId,
@@ -39,8 +35,10 @@ fun MemberScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_member,
         uniqueConstraintFailedResId = R.string.member_unique_constraint_error,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) { MemberView(appState.sharedViewModel.value) }
 }

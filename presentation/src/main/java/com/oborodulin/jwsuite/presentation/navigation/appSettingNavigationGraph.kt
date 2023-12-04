@@ -13,10 +13,12 @@ private const val TAG = "Presentation.Navigation.appSettingNavigationGraph"
 
 fun NavGraphBuilder.appSettingNavigationGraph(
     startDestination: String? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(
         route = Graph.SETTINGS,
@@ -31,10 +33,12 @@ fun NavGraphBuilder.appSettingNavigationGraph(
                 NavRoutes.Settings.arguments.firstOrNull()
             )
             AppSettingScreen(
+                onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
     }

@@ -23,9 +23,11 @@ fun TerritoryStreetScreen(
     territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d("TerritoryStreetScreen(...) called: territoryStreetInput = %s", territoryStreetInput)
@@ -48,9 +50,11 @@ fun TerritoryStreetScreen(
         upNavigation = upNavigation,
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_street,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) {
         TerritoryStreetView(
             uiModel = it, sharedViewModel = appState.sharedViewModel.value,

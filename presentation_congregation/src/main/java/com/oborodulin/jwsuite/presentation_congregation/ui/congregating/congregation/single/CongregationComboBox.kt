@@ -35,7 +35,7 @@ fun CongregationComboBox(
     listViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     singleViewModel: CongregationViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<CongregationsListItem>,
-    onValueChange: (CongregationsListItem) -> Unit,
+    onValueChange: (CongregationsListItem) -> Unit = {},
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("CongregationComboBox(...) called")

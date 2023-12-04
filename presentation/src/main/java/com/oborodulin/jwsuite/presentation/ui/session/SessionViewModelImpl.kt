@@ -234,7 +234,7 @@ class SessionViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: SessionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberModel) called: SessionUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(SessionUi) called: uiModel = %s", uiModel)
         initStateValue(
             SessionFields.SESSION_USERNAME,
             username,

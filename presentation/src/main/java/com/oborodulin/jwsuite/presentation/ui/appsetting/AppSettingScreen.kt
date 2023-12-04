@@ -22,10 +22,12 @@ private const val TAG = "Presentation.AppSettingScreen"
 fun AppSettingScreen(
     appSettingViewModel: AppSettingViewModelImpl = hiltViewModel(),
     sessionViewModel: SessionViewModelImpl = hiltViewModel(),
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("AppSettingScreen(...) called")
     val appState = LocalAppState.current
@@ -45,9 +47,11 @@ fun AppSettingScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) {
         AppSettingView(appSettingsUiModel = it, appSettingViewModel)
     }

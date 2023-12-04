@@ -39,7 +39,7 @@ fun ServiceSwitchComponent(viewModel: CongregatingViewModel, inputWrapper: Input
         }*/
             horizontalArrangement = Arrangement.Start,
             labelResId = R.string.congregating_is_service_hint,
-            lableStyle = MaterialTheme.typography.bodyMedium,
+            lableStyle = MaterialTheme.typography.titleMedium,
             inputWrapper = inputWrapper,
             onCheckedChange = { viewModel.onTextFieldEntered(CongregatingInputEvent.IsService(it)) }
         )

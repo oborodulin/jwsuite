@@ -93,8 +93,8 @@ fun AtWorkProcessMultiFabComponent(
 
     MultiFabComponent(
         modifier = Modifier.padding(
-            bottom = 48.dp,
-            end = 16.dp
+            bottom = 44.dp,
+            end = 4.dp
         ),
         multiFloatingState = multiFloatingState,
         onMultiFabStateChange = onMultiFabStateChange,

@@ -16,16 +16,14 @@ private const val TAG = "Common.ui.AddFabComponent"
 @Composable
 fun AddFabComponent(
     modifier: Modifier = Modifier,
-    @StringRes textResId: Int? = null,
     @StringRes contentDescriptionResId: Int? = null,
     onClick: () -> Unit = {}
 ) {
     Timber.tag(TAG).d("AddFabComponent(...) called")
-    ExtFabComponent(
+    FabComponent(
         modifier = modifier,
         enabled = true,
         imageVector = Icons.Outlined.Add,
-        textResId = textResId,
         contentDescriptionResId = contentDescriptionResId,
         onClick = onClick
     )

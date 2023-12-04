@@ -19,9 +19,11 @@ fun TerritoryRoomScreen(
     territoryViewModel: TerritoryViewModel,
     territoryRoomViewModel: TerritoryRoomViewModelImpl = hiltViewModel(),
     territoryRoomInput: TerritoryRoomInput,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d("TerritoryRoomScreen(...) called: territoryRoomInput = %s", territoryRoomInput)
@@ -35,9 +37,11 @@ fun TerritoryRoomScreen(
         upNavigation = upNavigation,
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_room,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) {
         TerritoryRoomView(
             territoryRoomsUiModel = it,

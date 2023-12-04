@@ -42,7 +42,6 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.OnCheckedChange
 import timber.log.Timber
 
@@ -56,7 +55,7 @@ fun SwitchComponent(
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
     @StringRes labelResId: Int? = null,
-    lableStyle: TextStyle = Typography.bodyLarge,
+    lableStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     @StringRes contentDescriptionResId: Int? = null,
     inputWrapper: InputWrapper, // string
     onCheckedChange: OnCheckedChange,

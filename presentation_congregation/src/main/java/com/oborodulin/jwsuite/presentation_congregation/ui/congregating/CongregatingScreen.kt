@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.fab.AddFabComponent
+import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
@@ -130,15 +131,18 @@ fun CongregatingScreen(
         }
 
         false -> {
-            onActionBarChange {
-                if (session.containsRole(MemberRoleType.ADMIN)) {
+            when {
+                session.containsRole(MemberRoleType.ADMIN) -> onActionBarChange {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         ServiceSwitchComponent(
                             viewModel = congregatingViewModel, inputWrapper = isService
                         )
                     }
                 }
+
+                else -> onActionBarChange(null)
             }
+
             onTopBarActionsChange(true) {
                 IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
                 IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
@@ -148,22 +152,23 @@ fun CongregatingScreen(
     onFabChange {
         when (CongregatingTabType.valueOf(tabType)) {
             CongregatingTabType.CONGREGATIONS -> AddFabComponent(
-                modifier = Modifier.padding(bottom = 48.dp, end = 4.dp)
+                modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
             ) { appState.mainNavigate(NavRoutes.Congregation.routeForCongregation()) }
 
             CongregatingTabType.GROUPS -> AddFabComponent(
-                modifier = Modifier.padding(bottom = 48.dp, end = 4.dp)
+                modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
             ) { appState.mainNavigate(NavRoutes.Group.routeForGroup()) }
 
             CongregatingTabType.MEMBERS ->
-                if (session.containsRole(MemberRoleType.ADMIN)) {
-                    AddFabComponent(
-                        modifier = Modifier.padding(bottom = 48.dp, end = 4.dp),
-                        textResId = R.string.fab_member_role_text
+                when {
+                    session.containsRole(MemberRoleType.ADMIN) -> ExtFabComponent(
+                        modifier = Modifier.padding(bottom = 44.dp, end = 24.dp),
+                        enabled = true,
+                        textResId = R.string.fab_add_member_role_text
                     ) { appState.mainNavigate(NavRoutes.MemberRole.routeForMemberRole()) }
-                } else {
-                    AddFabComponent(
-                        modifier = Modifier.padding(bottom = 48.dp, end = 4.dp)
+
+                    else -> AddFabComponent(
+                        modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
                     ) { appState.mainNavigate(NavRoutes.Member.routeForMember()) }
                 }
         }
@@ -183,7 +188,7 @@ fun CongregatingScreen(
                 handleCloseAndClearSearch.invoke()
             }
         }
-    // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
+// https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
     BackHandler {
         if (isShowSearchBar) {
             handleCloseAndClearSearch.invoke()
@@ -219,13 +224,13 @@ fun CongregatingScreen(
                     title = stringResource(R.string.congregation_tab_members),
                     onClick = { onTabChange(CongregatingTabType.MEMBERS) }
                 ) {
-                    if (session.containsRole(MemberRoleType.ADMIN)) {
-                        MemberRolesView(
+                    when {
+                        session.containsRole(MemberRoleType.ADMIN) -> MemberRolesView(
                             appState = appState, membersListViewModel = membersListViewModel,
                             isService = isService.value.toBoolean()
                         )
-                    } else {
-                        MembersView(
+
+                        else -> MembersView(
                             appState = appState,
                             //sharedViewModel = sharedViewModel,
                             //membersListViewModel = membersListViewModel

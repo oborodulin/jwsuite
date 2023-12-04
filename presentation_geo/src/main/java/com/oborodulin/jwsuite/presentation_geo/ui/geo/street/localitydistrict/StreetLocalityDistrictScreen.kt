@@ -17,9 +17,11 @@ private const val TAG = "Territoring.StreetLocalityDistrictScreen"
 fun StreetLocalityDistrictScreen(
     viewModel: StreetLocalityDistrictViewModelImpl = hiltViewModel(),
     streetLocalityDistrictInput: NavigationInput.StreetLocalityDistrictInput,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG)
         .d(
@@ -36,9 +38,11 @@ fun StreetLocalityDistrictScreen(
         upNavigation = upNavigation,
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_street_locality_district,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) {
         StreetLocalityDistrictView(
             streetLocalityDistrictsUiModel = it,

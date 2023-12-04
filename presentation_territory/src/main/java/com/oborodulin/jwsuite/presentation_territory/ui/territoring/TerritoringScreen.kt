@@ -204,16 +204,17 @@ fun TerritoringScreen(
                 onActionBarChange {
                     CommonScreen(state = state) { territoringUi ->
                         Row(
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Box(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                PrivateSectorSwitchComponent(
-                                    viewModel = territoringViewModel, inputWrapper = isPrivateSector
-                                )
-                            }
+                            //Box(
+                            //modifier = Modifier.weight(1f)
+                            //) {
+                            PrivateSectorSwitchComponent(
+                                viewModel = territoringViewModel, inputWrapper = isPrivateSector
+                            )
+                            //}
                             //Box(
                             //    modifier = Modifier.fillMaxWidth().weight(3f)
                             //) {

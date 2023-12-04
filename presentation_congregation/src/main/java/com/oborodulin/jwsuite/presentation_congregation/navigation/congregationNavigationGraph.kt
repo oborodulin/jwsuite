@@ -5,13 +5,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import timber.log.Timber
@@ -23,8 +27,8 @@ fun NavGraphBuilder.congregationNavGraph(
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(
         route = Graph.CONGREGATION,
@@ -43,8 +47,8 @@ fun NavGraphBuilder.congregationNavGraph(
                 onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(route = NavRoutes.Group.route, arguments = NavRoutes.Group.arguments) {
@@ -61,7 +65,8 @@ fun NavGraphBuilder.congregationNavGraph(
                 onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(route = NavRoutes.Member.route, arguments = NavRoutes.Member.arguments) {
@@ -78,24 +83,29 @@ fun NavGraphBuilder.congregationNavGraph(
                 onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(route = NavRoutes.MemberRole.route, arguments = NavRoutes.MemberRole.arguments) {
+            val appState = LocalAppState.current
             Timber.tag(TAG).d(
                 "Navigation Graph: to MemberRoleScreen [route = '%s', arguments = '%s']",
                 it.destination.route,
                 NavRoutes.MemberRole.arguments.firstOrNull()
             )
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val membersListViewModel =
+                hiltViewModel<MembersListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             MemberRoleScreen(
                 //sharedViewModel = sharedViewModel,
+                membersListViewModel = membersListViewModel,
                 memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
                 onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
     }

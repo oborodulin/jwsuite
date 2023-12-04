@@ -23,9 +23,11 @@ fun TerritoryScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoryViewModel,
     territoryInput: TerritoryInput? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
@@ -36,16 +38,19 @@ fun TerritoryScreen(
         inputId = territoryInput?.territoryId,
         loadUiAction = TerritoryUiAction.Load(territoryInput?.territoryId),
         saveUiAction = TerritoryUiAction.Save,
-        nextUiAction = TerritoryUiAction.EditTerritoryDetails(UUID.fromString(territoryId.value)),
+        nextUiAction = TerritoryUiAction.EditTerritoryDetails(territoryId.value.ifEmpty { null }
+            ?.let { UUID.fromString(it) }),
         upNavigation = upNavigation,
         handleTopBarNavClick = appState.handleTopBarNavClick,
         topBarActionImageVector = Icons.Outlined.ArrowForward,
         topBarActionCntDescResId = com.oborodulin.home.common.R.string.btn_next_cnt_desc,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory,
         uniqueConstraintFailedResId = R.string.territory_unique_constraint_error,
+        onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange
+        onTopBarActionsChange = onTopBarActionsChange,
+        onFabChange = onFabChange
     ) {
         TerritoryView(appState.sharedViewModel.value, viewModel = viewModel)
     }

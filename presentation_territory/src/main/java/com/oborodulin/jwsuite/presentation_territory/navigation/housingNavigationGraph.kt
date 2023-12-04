@@ -22,7 +22,8 @@ fun NavGraphBuilder.housingNavGraph(
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit
 ) {
     navigation(
         route = Graph.HOUSING, startDestination = startDestination ?: NavRoutes.Housing.route
@@ -55,9 +56,11 @@ fun NavGraphBuilder.housingNavGraph(
             HouseScreen(
                 //territoryViewModel = territoryViewModel,
                 houseInput = NavRoutes.House.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
         composable(
@@ -73,9 +76,11 @@ fun NavGraphBuilder.housingNavGraph(
             RoomScreen(
                 //territoryViewModel = territoryViewModel,
                 roomInput = NavRoutes.Room.fromEntry(it),
+                onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange
             )
         }
     }

@@ -53,9 +53,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     isControlsShow: Boolean = true,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
+    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
+    onFabChange: (@Composable () -> Unit) -> Unit,
     dialogView: @Composable (T) -> Unit
 ) {
     Timber.tag(TAG).d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
@@ -110,15 +112,17 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         ErrorAlertDialogComponent(isShow = isErrorShowAlert, text = errorMessage) {
             isErrorShowAlert.value = false; upNavigation()
         }
+        onActionBarChange(null)
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         val areInputsValid by viewModel.areInputsValid.collectAsStateWithLifecycle()
-        onTopBarActionsChange (true) {
+        onTopBarActionsChange(true) {
             if (isControlsShow) {
                 IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }
         }
+        onFabChange {}
         CommonScreen(state = state) {
             Column(
                 modifier = Modifier.fillMaxSize(),

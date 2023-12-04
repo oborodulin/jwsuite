@@ -2,7 +2,7 @@
     <!--BUTTONS:-->
 
     <!--FAB:-->
-    <string name="fab_member_role_text">Роль</string>
+    <string name="fab_add_member_role_text">Добавить роль</string>
 
     <!--МЕНЮ собрания-->
     <string name="congregation_add">Добавить</string>
@@ -91,6 +91,7 @@
     <!--формы собрания-->
     <string name="congregation_name_empty_error">Укажите, пожалуйста, наименование!</string>
     <string name="territory_mark_empty_error">Укажите, пожалуйста, код территории!</string>
+    <string name="congregation_unique_constraint_error">Собрание с таким номером уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы группы-->
     <string name="group_unique_constraint_error">Группа с таким номером уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы возвещателя-->

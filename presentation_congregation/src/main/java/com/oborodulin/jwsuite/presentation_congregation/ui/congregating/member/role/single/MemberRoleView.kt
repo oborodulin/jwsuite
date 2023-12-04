@@ -36,9 +36,10 @@ import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.role.single.RoleComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -48,7 +49,8 @@ private const val TAG = "Congregating.MemberRoleView"
 @Composable
 fun MemberRoleView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    viewModel: MemberRoleViewModelImpl = hiltViewModel()
+    memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("MemberRoleView(...) called")
     val context = LocalContext.current
@@ -56,18 +58,23 @@ fun MemberRoleView(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+    val events = remember(memberRoleViewModel.events, lifecycleOwner) {
+        memberRoleViewModel.events.flowWithLifecycle(
+            lifecycleOwner.lifecycle,
+            Lifecycle.State.STARTED
+        )
     }
 
     Timber.tag(TAG).d("MemberRole: CollectAsStateWithLifecycle for all fields")
     //val congregation by viewModel.congregation.collectAsStateWithLifecycle()
-    val member by viewModel.member.collectAsStateWithLifecycle()
-    val role by viewModel.role.collectAsStateWithLifecycle()
-    val roleExpiredDate by viewModel.roleExpiredDate.collectAsStateWithLifecycle()
+    val member by memberRoleViewModel.member.collectAsStateWithLifecycle()
+    val role by memberRoleViewModel.role.collectAsStateWithLifecycle()
+    val roleExpiredDate by memberRoleViewModel.roleExpiredDate.collectAsStateWithLifecycle()
 
     //val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
     //Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
+    val selectedMember = membersListViewModel.singleSelectedItem()
+    Timber.tag(TAG).d("selectedMember = %s", selectedMember)
 
     Timber.tag(TAG).d("MemberRole: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -99,12 +106,16 @@ fun MemberRoleView(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         //currentCongregation?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it.toCongregationsListItem())) }
-        member.item?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) }
+        if (member.item == null) {
+            selectedMember?.let {
+                memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it))
+            }
+        }
         MemberComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberRoleFields.MEMBER_ROLE_MEMBER]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    memberRoleViewModel.onTextFieldFocusChanged(
                         focusedField = MemberRoleFields.MEMBER_ROLE_MEMBER,
                         isFocused = focusState.isFocused
                     )
@@ -112,28 +123,28 @@ fun MemberRoleView(
             enabled = false,
             sharedViewModel = sharedViewModel,
             inputWrapper = member,
-            onValueChange = { viewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            //onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
+            onImeKeyAction = memberRoleViewModel::moveFocusImeAction
         )
         RoleComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberRoleFields.MEMBER_ROLE_ROLE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    memberRoleViewModel.onTextFieldFocusChanged(
                         focusedField = MemberRoleFields.MEMBER_ROLE_ROLE,
                         isFocused = focusState.isFocused
                     )
                 },
             memberId = member.item?.itemId!!,
             inputWrapper = role,
-            onValueChange = { viewModel.onTextFieldEntered(MemberRoleInputEvent.Role(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Role(it)) },
+            onImeKeyAction = memberRoleViewModel::moveFocusImeAction
         )
         DatePickerComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    memberRoleViewModel.onTextFieldFocusChanged(
                         focusedField = MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE,
                         isFocused = focusState.isFocused
                     )
@@ -143,8 +154,12 @@ fun MemberRoleView(
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
             },
             inputWrapper = roleExpiredDate,
-            onValueChange = { viewModel.onTextFieldEntered(MemberRoleInputEvent.RoleExpiredDate(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onValueChange = {
+                memberRoleViewModel.onTextFieldEntered(
+                    MemberRoleInputEvent.RoleExpiredDate(it)
+                )
+            },
+            onImeKeyAction = memberRoleViewModel::moveFocusImeAction
         )
     }
 }
@@ -153,10 +168,13 @@ fun MemberRoleView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    //val ctx = LocalContext.current
+    val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberRoleView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            MemberRoleView(
+                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
+                membersListViewModel = MembersListViewModelImpl.previewModel(ctx)
+            )
         }
     }
 }
