@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
@@ -29,7 +30,7 @@ fun HandOutConfirmationScreen(
         viewModel = viewModel,
         loadUiAction = TerritoriesGridUiAction.HandOutInitConfirmation,
         saveUiAction = TerritoriesGridUiAction.HandOut,
-        upNavigation = { appState.barNavController.navigateUp() },
+        upNavigation = { appState.barNavController.navigateUp(); appState.navigateToBarRoute(NavRoutes.Territoring.route) },
         handleTopBarNavClick = appState.handleTopBarNavClick,
         areInputsValid = viewModel.areHandOutInputsValid.collectAsStateWithLifecycle().value,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_hand_out,
@@ -40,7 +41,7 @@ fun HandOutConfirmationScreen(
         onFabChange = onFabChange
     ) {
         HandOutConfirmationView(
-            sharedViewModel = appState.sharedViewModel.value, viewModel = viewModel
+            sharedViewModel = appState.congregationViewModel.value, viewModel = viewModel
         )
     }
     // Scaffold Hoisting:

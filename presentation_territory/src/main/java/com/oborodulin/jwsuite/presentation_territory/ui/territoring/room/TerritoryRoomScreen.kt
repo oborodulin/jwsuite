@@ -45,7 +45,7 @@ fun TerritoryRoomScreen(
     ) {
         TerritoryRoomView(
             territoryRoomsUiModel = it,
-            sharedViewModel = appState.sharedViewModel.value,
+            sharedViewModel = appState.congregationViewModel.value,
             territoryViewModel = territoryViewModel,
             territoryRoomViewModel = territoryRoomViewModel
         )

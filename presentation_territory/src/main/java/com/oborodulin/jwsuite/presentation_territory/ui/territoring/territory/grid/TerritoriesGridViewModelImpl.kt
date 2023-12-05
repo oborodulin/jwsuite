@@ -207,6 +207,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 }
                 .collect {
                     submitState(it)
+                    observeCheckedListItems()
                 }
         }
         return job
@@ -240,7 +241,9 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             memberId?.let { memberId ->
                 useCases.handOutTerritoriesUseCase.execute(
                     HandOutTerritoriesUseCase.Request(memberId, territoryIds, receivingDate)
-                ).collect {}
+                ).collect {
+
+                }
             }
         }
         return job

@@ -18,11 +18,11 @@ sealed class TerritoriesGridUiAction(override val isEmitJob: Boolean = true) : U
     data class DeleteTerritory(val territoryId: UUID) : TerritoriesGridUiAction()
 
     // HandOut:
-    data object HandOutInitConfirmation : TerritoriesGridUiAction()
-    data object HandOutConfirmation : TerritoriesGridUiAction()
+    data object HandOutInitConfirmation : TerritoriesGridUiAction(false)
+    data object HandOutConfirmation : TerritoriesGridUiAction(false)
     data object HandOut : TerritoriesGridUiAction()
 
     // Process:
-    data object ProcessInitConfirmation : TerritoriesGridUiAction()
+    data object ProcessInitConfirmation : TerritoriesGridUiAction(false)
     data object Process : TerritoriesGridUiAction()
 }

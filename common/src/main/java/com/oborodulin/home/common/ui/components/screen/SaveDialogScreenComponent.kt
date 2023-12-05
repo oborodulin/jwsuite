@@ -73,6 +73,8 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
             viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) {
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
+                    Timber.tag(TAG)
+                        .d("SaveDialogScreenComponent -> viewModel.onContinueClick: after action no errors")
                     nextUiAction?.let { viewModel.submitAction(it) } ?: upNavigation()
                 } else {
                     isErrorShowAlert.value = true

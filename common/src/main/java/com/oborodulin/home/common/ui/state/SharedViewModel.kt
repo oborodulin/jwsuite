@@ -20,8 +20,6 @@ abstract class SharedViewModel<T : Any?> : SharedViewModeled<T>, ViewModel() {
     private val _sharedFlow: MutableStateFlow<T?> by lazy { MutableStateFlow(null) }
     override val sharedFlow = _sharedFlow.asStateFlow() //.asSharedFlow()//.distinctUntilChanged()
 
-    var fabOnClick = mutableStateOf({})
-
     override fun submitData(data: T): Job {
         return viewModelScope.launch {
             Timber.tag(TAG).d("submitData(): data = %s", data)

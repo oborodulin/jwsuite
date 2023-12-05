@@ -52,7 +52,7 @@ fun TerritoryScreen(
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
     ) {
-        TerritoryView(appState.sharedViewModel.value, viewModel = viewModel)
+        TerritoryView(appState.congregationViewModel.value, viewModel = viewModel)
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)

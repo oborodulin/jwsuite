@@ -66,7 +66,7 @@ fun TerritoriesGridView(
         locationId
     )
     val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)
@@ -88,7 +88,13 @@ fun TerritoriesGridView(
             )
         )
     }
-    val searchText by territoriesGridViewModel.searchText.collectAsStateWithLifecycle()
+
+    val searchText = when (territoryProcessType) {
+        TerritoryProcessType.HAND_OUT -> territoriesGridViewModel.handOutSearchText.collectAsStateWithLifecycle().value
+        TerritoryProcessType.AT_WORK -> territoriesGridViewModel.atWorkSearchText.collectAsStateWithLifecycle().value
+        TerritoryProcessType.IDLE -> territoriesGridViewModel.idleSearchText.collectAsStateWithLifecycle().value
+        TerritoryProcessType.ALL -> territoriesGridViewModel.searchText.collectAsStateWithLifecycle().value
+    }
     territoriesGridViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         //Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {

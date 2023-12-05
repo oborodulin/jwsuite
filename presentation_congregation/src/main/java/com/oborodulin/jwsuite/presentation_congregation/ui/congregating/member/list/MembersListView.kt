@@ -39,7 +39,7 @@ fun MembersListView(
         congregationInput, groupInput, isService
     )
     val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
 
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)

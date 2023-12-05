@@ -10,6 +10,7 @@ import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation_territory.R
 
+// 141
 private const val TAG = "Presentation.HandOutButtonComponent"
 
 @Composable

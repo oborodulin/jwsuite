@@ -43,7 +43,7 @@ fun MemberRoleScreen(
         onFabChange = onFabChange
     ) {
         MemberRoleView(
-            sharedViewModel = appState.sharedViewModel.value,
+            sharedViewModel = appState.congregationViewModel.value,
             membersListViewModel = membersListViewModel
         )
     }

@@ -64,6 +64,7 @@ fun CongregationsListItemComponent(
                                 .clickable {
                                     if (!item.isFavorite) {
                                         onFavorite(item)
+                                        onClick(item)
                                     }
                                 },
                             imageVector = when (item.isFavorite) {

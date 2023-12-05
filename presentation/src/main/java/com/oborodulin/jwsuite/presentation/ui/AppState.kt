@@ -23,7 +23,10 @@ fun rememberAppState(
     rootNavController: NavHostController = rememberNavController(),
     mainNavController: NavHostController = rememberNavController(),
     barNavController: NavHostController = rememberNavController(),
-    sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
+    congregationViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
+        mutableStateOf(null)
+    },
+    handOutTerritoriesViewModel: MutableState<SharedViewModeled<List<ListItemModel>?>?> = remember {
         mutableStateOf(null)
     },
     resources: Resources = LocalContext.current.resources,
@@ -33,7 +36,8 @@ fun rememberAppState(
     handleTopBarNavClick: MutableState<() -> Unit> = remember { mutableStateOf({}) }
 ) = remember(
     rootNavController, mainNavController, barNavController,
-    sharedViewModel,
+    congregationViewModel,
+    handOutTerritoriesViewModel,
     resources,
     coroutineScope,
     actionBarSubtitle, handleTopBarNavClick
@@ -42,7 +46,8 @@ fun rememberAppState(
         rootNavController = rootNavController,
         mainNavController = mainNavController,
         barNavController = barNavController,
-        sharedViewModel = sharedViewModel,
+        congregationViewModel = congregationViewModel,
+        handOutTerritoriesViewModel = handOutTerritoriesViewModel,
         appName = appName,
         actionBarSubtitle = actionBarSubtitle,
         handleTopBarNavClick = handleTopBarNavClick
@@ -60,7 +65,8 @@ class AppState(
     val rootNavController: NavHostController,
     val mainNavController: NavHostController,
     val barNavController: NavHostController,
-    val sharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
+    val congregationViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
+    val handOutTerritoriesViewModel: MutableState<SharedViewModeled<List<ListItemModel>?>?>,
     val appName: String,
     val actionBarSubtitle: MutableState<String>,
     val handleTopBarNavClick: MutableState<() -> Unit>
@@ -159,7 +165,7 @@ class AppState(
 
     // Клик по навигационному меню, вкладке.
     fun navigateToBarRoute(route: String) {
-        Timber.tag(TAG).d("navigateToBottomBarRoute(...) called: route = %s", route)
+        Timber.tag(TAG).d("navigateToBarRoute(...) called: route = %s", route)
         if (route != this.barNavCurrentRoute) {
             this.barNavController.navigate(route) {
                 // Pop up to the start destination of the graph to

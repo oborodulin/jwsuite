@@ -75,13 +75,15 @@ fun HandOutConfirmationView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Hand Out Territories Confirmation: CollectAsStateWithLifecycle for all fields")
+    Timber.tag(TAG)
+        .d("Hand Out Territories Confirmation: CollectAsStateWithLifecycle for all fields")
     val member by viewModel.member.collectAsStateWithLifecycle()
     val receivingDate by viewModel.receivingDate.collectAsStateWithLifecycle()
     val checkedTerritories by viewModel.checkedListItems.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Hand Out Territories Confirmation: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
+    val focusRequesters =
+        EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
     enumValues<TerritoriesFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
@@ -161,7 +163,10 @@ fun HandOutConfirmationView(
             contentPadding = PaddingValues(8.dp)
         ) {
             items(checkedTerritories.size) { index ->
-                TerritoriesClickableGridItemComponent(territory = checkedTerritories[index])
+                TerritoriesClickableGridItemComponent(
+                    territory = checkedTerritories[index],
+                    onChecked = { viewModel.observeCheckedListItems() }
+                )
             }
         }
     }

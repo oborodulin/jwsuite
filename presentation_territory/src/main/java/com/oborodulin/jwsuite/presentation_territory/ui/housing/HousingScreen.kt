@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +47,6 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
-import com.oborodulin.home.common.util.toast
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
@@ -90,7 +88,7 @@ fun HousingScreen(
     }
 
     val currentCongregation =
-        appState.sharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("HousingScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("Houses: CollectAsStateWithLifecycle for all fields")

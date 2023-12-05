@@ -57,7 +57,7 @@ fun TerritoryStreetScreen(
         onFabChange = onFabChange
     ) {
         TerritoryStreetView(
-            uiModel = it, sharedViewModel = appState.sharedViewModel.value,
+            uiModel = it, sharedViewModel = appState.congregationViewModel.value,
             territoryViewModel = territoryViewModel
         )
     }

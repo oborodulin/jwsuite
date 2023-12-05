@@ -42,5 +42,5 @@ fun HouseScreen(
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
-    ) { HouseView(sharedViewModel = appState.sharedViewModel.value) }
+    ) { HouseView(sharedViewModel = appState.congregationViewModel.value) }
 }

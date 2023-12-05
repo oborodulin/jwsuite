@@ -112,6 +112,7 @@ import java.util.UUID
 // ic_geo.png - https://www.freepik.com/
 // ic_role.png - <a href="https://www.flaticon.com/free-icons/setting" title="setting icons">Setting icons created by Tanah Basah - Flaticon</a>
 //              https://www.flaticon.com/search?word=role&shape=outline
+// ic_receive.png - <a href="https://www.flaticon.com/free-icons/download" title="download icons">Download icons created by Bharat Icons - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 

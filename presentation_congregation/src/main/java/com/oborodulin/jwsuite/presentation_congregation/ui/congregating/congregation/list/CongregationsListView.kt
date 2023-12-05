@@ -10,6 +10,8 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -20,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -45,11 +48,13 @@ fun CongregationsListView(
         Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect() BEFORE collect ui state flow")
         congregationsListViewModel.submitAction(CongregationsListUiAction.Load)
     }
+    val searchText by congregationsListViewModel.searchText.collectAsStateWithLifecycle()
     congregationsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             CongregationsList(
                 congregations = it,
+                searchedText = searchText.text,
                 onFavorite = { listItem ->
                     listItem.itemId?.let { id ->
                         congregationsListViewModel.submitAction(
@@ -70,9 +75,9 @@ fun CongregationsListView(
             ) { congregation ->
                 Timber.tag(TAG).d(
                     "CongregationsListView: sharedViewModel = %s",
-                    appState.sharedViewModel.value
+                    appState.congregationViewModel.value
                 )
-                appState.sharedViewModel.value?.submitData(congregation)
+                appState.congregationViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 onActionBarSubtitleChange(congregation.congregationName)
                 congregationsListViewModel.singleSelectItem(congregation)
@@ -83,7 +88,8 @@ fun CongregationsListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG)
+            .d("CongregationsListView -> LaunchedEffect() AFTER collect single Event Flow")
         congregationsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
@@ -98,6 +104,7 @@ fun CongregationsListView(
 @Composable
 fun CongregationsList(
     congregations: List<CongregationsListItem>,
+    searchedText: String = "",
     onFavorite: OnListItemEvent,
     onEdit: (CongregationsListItem) -> Unit,
     onDelete: (CongregationsListItem) -> Unit,
@@ -105,9 +112,22 @@ fun CongregationsList(
 ) {
     Timber.tag(TAG).d("CongregationsList(...) called: size = %d", congregations.size)
     if (congregations.isNotEmpty()) {
-        val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = congregations.filter { it.selected }
-                .getOrNull(0)?.let { congregations.indexOf(it) } ?: 0)
+        val filteredItems = remember(congregations, searchedText) {
+            if (searchedText.isEmpty()) {
+                congregations
+            } else {
+                congregations.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+        }
+        val firstVisibleItem = filteredItems.filter { it.selected }.getOrNull(0)
+        LaunchedEffect(firstVisibleItem) {
+            Timber.tag(TAG)
+                .d("CongregationsList -> LaunchedEffect()")
+            firstVisibleItem?.let { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(it) }
+        }
+        val listState = rememberLazyListState(initialFirstVisibleItemIndex = firstVisibleItem?.let {
+            filteredItems.indexOf(it)
+        } ?: 0)
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -115,7 +135,7 @@ fun CongregationsList(
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            itemsIndexed(congregations, key = { _, item -> item.id }) { _, congregation ->
+            itemsIndexed(filteredItems, key = { _, item -> item.id }) { _, congregation ->
                 CongregationsListItemComponent(
                     item = congregation,
                     itemActions = listOf(
