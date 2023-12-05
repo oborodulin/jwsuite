@@ -22,9 +22,10 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupConverter
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupToGroupsListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveGroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupUiToGroupMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toListItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -40,9 +41,10 @@ private const val TAG = "Congregating.GroupViewModelImpl"
 class GroupViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: GroupUseCases,
-    private val converter: GroupConverter,
-    private val groupUiMapper: GroupUiToGroupMapper,
-    private val groupMapper: GroupToGroupsListItemMapper
+    private val getConverter: GroupConverter,
+    private val saveConverter: SaveGroupConverter,
+    private val groupUiMapper: GroupUiToGroupMapper
+    //private val groupMapper: GroupToGroupsListItemMapper
 ) : GroupViewModel,
     DialogViewModel<GroupUi, UiState<GroupUi>, GroupUiAction, UiSingleEvent, GroupFields, InputWrapper>(
         state, GroupFields.GROUP_ID.name, GroupFields.GROUP_NUM
@@ -89,7 +91,7 @@ class GroupViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getGroupUseCase.execute(GetGroupUseCase.Request(groupId))
                 .map {
-                    converter.convert(it)
+                    getConverter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -124,11 +126,13 @@ class GroupViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("saveGroup() called: UI model %s", groupUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveGroupUseCase.execute(SaveGroupUseCase.Request(groupUiMapper.map(groupUi)))
+                .map { saveConverter.convert(it) }
                 .collect {
                     Timber.tag(TAG).d("saveGroup() collect: %s", it)
-                    if (it is Result.Success) {
-                        setSavedListItem(groupMapper.map(it.data.group))
+                    if (it is UiState.Success) {
+                        setSavedListItem(it.data.toListItemModel())
                     }
+                    submitState(it)
                 }
         }
         return job

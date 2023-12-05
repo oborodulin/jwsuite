@@ -54,6 +54,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     areInputsValid: Boolean = viewModel.areInputsValid.collectAsStateWithLifecycle().value,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
+    confirmButton: (@Composable (Boolean, () -> Unit) -> Unit)? = null,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
@@ -134,7 +135,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 if (isControlsShow) {
                     // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                     Spacer(Modifier.height(8.dp))
-                    SaveButtonComponent(enabled = areInputsValid, onClick = handleSaveButtonClick)
+                    confirmButton?.let { it.invoke(areInputsValid, handleSaveButtonClick) }
+                        ?: SaveButtonComponent(
+                            enabled = areInputsValid, onClick = handleSaveButtonClick
+                        )
                 }
             }
         }

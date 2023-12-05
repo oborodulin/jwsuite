@@ -36,6 +36,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.Memb
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.RolesListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveGroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberRoleToMemberRoleUiMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberRoleUiToMemberRoleMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.RoleToRoleUiMapper
@@ -187,6 +188,11 @@ object CongregatingModule {
     @Provides
     fun provideGroupConverter(mapper: GroupToGroupUiMapper): GroupConverter =
         GroupConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideSaveGroupConverter(mapper: GroupToGroupUiMapper): SaveGroupConverter =
+        SaveGroupConverter(mapper = mapper)
 
     // Member:
     @Singleton

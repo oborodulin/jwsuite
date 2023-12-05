@@ -8,6 +8,7 @@ import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.components.HandOutButtonComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 import timber.log.Timber
@@ -30,10 +31,20 @@ fun HandOutConfirmationScreen(
         viewModel = viewModel,
         loadUiAction = TerritoriesGridUiAction.HandOutInitConfirmation,
         saveUiAction = TerritoriesGridUiAction.HandOut,
-        upNavigation = { appState.barNavController.navigateUp(); appState.navigateToBarRoute(NavRoutes.Territoring.route) },
+        upNavigation = {
+            appState.barNavController.navigateUp(); appState.navigateToBarRoute(
+            NavRoutes.Territoring.route
+        )
+        },
         handleTopBarNavClick = appState.handleTopBarNavClick,
         areInputsValid = viewModel.areHandOutInputsValid.collectAsStateWithLifecycle().value,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_hand_out,
+        confirmButton = @Composable { areInputsValid, handleSaveButtonClick ->
+            HandOutButtonComponent(
+                enabled = areInputsValid,
+                onClick = handleSaveButtonClick
+            )
+        },
         onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
