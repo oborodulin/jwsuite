@@ -27,9 +27,4 @@ interface MemberViewModel :
     val memberType: StateFlow<InputWrapper>
     val movementDate: StateFlow<InputWrapper>
     val loginExpiredDate: StateFlow<InputWrapper>
-
-    fun getPseudonym(
-        surname: String? = null, memberName: String? = null, groupNum: Int? = null,
-        memberNum: String? = null
-    ): String
 }

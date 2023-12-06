@@ -12,7 +12,7 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
+import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
@@ -410,7 +410,12 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
                 override fun observeCheckedListItems() {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
 
                 override fun onTextFieldFocusChanged(
@@ -467,7 +472,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                         ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym)
                     }]",
                     pseudonym = ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym),
-                    dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
+                    dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime()
                 )
             ),
             TerritoriesListItem(

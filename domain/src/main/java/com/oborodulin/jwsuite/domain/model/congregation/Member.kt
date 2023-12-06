@@ -26,5 +26,14 @@ data class Member(
     val shortName = ("$surname"
         .plus(if (!memberName.isNullOrEmpty()) " ${memberName[0]}." else "")
         .plus(if (!patronymic.isNullOrEmpty()) "${patronymic[0]}." else "")
-        .plus(" [${pseudonym}]")).trim()
+        .plus(" [$pseudonym]")).trim()
+
+    companion object {
+        fun getPseudonym(
+            surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
+        ) =
+            "${surname?.firstOrNull() ?: ""}${memberName?.firstOrNull() ?: ""}${groupNum?.toString() ?: "0"}${
+                memberNum?.let { ".$it" }.orEmpty()
+            }"
+    }
 }

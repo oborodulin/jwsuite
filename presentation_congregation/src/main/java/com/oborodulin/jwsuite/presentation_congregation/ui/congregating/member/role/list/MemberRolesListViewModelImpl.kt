@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
+import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
@@ -104,7 +104,12 @@ class MemberRolesListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: MemberRolesListUiAction): Job? = null
             }
 
@@ -112,7 +117,7 @@ class MemberRolesListViewModelImpl @Inject constructor(
             MemberRolesListItem(
                 id = UUID.randomUUID(),
                 role = RolesListItem(),
-                roleExpiredDate = Utils.toOffsetDateTime("2023-12-01T14:29:10.212+03:00")
+                roleExpiredDate = "2023-12-01T14:29:10.212+03:00".toOffsetDateTime()
             )
         )
     }

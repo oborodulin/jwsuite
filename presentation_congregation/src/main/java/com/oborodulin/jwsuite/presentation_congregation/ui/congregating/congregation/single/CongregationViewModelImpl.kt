@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
@@ -36,8 +34,8 @@ private const val TAG = "Congregating.CongregationViewModelImpl"
 class CongregationViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: CongregationUseCases,
-    private val congregationConverter: CongregationConverter,
-    private val saveCongregationConverter: SaveCongregationConverter,
+    private val getConverter: CongregationConverter,
+    private val saveConverter: SaveCongregationConverter,
     private val mapper: CongregationUiToCongregationMapper
 ) : CongregationViewModel,
     DialogViewModel<CongregationUi, UiState<CongregationUi>, CongregationUiAction, UiSingleEvent, CongregationFields, InputWrapper>(
@@ -93,7 +91,7 @@ class CongregationViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getCongregationUseCase.execute(GetCongregationUseCase.Request(congregationId))
                 .map {
-                    congregationConverter.convert(it)
+                    getConverter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -126,7 +124,7 @@ class CongregationViewModelImpl @Inject constructor(
             ).catch {
                 Timber.tag(TAG).d("saveCongregation() error: %s", it.message)
             }.map {
-                saveCongregationConverter.convert(it)
+                saveConverter.convert(it)
             }.collect {
                 Timber.tag(TAG).d("saveCongregation() result: %s", it::class.java)
                 submitState(it)

@@ -13,12 +13,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import com.neovisionaries.i18n.CountryCode
 import timber.log.Timber
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Currency
+import java.util.Locale
+import java.util.SortedMap
 
 private const val TAG = "Common.Utils"
 
@@ -109,17 +106,6 @@ class Utils {
                 }
             }
             return AnnotatedString(text)
-        }
-
-        fun toOffsetDateTime(s: String): OffsetDateTime {
-            //val zoneId: ZoneId = ZoneId.of("UTC")   // Or another geographic: Europe/Paris
-            //val defaultZone: ZoneId = ZoneId.systemDefault()
-            val zoneId: ZoneId = ZoneId.systemDefault()
-            val formatter: DateTimeFormatter =
-                DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
-            val dateTime: LocalDateTime = LocalDateTime.parse(s, formatter)
-            val offset: ZoneOffset = zoneId.rules.getOffset(dateTime)
-            return OffsetDateTime.of(dateTime, offset)
         }
     }
 }

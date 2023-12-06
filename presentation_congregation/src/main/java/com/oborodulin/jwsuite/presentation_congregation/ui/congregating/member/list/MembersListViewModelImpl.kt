@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
+import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
@@ -127,7 +127,12 @@ class MembersListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: MembersListUiAction): Job? = null
             }
 
@@ -154,7 +159,7 @@ class MembersListViewModelImpl @Inject constructor(
                         R.string.def_ivanov_member_pseudonym
                     )
                 }]",
-                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
+                dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime()
             ),
             MembersListItem(
                 id = UUID.randomUUID(),
@@ -178,7 +183,7 @@ class MembersListViewModelImpl @Inject constructor(
                         R.string.def_tarasova_member_pseudonym
                     )
                 }]",
-                dateOfBirth = Utils.toOffsetDateTime("1979-08-01T14:29:10.212+03:00")
+                dateOfBirth = "1979-08-01T14:29:10.212+03:00".toOffsetDateTime()
             )
         )
     }

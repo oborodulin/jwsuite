@@ -5,17 +5,21 @@ import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.util.Utils
+import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.util.toOffsetDateTime
+import com.oborodulin.home.common.util.toShortFormatString
 import com.oborodulin.jwsuite.data_congregation.R
+import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
@@ -26,19 +30,31 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsLi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveMemberConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberUiToMemberMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMembersListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Congregating.MemberViewModelImpl"
@@ -49,7 +65,8 @@ class MemberViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val resHelper: ResourcesHelper,
     private val useCases: MemberUseCases,
-    private val converter: MemberConverter,
+    private val getConverter: MemberConverter,
+    private val saveConverter: SaveMemberConverter,
     private val memberUiMapper: MemberUiToMemberMapper,
     private val memberMapper: MemberToMembersListItemMapper
 ) : MemberViewModel,
@@ -157,7 +174,7 @@ class MemberViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMemberUseCase.execute(GetMemberUseCase.Request(memberId))
                 .map {
-                    converter.convert(it)
+                    getConverter.convert(it)
                 }
                 .collect {
                     submitState(it)
@@ -173,12 +190,7 @@ class MemberViewModelImpl @Inject constructor(
         val groupUi =
             GroupUi(congregation = congregationUi, groupNum = group.value.item?.headline?.toInt())
         groupUi.id = group.value.item?.itemId
-        val dateOfBirthOffsetDateTime = if (dateOfBirth.value.value.isNotEmpty())
-            LocalDate.parse(
-                dateOfBirth.value.value,
-                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-            ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-        else null
+        val dateOfBirthOffsetDateTime = dateOfBirth.value.value.toFullFormatOffsetDateTime()
         Timber.tag(TAG).d(
             "saveMember(): dateOfBirth.value.value: %s; dateOfBirthOffsetDateTime = %s",
             dateOfBirth.value.value,
@@ -194,26 +206,10 @@ class MemberViewModelImpl @Inject constructor(
             pseudonym = pseudonym.value.value,
             phoneNumber = phoneNumber.value.value,
             memberType = MemberType.valueOf(memberType.value.value),
+            movementDate = movementDate.value.value.toFullFormatOffsetDateTime()!!,
             dateOfBirth = dateOfBirthOffsetDateTime,
-            dateOfBaptism = if (dateOfBaptism.value.value.isNotEmpty())
-                LocalDate.parse(
-                    dateOfBaptism.value.value,
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-            else null,
-            loginExpiredDate = if (loginExpiredDate.value.value.isNotEmpty())
-                LocalDate.parse(
-                    loginExpiredDate.value.value,
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-            else null,
-            movementDate = LocalDate.parse(
-                dateOfBaptism.value.value,
-                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-            ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-//                offsetFormatter.parse(
-//                inactiveDate.value.value, OffsetDateTime::from
-//            ) else null
+            dateOfBaptism = dateOfBaptism.value.value.toFullFormatOffsetDateTime(),
+            loginExpiredDate = loginExpiredDate.value.value.toFullFormatOffsetDateTime()
         )
         memberUi.id = if (id.value.value.isNotEmpty()) {
             UUID.fromString(id.value.value)
@@ -221,23 +217,21 @@ class MemberViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("saveMember() called: UI model %s", memberUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))
+                .map {
+                    saveConverter.convert(it)
+                }
                 .collect {
                     Timber.tag(TAG).d("saveMember() collect: %s", it)
-                    if (it is Result.Success) {
-                        setSavedListItem(memberMapper.map(it.data.member))
+                    if (it is UiState.Success) {
+                        setSavedListItem(it.data.toMembersListItem())
                     }
+                    submitState(it)
                 }
         }
         return job
     }
 
     override fun stateInputFields() = enumValues<MemberFields>().map { it.name }
-    override fun getPseudonym(
-        surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
-    ) =
-        "${surname?.firstOrNull() ?: ""}${memberName?.firstOrNull() ?: ""}${groupNum?.toString() ?: "0"}${
-            memberNum?.let { ".$it" }.orEmpty()
-        }"
 
     override fun initFieldStatesByUiModel(uiModel: MemberUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
@@ -259,7 +253,7 @@ class MemberViewModelImpl @Inject constructor(
         initStateValue(
             MemberFields.MEMBER_PSEUDONYM, pseudonym,
             uiModel.pseudonym.ifEmpty {
-                getPseudonym(
+                Member.getPseudonym(
                     surname = uiModel.surname,
                     memberName = uiModel.memberName,
                     groupNum = uiModel.group?.groupNum,
@@ -272,24 +266,21 @@ class MemberViewModelImpl @Inject constructor(
         )
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BIRTH, dateOfBirth,
-            uiModel.dateOfBirth?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))// .ofPattern(Constants.APP_OFFSET_DATE_TIME))
-                .orEmpty()
+            uiModel.dateOfBirth.toShortFormatString()
+                .orEmpty() // .ofPattern(Constants.APP_OFFSET_DATE_TIME))
         )
         initStateValue(
             MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
-            uiModel.dateOfBaptism?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-                .orEmpty()
+            uiModel.dateOfBaptism.toShortFormatString().orEmpty()
         )
         initStateValue(MemberFields.MEMBER_TYPE, memberType, uiModel.memberType.name)
         initStateValue(
             MemberFields.MEMBER_MOVEMENT_DATE, movementDate,
-            uiModel.movementDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-                .orEmpty()
+            uiModel.movementDate.toShortFormatString().orEmpty()
         )
         initStateValue(
             MemberFields.MEMBER_LOGIN_EXPIRED_DATE, loginExpiredDate,
-            uiModel.loginExpiredDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-                .orEmpty()
+            uiModel.loginExpiredDate.toShortFormatString().orEmpty()
         )
         return null
     }
@@ -525,12 +516,13 @@ class MemberViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun getPseudonym(
-                    surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
-                ) = ""
-
                 override fun submitAction(action: MemberUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: MemberFields, isFocused: Boolean
@@ -561,8 +553,8 @@ class MemberViewModelImpl @Inject constructor(
                 pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
                 phoneNumber = "+79493851487",
                 memberType = MemberType.PREACHER,
-                dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00"),
-                dateOfBaptism = Utils.toOffsetDateTime("1994-06-14T14:29:10.212+03:00")
+                dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime(),
+                dateOfBaptism = "1994-06-14T14:29:10.212+03:00".toOffsetDateTime()
             )
             memberUi.id = UUID.randomUUID()
             return memberUi

@@ -7,7 +7,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
-import com.oborodulin.home.common.util.Utils
+import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -89,7 +89,11 @@ class TerritoriesListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
                 override fun submitAction(action: TerritoriesListUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
             }
 
         fun previewList(ctx: Context) = listOf(
@@ -127,7 +131,7 @@ class TerritoriesListViewModelImpl @Inject constructor(
                         ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym)
                     }]",
                     pseudonym = ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_ivanov_member_pseudonym),
-                    dateOfBirth = Utils.toOffsetDateTime("1981-08-01T14:29:10.212+03:00")
+                    dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime()
                 )
             ),
             TerritoriesListItem(
