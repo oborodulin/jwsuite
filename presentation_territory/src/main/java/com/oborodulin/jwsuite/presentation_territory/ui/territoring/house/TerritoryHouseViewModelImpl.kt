@@ -178,7 +178,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
             override val areInputsValid = MutableStateFlow(true)
 
             override fun submitAction(action: TerritoryHouseUiAction): Job? = null
-            override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+            override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
             override fun onTextFieldEntered(inputEvent: Inputable) {}
             override fun onTextFieldFocusChanged(
                 focusedField: TerritoryHouseFields, isFocused: Boolean

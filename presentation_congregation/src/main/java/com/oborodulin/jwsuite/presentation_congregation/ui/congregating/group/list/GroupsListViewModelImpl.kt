@@ -15,6 +15,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -106,7 +107,7 @@ class GroupsListViewModelImpl @Inject constructor(
                 override fun singleSelectedItem() = null
 
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: GroupsListUiAction): Job? = null
             }
 

@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -88,7 +89,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
 
     fun viewModelScope() = viewModelScope
 
-    override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {
+    override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {
         Timber.tag(TAG).d("handleActionJob(...) called")
         //viewModelScope.launch(Dispatchers.Main) {
         // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
@@ -99,7 +100,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                     job?.toString()
                 )
                 job?.join()
-                afterAction()
+                afterAction(this)
             }
         }
         clearUiStateErrorMessage()

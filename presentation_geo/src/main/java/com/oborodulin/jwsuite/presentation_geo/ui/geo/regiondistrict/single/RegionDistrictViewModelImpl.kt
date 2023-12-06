@@ -290,7 +290,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: RegionDistrictUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: RegionDistrictFields, isFocused: Boolean

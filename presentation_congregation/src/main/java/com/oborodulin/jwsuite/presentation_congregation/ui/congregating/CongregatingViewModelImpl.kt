@@ -98,7 +98,7 @@ class CongregatingViewModelImpl @Inject constructor(
                 override val isService = MutableStateFlow(InputWrapper())
 
                 override fun submitAction(action: CongregatingUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: CongregatingFields, isFocused: Boolean

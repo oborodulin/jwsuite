@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -110,7 +111,7 @@ class TerritoryDetailsViewModelImpl @Inject constructor() : TerritoryDetailsView
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun clearSearchText() {}
 
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: TerritoryDetailsUiAction): Job? = null
             }
 

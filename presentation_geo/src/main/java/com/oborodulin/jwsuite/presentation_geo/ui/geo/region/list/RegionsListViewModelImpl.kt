@@ -15,6 +15,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInpu
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -97,7 +98,7 @@ class RegionsListViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: RegionsListUiAction): Job? = null
             }
 

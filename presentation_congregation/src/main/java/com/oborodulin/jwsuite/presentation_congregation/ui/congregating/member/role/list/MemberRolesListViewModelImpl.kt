@@ -16,6 +16,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.MemberRolesListItem
 import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRolesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -103,7 +104,7 @@ class MemberRolesListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: MemberRolesListUiAction): Job? = null
             }
 

@@ -34,6 +34,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import kotlinx.coroutines.cancel
 import timber.log.Timber
 import java.util.UUID
 
@@ -71,11 +72,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         Timber.tag(TAG).d("SaveDialogScreenComponent: Save Button click...")
         viewModel.onContinueClick {
             // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-            viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) {
+            viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) { scope ->
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
                     Timber.tag(TAG)
-                        .d("SaveDialogScreenComponent -> viewModel.onContinueClick: after action no errors")
+                        .d("SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: no errors")
                     nextUiAction?.let { viewModel.submitAction(it) } ?: upNavigation()
                 } else {
                     isErrorShowAlert.value = true
@@ -86,6 +87,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
 
                         else -> errorMessage
                     }
+                    Timber.tag(TAG)
+                        .d("SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: cancel flow by errors")
+                    scope.cancel()
                 }
             }
         }

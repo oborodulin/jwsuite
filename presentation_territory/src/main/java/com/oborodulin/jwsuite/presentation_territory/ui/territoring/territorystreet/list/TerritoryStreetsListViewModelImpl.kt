@@ -17,6 +17,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryStreetsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -107,7 +108,7 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: TerritoryStreetsListUiAction): Job? = null
             }
 

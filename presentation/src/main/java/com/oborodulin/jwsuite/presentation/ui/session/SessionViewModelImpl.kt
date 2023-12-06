@@ -375,7 +375,7 @@ class SessionViewModelImpl @Inject constructor(
 
             override fun setSessionMode(mode: SessionModeType) {}
             override fun submitAction(action: SessionUiAction): Job? = null
-            override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+            override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
             override fun onTextFieldEntered(inputEvent: Inputable) {}
             override fun onTextFieldFocusChanged(
                 focusedField: SessionFields, isFocused: Boolean

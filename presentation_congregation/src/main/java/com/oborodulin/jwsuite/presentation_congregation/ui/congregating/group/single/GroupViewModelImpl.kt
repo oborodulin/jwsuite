@@ -230,7 +230,7 @@ class GroupViewModelImpl @Inject constructor(
 
                 //override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: GroupUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: GroupFields, isFocused: Boolean

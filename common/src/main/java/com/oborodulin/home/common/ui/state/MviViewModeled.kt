@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.state
 
 import androidx.compose.ui.text.input.TextFieldValue
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,5 +23,5 @@ interface MviViewModeled<T : Any, A : UiAction, E : UiSingleEvent> {
     fun onSearchTextChange(text: TextFieldValue)
     fun clearSearchText()
     fun submitAction(action: A): Job?
-    fun handleActionJob(action: () -> Unit, afterAction: () -> Unit)
+    fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit)
 }

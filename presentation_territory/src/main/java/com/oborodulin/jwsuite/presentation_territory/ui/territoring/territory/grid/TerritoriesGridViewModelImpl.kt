@@ -30,6 +30,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListIte
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoriesGridConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorycategory.single.TerritoryCategoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -409,7 +410,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
                 override fun observeCheckedListItems() {}
                 override fun submitAction(action: TerritoriesGridUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
 
                 override fun onTextFieldFocusChanged(

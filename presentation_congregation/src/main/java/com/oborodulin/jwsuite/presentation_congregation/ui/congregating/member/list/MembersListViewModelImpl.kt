@@ -17,6 +17,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -126,7 +127,7 @@ class MembersListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: () -> Unit) {}
+                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: MembersListUiAction): Job? = null
             }
 
