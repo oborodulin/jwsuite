@@ -75,9 +75,9 @@ fun CongregationsListView(
             ) { congregation ->
                 Timber.tag(TAG).d(
                     "CongregationsListView: sharedViewModel = %s",
-                    appState.congregationViewModel.value
+                    appState.congregationSharedViewModel.value
                 )
-                appState.congregationViewModel.value?.submitData(congregation)
+                appState.congregationSharedViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
                 onActionBarSubtitleChange(congregation.congregationName)
                 congregationsListViewModel.singleSelectItem(congregation)

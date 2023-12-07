@@ -182,6 +182,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
                 override fun observeCheckedListItems() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val street = MutableStateFlow(InputListItemWrapper<StreetsListItem>())
                 override val areInputsValid = MutableStateFlow(true)
 

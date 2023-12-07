@@ -136,8 +136,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                 if (redirectErrorStateMessage) {
                     _uiStateFlow.value = state
                 }
-                Timber.tag(TAG)
-                    .d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
+                //Timber.tag(TAG).d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
                 initFieldStatesByUiModel(it)
             }
         }

@@ -75,14 +75,14 @@ fun DashboardingScreen(
                 Column {
                     CommonScreen(state = state) { dashboardingUi ->
                         dashboardingUi.favoriteCongregation?.let { favorite ->
-                            appState.congregationViewModel.value?.submitData(favorite.toCongregationsListItem())
+                            appState.congregationSharedViewModel.value?.submitData(favorite.toCongregationsListItem())
                             appState.actionBarSubtitle.value = favorite.congregationName
                             onActionBarSubtitleChange(favorite.congregationName)
                             val currentCongregation =
-                                appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+                                appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
                             Timber.tag(TAG).d(
                                 "DashboardingScreen: appState.sharedViewModel.value = %s; currentCongregation = %s",
-                                appState.congregationViewModel.value, currentCongregation
+                                appState.congregationSharedViewModel.value, currentCongregation
                             )
                         }
                         when {

@@ -14,7 +14,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
-import com.oborodulin.jwsuite.presentation_territory.ui.HandOutTerritoriesListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.CurrentMemberViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.ProcessConfirmationScreen
@@ -51,11 +51,11 @@ fun BarNavigationHost(
             // https://stackoverflow.com/questions/68857820/how-to-share-a-viewmodel-between-two-or-more-jetpack-composables-inside-a-compos
             // https://proandroiddev.com/jetpack-navigation-component-manual-implementation-of-multiple-back-stacks-62b33e95795c
             //val parentEntry = remember(it) { appState.barNavController.getBackStackEntry(NavRoutes.Dashboarding.route) }
-            val sharedViewModel =
+            val congregationSharedViewModel =
                 hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             Timber.tag(TAG).d("Navigation Graph: get sharedViewModel")
-            if (appState.congregationViewModel.value == null) {
-                appState.congregationViewModel.value = sharedViewModel
+            if (appState.congregationSharedViewModel.value == null) {
+                appState.congregationSharedViewModel.value = congregationSharedViewModel
             }
             Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
             DashboardingScreen(
@@ -73,7 +73,11 @@ fun BarNavigationHost(
             // congregating: [Congregation, Members]; [Groups (favorite congregation), Members]
             Timber.tag(TAG)
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
-            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val memberSharedViewModel =
+                hiltViewModel<CurrentMemberViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+            if (appState.memberSharedViewModel.value == null) {
+                appState.memberSharedViewModel.value = memberSharedViewModel
+            }
             CongregatingScreen(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
@@ -93,11 +97,6 @@ fun BarNavigationHost(
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             val territoriesGridViewModel =
                 hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
-            val handOutTerritoriesViewModel =
-                hiltViewModel<HandOutTerritoriesListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
-            if (appState.handOutTerritoriesViewModel.value == null) {
-                appState.handOutTerritoriesViewModel.value = handOutTerritoriesViewModel
-            }
             TerritoringScreen(
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,

@@ -38,7 +38,7 @@ fun ProcessConfirmationScreen(
         onFabChange = onFabChange
     ) {
         ProcessConfirmationView(
-            sharedViewModel = appState.congregationViewModel.value, viewModel = viewModel
+            sharedViewModel = appState.congregationSharedViewModel.value, viewModel = viewModel
         )
     }
 }

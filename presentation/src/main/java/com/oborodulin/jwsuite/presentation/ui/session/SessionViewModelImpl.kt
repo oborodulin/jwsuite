@@ -366,6 +366,7 @@ class SessionViewModelImpl @Inject constructor(
 
             override val isLogged = MutableStateFlow(false)
             override val id = MutableStateFlow(InputWrapper())
+            override fun id() = null
             override val username = MutableStateFlow(InputWrapper())
             override val pin = MutableStateFlow(InputWrapper())
             override val confirmPin = MutableStateFlow(InputWrapper())

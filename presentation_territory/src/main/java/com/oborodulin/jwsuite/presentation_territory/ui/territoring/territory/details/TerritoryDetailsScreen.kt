@@ -131,11 +131,12 @@ fun TerritoryDetailsScreen(
                     territory.cardNum
                 )
             )
-            val upNavigation = { appState.backToBottomBarScreen() }
+            val upNavigation = { appState.mainNavigateUp() }
             // Scaffold Hoisting:
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-            onTopBarNavClickChange { upNavigation() }
-            onTopBarActionsChange (true) {
+            appState.handleTopBarNavClick.value = upNavigation
+
+            onTopBarActionsChange(true) {
                 IconButton(onClick = { appState.backToBottomBarScreen() }) {
                     Icon(Icons.Outlined.Done, null)
                 }

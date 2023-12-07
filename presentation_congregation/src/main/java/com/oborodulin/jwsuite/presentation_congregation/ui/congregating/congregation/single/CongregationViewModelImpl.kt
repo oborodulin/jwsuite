@@ -9,6 +9,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.congregation.CongregationUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
@@ -110,9 +111,7 @@ class CongregationViewModelImpl @Inject constructor(
             isFavorite = isFavorite.value.value.toBoolean(),
             locality = localityUi
         )
-        congregationUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        congregationUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
             "saveCongregation() called: UI model %s; localityUi.id = %s",
             congregationUi,
@@ -294,6 +293,7 @@ class CongregationViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val congregationNum = MutableStateFlow(InputWrapper())
                 override val congregationName = MutableStateFlow(InputWrapper())

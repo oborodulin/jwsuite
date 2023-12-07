@@ -5,16 +5,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.util.UUID
 
 private const val TAG = "Territoring.TerritoryScreen"
 
@@ -31,15 +28,15 @@ fun TerritoryScreen(
 ) {
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
-    val territoryId by viewModel.id.collectAsStateWithLifecycle()
     val upNavigation = { appState.backToBottomBarScreen() }
+    //val territoryId by viewModel.id.collectAsStateWithLifecycle()
+    //Timber.tag(TAG).d("TerritoryScreen: territoryId = %s", territoryId)
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = territoryInput?.territoryId,
         loadUiAction = TerritoryUiAction.Load(territoryInput?.territoryId),
         saveUiAction = TerritoryUiAction.Save,
-        nextUiAction = TerritoryUiAction.EditTerritoryDetails(territoryId.value.ifEmpty { null }
-            ?.let { UUID.fromString(it) }),
+        nextAction = { viewModel.submitAction(TerritoryUiAction.EditTerritoryDetails(viewModel.id())) },
         upNavigation = upNavigation,
         handleTopBarNavClick = appState.handleTopBarNavClick,
         topBarActionImageVector = Icons.Outlined.ArrowForward,
@@ -52,7 +49,7 @@ fun TerritoryScreen(
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
     ) {
-        TerritoryView(appState.congregationViewModel.value, viewModel = viewModel)
+        TerritoryView(appState.congregationSharedViewModel.value, viewModel = viewModel)
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)

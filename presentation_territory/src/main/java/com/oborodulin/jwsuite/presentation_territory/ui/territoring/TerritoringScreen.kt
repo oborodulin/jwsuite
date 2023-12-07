@@ -88,7 +88,7 @@ fun TerritoringScreen(
     Timber.tag(TAG).d("TerritoringScreen(...) called")
     val appState = LocalAppState.current
     val currentCongregation =
-        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
 
     val emptySearchText = TextFieldValue("")
@@ -426,7 +426,7 @@ fun HandOutTerritoriesView(
         }
         BarMemberComboBox(
             modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-            sharedViewModel = appState.congregationViewModel.value,
+            sharedViewModel = appState.congregationSharedViewModel.value,
             inputWrapper = member,
             onValueChange = {
                 territoriesGridViewModel.onTextFieldEntered(TerritoriesInputEvent.Member(it))

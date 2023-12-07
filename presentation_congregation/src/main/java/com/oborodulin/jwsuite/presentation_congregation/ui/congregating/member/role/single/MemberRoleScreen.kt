@@ -17,7 +17,6 @@ private const val TAG = "Congregating.MemberRoleScreen"
 fun MemberRoleScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel,
     memberRoleInput: NavigationInput.MemberRoleInput? = null,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -42,9 +41,6 @@ fun MemberRoleScreen(
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
     ) {
-        MemberRoleView(
-            sharedViewModel = appState.congregationViewModel.value,
-            membersListViewModel = membersListViewModel
-        )
+        MemberRoleView(sharedViewModel = appState.congregationSharedViewModel.value)
     }
 }

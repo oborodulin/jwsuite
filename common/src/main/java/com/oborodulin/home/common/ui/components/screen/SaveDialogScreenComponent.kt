@@ -47,6 +47,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     loadUiAction: A,
     saveUiAction: A,
     nextUiAction: A? = null,
+    nextAction: (() -> Unit)? = null,
     upNavigation: () -> Unit,
     handleTopBarNavClick: MutableState<() -> Unit>,
     topBarActionImageVector: ImageVector = Icons.Outlined.Done,
@@ -76,8 +77,12 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
                     Timber.tag(TAG)
-                        .d("SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: no errors")
-                    nextUiAction?.let { viewModel.submitAction(it) } ?: upNavigation()
+                        .d(
+                            "SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: (no errors) nextUiAction = %s",
+                            nextUiAction
+                        )
+                    nextUiAction?.let { viewModel.submitAction(it) }
+                        ?: nextAction?.invoke() ?: upNavigation()
                 } else {
                     isErrorShowAlert.value = true
                     errorMessage = when {
@@ -139,7 +144,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 if (isControlsShow) {
                     // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                     Spacer(Modifier.height(8.dp))
-                    confirmButton?.let { it.invoke(areInputsValid, handleSaveButtonClick) }
+                    confirmButton?.invoke(areInputsValid, handleSaveButtonClick)
                         ?: SaveButtonComponent(
                             enabled = areInputsValid, onClick = handleSaveButtonClick
                         )

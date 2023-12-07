@@ -377,6 +377,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

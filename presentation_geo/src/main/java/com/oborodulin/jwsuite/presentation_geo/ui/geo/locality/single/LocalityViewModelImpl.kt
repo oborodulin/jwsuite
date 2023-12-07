@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
@@ -136,9 +137,7 @@ class LocalityViewModelImpl @Inject constructor(
             localityShortName = localityShortName.value.value,
             localityName = localityName.value.value
         )
-        localityUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        localityUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
             "saveLocality() called: UI model %s; regionUi.id = %s; regionDistrictUi.id = %s",
             localityUi,
@@ -348,6 +347,7 @@ class LocalityViewModelImpl @Inject constructor(
                 override val localityTypes = MutableStateFlow(mutableMapOf<LocalityType, String>())
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val regionDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

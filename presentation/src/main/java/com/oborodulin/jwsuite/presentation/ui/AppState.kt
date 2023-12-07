@@ -23,10 +23,10 @@ fun rememberAppState(
     rootNavController: NavHostController = rememberNavController(),
     mainNavController: NavHostController = rememberNavController(),
     barNavController: NavHostController = rememberNavController(),
-    congregationViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
+    congregationSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
         mutableStateOf(null)
     },
-    handOutTerritoriesViewModel: MutableState<SharedViewModeled<List<ListItemModel>?>?> = remember {
+    memberSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
         mutableStateOf(null)
     },
     resources: Resources = LocalContext.current.resources,
@@ -36,8 +36,8 @@ fun rememberAppState(
     handleTopBarNavClick: MutableState<() -> Unit> = remember { mutableStateOf({}) }
 ) = remember(
     rootNavController, mainNavController, barNavController,
-    congregationViewModel,
-    handOutTerritoriesViewModel,
+    congregationSharedViewModel,
+    memberSharedViewModel,
     resources,
     coroutineScope,
     actionBarSubtitle, handleTopBarNavClick
@@ -46,8 +46,8 @@ fun rememberAppState(
         rootNavController = rootNavController,
         mainNavController = mainNavController,
         barNavController = barNavController,
-        congregationViewModel = congregationViewModel,
-        handOutTerritoriesViewModel = handOutTerritoriesViewModel,
+        congregationSharedViewModel = congregationSharedViewModel,
+        memberSharedViewModel = memberSharedViewModel,
         appName = appName,
         actionBarSubtitle = actionBarSubtitle,
         handleTopBarNavClick = handleTopBarNavClick
@@ -65,8 +65,8 @@ class AppState(
     val rootNavController: NavHostController,
     val mainNavController: NavHostController,
     val barNavController: NavHostController,
-    val congregationViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
-    val handOutTerritoriesViewModel: MutableState<SharedViewModeled<List<ListItemModel>?>?>,
+    val congregationSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
+    val memberSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
     val appName: String,
     val actionBarSubtitle: MutableState<String>,
     val handleTopBarNavClick: MutableState<() -> Unit>

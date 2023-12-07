@@ -13,7 +13,7 @@ import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.list.MemberRolesListUiAction
@@ -25,7 +25,6 @@ private const val TAG = "Congregating.MembersListView"
 
 @Composable
 fun MembersListView(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     memberRolesListViewModel: MemberRolesListViewModelImpl = hiltViewModel(),
@@ -34,12 +33,13 @@ fun MembersListView(
     isService: Boolean = false,
     isEditableList: Boolean = true
 ) {
+    val appState = LocalAppState.current
     Timber.tag(TAG).d(
         "MembersListView(...) called: congregationInput = %s; groupInput = %s; isService = %s",
         congregationInput, groupInput, isService
     )
     val currentCongregation =
-        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
 
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
@@ -47,14 +47,18 @@ fun MembersListView(
 
     LaunchedEffect(congregationId, groupInput?.groupId, isService) {
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect() BEFORE collect ui state flow")
-        when (groupInput?.groupId) {
-            null -> membersListViewModel.submitAction(
-                MembersListUiAction.LoadByCongregation(congregationId, isService)
-            )
+        membersListViewModel.handleActionJob({
+            when (groupInput?.groupId) {
+                null -> membersListViewModel.submitAction(
+                    MembersListUiAction.LoadByCongregation(congregationId, isService)
+                )
 
-            else -> membersListViewModel.submitAction(
-                MembersListUiAction.LoadByGroup(groupInput.groupId, isService)
-            )
+                else -> membersListViewModel.submitAction(
+                    MembersListUiAction.LoadByGroup(groupInput.groupId, isService)
+                )
+            }
+        }) {
+            appState.memberSharedViewModel.value?.submitData(membersListViewModel.singleSelectedItem())
         }
     }
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
@@ -78,6 +82,7 @@ fun MembersListView(
                             )
                         }
                     ) { member ->
+                        appState.memberSharedViewModel.value?.submitData(member)
                         membersListViewModel.singleSelectItem(member)
                         with(memberRolesListViewModel) {
                             submitAction(MemberRolesListUiAction.Load(member.itemId!!))

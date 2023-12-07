@@ -52,7 +52,7 @@ fun HandOutConfirmationScreen(
         onFabChange = onFabChange
     ) {
         HandOutConfirmationView(
-            sharedViewModel = appState.congregationViewModel.value, viewModel = viewModel
+            sharedViewModel = appState.congregationSharedViewModel.value, viewModel = viewModel
         )
     }
     // Scaffold Hoisting:

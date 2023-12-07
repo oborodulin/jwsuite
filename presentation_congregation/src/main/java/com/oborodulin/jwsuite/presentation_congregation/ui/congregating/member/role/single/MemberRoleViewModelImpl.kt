@@ -14,7 +14,10 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.toFullFormatOffsetDateTimeOrNull
 import com.oborodulin.home.common.util.toOffsetDateTime
+import com.oborodulin.home.common.util.toShortFormatString
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
@@ -46,10 +49,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.UUID
 import javax.inject.Inject
 
@@ -139,16 +138,9 @@ class MemberRoleViewModelImpl @Inject constructor(
         val memberRoleUi = MemberRoleUi(
             member = memberUi,
             role = roleUi,
-            roleExpiredDate = if (roleExpiredDate.value.value.isNotEmpty())
-                LocalDate.parse(
-                    roleExpiredDate.value.value,
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
-            else null
+            roleExpiredDate = roleExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
         )
-        memberRoleUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        memberRoleUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveMemberRole() called: UI model %s", memberRoleUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberRoleUseCase.execute(
@@ -186,8 +178,7 @@ class MemberRoleViewModelImpl @Inject constructor(
         )
         initStateValue(
             MemberRoleFields.MEMBER_ROLE_EXPIRED_DATE, roleExpiredDate,
-            uiModel.roleExpiredDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
-                .orEmpty()
+            uiModel.roleExpiredDate.toShortFormatString().orEmpty()
         )
         return null
     }
@@ -293,6 +284,7 @@ class MemberRoleViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())

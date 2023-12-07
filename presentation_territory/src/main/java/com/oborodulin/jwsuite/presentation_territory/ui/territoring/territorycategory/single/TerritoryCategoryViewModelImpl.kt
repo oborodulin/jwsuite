@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
@@ -108,9 +109,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
             territoryCategoryMark = territoryCategoryMark.value.value,
             territoryCategoryName = territoryCategoryName.value.value
         )
-        territoryCategoryUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        territoryCategoryUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveTerritoryCategory() called: UI model %s", territoryCategoryUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryCategoryUseCase.execute(
@@ -314,6 +313,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val territoryCategoryCode = MutableStateFlow(InputWrapper())
                 override val territoryCategoryMark = MutableStateFlow(InputWrapper())
                 override val territoryCategoryName = MutableStateFlow(InputWrapper())

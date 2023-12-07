@@ -95,6 +95,7 @@ class CongregatingViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val isService = MutableStateFlow(InputWrapper())
 
                 override fun submitAction(action: CongregatingUiAction): Job? = null

@@ -66,7 +66,7 @@ fun TerritoriesGridView(
         locationId
     )
     val currentCongregation =
-        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
         .d("currentCongregation = %s; congregationId = %s", currentCongregation, congregationId)

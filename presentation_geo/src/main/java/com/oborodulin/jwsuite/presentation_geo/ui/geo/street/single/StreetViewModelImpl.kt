@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
@@ -142,9 +143,7 @@ class StreetViewModelImpl @Inject constructor(
             estimatedHouses = estimatedHouses.value.value.toIntOrNull(),
             streetName = streetName.value.value
         )
-        streetUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        streetUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
             "saveStreet() called: UI model %s; localityUi.id = %s",
             streetUi, localityUi.id//, localityDistrictUi.id
@@ -339,6 +338,7 @@ class StreetViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 //override val localityDistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())

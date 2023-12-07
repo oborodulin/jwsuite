@@ -40,5 +40,5 @@ fun MemberScreen(
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
-    ) { MemberView(appState.congregationViewModel.value) }
+    ) { MemberView(appState.congregationSharedViewModel.value) }
 }

@@ -2,13 +2,22 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,11 +42,10 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.role.single.RoleComboBox
 import timber.log.Timber
@@ -49,10 +57,10 @@ private const val TAG = "Congregating.MemberRoleView"
 @Composable
 fun MemberRoleView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel
+    memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("MemberRoleView(...) called")
+    val appState = LocalAppState.current
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -66,15 +74,9 @@ fun MemberRoleView(
     }
 
     Timber.tag(TAG).d("MemberRole: CollectAsStateWithLifecycle for all fields")
-    //val congregation by viewModel.congregation.collectAsStateWithLifecycle()
     val member by memberRoleViewModel.member.collectAsStateWithLifecycle()
     val role by memberRoleViewModel.role.collectAsStateWithLifecycle()
     val roleExpiredDate by memberRoleViewModel.roleExpiredDate.collectAsStateWithLifecycle()
-
-    //val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value
-    //Timber.tag(TAG).d("currentCongregation = %s", currentCongregation)
-    val selectedMember = membersListViewModel.singleSelectedItem()
-    Timber.tag(TAG).d("selectedMember = %s", selectedMember)
 
     Timber.tag(TAG).d("MemberRole: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -105,11 +107,12 @@ fun MemberRoleView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        //currentCongregation?.let { viewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it.toCongregationsListItem())) }
-        if (member.item == null) {
-            selectedMember?.let {
-                memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it))
-            }
+        val currentMember =
+            appState.memberSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        val selectedMember = member.item ?: currentMember
+        Timber.tag(TAG).d("selectedMember = %s", currentMember)
+        selectedMember?.let {
+            memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it))
         }
         MemberComboBox(
             modifier = Modifier
@@ -120,10 +123,10 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            enabled = false,
+            enabled = member.item?.itemId == null,
             sharedViewModel = sharedViewModel,
             inputWrapper = member,
-            //onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
+            onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction
         )
         RoleComboBox(
@@ -135,7 +138,7 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            memberId = member.item?.itemId!!,
+            memberId = selectedMember?.itemId!!,
             inputWrapper = role,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Role(it)) },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction
@@ -168,13 +171,10 @@ fun MemberRoleView(
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewGroupView() {
-    val ctx = LocalContext.current
+    //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberRoleView(
-                sharedViewModel = FavoriteCongregationViewModelImpl.previewModel,
-                membersListViewModel = MembersListViewModelImpl.previewModel(ctx)
-            )
+            MemberRoleView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

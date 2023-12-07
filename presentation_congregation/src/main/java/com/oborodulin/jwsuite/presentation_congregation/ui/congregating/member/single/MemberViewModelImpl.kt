@@ -16,8 +16,10 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.util.toFullFormatOffsetDateTimeOrNull
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.home.common.util.toShortFormatString
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
@@ -190,7 +192,7 @@ class MemberViewModelImpl @Inject constructor(
         val groupUi =
             GroupUi(congregation = congregationUi, groupNum = group.value.item?.headline?.toInt())
         groupUi.id = group.value.item?.itemId
-        val dateOfBirthOffsetDateTime = dateOfBirth.value.value.toFullFormatOffsetDateTime()
+        val dateOfBirthOffsetDateTime = dateOfBirth.value.value.toFullFormatOffsetDateTimeOrNull()
         Timber.tag(TAG).d(
             "saveMember(): dateOfBirth.value.value: %s; dateOfBirthOffsetDateTime = %s",
             dateOfBirth.value.value,
@@ -206,14 +208,12 @@ class MemberViewModelImpl @Inject constructor(
             pseudonym = pseudonym.value.value,
             phoneNumber = phoneNumber.value.value,
             memberType = MemberType.valueOf(memberType.value.value),
-            movementDate = movementDate.value.value.toFullFormatOffsetDateTime()!!,
+            movementDate = movementDate.value.value.toFullFormatOffsetDateTime(),
             dateOfBirth = dateOfBirthOffsetDateTime,
-            dateOfBaptism = dateOfBaptism.value.value.toFullFormatOffsetDateTime(),
-            loginExpiredDate = loginExpiredDate.value.value.toFullFormatOffsetDateTime()
+            dateOfBaptism = dateOfBaptism.value.value.toFullFormatOffsetDateTimeOrNull(),
+            loginExpiredDate = loginExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
         )
-        memberUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        memberUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveMember() called: UI model %s", memberUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))
@@ -499,6 +499,7 @@ class MemberViewModelImpl @Inject constructor(
                 override val memberTypes = MutableStateFlow(mutableMapOf<MemberType, String>())
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val congregation =
                     MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
                 override val group = MutableStateFlow(InputListItemWrapper<ListItemModel>())

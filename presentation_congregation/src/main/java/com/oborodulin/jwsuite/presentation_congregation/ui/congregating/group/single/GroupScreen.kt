@@ -30,7 +30,7 @@ fun GroupScreen(
     val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
 
     val currentCongregation =
-        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(groupInput?.groupId) {
         Timber.tag(TAG).d("GroupScreen -> LaunchedEffect() BEFORE collect ui state flow")
         currentCongregation?.itemId?.let { congregationId ->
@@ -53,5 +53,5 @@ fun GroupScreen(
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
-    ) { GroupView(appState.congregationViewModel.value) }
+    ) { GroupView(appState.congregationSharedViewModel.value) }
 }

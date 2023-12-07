@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 //create an extension function on a date class which returns a string
 fun Date.dateToString(format: String): String {
@@ -28,6 +29,8 @@ fun Double.is5PercentDown(): Boolean {
     return this <= -5
 }
 
+fun String.toUUIDOrNull() = this.ifEmpty { null }?.let { UUID.fromString(it) }
+
 fun String.toOffsetDateTime(): OffsetDateTime {
     //val zoneId: ZoneId = ZoneId.of("UTC")   // Or another geographic: Europe/Paris
     //val defaultZone: ZoneId = ZoneId.systemDefault()
@@ -39,11 +42,14 @@ fun String.toOffsetDateTime(): OffsetDateTime {
     return OffsetDateTime.of(dateTime, offset)
 }
 
-fun String.toFullFormatOffsetDateTime() = if (this.isNotEmpty())
-    LocalDate.parse(
-        this,
-        DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-    ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime() else null
+fun String.toFullFormatOffsetDateTime(): OffsetDateTime = LocalDate.parse(
+    this,
+    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+
+fun String.toFullFormatOffsetDateTimeOrNull() = if (this.isNotEmpty())
+    this.toFullFormatOffsetDateTime()
+else null
 
 fun OffsetDateTime?.toShortFormatString() =
     this?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))

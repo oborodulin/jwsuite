@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
 import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
@@ -153,9 +154,7 @@ class RoomViewModelImpl @Inject constructor(
             isForeignLanguage = isForeignLanguage.value.value.toBoolean(),
             roomDesc = roomDesc.value.value.ifEmpty { null }
         )
-        roomUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        roomUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
             "saveRoom() called: UI model %s; houseUi.id = %s; entranceUi.id = %s; floorUi.id = %s",
             roomUi, houseUi.id, entranceUi.id, floorUi.id
@@ -400,6 +399,7 @@ class RoomViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val localityDistrict =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())

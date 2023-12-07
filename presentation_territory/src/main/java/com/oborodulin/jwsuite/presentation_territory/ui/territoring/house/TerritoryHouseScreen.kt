@@ -45,7 +45,7 @@ fun TerritoryHouseScreen(
     ) {
         TerritoryHouseView(
             territoryHousesUiModel = it,
-            sharedViewModel = appState.congregationViewModel.value,
+            sharedViewModel = appState.congregationSharedViewModel.value,
             territoryViewModel = territoryViewModel,
             territoryHouseViewModel = territoryHouseViewModel
         )

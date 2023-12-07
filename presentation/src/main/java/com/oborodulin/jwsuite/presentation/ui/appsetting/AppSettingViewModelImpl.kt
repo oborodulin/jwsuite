@@ -337,6 +337,7 @@ class AppSettingViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val territoryProcessingPeriod = MutableStateFlow(InputWrapper())
                 override val territoryAtHandPeriod = MutableStateFlow(InputWrapper())
                 override val territoryIdlePeriod = MutableStateFlow(InputWrapper())

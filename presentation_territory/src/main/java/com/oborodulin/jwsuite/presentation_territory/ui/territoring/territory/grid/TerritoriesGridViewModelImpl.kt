@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
@@ -48,9 +49,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.UUID
@@ -227,10 +226,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     private fun handOutTerritories(): Job {
         val memberId = member.value.item?.itemId
         val territoryIds = checkedListItems.value.map { it.id }
-        val receivingDate = LocalDate.parse(
-            receivingDate.value.value,
-            DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-        ).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime()
+        val receivingDate = receivingDate.value.value.toFullFormatOffsetDateTime()
         Timber.tag(TAG)
             .d(
                 "handOutTerritories() called: memberId = %s; territoryIds = %s; receivingDate = %s",
@@ -400,6 +396,7 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 override fun onIdleSearchTextChange(text: TextFieldValue) {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val receivingDate = MutableStateFlow(InputWrapper())
                 override val deliveryDate = MutableStateFlow(InputWrapper())

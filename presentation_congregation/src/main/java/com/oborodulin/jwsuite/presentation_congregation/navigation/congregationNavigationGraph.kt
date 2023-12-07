@@ -5,17 +5,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import timber.log.Timber
@@ -95,11 +92,9 @@ fun NavGraphBuilder.congregationNavGraph(
                 NavRoutes.MemberRole.arguments.firstOrNull()
             )
             onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-            val membersListViewModel =
-                hiltViewModel<MembersListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+            //val membersListViewModel = hiltViewModel<MembersListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             MemberRoleScreen(
                 //sharedViewModel = sharedViewModel,
-                membersListViewModel = membersListViewModel,
                 memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
                 onActionBarChange = onActionBarChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,

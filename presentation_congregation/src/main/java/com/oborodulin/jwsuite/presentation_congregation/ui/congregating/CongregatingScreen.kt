@@ -308,7 +308,6 @@ fun CongregationMembersView(
                 )
         ) {
             MembersListView(
-                appState = appState,
                 congregationInput = selectedCongregationId?.let {
                     NavigationInput.CongregationInput(it)
                 },
@@ -355,7 +354,7 @@ fun GroupMembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            GroupsListView(appState = appState)//, sharedViewModel = sharedViewModel)
+            GroupsListView()
         }
         Box(
             modifier = Modifier
@@ -370,7 +369,6 @@ fun GroupMembersView(
                 )
         ) {
             MembersListView(
-                appState = appState,
                 groupInput = selectedGroupId?.let { NavigationInput.GroupInput(it) },
                 isService = isService,
                 isEditableList = false
@@ -412,10 +410,7 @@ fun MemberRolesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(
-                appState = appState,
-                isService = isService
-            )//, sharedViewModel = sharedViewModel)
+            MembersListView(isService = isService)
         }
         Box(
             modifier = Modifier
@@ -469,10 +464,7 @@ fun MembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(
-                appState = appState,
-                isService = false
-            )//, sharedViewModel = sharedViewModel)
+            MembersListView(isService = false)
         }
         Box(
             modifier = Modifier

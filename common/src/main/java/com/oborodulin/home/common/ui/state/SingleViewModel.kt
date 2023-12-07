@@ -13,6 +13,7 @@ import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.InputsWrapper
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.util.toUUIDOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -37,7 +38,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
     private val _isUiStateChanged: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val isUiStateChanged = _isUiStateChanged.asStateFlow()
-    protected var focusedTextField = FocusedTextField(
+    private var focusedTextField = FocusedTextField(
         textField = initFocusedTextField,
         key = state[FOCUSED_FIELD_KEY] ?: initFocusedTextField?.key()
     )
@@ -64,6 +65,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     override fun initFieldStatesByUiModel(uiModel: T): Job? = null
 
     abstract suspend fun observeInputEvents()
+    override fun id() = id.value.value.toUUIDOrNull()
     fun isNewUiState() = id.value.value.isEmpty()
     fun onInsert(block: () -> Unit) {
         if (isNewUiState()) {

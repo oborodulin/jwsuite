@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.ResourcesHelper
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
@@ -203,9 +204,7 @@ class HouseViewModelImpl @Inject constructor(
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             houseDesc = houseDesc.value.value.ifEmpty { null }
         )
-        houseUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        houseUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
             "saveHouse() called: UI model %s; streetUi.id = %s",
             houseUi,
@@ -534,6 +533,7 @@ class HouseViewModelImpl @Inject constructor(
                 override val buildingTypes = MutableStateFlow(mutableMapOf<BuildingType, String>())
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street =
                     MutableStateFlow(InputListItemWrapper<StreetsListItem>())

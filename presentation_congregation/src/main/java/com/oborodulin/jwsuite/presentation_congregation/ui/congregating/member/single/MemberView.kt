@@ -39,6 +39,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
@@ -138,7 +139,7 @@ fun MemberView(
             onValueChange = { groupNum ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Group(groupNum))
                 viewModel.onInsert {
-                    val pseudonymVal = viewModel.getPseudonym(
+                    val pseudonymVal = Member.getPseudonym(
                         surname.value, memberName.value, groupNum.headline.toIntOrNull(),
                         memberNum.value
                     )
@@ -164,7 +165,7 @@ fun MemberView(
             onValueChange = { numInGroup ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberNum(numInGroup))
                 viewModel.onInsert {
-                    val pseudonymVal = viewModel.getPseudonym(
+                    val pseudonymVal = Member.getPseudonym(
                         surname.value, memberName.value, group.item?.headline?.toIntOrNull(),
                         numInGroup
                     )
@@ -193,7 +194,7 @@ fun MemberView(
             onValueChange = { value ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Surname(value))
                 viewModel.onInsert {
-                    val pseudonymVal = viewModel.getPseudonym(
+                    val pseudonymVal = Member.getPseudonym(
                         value, memberName.value, group.item?.headline?.toIntOrNull(),
                         memberNum.value
                     )
@@ -222,9 +223,8 @@ fun MemberView(
             onValueChange = { name ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberName(name))
                 viewModel.onInsert {
-                    val pseudonymVal = viewModel.getPseudonym(
-                        surname.value, name, group.item?.headline?.toIntOrNull(),
-                        memberNum.value
+                    val pseudonymVal = Member.getPseudonym(
+                        surname.value, name, group.item?.headline?.toIntOrNull(), memberNum.value
                     )
                     viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(pseudonymVal))
                 }

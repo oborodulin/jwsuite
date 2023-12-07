@@ -42,5 +42,5 @@ fun RoomScreen(
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
-    ) { RoomView(sharedViewModel = appState.congregationViewModel.value) }
+    ) { RoomView(sharedViewModel = appState.congregationSharedViewModel.value) }
 }

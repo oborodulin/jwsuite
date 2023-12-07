@@ -12,7 +12,7 @@ import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
@@ -24,13 +24,13 @@ private const val TAG = "Congregating.GroupsListView"
 
 @Composable
 fun GroupsListView(
-    appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null
 ) {
+    val appState = LocalAppState.current
     Timber.tag(TAG).d(
         "GroupsListView(...) called: congregationInput = %s; groupInput = %s",
         congregationInput,
@@ -44,7 +44,7 @@ fun GroupsListView(
     //    )
     //}
     val currentCongregation =
-        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     val congregationId = congregationInput?.congregationId ?: currentCongregation?.itemId
     Timber.tag(TAG)
         .d(

@@ -88,7 +88,7 @@ fun HousingScreen(
     }
 
     val currentCongregation =
-        appState.congregationViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("HousingScreen: currentCongregation = %s", currentCongregation)
 
     Timber.tag(TAG).d("Houses: CollectAsStateWithLifecycle for all fields")

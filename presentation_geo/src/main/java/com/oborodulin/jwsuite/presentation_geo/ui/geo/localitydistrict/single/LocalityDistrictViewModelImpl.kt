@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
@@ -110,9 +111,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
         )
-        localityDistrictUi.id = if (id.value.value.isNotEmpty()) {
-            UUID.fromString(id.value.value)
-        } else null
+        localityDistrictUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveLocalityDistrict() called: UI model %s", localityDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityDistrictUseCase.execute(
@@ -299,6 +298,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 override fun clearSearchText() {}
 
                 override val id = MutableStateFlow(InputWrapper())
+                override fun id() = null
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())
