@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.toast
 import timber.log.Timber
 
@@ -17,7 +19,7 @@ fun <F : Focusable> inputProcess(
     event: ScreenEvent,
     focusRequesters: Map<F, InputFocusRequester>
 ) {
-    Timber.tag(TAG).d("inputProcess(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("inputProcess(...) called")
     when (event) {
         is ScreenEvent.ShowToast -> context.toast(event.messageId)
         is ScreenEvent.UpdateKeyboard -> {

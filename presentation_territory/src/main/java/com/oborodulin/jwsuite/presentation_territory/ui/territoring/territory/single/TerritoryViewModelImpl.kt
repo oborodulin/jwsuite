@@ -205,7 +205,7 @@ class TerritoryViewModelImpl @Inject constructor(
             isBusiness = isBusiness.value.value.toBoolean(),
             isGroupMinistry = isGroupMinistry.value.value.toBoolean(),
             isActive = isActive.value.value.toBoolean(),
-            territoryDesc = territoryDesc.value.value
+            territoryDesc = territoryDesc.value.value.ifEmpty { null }
         )
         territoryUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)

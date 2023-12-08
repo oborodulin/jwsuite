@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_UI_STATE
 import timber.log.Timber
 
 private const val TAG = "Common.ui.CommonScreen"
@@ -36,7 +37,7 @@ fun <T : Any> CommonScreen(
         }
 
         is UiState.Success -> {
-            //Timber.tag(TAG).d("CommonScreen: onSuccess(...) called: %s", state.data)
+            if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("CommonScreen: onSuccess(...) called: %s", state.data)
             onSuccess(state.data)
         }
     }

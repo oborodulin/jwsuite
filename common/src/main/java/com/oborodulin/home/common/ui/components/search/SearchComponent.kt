@@ -60,6 +60,7 @@ fun SearchComponent(
     val relocation = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
     // https://stackoverflow.com/questions/64181930/request-focus-on-textfield-in-jetpack-compose
+    // https://stackoverflow.com/questions/72833025/jetpack-compose-textfield-doesnt-lose-focus-on-click-outside-of-it
     // initialize focus reference to be able to request focus programmatically
     val focusRequester = FocusRequester()
     // https://medium.com/@kamal.lakhani56/search-bar-animation-jetpack-compose-c865e4605c6a

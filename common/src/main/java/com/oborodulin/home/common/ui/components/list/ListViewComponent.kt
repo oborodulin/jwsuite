@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
@@ -18,7 +20,7 @@ fun ListViewComponent(
     isEmptyListTextOutput: Boolean = true,
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT
 ) {
-    Timber.tag(TAG).d("ListViewComponent(...) called: size = %d", items.size)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("ListViewComponent(...) called: size = %d", items.size)
     EditableListViewComponent(
         items = items,
         emptyListResId = emptyListResId,

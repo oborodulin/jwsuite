@@ -36,6 +36,8 @@ import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.OnTextFieldValueChange
@@ -63,7 +65,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("BarComboBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("BarComboBoxComponent(...) called")
     var itemId by remember { mutableStateOf(inputWrapper.item?.itemId) }
     var fieldValue by remember {
         mutableStateOf(
@@ -80,7 +82,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     // make sure to keep the value updated
     onFieldValueChange(fieldValue.copy(text = inputWrapper.item?.headline.orEmpty()))
 
-    Timber.tag(TAG).d(
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
         "itemId = %s; fieldValue.text = %s; inputWrapper.item.headline = %s",
         itemId,
         fieldValue.text,
@@ -88,7 +90,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     )
     /*    if (fieldValue.text != inputWrapper.item?.headline.orEmpty()) fieldValue =
             TextFieldValue(inputWrapper.item?.headline.orEmpty(), TextRange(inputWrapper.item?.headline.orEmpty().length))
-        Timber.tag(TAG).d(
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
             "BarComboBoxComponent: fieldValue = %s; inputWrapper = %s",
             fieldValue,
             inputWrapper

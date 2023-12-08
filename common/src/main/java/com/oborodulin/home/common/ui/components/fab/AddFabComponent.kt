@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import timber.log.Timber
 
 private const val TAG = "Common.ui.AddFabComponent"
@@ -19,7 +21,7 @@ fun AddFabComponent(
     @StringRes contentDescriptionResId: Int? = null,
     onClick: () -> Unit = {}
 ) {
-    Timber.tag(TAG).d("AddFabComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("AddFabComponent(...) called")
     FabComponent(
         modifier = modifier,
         enabled = true,

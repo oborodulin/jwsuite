@@ -42,6 +42,8 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnCheckedChange
 import timber.log.Timber
 
@@ -61,15 +63,15 @@ fun SwitchComponent(
     onCheckedChange: OnCheckedChange,
     colors: SwitchColors = SwitchDefaults.colors()
 ) {
-    Timber.tag(TAG).d("SwitchComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SwitchComponent(...) called")
     var isChecked by remember { mutableStateOf(inputWrapper.value.toBoolean()) } // boolean
-    Timber.tag(TAG).d(
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
         "SwitchComponent: isChecked = %s; inputWrapper.value = %s",
         isChecked,
         inputWrapper.value
     )
     /*    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
-        Timber.tag(TAG).d(
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
             "SwitchComponent: isChecked = %s; inputWrapper = %s",
             isChecked,
             inputWrapper

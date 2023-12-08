@@ -42,6 +42,7 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
 import kotlinx.coroutines.delay
@@ -76,12 +77,12 @@ fun TextFieldComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    Timber.tag(TAG).d("TextFieldComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("TextFieldComponent(...) called")
     var fieldValue by remember {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
-    Timber.tag(TAG).d(
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
         "TextFieldComponent: fieldValue.text = %s; inputWrapper.value = %s",
         fieldValue.text,
         inputWrapper.value
@@ -91,7 +92,7 @@ fun TextFieldComponent(
     val scope = rememberCoroutineScope()
     /*    if (fieldValue.text != inputWrapper.value) fieldValue =
             TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length))
-        Timber.tag(TAG).d(
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
             "TextFieldComponent: fieldValue = %s; inputWrapper = %s",
             fieldValue,
             inputWrapper

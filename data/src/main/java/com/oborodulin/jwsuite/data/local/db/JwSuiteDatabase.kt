@@ -3,12 +3,15 @@ package com.oborodulin.jwsuite.data.local.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.oborodulin.home.common.util.Mapper
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.converters.JwSuiteTypeConverters
-import com.oborodulin.jwsuite.data.local.db.entities.*
+import com.oborodulin.jwsuite.data.local.db.entities.MemberMinistryEntity
 import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.DATABASE_PASSPHRASE
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
@@ -97,14 +100,17 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.util.MemberRoleType
 import com.oborodulin.jwsuite.domain.util.MemberType
 import com.oborodulin.jwsuite.domain.util.TransferObjectType
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.sqlcipher.database.SupportFactory
 import timber.log.Timber
 import java.time.OffsetDateTime
-import java.util.*
 import java.util.concurrent.Executors
 
 // https://stackoverflow.com/questions/65043370/type-mismatch-when-serializing-data-class
@@ -188,6 +194,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
+            // https://developermemos.com/posts/synchronized-methods-kotlin
             synchronized(this) {
                 // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
                 // Smart cast is only available to local variables.
@@ -550,7 +557,8 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
 
             // Default Administrator:
-            val adminMember = insertDefAdminMember(db, congregation1, adminRole)
+            val adminMember =
+                insertDefAdminMember(db, congregation1, listOf(adminRole, reportsRole))
 
             // 2
             val congregation2 = CongregationEntity.secondCongregation(
@@ -570,9 +578,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             val group17 = insertDefGroup(db, 7, congregation1)
 
             // Group members:
-            val ivanov = insertDefMember(db, 1, congregation1, group11, adminRole)
-            val petrov = insertDefMember(db, 2, congregation1, group11, userRole)
-            val sidorov = insertDefMember(db, 1, congregation1, group12, territoriesRole)
+            val ivanov = insertDefMember(db, 1, congregation1, group11, listOf(adminRole, userRole))
+            val petrov = insertDefMember(db, 2, congregation1, group11, listOf(userRole))
+            val sidorov =
+                insertDefMember(db, 1, congregation1, group12, listOf(userRole, territoriesRole))
 
             // ==============================
             // TERRITORY:
@@ -886,8 +895,11 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         }
 
         private suspend fun insertDefMember(
-            db: JwSuiteDatabase, memberNumInGroup: Int,
-            congregation: CongregationEntity, group: GroupEntity, role: RoleEntity
+            db: JwSuiteDatabase,
+            memberNumInGroup: Int,
+            congregation: CongregationEntity,
+            group: GroupEntity,
+            roles: List<RoleEntity> = emptyList()
         ): MemberEntity {
             val memberDao = db.memberDao()
             val member = when (congregation.congregationNum) {
@@ -923,36 +935,43 @@ abstract class JwSuiteDatabase : RoomDatabase() {
 
                 else -> null
             }
-            member?.let {
-                memberDao.insert(it)
+            member?.let { member ->
+                memberDao.insert(member)
                 val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
-                    congregationId = congregation.congregationId, memberId = it.memberId
+                    congregationId = congregation.congregationId, memberId = member.memberId
                 )
                 memberDao.insert(memberCongregation)
                 val memberMovement = MemberMovementEntity.defaultMemberMovement(
-                    memberId = it.memberId, memberType = MemberType.PREACHER
+                    memberId = member.memberId, memberType = MemberType.PREACHER
                 )
                 memberDao.insert(memberMovement)
-                val memberRole = MemberRoleEntity.defaultMemberRole(
-                    memberId = it.memberId, roleId = role.roleId
-                )
-                memberDao.insert(memberRole)
                 Timber.tag(TAG).i("CONGREGATION: Default member imported")
                 jsonLogger?.let { logger ->
                     Timber.tag(TAG).i(
-                        ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
-                        logger.encodeToString(it),
+                        ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRoles\": [",
+                        logger.encodeToString(member),
                         logger.encodeToString(memberCongregation),
-                        logger.encodeToString(memberMovement),
-                        logger.encodeToString(memberRole)
+                        logger.encodeToString(memberMovement)
                     )
                 }
+                roles.forEach { role ->
+                    val memberRole = MemberRoleEntity.defaultMemberRole(
+                        memberId = member.memberId, roleId = role.roleId
+                    )
+                    memberDao.insert(memberRole)
+                    jsonLogger?.let { logger ->
+                        Timber.tag(TAG).i("{%s},", logger.encodeToString(memberRole))
+                    }
+                }
+                Timber.tag(TAG).i("]}")
             }
             return member!!
         }
 
         private suspend fun insertDefAdminMember(
-            db: JwSuiteDatabase, congregation: CongregationEntity, role: RoleEntity
+            db: JwSuiteDatabase,
+            congregation: CongregationEntity,
+            roles: List<RoleEntity> = emptyList()
         ): MemberEntity {
             val memberDao = db.memberDao()
             val member = MemberEntity.adminMember(ctx)
@@ -965,20 +984,25 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 memberId = member.memberId, memberType = MemberType.SERVICE
             )
             memberDao.insert(memberMovement)
-            val memberRole = MemberRoleEntity.defaultMemberRole(
-                memberId = member.memberId, roleId = role.roleId
-            )
-            memberDao.insert(memberRole)
             Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
             jsonLogger?.let { logger ->
                 Timber.tag(TAG).i(
-                    ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRole\": {%s}}",
+                    ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRoles\": [",
                     logger.encodeToString(member),
                     logger.encodeToString(memberCongregation),
-                    logger.encodeToString(memberMovement),
-                    logger.encodeToString(memberRole)
+                    logger.encodeToString(memberMovement)
                 )
             }
+            roles.forEach {
+                val memberRole = MemberRoleEntity.defaultMemberRole(
+                    memberId = member.memberId, roleId = it.roleId
+                )
+                memberDao.insert(memberRole)
+                jsonLogger?.let { logger ->
+                    Timber.tag(TAG).i("{%s},", logger.encodeToString(memberRole))
+                }
+            }
+            Timber.tag(TAG).i("]}")
             return member
         }
 

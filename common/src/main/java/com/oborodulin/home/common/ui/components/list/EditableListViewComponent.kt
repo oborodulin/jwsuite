@@ -18,6 +18,8 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
@@ -34,7 +36,7 @@ fun EditableListViewComponent(
     onDelete: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT
 ) {
-    Timber.tag(TAG).d("EditableListViewComponent(...) called: size = %d", items.size)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("EditableListViewComponent(...) called: size = %d", items.size)
     if (items.isNotEmpty()) {
         // https://developer.android.com/jetpack/compose/performance/bestpractices
         val filteredItems = remember(items, searchedText) {
@@ -46,7 +48,7 @@ fun EditableListViewComponent(
         }
         val firstVisibleItem = filteredItems.filter { it.selected }.getOrNull(0)
         LaunchedEffect(firstVisibleItem) {
-            Timber.tag(TAG)
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                 .d("EditableListViewComponent -> LaunchedEffect() BEFORE collect ui state flow")
             firstVisibleItem?.let { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(it) }
         }

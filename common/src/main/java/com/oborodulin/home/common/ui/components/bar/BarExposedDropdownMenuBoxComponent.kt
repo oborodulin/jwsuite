@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnTextFieldValueChange
 import com.oborodulin.home.common.util.OnValueChange
@@ -42,7 +44,7 @@ fun BarExposedDropdownMenuBoxComponent(
     onValueChange: OnValueChange,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
     val value =
         if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     // set the correct cursor position when this composable is first initialized
@@ -85,7 +87,7 @@ fun BarExposedDropdownMenuBoxComponent(
                 // menu item: Enums to resources
                 val option =
                     if (values.isNotEmpty()) values[keys.indexOf(selectedOption)] else selectedOption // resource
-                Timber.tag(TAG)
+                if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                     .d("selectedOption = %s; option = %s", selectedOption, option)
                 DropdownMenuItem(text = { Text(text = option) },
                     onClick = {

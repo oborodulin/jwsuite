@@ -20,6 +20,8 @@ import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.OnTextFieldValueChange
@@ -43,9 +45,9 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
     LaunchedEffect(Unit) {
-        Timber.tag(TAG)
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
             .d("BarViewModelExposedDropdownMenuBoxComponent -> LaunchedEffect() BEFORE collect ui state flow")
         listViewModel.submitAction(loadListUiAction)
     }
@@ -61,7 +63,7 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
     // make sure to keep the value updated
     onFieldValueChange(fieldValue.copy(text = inputWrapper.item?.headline.orEmpty()))
-    Timber.tag(TAG).d(
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
         "fieldValue.text = %s; inputWrapper.item.headline = %s",
         fieldValue.text,
         inputWrapper.item?.headline
@@ -95,11 +97,11 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
             onDismissRequest = { expanded = false }
         ) {
             listViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
                 CommonScreen(state = state) { items ->
                     items as List<ListItemModel>
                     items.forEach { option ->
-                        Timber.tag(TAG).d("option = %s", option)
+                        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("option = %s", option)
                         DropdownMenuItem(text = { Text(text = option.headline) },
                             onClick = {
                                 expanded = false

@@ -45,6 +45,8 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 import java.math.RoundingMode
@@ -67,7 +69,7 @@ fun ListItemComponent(
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     content: @Composable (() -> Unit)? = null
 ) {
-    Timber.tag(TAG)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
         .d(
             "ListItemComponent(...) called: {\"listItem\": {\"icon\": %s, \"itemId\": \"%s\", \"headline\": \"%s\", \"supportingText\": \"%s\", \"value\": \"%s\"}}",
             iconResId,

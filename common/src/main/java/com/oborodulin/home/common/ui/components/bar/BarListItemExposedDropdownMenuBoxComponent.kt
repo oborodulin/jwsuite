@@ -18,6 +18,8 @@ import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnTextFieldValueChange
 import timber.log.Timber
@@ -42,7 +44,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
     onValueChange: (T) -> Unit,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("BarListItemExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("BarListItemExposedDropdownMenuBoxComponent(...) called")
     // set the correct cursor position when this composable is first initialized
     var fieldValue by remember {
         mutableStateOf(
@@ -55,7 +57,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
     val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
     // make sure to keep the value updated
     onFieldValueChange(fieldValue.copy(text = inputWrapper.item?.headline.orEmpty()))
-    Timber.tag(TAG).d(
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
         "fieldValue.text = %s; inputWrapper.item.headline = %s",
         fieldValue.text,
         inputWrapper.item?.headline
@@ -94,7 +96,7 @@ fun <T : ListItemModel> BarListItemExposedDropdownMenuBoxComponent(
             onDismissRequest = { expanded = false }
         ) {
             items.forEach { option ->
-                Timber.tag(TAG).d("option = %s", option)
+                if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("option = %s", option)
                 DropdownMenuItem(text = { Text(text = option.headline) },
                     onClick = {
                         expanded = false

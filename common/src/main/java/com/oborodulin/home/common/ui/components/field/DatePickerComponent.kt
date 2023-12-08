@@ -42,6 +42,8 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.Constants
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
 import com.oborodulin.home.common.util.toast
@@ -68,7 +70,7 @@ fun DatePickerComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    Timber.tag(TAG).d("DatePickerComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("DatePickerComponent(...) called")
     var isShowDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     val onShowDialog = { isShowDatePickerDialog = true }
     val onDismissRequest = { isShowDatePickerDialog = false }
@@ -77,9 +79,9 @@ fun DatePickerComponent(
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
 
-    Timber.tag(TAG).d("DatePickerComponent: isShowDialog = %s", isShowDatePickerDialog)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("DatePickerComponent: isShowDialog = %s", isShowDatePickerDialog)
     if (isShowDatePickerDialog) {
-        Timber.tag(TAG).d("DatePickerComponent: isShowDialog = %s", isShowDatePickerDialog)
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("DatePickerComponent: isShowDialog = %s", isShowDatePickerDialog)
         val datePickerTitlePadding = PaddingValues(
             start = 24.dp,
             end = 12.dp,
@@ -111,7 +113,7 @@ fun DatePickerComponent(
             },
             dismissButton = { Button(onClick = onDismissRequest) { Text(stringResource(R.string.btn_cancel_lbl)) } }
         ) {
-            Timber.tag(TAG).d("DatePicker() calling")
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("DatePicker() calling")
             DatePicker(
                 state = datePickerState,
                 dateValidator = { timestamp -> timestamp > Instant.now().toEpochMilli() },

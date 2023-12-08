@@ -105,7 +105,7 @@ class SessionViewModelImpl @Inject constructor(
          */
     }
 
-    override suspend fun handleAction(action: SessionUiAction): Job? {
+    override suspend fun handleAction(action: SessionUiAction): Job {
         Timber.tag(TAG).d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
@@ -114,6 +114,7 @@ class SessionViewModelImpl @Inject constructor(
             is SessionUiAction.Login -> login()
             is SessionUiAction.Logout -> logout(action.lastDestination)
             is SessionUiAction.StartSession -> {
+                Timber.tag(TAG).d("handleAction: _isLogged.value = %s", _isLogged.value)
                 if (_isLogged.value) {
                     submitSingleEvent(SessionUiSingleEvent.OpenMainScreen(Graph.MAIN))
                 } else {
@@ -176,7 +177,7 @@ class SessionViewModelImpl @Inject constructor(
                 SignupUseCase.Request(username.value.value, pin.value.value)
             ).map { signupConverter.convert(it) }
                 .collect {
-                    //_isLogged.value = true
+                    _isLogged.value = false
                     submitState(it)
                 }
             //.collect {}
@@ -376,7 +377,12 @@ class SessionViewModelImpl @Inject constructor(
 
             override fun setSessionMode(mode: SessionModeType) {}
             override fun submitAction(action: SessionUiAction): Job? = null
-            override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+            override fun handleActionJob(
+                action: () -> Unit,
+                afterAction: (CoroutineScope) -> Unit
+            ) {
+            }
+
             override fun onTextFieldEntered(inputEvent: Inputable) {}
             override fun onTextFieldFocusChanged(
                 focusedField: SessionFields, isFocused: Boolean

@@ -23,6 +23,8 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
 import timber.log.Timber
@@ -50,7 +52,7 @@ fun ExposedDropdownMenuBoxComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
     val value =
         if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     val fieldValue = rememberSaveable { mutableStateOf(value) } // resource
@@ -110,7 +112,7 @@ fun ExposedDropdownMenuBoxComponent(
                 // menu item: Enums to resources
                 val option =
                     if (values.isNotEmpty()) values[keys.indexOf(selectedOption)] else selectedOption // resource
-                Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
+                if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
                 DropdownMenuItem(text = { Text(text = option) },
                     onClick = {
                         fieldValue.value = option

@@ -2,10 +2,18 @@ package com.oborodulin.jwsuite.presentation.ui.session.login
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,6 +33,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.OtpTextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_SECURE
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
@@ -67,25 +76,9 @@ fun LoginView(viewModel: SessionViewModel) {
 
     val handleLogin = {
         viewModel.onContinueClick {
-            viewModel.handleActionJob(
-                { viewModel.submitAction(SessionUiAction.Login) },
-                { viewModel.submitAction(SessionUiAction.StartSession) }
-            )
-            /*Timber.tag(TAG).d("LoginView: Start coroutineScope.launch")
-            coroutineScope.launch {
-                viewModel.actionsJobFlow.collect { job ->
-                    Timber.tag(TAG).d(
-                        "LoginView: Start actionsJobFlow.collect [job = %s]", job?.toString()
-                    )
-                    job?.let {
-                        if (it.isActive) it.join()
-                    }
-                    Timber.tag(TAG).d("LoginView: StartSession")
-                    viewModel.submitAction(SessionUiAction.StartSession)
-                    //appState.navigateByDestination(session.startDestination)
-                }
+            viewModel.handleActionJob({ viewModel.submitAction(SessionUiAction.Login) }) {
+                viewModel.submitAction(SessionUiAction.StartSession)
             }
-            viewModel.submitAction(SessionUiAction.Login)*/
         }
     }
     LaunchedEffect(Unit) {
@@ -119,7 +112,8 @@ fun LoginView(viewModel: SessionViewModel) {
             inputWrapper = pin,
             otpCount = PASS_MIN_LENGTH,
             onOtpTextChange = { value, otpInputFilled ->
-                //Timber.tag(TAG).d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
+                if (LOG_SECURE) Timber.tag(TAG)
+                    .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
                 if (otpInputFilled) handleLogin()
             })

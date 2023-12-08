@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import timber.log.Timber
 
 // https://www.droidcon.com/2022/12/27/jetpack-compose-otp-input-field/
@@ -44,12 +46,12 @@ fun OtpTextFieldComponent(
     otpCount: Int = 6,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
-    Timber.tag(TAG).d("OtpTextFieldComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("OtpTextFieldComponent(...) called")
     var otpValue by remember {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     otpValue = otpValue.copy(text = inputWrapper.value) // make sure to keep the value updated
-    //Timber.tag(TAG).d("OtpTextFieldComponent: otpValue = %s", otpValue)
+    //if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("OtpTextFieldComponent: otpValue = %s", otpValue)
     LaunchedEffect(Unit) {
         if (otpValue.text.length > otpCount) {
             throw IllegalArgumentException("Otp text value must not have more than otpCount: $otpCount characters")
@@ -87,7 +89,7 @@ private fun CharView(index: Int, text: String) {
         index > text.length -> ""
         else -> "*"//text[index].toString()
     }
-    //Timber.tag(TAG).d("CharView(...) called: index = %s; char = %s", index, char)
+    //if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("CharView(...) called: index = %s; char = %s", index, char)
     Text(
         modifier = Modifier
             .width(40.dp)

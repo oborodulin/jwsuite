@@ -34,6 +34,8 @@ import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.Constants.EMPTY_BLOCK
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
@@ -51,7 +53,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
 ) {
     if (isShow) {
         LaunchedEffect(Unit) {
-            Timber.tag(TAG)
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                 .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(loadUiAction)
         }
@@ -68,7 +70,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
                     val isSearching by viewModel.isSearching.collectAsStateWithLifecycle()
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) { items ->
                             if (items.isNotEmpty()) {
                                 /*var searchState by rememberSaveable {
@@ -100,7 +102,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                                     }
                                     items(filteredItems.size) { index ->
                                         SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
-                                            Timber.tag(TAG)
+                                            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                                                 .d("onClick() selectedItem = %s", selectedItem)
                                             onDismissRequest()
                                             onListItemClick(selectedItem)

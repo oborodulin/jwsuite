@@ -130,15 +130,14 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         val territoryStreetUi = TerritoryStreetUi(
             territoryId = territory.value.item?.itemId!!,
             street = streetUi,
-            isPrivateSector = isPrivateSector.value.value.toBoolean(),
-            isEvenSide = isEvenSide.value.value.toBoolean(),
-            estimatedHouses = estimatedHouses.value.value.toInt()
+            isPrivateSector = isPrivateSector.value.value.toBooleanStrictOrNull(),
+            isEvenSide = isEvenSide.value.value.toBooleanStrictOrNull(),
+            estimatedHouses = estimatedHouses.value.value.toIntOrNull()
         )
         territoryStreetUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
-            "saveTerritoryStreet() called: UI model %s; streetUi.id = %s",
-            territoryStreetUi,
-            streetUi.id
+            "saveTerritoryStreet() called: UI territoryStreetUi = %s; streetUi.id = %s",
+            territoryStreetUi, streetUi.id
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryStreetUseCase.execute(

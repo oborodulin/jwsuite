@@ -3,6 +3,7 @@ package com.oborodulin.home.common.ui.state
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_UI_STATE
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -136,7 +137,7 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                 if (redirectErrorStateMessage) {
                     _uiStateFlow.value = state
                 }
-                //Timber.tag(TAG).d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
+                if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
                 initFieldStatesByUiModel(it)
             }
         }

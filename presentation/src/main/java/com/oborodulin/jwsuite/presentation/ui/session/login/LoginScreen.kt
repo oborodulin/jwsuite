@@ -32,14 +32,16 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is SessionUiSingleEvent.OpenMainScreen -> {
-                    appState.rootNavController.navigate(it.navRoute)
+                    appState.rootNavController.navigate(it.navRoute) {
+                        popUpTo(it.navRoute) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
 
                 is SessionUiSingleEvent.OpenLoginScreen -> {
                     appState.rootNavController.navigate(it.navRoute) {
-                        popUpTo(it.navRoute) {
-                            inclusive = true
-                        }
+                        popUpTo(it.navRoute) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
 

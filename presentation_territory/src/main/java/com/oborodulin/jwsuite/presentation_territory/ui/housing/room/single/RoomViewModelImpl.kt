@@ -149,7 +149,7 @@ class RoomViewModelImpl @Inject constructor(
             floor = floorUi,
             territory = territoryUi,
             roomNum = roomNum.value.value.toInt(),
-            isIntercom = if (isIntercom.value.value.isNotEmpty()) isIntercom.value.value.toBoolean() else null,
+            isIntercom = isIntercom.value.value.toBooleanStrictOrNull(),
             isResidential = isResidential.value.value.toBoolean(),
             isForeignLanguage = isForeignLanguage.value.value.toBoolean(),
             roomDesc = roomDesc.value.value.ifEmpty { null }

@@ -34,6 +34,8 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import kotlinx.coroutines.cancel
 import timber.log.Timber
 import java.util.UUID
@@ -64,19 +66,19 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     onFabChange: (@Composable () -> Unit) -> Unit,
     dialogView: @Composable (T) -> Unit
 ) {
-    Timber.tag(TAG).d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
     val ctx = LocalContext.current
     var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
     //val errorMessage by viewModel.uiStateErrorMsg.collectAsStateWithLifecycle()
     val isErrorShowAlert = rememberSaveable { mutableStateOf(false) }
     val handleSaveButtonClick = {
-        Timber.tag(TAG).d("SaveDialogScreenComponent: Save Button click...")
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SaveDialogScreenComponent: Save Button click...")
         viewModel.onContinueClick {
             // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
             viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) { scope ->
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
-                    Timber.tag(TAG)
+                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                         .d(
                             "SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: (no errors) nextUiAction = %s",
                             nextUiAction
@@ -92,7 +94,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
 
                         else -> errorMessage
                     }
-                    Timber.tag(TAG)
+                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                         .d("SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: cancel flow by errors")
                     scope.cancel()
                 }
@@ -100,14 +102,14 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         }
     }
     LaunchedEffect(inputId) {
-        Timber.tag(TAG)
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
             .d("SaveDialogScreenComponent -> LaunchedEffect(inputId): inputId = %s", inputId)
         //inputId?.let {
         viewModel.submitAction(loadUiAction)
         //}
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        //Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        //if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }

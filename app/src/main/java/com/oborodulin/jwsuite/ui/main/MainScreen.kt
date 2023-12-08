@@ -55,7 +55,6 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
     Timber.tag(TAG).d("MainScreen(...) called")
     val appState = LocalAppState.current
     val activity = (LocalContext.current as? Activity)
-    val coroutineScope = rememberCoroutineScope()
     val bottomBarHeight = 72.dp
     val bottomBarHeightPx = with(LocalDensity.current) {
         bottomBarHeight.roundToPx().toFloat()
@@ -190,7 +189,10 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is SessionUiSingleEvent.OpenLoginScreen -> {
-                    appState.rootNavController.navigate(it.navRoute)
+                    appState.rootNavController.navigate(it.navRoute) {
+                        popUpTo(it.navRoute) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
 
                 else -> {}

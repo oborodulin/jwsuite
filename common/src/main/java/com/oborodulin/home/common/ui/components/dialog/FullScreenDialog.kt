@@ -32,6 +32,8 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.home.common.util.LogLevel
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
@@ -54,11 +56,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
     dismissOnClickOutside: Boolean = false,
     onConfirmButtonClick: () -> Unit = {}
 ) {
-    Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
     if (isShow) {
         //val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
-            Timber.tag(TAG)
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                 .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(loadUiAction)
         }
@@ -83,7 +85,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                         .verticalScroll(rememberScrollState())
                 ) {
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) {
                             TopAppBar(
                                 title = {
@@ -114,7 +116,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                                 // hide single dialog and onConfirmButtonClick
                                                 viewModel.onDialogConfirm(onConfirmButtonClick)
                                                 val savedListItem = viewModel.savedListItem.value
-                                                Timber.tag(TAG)
+                                                if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                                                     .d(
                                                         "Done: savedListItem = %s",
                                                         savedListItem.itemId
@@ -126,7 +128,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                             /*coroutineScope.launch {
                                                 // wait wile actionsJob executed
                                                 viewModel.actionsJobFlow.collectLatest { job ->
-                                                    Timber.tag(TAG).d(
+                                                    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
                                                         "FullScreenDialog: Start actionsJobFlow.collect [job = %s]",
                                                         job?.toString()
                                                     )
@@ -135,7 +137,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                                     viewModel.onDialogConfirm(onConfirmButtonClick)
                                                     val savedListItem =
                                                         viewModel.savedListItem.value
-                                                    Timber.tag(TAG)
+                                                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                                                         .d(
                                                             "Done: savedListItem = %s",
                                                             savedListItem.itemId
