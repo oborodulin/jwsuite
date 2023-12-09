@@ -14,6 +14,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.appSettingNavigationGraph
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation_congregation.navigation.congregationNavGraph
 import com.oborodulin.jwsuite.presentation_geo.navigation.geoNavGraph
 import com.oborodulin.jwsuite.presentation_territory.navigation.housingNavGraph
@@ -26,6 +27,7 @@ private const val TAG = "App.Navigation.MainNavigationHost"
 // https://stackoverflow.com/questions/69738397/jetpackcompose-navigation-nested-graphs-cause-viewmodelstore-should-be-set-befo
 @Composable
 fun MainNavigationHost(
+    sessionViewModel: SessionViewModel,
     innerPadding: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
@@ -88,6 +90,7 @@ fun MainNavigationHost(
             onFabChange = onFabChange
         )
         appSettingNavigationGraph(
+            sessionViewModel = sessionViewModel,
             startDestination = session.startDestination,
             onActionBarChange = onActionBarChange,
             onActionBarTitleChange = onActionBarTitleChange,

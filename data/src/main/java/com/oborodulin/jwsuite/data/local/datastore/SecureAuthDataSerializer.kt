@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data.local.datastore
 
 import androidx.datastore.core.Serializer
 import com.oborodulin.home.common.secure.Crypto
+import com.oborodulin.home.common.util.LogLevel.LOG_SECURE
 import com.oborodulin.jwsuite.domain.model.session.AuthData
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
@@ -22,14 +23,16 @@ class SecureAuthDataSerializer @Inject constructor(private val crypto: Crypto) :
         return try {
             Json.decodeFromString(decryptedBytes.decodeToString())
         } catch (e: SerializationException) {
-            Timber.tag(TAG).e(e)
+            if (LOG_SECURE) Timber.tag(TAG).e(e)
             this.defaultValue
         }
     }
 
     override suspend fun writeTo(t: AuthData, output: OutputStream) {
-        Timber.tag(TAG).d("writeTo: %s", t)
-        Timber.tag(TAG).d("Json<AuthData> : %s", Json.encodeToString(t))
+        if (LOG_SECURE) {
+            Timber.tag(TAG).d("writeTo: %s", t)
+            Timber.tag(TAG).d("Json<AuthData> : %s", Json.encodeToString(t))
+        }
         crypto.encrypt(rawBytes = Json.encodeToString(t).encodeToByteArray(), outputStream = output)
     }
 }

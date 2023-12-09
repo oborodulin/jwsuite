@@ -6,7 +6,15 @@ object LogLevel {
     const val LOG_MVI = false
     const val LOG_MVI_SINGLE = false
     const val LOG_MVI_DIALOG = false
+    const val LOG_MVI_LIST = false
+    const val LOG_MVI_SHARED = false
     const val LOG_MVI_UI_STATE = false
+
+    // Flows:
+    const val LOG_FLOW_ACTION = true
+    const val LOG_FLOW_EVENT = true
+    const val LOG_FLOW_INPUT = true
+    const val LOG_FLOW_JOB = true
 
     // Data:
     const val LOG_DATABASE = true

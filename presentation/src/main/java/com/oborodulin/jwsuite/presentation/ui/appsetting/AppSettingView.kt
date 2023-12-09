@@ -2,11 +2,24 @@ package com.oborodulin.jwsuite.presentation.ui.appsetting
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -28,7 +41,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -47,6 +59,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
@@ -61,7 +74,7 @@ private const val TAG = "Presentation.AppSettingView"
 fun AppSettingView(
     appSettingsUiModel: AppSettingsUiModel,
     appSettingViewModel: AppSettingViewModel,//Impl = hiltViewModel()
-    sessionViewModel: SessionViewModelImpl = hiltViewModel()
+    sessionViewModel: SessionViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("AppSettingView(...) called")
     val session = LocalSession.current
@@ -400,7 +413,8 @@ fun PreviewGroupView() {
             ) {
                 AppSettingView(
                     appSettingsUiModel = AppSettingViewModelImpl.previewUiModel(ctx),
-                    appSettingViewModel = AppSettingViewModelImpl.previewModel(ctx)
+                    appSettingViewModel = AppSettingViewModelImpl.previewModel(ctx),
+                    sessionViewModel = SessionViewModelImpl.previewModel(ctx)
                 )
             }
         }

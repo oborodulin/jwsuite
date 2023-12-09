@@ -1,6 +1,7 @@
 package com.oborodulin.home.common.ui.state
 
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
 import timber.log.Timber
 
 private const val TAG = "Common.ListViewModel"
@@ -35,16 +36,16 @@ abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiActi
 
     // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
     override fun singleSelectItem(selectedItem: ListItemModel) {
-        Timber.tag(TAG).d("singleSelectItem(...) called")
+        if (LOG_MVI_LIST) Timber.tag(TAG).d("singleSelectItem(...) called")
         uiState()?.let { uiState ->
             uiState.forEach { it.selected = false }
             uiState.find { it.itemId == selectedItem.itemId }?.selected = true
-            Timber.tag(TAG).d("selected %s list item", selectedItem)
+            if (LOG_MVI_LIST) Timber.tag(TAG).d("selected %s list item", selectedItem)
         }
     }
 
     override fun singleSelectedItem(): ListItemModel? {
-        Timber.tag(TAG).d("singleSelectedItem() called")
+        if (LOG_MVI_LIST) Timber.tag(TAG).d("singleSelectedItem() called")
         var selectedItem: ListItemModel? = null
         uiState()?.let { uiState ->
             selectedItem = try {
@@ -53,19 +54,19 @@ abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiActi
                 uiState.getOrNull(0)
                 //Timber.tag(TAG).e(e)
             }
-            Timber.tag(TAG).d("selected %s list item", selectedItem)
+            if (LOG_MVI_LIST) Timber.tag(TAG).d("selected %s list item", selectedItem)
         }
         return selectedItem
     }
 
     /*override fun checkItem(checkedItem: ListItemModel, checkValue: Boolean) {
-        Timber.tag(TAG).d("observeSelection() called")
+        if (LOG_MVI_LIST) Timber.tag(TAG).d("observeSelection() called")
         uiState()?.let { uiState ->
             if (uiState is List<*>) {
                 ((uiState as List<*>).find {
                     (it is ListItemModel) && it.itemId == checkedItem.itemId
                 } as? ListItemModel)?.checked = checkValue
-                Timber.tag(TAG).d("checked %s list item", checkedItem)
+                if (LOG_MVI_LIST) Timber.tag(TAG).d("checked %s list item", checkedItem)
             }
         }
     }*/

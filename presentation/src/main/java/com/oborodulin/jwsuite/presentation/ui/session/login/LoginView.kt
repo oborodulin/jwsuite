@@ -4,7 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -34,11 +34,9 @@ import com.oborodulin.home.common.ui.components.field.OtpTextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.util.LogLevel.LOG_SECURE
-import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionModeType
-import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -52,10 +50,6 @@ private const val TAG = "Presentation.LoginView"
 @Composable
 fun LoginView(viewModel: SessionViewModel) {
     Timber.tag(TAG).d("LoginView(...) called")
-    val appState = LocalAppState.current
-    //val session = LocalSession.current
-    val coroutineScope = rememberCoroutineScope()
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -73,14 +67,6 @@ fun LoginView(viewModel: SessionViewModel) {
     enumValues<SessionFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
-
-    val handleLogin = {
-        viewModel.onContinueClick {
-            viewModel.handleActionJob({ viewModel.submitAction(SessionUiAction.Login) }) {
-                viewModel.submitAction(SessionUiAction.StartSession)
-            }
-        }
-    }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LoginView -> LaunchedEffect(Unit)")
         viewModel.setSessionMode(SessionModeType.LOGIN)
@@ -91,7 +77,9 @@ fun LoginView(viewModel: SessionViewModel) {
     }
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            //.fillMaxSize()
+            .fillMaxWidth()
+            .height(400.dp)
             .padding(4.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
@@ -115,7 +103,7 @@ fun LoginView(viewModel: SessionViewModel) {
                 if (LOG_SECURE) Timber.tag(TAG)
                     .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
-                if (otpInputFilled) handleLogin()
+                //if (otpInputFilled) handleLogin()
             })
     }
 }

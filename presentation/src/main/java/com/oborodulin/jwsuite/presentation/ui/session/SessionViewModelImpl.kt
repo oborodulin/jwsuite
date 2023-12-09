@@ -137,7 +137,7 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     private fun loadSession(): Job {
-        Timber.tag(TAG).d("loadSession(...) called")
+        Timber.tag(TAG).d("loadSession() called")
         /*val state = useCases.getSessionUseCase.execute(GetSessionUseCase.Request)
             .map { sessionConverter.convert(it) }.first()
         uiState(state)?.let { session ->
@@ -171,7 +171,7 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     private fun signup(): Job {
-        Timber.tag(TAG).d("signup(...) called")
+        Timber.tag(TAG).d("signup() called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.signupUseCase.execute(
                 SignupUseCase.Request(username.value.value, pin.value.value)

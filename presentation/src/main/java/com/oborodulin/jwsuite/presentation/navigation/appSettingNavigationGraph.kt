@@ -7,11 +7,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.oborodulin.jwsuite.presentation.ui.appsetting.AppSettingScreen
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import timber.log.Timber
 
 private const val TAG = "Presentation.Navigation.appSettingNavigationGraph"
 
 fun NavGraphBuilder.appSettingNavigationGraph(
+    sessionViewModel: SessionViewModel,
     startDestination: String? = null,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
@@ -33,6 +35,7 @@ fun NavGraphBuilder.appSettingNavigationGraph(
                 NavRoutes.Settings.arguments.firstOrNull()
             )
             AppSettingScreen(
+                sessionViewModel = sessionViewModel,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,

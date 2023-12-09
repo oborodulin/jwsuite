@@ -12,7 +12,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
-import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
+import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -21,7 +21,7 @@ private const val TAG = "Presentation.AppSettingScreen"
 @Composable
 fun AppSettingScreen(
     appSettingViewModel: AppSettingViewModelImpl = hiltViewModel(),
-    sessionViewModel: SessionViewModelImpl = hiltViewModel(),
+    sessionViewModel: SessionViewModel, //Impl = hiltViewModel(),
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -53,7 +53,11 @@ fun AppSettingScreen(
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
     ) {
-        AppSettingView(appSettingsUiModel = it, appSettingViewModel)
+        AppSettingView(
+            appSettingsUiModel = it,
+            appSettingViewModel = appSettingViewModel,
+            sessionViewModel = sessionViewModel
+        )
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect() BEFORE collect ui state flow")

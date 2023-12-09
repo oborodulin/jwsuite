@@ -1,8 +1,8 @@
 package com.oborodulin.home.common.ui.state
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_SHARED
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +22,7 @@ abstract class SharedViewModel<T : Any?> : SharedViewModeled<T>, ViewModel() {
 
     override fun submitData(data: T): Job {
         return viewModelScope.launch {
-            Timber.tag(TAG).d("submitData(): data = %s", data)
+            if (LOG_MVI_SHARED) Timber.tag(TAG).d("submitData(): data = %s", data)
             //_sharedFlow.emit(data)
             _sharedFlow.value = data
         }
@@ -32,7 +32,7 @@ abstract class SharedViewModel<T : Any?> : SharedViewModeled<T>, ViewModel() {
         var data: T? = null
         viewModelScope.launch {
             sharedFlow.collectLatest { data = it }
-            Timber.tag(TAG).d("sharedData(): data = %s", data)
+            if (LOG_MVI_SHARED) Timber.tag(TAG).d("sharedData(): data = %s", data)
         }
         return data
     }

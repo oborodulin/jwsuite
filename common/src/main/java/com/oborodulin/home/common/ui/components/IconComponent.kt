@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import timber.log.Timber
 
 private const val TAG = "Common.ui.IconComponent"
@@ -32,7 +33,7 @@ fun IconComponent(
     @StringRes contentDescriptionResId: Int? = null,
     size: Dp = 24.dp
 ): Unit? {
-    //if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("IconComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("IconComponent(...) called")
     return icon?.let { it() } ?: when (painterResId) {
         null -> imageVector?.let { iv ->
             Icon(

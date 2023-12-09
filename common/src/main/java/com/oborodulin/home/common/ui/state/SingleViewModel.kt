@@ -13,6 +13,9 @@ import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.InputsWrapper
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_SINGLE
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_UI_STATE
 import com.oborodulin.home.common.util.toUUIDOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -52,7 +55,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     val inputEvents = Channel<Inputable>(Channel.CONFLATED)
 
     init {
-        Timber.tag(TAG).d("init: Start observe input events")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# init: Start observe input events")
         //Dispatchers.Default
         viewModelScope.launch(errorHandler) {
             observeInputEvents()
@@ -85,10 +88,10 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
 
     //InputWrapper:
     fun initStateValue(field: F, property: StateFlow<InputWrapper>, value: String) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
         if (property.value.isEmpty) {
-            Timber.tag(TAG).d("initStateValue: %s = '%s'", field.key(), value)
+            if (LOG_MVI_SINGLE) Timber.tag(TAG).d("initStateValue: %s = '%s'", field.key(), value)
             setStateValue(field, property, value)
             _isUiStateChanged.value = false
         }
@@ -97,7 +100,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     fun setStateValue(
         field: F, property: StateFlow<InputWrapper>, value: String, isValid: Boolean = false
     ) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("setStateValue: %s = '%s' [valid = %s]", field.key(), value, isValid)
         if (isValid) {
             state[field.key()] =
@@ -113,7 +116,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputWrapper>,
         @StringRes errorId: Int?, errorMsg: String? = null
     ) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         state[field.key()] =
             property.value.copy(errorId = errorId, errorMsg = errorMsg, isEmpty = false)
@@ -124,23 +127,27 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     fun initStateValue(
         field: F, properties: StateFlow<InputsWrapper>, value: String, key: String
     ) {
-        Timber.tag(TAG)
-            .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
-        Timber.tag(TAG)
-            .d(
-                "initStateValue: properties.value.inputs[%s] = '%s'",
-                key, properties.value.inputs[key]
-            )
-        if (state.get<T>(field.key()) == null || properties.value.inputs[key] == null || properties.value.inputs[key]?.isEmpty == true) {
-            properties.value.inputs[key] = InputWrapper(value = value, isEmpty = false)
+        if (LOG_MVI_SINGLE) {
+            Timber.tag(TAG)
+                .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
             Timber.tag(TAG)
                 .d(
-                    "initStateValue: add init value %s = '%s'",
-                    field.key(),
-                    properties.value.inputs[key]
+                    "initStateValue: properties.value.inputs[%s] = '%s'",
+                    key, properties.value.inputs[key]
                 )
-            Timber.tag(TAG)
-                .d("initStateValue: copy %s = '%s'", field.key(), properties.value.inputs)
+        }
+        if (state.get<T>(field.key()) == null || properties.value.inputs[key] == null || properties.value.inputs[key]?.isEmpty == true) {
+            properties.value.inputs[key] = InputWrapper(value = value, isEmpty = false)
+            if (LOG_MVI_SINGLE) {
+                Timber.tag(TAG)
+                    .d(
+                        "initStateValue: add init value %s = '%s'",
+                        field.key(),
+                        properties.value.inputs[key]
+                    )
+                Timber.tag(TAG)
+                    .d("initStateValue: copy %s = '%s'", field.key(), properties.value.inputs)
+            }
             state[field.key()] =
                 properties.value.copy(inputs = properties.value.inputs.toMutableMap())
         }
@@ -150,7 +157,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, properties: StateFlow<InputsWrapper>, value: String, key: String,
         isValid: Boolean = false, isSaved: Boolean = false
     ) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d(
                 "setStateValue: %s = '%s' [valid = %s; isSaved = %s]", field.key(),
                 value, isValid, isSaved
@@ -172,7 +179,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, properties: StateFlow<InputsWrapper>, key: String,
         @StringRes errorId: Int?, errorMsg: String? = null
     ) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         val property = properties.value.inputs.getValue(key)
         properties.value.inputs[key] =
@@ -191,10 +198,10 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     fun <T : ListItemModel> initStateValue(
         field: F, property: StateFlow<InputListItemWrapper<T>>, item: T
     ) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("initStateValue: exist state %s = '%s'", field.key(), state[field.key()])
         if (property.value.isEmpty) {
-            Timber.tag(TAG).d("initStateValue: %s = '%s'", field.key(), item)
+            if (LOG_MVI_SINGLE) Timber.tag(TAG).d("initStateValue: %s = '%s'", field.key(), item)
             setStateValue(field, property, item)
             _isUiStateChanged.value = false
         }
@@ -204,7 +211,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputListItemWrapper<T>>, item: T, isValid: Boolean = false
     ) {
         //val listItem = if (item.headline.isEmpty()) ListItemModel() else item
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("setStateValue: %s = '%s' [valid = %s]", field.key(), item, isValid)
         if (isValid) {
             state[field.key()] =
@@ -220,7 +227,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         field: F, property: StateFlow<InputListItemWrapper<T>>,
         @StringRes errorId: Int?, errorMsg: String? = null
     ) {
-        Timber.tag(TAG)
+        if (LOG_MVI_SINGLE) Timber.tag(TAG)
             .d("setStateValue: Validate (debounce) %s - ERR[%s]", field.key(), errorId)
         state[field.key()] =
             property.value.copy(errorId = errorId, errorMsg = errorMsg, isEmpty = false)
@@ -228,28 +235,29 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
 
     override fun onTextFieldEntered(inputEvent: Inputable) {
-        Timber.tag(TAG).d("onTextFieldEntered: %s", inputEvent.javaClass.name)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("IF# onTextFieldEntered: %s", inputEvent.javaClass.name)
         inputEvents.trySend(inputEvent)
     }
 
     override fun onTextFieldFocusChanged(focusedField: F, isFocused: Boolean) {
-        Timber.tag(TAG)
-            .d("onTextFieldFocusChanged: %s - %s", focusedField.key(), isFocused)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("IF# onTextFieldFocusChanged: %s - %s", focusedField.key(), isFocused)
         focusedTextField.key = if (isFocused) focusedField.key() else null
     }
 
     override fun moveFocusImeAction() {
-        Timber.tag(TAG).d("moveFocusImeAction() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# moveFocusImeAction() called")
         _events.trySend(ScreenEvent.MoveFocus())
     }
 
     override fun onContinueClick(isPartialInputsValid: Boolean, onSuccess: () -> Unit) {
-        Timber.tag(TAG).d("onContinueClick(onSuccess) called")
+        if (LOG_MVI_SINGLE) Timber.tag(TAG).d("onContinueClick(onSuccess) called")
         viewModelScope.launch(Dispatchers.Default) {
             performValidation()
             when (val inputErrors = if (!isPartialInputsValid) getInputErrorsOrNull() else null) {
                 null -> {
-                    Timber.tag(TAG).d("onContinueClick: no errors")
+                    if (LOG_MVI_SINGLE) Timber.tag(TAG).d("onContinueClick: no errors")
                     clearFocusAndHideKeyboard()
                     onSuccess()
                     _isUiStateChanged.value = false
@@ -258,7 +266,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
                 }
 
                 else -> {
-                    Timber.tag(TAG).d("onContinueClick: errors %s", inputErrors)
+                    if (LOG_MVI_SINGLE) Timber.tag(TAG).d("onContinueClick: errors %s", inputErrors)
                     displayInputErrors(inputErrors)
                 }
             }
@@ -271,13 +279,13 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     abstract fun stateInputFields(): List<String>
     open fun clearInputFieldsStates() {
         stateInputFields().forEach {
-            Timber.tag(TAG).d("clearInputFieldsStates(): remove state '%s'", it)
+            if (LOG_MVI_SINGLE) Timber.tag(TAG).d("clearInputFieldsStates(): remove state '%s'", it)
             state.remove<W>(it)
         }
     }
 
     private suspend fun clearFocusAndHideKeyboard() {
-        Timber.tag(TAG).d("clearFocusAndHideKeyboard() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# clearFocusAndHideKeyboard() called")
         if (focusedTextField.textField != null) {
             _events.send(ScreenEvent.ClearFocus)
             _events.send(ScreenEvent.UpdateKeyboard(false))
@@ -286,8 +294,8 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
         }
     }
 
-    protected fun focusOnLastSelectedTextField() {
-        Timber.tag(TAG).d("focusOnLastSelectedTextField() called")
+    private fun focusOnLastSelectedTextField() {
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# focusOnLastSelectedTextField() called")
         viewModelScope.launch(Dispatchers.Default) {
             focusedTextField.textField?.let {
                 _events.send(ScreenEvent.RequestFocus(focusedTextField.textField!!))
@@ -298,7 +306,7 @@ abstract class SingleViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     }
 
     override fun submitState(state: S): Job {
-        Timber.tag(TAG).d("submitState(S) called")
+        if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("submitState(S) called")
         return super.submitStateWithErrorStateMessageRedirection(state, true)
     }
 }

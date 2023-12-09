@@ -22,7 +22,7 @@ fun <T : Any> CommonScreen(
     state: UiState<T>,
     onSuccess: @Composable (T) -> Unit
 ) {
-    Timber.tag(TAG).d("CommonScreen(...) called")
+    if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("CommonScreen(...) called")
     val modifier = Modifier.fillMaxSize()
     if (paddingValues != null) {
         modifier.padding(paddingValues)
@@ -37,7 +37,8 @@ fun <T : Any> CommonScreen(
         }
 
         is UiState.Success -> {
-            if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("CommonScreen: onSuccess(...) called: %s", state.data)
+            if (LOG_MVI_UI_STATE) Timber.tag(TAG)
+                .d("CommonScreen: onSuccess(...) called: %s", state.data)
             onSuccess(state.data)
         }
     }
@@ -45,7 +46,7 @@ fun <T : Any> CommonScreen(
 
 @Composable
 fun Error(modifier: Modifier, errorMessage: String) {
-    Timber.tag(TAG).d("Error(...) called: %s", errorMessage)
+    if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("Error(...) called: %s", errorMessage)
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Bottom
@@ -56,7 +57,7 @@ fun Error(modifier: Modifier, errorMessage: String) {
 
 @Composable
 fun Loading(modifier: Modifier) {
-    Timber.tag(TAG).d("Loading() called")
+    if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("Loading() called")
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
