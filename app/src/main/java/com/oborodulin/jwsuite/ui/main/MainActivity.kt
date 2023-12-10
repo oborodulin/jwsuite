@@ -81,9 +81,10 @@ class MainActivity : ComponentActivity() {
                                 LocalSession provides session,
                                 //LocalSessionState provides sessionViewModel
                             ) {
-                                RootNavigationHost(
+                                MainScreen(sessionViewModel = sessionViewModel)
+                                /*RootNavigationHost(
                                     activity = this, sessionViewModel = sessionViewModel
-                                )
+                                )*/
                             }
                         }
                     }

@@ -129,13 +129,16 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         }
         onActionBarChange(null)
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        onTopBarActionsChange(true) {
-            if (isControlsShow) {
+        /*if (isControlsShow) {
+            onTopBarActionsChange(true) {
                 IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }
-        }
+        } else {
+            onTopBarActionsChange(true) {}
+        }*/
+        onTopBarActionsChange(true) {}
         onFabChange {}
         CommonScreen(state = state) {
             Column(

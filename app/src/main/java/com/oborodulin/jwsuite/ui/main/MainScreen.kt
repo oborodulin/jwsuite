@@ -11,11 +11,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -36,12 +34,10 @@ import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
-import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.ui.navigation.MainNavigationHost
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -111,21 +107,22 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
     val onNavIconChange: (@Composable (() -> Unit)?) -> Unit = { navIcon = it }
 
     // Action Bar -> Actions:
-    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf({}) }
-    val onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit =
+    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
+    val onTopBarActionsChange: (Boolean, @Composable RowScope.() -> Unit) -> Unit =
         { isActionsLeading, actions ->
-            topBarActions = {
-                val logoutAction = @Composable {
-                    IconButton(onClick = handleLogoutActionClick) {
-                        Icon(Icons.Outlined.ExitToApp, null)
-                    }
+            /*val logoutAction = @Composable {
+                IconButton(onClick = handleLogoutActionClick) {
+                    Icon(Icons.Outlined.ExitToApp, null)
                 }
-                if (isActionsLeading) {
-                    actions(); logoutAction()
-                } else {
-                    logoutAction(); actions()
-                }
+            }*/
+            topBarActions = actions
+            /*{
+            if (isActionsLeading) {
+                actions(); logoutAction()
+            } else {
+                logoutAction(); actions()
             }
+        }*/
         }
 
     // Bottom Navigation:
@@ -184,7 +181,7 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
             )
         }
     }
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         Timber.tag(TAG).d("MainScreen -> LaunchedEffect() BEFORE collect ui state flow")
         sessionViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
@@ -199,7 +196,7 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
                 else -> {}
             }
         }
-    }
+    }*/
 }
 
 @Composable

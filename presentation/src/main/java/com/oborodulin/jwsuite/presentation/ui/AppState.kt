@@ -20,9 +20,9 @@ private const val TAG = "Presentation.AppState"
 
 @Composable
 fun rememberAppState(
-    rootNavController: NavHostController = rememberNavController(),
+    //rootNavController: NavHostController = rememberNavController(),
     mainNavController: NavHostController = rememberNavController(),
-    barNavController: NavHostController = rememberNavController(),
+    //barNavController: NavHostController = rememberNavController(),
     congregationSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?> = remember {
         mutableStateOf(null)
     },
@@ -35,7 +35,7 @@ fun rememberAppState(
     actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") },
     handleTopBarNavClick: MutableState<() -> Unit> = remember { mutableStateOf({}) }
 ) = remember(
-    rootNavController, mainNavController, barNavController,
+    mainNavController,//, mainNavController, mainNavController,// rootNavController, barNavController,
     congregationSharedViewModel,
     memberSharedViewModel,
     resources,
@@ -43,9 +43,9 @@ fun rememberAppState(
     actionBarSubtitle, handleTopBarNavClick
 ) {
     AppState(
-        rootNavController = rootNavController,
+        rootNavController = mainNavController, // rootNavController,
         mainNavController = mainNavController,
-        barNavController = barNavController,
+        barNavController = mainNavController, //barNavController,
         congregationSharedViewModel = congregationSharedViewModel,
         memberSharedViewModel = memberSharedViewModel,
         appName = appName,
@@ -85,8 +85,8 @@ class AppState(
     // Атрибут отображения навигационного меню bottomBar
     // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
     val shouldShowBottomNavBar: Boolean
-        @Composable get() = barNavController.currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes &&
-                mainNavController.currentBackStackEntryAsState().value?.destination?.route == NavRoutes.Home.route
+        @Composable get() = barNavController.currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes //&&
+                //mainNavController.currentBackStackEntryAsState().value?.destination?.route == NavRoutes.Home.route
 
     // ----------------------------------------------------------
     // Источник состояния навигации

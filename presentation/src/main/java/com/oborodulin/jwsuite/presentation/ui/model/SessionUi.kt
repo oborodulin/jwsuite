@@ -25,11 +25,19 @@ data class SessionUi(
 
     val mainRoute = NavRoutes.mainRouteByDestination(lastDestination)
 
-    val startDestination = when (lastDestination) {
-        null,
-        NavRoutes.Home.route -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
-        else -> lastDestination // navigate to previous startDestination
+    val startDestination = when (isSigned) {
+        true -> when (isLogged) {
+            true -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
+            else -> NavRoutes.Login.route // navigate to LoginScreen()
+        }
+
+        else -> NavRoutes.Signup.route // navigate to SignupScreen()
     }
+    /*when (lastDestination) {
+    null,
+    NavRoutes.Home.route -> NavRoutes.Dashboarding.route  // navigate to DashboardingScreen()
+    else -> lastDestination // navigate to previous startDestination
+}*/
 
     fun containsRole(roleType: MemberRoleType) = roles.map { it.roleType }.contains(roleType)
 

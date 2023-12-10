@@ -79,7 +79,7 @@ fun LoginView(viewModel: SessionViewModel) {
         modifier = Modifier
             //.fillMaxSize()
             .fillMaxWidth()
-            .height(400.dp)
+            .height(350.dp)
             .padding(4.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(

@@ -2,7 +2,7 @@ package com.oborodulin.home.common.util
 
 object LogLevel {
     // Core:
-    const val LOG_UI_COMPONENTS = false
+    const val LOG_UI_COMPONENTS = true
     const val LOG_MVI = false
     const val LOG_MVI_SINGLE = false
     const val LOG_MVI_DIALOG = false
