@@ -28,7 +28,7 @@ fun TerritoryCategoryScreen(
             territoryCategoryInput
         )
     val appState = LocalAppState.current
-    val upNavigation = { appState.backToBottomBarScreen() }
+    val upNavigation = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = territoryCategoryInput?.territoryCategoryId,

@@ -32,7 +32,7 @@ fun AppSettingScreen(
     Timber.tag(TAG).d("AppSettingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
-    val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     onActionBarTitleChange(stringResource(R.string.nav_item_settings))
     onActionBarSubtitleChange("")
     LaunchedEffect(Unit) {

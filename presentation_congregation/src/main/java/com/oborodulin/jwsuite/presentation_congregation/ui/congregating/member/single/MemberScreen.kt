@@ -25,7 +25,7 @@ fun MemberScreen(
 ) {
     Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = memberInput?.memberId,

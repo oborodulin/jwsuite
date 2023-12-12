@@ -27,7 +27,7 @@ fun GroupScreen(
 ) {
     Timber.tag(TAG).d("GroupScreen(...) called: groupInput = %s", groupInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
 
     val currentCongregation =
         appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value

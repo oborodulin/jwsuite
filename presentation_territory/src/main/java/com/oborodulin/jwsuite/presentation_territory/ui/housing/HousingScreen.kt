@@ -127,7 +127,7 @@ fun HousingScreen(
         // Scaffold Hoisting:
         onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing))
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        onTopBarNavClickChange { appState.backToBottomBarScreen() }
+        onTopBarNavClickChange { appState.mainNavigateUp() } //backToBottomBarScreen() }
         onTopBarActionsChange (true) {
             IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
         }

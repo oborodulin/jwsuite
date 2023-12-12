@@ -160,7 +160,7 @@ class MemberRoleViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: MemberRoleUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberRoleUi) called: membeRolerUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(MemberRoleUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberRoleFields.MEMBER_ROLE_ID, id, it.toString()) }
         initStateValue(
             MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation,

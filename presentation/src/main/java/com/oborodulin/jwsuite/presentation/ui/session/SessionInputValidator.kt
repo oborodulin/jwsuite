@@ -33,10 +33,10 @@ sealed class SessionInputValidator : Validatable {
             when {
                 inputs[0].isNullOrEmpty() -> R.string.signup_confirm_pin_empty_error
                 inputs.size != 2 || inputs[1].isNullOrEmpty() -> R.string.signup_confirm_pin_ctrl_error
-                inputs[0]?.let {
-                    val pin = inputs[1].orEmpty()
-                    it != pin.substring(0, minOf(it.length, pin.length))
-                } ?: true -> R.string.signup_confirm_pin_error
+                inputs[0].orEmpty() != inputs[1].orEmpty().substring(
+                    0,
+                    minOf(inputs[0].orEmpty().length, inputs[1].orEmpty().length)
+                ) -> R.string.signup_confirm_pin_error
 
                 else -> null
             }

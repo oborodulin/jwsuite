@@ -28,7 +28,7 @@ fun ProcessConfirmationScreen(
         viewModel = viewModel,
         loadUiAction = TerritoriesGridUiAction.ProcessInitConfirmation,
         saveUiAction = TerritoriesGridUiAction.Process,
-        upNavigation = { appState.backToBottomBarScreen() },
+        upNavigation = { appState.mainNavigateUp() }, //backToBottomBarScreen() },
         handleTopBarNavClick = appState.handleTopBarNavClick,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_process,
         onActionBarChange = onActionBarChange,

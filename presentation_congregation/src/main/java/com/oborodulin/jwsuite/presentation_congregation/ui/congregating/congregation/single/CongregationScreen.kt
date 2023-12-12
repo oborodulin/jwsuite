@@ -24,7 +24,7 @@ fun CongregationScreen(
 ) {
     Timber.tag(TAG).d("CongregationScreen(...) called: congregationInput = %s", congregationInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.backToBottomBarScreen() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = congregationInput?.congregationId,

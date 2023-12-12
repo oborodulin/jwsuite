@@ -40,12 +40,10 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.role.single.RoleComboBox
 import timber.log.Timber
@@ -56,8 +54,8 @@ private const val TAG = "Congregating.MemberRoleView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemberRoleView(
-    sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel()
+    memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersListViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("MemberRoleView(...) called")
     val appState = LocalAppState.current
@@ -124,7 +122,7 @@ fun MemberRoleView(
                     )
                 },
             enabled = member.item?.itemId == null,
-            sharedViewModel = sharedViewModel,
+            sharedViewModel = appState.memberSharedViewModel.value,
             inputWrapper = member,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction
@@ -174,7 +172,7 @@ fun PreviewGroupView() {
     //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberRoleView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            MemberRoleView()//sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

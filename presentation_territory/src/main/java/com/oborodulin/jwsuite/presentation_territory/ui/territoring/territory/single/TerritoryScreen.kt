@@ -28,7 +28,7 @@ fun TerritoryScreen(
 ) {
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
-    val upNavigation = { appState.backToBottomBarScreen() }
+    val upNavigation = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     //val territoryId by viewModel.id.collectAsStateWithLifecycle()
     //Timber.tag(TAG).d("TerritoryScreen: territoryId = %s", territoryId)
     SaveDialogScreenComponent(

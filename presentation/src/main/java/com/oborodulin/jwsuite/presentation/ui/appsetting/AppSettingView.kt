@@ -324,9 +324,7 @@ fun AppSettingView(
                 inputWrapper = territoryAtHandPeriod,
                 onValueChange = {
                     appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryAtHandPeriod(
-                            it
-                        )
+                        AppSettingInputEvent.TerritoryAtHandPeriod(it)
                     )
                 },
                 onImeKeyAction = appSettingViewModel::moveFocusImeAction
@@ -347,9 +345,7 @@ fun AppSettingView(
                 inputWrapper = territoryIdlePeriod,
                 onValueChange = {
                     appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryIdlePeriod(
-                            it
-                        )
+                        AppSettingInputEvent.TerritoryIdlePeriod(it)
                     )
                 },
                 onImeKeyAction = appSettingViewModel::moveFocusImeAction
@@ -370,9 +366,7 @@ fun AppSettingView(
                 inputWrapper = territoryRoomsLimit,
                 onValueChange = {
                     appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryRoomsLimit(
-                            it
-                        )
+                        AppSettingInputEvent.TerritoryRoomsLimit(it)
                     )
                 },
                 onImeKeyAction = appSettingViewModel::moveFocusImeAction

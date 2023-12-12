@@ -137,7 +137,7 @@ fun TerritoryDetailsScreen(
             appState.handleTopBarNavClick.value = upNavigation
 
             onTopBarActionsChange(true) {
-                IconButton(onClick = { appState.backToBottomBarScreen() }) {
+                IconButton(onClick = { appState.mainNavigateUp() }) { //backToBottomBarScreen() }) {
                     Icon(Icons.Outlined.Done, null)
                 }
             }
