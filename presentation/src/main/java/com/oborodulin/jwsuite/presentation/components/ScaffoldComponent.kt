@@ -2,9 +2,18 @@ package com.oborodulin.jwsuite.presentation.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -33,7 +42,9 @@ fun ScaffoldComponent(
     @StringRes topBarNavCntDescResId: Int? = null,
     onTopBarNavClick: () -> Unit = {},
     navigationIcon: @Composable (() -> Unit)? = null,
+    defTopBarActions: @Composable RowScope.() -> Unit = {},
     topBarActions: @Composable RowScope.() -> Unit = {},
+    isActionsLeading: Boolean = true,
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable () -> Unit = {},
     isBottomNavigation: Boolean = false,
@@ -108,7 +119,13 @@ fun ScaffoldComponent(
                                 else -> topBarNavigationIcon()
                             }*/
                         },
-                        actions = topBarActions
+                        actions = {
+                            if (isActionsLeading) {
+                                topBarActions(); defTopBarActions()
+                            } else {
+                                defTopBarActions(); topBarActions()
+                            }
+                        }
                     )
 
                 else -> topBar()

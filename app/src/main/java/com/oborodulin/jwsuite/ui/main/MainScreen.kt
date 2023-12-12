@@ -108,21 +108,11 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
 
     // Action Bar -> Actions:
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
+    var isTopBarActionsLeading by rememberSaveable { mutableStateOf(false) }
     val onTopBarActionsChange: (Boolean, @Composable RowScope.() -> Unit) -> Unit =
         { isActionsLeading, actions ->
-            /*val logoutAction = @Composable {
-                IconButton(onClick = handleLogoutActionClick) {
-                    Icon(Icons.Outlined.ExitToApp, null)
-                }
-            }*/
+            isTopBarActionsLeading = isActionsLeading
             topBarActions = actions
-            /*{
-            if (isActionsLeading) {
-                actions(); logoutAction()
-            } else {
-                logoutAction(); actions()
-            }
-        }*/
         }
 
     // Bottom Navigation:
@@ -146,7 +136,13 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
             topBarTitle = actionBarTitle,
             topBarSubtitle = actionBarSubtitle,
             actionBar = actionBar,
+            defTopBarActions = {
+                IconButton(onClick = handleLogoutActionClick) {
+                    Icon(Icons.Outlined.ExitToApp, null)
+                }
+            },
             topBarActions = topBarActions,
+            isActionsLeading = isTopBarActionsLeading,
             bottomBar = {
                 if (appState.shouldShowBottomNavBar) {
                     BottomNavigationComponent(

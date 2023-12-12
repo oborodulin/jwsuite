@@ -313,6 +313,7 @@ fun MainNavigationHost(
                 "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
                 it.destination.route, NavRoutes.Geo.arguments
             )
+            onActionBarSubtitleChange("")
             GeoScreen(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
@@ -611,6 +612,7 @@ fun MainNavigationHost(
                 appState.congregationSharedViewModel.value = congregationSharedViewModel
             }
             Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
+            onActionBarSubtitleChange(appState.actionBarSubtitle.value)
             DashboardingScreen(
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,

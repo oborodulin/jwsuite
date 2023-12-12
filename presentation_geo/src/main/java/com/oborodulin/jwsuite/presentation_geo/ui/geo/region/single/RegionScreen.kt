@@ -27,7 +27,7 @@ fun RegionScreen(
 ) {
     Timber.tag(TAG).d("RegionScreen(...) called: regionInput = %s", regionInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp(NavRoutes.Geo.route) }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     SaveDialogScreenComponent(
         viewModel = viewModel,
         inputId = regionInput?.regionId,
