@@ -56,9 +56,10 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     }
     val handleLogin = {
         viewModel.onContinueClick {
-            viewModel.handleActionJob({ viewModel.submitAction(SessionUiAction.Login) }) {
+            viewModel.submitAction(SessionUiAction.Login)
+            /*viewModel.handleActionJob({ viewModel.submitAction(SessionUiAction.Login) }) {
                 viewModel.submitAction(SessionUiAction.StartSession)
-            }
+            }*/
         }
     }
     //viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

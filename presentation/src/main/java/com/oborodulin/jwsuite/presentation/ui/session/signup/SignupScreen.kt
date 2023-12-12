@@ -38,8 +38,9 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     //    Timber.tag(TAG).d("Collect ui state flow: %s", state)
     val handleSignup = {
         viewModel.onContinueClick {
-            viewModel.handleActionJob({ viewModel.submitAction(SessionUiAction.Signup) })
-            { viewModel.submitAction(SessionUiAction.StartSession) }
+            viewModel.submitAction(SessionUiAction.Signup)
+            /*viewModel.handleActionJob({ viewModel.submitAction(SessionUiAction.Signup) })
+            { viewModel.submitAction(SessionUiAction.StartSession) }*/
         }
     }
     val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
