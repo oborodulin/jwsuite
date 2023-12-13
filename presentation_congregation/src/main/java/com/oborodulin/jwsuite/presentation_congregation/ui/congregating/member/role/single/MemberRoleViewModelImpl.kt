@@ -66,7 +66,7 @@ class MemberRoleViewModelImpl @Inject constructor(
     DialogViewModel<MemberRoleUi, UiState<MemberRoleUi>, MemberRoleUiAction, UiSingleEvent, MemberRoleFields, InputWrapper>(
         state, MemberRoleFields.MEMBER_ROLE_ID.name, MemberRoleFields.MEMBER_ROLE_ROLE
     ) {
-    override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
+    override val congregation: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberRoleFields.MEMBER_ROLE_CONGREGATION.name, InputListItemWrapper())
     }
     override val member: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -286,7 +286,7 @@ class MemberRoleViewModelImpl @Inject constructor(
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
                 override val congregation =
-                    MutableStateFlow(InputListItemWrapper<CongregationsListItem>())
+                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val member = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val role = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val roleExpiredDate = MutableStateFlow(InputWrapper())

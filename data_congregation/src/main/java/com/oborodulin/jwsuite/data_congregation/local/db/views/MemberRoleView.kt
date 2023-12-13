@@ -11,7 +11,7 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
     value = """
     SELECT mv.*, mr.*, r.* FROM ${MemberRoleEntity.TABLE_NAME} mr JOIN ${RoleEntity.TABLE_NAME} r ON r.roleId = mr.mrRolesId
                         JOIN ${MemberView.VIEW_NAME} mv ON mv.memberId = mr.mrMembersId
-    WHERE ifnull(strftime($DB_FRACT_SEC_TIME, mr.roleExpiredDate), strftime($DB_FRACT_SEC_TIME, 'now', 'localtime')) <= strftime($DB_FRACT_SEC_TIME, 'now', 'localtime')
+    WHERE ifnull(strftime($DB_FRACT_SEC_TIME, mr.roleExpiredDate), strftime($DB_FRACT_SEC_TIME, 'now', 'localtime')) >= strftime($DB_FRACT_SEC_TIME, 'now', 'localtime')
 """
 )
 class MemberRoleView(

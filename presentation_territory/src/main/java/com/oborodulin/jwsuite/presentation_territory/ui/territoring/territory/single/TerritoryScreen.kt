@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -29,6 +30,14 @@ fun TerritoryScreen(
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
     val upNavigation = { appState.mainNavigateUp() } //backToBottomBarScreen() }
+    LaunchedEffect(Unit) {
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d(
+                "TerritoryScreen -> LaunchedEffect(Unit): territoryInput.territoryId = %s",
+                territoryInput?.territoryId
+            )
+        viewModel.submitAction(TerritoryUiAction.Load(territoryInput?.territoryId))
+    }
     //val territoryId by viewModel.id.collectAsStateWithLifecycle()
     //Timber.tag(TAG).d("TerritoryScreen: territoryId = %s", territoryId)
     SaveDialogScreenComponent(

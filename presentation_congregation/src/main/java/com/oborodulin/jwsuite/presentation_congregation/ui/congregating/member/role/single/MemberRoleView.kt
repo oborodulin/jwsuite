@@ -47,6 +47,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.l
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.role.single.RoleComboBox
 import timber.log.Timber
+import java.time.Instant
 import java.util.EnumMap
 
 private const val TAG = "Congregating.MemberRoleView"
@@ -82,14 +83,27 @@ fun MemberRoleView(
     enumValues<MemberRoleFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
-
+    val currentCongregation =
+        appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    var currentMember = member.item
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("MemberRoleView -> LaunchedEffect()")
+        if (currentMember == null) {
+            currentMember = membersListViewModel.singleSelectedItem()
+            currentCongregation?.let {
+                memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it))
+            }
+            currentMember?.let {
+                memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it))
+            }
+        }
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
+    Timber.tag(TAG)
+        .d("currentCongregation = %s; currentMember = %s", currentCongregation, currentMember)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,13 +119,6 @@ fun MemberRoleView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val currentMember =
-            appState.memberSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-        val selectedMember = member.item ?: currentMember
-        Timber.tag(TAG).d("selectedMember = %s", currentMember)
-        selectedMember?.let {
-            memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it))
-        }
         MemberComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberRoleFields.MEMBER_ROLE_MEMBER]!!.focusRequester)
@@ -121,7 +128,7 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            enabled = member.item?.itemId == null,
+            enabled = currentMember == null,
             sharedViewModel = appState.memberSharedViewModel.value,
             inputWrapper = member,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
@@ -136,7 +143,7 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            memberId = selectedMember?.itemId!!,
+            memberId = currentMember?.itemId!!,
             inputWrapper = role,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Role(it)) },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction
@@ -156,10 +163,9 @@ fun MemberRoleView(
             },
             inputWrapper = roleExpiredDate,
             onValueChange = {
-                memberRoleViewModel.onTextFieldEntered(
-                    MemberRoleInputEvent.RoleExpiredDate(it)
-                )
+                memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.RoleExpiredDate(it))
             },
+            dateValidator = { timestamp -> timestamp > Instant.now().toEpochMilli() },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction
         )
     }

@@ -34,6 +34,8 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_JOB
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import kotlinx.coroutines.cancel
 import timber.log.Timber
@@ -71,14 +73,14 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
     //val errorMessage by viewModel.uiStateErrorMsg.collectAsStateWithLifecycle()
     val isErrorShowAlert = rememberSaveable { mutableStateOf(false) }
-    val handleSaveButtonClick = {
+    val handleTopBarActionButtonClick = {
         if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SaveDialogScreenComponent: Save Button click...")
         viewModel.onContinueClick {
             // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
             viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) { scope ->
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
-                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                    if (LOG_FLOW_JOB) Timber.tag(TAG)
                         .d(
                             "SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: (no errors) nextUiAction = %s",
                             nextUiAction
@@ -94,7 +96,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
 
                         else -> errorMessage
                     }
-                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                    if (LOG_FLOW_JOB) Timber.tag(TAG)
                         .d("SaveDialogScreenComponent -> viewModel.onContinueClick -> After action: cancel flow by errors")
                     scope.cancel()
                 }
@@ -102,7 +104,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         }
     }
     LaunchedEffect(inputId) {
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("SaveDialogScreenComponent -> LaunchedEffect(inputId): inputId = %s", inputId)
         //inputId?.let {
         viewModel.submitAction(loadUiAction)
@@ -129,16 +131,15 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         }
         onActionBarChange(null)
         onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-        /*if (isControlsShow) {
+        if (isControlsShow) {
             onTopBarActionsChange(true) {
-                IconButton(enabled = areInputsValid, onClick = handleSaveButtonClick) {
+                IconButton(enabled = areInputsValid, onClick = handleTopBarActionButtonClick) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }
         } else {
             onTopBarActionsChange(true) {}
-        }*/
-        onTopBarActionsChange(true) {}
+        }
         onFabChange {}
         CommonScreen(state = state) {
             Column(
@@ -149,9 +150,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
                 if (isControlsShow) {
                     // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                     Spacer(Modifier.height(8.dp))
-                    confirmButton?.invoke(areInputsValid, handleSaveButtonClick)
+                    confirmButton?.invoke(areInputsValid, handleTopBarActionButtonClick)
                         ?: SaveButtonComponent(
-                            enabled = areInputsValid, onClick = handleSaveButtonClick
+                            enabled = areInputsValid, onClick = handleTopBarActionButtonClick
                         )
                 }
             }

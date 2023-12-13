@@ -23,11 +23,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
@@ -41,13 +38,6 @@ class MembersListViewModelImpl @Inject constructor(
     private val converter: MembersListConverter
 ) : MembersListViewModel,
     ListViewModel<List<MembersListItem>, UiState<List<MembersListItem>>, MembersListUiAction, MembersListUiSingleEvent>() {
-
-    override val areInputsValid =
-        flow { emit(singleSelectedItem() != null) }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
 
     override fun initState() = UiState.Loading
 
