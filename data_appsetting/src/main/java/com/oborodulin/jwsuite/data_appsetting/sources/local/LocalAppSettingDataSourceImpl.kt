@@ -5,7 +5,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*

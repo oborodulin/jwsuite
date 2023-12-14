@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.domain.types.BuildingType
 import java.util.UUID
 
 data class HousesListItem(

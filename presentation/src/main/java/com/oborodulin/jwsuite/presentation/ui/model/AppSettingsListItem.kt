@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import java.util.UUID
 
 data class AppSettingsListItem(

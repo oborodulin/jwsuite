@@ -17,9 +17,9 @@ import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
-import com.oborodulin.jwsuite.domain.util.TransferObjectType
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
+import com.oborodulin.jwsuite.domain.types.TransferObjectType
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.MemberRolesListItem

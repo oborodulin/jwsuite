@@ -15,7 +15,7 @@ import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_MICRO_DISTRICT_V
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.Constants.PRM_ALL_ITEMS_VAL
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import java.util.UUID
 
 @DatabaseView(

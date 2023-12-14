@@ -4,7 +4,7 @@ import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.model.territory.House
-import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.types.RoadType
 
 data class GeoStreet(
     val ctx: Context? = null,

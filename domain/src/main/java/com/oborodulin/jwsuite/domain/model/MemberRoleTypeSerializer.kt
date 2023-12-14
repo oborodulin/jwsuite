@@ -1,6 +1,6 @@
 package com.oborodulin.jwsuite.domain.model
 
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

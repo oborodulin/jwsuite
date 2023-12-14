@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_congregation.R
-import com.oborodulin.jwsuite.domain.util.TransferObjectType
+import com.oborodulin.jwsuite.domain.types.TransferObjectType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

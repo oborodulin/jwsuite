@@ -3,8 +3,8 @@ package com.oborodulin.jwsuite.domain.usecases.territory
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map

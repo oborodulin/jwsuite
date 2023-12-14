@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_appsetting.local.db.dao
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged

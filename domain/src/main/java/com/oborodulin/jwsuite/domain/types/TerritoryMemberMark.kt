@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.domain.util
+package com.oborodulin.jwsuite.domain.types
 
 enum class TerritoryMemberMark {
     PP,     //повторное посещение

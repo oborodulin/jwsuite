@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.domain.types.MemberType
 import java.time.OffsetDateTime
 import java.util.UUID
 

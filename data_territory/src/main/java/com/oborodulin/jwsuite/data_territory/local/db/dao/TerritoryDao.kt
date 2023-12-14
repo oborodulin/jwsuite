@@ -24,7 +24,7 @@ import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_VAL
 import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_MICRO_DISTRICT_VAL
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged

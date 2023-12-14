@@ -16,7 +16,7 @@ import com.oborodulin.home.common.ui.components.fab.MinFabItem
 import com.oborodulin.home.common.ui.components.fab.MultiFabComponent
 import com.oborodulin.home.common.ui.components.fab.MultiFloatingState
 import com.oborodulin.home.common.util.toast
-import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
+import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction

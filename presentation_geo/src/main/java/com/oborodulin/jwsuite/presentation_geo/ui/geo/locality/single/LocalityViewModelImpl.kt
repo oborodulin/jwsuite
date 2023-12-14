@@ -6,8 +6,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
@@ -19,7 +17,7 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
-import com.oborodulin.jwsuite.domain.util.LocalityType
+import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi

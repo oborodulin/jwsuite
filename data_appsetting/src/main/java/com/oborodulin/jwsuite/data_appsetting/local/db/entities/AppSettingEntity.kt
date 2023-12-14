@@ -8,7 +8,7 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.home.common.util.Utils.Companion.currencyCode
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.serialization.Serializable
 import java.util.Locale
 import java.util.UUID

@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.domain.R
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
-import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.domain.types.BuildingType
 
 data class House(
     val ctx: Context? = null,

@@ -10,7 +10,7 @@ import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
-import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
+import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryCategoryInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoriesListItem

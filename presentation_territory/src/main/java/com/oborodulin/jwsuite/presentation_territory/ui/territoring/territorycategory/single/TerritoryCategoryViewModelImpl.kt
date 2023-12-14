@@ -5,8 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
@@ -17,7 +15,7 @@ import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.SaveTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.TerritoryCategoryUseCases
-import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
+import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryCategoryConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.category.TerritoryCategoryToTerritoryCategoriesListItemMapper

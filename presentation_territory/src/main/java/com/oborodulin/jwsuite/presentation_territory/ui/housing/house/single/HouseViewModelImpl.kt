@@ -6,8 +6,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
@@ -18,7 +16,7 @@ import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
-import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl

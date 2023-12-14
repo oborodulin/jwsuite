@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model
 
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.domain.util.LocalityType
+import com.oborodulin.jwsuite.domain.types.LocalityType
 import java.util.UUID
 
 data class LocalityUi(

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.domain.util
+package com.oborodulin.jwsuite.domain.types
 
 // resource: domain/member_types
 enum class MemberType {

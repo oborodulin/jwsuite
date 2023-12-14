@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.domain.util
+package com.oborodulin.jwsuite.domain.types
 
 // resource: domain/building_types.xml
 enum class BuildingType {

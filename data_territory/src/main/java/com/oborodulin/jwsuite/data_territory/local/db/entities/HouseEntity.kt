@@ -10,7 +10,7 @@ import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
-import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.domain.types.BuildingType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

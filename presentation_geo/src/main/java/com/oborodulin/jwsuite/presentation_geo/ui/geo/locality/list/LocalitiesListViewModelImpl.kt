@@ -10,7 +10,7 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
-import com.oborodulin.jwsuite.domain.util.LocalityType
+import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalitiesListItem

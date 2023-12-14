@@ -49,7 +49,7 @@ import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.theme.Typography
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.components.ReceiveButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SendButtonComponent

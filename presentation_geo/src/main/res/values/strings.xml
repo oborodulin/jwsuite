@@ -45,6 +45,8 @@
     <!--Область-->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
+    <string name="region_code_helper">Уникальный код региона, например, 01, 02, …, 99</string>
+    <string name="region_name_helper">Наименование республики, края, области и др.</string>
     <!--Район области-->
     <string name="region_district_subheader">Район области</string>
     <string name="region_district_new_subheader">Новый район области</string>

@@ -2,13 +2,22 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -93,6 +102,7 @@ fun RegionView(viewModel: RegionViewModel) {
                     )
                 },
             labelResId = R.string.code_hint,
+            helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.region_code_helper,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
@@ -111,6 +121,7 @@ fun RegionView(viewModel: RegionViewModel) {
                     )
                 },
             labelResId = R.string.name_hint,
+            helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.region_name_helper,
             leadingPainterResId = R.drawable.ic_abc_36,
             keyboardOptions = remember {
                 KeyboardOptions(

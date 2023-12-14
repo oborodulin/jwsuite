@@ -9,8 +9,8 @@ import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryLocation
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreetNamesAndHouseNums
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
 import java.util.UUID

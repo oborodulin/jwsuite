@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.OffsetDateTimeSerializer
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
-import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.domain.types.MemberType
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

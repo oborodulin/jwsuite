@@ -6,8 +6,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
+import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
@@ -39,7 +40,7 @@ fun AppSettingScreen(
         Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect(Unit)")
         appSettingViewModel.submitAction(AppSettingUiAction.Load)
     }
-    SaveDialogScreenComponent(
+    DialogScreenComponent(
         viewModel = appSettingViewModel,
         loadUiAction = AppSettingUiAction.Load,
         saveUiAction = AppSettingUiAction.Save,
@@ -47,6 +48,9 @@ fun AppSettingScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
+        confirmButton = { areValid, handleSaveButtonClick ->
+            SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
+        },
         onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,

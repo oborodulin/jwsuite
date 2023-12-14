@@ -14,7 +14,7 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
-import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.domain.types.MemberType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged

@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.domain.model.appsetting
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.R
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 
 data class AppSetting(
     val ctx: Context? = null,

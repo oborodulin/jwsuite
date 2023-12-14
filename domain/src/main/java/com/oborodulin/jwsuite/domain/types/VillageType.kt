@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.domain.util
+package com.oborodulin.jwsuite.domain.types
 
 // resource: domain/village_types.xml
 enum class VillageType {

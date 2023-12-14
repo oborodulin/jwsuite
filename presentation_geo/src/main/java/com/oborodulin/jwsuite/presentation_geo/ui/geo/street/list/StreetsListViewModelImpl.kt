@@ -11,7 +11,7 @@ import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
-import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem

@@ -19,8 +19,8 @@ import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl

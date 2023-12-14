@@ -27,7 +27,7 @@ import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
+import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R

@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.types.RoadType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

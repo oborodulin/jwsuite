@@ -10,7 +10,7 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.DeleteMicrodistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.GetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.MicrodistrictUseCases
-import com.oborodulin.jwsuite.domain.util.VillageType
+import com.oborodulin.jwsuite.domain.types.VillageType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictsListItem

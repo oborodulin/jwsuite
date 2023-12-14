@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
@@ -22,11 +23,24 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.SaveRegionCon
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionUiToRegionMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Geo.RegionViewModelImpl"
@@ -38,8 +52,7 @@ class RegionViewModelImpl @Inject constructor(
     private val useCases: RegionUseCases,
     private val getConverter: RegionConverter,
     private val saveConverter: SaveRegionConverter,
-    private val regionUiMapper: RegionUiToRegionMapper,
-    //private val regionMapper: RegionToRegionsListItemMapper
+    private val regionUiMapper: RegionUiToRegionMapper
 ) : RegionViewModel,
     DialogViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
         state, RegionFields.REGION_ID.name, RegionFields.REGION_CODE
@@ -78,7 +91,7 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     private fun loadRegion(regionId: UUID): Job {
-        Timber.tag(TAG).d("loadRegion(UUID) called: %s", regionId.toString())
+        Timber.tag(TAG).d("loadRegion(UUID) called: %s", regionId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionUseCase.execute(GetRegionUseCase.Request(regionId))
                 .map {
@@ -117,7 +130,7 @@ class RegionViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: RegionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(RegionModel) called: regionUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(RegionUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
         initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
         initStateValue(RegionFields.REGION_NAME, regionName, uiModel.regionName)
@@ -129,27 +142,15 @@ class RegionViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is RegionInputEvent.RegionCode ->
-                        when (RegionInputValidator.RegionCode.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.REGION_CODE, regionCode, event.input, true
-                            )
+                    is RegionInputEvent.RegionCode -> setStateValue(
+                        RegionFields.REGION_CODE, regionCode, event.input,
+                        RegionInputValidator.RegionCode.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                RegionFields.REGION_CODE, regionCode, event.input
-                            )
-                        }
-
-                    is RegionInputEvent.RegionName ->
-                        when (RegionInputValidator.RegionName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionFields.REGION_NAME, regionName, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                RegionFields.REGION_NAME, regionName, event.input
-                            )
-                        }
+                    is RegionInputEvent.RegionName -> setStateValue(
+                        RegionFields.REGION_NAME, regionName, event.input,
+                        RegionInputValidator.RegionName.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
@@ -224,7 +225,12 @@ class RegionViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: RegionUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: RegionFields, isFocused: Boolean

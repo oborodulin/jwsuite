@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -27,7 +27,7 @@ fun HandOutConfirmationScreen(
 ) {
     Timber.tag(TAG).d("HandOutConfirmationScreen(...) called")
     val appState = LocalAppState.current
-    SaveDialogScreenComponent(
+    DialogScreenComponent(
         viewModel = viewModel,
         loadUiAction = TerritoriesGridUiAction.HandOutInitConfirmation,
         saveUiAction = TerritoriesGridUiAction.HandOut,
@@ -39,11 +39,8 @@ fun HandOutConfirmationScreen(
         handleTopBarNavClick = appState.handleTopBarNavClick,
         areInputsValid = viewModel.areHandOutInputsValid.collectAsStateWithLifecycle().value,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_hand_out,
-        confirmButton = @Composable { areInputsValid, handleSaveButtonClick ->
-            HandOutButtonComponent(
-                enabled = areInputsValid,
-                onClick = handleSaveButtonClick
-            )
+        confirmButton = @Composable { areInputsValid, handleHandOutButtonClick ->
+            HandOutButtonComponent(enabled = areInputsValid, onClick = handleHandOutButtonClick)
         },
         onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,

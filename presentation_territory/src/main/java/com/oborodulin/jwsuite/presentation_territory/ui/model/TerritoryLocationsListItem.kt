@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import java.util.UUID
 
 data class TerritoryLocationsListItem(

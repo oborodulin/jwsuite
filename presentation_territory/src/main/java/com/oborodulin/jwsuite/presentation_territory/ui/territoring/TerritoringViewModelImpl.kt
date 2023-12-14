@@ -4,15 +4,13 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoringUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryLocationsListItem

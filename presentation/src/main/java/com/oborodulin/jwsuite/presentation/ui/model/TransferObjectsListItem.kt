@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation.ui.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
-import com.oborodulin.jwsuite.domain.util.TransferObjectType
+import com.oborodulin.jwsuite.domain.types.TransferObjectType
 import java.util.UUID
 
 data class TransferObjectsListItem(

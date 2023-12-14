@@ -12,7 +12,7 @@ import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteTerritoryHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
-import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem

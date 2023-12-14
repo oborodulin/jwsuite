@@ -28,8 +28,8 @@ import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_UI_STATE
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.AppState

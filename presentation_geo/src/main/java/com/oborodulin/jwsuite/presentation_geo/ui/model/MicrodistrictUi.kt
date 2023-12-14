@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.domain.util.VillageType
+import com.oborodulin.jwsuite.domain.types.VillageType
 
 data class MicrodistrictUi(
     val locality: LocalityUi = LocalityUi(),

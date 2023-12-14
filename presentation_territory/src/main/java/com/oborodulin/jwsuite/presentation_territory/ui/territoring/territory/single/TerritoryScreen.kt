@@ -6,8 +6,11 @@ import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
+import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
+import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -30,17 +33,19 @@ fun TerritoryScreen(
     Timber.tag(TAG).d("TerritoryScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
     val upNavigation = { appState.mainNavigateUp() } //backToBottomBarScreen() }
+    val territoryId = viewModel.id.collectAsStateWithLifecycle().value.value.toUUIDOrNull()
+    Timber.tag(TAG).d("TerritoryScreen: territoryId = %s", territoryId)
     LaunchedEffect(Unit) {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d(
-                "TerritoryScreen -> LaunchedEffect(Unit): territoryInput.territoryId = %s",
-                territoryInput?.territoryId
+                "TerritoryScreen -> LaunchedEffect(Unit): territoryId = %s; territoryInput.territoryId = %s",
+                territoryId, territoryInput?.territoryId
             )
-        viewModel.submitAction(TerritoryUiAction.Load(territoryInput?.territoryId))
+        territoryId?.let {
+            if (territoryInput?.territoryId == null) viewModel.submitAction(TerritoryUiAction.Load())
+        }
     }
-    //val territoryId by viewModel.id.collectAsStateWithLifecycle()
-    //Timber.tag(TAG).d("TerritoryScreen: territoryId = %s", territoryId)
-    SaveDialogScreenComponent(
+    DialogScreenComponent(
         viewModel = viewModel,
         inputId = territoryInput?.territoryId,
         loadUiAction = TerritoryUiAction.Load(territoryInput?.territoryId),
@@ -52,6 +57,9 @@ fun TerritoryScreen(
         topBarActionCntDescResId = com.oborodulin.home.common.R.string.btn_next_cnt_desc,
         cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory,
         uniqueConstraintFailedResId = R.string.territory_unique_constraint_error,
+        confirmButton = { areValid, handleSaveButtonClick ->
+            SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
+        },
         onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,

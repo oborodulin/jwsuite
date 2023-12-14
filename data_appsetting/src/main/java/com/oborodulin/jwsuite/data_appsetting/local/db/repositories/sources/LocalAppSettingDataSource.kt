@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources
 
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
-import com.oborodulin.jwsuite.domain.util.AppSettingParam
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

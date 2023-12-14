@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.domain.util.TerritoryCategoryType
+import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import java.util.UUID
 
 data class TerritoryCategoryUi(

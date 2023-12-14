@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 
 data class RoleUi(
     val roleType: MemberRoleType = MemberRoleType.USER,

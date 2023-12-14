@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid
 
 import com.oborodulin.home.common.ui.state.UiAction
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.util.TerritoryProcessType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import java.util.UUID
 
 sealed class TerritoriesGridUiAction(override val isEmitJob: Boolean = true) : UiAction {

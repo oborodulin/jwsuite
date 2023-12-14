@@ -8,7 +8,6 @@ import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
 import timber.log.Timber
 
 private const val TAG = "Congregating.MemberRoleScreen"
@@ -41,6 +40,6 @@ fun MemberRoleScreen(
         onTopBarActionsChange = onTopBarActionsChange,
         onFabChange = onFabChange
     ) {
-        MemberRoleView(sharedViewModel = appState.congregationSharedViewModel.value)
+        MemberRoleView()
     }
 }

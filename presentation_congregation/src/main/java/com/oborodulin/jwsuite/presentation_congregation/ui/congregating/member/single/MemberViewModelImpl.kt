@@ -25,7 +25,7 @@ import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
-import com.oborodulin.jwsuite.domain.util.MemberType
+import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem

@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
-import com.oborodulin.jwsuite.domain.util.RoadType
+import com.oborodulin.jwsuite.domain.types.RoadType
 import java.util.UUID
 
 @DatabaseView(

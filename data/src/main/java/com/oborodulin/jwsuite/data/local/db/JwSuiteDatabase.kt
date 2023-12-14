@@ -99,9 +99,9 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouse
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
-import com.oborodulin.jwsuite.domain.util.MemberRoleType
-import com.oborodulin.jwsuite.domain.util.MemberType
-import com.oborodulin.jwsuite.domain.util.TransferObjectType
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
+import com.oborodulin.jwsuite.domain.types.MemberType
+import com.oborodulin.jwsuite.domain.types.TransferObjectType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

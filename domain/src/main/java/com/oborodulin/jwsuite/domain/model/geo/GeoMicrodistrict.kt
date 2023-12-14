@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.domain.model.geo
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.R
-import com.oborodulin.jwsuite.domain.util.VillageType
+import com.oborodulin.jwsuite.domain.types.VillageType
 
 data class GeoMicrodistrict(
     val ctx: Context? = null,

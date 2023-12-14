@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
-import com.oborodulin.jwsuite.domain.util.BuildingType
+import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi

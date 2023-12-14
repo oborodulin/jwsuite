@@ -5,9 +5,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
@@ -24,11 +26,24 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistric
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictToRegionDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Geo.RegionDistrictViewModelImpl"
@@ -151,41 +166,21 @@ class RegionDistrictViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is RegionDistrictInputEvent.Region ->
-                        when (RegionDistrictInputValidator.Region.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                RegionDistrictFields.REGION_DISTRICT_REGION, region, event.input,
-                                true
-                            )
+                    is RegionDistrictInputEvent.Region -> setStateValue(
+                        RegionDistrictFields.REGION_DISTRICT_REGION, region, event.input,
+                        RegionDistrictInputValidator.Region.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                RegionDistrictFields.REGION_DISTRICT_REGION, region, event.input
-                            )
-                        }
+                    is RegionDistrictInputEvent.DistrictShortName -> setStateValue(
+                        RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
+                        event.input,
+                        RegionDistrictInputValidator.DistrictShortName.isValid(event.input)
+                    )
 
-                    is RegionDistrictInputEvent.DistrictShortName ->
-                        when (RegionDistrictInputValidator.DistrictShortName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
-                                event.input
-                            )
-                        }
-
-                    is RegionDistrictInputEvent.DistrictName ->
-                        when (RegionDistrictInputValidator.DistrictName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                RegionDistrictFields.DISTRICT_NAME, districtName, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                RegionDistrictFields.DISTRICT_NAME, districtName, event.input
-                            )
-                        }
+                    is RegionDistrictInputEvent.DistrictName -> setStateValue(
+                        RegionDistrictFields.DISTRICT_NAME, districtName, event.input,
+                        RegionDistrictInputValidator.DistrictName.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
@@ -290,7 +285,12 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: RegionDistrictUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: RegionDistrictFields, isFocused: Boolean

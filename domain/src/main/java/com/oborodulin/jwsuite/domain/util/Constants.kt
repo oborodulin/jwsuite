@@ -40,4 +40,10 @@ object Constants {
     const val MT_FULL_TIME_VAL = "'FULL_TIME'"
     const val MT_SERVICE_VAL = "'SERVICE'"
     const val MT_IN_ACTIVE_VAL = "'IN_ACTIVE'"
+
+    // TransferObjectType:
+    const val TOT_ALL_VAL = "'ALL'"
+    const val TOT_MEMBERS_VAL = "'MEMBERS'"
+    const val TOT_TERRITORIES_VAL = "'TERRITORIES'"
+    const val TOT_BILLS_VAL = "'BILLS'"
 }

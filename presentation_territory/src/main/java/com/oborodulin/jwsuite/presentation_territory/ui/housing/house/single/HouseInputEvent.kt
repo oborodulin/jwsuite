@@ -14,7 +14,7 @@ sealed class HouseInputEvent(val value: String) : Inputable {
     data class HouseNum(val input: Int?) : HouseInputEvent(input?.toString().orEmpty())
     data class HouseLetter(val input: String) : HouseInputEvent(input)
     data class BuildingNum(val input: Int?) : HouseInputEvent(input?.toString().orEmpty())
-    data class BuildingType(val input: com.oborodulin.jwsuite.domain.util.BuildingType) :
+    data class BuildingType(val input: com.oborodulin.jwsuite.domain.types.BuildingType) :
         HouseInputEvent(input.name)
 
     data class IsBusiness(val input: Boolean) : HouseInputEvent(input.toString())

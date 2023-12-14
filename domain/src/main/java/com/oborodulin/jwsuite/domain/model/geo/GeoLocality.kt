@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.domain.model.geo
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.R
-import com.oborodulin.jwsuite.domain.util.LocalityType
+import com.oborodulin.jwsuite.domain.types.LocalityType
 
 data class GeoLocality(
     val ctx: Context? = null,

@@ -86,7 +86,7 @@ class AppState(
     // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
     val shouldShowBottomNavBar: Boolean
         @Composable get() = barNavController.currentBackStackEntryAsState().value?.destination?.route in bottomNavBarRoutes //&&
-                //mainNavController.currentBackStackEntryAsState().value?.destination?.route == NavRoutes.Home.route
+    //mainNavController.currentBackStackEntryAsState().value?.destination?.route == NavRoutes.Home.route
 
     // ----------------------------------------------------------
     // Источник состояния навигации
@@ -100,7 +100,14 @@ class AppState(
 
     fun mainNavigateUp(destination: String? = null) {
         Timber.tag(TAG).d("mainNavigateUp(...) called: destination = %s", destination)
-        if (!this.mainNavController.navigateUp()) {
+        this.mainNavController.navigateUp()
+        destination?.let {
+            this.mainNavController.navigate(it) {
+                launchSingleTop = true
+                popUpTo(it)
+            }
+        }
+        /*if (!this.mainNavController.navigateUp()) {
             destination?.let {
                 this.mainNavController.navigate(it) {
                     Timber.tag(TAG)
@@ -108,7 +115,7 @@ class AppState(
                     popUpTo(destination) { inclusive = true }
                 }
             }
-        }
+        }*/
     }
 
     // Возврат к экрану из главного меню нижней панели.

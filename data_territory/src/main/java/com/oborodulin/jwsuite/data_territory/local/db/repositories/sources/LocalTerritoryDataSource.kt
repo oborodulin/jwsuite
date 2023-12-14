@@ -15,7 +15,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEn
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
-import com.oborodulin.jwsuite.domain.util.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
 import java.util.UUID
