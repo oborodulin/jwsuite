@@ -32,6 +32,7 @@ fun rememberAppState(
     resources: Resources = LocalContext.current.resources,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     appName: String = "",
+    actionBarTitle: MutableState<String> = rememberSaveable { mutableStateOf("") },
     actionBarSubtitle: MutableState<String> = rememberSaveable { mutableStateOf("") },
     handleTopBarNavClick: MutableState<() -> Unit> = remember { mutableStateOf({}) }
 ) = remember(
@@ -40,7 +41,7 @@ fun rememberAppState(
     memberSharedViewModel,
     resources,
     coroutineScope,
-    actionBarSubtitle, handleTopBarNavClick
+    actionBarTitle, actionBarSubtitle, handleTopBarNavClick
 ) {
     AppState(
         rootNavController = mainNavController, // rootNavController,
@@ -49,6 +50,7 @@ fun rememberAppState(
         congregationSharedViewModel = congregationSharedViewModel,
         memberSharedViewModel = memberSharedViewModel,
         appName = appName,
+        actionBarTitle = actionBarTitle,
         actionBarSubtitle = actionBarSubtitle,
         handleTopBarNavClick = handleTopBarNavClick
     )
@@ -68,6 +70,7 @@ class AppState(
     val congregationSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
     val memberSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
     val appName: String,
+    val actionBarTitle: MutableState<String>,
     val actionBarSubtitle: MutableState<String>,
     val handleTopBarNavClick: MutableState<() -> Unit>
 ) {

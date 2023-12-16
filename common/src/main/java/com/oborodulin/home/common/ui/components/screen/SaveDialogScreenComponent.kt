@@ -1,10 +1,10 @@
 package com.oborodulin.home.common.ui.components.screen
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 import com.oborodulin.home.common.ui.state.DialogViewModeled
@@ -26,11 +26,13 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     handleTopBarNavClick: MutableState<() -> Unit>,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    /*onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,*/
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    //onFabChange: (@Composable () -> Unit) -> Unit,
+    innerPadding: PaddingValues,
     dialogView: @Composable (T) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG)
@@ -47,11 +49,12 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         confirmButton = { areValid, handleSaveButtonClick ->
             SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
         },
-        onActionBarChange = onActionBarChange,
+        /*onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
         onTopBarActionsChange = onTopBarActionsChange,
-        onFabChange = onFabChange,
+        //onFabChange = onFabChange,
+        innerPadding = innerPadding,
         dialogView = dialogView
     )
 }

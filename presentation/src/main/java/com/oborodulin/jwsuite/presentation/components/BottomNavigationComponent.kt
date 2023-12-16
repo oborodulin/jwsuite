@@ -13,14 +13,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
 
 private const val TAG = "Presentation.BottomNavBarComponent"
 
 @Composable
-fun BottomNavigationComponent(modifier: Modifier, appState: AppState) {
+fun BottomNavigationComponent(modifier: Modifier) {
     Timber.tag(TAG).d("BottomNavigationBar(...) called")
+    val appState = LocalAppState.current
     NavigationBar(
         modifier = Modifier
             .navigationBarsPadding()

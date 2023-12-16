@@ -20,7 +20,6 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -65,27 +64,27 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     //viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
     //    Timber.tag(TAG).d("Collect ui state flow: %s", state)
     val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
-    JWSuiteTheme { //(darkTheme = true)
-        ScaffoldComponent(
-            topBarTitle = appState.appName,
-            topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
-            //CommonScreen(paddingValues = innerPadding, state = state) { //session ->
-            //if (!session.isSigned) viewModel.submitAction(SessionUiAction.Registration)
-            //if (session.isLogged) viewModel.submitAction(SessionUiAction.StartSession)
-            val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
-            Timber.tag(TAG).d("LoginScreen: areInputsValid = %s", areInputsValid)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LoginView(viewModel)
-                Spacer(Modifier.height(8.dp))
-                LoginButtonComponent(enabled = areInputsValid, onClick = handleLogin)
-            }
-            //}
-            //}
+    //JWSuiteTheme { //(darkTheme = true)
+    ScaffoldComponent(
+        topBarTitle = appState.appName,
+        topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
+        //CommonScreen(paddingValues = innerPadding, state = state) { //session ->
+        //if (!session.isSigned) viewModel.submitAction(SessionUiAction.Registration)
+        //if (session.isLogged) viewModel.submitAction(SessionUiAction.StartSession)
+        val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
+        Timber.tag(TAG).d("LoginScreen: areInputsValid = %s", areInputsValid)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LoginView(viewModel)
+            Spacer(Modifier.height(8.dp))
+            LoginButtonComponent(enabled = areInputsValid, onClick = handleLogin)
         }
+        //}
+        //}
     }
+    //}
 }

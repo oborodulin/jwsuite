@@ -18,7 +18,6 @@ import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.components.SignupButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
-import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
 
 private const val TAG = "Presentation.SignupScreen"
@@ -44,25 +43,25 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
         }
     }
     val dialogTitleResId by viewModel.dialogTitleResId.collectAsStateWithLifecycle()
-    JWSuiteTheme { //(darkTheme = true)
-        ScaffoldComponent(
-            topBarTitle = appState.appName,
-            topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
-            //            CommonScreen(paddingValues = innerPadding, state = state) { //session ->
-            val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
-            Timber.tag(TAG).d("SignupScreen: areInputsValid = %s", areInputsValid)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SignupView(viewModel)
-                Spacer(Modifier.height(8.dp))
-                SignupButtonComponent(enabled = areInputsValid, onClick = handleSignup)
-            }
-            //}
-            //}
+    //JWSuiteTheme { //(darkTheme = true)
+    ScaffoldComponent(
+        topBarTitle = appState.appName,
+        topBarSubtitle = dialogTitleResId?.let { stringResource(it) }) { innerPadding ->
+        //            CommonScreen(paddingValues = innerPadding, state = state) { //session ->
+        val areInputsValid by viewModel.areSignupInputsValid.collectAsStateWithLifecycle()
+        Timber.tag(TAG).d("SignupScreen: areInputsValid = %s", areInputsValid)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            SignupView(viewModel)
+            Spacer(Modifier.height(8.dp))
+            SignupButtonComponent(enabled = areInputsValid, onClick = handleSignup)
         }
+        //}
+        //}
     }
+    //}
 }

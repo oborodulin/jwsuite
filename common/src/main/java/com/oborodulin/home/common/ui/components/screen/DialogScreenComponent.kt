@@ -2,12 +2,13 @@ package com.oborodulin.home.common.ui.components.screen
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,11 +60,13 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     confirmButton: @Composable (Boolean, () -> Unit) -> Unit,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
+    /*onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit,
+    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,*/
+    onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
+    //onFabChange: (@Composable () -> Unit) -> Unit,
+    innerPadding: PaddingValues,
     dialogView: @Composable (T) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG)
@@ -112,9 +115,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-            onActionBarSubtitleChange(stringResource(it))
-        }
+        //viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+        //    onActionBarSubtitleChange(stringResource(it))
+        //}
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }
@@ -129,21 +132,25 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         ErrorAlertDialogComponent(isShow = isErrorShowAlert, text = errorMessage) {
             isErrorShowAlert.value = false; upNavigation()
         }
-        onActionBarChange(null)
-        onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+        //onActionBarChange(null)
+        //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         if (isControlsShow) {
-            onTopBarActionsChange(true) {
+            //onTopBarActionsChange(true) {
+            onTopBarActionsChange {
                 IconButton(enabled = areInputsValid, onClick = handleTopBarActionButtonClick) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }
         } else {
-            onTopBarActionsChange(true) {}
+            //onTopBarActionsChange(true) {}
+            onTopBarActionsChange {}
         }
-        onFabChange {}
-        CommonScreen(state = state) {
+        //onFabChange {}
+        CommonScreen(paddingValues = innerPadding, state = state) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 dialogView.invoke(it)

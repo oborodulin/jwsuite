@@ -162,13 +162,15 @@ class MemberRoleViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberRoleUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberRoleFields.MEMBER_ROLE_ID, id, it.toString()) }
-        initStateValue(
-            MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation,
-            CongregationsListItem(
-                id = uiModel.member.congregation.id!!,
-                locality = uiModel.member.congregation.locality
+        uiModel.member.congregation.id?.let {
+            initStateValue(
+                MemberRoleFields.MEMBER_ROLE_CONGREGATION, congregation,
+                CongregationsListItem(
+                    id = it,
+                    locality = uiModel.member.congregation.locality
+                )
             )
-        )
+        }
         initStateValue(
             MemberRoleFields.MEMBER_ROLE_MEMBER, member, uiModel.member.toMembersListItem()
         )

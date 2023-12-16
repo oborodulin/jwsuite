@@ -3,13 +3,17 @@ package com.oborodulin.jwsuite.presentation.ui.appsetting
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
@@ -23,45 +27,55 @@ private const val TAG = "Presentation.AppSettingScreen"
 fun AppSettingScreen(
     appSettingViewModel: AppSettingViewModelImpl = hiltViewModel(),
     sessionViewModel: SessionViewModel, //Impl = hiltViewModel(),
+    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("AppSettingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
-    onActionBarTitleChange(stringResource(R.string.nav_item_settings))
-    onActionBarSubtitleChange("")
+    //onActionBarTitleChange(stringResource(R.string.nav_item_settings))
+    //onActionBarSubtitleChange("")
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect(Unit)")
         appSettingViewModel.submitAction(AppSettingUiAction.Load)
     }
-    DialogScreenComponent(
-        viewModel = appSettingViewModel,
-        loadUiAction = AppSettingUiAction.Load,
-        saveUiAction = AppSettingUiAction.Save,
-        upNavigation = upNavigation,
-        handleTopBarNavClick = appState.handleTopBarNavClick,
-        isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
-        cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
-        confirmButton = { areValid, handleSaveButtonClick ->
-            SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
-        },
-        onActionBarChange = onActionBarChange,
+    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
+    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    ScaffoldComponent(
+        topBarTitle = stringResource(R.string.nav_item_settings),
+        defTopBarActions = defTopBarActions,
+        topBarActions = topBarActions
+    ) { innerPadding ->
+        DialogScreenComponent(
+            viewModel = appSettingViewModel,
+            loadUiAction = AppSettingUiAction.Load,
+            saveUiAction = AppSettingUiAction.Save,
+            upNavigation = upNavigation,
+            handleTopBarNavClick = appState.handleTopBarNavClick,
+            isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
+            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
+            confirmButton = { areValid, handleSaveButtonClick ->
+                SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
+            },
+            /*onActionBarChange = onActionBarChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-        onTopBarActionsChange = onTopBarActionsChange,
-        onFabChange = onFabChange
-    ) {
-        AppSettingView(
-            appSettingsUiModel = it,
-            appSettingViewModel = appSettingViewModel,
-            sessionViewModel = sessionViewModel
-        )
+        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+            onTopBarActionsChange = onTopBarActionsChange,
+            //onFabChange = onFabChange
+            innerPadding = innerPadding
+        ) { uiModel ->
+            AppSettingView(
+                appSettingsUiModel = uiModel,
+                appSettingViewModel = appSettingViewModel,
+                sessionViewModel = sessionViewModel
+            )
+        }
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect() BEFORE collect ui state flow")

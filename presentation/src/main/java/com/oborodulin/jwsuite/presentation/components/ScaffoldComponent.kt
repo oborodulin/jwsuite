@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.IconButton
@@ -37,17 +39,15 @@ fun ScaffoldComponent(
     topBarTitle: String? = null,
     topBarSubtitle: String? = null,
     actionBar: @Composable (() -> Unit)? = null,
-    topBarNavImageVector: ImageVector? = null,
+    topBarNavImageVector: ImageVector? = Icons.Outlined.ArrowBack,
     @DrawableRes topBarNavPainterResId: Int? = null,
     @StringRes topBarNavCntDescResId: Int? = null,
-    onTopBarNavClick: () -> Unit = {},
     navigationIcon: @Composable (() -> Unit)? = null,
     defTopBarActions: @Composable RowScope.() -> Unit = {},
     topBarActions: @Composable RowScope.() -> Unit = {},
     isActionsLeading: Boolean = true,
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable () -> Unit = {},
-    isBottomNavigation: Boolean = false,
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     content: @Composable (PaddingValues) -> Unit

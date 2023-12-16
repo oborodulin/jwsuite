@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
-import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -69,20 +68,20 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
             }
         }
     }
+    val bottomBar = @Composable {
+        if (appState.shouldShowBottomNavBar) {
+            BottomNavigationComponent(
+                modifier = Modifier
+                    .height(bottomBarHeight)
+                    .offset { IntOffset(x = 0, y = -bottomBarOffsetHeightPx.roundToInt()) }
+            )
+        }
+    }
     val handleLogoutActionClick: () -> Unit = {
         Timber.tag(TAG).d("MainScreen: Logout Button onClick...")
         sessionViewModel.handleActionJob(
-            { sessionViewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) },
-            {
-                //sessionViewModel.submitAction(SessionUiAction.EnterPin)
-                activity?.finish()
-                //appState.rootNavController.popBackStack(NavRoutes.Login.route, true)
-                /*navigate(NavRoutes.Login.route) {
-                    popUpTo(appState.rootNavController.graph.startDestinationId) {
-                        inclusive = true
-                    }
-                }*/
-            })
+            { sessionViewModel.submitAction(SessionUiAction.Logout(appState.mainNavCurrentRoute)) })
+        { activity?.finish() }
     }
     // Action Bar:
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
@@ -127,56 +126,59 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
     var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
     val onFabChange: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
 
-    JWSuiteTheme { //(darkTheme = true)
-        ScaffoldComponent(
-            nestedScrollConnection = nestedScrollConnection,
-            isNestedScrollConnection = isNestedScrollConnection,
-            topBarNavImageVector = topBarNavImageVector,
-            onTopBarNavClick = onTopBarNavClick,
-            topBarTitle = actionBarTitle,
-            topBarSubtitle = actionBarSubtitle,
-            actionBar = actionBar,
-            defTopBarActions = {
-                IconButton(onClick = handleLogoutActionClick) {
-                    Icon(Icons.Outlined.ExitToApp, null)
-                }
-            },
-            topBarActions = topBarActions,
-            isActionsLeading = isTopBarActionsLeading,
-            bottomBar = {
-                if (appState.shouldShowBottomNavBar) {
-                    BottomNavigationComponent(
-                        modifier = Modifier
-                            .height(bottomBarHeight)
-                            .offset {
-                                IntOffset(
-                                    x = 0,
-                                    y = -bottomBarOffsetHeightPx.roundToInt()
-                                )
-                            },
-                        appState
-                    )
-                }
-            },
-            isBottomNavigation = isBottomNavigation,
-            floatingActionButton = floatingActionButton
-        ) { innerPadding ->
-            MainNavigationHost(
-                sessionViewModel = sessionViewModel,
-                innerPadding = innerPadding,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onNavIconChange = onNavIconChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarNavClickChange = onTopBarNavClickChange,
-                shouldUseNestedScrollConnection = shouldUseNestedScrollConnection,
-                onTopBarActionsChange = onTopBarActionsChange,
-                areUsingBottomNavigation = areUsingBottomNavigation,
-                onFabChange = onFabChange
-            )
-        }
-    }
+    /*ScaffoldComponent(
+        nestedScrollConnection = nestedScrollConnection,
+        isNestedScrollConnection = isNestedScrollConnection,
+        topBarNavImageVector = topBarNavImageVector,
+        onTopBarNavClick = onTopBarNavClick,
+        topBarTitle = actionBarTitle,
+        topBarSubtitle = actionBarSubtitle,
+        actionBar = actionBar,
+        defTopBarActions = {
+            IconButton(onClick = handleLogoutActionClick) {
+                Icon(Icons.Outlined.ExitToApp, null)
+            }
+        },
+        topBarActions = topBarActions,
+        isActionsLeading = isTopBarActionsLeading,
+        bottomBar = {
+            if (appState.shouldShowBottomNavBar) {
+                BottomNavigationComponent(
+                    modifier = Modifier
+                        .height(bottomBarHeight)
+                        .offset {
+                            IntOffset(
+                                x = 0,
+                                y = -bottomBarOffsetHeightPx.roundToInt()
+                            )
+                        },
+                    appState
+                )
+            }
+        },
+        isBottomNavigation = isBottomNavigation,
+        floatingActionButton = floatingActionButton
+    ) { innerPadding ->*/
+    MainNavigationHost(
+        sessionViewModel = sessionViewModel,
+        //innerPadding = innerPadding,
+        onActionBarChange = onActionBarChange,
+        onActionBarTitleChange = onActionBarTitleChange,
+        onActionBarSubtitleChange = onActionBarSubtitleChange,
+        onNavIconChange = onNavIconChange,
+        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+        onTopBarNavClickChange = onTopBarNavClickChange,
+        shouldUseNestedScrollConnection = shouldUseNestedScrollConnection,
+        defTopBarActions = {
+            IconButton(onClick = handleLogoutActionClick) {
+                Icon(Icons.Outlined.ExitToApp, null)
+            }
+        },
+        onTopBarActionsChange = onTopBarActionsChange,
+        areUsingBottomNavigation = areUsingBottomNavigation,
+        onFabChange = onFabChange
+    )
+    //}
     /*LaunchedEffect(Unit) {
         Timber.tag(TAG).d("MainScreen -> LaunchedEffect() BEFORE collect ui state flow")
         sessionViewModel.singleEventFlow.collectLatest {
