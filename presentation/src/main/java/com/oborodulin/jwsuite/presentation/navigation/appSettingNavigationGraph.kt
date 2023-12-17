@@ -26,7 +26,7 @@ fun NavGraphBuilder.appSettingNavigationGraph(
         route = Graph.SETTINGS,
         startDestination = startDestination ?: NavRoutes.Settings.route
     ) {
-        composable(
+        /*composable(
             route = NavRoutes.Settings.route, arguments = NavRoutes.Settings.arguments
         ) {
             Timber.tag(TAG).d(
@@ -43,6 +43,6 @@ fun NavGraphBuilder.appSettingNavigationGraph(
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )
-        }
+        }*/
     }
 }

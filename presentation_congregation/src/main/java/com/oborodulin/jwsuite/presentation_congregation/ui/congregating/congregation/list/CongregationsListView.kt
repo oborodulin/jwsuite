@@ -25,6 +25,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.AppState
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
@@ -37,13 +38,14 @@ private const val TAG = "Congregating.CongregationsListView"
 
 @Composable
 fun CongregationsListView(
-    appState: AppState,
+    //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    onActionBarSubtitleChange: (String) -> Unit
+    membersListViewModel: MembersListViewModelImpl = hiltViewModel()//,
+    //onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsListView(...) called")
+    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect() BEFORE collect ui state flow")
         congregationsListViewModel.submitAction(CongregationsListUiAction.Load)
@@ -79,7 +81,7 @@ fun CongregationsListView(
                 )
                 appState.congregationSharedViewModel.value?.submitData(congregation)
                 appState.actionBarSubtitle.value = congregation.congregationName
-                onActionBarSubtitleChange(congregation.congregationName)
+                //onActionBarSubtitleChange(congregation.congregationName)
                 congregationsListViewModel.singleSelectItem(congregation)
                 membersListViewModel.submitAction(
                     MembersListUiAction.LoadByCongregation(congregation.id)

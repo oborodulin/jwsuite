@@ -4,9 +4,9 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +27,7 @@ import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
@@ -48,11 +48,12 @@ fun TerritoryDetailsScreen(
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput,
+    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
@@ -119,23 +120,38 @@ fun TerritoryDetailsScreen(
 
     territoryViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         CommonScreen(state = state) { territory ->
-            tabs = when (territory.territoryCategory.territoryCategoryCode) {
-                TerritoryCategoryType.HOUSES -> listOf(tabStreets, tabHouses, tabEntraces)
-                TerritoryCategoryType.FLOORS -> listOf(tabFloors)
-                TerritoryCategoryType.ROOMS -> listOf(tabRooms)
-                else -> emptyList()
-            }
-            onActionBarSubtitleChange(
-                stringResource(
+            ScaffoldComponent(
+                topBarSubtitle = stringResource(
                     com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details,
                     territory.cardNum
-                )
-            )
-            val upNavigation = { appState.mainNavigateUp() }
-            // Scaffold Hoisting:
-            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-            appState.handleTopBarNavClick.value = upNavigation
-
+                ),
+                defTopBarActions = defTopBarActions,
+                topBarActions = {
+                    IconButton(onClick = { appState.mainNavigateUp() }) { //backToBottomBarScreen() }) {
+                        Icon(Icons.Outlined.Done, null)
+                    }
+                },
+                floatingActionButton = {
+                    ExtFabComponent(
+                        enabled = true,
+                        imageVector = Icons.Outlined.Add,
+                        textResId = com.oborodulin.home.common.R.string.btn_add_lbl,
+                        onClick = handleActionAdd
+                    )
+                }
+            ) { innerPadding ->
+                tabs = when (territory.territoryCategory.territoryCategoryCode) {
+                    TerritoryCategoryType.HOUSES -> listOf(tabStreets, tabHouses, tabEntraces)
+                    TerritoryCategoryType.FLOORS -> listOf(tabFloors)
+                    TerritoryCategoryType.ROOMS -> listOf(tabRooms)
+                    else -> emptyList()
+                }
+                //onActionBarSubtitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details, territory.cardNum))
+                val upNavigation = { appState.mainNavigateUp() }
+                // Scaffold Hoisting:
+                //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+                appState.handleTopBarNavClick.value = upNavigation
+                /*
             onTopBarActionsChange(true) {
                 IconButton(onClick = { appState.mainNavigateUp() }) { //backToBottomBarScreen() }) {
                     Icon(Icons.Outlined.Done, null)
@@ -149,8 +165,14 @@ fun TerritoryDetailsScreen(
                     onClick = handleActionAdd
                 )
             }
-            Column(modifier = Modifier.fillMaxSize()) {
-                CustomScrollableTabRow(tabs)
+             */
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    CustomScrollableTabRow(tabs)
+                }
             }
         }
     }

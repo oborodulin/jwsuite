@@ -34,7 +34,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +48,7 @@ import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -79,14 +79,27 @@ fun TerritoringScreen(
     territoriesGridViewModel: TerritoriesGridViewModel,
     territoringViewModel: TerritoringViewModelImpl = hiltViewModel(),
 //    territoryDetailsViewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
+    defTopBarActions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("TerritoringScreen(...) called")
     val appState = LocalAppState.current
+
+    // Action Bar:
+    var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
+    val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
+    // Action Bar -> Actions:
+    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
+    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    // FAB:
+    var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
+    val onFabChange: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
+
     val currentCongregation =
         appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     Timber.tag(TAG).d("TerritoringScreen: currentCongregation = %s", currentCongregation)
@@ -156,7 +169,7 @@ fun TerritoringScreen(
     }*/
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
+        //onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
         // Searching:
         var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
         val handOutSearchText by territoriesGridViewModel.handOutSearchText.collectAsStateWithLifecycle()
@@ -197,7 +210,7 @@ fun TerritoringScreen(
                         )
                     }
                 }
-                onTopBarActionsChange(true) {}
+                onTopBarActionsChange {}
             }
 
             false -> {
@@ -218,7 +231,7 @@ fun TerritoringScreen(
                         }
                     }
                 }
-                onTopBarActionsChange(false) {
+                onTopBarActionsChange {
                     var expanded by rememberSaveable { mutableStateOf(false) }
                     IconButton(onClick = { expanded = expanded.not() }) {
                         Icon(
@@ -244,7 +257,7 @@ fun TerritoringScreen(
                 }
             }
         }
-        onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
+        //onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
         val handleCloseAndClearSearch = {
             isShowSearchBar = false
             when (TerritoringTabType.valueOf(tabType)) {
@@ -275,73 +288,86 @@ fun TerritoringScreen(
                 handleCloseAndClearSearch.invoke()
             } else appState.mainNavigateUp()
         }
-        Column(modifier = Modifier.fillMaxSize()) {
-            CustomScrollableTabRow(
-                listOf(
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_hand_out),
-                        onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
-                    ) {
-                        location.item?.let {
-                            HandOutTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                enableAction = areHandOutInputsValid,
-                                territoringViewModel = territoringViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
+        ScaffoldComponent(
+            topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring),
+            actionBar = actionBar,
+            topBarNavImageVector = if (isShowSearchBar) Icons.Outlined.ArrowBack else null,
+            defTopBarActions = defTopBarActions,
+            topBarActions = topBarActions,
+            isActionsLeading = false,
+            bottomBar = bottomBar,
+            floatingActionButton = floatingActionButton
+        ) { innerPadding ->
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
+                CustomScrollableTabRow(
+                    listOf(
+                        TabRowItem(
+                            title = stringResource(R.string.territory_tab_hand_out),
+                            onClick = { onTabChange(TerritoringTabType.HAND_OUT) }
+                        ) {
+                            location.item?.let {
+                                HandOutTerritoriesView(
+                                    appState = appState,
+                                    //sharedViewModel = sharedViewModel,
+                                    enableAction = areHandOutInputsValid,
+                                    territoringViewModel = territoringViewModel,
+                                    territoriesGridViewModel = territoriesGridViewModel,
+                                    territoryLocationType = it.territoryLocationType,
+                                    locationId = it.locationId,
+                                    isPrivateSector = isPrivateSector.value.toBoolean()
+                                )
+                            }
+                        },
+                        TabRowItem(
+                            title = stringResource(R.string.territory_tab_at_work),
+                            onClick = { onTabChange(TerritoringTabType.AT_WORK) }
+                        ) {
+                            location.item?.let {
+                                AtWorkTerritoriesView(
+                                    appState = appState,
+                                    //sharedViewModel = sharedViewModel,
+                                    territoriesGridViewModel = territoriesGridViewModel,
+                                    territoryLocationType = it.territoryLocationType,
+                                    locationId = it.locationId,
+                                    isPrivateSector = isPrivateSector.value.toBoolean()
+                                )
+                            }
+                        },
+                        TabRowItem(
+                            title = stringResource(R.string.territory_tab_idle),
+                            onClick = { onTabChange(TerritoringTabType.IDLE) }
+                        ) {
+                            location.item?.let {
+                                IdleTerritoriesView(
+                                    appState = appState,
+                                    //sharedViewModel = sharedViewModel,
+                                    territoriesGridViewModel = territoriesGridViewModel,
+                                    territoryLocationType = it.territoryLocationType,
+                                    locationId = it.locationId,
+                                    isPrivateSector = isPrivateSector.value.toBoolean()
+                                )
+                            }
+                        },
+                        TabRowItem(
+                            title = stringResource(R.string.territory_tab_all),
+                            onClick = { onTabChange(TerritoringTabType.ALL) }
+                        ) {
+                            location.item?.let {
+                                AllTerritoriesView(
+                                    appState = appState,
+                                    //sharedViewModel = sharedViewModel,
+                                    territoriesGridViewModel = territoriesGridViewModel,
+                                    territoryLocationType = it.territoryLocationType,
+                                    locationId = it.locationId,
+                                    isPrivateSector = isPrivateSector.value.toBoolean()
+                                )
+                            }
                         }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_at_work),
-                        onClick = { onTabChange(TerritoringTabType.AT_WORK) }
-                    ) {
-                        location.item?.let {
-                            AtWorkTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_idle),
-                        onClick = { onTabChange(TerritoringTabType.IDLE) }
-                    ) {
-                        location.item?.let {
-                            IdleTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
-                    },
-                    TabRowItem(
-                        title = stringResource(R.string.territory_tab_all),
-                        onClick = { onTabChange(TerritoringTabType.ALL) }
-                    ) {
-                        location.item?.let {
-                            AllTerritoriesView(
-                                appState = appState,
-                                //sharedViewModel = sharedViewModel,
-                                territoriesGridViewModel = territoriesGridViewModel,
-                                territoryLocationType = it.territoryLocationType,
-                                locationId = it.locationId,
-                                isPrivateSector = isPrivateSector.value.toBoolean()
-                            )
-                        }
-                    }
+                    )
                 )
-            )
+            }
         }
     }
     LaunchedEffect(Unit) {

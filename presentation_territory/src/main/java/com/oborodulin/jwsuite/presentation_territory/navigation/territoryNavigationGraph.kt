@@ -35,7 +35,7 @@ fun NavGraphBuilder.territoryNavGraph(
         route = Graph.TERRITORY,
         startDestination = startDestination ?: NavRoutes.Territory.route
     ) {
-        composable(route = NavRoutes.Territory.route, arguments = NavRoutes.Territory.arguments) {
+        /*composable(route = NavRoutes.Territory.route, arguments = NavRoutes.Territory.arguments) {
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to TerritoryScreen [route = '%s', arguments = '%s']",
@@ -161,6 +161,6 @@ fun NavGraphBuilder.territoryNavGraph(
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )
-        }
+        }*/
     }
 }

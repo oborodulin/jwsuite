@@ -5,10 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryRoomInput
@@ -38,35 +37,34 @@ fun TerritoryRoomScreen(
     val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
-    territoryRoomViewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-        ScaffoldComponent(
-            topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring,
-            topBarSubtitle = stringResource(it),
-            defTopBarActions = defTopBarActions,
-            topBarActions = topBarActions
-        ) { innerPadding ->
-            SaveDialogScreenComponent(
-                viewModel = territoryRoomViewModel,
-                inputId = territoryRoomInput.territoryId,
-                loadUiAction = TerritoryRoomUiAction.Load(territoryRoomInput.territoryId),
-                saveUiAction = TerritoryRoomUiAction.Save,
-                upNavigation = upNavigation,
-                handleTopBarNavClick = appState.handleTopBarNavClick,
-                cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_room,
-                /*onActionBarChange = onActionBarChange,
-        onActionBarSubtitleChange = onActionBarSubtitleChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
-                onTopBarActionsChange = onTopBarActionsChange,
-                //onFabChange = onFabChange
-                innerPadding = innerPadding
-            ) { uiModel ->
-                TerritoryRoomView(
-                    territoryRoomsUiModel = uiModel,
-                    sharedViewModel = appState.congregationSharedViewModel.value,
-                    territoryViewModel = territoryViewModel,
-                    territoryRoomViewModel = territoryRoomViewModel
-                )
-            }
+    var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
+    val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
+    ScaffoldComponent(
+        topBarSubtitle = actionBarSubtitle,
+        defTopBarActions = defTopBarActions,
+        topBarActions = topBarActions
+    ) { innerPadding ->
+        SaveDialogScreenComponent(
+            viewModel = territoryRoomViewModel,
+            inputId = territoryRoomInput.territoryId,
+            loadUiAction = TerritoryRoomUiAction.Load(territoryRoomInput.territoryId),
+            saveUiAction = TerritoryRoomUiAction.Save,
+            upNavigation = upNavigation,
+            handleTopBarNavClick = appState.handleTopBarNavClick,
+            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_room,
+            /*onActionBarChange = onActionBarChange,
+    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarActionsChange = onTopBarActionsChange,
+            //onFabChange = onFabChange
+            innerPadding = innerPadding
+        ) { uiModel ->
+            TerritoryRoomView(
+                territoryRoomsUiModel = uiModel,
+                sharedViewModel = appState.congregationSharedViewModel.value,
+                territoryViewModel = territoryViewModel,
+                territoryRoomViewModel = territoryRoomViewModel
+            )
         }
     }
 }

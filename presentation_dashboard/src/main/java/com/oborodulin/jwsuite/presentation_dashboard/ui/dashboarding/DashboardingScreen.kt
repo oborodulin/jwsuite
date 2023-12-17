@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
@@ -41,11 +42,13 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 fun DashboardingScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
+    defTopBarActions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
     val appState = LocalAppState.current
@@ -54,11 +57,11 @@ fun DashboardingScreen(
         Timber.tag(TAG).d("DashboardingScreen -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(DashboardingUiAction.Init)
     }
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        onActionBarChange(null)
-        onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
-        onTopBarActionsChange (true) {
+    ScaffoldComponent(
+        topBarTitle = stringResource(R.string.nav_item_dashboarding),
+        topBarNavImageVector = null,
+        defTopBarActions = defTopBarActions,
+        topBarActions = {
             IconButton(onClick = { appState.mainNavigate(NavRoutes.Geo.route) }) {
                 Icon(
                     painterResource(R.drawable.ic_geo_24), stringResource(NavRoutes.Geo.titleResId)
@@ -68,31 +71,53 @@ fun DashboardingScreen(
             IconButton(onClick = { appState.mainNavigate(NavRoutes.Settings.route) }) {
                 Icon(Icons.Outlined.Settings, stringResource(NavRoutes.Settings.titleResId))
             }
-        }
-        onFabChange {}
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Column {
-                    CommonScreen(state = state) { dashboardingUi ->
-                        dashboardingUi.favoriteCongregation?.let { favorite ->
-                            appState.congregationSharedViewModel.value?.submitData(favorite.toCongregationsListItem())
-                            appState.actionBarSubtitle.value = favorite.congregationName
-                            onActionBarSubtitleChange(favorite.congregationName)
-                            val currentCongregation =
-                                appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-                            Timber.tag(TAG).d(
-                                "DashboardingScreen: appState.sharedViewModel.value = %s; currentCongregation = %s",
-                                appState.congregationSharedViewModel.value, currentCongregation
-                            )
-                        }
-                        when {
-                            session.containsRole(MemberRoleType.REPORTS) ->
-                                CongregationSection(
-                                    navController = appState.mainNavController,
-                                    congregation = dashboardingUi.favoriteCongregation
+        },
+        bottomBar = bottomBar
+    ) { innerPadding ->
+        viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            /*onActionBarChange(null)
+            onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
+            onTopBarActionsChange(true) {
+                IconButton(onClick = { appState.mainNavigate(NavRoutes.Geo.route) }) {
+                    Icon(
+                        painterResource(R.drawable.ic_geo_24), stringResource(NavRoutes.Geo.titleResId)
+                    )
+                }
+                // context.toast("Settings button clicked...")
+                IconButton(onClick = { appState.mainNavigate(NavRoutes.Settings.route) }) {
+                    Icon(Icons.Outlined.Settings, stringResource(NavRoutes.Settings.titleResId))
+                }
+            }*/
+            //onFabChange {}
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Column {
+                        CommonScreen(state = state) { dashboardingUi ->
+                            dashboardingUi.favoriteCongregation?.let { favorite ->
+                                appState.congregationSharedViewModel.value?.submitData(favorite.toCongregationsListItem())
+                                appState.actionBarSubtitle.value = favorite.congregationName
+                                //onActionBarSubtitleChange(favorite.congregationName)
+                                val currentCongregation =
+                                    appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+                                Timber.tag(TAG).d(
+                                    "DashboardingScreen: appState.sharedViewModel.value = %s; currentCongregation = %s",
+                                    appState.congregationSharedViewModel.value, currentCongregation
                                 )
+                            }
+                            when {
+                                session.containsRole(MemberRoleType.REPORTS) ->
+                                    CongregationSection(
+                                        navController = appState.mainNavController,
+                                        congregation = dashboardingUi.favoriteCongregation
+                                    )
 
-                            else -> {}
+                                else -> {}
+                            }
                         }
                     }
                 }

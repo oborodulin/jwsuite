@@ -44,7 +44,7 @@ fun BarNavigationHost(
         //modifier = Modifier.padding(innerPadding)
     ) {
         // Dashboarding Screen:
-        composable(NavRoutes.Dashboarding.route) {
+        /*composable(NavRoutes.Dashboarding.route) {
             // dashboarding: TOTALS: Congregations: Groups, Members; Territories; Ministries: Territories, Members and etc.
             Timber.tag(TAG)
                 .d("Navigation Graph: to DashboardingScreen [route = '%s']", it.destination.route)
@@ -158,6 +158,6 @@ fun BarNavigationHost(
             //MinistringScreen(appState = appState, paddingValues = paddingValues,
             //                onActionBarTitleChange = onActionBarTitleChange,
             //                onTopBarActionsChange = onTopBarActionsChange)
-        }
+        }*/
     }
 }

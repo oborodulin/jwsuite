@@ -1,11 +1,7 @@
 package com.oborodulin.jwsuite.ui.navigation
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,7 +54,9 @@ private const val TAG = "App.Navigation.MainNavigationHost"
 @Composable
 fun MainNavigationHost(
     sessionViewModel: SessionViewModel,
-    //innerPadding: PaddingValues,
+    defTopBarActions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
+    /*innerPadding: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
@@ -66,15 +64,14 @@ fun MainNavigationHost(
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     shouldUseNestedScrollConnection: (Boolean) -> Unit,
-    defTopBarActions: @Composable RowScope.() -> Unit = {},
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     areUsingBottomNavigation: (Boolean) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("MainNavigationHost(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
-    val context = LocalContext.current
+    //val context = LocalContext.current
     Timber.tag(TAG).d(
         "MainNavigationHost: session.startDestination = %s",
         session.startDestination
@@ -109,10 +106,10 @@ fun MainNavigationHost(
             )
             CongregationScreen(
                 congregationInput = NavRoutes.Congregation.fromEntry(it),
-                /*onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
                 defTopBarActions = defTopBarActions/*,
+                onActionBarChange = onActionBarChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange*/
             )
@@ -123,7 +120,7 @@ fun MainNavigationHost(
                 it.destination.route,
                 NavRoutes.Group.arguments.firstOrNull()
             )
-            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+            //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             GroupScreen(
                 //sharedViewModel = sharedViewModel,
@@ -142,7 +139,7 @@ fun MainNavigationHost(
                 it.destination.route,
                 NavRoutes.Member.arguments.firstOrNull()
             )
-            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+            //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
             MemberScreen(
                 //sharedViewModel = sharedViewModel,
@@ -161,7 +158,7 @@ fun MainNavigationHost(
                 it.destination.route,
                 NavRoutes.MemberRole.arguments.firstOrNull()
             )
-            onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+            //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val membersListViewModel = hiltViewModel<MembersListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
             MemberRoleScreen(
                 //sharedViewModel = sharedViewModel,
@@ -212,11 +209,55 @@ fun MainNavigationHost(
             TerritoryDetailsScreen(
                 territoryViewModel = territoryViewModel,
                 territoryInput = NavRoutes.TerritoryDetails.fromEntry(it),
+                defTopBarActions = defTopBarActions/*,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
+                onFabChange = onFabChange*/
+            )
+        }
+        composable(route = NavRoutes.HandOutConfirmation.route) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to HandOutConfirmationScreen [route = '%s']",
+                    it.destination.route
+                )
+            // https://developer.android.com/jetpack/compose/libraries#hilt
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
+            HandOutConfirmationScreen(
+                //sharedViewModel = sharedViewModel,
+                viewModel = territoriesGridViewModel,
+                defTopBarActions = defTopBarActions/*,
+                onActionBarChange = onActionBarChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange*/
+            )
+        }
+        composable(route = NavRoutes.ProcessConfirmation.route) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to ProcessConfirmationScreen [route = '%s']",
+                    it.destination.route
+                )
+            // https://developer.android.com/jetpack/compose/libraries#hilt
+            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
+            // TODO Delete shared viewModel
+            val territoriesGridViewModel =
+                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
+            ProcessConfirmationScreen(
+                //sharedViewModel = sharedViewModel,
+                viewModel = territoriesGridViewModel,
+                defTopBarActions = defTopBarActions/*,
+                onActionBarChange = onActionBarChange,
+                onActionBarSubtitleChange = onActionBarSubtitleChange,
+                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
+                onTopBarActionsChange = onTopBarActionsChange,
+                onFabChange = onFabChange*/
             )
         }
         composable(
@@ -316,15 +357,16 @@ fun MainNavigationHost(
                 "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
                 it.destination.route, NavRoutes.Geo.arguments
             )
-            onActionBarSubtitleChange("")
+            //onActionBarSubtitleChange("")
             GeoScreen(
+                defTopBarActions = defTopBarActions/*,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
+                onFabChange = onFabChange*/
             )
         }
         // RegionScreen:
@@ -482,11 +524,12 @@ fun MainNavigationHost(
                     it.destination.route, NavRoutes.Housing.arguments
                 )
             HousingScreen(
+                defTopBarActions = defTopBarActions/*,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarNavClickChange = onTopBarNavClickChange,
-                onTopBarActionsChange = onTopBarActionsChange
+                onTopBarActionsChange = onTopBarActionsChange*/
             )
         }
         composable(
@@ -626,13 +669,15 @@ fun MainNavigationHost(
                 appState.congregationSharedViewModel.value = congregationSharedViewModel
             }
             Timber.tag(TAG).d("Navigation Graph: sharedViewModel saved in appState")
-            onActionBarSubtitleChange(appState.actionBarSubtitle.value)
+            //onActionBarSubtitleChange(appState.actionBarSubtitle.value)
             DashboardingScreen(
+                defTopBarActions = defTopBarActions,
+                bottomBar = bottomBar/*,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
+                onFabChange = onFabChange*/
             )
         }
         // Congregating Screen:
@@ -648,12 +693,14 @@ fun MainNavigationHost(
                 appState.memberSharedViewModel.value = memberSharedViewModel
             }
             CongregatingScreen(
+                defTopBarActions = defTopBarActions,
+                bottomBar = bottomBar/*,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
+                onFabChange = onFabChange*/
             )
         }
         // Territoring Screen:
@@ -669,52 +716,13 @@ fun MainNavigationHost(
             TerritoringScreen(
                 //sharedViewModel = sharedViewModel,
                 territoriesGridViewModel = territoriesGridViewModel,
+                defTopBarActions = defTopBarActions,
+                bottomBar = bottomBar/*,
                 onActionBarChange = onActionBarChange,
                 onActionBarTitleChange = onActionBarTitleChange,
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
-            )
-        }
-        composable(route = NavRoutes.HandOutConfirmation.route) {
-            Timber.tag(TAG)
-                .d(
-                    "Navigation Graph: to HandOutConfirmationScreen [route = '%s']",
-                    it.destination.route
-                )
-            // https://developer.android.com/jetpack/compose/libraries#hilt
-            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(appState.barNavController))
-            HandOutConfirmationScreen(
-                //sharedViewModel = sharedViewModel,
-                viewModel = territoriesGridViewModel,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
-            )
-        }
-        composable(route = NavRoutes.ProcessConfirmation.route) {
-            Timber.tag(TAG)
-                .d(
-                    "Navigation Graph: to ProcessConfirmationScreen [route = '%s']",
-                    it.destination.route
-                )
-            // https://developer.android.com/jetpack/compose/libraries#hilt
-            //val sharedViewModel = hiltViewModel<FavoriteCongregationViewModelImpl>(it.rememberParentEntry(appState.navBarNavController))
-            // TODO Delete shared viewModel
-            val territoriesGridViewModel =
-                hiltViewModel<TerritoriesGridViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
-            ProcessConfirmationScreen(
-                //sharedViewModel = sharedViewModel,
-                viewModel = territoriesGridViewModel,
-                onActionBarChange = onActionBarChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange
+                onFabChange = onFabChange*/
             )
         }
         // Ministring Screen:

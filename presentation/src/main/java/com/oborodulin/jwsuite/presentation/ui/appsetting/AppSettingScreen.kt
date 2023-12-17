@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,8 +48,11 @@ fun AppSettingScreen(
     }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
+    val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
         topBarTitle = stringResource(R.string.nav_item_settings),
+        topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
     ) { innerPadding ->
@@ -64,8 +68,8 @@ fun AppSettingScreen(
                 SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
             },
             /*onActionBarChange = onActionBarChange,
-        onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding

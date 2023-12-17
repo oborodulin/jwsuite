@@ -29,7 +29,7 @@ fun NavGraphBuilder.housingNavGraph(
         route = Graph.HOUSING, startDestination = startDestination ?: NavRoutes.Housing.route
     ) {
         // House, Entrance, Floor, Room:
-        composable(route = NavRoutes.Housing.route, arguments = NavRoutes.Housing.arguments) {
+       /*composable(route = NavRoutes.Housing.route, arguments = NavRoutes.Housing.arguments) {
             Timber.tag(TAG)
                 .d(
                     "Navigation Graph: to HousingScreen [route = '%s', arguments = '%s']",
@@ -82,6 +82,6 @@ fun NavGraphBuilder.housingNavGraph(
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )
-        }
+        }*/
     }
 }

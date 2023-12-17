@@ -65,71 +65,62 @@ fun ScaffoldComponent(
 
      */
     val modifier = Modifier.fillMaxSize()
+    val title = topBarTitle ?: //LocalAppState.current.appName.plus(
+    topBarTitleResId?.let { stringResource(it) } ?: appState.actionBarTitle.value
+    val subTitle = topBarSubtitle ?: appState.actionBarSubtitle.value.ifEmpty { null }
     Scaffold(
         modifier = nestedScrollConnection?.let {
             if (isNestedScrollConnection) modifier.nestedScroll(it) else null
         } ?: modifier,
         topBar = {
-            when (topBar) {
-                null ->
-                    TopAppBar(
-                        title = {
-                            Column(
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                if (actionBar == null) {
-                                    Text(
-                                        text = topBarTitle ?: //LocalAppState.current.appName.plus(
-                                        topBarTitleResId?.let {
-                                            stringResource(it) // " - ${stringResource(it)}"
-                                        }.orEmpty(),
-                                        fontWeight = FontWeight.Bold,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    topBarSubtitle?.let {
-                                        Text(
-                                            text = it,
-                                            style = Typography.titleMedium,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    }
-                                    //if (appState.actionBarSubtitle.value.isNotEmpty()) {}
-                                }
-                                actionBar?.let { it() }
-                            }
-                        },
-                        navigationIcon = navigationIcon?.let { { it() } } ?: {
-                            // check icons for auth screens: Signup and Login
-                            if (topBarNavImageVector != null || topBarNavPainterResId != null) {
-                                topBarNavImageVector?.let {
-                                    IconButton(onClick = appState.handleTopBarNavClick.value) { // onTopBarNavClick
-                                        IconComponent(
-                                            imageVector = it,
-                                            painterResId = topBarNavPainterResId,
-                                            contentDescriptionResId = topBarNavCntDescResId
-                                        )
-                                    }
-                                }
-                            }
-                            /*when (topBarNavigationIcon) {
-                                null -> IconButton(onClick = { context.toast("Menu button clicked...") }) {
-                                    Icon(Icons.Filled.Menu, null)
-                                }
-
-                                else -> topBarNavigationIcon()
-                            }*/
-                        },
-                        actions = {
-                            if (isActionsLeading) {
-                                topBarActions(); defTopBarActions()
-                            } else {
-                                defTopBarActions(); topBarActions()
+            topBar?.invoke() ?: TopAppBar(
+                title = {
+                    actionBar?.invoke() ?: Column(
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = title,
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        subTitle?.let {
+                            Text(
+                                text = it,
+                                style = Typography.titleMedium,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                },
+                navigationIcon = navigationIcon?.let { { it() } } ?: {
+                    // check icons for auth screens: Signup and Login
+                    if (topBarNavImageVector != null || topBarNavPainterResId != null) {
+                        topBarNavImageVector?.let {
+                            IconButton(onClick = appState.handleTopBarNavClick.value) { // onTopBarNavClick
+                                IconComponent(
+                                    imageVector = it,
+                                    painterResId = topBarNavPainterResId,
+                                    contentDescriptionResId = topBarNavCntDescResId
+                                )
                             }
                         }
-                    )
+                    }
+                    /*when (topBarNavigationIcon) {
+                        null -> IconButton(onClick = { context.toast("Menu button clicked...") }) {
+                            Icon(Icons.Filled.Menu, null)
+                        }
 
-                else -> topBar()
-            }
+                        else -> topBarNavigationIcon()
+                    }*/
+                },
+                actions = {
+                    if (isActionsLeading) {
+                        topBarActions(); defTopBarActions()
+                    } else {
+                        defTopBarActions(); topBarActions()
+                    }
+                }
+            )
         },
         floatingActionButtonPosition = floatingActionButtonPosition,
         floatingActionButton = floatingActionButton,

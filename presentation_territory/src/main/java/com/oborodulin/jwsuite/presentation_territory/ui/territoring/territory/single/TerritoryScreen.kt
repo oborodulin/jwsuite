@@ -8,8 +8,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
@@ -53,39 +53,39 @@ fun TerritoryScreen(
     }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
-    viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-        ScaffoldComponent(
-            topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring,
-            topBarSubtitle = stringResource(it),
-            defTopBarActions = defTopBarActions,
-            topBarActions = topBarActions
-        ) { innerPadding ->
-            DialogScreenComponent(
-                viewModel = viewModel,
-                inputId = territoryInput?.territoryId,
-                loadUiAction = TerritoryUiAction.Load(territoryInput?.territoryId),
-                saveUiAction = TerritoryUiAction.Save,
-                nextAction = {
-                    viewModel.submitAction(TerritoryUiAction.EditTerritoryDetails(viewModel.id()))
-                },
-                upNavigation = upNavigation,
-                handleTopBarNavClick = appState.handleTopBarNavClick,
-                topBarActionImageVector = Icons.Outlined.ArrowForward,
-                topBarActionCntDescResId = com.oborodulin.home.common.R.string.btn_next_cnt_desc,
-                cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory,
-                uniqueConstraintFailedResId = R.string.territory_unique_constraint_error,
-                confirmButton = { areValid, handleSaveButtonClick ->
-                    SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
-                },
-                /*onActionBarChange = onActionBarChange,
-        onActionBarSubtitleChange = onActionBarSubtitleChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
-                onTopBarActionsChange = onTopBarActionsChange,
-                //onFabChange = onFabChange
-                innerPadding = innerPadding
-            ) {
-                TerritoryView(appState.congregationSharedViewModel.value, viewModel = viewModel)
-            }
+    var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
+    val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
+    ScaffoldComponent(
+        topBarSubtitle = actionBarSubtitle,
+        defTopBarActions = defTopBarActions,
+        topBarActions = topBarActions
+    ) { innerPadding ->
+        DialogScreenComponent(
+            viewModel = viewModel,
+            inputId = territoryInput?.territoryId,
+            loadUiAction = TerritoryUiAction.Load(territoryInput?.territoryId),
+            saveUiAction = TerritoryUiAction.Save,
+            nextAction = {
+                viewModel.submitAction(TerritoryUiAction.EditTerritoryDetails(viewModel.id()))
+            },
+            upNavigation = upNavigation,
+            handleTopBarNavClick = appState.handleTopBarNavClick,
+            topBarActionImageVector = Icons.Outlined.ArrowForward,
+            topBarActionCntDescResId = com.oborodulin.home.common.R.string.btn_next_cnt_desc,
+            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory,
+            uniqueConstraintFailedResId = R.string.territory_unique_constraint_error,
+            confirmButton = { areValid, handleSaveButtonClick ->
+                SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
+            },
+            /*onActionBarChange = onActionBarChange,
+    onActionBarSubtitleChange = onActionBarSubtitleChange,
+    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+            onActionBarSubtitleChange = onActionBarSubtitleChange,
+            onTopBarActionsChange = onTopBarActionsChange,
+            //onFabChange = onFabChange
+            innerPadding = innerPadding
+        ) {
+            TerritoryView(appState.congregationSharedViewModel.value, viewModel = viewModel)
         }
     }
     LaunchedEffect(Unit) {

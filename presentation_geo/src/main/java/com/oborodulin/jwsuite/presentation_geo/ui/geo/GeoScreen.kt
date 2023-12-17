@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,12 +20,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +34,7 @@ import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
@@ -71,16 +71,27 @@ fun GeoScreen(
     localityDistrictsListViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
     microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
     streetsListViewModel: StreetsListViewModelImpl = hiltViewModel(),
+    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarNavClickChange: (() -> Unit) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
     val appState = LocalAppState.current
+    // Action Bar:
+    var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
+    val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
+    // Action Bar -> Actions:
+    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
+    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    // FAB:
+    var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
+    val onFabChange: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
+
     //var viewModel: ListViewModeled<List<ListItemModel>, UiAction, UiSingleEvent>
     //var placeholderResId: Int
     var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
@@ -135,12 +146,12 @@ fun GeoScreen(
                     )
                 }
             }
-            onTopBarActionsChange(true) {}
+            onTopBarActionsChange {}
         }
 
         false -> {
             onActionBarChange(null)
-            onTopBarActionsChange(true) {
+            onTopBarActionsChange {
                 IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
                 IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
             }
@@ -189,9 +200,9 @@ fun GeoScreen(
 
      */
     // Scaffold Hoisting:
-    onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo))
-    onActionBarSubtitleChange("")
-    onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
+    //onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo))
+    //onActionBarSubtitleChange("")
+    //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
     appState.handleTopBarNavClick.value =
         {
             if (isShowSearchBar) {
@@ -212,66 +223,80 @@ fun GeoScreen(
         Timber.tag(TAG).d("GeoScreen -> onTopBarNavClickChange()")
         appState.mainNavigateUp()// .backToBottomBarScreen()
     }*/
-    Column(modifier = Modifier.fillMaxSize()) {
-        CustomScrollableTabRow(
-            listOf(
-                TabRowItem(
-                    title = stringResource(R.string.geo_tab_regions),
-                    onClick = { onTabChange(GeoTabType.REGIONS) }
-                ) {
-                    RegionRegionDistrictsLocalitiesView(
-                        appState = appState,
-                        regionsListViewModel = regionsListViewModel
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.geo_tab_region_districts),
-                    onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
-                ) {
-                    RegionDistrictsLocalitiesView(
-                        appState = appState,
-                        regionDistrictsListViewModel = regionDistrictsListViewModel
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.geo_tab_localities),
-                    onClick = { onTabChange(GeoTabType.LOCALITIES) }
-                ) {
-                    LocalitiesLocalitiesDistrictsMicrodistrictsView(
-                        appState = appState,
-                        localitiesListViewModel = localitiesListViewModel
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.geo_tab_locality_districts),
-                    onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
-                ) {
-                    LocalitiesDistrictsMicrodistrictsStreetsView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.geo_tab_microdistricts),
-                    onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
-                ) {
-                    MicrodistrictsStreetsView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.geo_tab_streets),
-                    onClick = { onTabChange(GeoTabType.STREETS) }
-                ) {
-                    StreetsView(
-                        appState = appState,
-                        onStreetTabChange = onStreetTabChange
-                        //sharedViewModel = sharedViewModel,
-                    )
-                }
+    //appState.actionBarTitle.value = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo)
+    ScaffoldComponent(
+        topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo),
+        topBarSubtitle = "",
+        actionBar = actionBar,
+        defTopBarActions = defTopBarActions,
+        topBarActions = topBarActions,
+        floatingActionButton = floatingActionButton
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_regions),
+                        onClick = { onTabChange(GeoTabType.REGIONS) }
+                    ) {
+                        RegionRegionDistrictsLocalitiesView(
+                            appState = appState,
+                            regionsListViewModel = regionsListViewModel
+                        )
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_region_districts),
+                        onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
+                    ) {
+                        RegionDistrictsLocalitiesView(
+                            appState = appState,
+                            regionDistrictsListViewModel = regionDistrictsListViewModel
+                        )
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_localities),
+                        onClick = { onTabChange(GeoTabType.LOCALITIES) }
+                    ) {
+                        LocalitiesLocalitiesDistrictsMicrodistrictsView(
+                            appState = appState,
+                            localitiesListViewModel = localitiesListViewModel
+                        )
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_locality_districts),
+                        onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
+                    ) {
+                        LocalitiesDistrictsMicrodistrictsStreetsView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                        )
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_microdistricts),
+                        onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
+                    ) {
+                        MicrodistrictsStreetsView(
+                            appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                        )
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.geo_tab_streets),
+                        onClick = { onTabChange(GeoTabType.STREETS) }
+                    ) {
+                        StreetsView(
+                            appState = appState,
+                            onStreetTabChange = onStreetTabChange
+                            //sharedViewModel = sharedViewModel,
+                        )
+                    }
+                )
             )
-        )
+        }
     }
 // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback

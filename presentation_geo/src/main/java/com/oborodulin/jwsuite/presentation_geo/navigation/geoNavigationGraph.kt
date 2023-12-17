@@ -33,7 +33,7 @@ fun NavGraphBuilder.geoNavGraph(
 ) {
     navigation(route = Graph.GEO, startDestination = startDestination ?: NavRoutes.Geo.route) {
         // GeoScreen:
-        composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
+        /*composable(route = NavRoutes.Geo.route, arguments = NavRoutes.Geo.arguments) {
             Timber.tag(TAG).d(
                 "Navigation Graph: to GeoScreen [route = '%s', arguments = '%s']",
                 it.destination.route, NavRoutes.Geo.arguments
@@ -184,6 +184,6 @@ fun NavGraphBuilder.geoNavGraph(
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )
-        }
+        }*/
     }
 }

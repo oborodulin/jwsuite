@@ -161,7 +161,13 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
     ) { innerPadding ->*/
     MainNavigationHost(
         sessionViewModel = sessionViewModel,
-        //innerPadding = innerPadding,
+        defTopBarActions = {
+            IconButton(onClick = handleLogoutActionClick) {
+                Icon(Icons.Outlined.ExitToApp, null)
+            }
+        },
+        bottomBar = bottomBar/*,
+        innerPadding = innerPadding,
         onActionBarChange = onActionBarChange,
         onActionBarTitleChange = onActionBarTitleChange,
         onActionBarSubtitleChange = onActionBarSubtitleChange,
@@ -169,14 +175,9 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
         onTopBarNavClickChange = onTopBarNavClickChange,
         shouldUseNestedScrollConnection = shouldUseNestedScrollConnection,
-        defTopBarActions = {
-            IconButton(onClick = handleLogoutActionClick) {
-                Icon(Icons.Outlined.ExitToApp, null)
-            }
-        },
         onTopBarActionsChange = onTopBarActionsChange,
         areUsingBottomNavigation = areUsingBottomNavigation,
-        onFabChange = onFabChange
+        onFabChange = onFabChange*/
     )
     //}
     /*LaunchedEffect(Unit) {

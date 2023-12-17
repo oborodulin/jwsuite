@@ -22,12 +22,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +39,7 @@ import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
+import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
@@ -68,16 +69,28 @@ fun CongregatingScreen(
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    defTopBarActions: @Composable RowScope.() -> Unit = {},
+    bottomBar: @Composable () -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit
+    onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
     Timber.tag(TAG).d("CongregatingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
+
+    // Action Bar:
+    var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
+    val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
+    // Action Bar -> Actions:
+    var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
+    val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
+    // FAB:
+    var floatingActionButton: @Composable () -> Unit by remember { mutableStateOf({}) }
+    val onFabChange: (@Composable () -> Unit) -> Unit = { floatingActionButton = it }
 
     Timber.tag(TAG).d("Territoring: CollectAsStateWithLifecycle for all fields")
     val isService by congregatingViewModel.isService.collectAsStateWithLifecycle()
@@ -102,8 +115,8 @@ fun CongregatingScreen(
             Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
-    onActionBarChange(null)
-    onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
+    //onActionBarChange(null)
+    //onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating))
     // Searching:
     var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
     val handleActionSearch = { isShowSearchBar = true }
@@ -127,7 +140,7 @@ fun CongregatingScreen(
                     )
                 }
             }
-            onTopBarActionsChange(true) {}
+            onTopBarActionsChange {}
         }
 
         false -> {
@@ -143,7 +156,7 @@ fun CongregatingScreen(
                 else -> onActionBarChange(null)
             }
 
-            onTopBarActionsChange(true) {
+            onTopBarActionsChange {
                 IconButton(onClick = handleActionSearch) { Icon(Icons.Outlined.Search, null) }
                 IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
             }
@@ -174,7 +187,7 @@ fun CongregatingScreen(
                 }
         }
     }
-    onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
+    //onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
     val handleCloseAndClearSearch = {
         isShowSearchBar = false
         when (CongregatingTabType.valueOf(tabType)) {
@@ -189,57 +202,69 @@ fun CongregatingScreen(
                 handleCloseAndClearSearch.invoke()
             }
         }
-// https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
+    // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
     BackHandler {
         if (isShowSearchBar) {
             handleCloseAndClearSearch.invoke()
         } else appState.mainNavigateUp()
     }
-    Column(modifier = Modifier.fillMaxSize()) {
-        CustomScrollableTabRow(
-            listOf(
-                TabRowItem(
-                    title = stringResource(R.string.congregation_tab_congregations),
-                    onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
-                ) {
-                    CongregationMembersView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                        //membersListViewModel = membersListViewModel,
-                        isService = isService.value.toBoolean(),
-                        onActionBarSubtitleChange = onActionBarSubtitleChange
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.congregation_tab_groups),
-                    onClick = { onTabChange(CongregatingTabType.GROUPS) }
-                ) {
-                    GroupMembersView(
-                        appState = appState,
-                        //sharedViewModel = sharedViewModel,
-                        //membersListViewModel = membersListViewModel,
-                        isService = isService.value.toBoolean()
-                    )
-                },
-                TabRowItem(
-                    title = stringResource(R.string.congregation_tab_members),
-                    onClick = { onTabChange(CongregatingTabType.MEMBERS) }
-                ) {
-                    when {
-                        session.containsRole(MemberRoleType.ADMIN) -> MemberRolesView(
-                            appState = appState, membersListViewModel = membersListViewModel,
-                            isService = isService.value.toBoolean()
+    ScaffoldComponent(
+        topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_congregating),
+        actionBar = actionBar,
+        topBarNavImageVector = if (isShowSearchBar) Icons.Outlined.ArrowBack else null,
+        defTopBarActions = defTopBarActions,
+        topBarActions = topBarActions,
+        bottomBar = bottomBar,
+        floatingActionButton = floatingActionButton
+    ) { innerPadding ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
+            CustomScrollableTabRow(
+                listOf(
+                    TabRowItem(
+                        title = stringResource(R.string.congregation_tab_congregations),
+                        onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
+                    ) {
+                        CongregationMembersView(
+                            //appState = appState,
+                            //sharedViewModel = sharedViewModel,
+                            //membersListViewModel = membersListViewModel,
+                            isService = isService.value.toBoolean()//,
+                            //onActionBarSubtitleChange = onActionBarSubtitleChange
                         )
-
-                        else -> MembersView(
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.congregation_tab_groups),
+                        onClick = { onTabChange(CongregatingTabType.GROUPS) }
+                    ) {
+                        GroupMembersView(
                             appState = appState,
                             //sharedViewModel = sharedViewModel,
-                            //membersListViewModel = membersListViewModel
+                            //membersListViewModel = membersListViewModel,
+                            isService = isService.value.toBoolean()
                         )
+                    },
+                    TabRowItem(
+                        title = stringResource(R.string.congregation_tab_members),
+                        onClick = { onTabChange(CongregatingTabType.MEMBERS) }
+                    ) {
+                        when {
+                            session.containsRole(MemberRoleType.ADMIN) -> MemberRolesView(
+                                appState = appState, membersListViewModel = membersListViewModel,
+                                isService = isService.value.toBoolean()
+                            )
+
+                            else -> MembersView(
+                                appState = appState,
+                                //sharedViewModel = sharedViewModel,
+                                //membersListViewModel = membersListViewModel
+                            )
+                        }
                     }
-                }
+                )
             )
-        )
+        }
     }
 // https://stackoverflow.com/questions/73034912/jetpack-compose-how-to-detect-when-tabrow-inside-horizontalpager-is-visible-and
 // Page change callback
@@ -256,12 +281,12 @@ fun CongregatingScreen(
 
 @Composable
 fun CongregationMembersView(
-    appState: AppState,
+    //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     //membersListViewModel: MembersListViewModel,
-    isService: Boolean = false,
-    onActionBarSubtitleChange: (String) -> Unit
+    isService: Boolean = false//,
+    //onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationMembersView(...) called")
     val selectedCongregationId = congregationsListViewModel.singleSelectedItem()?.itemId
@@ -291,8 +316,7 @@ fun CongregationMembersView(
                 )
         ) {
             CongregationsListView(
-                appState = appState,
-                onActionBarSubtitleChange = onActionBarSubtitleChange
+                //appState = appState, onActionBarSubtitleChange = onActionBarSubtitleChange
             )//, sharedViewModel = sharedViewModel)
         }
         Box(

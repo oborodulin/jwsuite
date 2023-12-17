@@ -61,9 +61,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     @StringRes uniqueConstraintFailedResId: Int? = null,
     confirmButton: @Composable (Boolean, () -> Unit) -> Unit,
     /*onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,*/
+    onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
@@ -115,9 +115,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
-        //viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
-        //    onActionBarSubtitleChange(stringResource(it))
-        //}
+        viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
+            onActionBarSubtitleChange(stringResource(it))
+        }
         // Cancel Changes Confirm:
         val isUiStateChanged by viewModel.isUiStateChanged.collectAsStateWithLifecycle()
         val isCancelChangesShowAlert = rememberSaveable { mutableStateOf(false) }

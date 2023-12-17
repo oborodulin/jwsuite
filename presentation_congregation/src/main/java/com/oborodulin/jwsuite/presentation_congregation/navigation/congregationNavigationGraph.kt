@@ -31,7 +31,7 @@ fun NavGraphBuilder.congregationNavGraph(
         route = Graph.CONGREGATION,
         startDestination = startDestination ?: NavRoutes.Congregation.route
     ) {
-        composable(
+        /*composable(
             route = NavRoutes.Congregation.route, arguments = NavRoutes.Congregation.arguments
         ) {
             Timber.tag(TAG).d(
@@ -102,6 +102,6 @@ fun NavGraphBuilder.congregationNavGraph(
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange
             )
-        }
+        }*/
     }
 }

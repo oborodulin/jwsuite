@@ -27,9 +27,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     /*onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
     onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,*/
+    onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
@@ -50,8 +50,8 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
             SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
         },
         /*onActionBarChange = onActionBarChange,
-        onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+        onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarActionsChange = onTopBarActionsChange,
         //onFabChange = onFabChange,
         innerPadding = innerPadding,
