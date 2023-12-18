@@ -209,7 +209,6 @@ class TerritoryViewModelImpl @Inject constructor(
         )
         territoryUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)
-        // Todo Add to insert territory "insert(CongregationTerritoryCrossRefEntity(...))"
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryUseCase.execute(
                 SaveTerritoryUseCase.Request(territoryUiMapper.map(territoryUi))
