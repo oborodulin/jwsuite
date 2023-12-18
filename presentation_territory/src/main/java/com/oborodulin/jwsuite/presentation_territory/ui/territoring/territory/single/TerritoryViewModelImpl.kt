@@ -209,6 +209,7 @@ class TerritoryViewModelImpl @Inject constructor(
         )
         territoryUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)
+        // Todo Add to insert territory "insert(CongregationTerritoryCrossRefEntity(...))"
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryUseCase.execute(
                 SaveTerritoryUseCase.Request(territoryUiMapper.map(territoryUi))
@@ -231,7 +232,7 @@ class TerritoryViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: TerritoryUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(TerritoryModel) called: territoryUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(TerritoryUi) called: territoryUi = %s", uiModel)
         uiModel.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,

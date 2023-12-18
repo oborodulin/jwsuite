@@ -185,7 +185,7 @@ fun MainNavigationHost(
                 hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryScreen(
                 //sharedViewModel = sharedViewModel,
-                viewModel = territoryViewModel,
+                //viewModel = territoryViewModel,
                 territoryInput = NavRoutes.Territory.fromEntry(it),
                 defTopBarActions = defTopBarActions/*,
                 onActionBarChange = onActionBarChange,
@@ -207,7 +207,7 @@ fun MainNavigationHost(
             val territoryViewModel =
                 hiltViewModel<TerritoryViewModelImpl>(it.rememberParentEntry(LocalAppState.current.mainNavController))
             TerritoryDetailsScreen(
-                territoryViewModel = territoryViewModel,
+                //territoryViewModel = territoryViewModel,
                 territoryInput = NavRoutes.TerritoryDetails.fromEntry(it),
                 defTopBarActions = defTopBarActions/*,
                 onActionBarSubtitleChange = onActionBarSubtitleChange,
@@ -684,7 +684,7 @@ fun MainNavigationHost(
         composable(
             route = NavRoutes.Congregating.route, arguments = NavRoutes.Congregating.arguments
         ) {
-            // congregating: [Congregation, Members]; [Groups (favorite congregation), Members]
+            // congregating: [Congregation, Members]; [Groups (favorite congregation), Members [Admin: Roles]]
             Timber.tag(TAG)
                 .d("Navigation Graph: to CongregatingScreen [route = '%s']", it.destination.route)
             val memberSharedViewModel =

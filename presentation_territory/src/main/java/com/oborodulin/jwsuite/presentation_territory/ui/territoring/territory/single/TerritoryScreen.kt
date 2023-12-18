@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
-import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
@@ -27,7 +27,7 @@ private const val TAG = "Territoring.TerritoryScreen"
 @Composable
 fun TerritoryScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    viewModel: TerritoryViewModel,
+    viewModel: TerritoryViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput? = null,
     defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
@@ -40,7 +40,8 @@ fun TerritoryScreen(
     val appState = LocalAppState.current
     val upNavigation = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     val territoryId = viewModel.id.collectAsStateWithLifecycle().value.value.toUUIDOrNull()
-    Timber.tag(TAG).d("TerritoryScreen: territoryId = %s", territoryId)
+    Timber.tag(TAG).d("TerritoryScreen: territoryId (id) = %s", territoryId)
+    /*
     LaunchedEffect(Unit) {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d(
@@ -50,7 +51,7 @@ fun TerritoryScreen(
         territoryId?.let {
             if (territoryInput?.territoryId == null) viewModel.submitAction(TerritoryUiAction.Load())
         }
-    }
+    }*/
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
@@ -78,7 +79,6 @@ fun TerritoryScreen(
                 SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
             },
             /*onActionBarChange = onActionBarChange,
-    onActionBarSubtitleChange = onActionBarSubtitleChange,
     onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,

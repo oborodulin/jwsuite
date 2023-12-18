@@ -52,7 +52,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> BarComboBo
     loadListUiAction: A,
     inputWrapper: InputListItemWrapper<T>,
     enabled: Boolean = true,
-    @StringRes placeholderResId: Int,
+    @StringRes placeholderResId: Int? = null,
     @StringRes listTitleResId: Int,
     leadingImageVector: ImageVector? = null,
     @DrawableRes leadingPainterResId: Int? = null,

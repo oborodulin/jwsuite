@@ -122,12 +122,14 @@ class AppState(
     }
 
     // Возврат к экрану из главного меню нижней панели.
-    fun backToBottomBarScreen() {
+    fun backToBottomBarScreen(destination: String? = null) {
         Timber.tag(TAG).d("backToBottomBarScreen() called")
         this.mainNavController.popBackStack()
-        this.mainNavController.navigate(NavRoutes.Home.route) {
-            popUpTo(mainNavController.graph.startDestinationId)
-            launchSingleTop = true
+        destination?.let {
+            this.mainNavController.navigate(it) {// NavRoutes.Home.route
+                popUpTo(mainNavController.graph.startDestinationId)
+                launchSingleTop = true
+            }
         }
     }
 

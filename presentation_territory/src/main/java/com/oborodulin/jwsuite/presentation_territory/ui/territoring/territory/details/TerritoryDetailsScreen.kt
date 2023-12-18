@@ -28,12 +28,13 @@ import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModel
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.list.TerritoryStreetsListView
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -45,7 +46,7 @@ private const val TAG = "Territoring.TerritoryDetailsScreen"
 
 @Composable
 fun TerritoryDetailsScreen(
-    territoryViewModel: TerritoryViewModel,
+    territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
     viewModel: TerritoryDetailsViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput,
     defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
@@ -127,7 +128,7 @@ fun TerritoryDetailsScreen(
                 ),
                 defTopBarActions = defTopBarActions,
                 topBarActions = {
-                    IconButton(onClick = { appState.mainNavigateUp() }) { //backToBottomBarScreen() }) {
+                    IconButton(onClick = { appState.backToBottomBarScreen(NavRoutes.Territoring.route) }) {
                         Icon(Icons.Outlined.Done, null)
                     }
                 },

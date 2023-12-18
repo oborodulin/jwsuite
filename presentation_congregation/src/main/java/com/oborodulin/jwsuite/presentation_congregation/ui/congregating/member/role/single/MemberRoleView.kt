@@ -128,8 +128,8 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            enabled = currentMember == null,
-            sharedViewModel = appState.memberSharedViewModel.value,
+            enabled = member.item?.itemId == null,
+            sharedViewModel = appState.congregationSharedViewModel.value,
             inputWrapper = member,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction
@@ -143,7 +143,7 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            memberId = currentMember?.itemId!!,
+            memberId = member.item?.itemId!!,
             inputWrapper = role,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Role(it)) },
             onImeKeyAction = memberRoleViewModel::moveFocusImeAction

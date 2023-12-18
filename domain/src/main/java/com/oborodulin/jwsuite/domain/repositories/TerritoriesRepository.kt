@@ -28,7 +28,7 @@ interface TerritoriesRepository {
     fun getNextNum(congregationId: UUID, territoryCategoryId: UUID): Flow<Int>
 
     // Territory Streets:
-    fun getTerritoryStreet(territoryStreetId: UUID? = null): Flow<TerritoryStreet?>
+    fun getTerritoryStreet(territoryStreetId: UUID): Flow<TerritoryStreet>
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreet>>
     fun getTerritoryStreetHouses(territoryId: UUID): Flow<List<TerritoryStreet>>
     fun getStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreet>>

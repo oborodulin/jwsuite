@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_territory.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
@@ -8,7 +14,10 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_territory.local.db.entities.*
+import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.pojo.TerritoryWithMembers
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
@@ -22,14 +31,15 @@ import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_ALL_VAL
 import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_DISTRICT_VAL
 import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_VAL
 import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_MICRO_DISTRICT_VAL
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
-import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface TerritoryDao {
@@ -417,6 +427,12 @@ interface TerritoryDao {
     suspend fun insertWithTerritoryNum(territory: TerritoryEntity) {
         changeWithTerritoryNum(territory)
         insert(territory)
+        insert(
+            CongregationTerritoryCrossRefEntity(
+                ctCongregationsId = territory.tCongregationsId,
+                ctTerritoriesId = territory.territoryId
+            )
+        )
     }
 
     @Transaction

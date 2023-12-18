@@ -5,9 +5,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
@@ -28,11 +30,24 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.Ter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Territoring.TerritoryStreetViewModelImpl"
@@ -105,10 +120,12 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
 
     private fun loadTerritoryStreetUiModel(
-        territoryId: UUID,
-        territoryStreetId: UUID? = null
+        territoryId: UUID, territoryStreetId: UUID? = null
     ): Job {
-        Timber.tag(TAG).d("loadTerritoryStreet(UUID) called: %s", territoryStreetId)
+        Timber.tag(TAG).d(
+            "loadTerritoryStreetUiModel(...) called: territoryId = %s; territoryStreetId = %s",
+            territoryId, territoryStreetId
+        )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoryStreetUseCase.execute(
                 GetTerritoryStreetUseCase.Request(territoryId, territoryStreetId)
@@ -162,9 +179,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 uiModel
             )
         uiModel.id?.let {
-            initStateValue(
-                TerritoryStreetFields.TERRITORY_STREET_ID, id, it.toString()
-            )
+            initStateValue(TerritoryStreetFields.TERRITORY_STREET_ID, id, it.toString())
         }
         initStateValue(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY, territory,
@@ -315,7 +330,12 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: TerritoryStreetUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: TerritoryStreetFields, isFocused: Boolean

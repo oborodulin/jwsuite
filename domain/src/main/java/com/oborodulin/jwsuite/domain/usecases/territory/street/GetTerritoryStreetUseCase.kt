@@ -6,27 +6,50 @@ import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.UUID
+
+private const val TAG = "Domain.GetTerritoryStreetUseCase"
 
 class GetTerritoryStreetUseCase(
     configuration: Configuration,
     private val territoriesRepository: TerritoriesRepository
 ) : UseCase<GetTerritoryStreetUseCase.Request, GetTerritoryStreetUseCase.Response>(configuration) {
 
-    override fun process(request: Request): Flow<Response> =
-        combine(
+    override fun process(request: Request): Flow<Response> = when (request.territoryStreetId) {
+        //Timber.tag(TAG).d("process(...) called: request = %s", request)
+        null -> combine(
+            territoriesRepository.get(request.territoryId),
+            territoriesRepository.getTerritoryStreets(request.territoryId)
+        ) { territory, territoryStreets ->
+            Timber.tag(TAG).d(
+                "process -> combine(...): territory = %s; territoryStreets = %s",
+                territory, territoryStreets
+            )
+            TerritoryStreetWithTerritoryAndStreets(
+                territory = territory,
+                streets = territoryStreets.map { it.street }
+            )
+        }
+
+        else -> combine(
             territoriesRepository.get(request.territoryId),
             territoriesRepository.getTerritoryStreet(request.territoryStreetId),
             territoriesRepository.getTerritoryStreets(request.territoryId)
         ) { territory, territoryStreet, territoryStreets ->
+            Timber.tag(TAG).d(
+                "process -> combine(...): territory = %s; territoryStreet = %s; territoryStreets = %s",
+                territory, territoryStreet, territoryStreets
+            )
             TerritoryStreetWithTerritoryAndStreets(
                 territoryStreet = territoryStreet,
                 territory = territory,
                 streets = territoryStreets.map { it.street }
             )
-        }.map {
-            Response(it)
         }
+    }.map {
+        Response(it)
+    }
 
     data class Request(val territoryId: UUID, val territoryStreetId: UUID? = null) : UseCase.Request
     data class Response(val territoryStreetWithTerritoryAndStreets: TerritoryStreetWithTerritoryAndStreets) :
