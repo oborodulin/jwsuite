@@ -55,15 +55,15 @@ class MembersRepositoryImpl @Inject constructor(
     // Transfer Objects:
     override fun getMemberTransferObjects(pseudonym: String) =
         localMemberDataSource.getMemberTransferObjects(pseudonym)
-            .map(transferObjectMappers.memberRoleTransferObjectViewListToRoleTransferObjectsListMapper::map)
+            .map(transferObjectMappers.roleTransferObjectViewListToRoleTransferObjectsListMapper::map)
 
     override fun getRoleTransferObjects(roleId: UUID) =
         localMemberDataSource.getRoleTransferObjects(roleId)
-            .map(transferObjectMappers.memberRoleTransferObjectViewListToRoleTransferObjectsListMapper::map)
+            .map(transferObjectMappers.memberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper::map)
 
     override fun getTransferObjectsForRole(roleId: UUID) =
         localMemberDataSource.getTransferObjectsForRole(roleId)
-            .map(transferObjectMappers.transferObjectListToTransferObjectsListMapper::map)
+            .map(transferObjectMappers.transferObjectEntityListToTransferObjectsListMapper::map)
 
     // Member:
     override fun get(memberId: UUID) = localMemberDataSource.getMember(memberId)

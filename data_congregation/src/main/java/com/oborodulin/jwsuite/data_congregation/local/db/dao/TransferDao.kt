@@ -9,6 +9,8 @@ import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
 import com.oborodulin.jwsuite.domain.util.Constants.TOT_ALL_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -32,35 +34,28 @@ interface TransferDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query(
-        """
-    SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE memberId = :memberId AND transferObjectType = $TOT_ALL_VAL
-    UNION ALL
-    SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME}
-    WHERE memberId = :memberId 
-        AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
-                        WHERE memberId = :memberId AND transferObjectType = $TOT_ALL_VAL)
-    ORDER BY transferObjectName
-    """)
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE memberId = :memberId ORDER BY transferObjectName")
     fun findByMemberId(memberId: UUID): Flow<List<MemberRoleTransferObjectView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByMemberId(memberId: UUID) =
-        findByMemberId(memberId).distinctUntilChanged()
+    fun findDistinctByMemberId(memberId: UUID) = findByMemberId(memberId).distinctUntilChanged()
 
     //-----------------------------
     @Query(
         """
-    SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE pseudonym = :pseudonym AND transferObjectType = $TOT_ALL_VAL
+    SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
+    WHERE mrv.pseudonym = :pseudonym AND rtov.transferObjectType = $TOT_ALL_VAL
+    GROUP BY mrv.memberId, rtov.transferObjectId
     UNION ALL
-    SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME}
-    WHERE pseudonym = :pseudonym 
+    SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
+    WHERE mrv.pseudonym = :pseudonym 
         AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
                         WHERE pseudonym = :pseudonym AND transferObjectType = $TOT_ALL_VAL)
+    GROUP BY mrv.memberId, rtov.transferObjectId
     ORDER BY transferObjectName
     """
     )
-    fun findByMemberPseudonym(pseudonym: String): Flow<List<MemberRoleTransferObjectView>>
+    fun findByMemberPseudonym(pseudonym: String): Flow<List<RoleTransferObjectView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByMemberPseudonym(pseudonym: String) =

@@ -39,6 +39,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberMovementVie
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
@@ -148,7 +149,7 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
-        MemberRoleTransferObjectView::class //TerritoryInfoView::class
+        RoleTransferObjectView::class, MemberRoleTransferObjectView::class //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true
 )

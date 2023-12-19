@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObject
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -21,7 +22,10 @@ interface LocalMemberDataSource {
     // Members by Groups:
     fun getFavoriteCongregationGroupMembers(isService: Boolean): Flow<List<MemberView>>
     fun getGroupMembers(groupId: UUID, isService: Boolean): Flow<List<MemberView>>
-    fun getEmptyGroupMembers(congregationId: UUID? = null, isService: Boolean): Flow<List<MemberView>>
+    fun getEmptyGroupMembers(
+        congregationId: UUID? = null,
+        isService: Boolean
+    ): Flow<List<MemberView>>
 
     // Member Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>
@@ -33,7 +37,7 @@ interface LocalMemberDataSource {
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
 
     // Transfer Objects:
-    fun getMemberTransferObjects(pseudonym: String): Flow<List<MemberRoleTransferObjectView>>
+    fun getMemberTransferObjects(pseudonym: String): Flow<List<RoleTransferObjectView>>
     fun getRoleTransferObjects(roleId: UUID): Flow<List<MemberRoleTransferObjectView>>
     fun getTransferObjectsForRole(roleId: UUID): Flow<List<TransferObjectEntity>>
 

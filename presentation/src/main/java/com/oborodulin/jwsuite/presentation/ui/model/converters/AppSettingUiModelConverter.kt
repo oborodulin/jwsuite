@@ -18,7 +18,7 @@ class AppSettingUiModelConverter(
             settings = settingsMapper.map(data.appSettingsWithSession.settings),
             username = data.appSettingsWithSession.username,
             roles = rolesMapper.map(data.appSettingsWithSession.roles),
-            transferObjects = transferObjectsMapper.map(data.appSettingsWithSession.transferObjects),
+            transferObjects = transferObjectsMapper.map(data.appSettingsWithSession.roleTransferObjects),
             appVersionName = data.appSettingsWithSession.appVersionName,
             frameworkVersion = data.appSettingsWithSession.frameworkVersion,
             sqliteVersion = data.appSettingsWithSession.sqliteVersion,

@@ -85,11 +85,13 @@ fun MemberRoleView(
     }
     val currentCongregation =
         appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+    val selectedMember =
+        appState.memberSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     var currentMember = member.item
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("MemberRoleView -> LaunchedEffect()")
         if (currentMember == null) {
-            currentMember = membersListViewModel.singleSelectedItem()
+            currentMember = selectedMember
             currentCongregation?.let {
                 memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it))
             }
@@ -103,7 +105,10 @@ fun MemberRoleView(
         }
     }
     Timber.tag(TAG)
-        .d("currentCongregation = %s; currentMember = %s", currentCongregation, currentMember)
+        .d(
+            "currentCongregation = %s; selectedMember = %s; currentMember = %s",
+            currentCongregation, selectedMember, currentMember
+        )
     Column(
         modifier = Modifier
             .fillMaxWidth()

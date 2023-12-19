@@ -8,7 +8,7 @@ data class AppSettingsWithSession(
     val settings: List<AppSetting> = emptyList(),
     val username: String,
     val roles: List<MemberRole> = emptyList(),
-    val transferObjects: List<RoleTransferObject> = emptyList(),
+    val roleTransferObjects: List<RoleTransferObject> = emptyList(),
     val appVersionName: String,
     val frameworkVersion: String,
     val sqliteVersion: String,

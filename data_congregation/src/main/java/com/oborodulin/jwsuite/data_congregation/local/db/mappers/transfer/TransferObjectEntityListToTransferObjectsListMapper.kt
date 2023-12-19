@@ -4,5 +4,5 @@ import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
 import com.oborodulin.jwsuite.domain.model.congregation.TransferObject
 
-class TransferObjectListToTransferObjectsListMapper(mapper: TransferObjectEntityToTransferObjectMapper) :
+class TransferObjectEntityListToTransferObjectsListMapper(mapper: TransferObjectEntityToTransferObjectMapper) :
     ListMapperImpl<TransferObjectEntity, TransferObject>(mapper)

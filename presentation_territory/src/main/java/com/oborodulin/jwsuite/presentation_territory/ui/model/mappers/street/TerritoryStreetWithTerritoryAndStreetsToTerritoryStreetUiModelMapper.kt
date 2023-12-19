@@ -13,11 +13,14 @@ class TerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper(
     private val streetListItemMapper: StreetsListToStreetsListItemMapper
 ) : Mapper<TerritoryStreetWithTerritoryAndStreets, TerritoryStreetUiModel> {
     override fun map(input: TerritoryStreetWithTerritoryAndStreets): TerritoryStreetUiModel {
-        return TerritoryStreetUiModel(
-            territoryStreet = territoryStreetMapper.nullableMap(input.territoryStreet)
-                ?: TerritoryStreetUi(),
+        val territoryStreet = territoryStreetMapper.nullableMap(input.territoryStreet)
+            ?: TerritoryStreetUi()
+        val uiModel = TerritoryStreetUiModel(
+            territoryStreet = territoryStreet,
             territory = territoryMapper.map(input.territory),
             streets = streetListItemMapper.map(input.streets)
         )
+        uiModel.id = territoryStreet.id
+        return uiModel
     }
 }

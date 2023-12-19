@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.model.congregation.MemberRole
+import com.oborodulin.jwsuite.domain.model.congregation.MemberRoleTransferObject
 import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.model.congregation.RoleTransferObject
 import com.oborodulin.jwsuite.domain.model.congregation.TransferObject
@@ -30,7 +31,7 @@ interface MembersRepository {
 
     // Transfer Objects:
     fun getMemberTransferObjects(pseudonym: String): Flow<List<RoleTransferObject>>
-    fun getRoleTransferObjects(roleId: UUID): Flow<List<RoleTransferObject>>
+    fun getRoleTransferObjects(roleId: UUID): Flow<List<MemberRoleTransferObject>>
     fun getTransferObjectsForRole(roleId: UUID): Flow<List<TransferObject>>
 
     // Member:

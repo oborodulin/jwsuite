@@ -58,7 +58,9 @@ fun MembersListView(
                 )
             }
         }) {
-            appState.memberSharedViewModel.value?.submitData(membersListViewModel.singleSelectedItem())
+            val selectedMember = membersListViewModel.singleSelectedItem()
+            Timber.tag(TAG).d("selectedMember = %s", selectedMember)
+            appState.memberSharedViewModel.value?.submitData(selectedMember)
         }
     }
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
@@ -82,8 +84,8 @@ fun MembersListView(
                             )
                         }
                     ) { member ->
-                        appState.memberSharedViewModel.value?.submitData(member)
                         membersListViewModel.singleSelectItem(member)
+                        appState.memberSharedViewModel.value?.submitData(member)
                         with(memberRolesListViewModel) {
                             submitAction(MemberRolesListUiAction.Load(member.itemId!!))
                         }

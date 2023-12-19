@@ -25,14 +25,14 @@ class GetAppSettingsUseCase(
         appSettingsRepository.dbVersion()
     ) { settings, username, sqliteVersion, dbVersion ->
         val roles = membersRepository.getMemberRoles(username.orEmpty()).first()
-        val transferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
+        val roleTransferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
         val version = ctx.getAppVersion()
         Response(
             AppSettingsWithSession(
                 settings = settings,
                 username = username.orEmpty(),
                 roles = roles,
-                transferObjects = transferObjects,
+                roleTransferObjects = roleTransferObjects,
                 appVersionName = version?.versionName.orEmpty(),
                 frameworkVersion = "${android.os.Build.VERSION.SDK_INT}",
                 sqliteVersion = sqliteVersion,

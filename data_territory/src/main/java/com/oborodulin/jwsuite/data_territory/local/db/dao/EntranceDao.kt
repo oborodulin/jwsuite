@@ -1,7 +1,12 @@
 package com.oborodulin.jwsuite.data_territory.local.db.dao
 
-import androidx.room.*
-import com.oborodulin.jwsuite.data_geo.util.Constants
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
@@ -11,7 +16,8 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface EntranceDao {
@@ -49,14 +55,14 @@ interface EntranceDao {
         """
         SELECT ev.* FROM ${EntranceView.VIEW_NAME} ev JOIN ${TerritoryEntity.TABLE_NAME} t 
                 ON t.territoryId = :territoryId AND ev.hTerritoriesId IS NULL 
-                    AND ev.${Constants.PX_LOCALITY}localityId = t.tLocalitiesId 
-                    AND ifnull(ev.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '') 
-                    AND ifnull(ev.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '')
+                    AND ev.${PX_LOCALITY}localityId = t.tLocalitiesId 
+                    AND ifnull(ev.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(ev.hMicrodistrictsId, '')) 
+                    AND ifnull(ev.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(ev.hLocalityDistrictsId , ''))
                     AND ev.streetLocCode = :locale
         WHERE NOT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h WHERE h.houseId = ev.eHousesId AND h.hTerritoriesId IS NOT NULL)
             AND NOT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fHousesId = ev.houseId AND f.fTerritoriesId IS NOT NULL)
             AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = ev.houseId AND r.rTerritoriesId IS NOT NULL)
-        ORDER BY entranceNum, houseNum, houseLetter, buildingNum, streetName
+        ORDER BY ev.entranceNum, ev.houseNum, ev.houseLetter, ev.buildingNum, ev.streetName
         """
     )
     fun findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(

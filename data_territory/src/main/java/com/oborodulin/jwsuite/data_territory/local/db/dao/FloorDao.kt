@@ -58,13 +58,13 @@ interface FloorDao {
         SELECT fv.* FROM ${FloorView.VIEW_NAME} fv JOIN ${TerritoryEntity.TABLE_NAME} t 
                 ON t.territoryId = :territoryId AND fv.hTerritoriesId IS NULL 
                     AND fv.${Constants.PX_LOCALITY}localityId = t.tLocalitiesId 
-                    AND ifnull(fv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '') 
-                    AND ifnull(fv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '')
+                    AND ifnull(fv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(fv.hMicrodistrictsId, '')) 
+                    AND ifnull(fv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(fv.hLocalityDistrictsId , ''))
                     AND fv.streetLocCode = :locale
         WHERE NOT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h WHERE h.houseId = fv.eHousesId AND h.hTerritoriesId IS NOT NULL)
             AND NOT EXISTS (SELECT e.entranceId FROM ${EntranceEntity.TABLE_NAME} e WHERE e.eHousesId = fv.houseId AND e.eTerritoriesId IS NOT NULL)
             AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = fv.houseId AND r.rTerritoriesId IS NOT NULL)
-        ORDER BY entranceNum, houseNum, houseLetter, buildingNum, streetName
+        ORDER BY fv.entranceNum, fv.houseNum, fv.houseLetter, fv.buildingNum, fv.streetName
         """
     )
     fun findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(

@@ -153,8 +153,8 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         )
         territoryStreetUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d(
-            "saveTerritoryStreet() called: UI territoryStreetUi = %s; streetUi.id = %s",
-            territoryStreetUi, streetUi.id
+            "saveTerritoryStreet() called: UI territoryStreetUi.id = %s; territoryStreetUi = %s; streetUi.id = %s",
+            territoryStreetUi.id, territoryStreetUi, streetUi.id
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryStreetUseCase.execute(
@@ -175,8 +175,8 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(TerritoryStreetModel) called: territoryStreetUi = %s",
-                uiModel
+                "initFieldStatesByUiModel(TerritoryStreetUiModel) called: uiModel.id = %s; uiModel = %s",
+                uiModel.id, uiModel
             )
         uiModel.id?.let {
             initStateValue(TerritoryStreetFields.TERRITORY_STREET_ID, id, it.toString())
@@ -209,17 +209,10 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is TerritoryStreetInputEvent.Street ->
-                        when (TerritoryStreetInputValidator.Street.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                TerritoryStreetFields.TERRITORY_STREET_STREET, street, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                TerritoryStreetFields.TERRITORY_STREET_STREET, street, event.input
-                            )
-                        }
+                    is TerritoryStreetInputEvent.Street -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_STREET, street, event.input,
+                        TerritoryStreetInputValidator.Street.isValid(event.input.headline)
+                    )
 
                     is TerritoryStreetInputEvent.IsPrivateSector ->
                         setStateValue(

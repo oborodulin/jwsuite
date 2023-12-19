@@ -8,6 +8,8 @@ import com.oborodulin.jwsuite.domain.model.congregation.TransferObject
 class MemberRoleTransferObjectViewToTransferObjectMapper(private val mapper: TransferObjectEntityToTransferObjectMapper) :
     NullableMapper<MemberRoleTransferObjectView, TransferObject>,
     Mapper<MemberRoleTransferObjectView, TransferObject> {
-    override fun map(input: MemberRoleTransferObjectView) = mapper.map(input.transferObject)
+    override fun map(input: MemberRoleTransferObjectView) =
+        mapper.map(input.roleTransferObject.transferObject)
+
     override fun nullableMap(input: MemberRoleTransferObjectView?) = input?.let { map(it) }
 }
