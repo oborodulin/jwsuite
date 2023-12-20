@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
@@ -205,7 +206,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -264,7 +265,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         TerritoryStreetInputValidator.Street.errorIdOrNull(street.value.item?.headline)?.let {
             inputErrors.add(
@@ -277,8 +278,8 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoryStreetFields.valueOf(error.fieldName)) {
                 TerritoryStreetFields.TERRITORY_STREET_STREET -> street.value.copy(

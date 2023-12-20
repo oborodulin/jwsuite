@@ -11,6 +11,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetMicrodistrictsForStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
@@ -129,7 +130,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {

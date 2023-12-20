@@ -8,7 +8,7 @@ sealed class StreetsListUiAction(override val isEmitJob: Boolean = true) : UiAct
         val localityId: UUID? = null,
         val localityDistrictId: UUID? = null,
         val microdistrictId: UUID? = null,
-        val isPrivateSector: Boolean = false
+        val isPrivateSector: Boolean? = null
     ) : StreetsListUiAction()
 
     data class LoadForTerritory(

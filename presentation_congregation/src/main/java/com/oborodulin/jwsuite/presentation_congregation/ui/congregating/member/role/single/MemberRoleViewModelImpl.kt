@@ -14,6 +14,8 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.toFullFormatOffsetDateTimeOrNull
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.home.common.util.toShortFormatString
@@ -159,7 +161,7 @@ class MemberRoleViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: MemberRoleUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
+        if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberRoleUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberRoleFields.MEMBER_ROLE_ID, id, it.toString()) }
         uiModel.member.congregation.id?.let {
@@ -186,7 +188,7 @@ class MemberRoleViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -238,7 +240,7 @@ class MemberRoleViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         MemberRoleInputValidator.Role.errorIdOrNull(role.value.item?.headline)?.let {
             inputErrors.add(
@@ -254,8 +256,8 @@ class MemberRoleViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (MemberRoleFields.valueOf(error.fieldName)) {
                 MemberRoleFields.MEMBER_ROLE_ROLE -> role.value.copy(errorId = error.errorId)

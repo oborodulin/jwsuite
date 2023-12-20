@@ -61,9 +61,9 @@ interface FloorDao {
                     AND ifnull(fv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(fv.hMicrodistrictsId, '')) 
                     AND ifnull(fv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(fv.hLocalityDistrictsId , ''))
                     AND fv.streetLocCode = :locale
-        WHERE NOT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h WHERE h.houseId = fv.eHousesId AND h.hTerritoriesId IS NOT NULL)
-            AND NOT EXISTS (SELECT e.entranceId FROM ${EntranceEntity.TABLE_NAME} e WHERE e.eHousesId = fv.houseId AND e.eTerritoriesId IS NOT NULL)
-            AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = fv.houseId AND r.rTerritoriesId IS NOT NULL)
+        WHERE NOT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h WHERE h.houseId = fv.fHousesId AND h.hTerritoriesId IS NOT NULL)
+            AND NOT EXISTS (SELECT e.entranceId FROM ${EntranceEntity.TABLE_NAME} e WHERE e.entranceId = fv.fEntrancesId AND e.eTerritoriesId IS NOT NULL)
+            AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rFloorsId = fv.floorId AND r.rTerritoriesId IS NOT NULL)
         ORDER BY fv.entranceNum, fv.houseNum, fv.houseLetter, fv.buildingNum, fv.streetName
         """
     )

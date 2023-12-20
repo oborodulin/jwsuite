@@ -6,18 +6,23 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
-import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
@@ -26,11 +31,26 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityConve
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalitiesListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Geo.LocalityViewModelImpl"
@@ -82,7 +102,7 @@ class LocalityViewModelImpl @Inject constructor(
 
     private fun initLocalityTypes(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in LocalityType.values()) _localityTypes.value[type] = resArray[type.ordinal]
+        for (type in LocalityType.entries) _localityTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState(): UiState<LocalityUi> = UiState.Loading
@@ -108,7 +128,7 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     private fun loadLocality(localityId: UUID): Job {
-        Timber.tag(TAG).d("loadLocality(UUID) called: %s", localityId)
+        Timber.tag(TAG).d("loadLocality(UUID) called: localityId = %s", localityId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getLocalityUseCase.execute(GetLocalityUseCase.Request(localityId))
                 .map {
@@ -159,11 +179,8 @@ class LocalityViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: LocalityUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(LocalityModel) called: localityUi = %s", uiModel)
-        uiModel.id?.let {
-            initStateValue(LocalityFields.LOCALITY_ID, id, it.toString())
-        }
+        Timber.tag(TAG).d("initFieldStatesByUiModel(LocalityUi) called: uiModel = %s", uiModel)
+        uiModel.id?.let { initStateValue(LocalityFields.LOCALITY_ID, id, it.toString()) }
         initStateValue(
             LocalityFields.LOCALITY_REGION, region,
             ListItemModel(uiModel.region.id, uiModel.region.regionName)
@@ -184,101 +201,69 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is LocalityInputEvent.Region ->
-                        when (LocalityInputValidator.Region.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                LocalityFields.LOCALITY_REGION, region, event.input, true
-                            )
+                    is LocalityInputEvent.Region -> setStateValue(
+                        LocalityFields.LOCALITY_REGION, region, event.input,
+                        LocalityInputValidator.Region.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                LocalityFields.LOCALITY_REGION, region, event.input
-                            )
-                        }
+                    is LocalityInputEvent.RegionDistrict -> setStateValue(
+                        LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict, event.input,
+                        true
+                    )
 
-                    is LocalityInputEvent.RegionDistrict ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict,
-                            event.input, true
-                        )
+                    is LocalityInputEvent.LocalityCode -> setStateValue(
+                        LocalityFields.LOCALITY_CODE, localityCode, event.input,
+                        LocalityInputValidator.LocalityCode.isValid(event.input)
+                    )
 
-                    is LocalityInputEvent.LocalityCode ->
-                        when (LocalityInputValidator.LocalityCode.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                LocalityFields.LOCALITY_CODE, localityCode, event.input, true
-                            )
+                    is LocalityInputEvent.LocalityShortName -> setStateValue(
+                        LocalityFields.LOCALITY_SHORT_NAME, localityShortName, event.input,
+                        LocalityInputValidator.LocalityShortName.isValid(event.input)
+                    )
 
-                            else -> setStateValue(
-                                LocalityFields.LOCALITY_CODE, localityCode, event.input
-                            )
-                        }
+                    is LocalityInputEvent.LocalityType -> setStateValue(
+                        LocalityFields.LOCALITY_TYPE, localityType, event.input, true
+                    )
 
-                    is LocalityInputEvent.LocalityShortName ->
-                        when (LocalityInputValidator.LocalityShortName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                LocalityFields.LOCALITY_SHORT_NAME, localityShortName, event.input,
-                                true
-                            )
-
-                            else -> setStateValue(
-                                LocalityFields.LOCALITY_SHORT_NAME, localityShortName, event.input
-                            )
-                        }
-
-                    is LocalityInputEvent.LocalityType ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_TYPE, localityType, event.input, true
-                        )
-
-                    is LocalityInputEvent.LocalityName ->
-                        when (LocalityInputValidator.LocalityName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                LocalityFields.LOCALITY_NAME, localityName, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                LocalityFields.LOCALITY_NAME, localityName, event.input
-                            )
-                        }
+                    is LocalityInputEvent.LocalityName -> setStateValue(
+                        LocalityFields.LOCALITY_NAME, localityName, event.input,
+                        LocalityInputValidator.LocalityName.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is LocalityInputEvent.Region ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_REGION, region,
-                            LocalityInputValidator.Region.errorIdOrNull(event.input.headline)
-                        )
+                    is LocalityInputEvent.Region -> setStateValue(
+                        LocalityFields.LOCALITY_REGION, region,
+                        LocalityInputValidator.Region.errorIdOrNull(event.input.headline)
+                    )
 
-                    is LocalityInputEvent.RegionDistrict ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict, null
-                        )
+                    is LocalityInputEvent.RegionDistrict -> setStateValue(
+                        LocalityFields.LOCALITY_REGION_DISTRICT, regionDistrict, null
+                    )
 
-                    is LocalityInputEvent.LocalityCode ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_CODE, localityCode,
-                            LocalityInputValidator.LocalityCode.errorIdOrNull(event.input)
-                        )
+                    is LocalityInputEvent.LocalityCode -> setStateValue(
+                        LocalityFields.LOCALITY_CODE, localityCode,
+                        LocalityInputValidator.LocalityCode.errorIdOrNull(event.input)
+                    )
 
-                    is LocalityInputEvent.LocalityShortName ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_SHORT_NAME, localityShortName,
-                            LocalityInputValidator.LocalityShortName.errorIdOrNull(event.input)
-                        )
+                    is LocalityInputEvent.LocalityShortName -> setStateValue(
+                        LocalityFields.LOCALITY_SHORT_NAME, localityShortName,
+                        LocalityInputValidator.LocalityShortName.errorIdOrNull(event.input)
+                    )
 
                     is LocalityInputEvent.LocalityType ->
                         setStateValue(LocalityFields.LOCALITY_TYPE, localityType, null)
 
-                    is LocalityInputEvent.LocalityName ->
-                        setStateValue(
-                            LocalityFields.LOCALITY_NAME, localityName,
-                            LocalityInputValidator.LocalityName.errorIdOrNull(event.input)
-                        )
+                    is LocalityInputEvent.LocalityName -> setStateValue(
+                        LocalityFields.LOCALITY_NAME, localityName,
+                        LocalityInputValidator.LocalityName.errorIdOrNull(event.input)
+                    )
 
                 }
             }
@@ -286,7 +271,7 @@ class LocalityViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         LocalityInputValidator.Region.errorIdOrNull(region.value.item?.headline)?.let {
             inputErrors.add(
@@ -308,8 +293,8 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (LocalityFields.valueOf(error.fieldName)) {
                 LocalityFields.LOCALITY_REGION -> region.value.copy(errorId = error.errorId)
@@ -358,7 +343,12 @@ class LocalityViewModelImpl @Inject constructor(
 
                 override fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
                 override fun submitAction(action: LocalityUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: LocalityFields, isFocused: Boolean

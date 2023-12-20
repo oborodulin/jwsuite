@@ -66,8 +66,8 @@ fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : F
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(4.dp),
+            //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

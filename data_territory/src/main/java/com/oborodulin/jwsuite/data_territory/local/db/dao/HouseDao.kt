@@ -9,6 +9,8 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -64,9 +66,12 @@ interface HouseDao {
                 AND ifnull(hv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(hv.hMicrodistrictsId, '')) 
                 AND ifnull(hv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(hv.hLocalityDistrictsId , ''))
                 AND hv.streetLocCode = :locale
+            LEFT JOIN ${TerritoryStreetView.VIEW_NAME} tsv ON tsv.tsTerritoriesId = t.territoryId 
+                                                            AND ifnull(tsv.isTerStreetPrivateSector, tsv.isStreetPrivateSector) = $DB_TRUE
         WHERE NOT EXISTS (SELECT e.entranceId FROM ${EntranceEntity.TABLE_NAME} e WHERE e.eHousesId = hv.houseId AND e.eTerritoriesId IS NOT NULL)
             AND NOT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fHousesId = hv.houseId AND f.fTerritoriesId IS NOT NULL)
             AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = hv.houseId AND r.rTerritoriesId IS NOT NULL)
+            AND (tsv.territoryStreetId IS NULL OR tsv.territoryStreetId IS NOT NULL AND hv.hStreetsId = tsv.tsStreetsId AND hv.isHousePrivateSector = $DB_TRUE)
         ORDER BY hv.houseNum, hv.houseLetter, hv.buildingNum, hv.streetName
         """
     )

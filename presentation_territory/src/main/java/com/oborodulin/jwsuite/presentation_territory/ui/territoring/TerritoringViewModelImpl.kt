@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
@@ -108,7 +109,7 @@ class TerritoringViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {

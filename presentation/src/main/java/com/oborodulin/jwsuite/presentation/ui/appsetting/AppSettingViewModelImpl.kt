@@ -12,14 +12,16 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_congregation.R
-import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
-import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
-import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.domain.types.TransferObjectType
+import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
+import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
+import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.MemberRolesListItem
@@ -95,7 +97,7 @@ class AppSettingViewModelImpl @Inject constructor(
     override fun initState(): UiState<AppSettingsUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: AppSettingUiAction): Job {
-        Timber.tag(TAG).d("handleAction(AppSettingUiModelAction) called: %s", action.javaClass.name)
+        Timber.tag(TAG).d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is AppSettingUiAction.Load -> loadAppSettings()
             is AppSettingUiAction.Save -> saveAppSettings()
@@ -138,13 +140,10 @@ class AppSettingViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("saveAppSettings() called: UI model %s", appSettings)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveAppSettingsUseCase.execute(
-                SaveAppSettingsUseCase.Request(
-                    appSettingsUiMapper.map(appSettings)
-                )
-            )
-                .collect {
-                    Timber.tag(TAG).d("saveMember() collect: %s", it)
-                }
+                SaveAppSettingsUseCase.Request(appSettingsUiMapper.map(appSettings))
+            ).collect {
+                Timber.tag(TAG).d("saveMember() collect: %s", it)
+            }
         }
         return job
     }
@@ -153,7 +152,7 @@ class AppSettingViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: AppSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
+        if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
         initStateValue(
             AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
@@ -179,7 +178,7 @@ class AppSettingViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -251,7 +250,7 @@ class AppSettingViewModelImpl @Inject constructor(
     override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
 
         AppSettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(territoryProcessingPeriod.value.value)
@@ -296,8 +295,8 @@ class AppSettingViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (AppSettingFields.valueOf(error.fieldName)) {
                 AppSettingFields.TERRITORY_PROCESSING_PERIOD -> territoryProcessingPeriod.value.copy(

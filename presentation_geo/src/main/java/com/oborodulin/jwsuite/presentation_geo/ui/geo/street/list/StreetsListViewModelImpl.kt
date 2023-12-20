@@ -7,11 +7,11 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.usecases.geostreet.DeleteStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
-import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
@@ -77,7 +77,10 @@ class StreetsListViewModelImpl @Inject constructor(
         localityId: UUID? = null, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
         isPrivateSector: Boolean? = null
     ): Job {
-        Timber.tag(TAG).d("loadStreets() called")
+        Timber.tag(TAG).d(
+            "loadStreets(...) called: localityId = %s; localityDistrictId = %s; microdistrictId = %s; isPrivateSector = %s",
+            localityId, localityDistrictId, microdistrictId, isPrivateSector
+        )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getStreetsUseCase.execute(
                 GetStreetsUseCase.Request(
@@ -140,7 +143,12 @@ class StreetsListViewModelImpl @Inject constructor(
 
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: StreetsListUiAction): Job? = null
             }
 

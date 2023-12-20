@@ -60,8 +60,8 @@ interface EntranceDao {
                     AND ifnull(ev.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(ev.hLocalityDistrictsId , ''))
                     AND ev.streetLocCode = :locale
         WHERE NOT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h WHERE h.houseId = ev.eHousesId AND h.hTerritoriesId IS NOT NULL)
-            AND NOT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fHousesId = ev.houseId AND f.fTerritoriesId IS NOT NULL)
-            AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = ev.houseId AND r.rTerritoriesId IS NOT NULL)
+            AND NOT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fEntrancesId = ev.entranceId AND f.fTerritoriesId IS NOT NULL)
+            AND NOT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rEntrancesId = ev.entranceId AND r.rTerritoriesId IS NOT NULL)
         ORDER BY ev.entranceNum, ev.houseNum, ev.houseLetter, ev.buildingNum, ev.streetName
         """
     )

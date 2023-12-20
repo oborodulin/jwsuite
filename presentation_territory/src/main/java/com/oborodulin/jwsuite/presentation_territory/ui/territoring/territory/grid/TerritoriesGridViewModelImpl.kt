@@ -12,15 +12,16 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
+import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
-import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
@@ -259,81 +260,54 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: List<TerritoriesListItem>): Job? = null
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is TerritoriesInputEvent.Member ->
-                        when (TerritoriesInputValidator.Member.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                TerritoriesFields.TERRITORY_MEMBER, member, event.input,
-                                true
-                            )
+                    is TerritoriesInputEvent.Member -> setStateValue(
+                        TerritoriesFields.TERRITORY_MEMBER, member, event.input,
+                        TerritoriesInputValidator.Member.isValid(event.input.headline)
+                    )
 
-                            else -> setStateValue(
-                                TerritoriesFields.TERRITORY_MEMBER, member, event.input
-                            )
-                        }
+                    is TerritoriesInputEvent.ReceivingDate -> setStateValue(
+                        TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate, event.input,
+                        TerritoriesInputValidator.ReceivingDate.isValid(event.input)
+                    )
 
-                    is TerritoriesInputEvent.ReceivingDate ->
-                        when (TerritoriesInputValidator.ReceivingDate.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
-                                event.input
-                            )
-                        }
-
-                    is TerritoriesInputEvent.DeliveryDate ->
-                        when (TerritoriesInputValidator.DeliveryDate.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate,
-                                event.input, true
-                            )
-
-                            else -> setStateValue(
-                                TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate, event.input
-                            )
-                        }
+                    is TerritoriesInputEvent.DeliveryDate -> setStateValue(
+                        TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate, event.input,
+                        TerritoriesInputValidator.DeliveryDate.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is TerritoriesInputEvent.Member ->
-                        setStateValue(
-                            TerritoriesFields.TERRITORY_MEMBER, member,
-                            TerritoriesInputValidator.Member.errorIdOrNull(event.input.headline)
-                        )
+                    is TerritoriesInputEvent.Member -> setStateValue(
+                        TerritoriesFields.TERRITORY_MEMBER, member,
+                        TerritoriesInputValidator.Member.errorIdOrNull(event.input.headline)
+                    )
 
-                    is TerritoriesInputEvent.ReceivingDate ->
-                        setStateValue(
-                            TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
-                            TerritoriesInputValidator.Member.errorIdOrNull(event.input)
-                        )
+                    is TerritoriesInputEvent.ReceivingDate -> setStateValue(
+                        TerritoriesFields.TERRITORY_RECEIVING_DATE, receivingDate,
+                        TerritoriesInputValidator.Member.errorIdOrNull(event.input)
+                    )
 
-                    is TerritoriesInputEvent.DeliveryDate ->
-                        setStateValue(
-                            TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate,
-                            TerritoriesInputValidator.Member.errorIdOrNull(event.input)
-                        )
+                    is TerritoriesInputEvent.DeliveryDate -> setStateValue(
+                        TerritoriesFields.TERRITORY_DELIVERY_DATE, deliveryDate,
+                        TerritoriesInputValidator.Member.errorIdOrNull(event.input)
+                    )
                 }
             }
     }
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         TerritoriesInputValidator.Member.errorIdOrNull(member.value.item?.headline)?.let {
             inputErrors.add(
-                InputError(
-                    fieldName = TerritoriesFields.TERRITORY_MEMBER.name, errorId = it
-                )
+                InputError(fieldName = TerritoriesFields.TERRITORY_MEMBER.name, errorId = it)
             )
         }
         TerritoriesInputValidator.ReceivingDate.errorIdOrNull(receivingDate.value.value)?.let {
@@ -352,14 +326,13 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoriesFields.valueOf(error.fieldName)) {
                 TerritoriesFields.TERRITORY_MEMBER -> member.value.copy(errorId = error.errorId)
                 TerritoriesFields.TERRITORY_RECEIVING_DATE -> receivingDate.value.copy(errorId = error.errorId)
                 TerritoriesFields.TERRITORY_DELIVERY_DATE -> deliveryDate.value.copy(errorId = error.errorId)
-                else -> null
             }
         }
     }

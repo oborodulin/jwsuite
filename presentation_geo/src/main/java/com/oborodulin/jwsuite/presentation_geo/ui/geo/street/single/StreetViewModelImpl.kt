@@ -6,18 +6,24 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
-import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
@@ -25,11 +31,25 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConvert
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetUiToStreetMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Geo.StreetViewModelImpl"
@@ -85,7 +105,7 @@ class StreetViewModelImpl @Inject constructor(
 
     private fun initStreetTypes(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in RoadType.values()) _roadTypes.value[type] = resArray[type.ordinal]
+        for (type in RoadType.entries) _roadTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState(): UiState<StreetUi> = UiState.Loading
@@ -163,8 +183,8 @@ class StreetViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: StreetUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(StreetModel) called: localityUi = %s", uiModel)
+        if (LOG_UI_STATE) Timber.tag(TAG)
+            .d("initFieldStatesByUiModel(StreetUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(StreetFields.STREET_ID, id, it.toString()) }
         initStateValue(
             StreetFields.STREET_LOCALITY, locality,
@@ -184,8 +204,7 @@ class StreetViewModelImpl @Inject constructor(
         )*/
         initStateValue(StreetFields.STREET_ROAD_TYPE, roadType, uiModel.roadType.name)
         initStateValue(
-            StreetFields.STREET_IS_PRIVATE_SECTOR,
-            isPrivateSector,
+            StreetFields.STREET_IS_PRIVATE_SECTOR, isPrivateSector,
             uiModel.isPrivateSector.toString()
         )
         initStateValue(
@@ -196,20 +215,14 @@ class StreetViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is StreetInputEvent.Locality ->
-                        when (StreetInputValidator.Locality.errorIdOrNull(event.input.headline)) {
-                            null -> setStateValue(
-                                StreetFields.STREET_LOCALITY, locality, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                StreetFields.STREET_LOCALITY, locality, event.input
-                            )
-                        }
+                    is StreetInputEvent.Locality -> setStateValue(
+                        StreetFields.STREET_LOCALITY, locality, event.input,
+                        StreetInputValidator.Locality.isValid(event.input.headline)
+                    )
                     /*
                                         is StreetInputEvent.LocalityDistrict ->
                                             setStateValue(
@@ -222,43 +235,33 @@ class StreetViewModelImpl @Inject constructor(
                                                 StreetFields.STREET_MICRODISTRICT, microdistrict, event.input, true
                                             )
                     */
-                    is StreetInputEvent.RoadType ->
-                        setStateValue(
-                            StreetFields.STREET_ROAD_TYPE, roadType, event.input, true
-                        )
+                    is StreetInputEvent.RoadType -> setStateValue(
+                        StreetFields.STREET_ROAD_TYPE, roadType, event.input, true
+                    )
 
-                    is StreetInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            StreetFields.STREET_IS_PRIVATE_SECTOR, isPrivateSector,
-                            event.input.toString()
-                        )
+                    is StreetInputEvent.IsPrivateSector -> setStateValue(
+                        StreetFields.STREET_IS_PRIVATE_SECTOR, isPrivateSector,
+                        event.input.toString()
+                    )
 
-                    is StreetInputEvent.EstimatedHouses ->
-                        setStateValue(
-                            StreetFields.STREET_EST_HOUSES, estimatedHouses,
-                            event.input.toString(), true
-                        )
+                    is StreetInputEvent.EstimatedHouses -> setStateValue(
+                        StreetFields.STREET_EST_HOUSES, estimatedHouses,
+                        event.input.toString(), true
+                    )
 
-                    is StreetInputEvent.StreetName ->
-                        when (StreetInputValidator.StreetName.errorIdOrNull(event.input)) {
-                            null -> setStateValue(
-                                StreetFields.STREET_NAME, streetName, event.input, true
-                            )
-
-                            else -> setStateValue(
-                                StreetFields.STREET_NAME, streetName, event.input
-                            )
-                        }
+                    is StreetInputEvent.StreetName -> setStateValue(
+                        StreetFields.STREET_NAME, streetName, event.input,
+                        StreetInputValidator.StreetName.isValid(event.input)
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is StreetInputEvent.Locality ->
-                        setStateValue(
-                            StreetFields.STREET_LOCALITY, locality,
-                            StreetInputValidator.Locality.errorIdOrNull(event.input.headline)
-                        )
+                    is StreetInputEvent.Locality -> setStateValue(
+                        StreetFields.STREET_LOCALITY, locality,
+                        StreetInputValidator.Locality.errorIdOrNull(event.input.headline)
+                    )
                     /*
                                         is StreetInputEvent.LocalityDistrict ->
                                             setStateValue(StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict, null)
@@ -275,11 +278,10 @@ class StreetViewModelImpl @Inject constructor(
                     is StreetInputEvent.EstimatedHouses ->
                         setStateValue(StreetFields.STREET_EST_HOUSES, estimatedHouses, null)
 
-                    is StreetInputEvent.StreetName ->
-                        setStateValue(
-                            StreetFields.STREET_NAME, streetName,
-                            StreetInputValidator.StreetName.errorIdOrNull(event.input)
-                        )
+                    is StreetInputEvent.StreetName -> setStateValue(
+                        StreetFields.STREET_NAME, streetName,
+                        StreetInputValidator.StreetName.errorIdOrNull(event.input)
+                    )
 
                 }
             }
@@ -287,7 +289,7 @@ class StreetViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         StreetInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
@@ -301,8 +303,8 @@ class StreetViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (StreetFields.valueOf(error.fieldName)) {
                 StreetFields.STREET_LOCALITY -> locality.value.copy(errorId = error.errorId)
@@ -349,7 +351,12 @@ class StreetViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: StreetUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: StreetFields, isFocused: Boolean

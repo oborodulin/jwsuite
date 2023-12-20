@@ -11,6 +11,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
@@ -133,7 +134,7 @@ class HouseViewModelImpl @Inject constructor(
 
     private fun initLocalityTypes(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in BuildingType.values()) _buildingTypes.value[type] = resArray[type.ordinal]
+        for (type in BuildingType.entries) _buildingTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState(): UiState<HouseUi> = UiState.Loading
@@ -291,7 +292,7 @@ class HouseViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -473,7 +474,7 @@ class HouseViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         HouseInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = HouseFields.HOUSE_LOCALITY.name, errorId = it))
@@ -493,8 +494,8 @@ class HouseViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (HouseFields.valueOf(error.fieldName)) {
                 HouseFields.HOUSE_LOCALITY -> locality.value.copy(errorId = error.errorId)

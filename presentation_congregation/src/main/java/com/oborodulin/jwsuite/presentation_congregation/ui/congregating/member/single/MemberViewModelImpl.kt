@@ -14,6 +14,8 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
 import com.oborodulin.home.common.util.toFullFormatOffsetDateTimeOrNull
@@ -22,10 +24,10 @@ import com.oborodulin.home.common.util.toShortFormatString
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.model.congregation.Member
+import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
-import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
@@ -146,7 +148,7 @@ class MemberViewModelImpl @Inject constructor(
 
     private fun initMemberTypes(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in MemberType.values()) _memberTypes.value[type] = resArray[type.ordinal]
+        for (type in MemberType.entries) _memberTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState(): UiState<MemberUi> = UiState.Loading
@@ -235,7 +237,7 @@ class MemberViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: MemberUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
+        if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberFields.MEMBER_ID, id, it.toString()) }
         initStateValue(
@@ -286,7 +288,7 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -419,7 +421,7 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         MemberInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = MemberFields.MEMBER_GROUP.name, errorId = it))
@@ -459,8 +461,8 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (MemberFields.valueOf(error.fieldName)) {
                 MemberFields.MEMBER_GROUP -> group.value.copy(errorId = error.errorId)

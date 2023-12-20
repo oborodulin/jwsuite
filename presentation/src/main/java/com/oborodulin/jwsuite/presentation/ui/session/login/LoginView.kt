@@ -4,8 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +47,7 @@ private const val TAG = "Presentation.LoginView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginView(viewModel: SessionViewModel) {
+fun LoginView(viewModel: SessionViewModel, handleLogin: () -> Unit = {}) {
     Timber.tag(TAG).d("LoginView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -77,9 +76,9 @@ fun LoginView(viewModel: SessionViewModel) {
     }
     Column(
         modifier = Modifier
-            //.fillMaxSize()
-            .fillMaxWidth()
-            .height(350.dp)
+            .fillMaxSize()
+            //.fillMaxWidth()
+            //.height(350.dp)
             .padding(4.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
@@ -103,7 +102,7 @@ fun LoginView(viewModel: SessionViewModel) {
                 if (LOG_SECURE) Timber.tag(TAG)
                     .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
-                //if (otpInputFilled) handleLogin()
+                if (otpInputFilled) handleLogin()
             })
     }
 }

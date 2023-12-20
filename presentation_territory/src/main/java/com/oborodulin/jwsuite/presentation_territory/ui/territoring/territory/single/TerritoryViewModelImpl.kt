@@ -14,6 +14,8 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
@@ -230,8 +232,8 @@ class TerritoryViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: TerritoryUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(TerritoryUi) called: territoryUi = %s", uiModel)
+        if (LOG_UI_STATE) Timber.tag(TAG)
+            .d("initFieldStatesByUiModel(TerritoryUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,
@@ -275,7 +277,7 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -383,7 +385,7 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         TerritoryInputValidator.Category.errorIdOrNull(category.value.item?.headline)?.let {
             inputErrors.add(
@@ -404,8 +406,8 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoryFields.valueOf(error.fieldName)) {
                 TerritoryFields.TERRITORY_CATEGORY -> category.value.copy(errorId = error.errorId)

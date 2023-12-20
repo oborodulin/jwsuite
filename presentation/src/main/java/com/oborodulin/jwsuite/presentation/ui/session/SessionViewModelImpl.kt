@@ -11,6 +11,8 @@ import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
@@ -234,7 +236,7 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: SessionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
+        if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(SessionUi) called: uiModel = %s", uiModel)
         initStateValue(
             SessionFields.SESSION_USERNAME,
@@ -245,7 +247,7 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow().onEach { event ->
             when (event) {
                 is SessionInputEvent.Username -> setStateValue(
@@ -289,7 +291,7 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         when (sessionMode.value) {
             SessionModeType.SIGNUP -> {
@@ -327,7 +329,8 @@ class SessionViewModelImpl @Inject constructor(
 
     // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG).d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             when (sessionMode.value) {
                 SessionModeType.SIGNUP -> {

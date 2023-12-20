@@ -12,6 +12,8 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
@@ -129,7 +131,7 @@ class RegionViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: RegionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG)
+        if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(RegionUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
         initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
@@ -138,7 +140,7 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -174,7 +176,7 @@ class RegionViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         RegionInputValidator.RegionCode.errorIdOrNull(regionCode.value.value)?.let {
             inputErrors.add(InputError(fieldName = RegionFields.REGION_CODE.name, errorId = it))
@@ -186,8 +188,8 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (RegionFields.valueOf(error.fieldName)) {
                 RegionFields.REGION_CODE -> regionCode.value.copy(errorId = error.errorId)

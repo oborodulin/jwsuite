@@ -45,7 +45,6 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
@@ -103,8 +102,9 @@ fun ListItemComponent(
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         val widthColIcon = 0.6f
-        val widthColContent = 2.9f + (if (iconResId == null) widthColIcon / 2.0f else 0f)
         val widthColActions = 0.3f + (if (iconResId == null) widthColIcon / 2.0f else 0f)
+        val widthColContent = 2.9f + (if (iconResId == null) widthColIcon / 2.0f else 0f) +
+                (if (itemActions.isEmpty()) widthColActions else 0f)
         Row(
             Modifier
                 .fillMaxSize()
@@ -136,88 +136,86 @@ fun ListItemComponent(
                     .weight(widthColContent)
                     .padding(horizontal = 4.dp)
             ) {
-                if (content != null) {
-                    content()
-                } else {
-                    Row(Modifier.fillMaxSize()) {
-                        Column(modifier = Modifier.weight(2f)) {
+                content?.invoke() ?: Row(Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.weight(2f)) {
+                        Text(
+                            text = item.headline,
+                            style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            maxLines = 2
+                        )
+                        item.supportingText?.let {
                             Text(
-                                text = item.headline,
-                                style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                                maxLines = 2
+                                modifier = Modifier.padding(top = 4.dp),
+                                text = it,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
-                            item.supportingText?.let {
-                                Text(
-                                    modifier = Modifier.padding(top = 4.dp),
-                                    text = it,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
                         }
-                        item.value?.let {
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                //val nf = NumberFormat.getCurrencyInstance(Locale.getDefault())
-                                val nf = NumberFormat.getNumberInstance(Locale.getDefault())
-                                nf.roundingMode = RoundingMode.HALF_UP
-                                nf.maximumFractionDigits = 0
-                                Text(
-                                    text = nf.format(it),
-                                    style = Typography.bodyMedium.copy(
-                                        fontWeight = FontWeight.Bold, fontSize = 20.sp
-                                    )
+                    }
+                    item.value?.let {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            //val nf = NumberFormat.getCurrencyInstance(Locale.getDefault())
+                            val nf = NumberFormat.getNumberInstance(Locale.getDefault())
+                            nf.roundingMode = RoundingMode.HALF_UP
+                            nf.maximumFractionDigits = 0
+                            Text(
+                                text = nf.format(it),
+                                style = Typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold, fontSize = 20.sp
                                 )
-                            }
+                            )
                         }
                     }
                 }
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(widthColActions),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.End
-            ) {
-                val isShowAlert = rememberSaveable { mutableStateOf(false) }
-                val spaceVal = 18
-                var itemIndex = 0
-                for (action in itemActions.filter { it.isMenuButton }) {
-                    when (action) {
-                        is ComponentUiAction.EditListItem -> {
-                            Image(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable { action.event(item) },
-                                painter = painterResource(R.drawable.outline_mode_edit_black_24),
-                                contentDescription = ""
-                            )
-                        }
+            if (itemActions.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(widthColActions),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    val isShowAlert = rememberSaveable { mutableStateOf(false) }
+                    val spaceVal = 18
+                    var itemIndex = 0
+                    for (action in itemActions.filter { it.isMenuButton }) {
+                        when (action) {
+                            is ComponentUiAction.EditListItem -> {
+                                Image(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .clickable { action.event(item) },
+                                    painter = painterResource(R.drawable.outline_mode_edit_black_24),
+                                    contentDescription = ""
+                                )
+                            }
 
-                        is ComponentUiAction.DeleteListItem -> {
-                            DeleteConfirmDialogComponent(
-                                isShow = isShowAlert, text = action.alertText
-                            ) { action.event(item) }
-                            Image(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable { isShowAlert.value = true },
-                                painter = painterResource(R.drawable.outline_delete_black_24),
-                                contentDescription = ""
-                            )
-                        }
+                            is ComponentUiAction.DeleteListItem -> {
+                                DeleteConfirmDialogComponent(
+                                    isShow = isShowAlert, text = action.alertText
+                                ) { action.event(item) }
+                                Image(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .clickable { isShowAlert.value = true },
+                                    painter = painterResource(R.drawable.outline_delete_black_24),
+                                    contentDescription = ""
+                                )
+                            }
 
-                        is ComponentUiAction.PayListItem -> {
+                            is ComponentUiAction.PayListItem -> {
+                            }
                         }
+                        itemIndex++
+                        if (itemIndex < itemActions.size) Spacer(Modifier.height(spaceVal.dp))
                     }
-                    itemIndex++
-                    if (itemIndex < itemActions.size) Spacer(Modifier.height(spaceVal.dp))
                 }
             }
         }

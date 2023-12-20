@@ -93,9 +93,9 @@ fun PreviewCheckedListItemComponent() {
             CheckedListItemComponent(
                 //iconResId = R.drawable.outline_photo_24,
                 item = ListItemModel.defaultListItemModel(LocalContext.current),
-                itemActions = listOf(
+                /*itemActions = listOf(
                     ComponentUiAction.EditListItem { println() },
-                    ComponentUiAction.DeleteListItem { println() }),
+                    ComponentUiAction.DeleteListItem { println() }),*/
                 onChecked = { println() },
                 onClick = { println() }
             )

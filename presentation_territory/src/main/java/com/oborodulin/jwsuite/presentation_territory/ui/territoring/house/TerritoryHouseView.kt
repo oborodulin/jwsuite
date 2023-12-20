@@ -86,7 +86,8 @@ fun TerritoryHouseView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .height(IntrinsicSize.Min)
+            .heightIn(min = 350.dp, max = 600.dp)
+            //.height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,

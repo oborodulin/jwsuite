@@ -79,9 +79,9 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LoginView(viewModel)
-            Spacer(Modifier.height(8.dp))
-            LoginButtonComponent(enabled = areInputsValid, onClick = handleLogin)
+            LoginView(viewModel = viewModel, handleLogin = handleLogin)
+            /*Spacer(Modifier.height(8.dp))
+            LoginButtonComponent(enabled = areInputsValid, onClick = handleLogin)*/
         }
         //}
         //}

@@ -199,8 +199,8 @@ interface TerritoryDao {
     SELECT sv.* FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${GeoStreetView.VIEW_NAME} sv 
         ON t.territoryId = :territoryId AND sv.streetLocCode = :locale AND sv.${PX_LOCALITY}localityId = t.tLocalitiesId
         LEFT JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
-                                                            AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, '')
-                                                            AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, '') 
+                                                            AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(ds.dsMicrodistrictsId, ''))
+                                                            AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(ds.dsLocalityDistrictsId , '')) 
     WHERE NOT EXISTS (SELECT ts.territoryStreetId FROM ${TerritoryStreetEntity.TABLE_NAME} ts WHERE ts.tsTerritoriesId = :territoryId AND ts.tsStreetsId = sv.streetId)
         AND (t.tMicrodistrictsId IS NULL OR (t.tMicrodistrictsId IS NOT NULL AND ds.streetDistrictId IS NOT NULL))
         AND (t.tLocalityDistrictsId IS NULL OR (t.tLocalityDistrictsId IS NOT NULL AND ds.streetDistrictId IS NOT NULL))

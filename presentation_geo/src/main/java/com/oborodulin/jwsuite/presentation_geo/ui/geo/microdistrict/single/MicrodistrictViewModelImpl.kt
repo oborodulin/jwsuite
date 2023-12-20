@@ -15,6 +15,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.VillageType
@@ -101,7 +102,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
 
     private fun initVillageTypes(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in VillageType.values()) _microdistrictTypes.value[type] = resArray[type.ordinal]
+        for (type in VillageType.entries) _microdistrictTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState(): UiState<MicrodistrictUi> = UiState.Loading
@@ -211,7 +212,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        Timber.tag(TAG).d("observeInputEvents() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -282,7 +283,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        Timber.tag(TAG).d("getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         MicrodistrictInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
@@ -320,8 +321,8 @@ class MicrodistrictViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        Timber.tag(TAG)
-            .d("displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) Timber.tag(TAG)
+            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (MicrodistrictFields.valueOf(error.fieldName)) {
                 MicrodistrictFields.MICRODISTRICT_LOCALITY -> locality.value.copy(errorId = error.errorId)
