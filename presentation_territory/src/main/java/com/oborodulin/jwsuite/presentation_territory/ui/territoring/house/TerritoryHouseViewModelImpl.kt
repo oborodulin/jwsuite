@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
@@ -15,18 +17,31 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHousesUiModel
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryHousesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoriesListItem
-import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Territoring.TerritoryHouseViewModelImpl"
@@ -51,7 +66,7 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         MutableStateFlow(emptyList())
     override val checkedListItems = _checkedListItems.asStateFlow()
 
-    override val areInputsValid = flow { emit(checkedListItems.value.isNotEmpty()) }.stateIn(
+    override val areInputsValid = checkedListItems.map { it.isNotEmpty() }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         false
@@ -61,7 +76,10 @@ class TerritoryHouseViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("observeCheckedListItems() called")
         uiState()?.let { uiState ->
             _checkedListItems.value = uiState.houses.filter { it.checked }
-            Timber.tag(TAG).d("checked %d List Items", _checkedListItems.value.size)
+            Timber.tag(TAG).d(
+                "checked %d List Items; areInputsValid = %s",
+                _checkedListItems.value.size, areInputsValid.value
+            )
         }
     }
 
@@ -180,7 +198,12 @@ class TerritoryHouseViewModelImpl @Inject constructor(
             override val areInputsValid = MutableStateFlow(true)
 
             override fun submitAction(action: TerritoryHouseUiAction): Job? = null
-            override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+            override fun handleActionJob(
+                action: () -> Unit,
+                afterAction: (CoroutineScope) -> Unit
+            ) {
+            }
+
             override fun onTextFieldEntered(inputEvent: Inputable) {}
             override fun onTextFieldFocusChanged(
                 focusedField: TerritoryHouseFields, isFocused: Boolean

@@ -41,7 +41,6 @@ fun BottomNavigationComponent(modifier: Modifier) {
         val navBackStackEntry by appState.barNavController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         NavRoutes.bottomNavBarRoutes().forEach { item ->
-            val label = stringResource(item.titleResId)
             NavigationBarItem(
                 icon = {
                     IconComponent(
@@ -53,7 +52,7 @@ fun BottomNavigationComponent(modifier: Modifier) {
                 },
                 label = {
                     Text(
-                        text = label,
+                        text = stringResource(item.titleResId),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         softWrap = false,
@@ -65,10 +64,7 @@ fun BottomNavigationComponent(modifier: Modifier) {
                 //unselectedContentColor = Color.White.copy(0.4f),
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
-                onClick = {
-                    appState.navigateToBarRoute(item.route)
-                    appState.actionBarTitle.value = label
-                }
+                onClick = { appState.navigateToBarRoute(item.route) }
             )
         }
     }

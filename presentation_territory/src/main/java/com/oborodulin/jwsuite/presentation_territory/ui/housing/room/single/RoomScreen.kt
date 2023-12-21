@@ -1,12 +1,15 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
@@ -31,15 +34,15 @@ fun RoomScreen(
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
-    Timber.tag(TAG).d("RoomScreen(...) called: houseInput = %s", roomInput)
+    Timber.tag(TAG).d("RoomScreen(...) called: roomInput = %s", roomInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp(NavRoutes.Housing.route) }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() } // NavRoutes.Housing.route
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
-        topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_housing,
+        //topBarTitleResId = com.oborodulin.jwsuite.presentation.R.string.nav_item_housing,
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
@@ -59,6 +62,11 @@ fun RoomScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { RoomView(sharedViewModel = appState.congregationSharedViewModel.value) }
+        ) {
+            RoomView(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                sharedViewModel = appState.congregationSharedViewModel.value
+            )
+        }
     }
 }

@@ -6,7 +6,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
@@ -14,10 +18,10 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
-import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
@@ -25,6 +29,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
@@ -33,11 +38,25 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.Hous
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Territoring.HouseViewModelImpl"
@@ -228,10 +247,13 @@ class HouseViewModelImpl @Inject constructor(
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
             .d(
-                "initFieldStatesByUiModel(HouseUiModel) called: houseUi = %s",
+                "initFieldStatesByUiModel(HouseUi) called: uiModel = %s",
                 uiModel
             )
         uiModel.id?.let { initStateValue(HouseFields.HOUSE_ID, id, it.toString()) }
+        initStateValue(
+            HouseFields.HOUSE_LOCALITY, locality, uiModel.street.locality.toListItemModel()
+        )
         initStateValue(HouseFields.HOUSE_STREET, street, uiModel.street.toStreetsListItem())
         initStateValue(
             HouseFields.HOUSE_LOCALITY_DISTRICT, localityDistrict,
@@ -560,7 +582,12 @@ class HouseViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: HouseUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: HouseFields, isFocused: Boolean

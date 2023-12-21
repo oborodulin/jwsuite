@@ -3,9 +3,9 @@ package com.oborodulin.jwsuite.presentation_territory.ui.housing
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -146,7 +146,10 @@ fun HousingScreen(
             }*/
             appState.handleTopBarNavClick.value = { appState.mainNavigateUp() }
             onActionBarChange {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Box(
                         modifier = Modifier.weight(2.8f)
                     ) {

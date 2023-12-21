@@ -18,7 +18,7 @@
     <string name="nav_item_member_role">Роль возвещателя</string>
     <string name="nav_item_territory">Участок</string>
     <string name="nav_item_territory_street">Улица участка</string>
-    <string name="nav_item_territory_details">Участок №%1$s</string>
+    <string name="nav_item_territory_details">Данные участка №%1$s</string>
     <string name="nav_item_territory_house">Дом участка</string>
     <string name="nav_item_territory_entrance">Подъезд участка</string>
     <string name="nav_item_territory_floor">Этаж участка</string>

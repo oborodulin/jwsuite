@@ -2,12 +2,18 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.room
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -88,14 +94,13 @@ fun TerritoryRoomView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .height(IntrinsicSize.Min)
+            .heightIn(min = 350.dp, max = 550.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

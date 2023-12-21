@@ -60,6 +60,7 @@ private const val TAG = "Territoring.HouseView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HouseView(
+    modifier: Modifier = Modifier,
     territoryUiModel: TerritoryUi? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
@@ -140,7 +141,8 @@ fun HouseView(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            ),
+            )
+            .then(modifier),
             //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,

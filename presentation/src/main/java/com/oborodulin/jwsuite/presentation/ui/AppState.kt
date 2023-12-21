@@ -49,6 +49,7 @@ fun rememberAppState(
         barNavController = mainNavController, //barNavController,
         congregationSharedViewModel = congregationSharedViewModel,
         memberSharedViewModel = memberSharedViewModel,
+        resources = resources,
         appName = appName,
         actionBarTitle = actionBarTitle,
         actionBarSubtitle = actionBarSubtitle,
@@ -69,6 +70,7 @@ class AppState(
     val barNavController: NavHostController,
     val congregationSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
     val memberSharedViewModel: MutableState<SharedViewModeled<ListItemModel?>?>,
+    val resources: Resources,
     val appName: String,
     val actionBarTitle: MutableState<String>,
     val actionBarSubtitle: MutableState<String>,
@@ -84,6 +86,9 @@ class AppState(
 
     private val bottomNavBarTabs = NavRoutes.bottomNavBarRoutes()
     private val bottomNavBarRoutes = bottomNavBarTabs.map { it.route }
+
+    private val allAggregationNavTabs =
+        NavRoutes.aggregationRoutes().toMutableList().union(NavRoutes.bottomNavBarRoutes())
 
     // Атрибут отображения навигационного меню bottomBar
     // https://stackoverflow.com/questions/76835709/right-strategy-of-using-bottom-navigation-bar-with-jetpack-compose
@@ -104,10 +109,13 @@ class AppState(
     fun mainNavigateUp(destination: String? = null) {
         Timber.tag(TAG).d("mainNavigateUp(...) called: destination = %s", destination)
         this.mainNavController.navigateUp()
-        destination?.let {
-            this.mainNavController.navigate(it) {
+        destination?.let { route ->
+            allAggregationNavTabs.find { it.route == route }?.let {
+                this.actionBarTitle.value = resources.getString(it.titleResId)
+            }
+            this.mainNavController.navigate(route) {
                 launchSingleTop = true
-                popUpTo(it)
+                popUpTo(route)
             }
         }
         /*if (!this.mainNavController.navigateUp()) {
@@ -123,10 +131,17 @@ class AppState(
 
     // Возврат к экрану из главного меню нижней панели.
     fun backToBottomBarScreen(destination: String? = null) {
-        Timber.tag(TAG).d("backToBottomBarScreen() called")
-        this.mainNavController.popBackStack()
+        val dbgMsg = "backToBottomBarScreen(...) called: destination = %s".format(destination)
         destination?.let {
-            this.mainNavController.navigate(it) {// NavRoutes.Home.route
+            if (!bottomNavBarRoutes.contains(it)) throw IllegalArgumentException(dbgMsg)
+        }
+        Timber.tag(TAG).d(dbgMsg)
+        this.mainNavController.popBackStack()
+        destination?.let { route ->
+            bottomNavBarTabs.find { it.route == route }?.let {
+                this.actionBarTitle.value = resources.getString(it.titleResId)
+            }
+            this.mainNavController.navigate(route) {// NavRoutes.Home.route
                 popUpTo(mainNavController.graph.startDestinationId)
                 launchSingleTop = true
             }
@@ -141,7 +156,7 @@ class AppState(
     fun navigateByDestination(destination: String) {
         Timber.tag(TAG).d("navigateByRoute(...) called: destination = %s", destination)
         when {
-            NavRoutes.rootRoutes().map { it.route }
+            NavRoutes.authRoutes().map { it.route }
                 .contains(destination) -> this.rootNavController.navigate(destination) {
                 popUpTo(destination) {
                     inclusive = true
@@ -177,7 +192,12 @@ class AppState(
 
     // Клик по навигационному меню, вкладке.
     fun navigateToBarRoute(route: String) {
-        Timber.tag(TAG).d("navigateToBarRoute(...) called: route = %s", route)
+        val dbgMsg = "navigateToBarRoute(...) called: route = %s".format(route)
+        if (!bottomNavBarRoutes.contains(route)) throw IllegalArgumentException(dbgMsg)
+        Timber.tag(TAG).d(dbgMsg)
+        bottomNavBarTabs.find { it.route == route }?.let {
+            this.actionBarTitle.value = resources.getString(it.titleResId)
+        }
         if (route != this.barNavCurrentRoute) {
             this.barNavController.navigate(route) {
                 // Pop up to the start destination of the graph to
