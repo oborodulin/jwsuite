@@ -121,6 +121,11 @@ fun TerritoryDetailsScreen(
 
     territoryViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         CommonScreen(state = state) { territory ->
+            when (territory.territoryCategory.territoryCategoryCode) {
+                TerritoryCategoryType.ROOMS -> onTabChange(TerritoryDetailsTabType.ROOMS)
+                TerritoryCategoryType.FLOORS -> onTabChange(TerritoryDetailsTabType.FLOORS)
+                else -> onTabChange(TerritoryDetailsTabType.STREETS)
+            }
             ScaffoldComponent(
                 topBarSubtitle = stringResource(
                     com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_details,

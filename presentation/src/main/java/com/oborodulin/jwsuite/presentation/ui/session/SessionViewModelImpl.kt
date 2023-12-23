@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
+import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.domain.usecases.session.CheckPasswordValidUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
@@ -48,6 +49,7 @@ private const val TAG = "Presentation.SessionViewModelImpl"
 class SessionViewModelImpl @Inject constructor(
     @SuppressLint("StaticFieldLeak") @ApplicationContext val ctx: Context,
     private val state: SavedStateHandle,
+    private val db: JwSuiteDatabase,
     private val useCases: SessionUseCases,
     private val sessionConverter: SessionConverter,
     private val signupConverter: SignupSessionConverter,
@@ -212,7 +214,13 @@ class SessionViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.checkPasswordValidUseCase.execute(CheckPasswordValidUseCase.Request(pin.value.value))
                 .collect {
-                    if (it is Result.Success) _isPasswordValid.value = it.data.isPasswordValid
+                    if (it is Result.Success) {
+                        _isPasswordValid.value = it.data.isPasswordValid
+                        if (it.data.isPasswordValid) {
+                            Timber.tag(TAG).d("checkPasswordValid: Init Database")
+                            db.openHelper.readableDatabase
+                        }
+                    }
                 }
         }
         return job

@@ -48,6 +48,7 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.EnumMap
@@ -86,26 +87,6 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
-        scope.launch {
-            Timber.tag(TAG)
-                .d("scope.launch: JwSuiteDatabase.importJob = %s", JwSuiteDatabase.importJob)
-            do {
-                JwSuiteDatabase.importJob?.let {
-                    Timber.tag(TAG)
-                        .d(
-                            "scope.launch: JwSuiteDatabase.importJob = %s",
-                            JwSuiteDatabase.importJob
-                        )
-                    if (it.isActive) {
-                        isImportDataProgressShow = true
-                        isImportDataProgressShow = it.await().not()
-                    } else {
-                        isImportDataProgressShow = it.await().not()
-                    }
-                    handleLogin()
-                }
-            } while (JwSuiteDatabase.importJob == null)
-        }
     }
     Column(
         modifier = Modifier
@@ -130,20 +111,42 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
                     )
                 },
             inputWrapper = pin,
-            otpCount = PASS_MIN_LENGTH,
-            onOtpTextChange = { value, otpInputFilled ->
-                if (LOG_SECURE) Timber.tag(TAG)
-                    .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
-                viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
-                if (otpInputFilled) {
-                    handleCheckPasswordValid()
+            otpCount = PASS_MIN_LENGTH
+        ) { value, otpInputFilled ->
+            if (LOG_SECURE) Timber.tag(TAG)
+                .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
+            viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
+            if (otpInputFilled) {
+                handleCheckPasswordValid()
+                scope.launch(Dispatchers.IO) {
+                    Timber.tag(TAG)
+                        .d(
+                            "scope.launch: JwSuiteDatabase.importJob = %s",
+                            JwSuiteDatabase.importJob
+                        )
+                    do {
+                        JwSuiteDatabase.importJob?.let {
+                            Timber.tag(TAG)
+                                .d(
+                                    "scope.launch: JwSuiteDatabase.importJob = %s",
+                                    JwSuiteDatabase.importJob
+                                )
+                            isImportDataProgressShow = it.isActive
+                            Timber.tag(TAG)
+                                .d(
+                                    "scope.launch: isImportDataProgressShow = %s",
+                                    isImportDataProgressShow
+                                )
+                            isImportDataProgressShow = it.await().not()
+                            handleLogin()
+                        }
+                    } while (JwSuiteDatabase.importJob == null)
                 }
-            })
-        if (isPasswordValid) {
-            Timber.tag(TAG).d("LoginView: isPasswordValid = true")
-            if (isImportDataProgressShow) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
+        }
+        if (isPasswordValid && isImportDataProgressShow) {
+            Timber.tag(TAG).d("LoginView: isPasswordValid = true; isImportDataProgressShow = true")
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
     }
 }
