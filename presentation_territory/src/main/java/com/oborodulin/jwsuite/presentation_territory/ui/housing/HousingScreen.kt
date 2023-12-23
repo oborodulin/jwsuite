@@ -45,6 +45,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
@@ -127,7 +128,7 @@ fun HousingScreen(
         }
     }
     housesViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         ScaffoldComponent(
             topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing),
             topBarSubtitle = "",

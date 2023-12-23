@@ -31,6 +31,9 @@ class SessionManagerRepositoryImpl @Inject constructor(
         emit(true)
     }
 
+    override fun isPasswordValid(password: String) =
+        localSessionManagerDataSource.isPasswordValid(password)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun login(password: String) = localSessionManagerDataSource.login(password)
     /*.flatMapLatest { username ->

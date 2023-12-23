@@ -196,7 +196,7 @@ fun GeoScreen(
             viewModel.submitAction(GeoUiAction.Init)
         }
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
     // Scaffold Hoisting:

@@ -1,13 +1,24 @@
 package com.oborodulin.home.common.ui.state
 
+import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 
 private const val TAG = "Common.ListViewModel"
 
 abstract class ListViewModel<T : List<ListItemModel>, S : UiState<T>, A : UiAction, E : UiSingleEvent> :
     MviViewModel<T, S, A, E>(), ListViewModeled<T, A, E> {
+    override val areSingleSelected = _uiStateFlow.map { state ->
+        uiState(state)?.find { it.selected } != null
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        false
+    )
 
     // https://www.youtube.com/watch?v=CfL6Dl2_dAE
     // https://stackoverflow.com/questions/70709121/how-to-convert-a-flowcustomtype-to-stateflowuistate-android-kotlin

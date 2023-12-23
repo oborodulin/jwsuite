@@ -4,9 +4,19 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -20,8 +30,8 @@ import com.oborodulin.home.common.ui.state.MviViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.home.common.util.OnTextFieldValueChange
@@ -45,7 +55,8 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+        .d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
     LaunchedEffect(Unit) {
         if (LOG_UI_COMPONENTS) Timber.tag(TAG)
             .d("BarViewModelExposedDropdownMenuBoxComponent -> LaunchedEffect() BEFORE collect ui state flow")
@@ -97,7 +108,7 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
             onDismissRequest = { expanded = false }
         ) {
             listViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
                 CommonScreen(state = state) { items ->
                     items as List<ListItemModel>
                     items.forEach { option ->

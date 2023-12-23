@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface SessionViewModel :
     DialogViewModeled<SessionUi, SessionUiAction, SessionUiSingleEvent, SessionFields> {
+    val isPasswordValid: StateFlow<Boolean>
     val isLogged: StateFlow<Boolean>
 
     val username: StateFlow<InputWrapper>

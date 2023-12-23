@@ -91,9 +91,21 @@ interface TerritoryDao {
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId ORDER BY territoryNum")
     fun findTerritoryWithMembers(congregationId: UUID): Flow<List<TerritoryWithMembers>>
 
-    @Query("SELECT EXISTS(SELECT territoryId FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1)")
+    @Query(
+        """
+    SELECT EXISTS(SELECT territoryId FROM ${TerritoryEntity.TABLE_NAME} 
+                    WHERE tCongregationsId = :congregationId
+                        AND tTerritoryCategoriesId = :territoryCategoryId
+                        AND territoryNum = :territoryNum 
+                        AND territoryId <> ifnull(:territoryId, territoryId) 
+                LIMIT 1)
+       """
+    )
     fun existsWithTerritoryNum(
-        congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int
+        congregationId: UUID,
+        territoryCategoryId: UUID,
+        territoryNum: Int,
+        territoryId: UUID? = null
     ): Boolean
 
     //-----------------------------
@@ -414,7 +426,10 @@ interface TerritoryDao {
 
     suspend fun changeWithTerritoryNum(territory: TerritoryEntity) {
         if (existsWithTerritoryNum(
-                territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
+                territory.tCongregationsId,
+                territory.tTerritoryCategoriesId,
+                territory.territoryNum,
+                territory.territoryId
             )
         ) {
             updateTerritoryNum(

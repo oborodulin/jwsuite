@@ -32,8 +32,8 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.OnListItemEvent
 import timber.log.Timber
 
@@ -85,7 +85,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                         .verticalScroll(rememberScrollState())
                 ) {
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
                         CommonScreen(state = state) {
                             TopAppBar(
                                 title = {

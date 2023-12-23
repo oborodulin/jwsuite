@@ -181,7 +181,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     abstract fun roomDao(): RoomDao
 
     companion object {
-        var isImportDone: Deferred<Boolean>? = null
+        var importJob: Deferred<Boolean>? = null
 
         @Volatile
         var isImportExecute: Boolean = false
@@ -355,7 +355,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             // https://developermemos.com/posts/prepopulate-android-room-data
             //CoroutineScope(Dispatchers.Main).launch {
             //GlobalScope.launch(Dispatchers.Main) {
-            isImportDone = CoroutineScope(Dispatchers.IO).async {
+            importJob = CoroutineScope(Dispatchers.IO).async {
                 if (LOG_DATABASE) Timber.tag(TAG).d("onCreate -> CoroutineScope(Dispatchers.IO).async")
                 val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
                 if (LOG_DATABASE) Timber.tag(TAG).d(

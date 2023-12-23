@@ -9,6 +9,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.home.common.util.LogLevel.LOG_NAVIGATION
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
@@ -80,6 +81,12 @@ class AppState(
     // Источник состояния TopAppBar
     // ----------------------------------------------------------
 
+    private fun setActionBarTitle(navRoutes: List<NavRoutes> = emptyList(), route: String) {
+        navRoutes.find { it.route == route }?.let {
+            this.actionBarTitle.value = resources.getString(it.titleResId)
+        }
+    }
+
     // ----------------------------------------------------------
     // Источник состояния BottomBar
     // ----------------------------------------------------------
@@ -107,12 +114,11 @@ class AppState(
         get() = this.mainNavController.currentDestination?.route
 
     fun mainNavigateUp(destination: String? = null) {
-        Timber.tag(TAG).d("mainNavigateUp(...) called: destination = %s", destination)
+        if (LOG_NAVIGATION) Timber.tag(TAG)
+            .d("mainNavigateUp(...) called: destination = %s", destination)
         this.mainNavController.navigateUp()
         destination?.let { route ->
-            allAggregationNavTabs.find { it.route == route }?.let {
-                this.actionBarTitle.value = resources.getString(it.titleResId)
-            }
+            this.setActionBarTitle(allAggregationNavTabs.toList(), route)
             this.mainNavController.navigate(route) {
                 launchSingleTop = true
                 popUpTo(route)
@@ -135,12 +141,10 @@ class AppState(
         destination?.let {
             if (!bottomNavBarRoutes.contains(it)) throw IllegalArgumentException(dbgMsg)
         }
-        Timber.tag(TAG).d(dbgMsg)
+        if (LOG_NAVIGATION) Timber.tag(TAG).d(dbgMsg)
         this.mainNavController.popBackStack()
         destination?.let { route ->
-            bottomNavBarTabs.find { it.route == route }?.let {
-                this.actionBarTitle.value = resources.getString(it.titleResId)
-            }
+            this.setActionBarTitle(bottomNavBarTabs, route)
             this.mainNavController.navigate(route) {// NavRoutes.Home.route
                 popUpTo(mainNavController.graph.startDestinationId)
                 launchSingleTop = true
@@ -149,12 +153,14 @@ class AppState(
     }
 
     fun mainNavigate(route: String) {
-        Timber.tag(TAG).d("mainNavigate(...) called: route = %s", route)
+        if (LOG_NAVIGATION) Timber.tag(TAG).d("mainNavigate(...) called: route = %s", route)
         this.mainNavController.navigate(route)
+        this.setActionBarTitle(allAggregationNavTabs.toList(), route)
     }
 
     fun navigateByDestination(destination: String) {
-        Timber.tag(TAG).d("navigateByRoute(...) called: destination = %s", destination)
+        if (LOG_NAVIGATION) Timber.tag(TAG)
+            .d("navigateByRoute(...) called: destination = %s", destination)
         when {
             NavRoutes.authRoutes().map { it.route }
                 .contains(destination) -> this.rootNavController.navigate(destination) {
@@ -178,7 +184,7 @@ class AppState(
     // https://stackoverflow.com/questions/66845899/compose-navigation-remove-previous-composable-from-stack-before-navigating
     // https://stackoverflow.com/questions/75978612/skip-back-stack-items-on-jetpack-compose-navigation
     fun mainNavigateToRoute(route: String, skippedPrevRoute: String? = null) {
-        Timber.tag(TAG)
+        if (LOG_NAVIGATION) Timber.tag(TAG)
             .d(
                 "mainNavigateToRoute(...) called: route = %s; skippedPrevRoute = %s",
                 route, skippedPrevRoute
@@ -194,10 +200,8 @@ class AppState(
     fun navigateToBarRoute(route: String) {
         val dbgMsg = "navigateToBarRoute(...) called: route = %s".format(route)
         if (!bottomNavBarRoutes.contains(route)) throw IllegalArgumentException(dbgMsg)
-        Timber.tag(TAG).d(dbgMsg)
-        bottomNavBarTabs.find { it.route == route }?.let {
-            this.actionBarTitle.value = resources.getString(it.titleResId)
-        }
+        if (LOG_NAVIGATION) Timber.tag(TAG).d(dbgMsg)
+        this.setActionBarTitle(bottomNavBarTabs, route)
         if (route != this.barNavCurrentRoute) {
             this.barNavController.navigate(route) {
                 // Pop up to the start destination of the graph to

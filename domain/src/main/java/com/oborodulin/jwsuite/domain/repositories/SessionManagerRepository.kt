@@ -11,6 +11,7 @@ interface SessionManagerRepository {
     //fun roles(): Flow<List<Role>>
     fun signup(username: String, password: String): Flow<Boolean>
     fun signout(): Flow<Boolean>
+    fun isPasswordValid(password: String): Flow<Boolean>
     fun login(password: String): Flow<String?>
     fun logout(lastDestination: String? = null): Flow<Boolean>
 }

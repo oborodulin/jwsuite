@@ -21,9 +21,7 @@ object LogLevel {
     const val LOG_DATABASE = true
     const val LOG_DATASTORE = true
     const val LOG_WORKER = true
-
-    // Data mappers:
-    const val LOG_DB_MAPPER_TERRITORY = false
+    const val LOG_DB_MAPPER = false
 
     // Secure:
     const val LOG_SECURE = false
@@ -33,12 +31,4 @@ object LogLevel {
 
     // UI:
     const val LOG_NAVIGATION = false
-
-    // Modules:
-    const val LOG_AUTH = true
-    const val LOG_SETTING = true
-    const val LOG_CONGREGATION = true
-    const val LOG_GEO = true
-    const val LOG_HOUSING = true
-    const val LOG_TERRITORY = true
 }

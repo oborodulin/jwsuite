@@ -46,6 +46,7 @@ import com.oborodulin.home.common.ui.components.search.SearchComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
@@ -168,7 +169,7 @@ fun TerritoringScreen(
         }
     }*/
     territoringViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         //onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territoring))
         // Searching:
         var isShowSearchBar by rememberSaveable { mutableStateOf(false) }
@@ -298,9 +299,11 @@ fun TerritoringScreen(
             bottomBar = bottomBar,
             floatingActionButton = floatingActionButton
         ) { innerPadding ->
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(

@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
@@ -38,7 +39,7 @@ fun RegionsListView(
     }
     val searchText by regionsListViewModel.searchText.collectAsStateWithLifecycle()
     regionsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             EditableListViewComponent(
                 items = it,

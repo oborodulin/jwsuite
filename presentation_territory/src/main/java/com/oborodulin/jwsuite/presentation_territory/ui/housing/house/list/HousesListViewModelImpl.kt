@@ -109,8 +109,10 @@ class HousesListViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun clearSearchText() {}
 
+                override val areSingleSelected = MutableStateFlow(false)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
+
                 override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun submitAction(action: HousesListUiAction): Job? = null
             }

@@ -10,11 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
 import java.time.OffsetDateTime
-import java.util.Arrays
-import javax.crypto.KeyGenerator
 import javax.inject.Inject
 
 /**
@@ -67,6 +63,9 @@ class LocalSessionManagerDataSourceImpl @Inject constructor(
         dataStore.updateData { it.copy(username = null, password = null) }
         Unit
     }
+
+    override fun isPasswordValid(password: String) =
+        dataStore.data.map { authData -> authData.password?.let { it == password } == true }
 
     override fun login(password: String) =
         dataStore.data.map { authData ->

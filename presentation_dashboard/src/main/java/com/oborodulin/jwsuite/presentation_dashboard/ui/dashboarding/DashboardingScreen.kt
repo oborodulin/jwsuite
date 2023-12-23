@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
@@ -75,7 +76,7 @@ fun DashboardingScreen(
         bottomBar = bottomBar
     ) { innerPadding ->
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
             /*onActionBarChange(null)
             onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
             onTopBarActionsChange(true) {

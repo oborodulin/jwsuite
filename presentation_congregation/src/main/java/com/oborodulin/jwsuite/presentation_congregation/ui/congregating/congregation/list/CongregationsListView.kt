@@ -23,6 +23,7 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -52,7 +53,7 @@ fun CongregationsListView(
     }
     val searchText by congregationsListViewModel.searchText.collectAsStateWithLifecycle()
     congregationsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             CongregationsList(
                 congregations = it,

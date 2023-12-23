@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -47,25 +48,25 @@ fun MembersListView(
 
     LaunchedEffect(congregationId, groupInput?.groupId, isService) {
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect() BEFORE collect ui state flow")
-        membersListViewModel.handleActionJob({
-            when (groupInput?.groupId) {
-                null -> membersListViewModel.submitAction(
-                    MembersListUiAction.LoadByCongregation(congregationId, isService)
-                )
+        when (groupInput?.groupId) {
+            null -> membersListViewModel.submitAction(
+                MembersListUiAction.LoadByCongregation(congregationId, isService)
+            )
 
-                else -> membersListViewModel.submitAction(
-                    MembersListUiAction.LoadByGroup(groupInput.groupId, isService)
-                )
-            }
+            else -> membersListViewModel.submitAction(
+                MembersListUiAction.LoadByGroup(groupInput.groupId, isService)
+            )
+        }
+        /*membersListViewModel.handleActionJob({
         }) {
             val selectedMember = membersListViewModel.singleSelectedItem()
             Timber.tag(TAG).d("selectedMember = %s", selectedMember)
             appState.memberSharedViewModel.value?.submitData(selectedMember)
-        }
+        }*/
     }
     val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     membersListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             when (isEditableList) {
                 true -> {
@@ -85,6 +86,7 @@ fun MembersListView(
                         }
                     ) { member ->
                         membersListViewModel.singleSelectItem(member)
+                        Timber.tag(TAG).d("selectedMember = %s", member)
                         appState.memberSharedViewModel.value?.submitData(member)
                         with(memberRolesListViewModel) {
                             submitAction(MemberRolesListUiAction.Load(member.itemId!!))

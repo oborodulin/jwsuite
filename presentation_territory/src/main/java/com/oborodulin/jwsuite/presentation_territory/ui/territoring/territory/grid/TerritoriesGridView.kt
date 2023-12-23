@@ -26,7 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
-import com.oborodulin.home.common.util.LogLevel.LOG_MVI_UI_STATE
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
@@ -97,7 +97,7 @@ fun TerritoriesGridView(
         TerritoryProcessType.ALL -> territoriesGridViewModel.searchText.collectAsStateWithLifecycle().value
     }
     territoriesGridViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             if (listOf(
                     TerritoryProcessType.HAND_OUT,

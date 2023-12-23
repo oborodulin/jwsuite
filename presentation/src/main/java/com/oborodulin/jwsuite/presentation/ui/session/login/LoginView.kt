@@ -5,14 +5,20 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,13 +39,16 @@ import com.oborodulin.home.common.ui.components.field.OtpTextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.util.LogLevel.LOG_SECURE
+import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionModeType
+import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -47,18 +56,22 @@ private const val TAG = "Presentation.LoginView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginView(viewModel: SessionViewModel, handleLogin: () -> Unit = {}) {
+fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit = {}) {
     Timber.tag(TAG).d("LoginView(...) called")
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    var isImportDataProgressShow by rememberSaveable { mutableStateOf(false) }
+    val handleLogin = { viewModel.submitAction(SessionUiAction.Login) }
+
     val events = remember(viewModel.events, lifecycleOwner) {
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
-
     Timber.tag(TAG).d("LoginView: CollectAsStateWithLifecycle for pin field")
+    val isPasswordValid by viewModel.isPasswordValid.collectAsStateWithLifecycle()
     val pin by viewModel.pin.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("LoginView: Init Focus Requesters for all fields")
@@ -72,6 +85,26 @@ fun LoginView(viewModel: SessionViewModel, handleLogin: () -> Unit = {}) {
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
+        }
+        scope.launch {
+            Timber.tag(TAG)
+                .d("scope.launch: JwSuiteDatabase.importJob = %s", JwSuiteDatabase.importJob)
+            do {
+                JwSuiteDatabase.importJob?.let {
+                    Timber.tag(TAG)
+                        .d(
+                            "scope.launch: JwSuiteDatabase.importJob = %s",
+                            JwSuiteDatabase.importJob
+                        )
+                    if (it.isActive) {
+                        isImportDataProgressShow = true
+                        isImportDataProgressShow = it.await().not()
+                    } else {
+                        isImportDataProgressShow = it.await().not()
+                    }
+                    handleLogin()
+                }
+            } while (JwSuiteDatabase.importJob == null)
         }
     }
     Column(
@@ -102,8 +135,16 @@ fun LoginView(viewModel: SessionViewModel, handleLogin: () -> Unit = {}) {
                 if (LOG_SECURE) Timber.tag(TAG)
                     .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
                 viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
-                if (otpInputFilled) handleLogin()
+                if (otpInputFilled) {
+                    handleCheckPasswordValid()
+                }
             })
+        if (isPasswordValid) {
+            Timber.tag(TAG).d("LoginView: isPasswordValid = true")
+            if (isImportDataProgressShow) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+        }
     }
 }
 

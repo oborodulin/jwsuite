@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation.di
 
+import com.oborodulin.jwsuite.domain.usecases.session.CheckPasswordValidUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
@@ -8,6 +9,7 @@ import com.oborodulin.jwsuite.domain.usecases.session.SignoutUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.SignupUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LoginSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.LogoutSessionConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.PasswordValidConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignoutSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
@@ -56,6 +58,10 @@ object SessionModule {
 
     @Singleton
     @Provides
+    fun providePasswordValidConverter(): PasswordValidConverter = PasswordValidConverter()
+
+    @Singleton
+    @Provides
     fun provideLoginSessionConverter(mapper: SessionToSessionUiMapper): LoginSessionConverter =
         LoginSessionConverter(mapper = mapper)
 
@@ -71,12 +77,14 @@ object SessionModule {
         getSessionUseCase: GetSessionUseCase,
         signupUseCase: SignupUseCase,
         signoutUseCase: SignoutUseCase,
+        checkPasswordValidUseCase: CheckPasswordValidUseCase,
         loginUseCase: LoginUseCase,
         logoutUseCase: LogoutUseCase
     ): SessionUseCases = SessionUseCases(
         getSessionUseCase,
         signupUseCase,
         signoutUseCase,
+        checkPasswordValidUseCase,
         loginUseCase,
         logoutUseCase
     )

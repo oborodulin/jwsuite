@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.util.LogLevel.LOG_DB_MAPPER
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
@@ -26,22 +27,22 @@ class TerritoriesHandOutViewToTerritoryMapper(
     private val memberMapper: MemberViewToMemberMapper
 ) : Mapper<TerritoriesHandOutView, Territory> {
     override fun map(input: TerritoriesHandOutView): Territory {
-        Timber.tag(TAG).d(
+        if (LOG_DB_MAPPER) Timber.tag(TAG).d(
             "TerritoriesHandOutViewToTerritoryMapper(...) called: territoryId = %s",
             input.territory.territory.territoryId
         )
         var territory: Territory
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
-            Timber.tag(TAG).d("TerritoriesHandOutViewToTerritoryMapper: region = %s", region)
+            if (LOG_DB_MAPPER) Timber.tag(TAG).d("TerritoriesHandOutViewToTerritoryMapper: region = %s", region)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
-            Timber.tag(TAG).d("Territory: Locality -> RegionDistrict -> Region mapped")
+            if (LOG_DB_MAPPER) Timber.tag(TAG).d("Territory: Locality -> RegionDistrict -> Region mapped")
 
             val ldRegion = regionMapper.nullableMap(this.tldRegion)
             val ldRegionDistrict = regionDistrictMapper.nullableMap(this.tldDistrict, ldRegion)
             val ldLocality =
                 localityMapper.nullableMap(this.tldLocality, ldRegion, ldRegionDistrict)
-            Timber.tag(TAG)
+            if (LOG_DB_MAPPER) Timber.tag(TAG)
                 .d("Territory: LocalityDistrict -> Locality -> RegionDistrict -> Region mapped")
 
             val mRegion = regionMapper.nullableMap(this.tmRegion)
@@ -50,7 +51,7 @@ class TerritoriesHandOutViewToTerritoryMapper(
             val mLocalityDistrict = localityDistrictMapper.nullableMap(
                 this.tmLocalityDistrict, mLocality
             )
-            Timber.tag(TAG)
+            if (LOG_DB_MAPPER) Timber.tag(TAG)
                 .d("Territory: Microdistrict -> LocalityDistrict -> Locality -> RegionDistrict -> Region mapped")
             territory = Territory(
                 congregation = congregationMapper.map(this.congregation),

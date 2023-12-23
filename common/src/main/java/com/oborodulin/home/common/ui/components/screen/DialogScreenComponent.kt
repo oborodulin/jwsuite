@@ -37,6 +37,7 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_JOB
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import kotlinx.coroutines.cancel
 import timber.log.Timber
 import java.util.UUID
@@ -114,7 +115,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         //}
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }

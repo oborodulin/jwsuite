@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsListItem
@@ -37,11 +38,12 @@ fun TerritoryDetailsListView(
 ) {
     Timber.tag(TAG).d("TerritoryDetailsListView(...) called: territoryInput = %s", territoryInput)
     LaunchedEffect(territoryInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryDetailsListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG)
+            .d("TerritoryDetailsListView -> LaunchedEffect() BEFORE collect ui state flow")
         territoryInput?.let { viewModel.submitAction(TerritoryDetailsListUiAction.Load(it.territoryId)) }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             TerritoryDetails(details = it)
         }

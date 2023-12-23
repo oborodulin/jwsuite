@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.domain.entities.Result
 import com.oborodulin.home.common.ui.components.*
 import com.oborodulin.home.common.ui.components.field.*
 import com.oborodulin.home.common.ui.components.field.util.*
@@ -13,6 +14,7 @@ import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
+import com.oborodulin.jwsuite.domain.usecases.session.CheckPasswordValidUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
@@ -50,14 +52,17 @@ class SessionViewModelImpl @Inject constructor(
     private val sessionConverter: SessionConverter,
     private val signupConverter: SignupSessionConverter,
     private val signoutConverter: SignoutSessionConverter,
-    private val loginConverter: LoginSessionConverter,
-    //private val logoutConverter: LogoutSessionConverter
+    private val loginConverter: LoginSessionConverter//,
+    //private val passwordValidConverter: PasswordValidConverter
 ) : SessionViewModel,
     DialogViewModel<SessionUi, UiState<SessionUi>, SessionUiAction, SessionUiSingleEvent, SessionFields, InputWrapper>(
         state, initFocusedTextField = SessionFields.SESSION_PIN
     ) {
     private val _sessionMode = MutableStateFlow(SessionModeType.SIGNUP)
     private val sessionMode = _sessionMode.asStateFlow()
+
+    private val _isPasswordValid = MutableStateFlow(false)
+    override val isPasswordValid = _isPasswordValid.asStateFlow()
 
     private val _isLogged = MutableStateFlow(false)
     override val isLogged = _isLogged.asStateFlow()
@@ -113,6 +118,7 @@ class SessionViewModelImpl @Inject constructor(
             is SessionUiAction.Load -> loadSession()
             is SessionUiAction.Signup -> signup()
             is SessionUiAction.Signout -> signout()
+            is SessionUiAction.CheckPasswordValid -> checkPasswordValid()
             is SessionUiAction.Login -> login()
             is SessionUiAction.Logout -> logout(action.lastDestination)
             is SessionUiAction.StartSession -> {
@@ -201,6 +207,17 @@ class SessionViewModelImpl @Inject constructor(
         return job
     }
 
+    private fun checkPasswordValid(): Job {
+        Timber.tag(TAG).d("checkPasswordValid() called")
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.checkPasswordValidUseCase.execute(CheckPasswordValidUseCase.Request(pin.value.value))
+                .collect {
+                    if (it is Result.Success) _isPasswordValid.value = it.data.isPasswordValid
+                }
+        }
+        return job
+    }
+
     private fun login(): Job {
         Timber.tag(TAG).d("login() called")
         val job = viewModelScope.launch(errorHandler) {
@@ -209,7 +226,8 @@ class SessionViewModelImpl @Inject constructor(
             uiState(state)?.let { session ->
                 Timber.tag(TAG).d("login: session.isLogged = %s", session.isLogged)
                 _isLogged.value = session.isLogged
-                if (_isLogged.value) submitState(state)
+                submitState(state)
+                //if (_isLogged.value) submitState(state)
             }
             /*useCases.loginUseCase.execute(LoginUseCase.Request(pin.value.value))
                 .map { loginConverter.convert(it) }.collect { state ->
@@ -368,6 +386,7 @@ class SessionViewModelImpl @Inject constructor(
             override fun onSearchTextChange(text: TextFieldValue) {}
             override fun clearSearchText() {}
 
+            override val isPasswordValid = MutableStateFlow(false)
             override val isLogged = MutableStateFlow(false)
             override val id = MutableStateFlow(InputWrapper())
             override fun id() = null

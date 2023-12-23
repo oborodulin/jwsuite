@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -48,7 +49,7 @@ fun LocalityDistrictsListView(
     }
     val searchText by localityDistrictsListViewModel.searchText.collectAsStateWithLifecycle()
     localityDistrictsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             when (streetInput?.streetId) {
                 null -> when (isEditableList) {

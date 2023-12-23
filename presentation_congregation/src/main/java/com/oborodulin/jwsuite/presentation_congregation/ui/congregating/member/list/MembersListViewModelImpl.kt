@@ -45,31 +45,23 @@ class MembersListViewModelImpl @Inject constructor(
         Timber.tag(TAG)
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is MembersListUiAction.LoadByCongregation -> {
-                loadMembers(
-                    congregationId = action.congregationId, isService = action.isService,
-                    byCongregation = true
-                )
-            }
+            is MembersListUiAction.LoadByCongregation -> loadMembers(
+                congregationId = action.congregationId, isService = action.isService,
+                byCongregation = true
+            )
 
-            is MembersListUiAction.LoadByGroup -> {
-                loadMembers(
-                    groupId = action.groupId, isService = action.isService,
-                    byCongregation = false
-                )
-            }
+            is MembersListUiAction.LoadByGroup -> loadMembers(
+                groupId = action.groupId, isService = action.isService,
+                byCongregation = false
+            )
 
-            is MembersListUiAction.EditMember -> {
-                submitSingleEvent(
-                    MembersListUiSingleEvent.OpenMemberScreen(
-                        NavRoutes.Member.routeForMember(MemberInput(action.memberId))
-                    )
+            is MembersListUiAction.EditMember -> submitSingleEvent(
+                MembersListUiSingleEvent.OpenMemberScreen(
+                    NavRoutes.Member.routeForMember(MemberInput(action.memberId))
                 )
-            }
+            )
 
-            is MembersListUiAction.DeleteMember -> {
-                deleteMember(action.memberId)
-            }
+            is MembersListUiAction.DeleteMember -> deleteMember(action.memberId)
         }
         return job
     }
@@ -80,8 +72,8 @@ class MembersListViewModelImpl @Inject constructor(
     ): Job {
         Timber.tag(TAG)
             .d(
-                "loadMembers(...) called: congregationId = %s; groupId = %s, isService = %s",
-                congregationId, groupId, isService
+                "loadMembers(...) called: congregationId = %s; groupId = %s, isService = %s; byCongregation = %s",
+                congregationId, groupId, isService, byCongregation
             )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMembersUseCase.execute(
@@ -101,7 +93,7 @@ class MembersListViewModelImpl @Inject constructor(
     }
 
     private fun deleteMember(memberId: UUID): Job {
-        Timber.tag(TAG).d("deleteMember() called: memberId = %s", memberId)
+        Timber.tag(TAG).d("deleteMember(...) called: memberId = %s", memberId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteMemberUseCase.execute(DeleteMemberUseCase.Request(memberId)).collect {}
         }
@@ -124,6 +116,7 @@ class MembersListViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun clearSearchText() {}
 
+                override val areSingleSelected = MutableStateFlow(false)
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 

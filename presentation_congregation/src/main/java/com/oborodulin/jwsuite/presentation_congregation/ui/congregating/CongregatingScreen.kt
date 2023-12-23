@@ -112,7 +112,7 @@ fun CongregatingScreen(
             viewModel.submitAction(CongregatingUiAction.Init)
         }
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
 
      */
     //onActionBarChange(null)
@@ -162,6 +162,7 @@ fun CongregatingScreen(
             }
         }
     }
+    val areSingleSelected by membersListViewModel.areSingleSelected.collectAsStateWithLifecycle()
     onFabChange {
         when (CongregatingTabType.valueOf(tabType)) {
             CongregatingTabType.CONGREGATIONS -> AddFabComponent(
@@ -176,7 +177,7 @@ fun CongregatingScreen(
                 when {
                     session.containsRole(MemberRoleType.ADMIN) -> ExtFabComponent(
                         modifier = Modifier.padding(bottom = 44.dp, end = 24.dp),
-                        enabled = true,
+                        enabled = areSingleSelected,
                         imageVector = Icons.Outlined.Add,
                         textResId = R.string.fab_add_member_role_text
                     ) { appState.mainNavigate(NavRoutes.MemberRole.routeForMemberRole()) }
@@ -217,9 +218,11 @@ fun CongregatingScreen(
         bottomBar = bottomBar,
         floatingActionButton = floatingActionButton
     ) { innerPadding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             CustomScrollableTabRow(
                 listOf(
                     TabRowItem(

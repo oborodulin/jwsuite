@@ -4,6 +4,7 @@ import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.domain.usecases.session.CheckPasswordValidUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.GetSessionUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LoginUseCase
 import com.oborodulin.jwsuite.domain.usecases.session.LogoutUseCase
@@ -36,6 +37,14 @@ object SessionUseCasesModule {
     fun provideSignoutUseCase(
         configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository
     ): SignoutUseCase = SignoutUseCase(configuration, sessionManagerRepository)
+
+    @Singleton
+    @Provides
+    fun provideCheckPasswordValidUseCase(
+        configuration: UseCase.Configuration, sessionManagerRepository: SessionManagerRepository,
+        membersRepository: MembersRepository
+    ): CheckPasswordValidUseCase =
+        CheckPasswordValidUseCase(configuration, sessionManagerRepository, membersRepository)
 
     @Singleton
     @Provides

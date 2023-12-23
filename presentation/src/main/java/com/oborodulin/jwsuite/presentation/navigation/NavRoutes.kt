@@ -15,6 +15,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.oborodulin.home.common.util.LogLevel.LOG_NAVIGATION
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
@@ -230,14 +231,14 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_REGION, regionInput?.let { "$ARG_REGION_ID=${it.regionId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Region -> routeForRegion: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Region -> routeForRegion: '%s'", route)
             return route
         }
 
         fun fromEntry(entry: NavBackStackEntry): RegionInput? {
             val regionInput =
                 entry.arguments?.getString(ARG_REGION_ID)?.let { RegionInput(UUID.fromString(it)) }
-            Timber.tag(TAG).d("Region -> fromEntry: '%s'", regionInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Region -> fromEntry: '%s'", regionInput)
             return regionInput
         }
     }
@@ -259,7 +260,8 @@ sealed class NavRoutes constructor(
                 regionDistrictInput?.let { "$ARG_REGION_DISTRICT_ID=${it.regionDistrictId}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("RegionDistrict -> routeForRegionDistrict: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("RegionDistrict -> routeForRegionDistrict: '%s'", route)
             return route
         }
 
@@ -268,7 +270,8 @@ sealed class NavRoutes constructor(
                 entry.arguments?.getString(ARG_REGION_DISTRICT_ID)?.let {
                     RegionDistrictInput(UUID.fromString(it))
                 }
-            Timber.tag(TAG).d("RegionDistrict -> fromEntry: '%s'", regionDistrictInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("RegionDistrict -> fromEntry: '%s'", regionDistrictInput)
             return regionDistrictInput
         }
     }
@@ -287,7 +290,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_LOCALITY, localityInput?.let { "$ARG_LOCALITY_ID=${it.localityId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Locality -> routeForLocality: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Locality -> routeForLocality: '%s'", route)
             return route
         }
 
@@ -295,7 +298,7 @@ sealed class NavRoutes constructor(
             val localityInput = entry.arguments?.getString(ARG_LOCALITY_ID)?.let {
                 LocalityInput(UUID.fromString(it))
             }
-            Timber.tag(TAG).d("Locality -> fromEntry: '%s'", localityInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Locality -> fromEntry: '%s'", localityInput)
             return localityInput
         }
     }
@@ -318,7 +321,8 @@ sealed class NavRoutes constructor(
                 localityDistrictInput?.let { "$ARG_LOCALITY_DISTRICT_ID=${it.localityDistrictId}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("LocalityDistrict -> routeForLocalityDistrict: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("LocalityDistrict -> routeForLocalityDistrict: '%s'", route)
             return route
         }
 
@@ -326,7 +330,8 @@ sealed class NavRoutes constructor(
             val localityDistrictInput = entry.arguments?.getString(ARG_LOCALITY_DISTRICT_ID)?.let {
                 LocalityDistrictInput(UUID.fromString(it))
             }
-            Timber.tag(TAG).d("LocalityDistrict -> fromEntry: '%s'", localityDistrictInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("LocalityDistrict -> fromEntry: '%s'", localityDistrictInput)
             return localityDistrictInput
         }
     }
@@ -346,7 +351,8 @@ sealed class NavRoutes constructor(
                 ROUTE_MICRODISTRICT,
                 microdistrictInput?.let { "$ARG_MICRODISTRICT_ID=${it.microdistrictId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Microdistrict -> routeForMicrodistrict: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("Microdistrict -> routeForMicrodistrict: '%s'", route)
             return route
         }
 
@@ -354,7 +360,8 @@ sealed class NavRoutes constructor(
             val microdistrictInput = entry.arguments?.getString(ARG_MICRODISTRICT_ID)?.let {
                 MicrodistrictInput(UUID.fromString(it))
             }
-            Timber.tag(TAG).d("Microdistrict -> fromEntry: '%s'", microdistrictInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("Microdistrict -> fromEntry: '%s'", microdistrictInput)
             return microdistrictInput
         }
     }
@@ -373,7 +380,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_STREET, streetInput?.let { "$ARG_STREET_ID=${it.streetId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Street -> routeForStreet: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Street -> routeForStreet: '%s'", route)
             return route
         }
 
@@ -381,7 +388,7 @@ sealed class NavRoutes constructor(
             val streetInput = entry.arguments?.getString(ARG_STREET_ID)?.let {
                 StreetInput(UUID.fromString(it))
             }
-            Timber.tag(TAG).d("Street -> fromEntry: '%s'", streetInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Street -> fromEntry: '%s'", streetInput)
             return streetInput
         }
     }
@@ -431,7 +438,8 @@ sealed class NavRoutes constructor(
                 ROUTE_STREET_MICRODISTRICT,
                 streetMicrodistrictInput?.let { "${it.streetId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("StreetMicrodistrict -> routeForStreetMicrodistrict: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("StreetMicrodistrict -> routeForStreetMicrodistrict: '%s'", route)
             return route
         }
 
@@ -461,14 +469,16 @@ sealed class NavRoutes constructor(
                 ROUTE_CONGREGATION,
                 congregationInput?.let { "$ARG_CONGREGATION_ID=${it.congregationId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Congregation -> routeForCongregation: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("Congregation -> routeForCongregation: '%s'", route)
             return route
         }
 
         fun fromEntry(entry: NavBackStackEntry): CongregationInput? {
             val congregationInput = entry.arguments?.getString(ARG_CONGREGATION_ID)
                 ?.let { CongregationInput(UUID.fromString(it)) }
-            Timber.tag(TAG).d("Congregation -> fromEntry: '%s'", congregationInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("Congregation -> fromEntry: '%s'", congregationInput)
             return congregationInput
         }
     }
@@ -487,14 +497,14 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_GROUP, groupInput?.let { "$ARG_GROUP_ID=${it.groupId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Group -> routeForGroup: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Group -> routeForGroup: '%s'", route)
             return route
         }
 
         fun fromEntry(entry: NavBackStackEntry): GroupInput? {
             val groupInput =
                 entry.arguments?.getString(ARG_GROUP_ID)?.let { GroupInput(UUID.fromString(it)) }
-            Timber.tag(TAG).d("Group -> fromEntry: '%s'", groupInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Group -> fromEntry: '%s'", groupInput)
             return groupInput
         }
     }
@@ -513,14 +523,14 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_MEMBER, memberInput?.let { "$ARG_MEMBER_ID=${it.memberId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Member -> routeForMember: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Member -> routeForMember: '%s'", route)
             return route
         }
 
         fun fromEntry(entry: NavBackStackEntry): MemberInput? {
             val memberInput =
                 entry.arguments?.getString(ARG_MEMBER_ID)?.let { MemberInput(UUID.fromString(it)) }
-            Timber.tag(TAG).d("Member -> fromEntry: '%s'", memberInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Member -> fromEntry: '%s'", memberInput)
             return memberInput
         }
     }
@@ -540,7 +550,7 @@ sealed class NavRoutes constructor(
                 ROUTE_MEMBER_ROLE,
                 memberRoleInput?.let { "$ARG_MEMBER_ROLE_ID=${it.memberRoleId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("MemberRole -> routeForMemberRole: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberRole -> routeForMemberRole: '%s'", route)
             return route
         }
 
@@ -548,7 +558,7 @@ sealed class NavRoutes constructor(
             val memberRoleInput =
                 entry.arguments?.getString(ARG_MEMBER_ROLE_ID)
                     ?.let { MemberRoleInput(UUID.fromString(it)) }
-            Timber.tag(TAG).d("MemberRole -> fromEntry: '%s'", memberRoleInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberRole -> fromEntry: '%s'", memberRoleInput)
             return memberRoleInput
         }
     }
@@ -572,7 +582,8 @@ sealed class NavRoutes constructor(
                 territoryCategoryInput?.let { "$ARG_TERRITORY_CATEGORY_ID=${it.territoryCategoryId}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("TerritoryCategory -> routeForTerritoryCategory: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryCategory -> routeForTerritoryCategory: '%s'", route)
             return route
         }
 
@@ -581,7 +592,8 @@ sealed class NavRoutes constructor(
                 entry.arguments?.getString(ARG_TERRITORY_CATEGORY_ID)?.let {
                     TerritoryCategoryInput(UUID.fromString(it))
                 }
-            Timber.tag(TAG).d("TerritoryCategory -> fromEntry: '%s'", territoryCategoryInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryCategory -> fromEntry: '%s'", territoryCategoryInput)
             return territoryCategoryInput
         }
     }
@@ -601,7 +613,7 @@ sealed class NavRoutes constructor(
                 ROUTE_TERRITORY,
                 territoryInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("Territory -> routeForTerritory: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Territory -> routeForTerritory: '%s'", route)
             return route
         }
 
@@ -609,7 +621,7 @@ sealed class NavRoutes constructor(
             val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
                 TerritoryInput(UUID.fromString(it))
             }
-            Timber.tag(TAG).d("Territory -> fromEntry: '%s'", territoryInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Territory -> fromEntry: '%s'", territoryInput)
             return territoryInput
         }
     }
@@ -629,7 +641,8 @@ sealed class NavRoutes constructor(
                 null -> baseRoute()
                 else -> String.format(ROUTE_TERRITORY_DETAILS, territoryInput.territoryId)
             }
-            Timber.tag(TAG).d("TerritoryDetails -> routeForTerritoryDetails: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryDetails -> routeForTerritoryDetails: '%s'", route)
             return route
         }
 
@@ -637,7 +650,8 @@ sealed class NavRoutes constructor(
             val territoryInput = TerritoryInput(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty())
             )
-            Timber.tag(TAG).d("TerritoryDetails -> fromEntry: '%s'", territoryInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryDetails -> fromEntry: '%s'", territoryInput)
             return territoryInput
         }
     }
@@ -666,7 +680,8 @@ sealed class NavRoutes constructor(
                 territoryStreetInput?.territoryStreetId?.let { "$ARG_TERRITORY_STREET_ID=${it}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("TerritoryStreet -> routeForTerritoryStreet: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryStreet -> routeForTerritoryStreet: '%s'", route)
             return route
         }
 
@@ -675,7 +690,8 @@ sealed class NavRoutes constructor(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
                 entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.let { UUID.fromString(it) }
             )
-            Timber.tag(TAG).d("TerritoryStreet -> fromEntry: '%s'", territoryStreetInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryStreet -> fromEntry: '%s'", territoryStreetInput)
             return territoryStreetInput
         }
     }
@@ -702,7 +718,8 @@ sealed class NavRoutes constructor(
                 territoryHouseInput?.let { "${it.territoryId}" }.orEmpty(),
                 territoryHouseInput?.houseId?.let { "$ARG_HOUSE_ID=${it}" }.orEmpty()
             )
-            Timber.tag(TAG).d("TerritoryHouse -> routeForTerritoryHouse: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryHouse -> routeForTerritoryHouse: '%s'", route)
             return route
         }
 
@@ -711,7 +728,8 @@ sealed class NavRoutes constructor(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
                 entry.arguments?.getString(ARG_HOUSE_ID)?.let { UUID.fromString(it) }
             )
-            Timber.tag(TAG).d("TerritoryHouse -> fromEntry: '%s'", territoryHouseInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryHouse -> fromEntry: '%s'", territoryHouseInput)
             return territoryHouseInput
         }
     }
@@ -739,7 +757,8 @@ sealed class NavRoutes constructor(
                 territoryEntranceInput?.let { "$ARG_ENTRANCE_ID=${it.entranceId}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("TerritoryEntrance -> routeForTerritoryEntrance: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryEntrance -> routeForTerritoryEntrance: '%s'", route)
             return route
         }
 
@@ -748,7 +767,8 @@ sealed class NavRoutes constructor(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
                 entry.arguments?.getString(ARG_ENTRANCE_ID)?.let { UUID.fromString(it) }
             )
-            Timber.tag(TAG).d("TerritoryEntrance -> fromEntry: '%s'", territoryEntranceInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryEntrance -> fromEntry: '%s'", territoryEntranceInput)
             return territoryEntranceInput
         }
     }
@@ -776,7 +796,8 @@ sealed class NavRoutes constructor(
                 territoryFloorInput?.let { "$ARG_FLOOR_ID=${it.floorId}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("TerritoryFloor -> routeForTerritoryFloor: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryFloor -> routeForTerritoryFloor: '%s'", route)
             return route
         }
 
@@ -785,7 +806,8 @@ sealed class NavRoutes constructor(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
                 entry.arguments?.getString(ARG_FLOOR_ID)?.let { UUID.fromString(it) }
             )
-            Timber.tag(TAG).d("TerritoryFloor -> fromEntry: '%s'", territoryFloorInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryFloor -> fromEntry: '%s'", territoryFloorInput)
             return territoryFloorInput
         }
     }
@@ -813,7 +835,8 @@ sealed class NavRoutes constructor(
                 territoryRoomInput?.let { "$ARG_ROOM_ID=${it.roomId}" }
                     .orEmpty()
             )
-            Timber.tag(TAG).d("TerritoryRoom -> routeForTerritoryRoom: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryRoom -> routeForTerritoryRoom: '%s'", route)
             return route
         }
 
@@ -822,7 +845,8 @@ sealed class NavRoutes constructor(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
                 entry.arguments?.getString(ARG_ROOM_ID)?.let { UUID.fromString(it) }
             )
-            Timber.tag(TAG).d("TerritoryRoom -> fromEntry: '%s'", territoryRoomInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("TerritoryRoom -> fromEntry: '%s'", territoryRoomInput)
             return territoryRoomInput
         }
     }
@@ -842,7 +866,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_HOUSE, houseInput?.let { "$ARG_HOUSE_ID=${it.houseId}" }.orEmpty()
             )
-            Timber.tag(TAG).d("House -> routeForHouse: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("House -> routeForHouse: '%s'", route)
             return route
         }
 
@@ -850,7 +874,7 @@ sealed class NavRoutes constructor(
             val houseInput = entry.arguments?.getString(ARG_HOUSE_ID)?.let {
                 HouseInput(UUID.fromString(it))
             }
-            Timber.tag(TAG).d("House -> fromEntry: '%s'", houseInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("House -> fromEntry: '%s'", houseInput)
             return houseInput
         }
     }
@@ -871,7 +895,7 @@ sealed class NavRoutes constructor(
                 else -> String.format(ROUTE_ENTRANCE, entranceInput.entranceId)
             }
             //val route = String.format(ROUTE_RATE, payerId)
-            Timber.tag(TAG).d("Entrance -> routeForEntrance: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Entrance -> routeForEntrance: '%s'", route)
             return route
         }
 
@@ -879,7 +903,7 @@ sealed class NavRoutes constructor(
             val entranceInput = EntranceInput(
                 UUID.fromString(entry.arguments?.getString(ARG_ENTRANCE_ID).orEmpty())
             )
-            Timber.tag(TAG).d("Entrance -> fromEntry: '%s'", entranceInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Entrance -> fromEntry: '%s'", entranceInput)
             return entranceInput
         }
     }
@@ -900,7 +924,7 @@ sealed class NavRoutes constructor(
                 else -> String.format(ROUTE_FLOOR, floorInput.floorId)
             }
             //val route = String.format(ROUTE_RATE, payerId)
-            Timber.tag(TAG).d("Floor -> routeForFloor: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Floor -> routeForFloor: '%s'", route)
             return route
         }
 
@@ -908,7 +932,7 @@ sealed class NavRoutes constructor(
             val floorInput = FloorInput(
                 UUID.fromString(entry.arguments?.getString(ARG_FLOOR_ID).orEmpty())
             )
-            Timber.tag(TAG).d("Floor -> fromEntry: '%s'", floorInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Floor -> fromEntry: '%s'", floorInput)
             return floorInput
         }
     }
@@ -929,7 +953,7 @@ sealed class NavRoutes constructor(
                 else -> String.format(ROUTE_ROOM, roomInput.roomId)
             }
             //val route = String.format(ROUTE_RATE, payerId)
-            Timber.tag(TAG).d("Room -> routeForRoom: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Room -> routeForRoom: '%s'", route)
             return route
         }
 
@@ -937,7 +961,7 @@ sealed class NavRoutes constructor(
             val roomInput = RoomInput(
                 UUID.fromString(entry.arguments?.getString(ARG_ROOM_ID).orEmpty())
             )
-            Timber.tag(TAG).d("Room -> fromEntry: '%s'", roomInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Room -> fromEntry: '%s'", roomInput)
             return roomInput
         }
     }
@@ -960,7 +984,8 @@ sealed class NavRoutes constructor(
         titleResId = R.string.nav_item_territory_at_work_confirmation
     ) {
         fun routeProcessConfirmation(): String {
-            Timber.tag(TAG).d("ProcessConfirmation - routeProcessConfirmation: '%s'", this.route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("ProcessConfirmation - routeProcessConfirmation: '%s'", this.route)
             return this.route
         }
     }

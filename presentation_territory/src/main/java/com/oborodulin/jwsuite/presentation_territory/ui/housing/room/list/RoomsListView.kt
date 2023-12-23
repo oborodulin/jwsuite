@@ -21,6 +21,7 @@ import com.oborodulin.home.common.ui.ComponentUiAction
 import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -50,29 +51,29 @@ fun RoomsListView(
         )
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-                when (territoryInput?.territoryId) {
-                    null -> HouseRoomsList(
-                        rooms = it,
-                        onEdit = { room ->
-                            viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
-                        },
-                        onDelete = { room ->
-                            viewModel.submitAction(RoomsListUiAction.DeleteRoom(room.id))
-                        }
-                    ) { room -> viewModel.singleSelectItem(room) }
+            when (territoryInput?.territoryId) {
+                null -> HouseRoomsList(
+                    rooms = it,
+                    onEdit = { room ->
+                        viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
+                    },
+                    onDelete = { room ->
+                        viewModel.submitAction(RoomsListUiAction.DeleteRoom(room.id))
+                    }
+                ) { room -> viewModel.singleSelectItem(room) }
 
-                    else -> TerritoryRoomsList(
-                        rooms = it,
-                        onProcess = { room ->
-                            viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
-                        },
-                        onDelete = { room ->
-                            viewModel.submitAction(RoomsListUiAction.DeleteTerritoryRoom(room.id))
-                        }
-                    ) { room -> viewModel.singleSelectItem(room) }
-                }
+                else -> TerritoryRoomsList(
+                    rooms = it,
+                    onProcess = { room ->
+                        viewModel.submitAction(RoomsListUiAction.EditRoom(room.id))
+                    },
+                    onDelete = { room ->
+                        viewModel.submitAction(RoomsListUiAction.DeleteTerritoryRoom(room.id))
+                    }
+                ) { room -> viewModel.singleSelectItem(room) }
+            }
         }
     }
     LaunchedEffect(Unit) {
