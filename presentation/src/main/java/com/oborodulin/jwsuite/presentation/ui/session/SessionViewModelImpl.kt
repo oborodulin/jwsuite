@@ -265,8 +265,7 @@ class SessionViewModelImpl @Inject constructor(
         if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(SessionUi) called: uiModel = %s", uiModel)
         initStateValue(
-            SessionFields.SESSION_USERNAME,
-            username,
+            SessionFields.SESSION_USERNAME, username,
             ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_admin_member_pseudonym)
         )
         return null

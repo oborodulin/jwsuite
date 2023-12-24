@@ -72,6 +72,8 @@
     <string name="session_username_hint">Логин</string>
     <string name="session_pin_hint">PIN</string>
     <string name="session_confirm_pin_hint">Подтвердите PIN</string>
+    <!--вход-->
+    <string name="import_data_hint">Инициализация данных:</string>
     <!--настройки-->
     <string name="authorization_subheader">АВТОРИЗАЦИЯ</string>
     <string name="username_hint">Логин</string>

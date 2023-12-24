@@ -213,7 +213,8 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         databasePassphrase =
                             localSessionManagerDataSource.databasePassphrase().first()
                     }
-                    if (LOG_SECURE) Timber.tag(TAG).d("databasePassphrase got: %s", databasePassphrase)
+                    if (LOG_SECURE) Timber.tag(TAG)
+                        .d("databasePassphrase got: %s", databasePassphrase)
                     val roomBuilder = Room.databaseBuilder(
                         ctx,
                         JwSuiteDatabase::class.java,
@@ -356,7 +357,8 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             //CoroutineScope(Dispatchers.Main).launch {
             //GlobalScope.launch(Dispatchers.Main) {
             importJob = CoroutineScope(Dispatchers.IO).async {
-                if (LOG_DATABASE) Timber.tag(TAG).d("onCreate -> CoroutineScope(Dispatchers.IO).async")
+                if (LOG_DATABASE) Timber.tag(TAG)
+                    .d("onCreate -> CoroutineScope(Dispatchers.IO).async")
                 val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
                 if (LOG_DATABASE) Timber.tag(TAG).d(
                     "onCreate -> Start thread '%s': database.getInstance(...)",

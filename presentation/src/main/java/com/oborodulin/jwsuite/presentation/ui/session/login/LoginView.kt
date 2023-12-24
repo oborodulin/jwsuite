@@ -40,6 +40,7 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.util.LogLevel.LOG_SECURE
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
+import com.oborodulin.jwsuite.data.util.dbExists
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionModeType
@@ -88,6 +89,11 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
+    if (isPasswordValid && isImportDataProgressShow) {
+        //Text(text = stringResource(R.string.import_data_hint), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Timber.tag(TAG).d("LoginView: isPasswordValid = true; isImportDataProgressShow = true")
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -124,29 +130,30 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
                             "scope.launch: JwSuiteDatabase.importJob = %s",
                             JwSuiteDatabase.importJob
                         )
-                    do {
-                        JwSuiteDatabase.importJob?.let {
-                            Timber.tag(TAG)
-                                .d(
-                                    "scope.launch: JwSuiteDatabase.importJob = %s",
-                                    JwSuiteDatabase.importJob
-                                )
-                            isImportDataProgressShow = it.isActive
-                            Timber.tag(TAG)
-                                .d(
-                                    "scope.launch: isImportDataProgressShow = %s",
-                                    isImportDataProgressShow
-                                )
-                            isImportDataProgressShow = it.await().not()
-                            handleLogin()
-                        }
-                    } while (JwSuiteDatabase.importJob == null)
+                    if (context.dbExists()) {
+                        Timber.tag(TAG).d("scope.launch: Database Exists")
+                        handleLogin()
+                    } else {
+                        do {
+                            JwSuiteDatabase.importJob?.let {
+                                Timber.tag(TAG)
+                                    .d(
+                                        "scope.launch: JwSuiteDatabase.importJob = %s",
+                                        JwSuiteDatabase.importJob
+                                    )
+                                isImportDataProgressShow = it.isActive
+                                Timber.tag(TAG)
+                                    .d(
+                                        "scope.launch: isImportDataProgressShow = %s",
+                                        isImportDataProgressShow
+                                    )
+                                isImportDataProgressShow = it.await().not()
+                                handleLogin()
+                            }
+                        } while (JwSuiteDatabase.importJob == null)
+                    }
                 }
             }
-        }
-        if (isPasswordValid && isImportDataProgressShow) {
-            Timber.tag(TAG).d("LoginView: isPasswordValid = true; isImportDataProgressShow = true")
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
     }
 }

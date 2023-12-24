@@ -30,5 +30,5 @@ object LogLevel {
     const val LOG_DOMAIN_MODEL = false
 
     // UI:
-    const val LOG_NAVIGATION = false
+    const val LOG_NAVIGATION = true
 }
