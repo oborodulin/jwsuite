@@ -121,6 +121,7 @@ class HousesListViewModelImpl @Inject constructor(
             HousesListItem(
                 id = UUID.randomUUID(),
                 zipCode = "830004",
+                houseNum = 1,
                 houseFullNum = "1Б",
                 buildingType = BuildingType.HOSTEL,
                 isBusiness = true,
@@ -135,6 +136,7 @@ class HousesListViewModelImpl @Inject constructor(
             ),
             HousesListItem(
                 id = UUID.randomUUID(),
+                houseNum = 145,
                 houseFullNum = "145",
                 buildingType = BuildingType.HOUSE,
                 isBusiness = false,

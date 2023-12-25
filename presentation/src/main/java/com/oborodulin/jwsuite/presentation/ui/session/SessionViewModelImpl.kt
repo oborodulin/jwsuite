@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.components.field.util.*
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_DATABASE
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
@@ -217,7 +218,8 @@ class SessionViewModelImpl @Inject constructor(
                     if (it is Result.Success) {
                         _isPasswordValid.value = it.data.isPasswordValid
                         if (it.data.isPasswordValid) {
-                            Timber.tag(TAG).d("checkPasswordValid: Init Database")
+                            // https://stackoverflow.com/questions/41188042/how-to-recreate-a-database-on-an-android-application-update
+                            if (LOG_DATABASE) Timber.tag(TAG).d("checkPasswordValid: Init Database")
                             db.openHelper.readableDatabase
                         }
                     }

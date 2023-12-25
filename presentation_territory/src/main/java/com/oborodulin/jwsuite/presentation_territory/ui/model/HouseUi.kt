@@ -34,6 +34,7 @@ data class HouseUi(
 fun HouseUi.toHousesListItem() = HousesListItem(
     id = this.id!!,
     zipCode = this.zipCode,
+    houseNum = this.houseNum ?: 0,
     houseFullNum = this.houseFullNum,
     buildingType = this.buildingType,
     isBusiness = this.isBusiness,

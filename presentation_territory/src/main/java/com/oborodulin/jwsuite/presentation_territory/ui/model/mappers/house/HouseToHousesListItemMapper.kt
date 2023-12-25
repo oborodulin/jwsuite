@@ -9,6 +9,7 @@ class HouseToHousesListItemMapper : Mapper<House, HousesListItem> {
     override fun map(input: House) = HousesListItem(
         id = input.id ?: UUID.randomUUID(),
         zipCode = input.zipCode,
+        houseNum = input.houseNum,
         houseFullNum = input.houseFullNum,
         buildingType = input.buildingType,
         isBusiness = input.isBusiness,

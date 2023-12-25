@@ -6,6 +6,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomUi
 import kotlinx.coroutines.flow.StateFlow
 
@@ -14,7 +15,7 @@ interface RoomViewModel : DialogViewModeled<RoomUi, RoomUiAction, UiSingleEvent,
     val localityDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val microdistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val street: StateFlow<InputListItemWrapper<StreetsListItem>>
-    val house: StateFlow<InputListItemWrapper<ListItemModel>>
+    val house: StateFlow<InputListItemWrapper<HousesListItem>>
     val entrance: StateFlow<InputListItemWrapper<ListItemModel>>
     val floor: StateFlow<InputListItemWrapper<ListItemModel>>
     val territory: StateFlow<InputListItemWrapper<ListItemModel>>

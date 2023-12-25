@@ -5,9 +5,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
@@ -27,18 +29,33 @@ import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.Hou
 import com.oborodulin.jwsuite.presentation_territory.ui.model.EntranceUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.FloorUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toHousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Territoring.RoomViewModelImpl"
@@ -67,7 +84,7 @@ class RoomViewModelImpl @Inject constructor(
     override val street: StateFlow<InputListItemWrapper<StreetsListItem>> by lazy {
         state.getStateFlow(RoomFields.ROOM_STREET.name, InputListItemWrapper())
     }
-    override val house: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val house: StateFlow<InputListItemWrapper<HousesListItem>> by lazy {
         state.getStateFlow(RoomFields.ROOM_HOUSE.name, InputListItemWrapper())
     }
     override val entrance: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -123,7 +140,7 @@ class RoomViewModelImpl @Inject constructor(
     }
 
     private fun loadRoom(roomId: UUID): Job {
-        Timber.tag(TAG).d("loadRoom(UUID) called: %s", roomId)
+        Timber.tag(TAG).d("loadRoom(UUID) called: roomId = %s", roomId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRoomUseCase.execute(GetRoomUseCase.Request(roomId)).map {
                 converter.convert(it)
@@ -135,7 +152,7 @@ class RoomViewModelImpl @Inject constructor(
     }
 
     private fun saveRoom(): Job {
-        val houseUi = HouseUi()
+        val houseUi = HouseUi(houseNum = house.value.item?.houseNum)
         houseUi.id = house.value.item?.itemId
         val entranceUi = EntranceUi()
         entranceUi.id = entrance.value.item?.itemId
@@ -177,7 +194,7 @@ class RoomViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: RoomUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        Timber.tag(TAG).d("initFieldStatesByUiModel(RoomUiModel) called: %s", uiModel)
+        Timber.tag(TAG).d("initFieldStatesByUiModel(RoomUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(RoomFields.ROOM_ID, id, it.toString()) }
         initStateValue(
             RoomFields.ROOM_LOCALITY, locality,
@@ -196,10 +213,7 @@ class RoomViewModelImpl @Inject constructor(
             )
         )
         initStateValue(RoomFields.ROOM_STREET, street, uiModel.street.toStreetsListItem())
-        initStateValue(
-            RoomFields.ROOM_HOUSE, house,
-            ListItemModel(uiModel.house.id, uiModel.house.houseFullNum)
-        )
+        initStateValue(RoomFields.ROOM_HOUSE, house, uiModel.house.toHousesListItem())
         initStateValue(
             RoomFields.ROOM_ENTRANCE, entrance,
             ListItemModel(uiModel.entrance?.id, uiModel.entrance?.entranceNum?.toString().orEmpty())
@@ -407,7 +421,7 @@ class RoomViewModelImpl @Inject constructor(
                 override val microdistrict = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street =
                     MutableStateFlow(InputListItemWrapper<StreetsListItem>())
-                override val house = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val house = MutableStateFlow(InputListItemWrapper<HousesListItem>())
                 override val entrance = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val floor = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
@@ -420,7 +434,12 @@ class RoomViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: RoomUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: RoomFields, isFocused: Boolean

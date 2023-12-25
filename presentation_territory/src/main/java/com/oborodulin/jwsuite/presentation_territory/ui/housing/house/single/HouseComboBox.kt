@@ -19,11 +19,12 @@ import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.home.common.util.OnImeKeyAction
-import com.oborodulin.home.common.util.OnListItemEvent
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toHousesListItem
 import timber.log.Timber
 import java.util.UUID
 
@@ -36,8 +37,8 @@ fun HouseComboBox(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: HousesListViewModelImpl = hiltViewModel(),
     singleViewModel: HouseViewModelImpl = hiltViewModel(),
-    inputWrapper: InputListItemWrapper<ListItemModel>,
-    onValueChange: OnListItemEvent,
+    inputWrapper: InputListItemWrapper<HousesListItem>,
+    onValueChange: (HousesListItem) -> Unit = {},
     onImeKeyAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("HouseComboBox(...) called: streetId = %s", streetId)
@@ -51,7 +52,7 @@ fun HouseComboBox(
         loadUiAction = HouseUiAction.Load(),
         confirmUiAction = HouseUiAction.Save,
         dialogView = { HouseView(sharedViewModel = sharedViewModel) },
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toHousesListItem()) },
     )
     ComboBoxComponent(
         modifier = modifier,
@@ -65,7 +66,7 @@ fun HouseComboBox(
         listTitleResId = R.string.dlg_title_select_house,
         leadingImageVector = Icons.Outlined.Home,
         inputWrapper = inputWrapper,
-        onValueChange = onValueChange,
+        onValueChange = { onValueChange(it.toHousesListItem()) },
         onImeKeyAction = onImeKeyAction
     )
 }

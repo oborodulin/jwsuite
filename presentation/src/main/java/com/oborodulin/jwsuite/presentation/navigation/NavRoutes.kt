@@ -754,7 +754,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_TERRITORY_ENTRANCE,
                 territoryEntranceInput?.let { "${it.territoryId}" }.orEmpty(),
-                territoryEntranceInput?.let { "$ARG_ENTRANCE_ID=${it.entranceId}" }
+                territoryEntranceInput?.entranceId?.let { "$ARG_ENTRANCE_ID=${it}" }
                     .orEmpty()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
@@ -793,7 +793,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_TERRITORY_FLOOR,
                 territoryFloorInput?.let { "${it.territoryId}" }.orEmpty(),
-                territoryFloorInput?.let { "$ARG_FLOOR_ID=${it.floorId}" }
+                territoryFloorInput?.floorId?.let { "$ARG_FLOOR_ID=${it}" }
                     .orEmpty()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
@@ -832,7 +832,7 @@ sealed class NavRoutes constructor(
             val route = String.format(
                 ROUTE_TERRITORY_ROOM,
                 territoryRoomInput?.let { "${it.territoryId}" }.orEmpty(),
-                territoryRoomInput?.let { "$ARG_ROOM_ID=${it.roomId}" }
+                territoryRoomInput?.roomId?.let { "$ARG_ROOM_ID=${it}" }
                     .orEmpty()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)

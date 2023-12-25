@@ -141,6 +141,7 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
                                         "scope.launch: JwSuiteDatabase.importJob = %s",
                                         JwSuiteDatabase.importJob
                                     )
+                                // https://stackoverflow.com/questions/58972786/how-to-efficiently-show-loading-dialog-if-kotlin-coroutine-job-takes-quite-some
                                 isImportDataProgressShow = it.isActive
                                 Timber.tag(TAG)
                                     .d(

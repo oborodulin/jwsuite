@@ -8,6 +8,7 @@ import java.util.UUID
 data class HousesListItem(
     val id: UUID,
     val zipCode: String? = null,
+    val houseNum: Int,
     val houseFullNum: String,
     val buildingType: BuildingType = BuildingType.HOUSE,
     val isBusiness: Boolean = false,
@@ -22,7 +23,7 @@ data class HousesListItem(
     val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = "$streetFullName, $houseExpr $houseFullNum",
+    headline = houseFullNum, // "$streetFullName, $houseExpr $houseFullNum"
     supportingText = territoryFullCardNum.orEmpty().plus(zipCode?.let { "($it) " }.orEmpty())
         .plus(if (info.isNotEmpty()) info.joinToString(", ") else "")
 ) {
@@ -34,3 +35,11 @@ data class HousesListItem(
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
 }
+
+fun ListItemModel.toHousesListItem() = HousesListItem(
+    id = this.itemId ?: UUID.randomUUID(),
+    houseNum = this.headline.let { s -> s.substring(0, s.indexOf(s.first { it.isLetter() })) }
+        .toInt(),
+    houseFullNum = this.headline,
+    streetFullName = ""
+)
