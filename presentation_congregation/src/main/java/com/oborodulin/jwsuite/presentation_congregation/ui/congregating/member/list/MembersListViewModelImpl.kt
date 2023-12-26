@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
@@ -42,7 +43,7 @@ class MembersListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MembersListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is MembersListUiAction.LoadByCongregation -> loadMembers(

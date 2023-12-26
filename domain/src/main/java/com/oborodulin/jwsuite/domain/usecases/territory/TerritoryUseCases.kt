@@ -20,4 +20,5 @@ data class TerritoryUseCases(
     val deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase,
 
     val handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
+    val processTerritoriesUseCase: ProcessTerritoriesUseCase
 )

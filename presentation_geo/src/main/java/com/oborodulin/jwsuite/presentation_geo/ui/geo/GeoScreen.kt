@@ -215,7 +215,10 @@ fun GeoScreen(
                     GeoTabType.MICRODISTRICTS -> microdistrictsListViewModel.clearSearchText()
                     GeoTabType.STREETS -> streetsListViewModel.clearSearchText()
                 }
-            } else appState.mainNavigateUp() //backToBottomBarScreen()
+            } else {
+                appState.mainNavigateUp()
+                appState.navigateToBarRoute(NavRoutes.Dashboarding.route)
+            } //backToBottomBarScreen()
         }
     // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
     BackHandler { appState.handleTopBarNavClick.value.invoke() }

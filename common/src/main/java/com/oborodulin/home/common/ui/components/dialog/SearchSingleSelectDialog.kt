@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,7 +80,15 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                                 SearchComponent(
                                     searchText, onValueChange = viewModel::onSearchTextChange
                                 )
-                                var filteredItems: List<ListItemModel>
+                                //var filteredItems: List<ListItemModel>
+                                val searchedText = searchText.text
+                                val filteredItems = remember(items, searchedText) {
+                                    if (searchedText.isEmpty()) {
+                                        items
+                                    } else {
+                                        items.filter { it.doesMatchSearchQuery(searchedText) }
+                                    }
+                                }
                                 /*                                if (isSearching) {
                                                                     Box(modifier = Modifier.fillMaxSize()) {
                                                                         CircularProgressIndicator(
@@ -94,12 +103,11 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                                         .padding(8.dp)
                                         .focusable(enabled = true)
                                 ) {
-                                    val searchedText = searchText.text
-                                    filteredItems = if (searchedText.isEmpty()) {
+                                    /*filteredItems = if (searchedText.isEmpty()) {
                                         items
                                     } else {
                                         items.filter { it.doesMatchSearchQuery(searchedText) }
-                                    }
+                                    }*/
                                     items(filteredItems.size) { index ->
                                         SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
                                             if (LOG_UI_COMPONENTS) Timber.tag(TAG)

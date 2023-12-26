@@ -12,7 +12,9 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
 import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
@@ -21,6 +23,7 @@ import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.ProcessTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
@@ -43,7 +46,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -112,12 +114,9 @@ class TerritoriesGridViewModelImpl @Inject constructor(
         MutableStateFlow(emptyList())
     override val checkedListItems = _checkedListItems.asStateFlow()
 
-    override val areInputsValid =
-        flow { emit(checkedListItems.value.isNotEmpty()) }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            false
-        )
+    override val areInputsValid = checkedListItems.map { it.isNotEmpty() }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), false
+    )
 
     override val areHandOutInputsValid = combine(member, receivingDate, checkedListItems)
     { member, receivingDate, checkedTerritories ->
@@ -130,10 +129,10 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun observeCheckedListItems() {
-        Timber.tag(TAG).d("observeCheckedListItems() called")
+        if (LOG_MVI_LIST) Timber.tag(TAG).d("observeCheckedListItems() called")
         uiState()?.let { uiState ->
             _checkedListItems.value = uiState.filter { it.checked }
-            Timber.tag(TAG).d(
+            if (LOG_MVI_LIST) Timber.tag(TAG).d(
                 "checked %s territories; areHandOutInputsValid = %s",
                 _checkedListItems.value.size,
                 areHandOutInputsValid.value
@@ -144,24 +143,20 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoriesGridUiAction): Job? {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is TerritoriesGridUiAction.Load -> {
-                loadTerritories(
-                    action.congregationId,
-                    action.territoryProcessType, action.territoryLocationType,
-                    action.locationId, action.isPrivateSector
-                )
-            }
+            is TerritoriesGridUiAction.Load -> loadTerritories(
+                action.congregationId,
+                action.territoryProcessType, action.territoryLocationType,
+                action.locationId, action.isPrivateSector
+            )
 
-            is TerritoriesGridUiAction.EditTerritory -> {
-                submitSingleEvent(
-                    TerritoriesGridUiSingleEvent.OpenTerritoryScreen(
-                        NavRoutes.Territory.routeForTerritory(TerritoryInput(action.territoryId))
-                    )
+            is TerritoriesGridUiAction.EditTerritory -> submitSingleEvent(
+                TerritoriesGridUiSingleEvent.OpenTerritoryScreen(
+                    NavRoutes.Territory.routeForTerritory(TerritoryInput(action.territoryId))
                 )
-            }
+            )
 
             is TerritoriesGridUiAction.DeleteTerritory -> deleteTerritory(action.territoryId)
 
@@ -170,13 +165,11 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 null
             }
 
-            is TerritoriesGridUiAction.HandOutConfirmation -> {
-                submitSingleEvent(
-                    TerritoriesGridUiSingleEvent.OpenHandOutConfirmationScreen(
-                        NavRoutes.HandOutConfirmation.routeForHandOutConfirmation()
-                    )
+            is TerritoriesGridUiAction.HandOutConfirmation -> submitSingleEvent(
+                TerritoriesGridUiSingleEvent.OpenHandOutConfirmationScreen(
+                    NavRoutes.HandOutConfirmation.routeForHandOutConfirmation()
                 )
-            }
+            )
 
             is TerritoriesGridUiAction.HandOut -> handOutTerritories()
 
@@ -248,9 +241,17 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     }
 
     private fun processTerritories(): Job {
+        val territoryIds = checkedListItems.value.map { it.id }
+        val deliveryDate = deliveryDate.value.value.toFullFormatOffsetDateTime()
+        Timber.tag(TAG)
+            .d(
+                "processTerritories() called:  territoryIds = %s; deliveryDate = %s",
+                territoryIds, deliveryDate
+            )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteTerritoryUseCase.execute(DeleteTerritoryUseCase.Request(UUID.randomUUID()))
-                .collect {}
+            useCases.processTerritoriesUseCase.execute(
+                ProcessTerritoriesUseCase.Request(territoryIds, deliveryDate)
+            ).collect {}
         }
         return job
     }

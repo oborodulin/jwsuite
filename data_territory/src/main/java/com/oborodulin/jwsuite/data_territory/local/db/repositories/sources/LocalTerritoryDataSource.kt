@@ -1,5 +1,9 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories.sources
 
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
@@ -11,10 +15,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationVie
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
-import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
@@ -108,4 +108,6 @@ interface LocalTerritoryDataSource {
     suspend fun handOut(
         territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime = OffsetDateTime.now()
     )
+
+    suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime)
 }

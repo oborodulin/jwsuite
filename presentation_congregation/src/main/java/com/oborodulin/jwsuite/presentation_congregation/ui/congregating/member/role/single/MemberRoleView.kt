@@ -88,6 +88,11 @@ fun MemberRoleView(
     val selectedMember =
         appState.memberSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     var currentMember = member.item
+    Timber.tag(TAG)
+        .d(
+            "currentCongregation = %s; selectedMember = %s; currentMember = %s",
+            currentCongregation, selectedMember, currentMember
+        )
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("MemberRoleView -> LaunchedEffect()")
         if (currentMember == null) {
@@ -104,11 +109,7 @@ fun MemberRoleView(
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
-    Timber.tag(TAG)
-        .d(
-            "currentCongregation = %s; selectedMember = %s; currentMember = %s",
-            currentCongregation, selectedMember, currentMember
-        )
+    Timber.tag(TAG).d("currentMember = %s", currentMember)
     Column(
         modifier = Modifier
             .fillMaxWidth()

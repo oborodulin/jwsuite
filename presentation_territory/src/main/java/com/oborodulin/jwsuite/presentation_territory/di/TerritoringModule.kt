@@ -46,6 +46,7 @@ import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCa
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.ProcessTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
@@ -537,7 +538,8 @@ object TerritoringModule {
         getTerritoryStreetUseCase: GetTerritoryStreetUseCase,
         saveTerritoryStreetUseCase: SaveTerritoryStreetUseCase,
         deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase,
-        handOutTerritoriesUseCase: HandOutTerritoriesUseCase
+        handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
+        processTerritoriesUseCase: ProcessTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
         getProcessAndLocationTerritoriesUseCase,
         getCongregationTerritoriesUseCase,
@@ -550,7 +552,8 @@ object TerritoringModule {
         getTerritoryStreetUseCase,
         saveTerritoryStreetUseCase,
         deleteTerritoryStreetUseCase,
-        handOutTerritoriesUseCase
+        handOutTerritoriesUseCase,
+        processTerritoriesUseCase
     )
 
     // Territoring:

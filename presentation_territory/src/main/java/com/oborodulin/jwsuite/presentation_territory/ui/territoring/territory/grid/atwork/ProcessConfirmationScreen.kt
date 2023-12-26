@@ -7,10 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.components.AtWorkProcessButtonComponent
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModel
 import timber.log.Timber
@@ -39,18 +42,25 @@ fun ProcessConfirmationScreen(
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
     ) { innerPadding ->
-        SaveDialogScreenComponent(
+        DialogScreenComponent(
             viewModel = viewModel,
             loadUiAction = TerritoriesGridUiAction.ProcessInitConfirmation,
             saveUiAction = TerritoriesGridUiAction.Process,
-            upNavigation = { appState.mainNavigateUp() }, //backToBottomBarScreen() },
+            upNavigation = {
+                appState.barNavController.navigateUp()
+                appState.navigateToBarRoute(NavRoutes.Territoring.route)
+            }, //backToBottomBarScreen() },
             handleTopBarNavClick = appState.handleTopBarNavClick,
+            areInputsValid = viewModel.areAtWorkProcessInputsValid.collectAsStateWithLifecycle().value,
             cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_process,
-            /*onActionBarChange = onActionBarChange,
-    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+            confirmButton = @Composable { areInputsValid, atWorkProcessButtonClick ->
+                AtWorkProcessButtonComponent(
+                    enabled = areInputsValid,
+                    onClick = atWorkProcessButtonClick
+                )
+            },
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
         ) {
             ProcessConfirmationView(

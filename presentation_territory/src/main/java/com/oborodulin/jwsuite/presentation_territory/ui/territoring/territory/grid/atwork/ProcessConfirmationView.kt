@@ -74,12 +74,14 @@ fun ProcessConfirmationView(
         viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("At Work Territories Confirmation: CollectAsStateWithLifecycle for all fields")
+    Timber.tag(TAG)
+        .d("At Work Territories Confirmation: CollectAsStateWithLifecycle for all fields")
     val deliveryDate by viewModel.deliveryDate.collectAsStateWithLifecycle()
     val checkedTerritories by viewModel.checkedListItems.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("At Work Territories Confirmation: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
+    val focusRequesters =
+        EnumMap<TerritoriesFields, InputFocusRequester>(TerritoriesFields::class.java)
     enumValues<TerritoriesFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
@@ -126,9 +128,7 @@ fun ProcessConfirmationView(
                 KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             },
             inputWrapper = deliveryDate,
-            onValueChange = {
-                viewModel.onTextFieldEntered(TerritoriesInputEvent.DeliveryDate(it))
-            },
+            onValueChange = { viewModel.onTextFieldEntered(TerritoriesInputEvent.DeliveryDate(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         LazyVerticalGrid(
@@ -143,7 +143,10 @@ fun ProcessConfirmationView(
             contentPadding = PaddingValues(8.dp)
         ) {
             items(checkedTerritories.size) { index ->
-                TerritoriesClickableGridItemComponent(territory = checkedTerritories[index])
+                TerritoriesClickableGridItemComponent(
+                    territory = checkedTerritories[index],
+                    onChecked = { viewModel.observeCheckedListItems() }
+                )
             }
         }
     }

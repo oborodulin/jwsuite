@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.toUUIDOrNull
@@ -83,7 +84,8 @@ class GroupViewModelImpl @Inject constructor(
     override fun initState(): UiState<GroupUi> = UiState.Loading
 
     override suspend fun handleAction(action: GroupUiAction): Job {
-        Timber.tag(TAG).d("handleAction(GroupUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(GroupUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is GroupUiAction.Load -> when (action.groupId) {
                 null -> {

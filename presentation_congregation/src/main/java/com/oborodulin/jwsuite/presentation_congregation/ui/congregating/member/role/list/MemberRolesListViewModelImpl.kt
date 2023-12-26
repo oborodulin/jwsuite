@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.toOffsetDateTime
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCase
@@ -41,7 +42,7 @@ class MemberRolesListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberRolesListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(MemberRolesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is MemberRolesListUiAction.Load -> loadMemberRoles(action.memberId)

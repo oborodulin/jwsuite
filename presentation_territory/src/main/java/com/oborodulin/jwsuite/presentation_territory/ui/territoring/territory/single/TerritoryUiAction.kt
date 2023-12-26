@@ -10,4 +10,5 @@ sealed class TerritoryUiAction(override val isEmitJob: Boolean = true) : UiActio
 
     data object Save : TerritoryUiAction()
     data class EditTerritoryDetails(val territoryId: UUID? = null) : TerritoryUiAction(false)
+    //data class TerritoryPartialProcess(val territoryId: UUID? = null) : TerritoryUiAction(false)
 }

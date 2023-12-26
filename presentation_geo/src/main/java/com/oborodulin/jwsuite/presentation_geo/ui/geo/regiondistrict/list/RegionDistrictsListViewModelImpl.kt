@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.DeleteRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictsUseCase
@@ -40,7 +41,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RegionDistrictsListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(RegionDistrictsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RegionDistrictsListUiAction.Load -> loadRegionDistricts(action.regionId)
@@ -108,7 +109,12 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: RegionDistrictsListUiAction): Job? = null
             }
 

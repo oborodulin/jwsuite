@@ -12,6 +12,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.toOffsetDateTime
@@ -97,7 +98,8 @@ class AppSettingViewModelImpl @Inject constructor(
     override fun initState(): UiState<AppSettingsUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: AppSettingUiAction): Job {
-        Timber.tag(TAG).d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is AppSettingUiAction.Load -> loadAppSettings()
             is AppSettingUiAction.Save -> saveAppSettings()

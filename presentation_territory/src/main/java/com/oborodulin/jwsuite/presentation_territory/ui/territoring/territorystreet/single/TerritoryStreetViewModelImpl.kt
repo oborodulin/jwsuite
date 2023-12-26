@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -101,7 +102,8 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     override fun initState(): UiState<TerritoryStreetUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryStreetUiAction): Job {
-        Timber.tag(TAG).d("handleAction(TerritoryStreetUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(TerritoryStreetUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryStreetUiAction.Load -> when (action.territoryStreetId) {
                 null -> {

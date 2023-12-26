@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
@@ -83,7 +84,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
     override fun initState(): UiState<LocalityDistrictUi> = UiState.Loading
 
     override suspend fun handleAction(action: LocalityDistrictUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(LocalityDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is LocalityDistrictUiAction.Load -> when (action.localityDistrictId) {

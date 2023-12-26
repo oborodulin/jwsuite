@@ -5,9 +5,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
-import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsListItem
@@ -38,7 +38,7 @@ class TerritoryDetailsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryDetailsListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(TerritoryDetailsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryDetailsListUiAction.Load -> {
@@ -84,7 +84,12 @@ class TerritoryDetailsListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: TerritoryDetailsListUiAction): Job? = null
             }
 

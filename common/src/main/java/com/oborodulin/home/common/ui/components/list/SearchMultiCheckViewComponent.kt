@@ -13,11 +13,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +33,6 @@ import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiAction
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import timber.log.Timber
 
@@ -67,7 +65,7 @@ fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : F
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp),
-            //.verticalScroll(rememberScrollState()),
+        //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -97,23 +95,31 @@ fun SearchMultiCheckList(
     onChecked: (Boolean) -> Unit,
     onClick: (ListItemModel) -> Unit = {}
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SearchMultiCheckList(...) called: size = %d", items.size)
+    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+        .d("SearchMultiCheckList(...) called: size = %d", items.size)
     if (items.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = items.filter { it.selected }
                 .getOrNull(0)?.let { items.indexOf(it) } ?: 0)
-        var filteredItems: List<ListItemModel>
+        //var filteredItems: List<ListItemModel>
+        val filteredItems = remember(items, searchedText) {
+            if (searchedText.isEmpty()) {
+                items
+            } else {
+                items.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+        }
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .padding(8.dp)
                 .focusable(enabled = true)
         ) {
-            filteredItems = if (searchedText.isEmpty()) {
+            /*filteredItems = if (searchedText.isEmpty()) {
                 items
             } else {
                 items.filter { it.doesMatchSearchQuery(searchedText) }
-            }
+            }*/
             itemsIndexed(filteredItems, key = { _, item -> item.itemId!! }) { _, item ->
                 CheckedListItemComponent(
                     item = item,

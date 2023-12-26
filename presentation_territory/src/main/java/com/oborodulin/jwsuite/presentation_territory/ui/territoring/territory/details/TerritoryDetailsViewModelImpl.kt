@@ -2,9 +2,9 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.d
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
-import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryDetailsUi
@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,11 +25,19 @@ private const val TAG = "Territoring.TerritoryDetailsViewModelImpl"
 @HiltViewModel
 class TerritoryDetailsViewModelImpl @Inject constructor() : TerritoryDetailsViewModel,
     MviViewModel<TerritoryDetailsUi, UiState<TerritoryDetailsUi>, TerritoryDetailsUiAction, TerritoryDetailsUiSingleEvent>() {
+    private val _detailsTabType: MutableStateFlow<TerritoryDetailsTabType> =
+        MutableStateFlow(TerritoryDetailsTabType.STREETS)
+    override val detailsTabType = _detailsTabType.asStateFlow()
+
+    override fun setDetailsTabType(tabType: TerritoryDetailsTabType) {
+        Timber.tag(TAG).d("setDetailsTabType(...) called: tabType = %s", tabType.name)
+        _detailsTabType.value = tabType
+    }
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryDetailsUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(TerritoryDetailsUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryDetailsUiAction.EditTerritoryStreet -> {
@@ -111,8 +120,16 @@ class TerritoryDetailsViewModelImpl @Inject constructor() : TerritoryDetailsView
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun clearSearchText() {}
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: TerritoryDetailsUiAction): Job? = null
+
+                override val detailsTabType = MutableStateFlow(TerritoryDetailsTabType.STREETS)
+                override fun setDetailsTabType(tabType: TerritoryDetailsTabType) {}
             }
 
         fun previewList(ctx: Context) = TerritoryDetailsUi()

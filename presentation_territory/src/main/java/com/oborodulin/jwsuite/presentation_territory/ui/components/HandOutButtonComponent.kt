@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.components
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,13 +10,12 @@ import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation_territory.R
 
 // 141
-private const val TAG = "Presentation.HandOutButtonComponent"
+private const val TAG = "Presentation_Territory.HandOutButtonComponent"
 
 @Composable
 fun HandOutButtonComponent(
     modifier: Modifier = Modifier,
     enabled: Boolean = false,
-    @StringRes contentDescriptionResId: Int? = null,
     onClick: () -> Unit = {}
 ) {
     ButtonComponent(
@@ -25,7 +23,7 @@ fun HandOutButtonComponent(
         enabled = enabled,
         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
         textResId = R.string.fab_territory_hand_out_text,
-        contentDescriptionResId = contentDescriptionResId,
+        contentDescriptionResId = R.string.hand_out_cnt_desc,
         onClick = onClick
     )
 }

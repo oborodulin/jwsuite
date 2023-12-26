@@ -27,7 +27,7 @@ private const val TAG = "Congregating.MembersListView"
 @Composable
 fun MembersListView(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersListViewModel,//Impl = hiltViewModel(),
     memberRolesListViewModel: MemberRolesListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,

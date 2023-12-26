@@ -13,6 +13,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_DATABASE
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
@@ -116,7 +117,8 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     override suspend fun handleAction(action: SessionUiAction): Job {
-        Timber.tag(TAG).d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
             is SessionUiAction.Signup -> signup()

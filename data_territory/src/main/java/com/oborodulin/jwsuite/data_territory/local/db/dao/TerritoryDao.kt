@@ -33,6 +33,7 @@ import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_VAL
 import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_MICRO_DISTRICT_VAL
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -65,8 +66,10 @@ interface TerritoryDao {
     ORDER BY t.territoryCategoryMark, t.territoryNum
         """
     )
-    fun findByCongregationId(congregationId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<TerritoryView>>
+    fun findByCongregationId(
+        congregationId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByCongregationId(congregationId: UUID) =
@@ -84,8 +87,11 @@ interface TerritoryDao {
     fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
     @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId AND territoryNum = :territoryNum LIMIT 1")
-    fun findByTerritoryNum(congregationId: UUID, territoryCategoryId: UUID, territoryNum: Int):
-            Flow<List<TerritoryView>>
+    fun findByTerritoryNum(
+        congregationId: UUID,
+        territoryCategoryId: UUID,
+        territoryNum: Int
+    ): Flow<List<TerritoryView>>
 
     @Transaction
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId ORDER BY territoryNum")
@@ -138,8 +144,10 @@ interface TerritoryDao {
     """
     )
     fun findHandOutTerritories(
-        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
-        territoryLocationType: TerritoryLocationType, locationId: UUID? = null,
+        congregationId: UUID? = null,
+        isPrivateSector: Boolean? = null,
+        territoryLocationType: TerritoryLocationType,
+        locationId: UUID? = null,
         locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoriesHandOutView>>
 
@@ -157,8 +165,10 @@ interface TerritoryDao {
     """
     )
     fun findAtWorkTerritories(
-        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
-        territoryLocationType: TerritoryLocationType, locationId: UUID? = null,
+        congregationId: UUID? = null,
+        isPrivateSector: Boolean? = null,
+        territoryLocationType: TerritoryLocationType,
+        locationId: UUID? = null,
         locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoriesAtWorkView>>
 
@@ -176,8 +186,10 @@ interface TerritoryDao {
     """
     )
     fun findIdleTerritories(
-        congregationId: UUID? = null, isPrivateSector: Boolean? = null,
-        territoryLocationType: TerritoryLocationType, locationId: UUID? = null,
+        congregationId: UUID? = null,
+        isPrivateSector: Boolean? = null,
+        territoryLocationType: TerritoryLocationType,
+        locationId: UUID? = null,
         locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoriesIdleView>>
 
@@ -198,8 +210,10 @@ interface TerritoryDao {
     @Query(
         "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.tsTerritoriesId = :territoryId AND tsv.streetLocCode = :locale ORDER BY tsv.streetName"
     )
-    fun findStreetsByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<TerritoryStreetView>>
+    fun findStreetsByTerritoryId(
+        territoryId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryStreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctStreetsByTerritoryId(territoryId: UUID) =
@@ -307,9 +321,7 @@ interface TerritoryDao {
         territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime = OffsetDateTime.now()
     ) = insert(
         TerritoryMemberCrossRefEntity(
-            tmcTerritoriesId = territoryId,
-            tmcMembersId = memberId,
-            receivingDate = receivingDate
+            tmcTerritoriesId = territoryId, tmcMembersId = memberId, receivingDate = receivingDate
         )
     )
 
@@ -333,8 +345,11 @@ interface TerritoryDao {
     )
 
     suspend fun insert(
-        territoryId: UUID, streetId: UUID, isEvenSide: Boolean? = null,
-        isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
+        territoryId: UUID,
+        streetId: UUID,
+        isEvenSide: Boolean? = null,
+        isPrivateSector: Boolean? = null,
+        estimatedHouses: Int? = null
     ) = insert(
         TerritoryStreetEntity(
             tsTerritoriesId = territoryId,
@@ -360,9 +375,6 @@ interface TerritoryDao {
 
     @Update
     suspend fun update(vararg territoryStreet: TerritoryStreetEntity)
-
-    @Query("UPDATE ${TerritoryEntity.TABLE_NAME} SET isProcessed = :isProcessed WHERE territoryId = :territoryId")
-    suspend fun updateProcessedMark(territoryId: UUID, isProcessed: Boolean)
 
     // DELETES:
     @Delete
@@ -408,6 +420,20 @@ interface TerritoryDao {
     suspend fun deleteAll()
 
     // API:
+    @Query("UPDATE ${TerritoryEntity.TABLE_NAME} SET isProcessed = :isProcessed WHERE territoryId = :territoryId")
+    suspend fun updateProcessedMark(territoryId: UUID, isProcessed: Boolean)
+
+    @Query(
+        """
+    UPDATE ${TerritoryMemberCrossRefEntity.TABLE_NAME} SET deliveryDate = :deliveryDate
+    WHERE tmcTerritoriesId = :territoryId 
+        AND strftime($DB_FRACT_SEC_TIME, receivingDate) = (SELECT MAX(strftime($DB_FRACT_SEC_TIME, receivingDate))
+                                                            FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME}
+                                                            WHERE tmcTerritoriesId = :territoryId AND deliveryDate IS NULL)
+        """
+    )
+    suspend fun updateDeliveryDate(territoryId: UUID, deliveryDate: OffsetDateTime)
+
     @Query("SELECT ifnull(MAX(territoryNum), 0) FROM ${TerritoryEntity.TABLE_NAME} WHERE tCongregationsId = :congregationId AND tTerritoryCategoriesId = :territoryCategoryId")
     fun maxTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
 
@@ -470,6 +496,11 @@ interface TerritoryDao {
         updateProcessedMark(territoryId = territoryId, isProcessed = false)
     }
 
+    @Transaction
+    suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime = OffsetDateTime.now()) {
+        updateDeliveryDate(territoryId = territoryId, deliveryDate = deliveryDate)
+        updateProcessedMark(territoryId = territoryId, isProcessed = true)
+    }
 
     /*
         // API:

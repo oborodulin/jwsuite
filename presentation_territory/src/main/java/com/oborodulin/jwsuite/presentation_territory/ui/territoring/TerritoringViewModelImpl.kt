@@ -4,24 +4,39 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.usecases.TerritoringUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryLocationsUseCase
-import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoringUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryLocationsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryLocationsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Territoring.TerritoringViewModelImpl"
@@ -46,7 +61,8 @@ class TerritoringViewModelImpl @Inject constructor(
     override fun initState(): UiState<TerritoringUi> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoringUiAction): Job {
-        Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoringUiAction.LoadLocations -> loadTerritoryLocations(
                 action.congregationId, action.isPrivateSector
@@ -164,7 +180,12 @@ class TerritoringViewModelImpl @Inject constructor(
                     MutableStateFlow(InputListItemWrapper<TerritoryLocationsListItem>())
 
                 override fun submitAction(action: TerritoringUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: TerritoringFields, isFocused: Boolean

@@ -15,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -62,30 +61,29 @@ fun TerritoryDetailsScreen(
         Timber.tag(TAG).d("TerritoryDetailsScreen -> LaunchedEffect() BEFORE collect ui state flow")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
     }
-    var tabType by rememberSaveable { mutableStateOf(TerritoryDetailsTabType.STREETS.name) }
-    val onTabChange: (TerritoryDetailsTabType) -> Unit = { tabType = it.name }
+    //val detailsTabType
+    val tabType by viewModel.detailsTabType.collectAsStateWithLifecycle() //by rememberSaveable { mutableStateOf(detailsTabType.name) }
+    val onTabChange: (TerritoryDetailsTabType) -> Unit =
+        { viewModel.setDetailsTabType(it) } // tabType = it.name;
     val handleActionAdd: () -> Unit = {
-        when (TerritoryDetailsTabType.valueOf(tabType)) {
-            TerritoryDetailsTabType.STREETS -> viewModel.submitAction(
-                TerritoryDetailsUiAction.EditTerritoryStreet(territoryInput.territoryId)
-            )
+        viewModel.submitAction(
+            when (tabType) { // TerritoryDetailsTabType.valueOf(tabType)
+                TerritoryDetailsTabType.STREETS ->
+                    TerritoryDetailsUiAction.EditTerritoryStreet(territoryInput.territoryId)
 
-            TerritoryDetailsTabType.HOUSES -> viewModel.submitAction(
-                TerritoryDetailsUiAction.EditTerritoryHouse(territoryInput.territoryId)
-            )
+                TerritoryDetailsTabType.HOUSES ->
+                    TerritoryDetailsUiAction.EditTerritoryHouse(territoryInput.territoryId)
 
-            TerritoryDetailsTabType.ENTRANCES -> viewModel.submitAction(
-                TerritoryDetailsUiAction.EditTerritoryEntrance(territoryInput.territoryId)
-            )
+                TerritoryDetailsTabType.ENTRANCES ->
+                    TerritoryDetailsUiAction.EditTerritoryEntrance(territoryInput.territoryId)
 
-            TerritoryDetailsTabType.FLOORS -> viewModel.submitAction(
-                TerritoryDetailsUiAction.EditTerritoryFloor(territoryInput.territoryId)
-            )
+                TerritoryDetailsTabType.FLOORS ->
+                    TerritoryDetailsUiAction.EditTerritoryFloor(territoryInput.territoryId)
 
-            TerritoryDetailsTabType.ROOMS -> viewModel.submitAction(
-                TerritoryDetailsUiAction.EditTerritoryRoom(territoryInput.territoryId)
-            )
-        }
+                TerritoryDetailsTabType.ROOMS ->
+                    TerritoryDetailsUiAction.EditTerritoryRoom(territoryInput.territoryId)
+            }
+        )
     }
     val tabStreets = TabRowItem(
         title = stringResource(R.string.territory_details_tab_streets),

@@ -13,7 +13,9 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
@@ -73,10 +75,10 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     )
 
     override fun observeCheckedListItems() {
-        Timber.tag(TAG).d("observeCheckedListItems() called")
+        if (LOG_MVI_LIST) Timber.tag(TAG).d("observeCheckedListItems() called")
         uiState()?.let { uiState ->
             _checkedListItems.value = uiState.houses.filter { it.checked }
-            Timber.tag(TAG).d(
+            if (LOG_MVI_LIST) Timber.tag(TAG).d(
                 "checked %d List Items; areInputsValid = %s",
                 _checkedListItems.value.size, areInputsValid.value
             )
@@ -86,7 +88,8 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     override fun initState(): UiState<TerritoryHousesUiModel> = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryHouseUiAction): Job {
-        Timber.tag(TAG).d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is TerritoryHouseUiAction.Load -> {
                 setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_house_new_subheader)

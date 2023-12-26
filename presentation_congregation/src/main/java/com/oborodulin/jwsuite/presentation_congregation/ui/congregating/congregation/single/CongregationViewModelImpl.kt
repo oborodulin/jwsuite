@@ -4,11 +4,16 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
@@ -22,11 +27,25 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congreg
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Congregating.CongregationViewModelImpl"
@@ -68,7 +87,8 @@ class CongregationViewModelImpl @Inject constructor(
     override fun initState(): UiState<CongregationUi> = UiState.Loading
 
     override suspend fun handleAction(action: CongregationUiAction): Job {
-        Timber.tag(TAG).d("handleAction(CongregationUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(CongregationUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is CongregationUiAction.Load -> when (action.congregationId) {
                 null -> {
@@ -304,7 +324,12 @@ class CongregationViewModelImpl @Inject constructor(
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: CongregationUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: CongregationFields, isFocused: Boolean

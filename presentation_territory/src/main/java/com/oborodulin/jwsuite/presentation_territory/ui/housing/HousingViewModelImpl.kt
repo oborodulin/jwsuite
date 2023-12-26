@@ -42,7 +42,7 @@ class HousingViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: HousingUiAction) = null
 
-    /*        Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
+    /*        if (LOG_FLOW_ACTION) Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
             val job = when (action) {
                 is HousingUiAction.LoadLocations -> loadTerritoryLocations(
                     action.congregationId,

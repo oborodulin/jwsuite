@@ -23,14 +23,15 @@ data class HousesListItem(
     val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = houseFullNum, // "$streetFullName, $houseExpr $houseFullNum"
-    supportingText = territoryFullCardNum.orEmpty().plus(zipCode?.let { "($it) " }.orEmpty())
-        .plus(if (info.isNotEmpty()) info.joinToString(", ") else "")
+    headline = houseFullNum.plus(territoryFullCardNum?.let { " [$it]" }
+        .orEmpty()), // "$streetFullName, $houseExpr $houseFullNum"
+    supportingText = streetFullName.plus(zipCode?.let { ", $it" }.orEmpty())
+        .plus(if (info.isNotEmpty()) "\n${info.joinToString(", ")}" else "")
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
-            "$houseFullNum${info.joinToString("")}",
-            "$houseFullNum ${info.joinToString(" ")}"
+            "$houseFullNum$streetFullName${info.joinToString("")}",
+            "$houseFullNum $streetFullName ${info.joinToString(" ")}"
         )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
@@ -38,8 +39,19 @@ data class HousesListItem(
 
 fun ListItemModel.toHousesListItem() = HousesListItem(
     id = this.itemId ?: UUID.randomUUID(),
-    houseNum = this.headline.let { s -> s.substring(0, s.indexOf(s.first { it.isLetter() })) }
-        .toInt(),
+    houseNum = this.headline.let { s ->
+        try {
+            s.substringBefore(s.first { it.isLetter() || it == '-' })
+        } catch (e: NoSuchElementException) {
+            s
+        }
+    }.toInt(),
     houseFullNum = this.headline,
-    streetFullName = ""
+    streetFullName = this.supportingText?.let { s ->
+        try {
+            s.substringBefore(s.first { it == ',' || it == '\n' })
+        } catch (e: NoSuchElementException) {
+            s
+        }
+    }.orEmpty()
 )

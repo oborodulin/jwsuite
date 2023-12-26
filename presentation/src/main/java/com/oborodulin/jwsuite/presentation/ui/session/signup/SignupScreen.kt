@@ -56,7 +56,11 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SignupView(viewModel)
+            SignupView(
+                viewModel = viewModel,
+                //areInputsValid = areInputsValid,
+                handleSignup = handleSignup
+            )
             Spacer(Modifier.height(8.dp))
             SignupButtonComponent(enabled = areInputsValid, onClick = handleSignup)
         }

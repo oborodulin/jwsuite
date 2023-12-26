@@ -1,8 +1,8 @@
 package com.oborodulin.jwsuite.domain.repositories
 
+import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.model.territory.Entrance
 import com.oborodulin.jwsuite.domain.model.territory.Floor
-import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.domain.model.territory.Room
 import com.oborodulin.jwsuite.domain.model.territory.Territory
@@ -51,5 +51,9 @@ interface TerritoriesRepository {
     // API:
     fun handOutTerritories(
         memberId: UUID, territoryIds: List<UUID> = emptyList(), receivingDate: OffsetDateTime
+    ): Flow<List<UUID>>
+
+    fun processTerritories(
+        territoryIds: List<UUID> = emptyList(), deliveryDate: OffsetDateTime
     ): Flow<List<UUID>>
 }

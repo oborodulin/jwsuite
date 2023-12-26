@@ -7,10 +7,11 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_congregation.R
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.role.GetRolesUseCase
-import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.RolesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +40,7 @@ class RolesListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RolesListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(RolesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RolesListUiAction.Load -> loadRoles(action.memberId)
@@ -82,7 +83,12 @@ class RolesListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: RolesListUiAction): Job? = null
             }
 

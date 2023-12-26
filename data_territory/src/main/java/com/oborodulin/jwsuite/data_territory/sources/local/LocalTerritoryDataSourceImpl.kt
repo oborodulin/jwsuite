@@ -190,4 +190,7 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     override suspend fun handOut(
         territoryId: UUID, memberId: UUID, receivingDate: OffsetDateTime
     ) = withContext(dispatcher) { territoryDao.handOut(territoryId, memberId, receivingDate) }
+
+    override suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime) =
+        withContext(dispatcher) { territoryDao.process(territoryId, deliveryDate) }
 }

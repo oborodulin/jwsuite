@@ -161,4 +161,13 @@ class TerritoriesRepositoryImpl @Inject constructor(
         }
         this.emit(ids)
     }
+
+    override fun processTerritories(territoryIds: List<UUID>, deliveryDate: OffsetDateTime) = flow {
+        val ids = mutableListOf<UUID>()
+        territoryIds.forEach {
+            localTerritoryDataSource.process(it, deliveryDate)
+            ids.add(it)
+        }
+        this.emit(ids)
+    }
 }

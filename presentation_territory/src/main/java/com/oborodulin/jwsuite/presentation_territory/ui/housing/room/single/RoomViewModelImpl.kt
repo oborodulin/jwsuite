@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
@@ -120,7 +121,8 @@ class RoomViewModelImpl @Inject constructor(
     override fun initState(): UiState<RoomUi> = UiState.Loading
 
     override suspend fun handleAction(action: RoomUiAction): Job {
-        Timber.tag(TAG).d("handleAction(RoomUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(RoomUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RoomUiAction.Load -> when (action.roomId) {
                 null -> {

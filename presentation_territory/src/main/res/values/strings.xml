@@ -1,6 +1,7 @@
 <resources>
     <!--BUTTONS:-->
     <string name="btn_hand_out_lbl">Выдать</string>
+    <string name="btn_at_work_lbl">Обработать</string>
     <!--FAB:-->
     <string name="fab_territory_hand_out_text">Выдать</string>
     <string name="fab_territory_at_work_text">Обработать</string>
@@ -192,5 +193,7 @@
     <string name="ter_business_cnt_desc">деловая территория</string>
     <string name="ter_group_ministry_cnt_desc">групповое служение</string>
     <string name="territory_menu_cnt_desc">Меню участков</string>
+    <string name="hand_out_cnt_desc">Выдать</string>
+    <string name="at_work_cnt_desc">Обработать</string>
 
 </resources>

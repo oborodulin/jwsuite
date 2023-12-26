@@ -14,6 +14,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
@@ -80,7 +81,8 @@ class RegionDistrictViewModelImpl @Inject constructor(
     override fun initState(): UiState<RegionDistrictUi> = UiState.Loading
 
     override suspend fun handleAction(action: RegionDistrictUiAction): Job {
-        Timber.tag(TAG).d("handleAction(RegionDistrictUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(RegionDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RegionDistrictUiAction.Load -> when (action.regionDistrictId) {
                 null -> {

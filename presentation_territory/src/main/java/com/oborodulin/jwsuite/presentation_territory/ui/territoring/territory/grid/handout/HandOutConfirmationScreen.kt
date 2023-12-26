@@ -47,9 +47,8 @@ fun HandOutConfirmationScreen(
             loadUiAction = TerritoriesGridUiAction.HandOutInitConfirmation,
             saveUiAction = TerritoriesGridUiAction.HandOut,
             upNavigation = {
-                appState.barNavController.navigateUp(); appState.navigateToBarRoute(
-                NavRoutes.Territoring.route
-            )
+                appState.barNavController.navigateUp()
+                appState.navigateToBarRoute(NavRoutes.Territoring.route)
             },
             handleTopBarNavClick = appState.handleTopBarNavClick,
             areInputsValid = viewModel.areHandOutInputsValid.collectAsStateWithLifecycle().value,

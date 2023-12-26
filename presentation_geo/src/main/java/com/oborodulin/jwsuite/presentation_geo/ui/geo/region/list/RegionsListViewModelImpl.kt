@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.DeleteRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionsUseCase
@@ -40,7 +41,7 @@ class RegionsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RegionsListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RegionsListUiAction.Load -> loadRegions()

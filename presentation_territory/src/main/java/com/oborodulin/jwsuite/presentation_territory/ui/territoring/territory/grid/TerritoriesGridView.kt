@@ -172,7 +172,13 @@ fun TerritoriesClickableGrid(
 ) {
     Timber.tag(TAG).d("TerritoriesClickableGrid(...) called")
     if (territories.isNotEmpty()) {
-        var filteredItems: List<TerritoriesListItem>
+        val filteredItems = remember(territories, searchedText) {
+            if (searchedText.isEmpty()) {
+                territories
+            } else {
+                territories.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+        }
         LazyVerticalGrid(
             columns = GridCells.Adaptive(CELL_SIZE),
             modifier = Modifier
@@ -183,19 +189,12 @@ fun TerritoriesClickableGrid(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
-            filteredItems = if (searchedText.isEmpty()) {
-                territories
-            } else {
-                territories.filter { it.doesMatchSearchQuery(searchedText) }
-            }
             items(filteredItems.size) { index ->
-                filteredItems[index].let { territory ->
-                    TerritoriesClickableGridItemComponent(
-                        territory = territory,
-                        onChecked = onChecked,
-                        onClick = onClick
-                    )
-                }
+                TerritoriesClickableGridItemComponent(
+                    territory = filteredItems[index],
+                    onChecked = onChecked,
+                    onClick = onClick
+                )
             }
         }
     } else {
@@ -216,7 +215,13 @@ fun TerritoriesEditableGrid(
     Timber.tag(TAG).d("TerritoriesEditableGrid(...) called")
     var selectedIndex by remember { mutableStateOf(-1) } // by
     if (territories.isNotEmpty()) {
-        var filteredItems: List<TerritoriesListItem>
+        val filteredItems = remember(territories, searchedText) {
+            if (searchedText.isEmpty()) {
+                territories
+            } else {
+                territories.filter { it.doesMatchSearchQuery(searchedText) }
+            }
+        }
         LazyVerticalGrid(
             columns = GridCells.Adaptive(100.dp),
             modifier = Modifier
@@ -227,11 +232,6 @@ fun TerritoriesEditableGrid(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(24.dp)
         ) {
-            filteredItems = if (searchedText.isEmpty()) {
-                territories
-            } else {
-                territories.filter { it.doesMatchSearchQuery(searchedText) }
-            }
             items(filteredItems.size) { index ->
                 filteredItems[index].let { territory ->
                     val isSelected =

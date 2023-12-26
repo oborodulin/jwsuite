@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
@@ -32,13 +33,9 @@ class DashboardingViewModelImpl @Inject constructor(
     override fun initState(): UiState<DashboardingUi> = UiState.Loading
 
     override suspend fun handleAction(action: DashboardingUiAction): Job {
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(DashboardingUiAction) called: %s ", action.javaClass.name)
         /*
-        Timber.tag(TAG)
-            .d(
-                "handleAction(DashboardingUiAction) called: %s [JwSuiteDatabase.isImportExecute = %s]",
-                action.javaClass.name,
-                JwSuiteDatabase.isImportExecute
-            )
         if (JwSuiteDatabase.isImportExecute) JwSuiteDatabase.isImportDone?.await()
         Timber.tag(TAG)
             .d(

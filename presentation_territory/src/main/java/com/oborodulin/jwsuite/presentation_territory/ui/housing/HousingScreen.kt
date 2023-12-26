@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -145,11 +146,14 @@ fun HousingScreen(
             onTopBarActionsChange(true) {
                 IconButton(onClick = handleActionAdd) { Icon(Icons.Outlined.Add, null) }
             }*/
-            appState.handleTopBarNavClick.value = { appState.mainNavigateUp() }
+            appState.handleTopBarNavClick.value = {
+                appState.mainNavigateUp()
+                appState.navigateToBarRoute(NavRoutes.Territoring.route)
+            }
             onActionBarChange {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Center
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier.weight(2.8f)

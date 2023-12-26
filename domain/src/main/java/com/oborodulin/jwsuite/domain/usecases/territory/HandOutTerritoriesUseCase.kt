@@ -19,7 +19,7 @@ class HandOutTerritoriesUseCase(
             request.memberId, request.territoryIds, request.receivingDate
         ).map {
             Response(it)
-        }.catch { throw UseCaseException.HandOutTerritoryException(it) }
+        }.catch { throw UseCaseException.HandOutTerritoriesException(it) }
     }
 
     data class Request(

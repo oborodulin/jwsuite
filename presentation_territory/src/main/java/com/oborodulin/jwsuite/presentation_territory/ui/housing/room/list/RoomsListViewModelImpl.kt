@@ -7,6 +7,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
@@ -41,7 +42,7 @@ class RoomsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RoomsListUiAction): Job {
-        Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(RoomsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is RoomsListUiAction.Load -> loadRooms(action.houseId, action.territoryId)

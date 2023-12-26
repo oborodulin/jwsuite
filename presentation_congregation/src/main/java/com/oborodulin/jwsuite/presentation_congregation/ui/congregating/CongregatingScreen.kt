@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.oborodulin.home.common.ui.components.fab.AddFabComponent
 import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
@@ -164,29 +163,31 @@ fun CongregatingScreen(
     }
     val areSingleSelected by membersListViewModel.areSingleSelected.collectAsStateWithLifecycle()
     onFabChange {
-        when (CongregatingTabType.valueOf(tabType)) {
+        /*when (CongregatingTabType.valueOf(tabType)) {
             CongregatingTabType.CONGREGATIONS -> AddFabComponent(
                 modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
             ) { appState.mainNavigate(NavRoutes.Congregation.routeForCongregation()) }
 
             CongregatingTabType.GROUPS -> AddFabComponent(
                 modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
-            ) { appState.mainNavigate(NavRoutes.Group.routeForGroup()) }
+            ) { appState.mainNavigate(NavRoutes.Group.routeForGroup()) }*/
 
-            CongregatingTabType.MEMBERS ->
+        if (CongregatingTabType.valueOf(tabType) == CongregatingTabType.MEMBERS) {
+            /*CongregatingTabType.MEMBERS ->
                 when {
-                    session.containsRole(MemberRoleType.ADMIN) -> ExtFabComponent(
-                        modifier = Modifier.padding(bottom = 44.dp, end = 24.dp),
-                        enabled = areSingleSelected,
-                        imageVector = Icons.Outlined.Add,
-                        textResId = R.string.fab_add_member_role_text
-                    ) { appState.mainNavigate(NavRoutes.MemberRole.routeForMemberRole()) }
+                    session.containsRole(MemberRoleType.ADMIN) -> ExtFabComponent(*/
+            if (session.containsRole(MemberRoleType.ADMIN)) ExtFabComponent(
+                modifier = Modifier.padding(bottom = 44.dp, end = 24.dp),
+                enabled = areSingleSelected,
+                imageVector = Icons.Outlined.Add,
+                textResId = R.string.fab_add_member_role_text
+            ) { appState.mainNavigate(NavRoutes.MemberRole.routeForMemberRole()) }
 
-                    else -> AddFabComponent(
-                        modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
-                    ) { appState.mainNavigate(NavRoutes.Member.routeForMember()) }
-                }
+            /*else -> AddFabComponent(
+                modifier = Modifier.padding(bottom = 44.dp, end = 24.dp)
+            ) { appState.mainNavigate(NavRoutes.Member.routeForMember()) }*/
         }
+        //}
     }
     //onTopBarNavImageVectorChange(if (isShowSearchBar) Icons.Outlined.ArrowBack else null)
     val handleCloseAndClearSearch = {
@@ -232,7 +233,7 @@ fun CongregatingScreen(
                         CongregationMembersView(
                             //appState = appState,
                             //sharedViewModel = sharedViewModel,
-                            //membersListViewModel = membersListViewModel,
+                            membersListViewModel = membersListViewModel,
                             isService = isService.value.toBoolean()//,
                             //onActionBarSubtitleChange = onActionBarSubtitleChange
                         )
@@ -244,7 +245,7 @@ fun CongregatingScreen(
                         GroupMembersView(
                             appState = appState,
                             //sharedViewModel = sharedViewModel,
-                            //membersListViewModel = membersListViewModel,
+                            membersListViewModel = membersListViewModel,
                             isService = isService.value.toBoolean()
                         )
                     },
@@ -259,9 +260,9 @@ fun CongregatingScreen(
                             )
 
                             else -> MembersView(
-                                appState = appState,
+                                //appState = appState,
                                 //sharedViewModel = sharedViewModel,
-                                //membersListViewModel = membersListViewModel
+                                membersListViewModel = membersListViewModel
                             )
                         }
                     }
@@ -287,7 +288,7 @@ fun CongregationMembersView(
     //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
-    //membersListViewModel: MembersListViewModel,
+    membersListViewModel: MembersListViewModel,
     isService: Boolean = false//,
     //onActionBarSubtitleChange: (String) -> Unit
 ) {
@@ -335,6 +336,7 @@ fun CongregationMembersView(
                 )
         ) {
             MembersListView(
+                membersListViewModel = membersListViewModel,
                 congregationInput = selectedCongregationId?.let {
                     NavigationInput.CongregationInput(it)
                 },
@@ -351,7 +353,7 @@ fun GroupMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    //membersListViewModel: MembersListViewModel,
+    membersListViewModel: MembersListViewModel,
     isService: Boolean = false
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
@@ -396,6 +398,7 @@ fun GroupMembersView(
                 )
         ) {
             MembersListView(
+                membersListViewModel = membersListViewModel,
                 groupInput = selectedGroupId?.let { NavigationInput.GroupInput(it) },
                 isService = isService,
                 isEditableList = false
@@ -437,7 +440,7 @@ fun MemberRolesView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(isService = isService)
+            MembersListView(membersListViewModel = membersListViewModel, isService = isService)
         }
         Box(
             modifier = Modifier
@@ -461,9 +464,9 @@ fun MemberRolesView(
 
 @Composable
 fun MembersView(
-    appState: AppState,
+    //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    //membersListViewModel: MembersListViewModel
+    membersListViewModel: MembersListViewModel
 ) {
     Timber.tag(TAG).d("MembersView(...) called")
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
@@ -491,7 +494,7 @@ fun MembersView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MembersListView(isService = false)
+            MembersListView(membersListViewModel = membersListViewModel, isService = false)
         }
         Box(
             modifier = Modifier
