@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.presentation_territory.ui.housing
+package com.oborodulin.jwsuite.presentation_territory.ui.reporting.rooms
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -64,13 +64,13 @@ import java.util.EnumMap
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Housing.HousingScreen"
+private const val TAG = "Reporting.HousingScreen"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HousingScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    housesViewModel: HousingViewModelImpl = hiltViewModel(),
+    housesViewModel: PartialRoomsViewModelImpl = hiltViewModel(),
     defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,
@@ -115,8 +115,8 @@ fun HousingScreen(
         )
     }
     Timber.tag(TAG).d("Houses: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<HousingFields, InputFocusRequester>(HousingFields::class.java)
-    enumValues<HousingFields>().forEach {
+    val focusRequesters = EnumMap<PartialRoomsFields, InputFocusRequester>(PartialRoomsFields::class.java)
+    enumValues<PartialRoomsFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
@@ -150,14 +150,8 @@ fun HousingScreen(
                 appState.mainNavigateUp()
                 appState.navigateToBarRoute(NavRoutes.Territoring.route)
             }
-            onActionBarChange(null)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
+            onActionBarChange {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(4.dp),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -166,17 +160,17 @@ fun HousingScreen(
                     ) {
                         BarLocalityComboBox(
                             modifier = Modifier
-                                .focusRequester(focusRequesters[HousingFields.HOUSES_LOCALITY]!!.focusRequester)
+                                .focusRequester(focusRequesters[PartialRoomsFields.HOUSES_LOCALITY]!!.focusRequester)
                                 .onFocusChanged { focusState ->
                                     housesViewModel.onTextFieldFocusChanged(
-                                        focusedField = HousingFields.HOUSES_LOCALITY,
+                                        focusedField = PartialRoomsFields.HOUSES_LOCALITY,
                                         isFocused = focusState.isFocused
                                     )
                                 },
                             inputWrapper = locality,
                             onValueChange = {
                                 housesViewModel.onTextFieldEntered(
-                                    HousingInputEvent.Locality(it)
+                                    PartialRoomsInputEvent.Locality(it)
                                 )
                             }
                         )
@@ -188,21 +182,27 @@ fun HousingScreen(
                     ) {
                         BarStreetComboBox(
                             modifier = Modifier
-                                .focusRequester(focusRequesters[HousingFields.HOUSES_STREET]!!.focusRequester)
+                                .focusRequester(focusRequesters[PartialRoomsFields.PARTIAL_ROOM_HOUSES]!!.focusRequester)
                                 .onFocusChanged { focusState ->
                                     housesViewModel.onTextFieldFocusChanged(
-                                        focusedField = HousingFields.HOUSES_STREET,
+                                        focusedField = PartialRoomsFields.PARTIAL_ROOM_HOUSES,
                                         isFocused = focusState.isFocused
                                     )
                                 },
                             localityId = locality.item?.itemId,
                             inputWrapper = street,
                             onValueChange = {
-                                housesViewModel.onTextFieldEntered(HousingInputEvent.Street(it))
+                                housesViewModel.onTextFieldEntered(PartialRoomsInputEvent.Street(it))
                             }
                         )
                     }
                 }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 CustomScrollableTabRow(
                     listOf(
                         TabRowItem(
@@ -238,7 +238,7 @@ fun HousingScreen(
         housesViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is HousingUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
+                is PartialRoomsUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen -> {
                     appState.mainNavigate(it.navRoute)
                 }
             }

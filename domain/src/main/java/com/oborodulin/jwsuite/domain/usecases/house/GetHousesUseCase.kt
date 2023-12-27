@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class GetHousesUseCase(
-    configuration: Configuration,
-    private val housesRepository: HousesRepository
+    configuration: Configuration, private val housesRepository: HousesRepository
 ) : UseCase<GetHousesUseCase.Request, GetHousesUseCase.Response>(configuration) {
     override fun process(request: Request) = when (request.territoryId) {
         null -> when (request.streetId) {

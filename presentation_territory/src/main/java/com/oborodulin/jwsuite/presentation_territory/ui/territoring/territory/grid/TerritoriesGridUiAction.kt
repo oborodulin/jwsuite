@@ -24,5 +24,6 @@ sealed class TerritoriesGridUiAction(override val isEmitJob: Boolean = true) : U
 
     // Process:
     data object ProcessInitConfirmation : TerritoriesGridUiAction(false)
+    data object ProcessConfirmation : TerritoriesGridUiAction(false)
     data object Process : TerritoriesGridUiAction()
 }

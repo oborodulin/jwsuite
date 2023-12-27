@@ -157,6 +157,10 @@ fun TerritoriesGridView(
                 is TerritoriesGridUiSingleEvent.OpenHandOutConfirmationScreen -> {
                     appState.mainNavigate(it.navRoute)
                 }
+
+                is TerritoriesGridUiSingleEvent.OpenProcessConfirmationScreen -> {
+                    appState.mainNavigate(it.navRoute)
+                }
             }
         }
     }

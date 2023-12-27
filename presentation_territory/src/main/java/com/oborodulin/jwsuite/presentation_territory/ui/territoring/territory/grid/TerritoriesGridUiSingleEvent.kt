@@ -6,5 +6,7 @@ sealed class TerritoriesGridUiSingleEvent : UiSingleEvent {
     data class OpenTerritoryScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
     data class OpenHandOutConfirmationScreen(val navRoute: String) :
         TerritoriesGridUiSingleEvent()
+    data class OpenProcessConfirmationScreen(val navRoute: String) :
+        TerritoriesGridUiSingleEvent()
 }
 

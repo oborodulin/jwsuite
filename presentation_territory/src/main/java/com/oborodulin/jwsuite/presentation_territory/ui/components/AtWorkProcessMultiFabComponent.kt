@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.dialog.alert.AlertDialogComponent
 import com.oborodulin.home.common.ui.components.fab.MinFabItem
@@ -88,7 +89,7 @@ fun AtWorkProcessMultiFabComponent(
     AlertDialogComponent(
         isShow = isShowAlert,
         titleResId = com.oborodulin.home.common.R.string.dlg_confirm_title,
-        text = "Обработать отмеченные участки?"
+        text = stringResource(R.string.dlg_confirm_process_territories)
     ) { territoriesGridViewModel.submitAction(TerritoriesGridUiAction.Process) }
 
     MultiFabComponent(

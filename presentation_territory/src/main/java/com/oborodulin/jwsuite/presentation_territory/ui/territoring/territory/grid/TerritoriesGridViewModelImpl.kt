@@ -178,6 +178,12 @@ class TerritoriesGridViewModelImpl @Inject constructor(
                 null
             }
 
+            is TerritoriesGridUiAction.ProcessConfirmation -> submitSingleEvent(
+                TerritoriesGridUiSingleEvent.OpenProcessConfirmationScreen(
+                    NavRoutes.ProcessConfirmation.routeForProcessConfirmation()
+                )
+            )
+
             is TerritoriesGridUiAction.Process -> processTerritories()
         }
         return job

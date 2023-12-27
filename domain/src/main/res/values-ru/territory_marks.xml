@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="territory_marks">
+        <!--PP -->
+        <item>повторное посещение</item>
+        <!--VPP -->
+        <item>возможное повторное посещение</item>
+        <!--GO -->
+        <item>грубый отказ</item>
+        <!--GUJ -->
+        <item>подтверждённый грубый отказ</item>
+        <!--PNZ -->
+        <item>просили не заходить</item>
+        <!--YG -->
+        <item>яростный гонитель</item>
+        <!--IT -->
+        <item>инноязычная территория</item>
+        <!--OT -->
+        <item>отступник</item>
+        <!--SI -->
+        <item>возвещатель</item>
+    </string-array>
+</resources>

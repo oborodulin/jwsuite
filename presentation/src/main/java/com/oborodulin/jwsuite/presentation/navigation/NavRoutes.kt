@@ -989,7 +989,7 @@ sealed class NavRoutes constructor(
         iconImageVector = Icons.Outlined.ThumbUp,
         titleResId = R.string.nav_item_territory_at_work_confirmation
     ) {
-        fun routeProcessConfirmation(): String {
+        fun routeForProcessConfirmation(): String {
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("ProcessConfirmation - routeProcessConfirmation: '%s'", this.route)
             return this.route

@@ -83,6 +83,10 @@
     <!--Обработка участка-->
     <string name="territory_at_work_process_subheader">Обработка участка</string>
     <string name="territory_delivery_date_hint">Дата обработки</string>
+    <!--дома-->
+    <string name="territory_houses_process">Дома участка №%1$s</string>
+    <!--квартиры-->
+    <string name="territory_rooms_process">Квартиры участка №%1$s</string>
     <!--Детали участка-->
     <string name="territory_street_hint">Улица участка</string>
     <string name="territory_house_hint">Дом участка</string>
@@ -94,6 +98,7 @@
     <string name="territory_street_new_subheader">Новая улица участка</string>
     <string name="territory_street_is_even_side_hint">Чётная сторона?</string>
     <string name="territory_street_estimated_houses_hint">Кол-во домов</string>
+    <string name="territory_street_placeholder">Улица участка…</string>
     <!--Дом участка-->
     <string name="territory_house_subheader">Дом участка</string>
     <string name="territory_house_new_subheader">Новый дом участка</string>
@@ -143,6 +148,7 @@
     <string name="dlg_title_select_territory_floor">Выберите этаж участка</string>
     <string name="dlg_title_select_territory_room">Выберите квартиру участка</string>
     <!--Подтверждения-->
+    <string name="dlg_confirm_process_territories">Обработать отмеченные участки?</string>
     <!--удаления-->
     <string name="dlg_confirm_del_house">Удалить дом на улице №%1$s?</string>
     <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>

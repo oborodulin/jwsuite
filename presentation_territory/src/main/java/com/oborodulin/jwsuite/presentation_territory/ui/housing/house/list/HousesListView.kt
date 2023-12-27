@@ -24,6 +24,7 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.list.RoomsListUiAction
@@ -40,17 +41,26 @@ fun HousesListView(
     roomsListViewModel: RoomsListViewModelImpl = hiltViewModel(),
     navController: NavController,
     streetInput: StreetInput? = null,
-    territoryInput: TerritoryInput? = null
+    territoryInput: TerritoryInput? = null,
+    territoryStreetInput: TerritoryStreetInput? = null
 ) {
     Timber.tag(TAG).d(
-        "HousesListView(...) called: streetInput = %s; territoryInput = %s",
-        streetInput, territoryInput
+        "HousesListView(...) called: streetInput = %s; territoryInput = %s; territoryStreetInput = %s",
+        streetInput, territoryInput, territoryStreetInput
     )
-    LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId) {
+    LaunchedEffect(
+        streetInput?.streetId,
+        territoryInput?.territoryId ?: territoryStreetInput?.territoryId,
+        territoryStreetInput?.territoryStreetId
+    ) {
         Timber.tag(TAG)
             .d("HousesListView -> LaunchedEffect() BEFORE collect ui state flow")
         housesListViewModel.submitAction(
-            HousesListUiAction.Load(streetInput?.streetId, territoryInput?.territoryId)
+            HousesListUiAction.Load(
+                streetId = streetInput?.streetId,
+                territoryId = territoryInput?.territoryId ?: territoryStreetInput?.territoryId,
+                territoryStreetId = territoryStreetInput?.territoryStreetId
+            )
         )
     }
     housesListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
