@@ -57,6 +57,9 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryToTerritoryCategoryEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewListToTerritoryLocationsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewToTerritoryLocationMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report.TerritoryHouseReportViewToTerritoryHouseReportMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report.TerritoryReportViewToTerritoryReportMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report.TerritoryRoomReportViewToTerritoryRoomReportMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.street.TerritoryStreetMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.street.TerritoryStreetToTerritoryStreetEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.street.TerritoryStreetViewListToTerritoryStreetsListMapper
@@ -398,6 +401,34 @@ object TerritoryMappersModule {
     ): TerritoryStreetHouseViewListToTerritoryStreetsListMapper =
         TerritoryStreetHouseViewListToTerritoryStreetsListMapper(
             territoryStreetMapper = territoryStreetMapper, territoryMapper = territoryMapper
+        )
+
+    //Territory Reports:
+    @Singleton
+    @Provides
+    fun provideTerritoryReportViewToTerritoryReportMapper(
+        @ApplicationContext ctx: Context
+    ): TerritoryReportViewToTerritoryReportMapper =
+        TerritoryReportViewToTerritoryReportMapper(ctx = ctx)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryHouseReportViewToTerritoryHouseReportMapper(
+        houseMapper: HouseViewToHouseMapper,
+        territoryReportMapper: TerritoryReportViewToTerritoryReportMapper
+    ): TerritoryHouseReportViewToTerritoryHouseReportMapper =
+        TerritoryHouseReportViewToTerritoryHouseReportMapper(
+            houseMapper = houseMapper, territoryReportMapper = territoryReportMapper
+        )
+
+    @Singleton
+    @Provides
+    fun provideTerritoryRoomReportViewToTerritoryRoomReportMapper(
+        roomMapper: RoomViewToRoomMapper,
+        territoryReportMapper: TerritoryReportViewToTerritoryReportMapper
+    ): TerritoryRoomReportViewToTerritoryRoomReportMapper =
+        TerritoryRoomReportViewToTerritoryRoomReportMapper(
+            roomMapper = roomMapper, territoryReportMapper = territoryReportMapper
         )
 
     // Territories:

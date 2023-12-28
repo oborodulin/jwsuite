@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.ComponentUiAction
+import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.components.list.items.ListItemComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
@@ -63,29 +64,49 @@ fun HousesListView(
             )
         )
     }
+    val searchText by housesListViewModel.searchText.collectAsStateWithLifecycle()
     housesListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            when (territoryInput?.territoryId) {
-                null -> StreetHousesList(
-                    houses = it,
-                    onEdit = { house ->
-                        housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.id))
-                    },
-                    onDelete = { house ->
-                        housesListViewModel.submitAction(HousesListUiAction.DeleteHouse(house.id))
+            when (territoryStreetInput?.territoryId) {
+                null -> when (territoryInput?.territoryId) {
+                    null -> EditableListViewComponent(
+                        items = it,
+                        searchedText = searchText.text,
+                        dlgConfirmDelResId = R.string.dlg_confirm_del_house,
+                        emptyListResId = R.string.houses_list_empty_text,
+                        onEdit = { house ->
+                            housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.itemId!!))
+                        },
+                        onDelete = { house ->
+                            housesListViewModel.submitAction(HousesListUiAction.DeleteHouse(house.itemId!!))
+                        }
+                    ) { house ->
+                        housesListViewModel.singleSelectItem(house)
+                        roomsListViewModel.submitAction(RoomsListUiAction.Load(houseId = house.itemId!!))
                     }
-                ) { house ->
-                    housesListViewModel.singleSelectItem(house)
-                    roomsListViewModel.submitAction(RoomsListUiAction.Load(houseId = house.id))
+
+                    else -> EditableListViewComponent(
+                        items = it,
+                        searchedText = searchText.text,
+                        dlgConfirmDelResId = R.string.dlg_confirm_del_territory_house,
+                        emptyListResId = R.string.territory_houses_list_empty_text,
+                        onDelete = { house ->
+                            housesListViewModel.submitAction(
+                                HousesListUiAction.DeleteTerritoryHouse(house.itemId!!)
+                            )
+                        }
+                    ) { house ->
+                        housesListViewModel.singleSelectItem(house)
+                    }
                 }
 
-                else -> TerritoryHousesList(
+                else -> PrecessedTerritoryHousesList(
                     houses = it,
                     onProcess = { house ->
                         housesListViewModel.submitAction(HousesListUiAction.EditHouse(house.id))
                     },
-                    onDelete = { house ->
+                    onReport = { house ->
                         housesListViewModel.submitAction(
                             HousesListUiAction.DeleteTerritoryHouse(house.id)
                         )
@@ -111,46 +132,10 @@ fun HousesListView(
 }
 
 @Composable
-fun StreetHousesList(
+fun PrecessedTerritoryHousesList(
     houses: List<HousesListItem>,
-    onEdit: (HousesListItem) -> Unit,
-    onDelete: (HousesListItem) -> Unit,
-    onClick: (HousesListItem) -> Unit
-) {
-    Timber.tag(TAG).d("StreetHousesList(...) called: size = %d", houses.size)
-    if (houses.isNotEmpty()) {
-        val listState =
-            rememberLazyListState(initialFirstVisibleItemIndex = houses.filter { it.selected }
-                .getOrNull(0)?.let { houses.indexOf(it) } ?: 0)
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .padding(8.dp)
-                .focusable(enabled = true)
-        ) {
-            itemsIndexed(houses, key = { _, item -> item.id }) { _, house ->
-                ListItemComponent(
-                    item = house,
-                    itemActions = listOf(
-                        ComponentUiAction.EditListItem { onEdit(house) },
-                        ComponentUiAction.DeleteListItem(
-                            stringResource(R.string.dlg_confirm_del_house, house.houseFullNum)
-                        ) { onDelete(house) }),
-                    selected = house.selected,
-                    onClick = { onClick(house) }
-                )
-            }
-        }
-    } else {
-        EmptyListTextComponent(R.string.houses_list_empty_text)
-    }
-}
-
-@Composable
-fun TerritoryHousesList(
-    houses: List<HousesListItem>,
+    onReport: (HousesListItem) -> Unit,
     onProcess: (HousesListItem) -> Unit,
-    onDelete: (HousesListItem) -> Unit,
     onClick: (HousesListItem) -> Unit
 ) {
     Timber.tag(TAG).d("TerritoryHousesList(...) called: size = %d", houses.size)
@@ -174,7 +159,7 @@ fun TerritoryHousesList(
                                 R.string.dlg_confirm_del_territory_house,
                                 house.houseFullNum
                             )
-                        ) { onDelete(house) }),
+                        ) { onReport(house) }),
                     selected = house.selected,
                     onClick = { onClick(house) }
                 )
@@ -191,12 +176,12 @@ fun TerritoryHousesList(
 fun PreviewHousesEditableList() {
     JWSuiteTheme {
         Surface {
-            StreetHousesList(
+            /*StreetHousesList(
                 houses = HousesListViewModelImpl.previewList(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
                 onClick = {}
-            )
+            )*/
         }
     }
 }

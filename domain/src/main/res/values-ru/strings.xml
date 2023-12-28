@@ -8,6 +8,9 @@
     <string name="entrance_expr">подъезд</string>
     <string name="floor_expr">этаж</string>
     <string name="house_expr">д.</string>
+    <string name="male_expr">м.</string>
+    <string name="female_expr">ж.</string>
+    <string name="age_expr">лет</string>
     <!--Признаки -->
     <string name="territory_business_mark">д</string>
 

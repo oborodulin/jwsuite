@@ -23,10 +23,10 @@ data class HousesListItem(
     val info: List<String> = emptyList()
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = houseFullNum.plus(territoryFullCardNum?.let { " [$it]" }
-        .orEmpty()), // "$streetFullName, $houseExpr $houseFullNum"
+    headline = "$houseExpr $houseFullNum", // "$streetFullName, $houseExpr $houseFullNum"
     supportingText = streetFullName.plus(zipCode?.let { ", $it" }.orEmpty())
-        .plus(if (info.isNotEmpty()) "\n${info.joinToString(", ")}" else "")
+        .plus(if (info.isNotEmpty()) "\n${info.joinToString(", ")} " else "")
+        .plus(territoryFullCardNum?.let { "[$it]" }.orEmpty())
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Top
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -65,6 +66,7 @@ fun ListItemComponent(
     selected: Boolean = false,
     background: Color = Color.Transparent,
     itemActions: List<ComponentUiAction> = emptyList(),
+    actionsContent: @Composable (ColumnScope.() -> Unit)? = null,
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     content: @Composable (() -> Unit)? = null
 ) {
@@ -80,8 +82,8 @@ fun ListItemComponent(
     // https://m3.material.io/components/lists/specs
     // https://stackoverflow.com/questions/69707827/jetpack-compose-find-how-many-lines-a-text-will-take-before-composition
     val cardHeight = when {
-        itemActions.size <= 1 && item.supportingText.isNullOrEmpty() -> 56.dp
-        itemActions.size <= 1 && (!item.supportingText.isNullOrEmpty() && !item.supportingText.contains(
+        actionsContent == null && itemActions.size <= 1 && item.supportingText.isNullOrEmpty() -> 56.dp
+        actionsContent == null && itemActions.size <= 1 && (!item.supportingText.isNullOrEmpty() && !item.supportingText.contains(
             "\n"
         )) -> 72.dp
 
@@ -216,6 +218,16 @@ fun ListItemComponent(
                         itemIndex++
                         if (itemIndex < itemActions.size) Spacer(Modifier.height(spaceVal.dp))
                     }
+                }
+            } else {
+                actionsContent?.let {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(widthColActions),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.End
+                    ) { it() }
                 }
             }
         }

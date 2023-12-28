@@ -156,9 +156,9 @@
     <string name="dlg_confirm_del_room">Удалить квартиру №%1$s?</string>
     <string name="dlg_confirm_del_territory_category">Удалить категорию участка %1$s?</string>
     <string name="dlg_confirm_del_territory">Удалить участок %1$s?</string>
-    <string name="dlg_confirm_del_territory_street">Удалить улицу участка %1$s?</string>
-    <string name="dlg_confirm_del_territory_house">Удалить дом участка №%1$s?</string>
-    <string name="dlg_confirm_del_territory_room">Удалить квартиру участка %1$s?</string>
+    <string name="dlg_confirm_del_territory_street">Удалить из участка улицу %1$s?</string>
+    <string name="dlg_confirm_del_territory_house">Удалить из участка дом №%1$s?</string>
+    <string name="dlg_confirm_del_territory_room">Удалить из участка квартиру %1$s?</string>
     <!--отмена изменений-->
     <string name="dlg_confirm_cancel_changes_hand_out">Выдача участков не сохранится</string>
     <string name="dlg_confirm_cancel_changes_process">Обработка участка не сохранится</string>

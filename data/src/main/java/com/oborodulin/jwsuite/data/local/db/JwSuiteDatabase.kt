@@ -93,9 +93,12 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryHouseReportView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberLastReceivingDateView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryRoomReportView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
@@ -149,7 +152,9 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
-        RoleTransferObjectView::class, MemberRoleTransferObjectView::class //TerritoryInfoView::class
+        RoleTransferObjectView::class, MemberRoleTransferObjectView::class,
+        TerritoryReportView::class, TerritoryHouseReportView::class, TerritoryRoomReportView::class
+            //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true
 )
