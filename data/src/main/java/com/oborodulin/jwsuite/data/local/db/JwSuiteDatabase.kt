@@ -97,7 +97,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryHouseReport
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberLastReceivingDateView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryRoomReportView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
@@ -153,7 +152,7 @@ private const val TAG = "JwSuiteDatabase"
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
         RoleTransferObjectView::class, MemberRoleTransferObjectView::class,
-        TerritoryReportView::class, TerritoryHouseReportView::class, TerritoryRoomReportView::class
+        TerritoryHouseReportView::class, TerritoryRoomReportView::class
             //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true

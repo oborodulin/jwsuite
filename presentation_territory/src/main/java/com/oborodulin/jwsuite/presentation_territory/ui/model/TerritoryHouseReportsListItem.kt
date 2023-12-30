@@ -1,0 +1,37 @@
+package com.oborodulin.jwsuite.presentation_territory.ui.model
+
+import android.os.Parcelable
+import com.oborodulin.home.common.ui.model.ListItemModel
+import java.util.UUID
+
+data class TerritoryHouseReportsListItem(
+    val id: UUID,
+    val houseNum: Int,
+    val houseFullNum: String,
+    val streetFullName: String
+) : Parcelable, ListItemModel(
+    itemId = id,
+    headline = houseFullNum,
+    supportingText = streetFullName
+) {
+    override fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            "$houseFullNum$streetFullName",
+            "$houseFullNum $streetFullName"
+        )
+        return matchingCombinations.any { it.contains(query, ignoreCase = true) }
+    }
+}
+
+fun ListItemModel.toTerritoryHouseReportsListItem() = TerritoryHouseReportsListItem(
+    id = this.itemId ?: UUID.randomUUID(),
+    houseNum = this.headline.let { s ->
+        try {
+            s.substringBefore(s.first { it.isLetter() || it == '-' })
+        } catch (e: NoSuchElementException) {
+            s
+        }
+    }.toInt(),
+    houseFullNum = this.headline,
+    streetFullName = this.supportingText.orEmpty()
+)

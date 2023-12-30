@@ -1,16 +1,15 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report
 
-import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
-import com.oborodulin.jwsuite.domain.model.territory.TerritoryHouseReport
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryRoomReport
 import java.util.UUID
 
-class TerritoryHouseReportToTerritoryMemberReportEntityMapper :
-    Mapper<TerritoryHouseReport, TerritoryMemberReportEntity>,
-    NullableMapper<TerritoryHouseReport, TerritoryMemberReportEntity> {
-    override fun map(input: TerritoryHouseReport) = TerritoryMemberReportEntity(
+class TerritoryRoomReportToTerritoryMemberReportEntityMapper :
+    Mapper<TerritoryRoomReport, TerritoryMemberReportEntity>,
+    NullableMapper<TerritoryRoomReport, TerritoryMemberReportEntity> {
+    override fun map(input: TerritoryRoomReport) = TerritoryMemberReportEntity(
         territoryMemberReportId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
         territoryMemberMark = input.territoryReport.territoryMemberMark,
         languageCode = input.territoryReport.languageCode,
@@ -18,10 +17,10 @@ class TerritoryHouseReportToTerritoryMemberReportEntityMapper :
         age = input.territoryReport.age,
         isProcessed = input.territoryReport.isProcessed,
         territoryReportDesc = input.territoryReport.territoryReportDesc,
-        tmrHousesId = input.house.id,
+        tmrRoomsId = input.room.id,
         tmrTerritoryMembersId = input.territoryReport.territoryMemberId
     )
 
-    override fun nullableMap(input: TerritoryHouseReport?) =
+    override fun nullableMap(input: TerritoryRoomReport?) =
         input?.let { map(it) }
 }

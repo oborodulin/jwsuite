@@ -40,10 +40,11 @@ data class HousesListItem(
 fun ListItemModel.toHousesListItem() = HousesListItem(
     id = this.itemId ?: UUID.randomUUID(),
     houseNum = this.headline.let { s ->
+        val cs = s.substringAfter(' ')
         try {
-            s.substringBefore(s.first { it.isLetter() || it == '-' })
+            cs.substringBefore(cs.first { it.isLetter() || it == '-' })
         } catch (e: NoSuchElementException) {
-            s
+            cs
         }
     }.toInt(),
     houseFullNum = this.headline,

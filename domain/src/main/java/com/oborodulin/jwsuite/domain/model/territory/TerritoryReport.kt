@@ -8,8 +8,7 @@ import java.util.UUID
 
 data class TerritoryReport(
     val ctx: Context? = null,
-    val territoryId: UUID,
-    val territoryMemberId: UUID? = null,
+    val territoryMemberId: UUID,
     val territoryMemberMark: TerritoryMemberMark? = null,
     val languageCode: String? = null,
     val gender: Boolean? = null,
@@ -17,6 +16,10 @@ data class TerritoryReport(
     val isProcessed: Boolean = false,
     val territoryReportDesc: String? = null
 ) : DomainModel() {
+    val territoryMark = territoryMemberMark?.let { mark ->
+        ctx?.let { it.resources.getStringArray(R.array.territory_marks)[mark.ordinal] }
+            .orEmpty()
+    }
     val genderInfo = gender?.let {
         when (gender) {
             true -> ctx?.resources?.getString(R.string.male_expr).orEmpty()
@@ -26,9 +29,5 @@ data class TerritoryReport(
     val ageInfo = age?.let {
         "($it ${ctx?.resources?.getString(R.string.age_expr).orEmpty()})"
     }
-    val territoryMark = territoryMemberMark?.let { mark ->
-        ctx?.let { it.resources.getStringArray(R.array.territory_marks)[mark.ordinal] }
-            .orEmpty()
-    }
-    val info = listOfNotNull(genderInfo, ageInfo, territoryMark)
+    val info = listOfNotNull(territoryMark, genderInfo, ageInfo)
 }

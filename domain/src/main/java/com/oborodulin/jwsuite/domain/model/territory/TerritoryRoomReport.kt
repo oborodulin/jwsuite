@@ -4,5 +4,5 @@ import com.oborodulin.home.common.domain.model.DomainModel
 
 data class TerritoryRoomReport(
     val room: Room,
-    val territoryReport: TerritoryReport?
+    val territoryReport: TerritoryReport
 ) : DomainModel()
