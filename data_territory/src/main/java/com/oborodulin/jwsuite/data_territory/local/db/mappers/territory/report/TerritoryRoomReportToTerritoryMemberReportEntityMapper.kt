@@ -11,7 +11,7 @@ class TerritoryRoomReportToTerritoryMemberReportEntityMapper :
     NullableMapper<TerritoryRoomReport, TerritoryMemberReportEntity> {
     override fun map(input: TerritoryRoomReport) = TerritoryMemberReportEntity(
         territoryMemberReportId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
-        territoryMemberMark = input.territoryReport.territoryMemberMark,
+        territoryReportMark = input.territoryReport.territoryReportMark,
         languageCode = input.territoryReport.languageCode,
         gender = input.territoryReport.gender,
         age = input.territoryReport.age,

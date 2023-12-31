@@ -13,7 +13,7 @@ import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
-import com.oborodulin.jwsuite.domain.types.TerritoryMemberMark
+import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.oborodulin.jwsuite.domain.types.VillageType
 import java.math.BigDecimal
 import java.time.*
@@ -115,10 +115,10 @@ object JwSuiteTypeConverters {
 
     //-----------------------------
     @TypeConverter
-    fun toTerritoryMemberMark(value: String) = enumValueOf<TerritoryMemberMark>(value)
+    fun toTerritoryReportMark(value: String) = enumValueOf<TerritoryReportMark>(value)
 
     @TypeConverter
-    fun fromTerritoryMemberMark(value: TerritoryMemberMark) = value.name
+    fun fromTerritoryReportMark(value: TerritoryReportMark) = value.name
 
     //-----------------------------
     @TypeConverter

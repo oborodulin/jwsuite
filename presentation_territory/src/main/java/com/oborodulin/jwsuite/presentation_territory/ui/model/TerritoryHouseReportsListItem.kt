@@ -8,7 +8,13 @@ data class TerritoryHouseReportsListItem(
     val id: UUID,
     val houseNum: Int,
     val houseFullNum: String,
-    val streetFullName: String
+    val streetFullName: String,
+    val territoryMemberId: UUID,
+    val territoryShortMark: String? = null,
+    val languageCode: String? = null,
+    val genderInfo: String? = null,
+    val ageInfo: String? = null,
+    val isProcessed: Boolean = false
 ) : Parcelable, ListItemModel(
     itemId = id,
     headline = houseFullNum,
@@ -16,13 +22,13 @@ data class TerritoryHouseReportsListItem(
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
-            "$houseFullNum$streetFullName",
-            "$houseFullNum $streetFullName"
+            "${territoryShortMark.orEmpty()}$houseFullNum$streetFullName",
+            "${territoryShortMark.orEmpty()} $houseFullNum $streetFullName"
         )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
 }
-
+/*
 fun ListItemModel.toTerritoryHouseReportsListItem() = TerritoryHouseReportsListItem(
     id = this.itemId ?: UUID.randomUUID(),
     houseNum = this.headline.let { s ->
@@ -34,4 +40,4 @@ fun ListItemModel.toTerritoryHouseReportsListItem() = TerritoryHouseReportsListI
     }.toInt(),
     houseFullNum = this.headline,
     streetFullName = this.supportingText.orEmpty()
-)
+)*/

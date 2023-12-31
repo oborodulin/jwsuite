@@ -161,7 +161,7 @@ fun PartialHousesScreen(
         partialHousesViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is PartialHousesUiSingleEvent.OpenHouseProcessScreen -> {
+                is PartialHousesUiSingleEvent.OpenMemberReportScreen -> {
                     appState.mainNavigate(it.navRoute)
                 }
             }

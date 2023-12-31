@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report
 
-import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
@@ -12,7 +11,7 @@ class TerritoryHouseReportToTerritoryMemberReportEntityMapper :
     NullableMapper<TerritoryHouseReport, TerritoryMemberReportEntity> {
     override fun map(input: TerritoryHouseReport) = TerritoryMemberReportEntity(
         territoryMemberReportId = input.id ?: input.apply { id = UUID.randomUUID() }.id!!,
-        territoryMemberMark = input.territoryReport.territoryMemberMark,
+        territoryReportMark = input.territoryReport.territoryReportMark,
         languageCode = input.territoryReport.languageCode,
         gender = input.territoryReport.gender,
         age = input.territoryReport.age,

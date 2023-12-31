@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.domain.types
 
 // resource: domain/territory_marks.xml
 
-enum class TerritoryMemberMark {
+enum class TerritoryReportMark {
     PP,     //повторное посещение
     VPP,    //возможное повторное посещение
     GO,     //грубый отказ

@@ -110,6 +110,8 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.Hous
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHousesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HousesListToHousesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryHouseReportToTerritoryHouseReportsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
@@ -405,6 +407,17 @@ object TerritoringModule {
     @Provides
     fun provideRoomsListToRoomsListItemMapper(mapper: RoomToRoomsListItemMapper): RoomsListToRoomsListItemMapper =
         RoomsListToRoomsListItemMapper(mapper = mapper)
+
+    //Territory House Report:
+    @Singleton
+    @Provides
+    fun provideTerritoryHouseReportToTerritoryHouseReportsListItemMapper(): TerritoryHouseReportToTerritoryHouseReportsListItemMapper =
+        TerritoryHouseReportToTerritoryHouseReportsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryHouseReportsListToTerritoryHouseReportsListItemMapper(mapper: TerritoryHouseReportToTerritoryHouseReportsListItemMapper): TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper =
+        TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper(mapper = mapper)
 
     // CONVERTERS:
     // Territory Category:

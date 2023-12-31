@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.reporting.houses
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -11,8 +12,15 @@ import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoringUi
+import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
+import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHouseReportsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -23,9 +31,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Reporting.PartialHousesViewModelImpl"
@@ -33,9 +44,12 @@ private const val TAG = "Reporting.PartialHousesViewModelImpl"
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class PartialHousesViewModelImpl @Inject constructor(
-    private val state: SavedStateHandle
-) : PartialHousesViewModel,
-    SingleViewModel<Any, UiState<Any>, PartialHousesUiAction, PartialHousesUiSingleEvent, PartialHousesFields, InputWrapper>(
+    private val state: SavedStateHandle,
+    private val useCases: RegionUseCases,
+    private val converter: RegionsListConverter
+) :
+    PartialHousesViewModel,
+    SingleViewModel<List<TerritoryHouseReportsListItem>, UiState<List<TerritoryHouseReportsListItem>>, PartialHousesUiAction, PartialHousesUiSingleEvent, PartialHousesFields, InputWrapper>(
         state
     ) {
     override val territoryStreet: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -44,50 +58,60 @@ class PartialHousesViewModelImpl @Inject constructor(
         )
     }
 
-    override fun initState(): UiState<TerritoringUi> = UiState.Loading
+    override fun initState(): UiState<List<TerritoryHouseReportsListItem>> = UiState.Loading
 
-    override suspend fun handleAction(action: PartialHousesUiAction) = null
-
-    /*        if (LOG_FLOW_ACTION) Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
-            val job = when (action) {
-                is HousingUiAction.LoadLocations -> loadTerritoryLocations(
-                    action.congregationId,
-                    action.isPrivateSector
-                )
-
-                is HousingUiAction.HandOutTerritoriesConfirmation -> {
-                    submitSingleEvent(
-                        HousingUiSingleEvent.OpenHandOutTerritoriesConfirmationScreen(
-                            NavRoutes.HandOutTerritoriesConfirmation.routeForHandOutTerritoriesConfirmation()
-                        )
-                    )
-                }
-
-            }
-            return job
-        }
-        private fun loadTerritoryLocations(congregationId: UUID?, isPrivateSector: Boolean = false):
-                Job {
-            Timber.tag(TAG).d(
-                "loadTerritoryLocations(...) called: congregationId = %s; isPrivateSector = %s",
-                congregationId,
-                isPrivateSector
+    override suspend fun handleAction(action: PartialHousesUiAction): Job {
+        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+            .d("handleAction(PartialHousesUiAction) called: %s", action.javaClass.name)
+        val job = when (action) {
+            is PartialHousesUiAction.Load -> loadPartialHouses(
+                action.territoryId, action.territoryStreetId
             )
-            val job = viewModelScope.launch(errorHandler) {
-                useCases.getTerritoryLocationsUseCase.execute(
-                    GetTerritoryLocationsUseCase.Request(congregationId, isPrivateSector)
-                )
-                    .map {
-                        converter.convert(it)
-                    }
-                    .collect {
-                        submitState(it)
-                    }
-            }
-            return job
-        }
 
-    */
+            is PartialHousesUiAction.EditMemberReport -> submitSingleEvent(
+                PartialHousesUiSingleEvent.OpenMemberReportScreen(
+                    NavRoutes.MemberReport.routeForMemberReport(
+                        NavigationInput.MemberReportInput(action.territoryMemberReportId)
+                    )
+                )
+            )
+
+            is PartialHousesUiAction.DeleteMemberReport -> deleteMemberReport(action.territoryMemberReportId)
+        }
+        return job
+    }
+
+    private fun loadPartialHouses(territoryId: UUID, territoryStreetId: UUID? = null): Job {
+        Timber.tag(TAG)
+            .d(
+                "loadPartialHouses(...) called: territoryId = %s; territoryStreetId = %s",
+                territoryId,
+                territoryStreetId
+            )
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.getHousesUseCase.execute(
+                GetHousesUseCase.Request(
+                    territoryId,
+                    territoryStreetId
+                )
+            ).map {
+                converter.convert(it)
+            }.collect {
+                submitState(it)
+            }
+        }
+        return job
+    }
+
+    private fun deleteMemberReport(memberReportId: UUID): Job {
+        Timber.tag(TAG).d("deleteMemberReport(...) called: memberReportId = %s", memberReportId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.deleteHouseUseCase.execute(DeleteHouseUseCase.Request(memberReportId))
+                .collect {}
+        }
+        return job
+    }
+
     override fun stateInputFields() = enumValues<PartialHousesFields>().map { it.name }
 
     /*override fun initFieldStatesByUiModel(uiModel: TerritoringUi): Job? {
@@ -146,7 +170,7 @@ class PartialHousesViewModelImpl @Inject constructor(
             object : PartialHousesViewModel {
                 override val uiStateErrorMsg = MutableStateFlow("")
                 override val isUiStateChanged = MutableStateFlow(true)
-                override val uiStateFlow = MutableStateFlow(UiState.Success(1)) // Any
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
                 override val singleEventFlow = Channel<PartialHousesUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -182,5 +206,32 @@ class PartialHousesViewModelImpl @Inject constructor(
                 ) {
                 }
             }
+
+        fun previewUiModel(ctx: Context) = listOf(
+            TerritoryHouseReportsListItem(
+                id = UUID.randomUUID(),
+                houseNum = 1,
+                houseFullNum = "1Б",
+                streetFullName = "ул. Независимости",
+                territoryMemberId = UUID.randomUUID(),
+                territoryShortMark = "ПП",
+                languageCode = null,
+                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
+                ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
+                isProcessed = false
+            ),
+            TerritoryHouseReportsListItem(
+                id = UUID.randomUUID(),
+                houseNum = 145,
+                houseFullNum = "145",
+                streetFullName = "ул. Независимости",
+                territoryMemberId = UUID.randomUUID(),
+                territoryShortMark = "ГО",
+                languageCode = null,
+                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
+                ageInfo = "(54 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
+                isProcessed = true
+            )
+        )
     }
 }

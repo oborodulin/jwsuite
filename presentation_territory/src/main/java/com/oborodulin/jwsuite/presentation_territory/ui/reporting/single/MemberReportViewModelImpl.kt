@@ -25,7 +25,7 @@ import com.oborodulin.home.common.util.toShortFormatString
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.model.congregation.Member
-import com.oborodulin.jwsuite.domain.types.TerritoryMemberMark
+import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
@@ -78,7 +78,7 @@ class MemberReportViewModelImpl @Inject constructor(
     DialogViewModel<MemberUi, UiState<MemberUi>, MemberReportUiAction, UiSingleEvent, MemberReportFields, InputWrapper>(
         state, MemberReportFields.MEMBER_REPORT_ID.name, MemberReportFields.MEMBER_REPORT_GENDER
     ) {
-    private val _memberTypes: MutableStateFlow<MutableMap<TerritoryMemberMark, String>> =
+    private val _memberTypes: MutableStateFlow<MutableMap<TerritoryReportMark, String>> =
         MutableStateFlow(mutableMapOf())
     override val territoryMarks = _memberTypes.asStateFlow()
 
@@ -149,7 +149,7 @@ class MemberReportViewModelImpl @Inject constructor(
 
     private fun initTerritoryMemberMarks(@ArrayRes arrayId: Int) {
         val resArray = resHelper.appContext.resources.getStringArray(arrayId)
-        for (type in TerritoryMemberMark.entries) _memberTypes.value[type] = resArray[type.ordinal]
+        for (type in TerritoryReportMark.entries) _memberTypes.value[type] = resArray[type.ordinal]
     }
 
     override fun initState(): UiState<MemberUi> = UiState.Loading
@@ -211,7 +211,7 @@ class MemberReportViewModelImpl @Inject constructor(
             patronymic = patronymic.value.value.ifEmpty { null },
             pseudonym = pseudonym.value.value,
             phoneNumber = phoneNumber.value.value,
-            memberType = TerritoryMemberMark.valueOf(reportMark.value.value),
+            memberType = TerritoryReportMark.valueOf(reportMark.value.value),
             movementDate = movementDate.value.value.toFullFormatOffsetDateTime(),
             dateOfBirth = dateOfBirthOffsetDateTime,
             dateOfBaptism = dateOfBaptism.value.value.toFullFormatOffsetDateTimeOrNull(),
@@ -500,7 +500,7 @@ class MemberReportViewModelImpl @Inject constructor(
                 override fun onSearchTextChange(text: TextFieldValue) {}
                 override fun clearSearchText() {}
 
-                override val territoryMarks = MutableStateFlow(mutableMapOf<TerritoryMemberMark, String>())
+                override val territoryMarks = MutableStateFlow(mutableMapOf<TerritoryReportMark, String>())
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
@@ -557,7 +557,7 @@ class MemberReportViewModelImpl @Inject constructor(
                 patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
                 pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
                 phoneNumber = "+79493851487",
-                memberType = TerritoryMemberMark.PREACHER,
+                memberType = TerritoryReportMark.PREACHER,
                 dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime(),
                 dateOfBaptism = "1994-06-14T14:29:10.212+03:00".toOffsetDateTime()
             )

@@ -33,8 +33,8 @@ private const val TAG = "Geo.RegionsListViewModelImpl"
 
 @HiltViewModel
 class RegionsListViewModelImpl @Inject constructor(
-    private val regionUseCases: RegionUseCases,
-    private val regionsListConverter: RegionsListConverter
+    private val useCases: RegionUseCases,
+    private val converter: RegionsListConverter
 ) : RegionsListViewModel,
     ListViewModel<List<RegionsListItem>, UiState<List<RegionsListItem>>, RegionsListUiAction, RegionsListUiSingleEvent>() {
 
@@ -62,8 +62,8 @@ class RegionsListViewModelImpl @Inject constructor(
     private fun loadRegions(): Job {
         Timber.tag(TAG).d("loadRegions() called")
         val job = viewModelScope.launch(errorHandler) {
-            regionUseCases.getRegionsUseCase.execute(GetRegionsUseCase.Request).map {
-                regionsListConverter.convert(it)
+            useCases.getRegionsUseCase.execute(GetRegionsUseCase.Request).map {
+                converter.convert(it)
             }.collect {
                 submitState(it)
             }
@@ -74,7 +74,7 @@ class RegionsListViewModelImpl @Inject constructor(
     private fun deleteRegion(regionId: UUID): Job {
         Timber.tag(TAG).d("deleteRegion() called: regionId = %s", regionId.toString())
         val job = viewModelScope.launch(errorHandler) {
-            regionUseCases.deleteRegionUseCase.execute(
+            useCases.deleteRegionUseCase.execute(
                 DeleteRegionUseCase.Request(regionId)
             ).collect {}
         }
@@ -101,7 +101,12 @@ class RegionsListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: RegionsListUiAction): Job? = null
             }
 

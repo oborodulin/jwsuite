@@ -13,7 +13,7 @@ class TerritoryMemberReportEntityToTerritoryReportMapper(private val ctx: Contex
         val territoryReport = TerritoryReport(
             ctx = ctx,
             territoryMemberId = input.tmrTerritoryMembersId,
-            territoryMemberMark = input.territoryMemberMark,
+            territoryReportMark = input.territoryReportMark,
             languageCode = input.languageCode,
             gender = input.gender,
             age = input.age,

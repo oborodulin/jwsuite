@@ -32,9 +32,11 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOC
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_LOGIN
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER_REPORT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER_ROLE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PARTIAL_HOUSES
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PROCESS_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
@@ -76,6 +78,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryH
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryRoomInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberReportInput
 import timber.log.Timber
 import java.util.UUID
 
@@ -141,6 +144,8 @@ private const val ARG_HOUSE_ID = "houseId"
 private const val ARG_ENTRANCE_ID = "entranceId"
 private const val ARG_FLOOR_ID = "floorId"
 private const val ARG_ROOM_ID = "roomId"
+
+private const val ARG_MEMBER_REPORT_ID = "memberReportId"
 
 /**
  * Created by oborodulin on 12.December.2021
@@ -993,6 +998,75 @@ sealed class NavRoutes constructor(
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("ProcessConfirmation - routeProcessConfirmation: '%s'", this.route)
             return this.route
+        }
+    }
+
+    data object MemberReport : NavRoutes(
+        route = String.format(ROUTE_MEMBER_REPORT, "$ARG_MEMBER_REPORT_ID={$ARG_MEMBER_REPORT_ID}"),
+        iconPainterResId = R.drawable.ic_maps_home_work_24,
+        titleResId = R.string.nav_item_territory_member_report,
+        arguments = listOf(navArgument(ARG_MEMBER_REPORT_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForMemberReport(memberReportInput: MemberReportInput? = null): String {
+            val route = when (memberReportInput) {
+                null -> baseRoute()
+                else -> String.format(ROUTE_MEMBER_REPORT, memberReportInput.memberReportId)
+            }
+            //val route = String.format(ROUTE_RATE, payerId)
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberReport -> routeForMemberReport: '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): MemberReportInput {
+            val memberReportInput = MemberReportInput(
+                UUID.fromString(entry.arguments?.getString(ARG_MEMBER_REPORT_ID).orEmpty())
+            )
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberReport -> fromEntry: '%s'", memberReportInput)
+            return memberReportInput
+        }
+    }
+
+    data object PartialHouses : NavRoutes(
+        route = String.format(
+            ROUTE_PARTIAL_HOUSES, "{$ARG_TERRITORY_ID}",
+            "$ARG_TERRITORY_STREET_ID={$ARG_TERRITORY_STREET_ID}"
+        ),
+        iconPainterResId = R.drawable.ic_territory_street_24,
+        titleResId = R.string.nav_item_territory_partial_houses,
+        arguments = listOf(navArgument(ARG_TERRITORY_ID) {
+            type = NavType.StringType
+            nullable = false
+            //defaultValue = null
+        }, navArgument(ARG_TERRITORY_STREET_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForPartialHouses(territoryStreetInput: TerritoryStreetInput? = null): String {
+            val route = String.format(
+                ROUTE_PARTIAL_HOUSES,
+                territoryStreetInput?.let { "${it.territoryId}" }.orEmpty(),
+                territoryStreetInput?.territoryStreetId?.let { "$ARG_TERRITORY_STREET_ID=${it}" }
+                    .orEmpty()
+            )
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("PartialHouses -> routeForPartialHouses: '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryStreetInput {
+            val territoryStreetInput = TerritoryStreetInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
+                entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.let { UUID.fromString(it) }
+            )
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("PartialHouses -> fromEntry: '%s'", territoryStreetInput)
+            return territoryStreetInput
         }
     }
 

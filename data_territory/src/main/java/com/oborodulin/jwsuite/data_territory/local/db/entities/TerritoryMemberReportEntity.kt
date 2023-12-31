@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
-import com.oborodulin.jwsuite.domain.types.TerritoryMemberMark
+import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -47,7 +47,7 @@ import java.util.UUID
 data class TerritoryMemberReportEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryMemberReportId: UUID = UUID.randomUUID(),
-    val territoryMemberMark: TerritoryMemberMark? = null,
+    val territoryReportMark: TerritoryReportMark? = null,
     val languageCode: String? = null,
     val gender: Boolean? = null,
     val age: Int? = null,
@@ -70,7 +70,7 @@ data class TerritoryMemberReportEntity(
             territoryMemberReportId: UUID = UUID.randomUUID(),
             territoryMemberId: UUID = UUID.randomUUID(),
             territoryStreetId: UUID? = null, houseId: UUID? = null, roomId: UUID? = null,
-            territoryMemberMark: TerritoryMemberMark? = null,
+            territoryReportMark: TerritoryReportMark? = null,
             languageCode: String? = null,
             gender: Boolean? = null, age: Int? = null,
             isProcessed: Boolean = false,
@@ -79,7 +79,7 @@ data class TerritoryMemberReportEntity(
             tmrTerritoryMembersId = territoryMemberId,
             territoryMemberReportId = territoryMemberReportId,
             tmrTerritoryStreetsId = territoryStreetId, tmrHousesId = houseId, tmrRoomsId = roomId,
-            territoryMemberMark = territoryMemberMark, languageCode = languageCode,
+            territoryReportMark = territoryReportMark, languageCode = languageCode,
             gender = gender, age = age,
             isProcessed = isProcessed, territoryReportDesc = territoryReportDesc
         )
@@ -99,7 +99,7 @@ data class TerritoryMemberReportEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Territory Member Report Entity ")
-            .append(" [territoryMemberMark = ").append(territoryMemberMark)
+            .append(" [territoryMemberMark = ").append(territoryReportMark)
             .append("; isProcessed = ").append(isProcessed)
         tmrTerritoryStreetsId?.let { str.append("; tmrTerritoryStreetsId = ").append(it) }
         tmrHousesId?.let { str.append("; tmrHousesId = ").append(it) }

@@ -38,6 +38,10 @@
     <string name="nav_item_entrance">Подъезд</string>
     <string name="nav_item_floor">Этаж</string>
     <string name="nav_item_room">Квартира</string>
+    <string name="nav_item_territory_member_report">Отчёт по участку</string>
+    <string name="nav_item_territory_partial_streets">Обработка улиц участка</string>
+    <string name="nav_item_territory_partial_houses">Обработка домов участка</string>
+    <string name="nav_item_territory_partial_rooms">Обработка квартир участка</string>
 
     <!--BUTTONS:-->
     <string name="btn_signup_lbl">Зарегистрировать</string>

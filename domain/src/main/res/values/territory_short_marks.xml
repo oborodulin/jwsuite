@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="territory_short_marks">
+        <!--PP -->
+        <item>ПП</item>
+        <!--VPP -->
+        <item>ВПП</item>
+        <!--GO -->
+        <item>ГО</item>
+        <!--GUJ -->
+        <item>ПГО</item>
+        <!--PNZ -->
+        <item>ПНЗ</item>
+        <!--YG -->
+        <item>ЯГ</item>
+        <!--IT -->
+        <item>ИТ</item>
+        <!--OT -->
+        <item>ОТ</item>
+        <!--SI -->
+        <item>СИ</item>
+    </string-array>
+</resources>
