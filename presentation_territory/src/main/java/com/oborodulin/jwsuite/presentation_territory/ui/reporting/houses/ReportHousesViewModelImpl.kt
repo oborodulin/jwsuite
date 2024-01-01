@@ -20,7 +20,7 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryHouseReportsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryReportHousesListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -49,7 +49,7 @@ class ReportHousesViewModelImpl @Inject constructor(
     private val converter: RegionsListConverter
 ) :
     ReportHousesViewModel,
-    SingleViewModel<List<TerritoryHouseReportsListItem>, UiState<List<TerritoryHouseReportsListItem>>, ReportHousesUiAction, ReportHousesUiSingleEvent, ReportHousesFields, InputWrapper>(
+    SingleViewModel<List<TerritoryReportHousesListItem>, UiState<List<TerritoryReportHousesListItem>>, ReportHousesUiAction, ReportHousesUiSingleEvent, ReportHousesFields, InputWrapper>(
         state
     ) {
     override val territoryStreet: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -58,7 +58,7 @@ class ReportHousesViewModelImpl @Inject constructor(
         )
     }
 
-    override fun initState(): UiState<List<TerritoryHouseReportsListItem>> = UiState.Loading
+    override fun initState(): UiState<List<TerritoryReportHousesListItem>> = UiState.Loading
 
     override suspend fun handleAction(action: ReportHousesUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
@@ -208,7 +208,7 @@ class ReportHousesViewModelImpl @Inject constructor(
             }
 
         fun previewUiModel(ctx: Context) = listOf(
-            TerritoryHouseReportsListItem(
+            TerritoryReportHousesListItem(
                 id = UUID.randomUUID(),
                 houseNum = 1,
                 houseFullNum = "1Б",
@@ -220,7 +220,7 @@ class ReportHousesViewModelImpl @Inject constructor(
                 ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
                 isProcessed = false
             ),
-            TerritoryHouseReportsListItem(
+            TerritoryReportHousesListItem(
                 id = UUID.randomUUID(),
                 houseNum = 145,
                 houseFullNum = "145",

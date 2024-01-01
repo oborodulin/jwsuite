@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
 import java.util.UUID
 
-data class TerritoryHouseReportsListItem(
+data class TerritoryReportHousesListItem(
     val id: UUID,
     val houseNum: Int,
     val houseFullNum: String,
