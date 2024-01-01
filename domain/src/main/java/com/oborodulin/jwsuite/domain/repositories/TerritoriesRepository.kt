@@ -25,6 +25,11 @@ interface TerritoriesRepository {
         locationId: UUID? = null, isPrivateSector: Boolean, congregationId: UUID? = null
     ): Flow<List<Territory>>
 
+    fun getAllByGeo(
+        localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null
+    ): Flow<List<Territory>>
+
+    fun getAllForHouse(houseId: UUID): Flow<List<Territory>>
     fun getNextNum(congregationId: UUID, territoryCategoryId: UUID): Flow<Int>
 
     // Territory Streets:

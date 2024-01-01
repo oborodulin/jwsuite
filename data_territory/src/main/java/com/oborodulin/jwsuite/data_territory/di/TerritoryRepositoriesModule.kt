@@ -6,24 +6,28 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryMappers
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report.TerritoryReportMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.EntrancesRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.FloorsRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.HousesRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.RoomsRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoriesRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoryCategoriesRepositoryImpl
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.TerritoryReportsRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalRoomDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
+import com.oborodulin.jwsuite.domain.repositories.TerritoryReportsRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -65,6 +69,14 @@ object TerritoryRepositoriesModule {
         mappers: TerritoryCategoryMappers
     ): TerritoryCategoriesRepository =
         TerritoryCategoriesRepositoryImpl(localTerritoryCategoryDataSource, mappers)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryReportsRepository(
+        localTerritoryReportDataSource: LocalTerritoryReportDataSource,
+        mappers: TerritoryReportMappers
+    ): TerritoryReportsRepository =
+        TerritoryReportsRepositoryImpl(localTerritoryReportDataSource, mappers)
 
     @Singleton
     @Provides

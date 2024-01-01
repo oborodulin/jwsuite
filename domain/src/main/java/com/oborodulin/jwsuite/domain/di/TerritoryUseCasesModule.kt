@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
+import com.oborodulin.jwsuite.domain.repositories.TerritoryReportsRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.entrance.DeleteEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.DeleteTerritoryEntranceUseCase
@@ -51,6 +52,13 @@ import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.ProcessTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.DeleteMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportRoomsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
@@ -403,4 +411,48 @@ object TerritoryUseCasesModule {
     fun provideSaveTerritoryRoomsUseCase(
         configuration: UseCase.Configuration, roomsRepository: RoomsRepository
     ): SaveTerritoryRoomsUseCase = SaveTerritoryRoomsUseCase(configuration, roomsRepository)
+
+    // Territory Report:
+    @Singleton
+    @Provides
+    fun provideGetMemberReportUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): GetMemberReportUseCase = GetMemberReportUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetMemberReportsUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): GetMemberReportsUseCase = GetMemberReportsUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetReportHousesUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): GetReportHousesUseCase = GetReportHousesUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetReportRoomsUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): GetReportRoomsUseCase = GetReportRoomsUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteMemberReportUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): DeleteMemberReportUseCase =
+        DeleteMemberReportUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveReportHouseUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): SaveReportHouseUseCase = SaveReportHouseUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveReportRoomUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): SaveReportRoomUseCase = SaveReportRoomUseCase(configuration, territoryReportsRepository)
 }

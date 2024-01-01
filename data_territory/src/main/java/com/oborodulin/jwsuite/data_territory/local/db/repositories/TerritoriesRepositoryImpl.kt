@@ -62,6 +62,16 @@ class TerritoriesRepositoryImpl @Inject constructor(
         }.map(mappers.territoryViewListToTerritoriesListMapper::map)
     }
 
+    override fun getAllByGeo(
+        localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?
+    ) = localTerritoryDataSource.getTerritoriesByGeo(
+        localityId, localityDistrictId, microdistrictId
+    ).map(mappers.territoryViewListToTerritoriesListMapper::map)
+
+    override fun getAllForHouse(houseId: UUID) =
+        localTerritoryDataSource.getTerritoriesForHouse(houseId)
+            .map(mappers.territoryViewListToTerritoriesListMapper::map)
+
     override fun getNextNum(congregationId: UUID, territoryCategoryId: UUID) = flow {
         emit(localTerritoryDataSource.getNextTerritoryNum(congregationId, territoryCategoryId))
     }

@@ -18,6 +18,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.dao.HouseDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.RoomDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryCategoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -105,4 +106,7 @@ object DaoModule {
     @Provides
     fun provideRoomDao(db: JwSuiteDatabase): RoomDao = db.roomDao()
 
+    @Singleton
+    @Provides
+    fun provideTerritoryReportDao(db: JwSuiteDatabase): TerritoryReportDao = db.territoryReportDao()
 }

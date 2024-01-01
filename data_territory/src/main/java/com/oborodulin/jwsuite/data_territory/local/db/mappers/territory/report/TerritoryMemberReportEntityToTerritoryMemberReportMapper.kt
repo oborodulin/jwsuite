@@ -1,0 +1,28 @@
+package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report
+
+import android.content.Context
+import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
+
+class TerritoryMemberReportEntityToTerritoryMemberReportMapper(private val ctx: Context) :
+    Mapper<TerritoryMemberReportEntity, TerritoryMemberReport>,
+    NullableMapper<TerritoryMemberReportEntity, TerritoryMemberReport> {
+    override fun map(input: TerritoryMemberReportEntity): TerritoryMemberReport {
+        val territoryMemberReport = TerritoryMemberReport(
+            ctx = ctx,
+            territoryMemberId = input.tmrTerritoryMembersId,
+            territoryReportMark = input.territoryReportMark,
+            languageCode = input.languageCode,
+            gender = input.gender,
+            age = input.age,
+            isProcessed = input.isProcessed,
+            territoryReportDesc = input.territoryReportDesc
+        )
+        territoryMemberReport.id = input.territoryMemberReportId
+        return territoryMemberReport
+    }
+
+    override fun nullableMap(input: TerritoryMemberReportEntity?) = input?.let { map(it) }
+}

@@ -34,6 +34,8 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class EntranceSaveException(cause: Throwable) : UseCaseException(cause)
     class FloorSaveException(cause: Throwable) : UseCaseException(cause)
     class RoomSaveException(cause: Throwable) : UseCaseException(cause)
+    class ReportHouseSaveException(cause: Throwable) : UseCaseException(cause)
+    class ReportRoomSaveException(cause: Throwable) : UseCaseException(cause)
 
     class UnknownException(cause: Throwable) : UseCaseException(cause)
 

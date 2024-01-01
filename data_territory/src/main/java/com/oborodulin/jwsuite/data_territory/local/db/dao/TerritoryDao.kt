@@ -15,6 +15,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
@@ -192,6 +193,45 @@ interface TerritoryDao {
         locationId: UUID? = null,
         locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoriesIdleView>>
+
+    //-----------------------------
+    @Query(
+        """
+    SELECT tv.* FROM ${TerritoryView.VIEW_NAME} tv 
+    WHERE tv.${PX_TERRITORY_LOCALITY}localityLocCode = :locale 
+        AND ifnull(tv.tMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(tv.tMicrodistrictsId, '')) 
+        AND ifnull(tv.tLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(tv.tLocalityDistrictsId, ''))
+        AND tv.tLocalitiesId = :localityId
+    ORDER BY tv.territoryCategoryMark, tv.territoryNum
+    """
+    )
+    fun findByLocalityIdAndLocalityDistrictIdAndMicrodistrictId(
+        localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByLocalityIdAndLocalityDistrictIdAndMicrodistrictId(
+        localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null
+    ) = findByLocalityIdAndLocalityDistrictIdAndMicrodistrictId(
+        localityId, localityDistrictId, microdistrictId
+    ).distinctUntilChanged()
+
+    //-----------------------------
+    @Query(
+        """
+    SELECT tv.* FROM ${TerritoryView.VIEW_NAME} tv JOIN ${HouseEntity.TABLE_NAME} h 
+            ON h.houseId = :houseId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+                AND ifnull(tv.tMicrodistrictsId, '') = ifnull(h.hMicrodistrictsId, ifnull(tv.tMicrodistrictsId, '')) 
+                AND ifnull(tv.tLocalityDistrictsId, '') = ifnull(h.hLocalityDistrictsId, ifnull(tv.tLocalityDistrictsId, ''))
+        JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId AND sv.sLocalitiesId = tv.tLocalitiesId AND sv.streetLocCode = :locale
+    ORDER BY tv.territoryCategoryMark, tv.territoryNum
+    """
+    )
+    fun findByHouseId(houseId: UUID, locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
     // TerritoryStreets:
     //-----------------------------

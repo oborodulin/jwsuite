@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class SaveTerritoryStreetUseCase(
-    configuration: Configuration,
-    private val territoriesRepository: TerritoriesRepository
+    configuration: Configuration, private val territoriesRepository: TerritoriesRepository
 ) : UseCase<SaveTerritoryStreetUseCase.Request, SaveTerritoryStreetUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
         return territoriesRepository.saveTerritoryStreet(request.territoryStreet)

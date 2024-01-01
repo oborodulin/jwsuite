@@ -1,21 +1,21 @@
 package com.oborodulin.jwsuite.data_territory.sources.local
 
 import com.oborodulin.home.common.di.IoDispatcher
-import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
-import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -59,6 +59,14 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     ) = territoryDao.findIdleTerritories(
         congregationId, isPrivateSector, territoryLocationType, locationId
     )
+
+    override fun getTerritoriesByGeo(
+        localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?
+    ) = territoryDao.findByLocalityIdAndLocalityDistrictIdAndMicrodistrictId(
+        localityId, localityDistrictId, microdistrictId
+    )
+
+    override fun getTerritoriesForHouse(houseId: UUID) = territoryDao.findByHouseId(houseId)
 
     override fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID) =
         territoryDao.nextTerritoryNum(congregationId, territoryCategoryId)

@@ -76,6 +76,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.dao.HouseDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.RoomDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryCategoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
@@ -93,11 +94,12 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryHouseReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberLastReceivingDateView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryRoomReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
@@ -152,8 +154,8 @@ private const val TAG = "JwSuiteDatabase"
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
         RoleTransferObjectView::class, MemberRoleTransferObjectView::class,
-        TerritoryHouseReportView::class, TerritoryRoomReportView::class
-            //TerritoryInfoView::class
+        TerritoryMemberReportView::class, TerritoryReportHouseView::class, TerritoryReportRoomView::class
+        //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true
 )
@@ -183,6 +185,8 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     abstract fun entranceDao(): EntranceDao
     abstract fun floorDao(): FloorDao
     abstract fun roomDao(): RoomDao
+
+    abstract fun territoryReportDao(): TerritoryReportDao
 
     companion object {
         var importJob: Deferred<Boolean>? = null
