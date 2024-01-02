@@ -14,12 +14,14 @@ class TerritoryReportRoomViewToTerritoryReportRoomMapper(
     Mapper<TerritoryReportRoomView, TerritoryReportRoom>,
     NullableMapper<TerritoryReportRoomView, TerritoryReportRoom> {
     override fun map(input: TerritoryReportRoomView): TerritoryReportRoom {
+        val room = roomMapper.map(input.room)
         val territoryMemberReport =
             territoryReportMapper.nullableMap(input.territoryReport) ?: TerritoryMemberReport(
+                room = room,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
         val territoryReportRoom = TerritoryReportRoom(
-            room = roomMapper.map(input.room),
+            room = room,
             territoryMemberReport = territoryMemberReport
         )
         territoryReportRoom.id = input.territoryReport?.territoryMemberReportId

@@ -4,9 +4,9 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 
 sealed class TerritoriesGridUiSingleEvent : UiSingleEvent {
     data class OpenTerritoryScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
-    data class OpenHandOutConfirmationScreen(val navRoute: String) :
-        TerritoriesGridUiSingleEvent()
-    data class OpenProcessConfirmationScreen(val navRoute: String) :
-        TerritoriesGridUiSingleEvent()
+    data class OpenHandOutConfirmationScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
+    data class OpenProcessConfirmationScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
+    data class OpenReportStreetsScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
+    data class OpenReportHousesScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
+    data class OpenReportRoomsScreen(val navRoute: String) : TerritoriesGridUiSingleEvent()
 }
-

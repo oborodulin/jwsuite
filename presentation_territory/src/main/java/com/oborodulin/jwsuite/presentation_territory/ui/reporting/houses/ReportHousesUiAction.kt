@@ -9,4 +9,6 @@ sealed class ReportHousesUiAction(override val isEmitJob: Boolean = true) : UiAc
 
     data class EditMemberReport(val territoryMemberReportId: UUID) : ReportHousesUiAction()
     data class DeleteMemberReport(val territoryMemberReportId: UUID) : ReportHousesUiAction()
+    data class ProcessReport(val territoryMemberReportId: UUID) : ReportHousesUiAction()
+    data class CancelProcessReport(val territoryMemberReportId: UUID) : ReportHousesUiAction()
 }

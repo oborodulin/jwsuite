@@ -28,7 +28,7 @@ class PartialRoomsViewModelImpl @Inject constructor(
     //private val useCases: TerritoringUseCases,
     //private val converter: TerritoryLocationsListConverter
 ) : PartialRoomsViewModel,
-    SingleViewModel<Any, UiState<Any>, PartialRoomsUiAction, PartialRoomsUiSingleEvent, PartialRoomsFields, InputWrapper>(
+    SingleViewModel<Any, UiState<Any>, ReportRoomsUiAction, PartialRoomsUiSingleEvent, PartialRoomsFields, InputWrapper>(
         state//, initFocusedTextField = HousingFields.HOUSES_LOCALITY
     ) {
     override val locality: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -40,7 +40,7 @@ class PartialRoomsViewModelImpl @Inject constructor(
 
     override fun initState(): UiState<TerritoringUi> = UiState.Loading
 
-    override suspend fun handleAction(action: PartialRoomsUiAction) = null
+    override suspend fun handleAction(action: ReportRoomsUiAction) = null
 
     /*        if (LOG_FLOW_ACTION) Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
             val job = when (action) {
@@ -158,7 +158,7 @@ class PartialRoomsViewModelImpl @Inject constructor(
                 override val locality = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val street = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
-                override fun submitAction(action: PartialRoomsUiAction): Job? = null
+                override fun submitAction(action: ReportRoomsUiAction): Job? = null
                 override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(

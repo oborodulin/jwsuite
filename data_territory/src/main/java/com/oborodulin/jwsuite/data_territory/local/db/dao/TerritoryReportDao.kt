@@ -7,8 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -119,6 +119,9 @@ interface TerritoryReportDao {
 
     @Update
     suspend fun update(vararg territoryMemberReports: TerritoryMemberReportEntity)
+
+    @Query("UPDATE ${TerritoryMemberReportEntity.TABLE_NAME} SET isProcess = :isProcess WHERE territoryMemberReportId = :territoryMemberReportId")
+    suspend fun updateIsProcess(territoryMemberReportId: UUID, isProcess: Boolean)
 
     // DELETES:
     @Delete

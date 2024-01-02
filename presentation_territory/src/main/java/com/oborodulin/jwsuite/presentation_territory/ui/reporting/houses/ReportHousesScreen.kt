@@ -40,13 +40,12 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.StreetInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
-import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.list.HousesListView
-import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.list.RoomsListView
+import com.oborodulin.jwsuite.presentation_territory.ui.reporting.list.MemberReportsListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.BarTerritoryStreetComboBox
@@ -57,18 +56,17 @@ import java.util.EnumMap
 /**
  * Created by o.borodulin 10.June.2023
  */
-private const val TAG = "Reporting.PartialHousesScreen"
+private const val TAG = "Reporting.ReportHousesScreen"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun PartialHousesScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
+fun ReportHousesScreen(
     territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
-    partialHousesViewModel: ReportHousesViewModelImpl = hiltViewModel(),
+    reportHousesViewModel: ReportHousesViewModelImpl = hiltViewModel(),
     territoryInput: TerritoryInput,
     defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
-    Timber.tag(TAG).d("PartialHousesScreen(...) called")
+    Timber.tag(TAG).d("ReportHousesScreen(...) called")
     // Action Bar:
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
     val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
@@ -79,15 +77,14 @@ fun PartialHousesScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(partialHousesViewModel.events, lifecycleOwner) {
-        partialHousesViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+    val events = remember(reportHousesViewModel.events, lifecycleOwner) {
+        reportHousesViewModel.events.flowWithLifecycle(
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
 
     Timber.tag(TAG).d("PartialHouses: CollectAsStateWithLifecycle for all fields")
-    val territoryStreet by partialHousesViewModel.territoryStreet.collectAsStateWithLifecycle()
+    val territoryStreet by reportHousesViewModel.territoryStreet.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("PartialHouses: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<ReportHousesFields, InputFocusRequester>(
@@ -99,8 +96,8 @@ fun PartialHousesScreen(
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("PartialHousesScreen -> LaunchedEffect() BEFORE collect ui state flow: events.collect")
-        territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
+            .d("ReportHousesScreen -> LaunchedEffect() BEFORE collect ui state flow: events.collect")
+        territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput?.territoryId))
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -125,7 +122,7 @@ fun PartialHousesScreen(
                         modifier = Modifier
                             .focusRequester(focusRequesters[ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET]!!.focusRequester)
                             .onFocusChanged { focusState ->
-                                partialHousesViewModel.onTextFieldFocusChanged(
+                                reportHousesViewModel.onTextFieldFocusChanged(
                                     focusedField = ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET,
                                     isFocused = focusState.isFocused
                                 )
@@ -135,7 +132,7 @@ fun PartialHousesScreen(
                         territoryViewModel = territoryViewModel,
                         inputWrapper = territoryStreet,
                         onValueChange = {
-                            partialHousesViewModel.onTextFieldEntered(
+                            reportHousesViewModel.onTextFieldEntered(
                                 ReportHousesInputEvent.Street(it)
                             )
                         }
@@ -148,8 +145,10 @@ fun PartialHousesScreen(
                 ) {
                     HousesMemberReportView(
                         appState = appState,
-                        streetInput = territoryStreet.item?.itemId?.let { StreetInput(it) },
-                        territoryInput = territoryInput
+                        territoryStreetInput = TerritoryStreetInput(
+                            territoryInput.territoryId,
+                            territoryStreet.item?.itemId
+                        )
                     )
                 }
             }
@@ -157,8 +156,8 @@ fun PartialHousesScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("PartialHousesScreen -> LaunchedEffect() AFTER collect single Event Flow")
-        partialHousesViewModel.singleEventFlow.collectLatest {
+            .d("ReportHousesScreen -> LaunchedEffect() AFTER collect single Event Flow")
+        reportHousesViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is ReportHousesUiSingleEvent.OpenMemberReportScreen -> {
@@ -172,8 +171,7 @@ fun PartialHousesScreen(
 @Composable
 fun HousesMemberReportView(
     appState: AppState,
-    territoryInput: TerritoryInput,
-    streetInput: StreetInput? = null
+    territoryStreetInput: TerritoryStreetInput
 ) {
     Timber.tag(TAG).d("HousesMemberReportView(...) called")
     Column(
@@ -199,9 +197,9 @@ fun HousesMemberReportView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            HousesListView(
+            ReportHousesGridView(
                 navController = appState.mainNavController,
-                territoryInput = territoryInput
+                territoryStreetInput = territoryStreetInput
             )
         }
         Box(
@@ -215,7 +213,7 @@ fun HousesMemberReportView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            RoomsListView(navController = appState.mainNavController)
+            MemberReportsListView(navController = appState.mainNavController)
         }
     }
 }
@@ -223,8 +221,8 @@ fun HousesMemberReportView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewPartialHousesScreen() {
-    /*PartialHousesScreen(
+fun PreviewReportHousesScreen() {
+    /*ReportHousesScreen(
         appState = rememberAppState(),
         congregationInput = CongregationInput(UUID.randomUUID()),
         onClick = {},

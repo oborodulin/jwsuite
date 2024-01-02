@@ -2,30 +2,28 @@ package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import android.os.Parcelable
 import com.oborodulin.home.common.ui.model.ListItemModel
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.UUID
 
-data class TerritoryReportHousesListItem(
+data class TerritoryMemberReportsListItem(
     val id: UUID,
-    val houseId: UUID,
-    val houseNum: Int,
-    val houseFullNum: String,
-    val streetFullName: String,
-    val territoryMemberId: UUID,
+    val deliveryDate: OffsetDateTime? = null,
     val territoryShortMark: String? = null,
     val languageCode: String? = null,
     val genderInfo: String? = null,
-    val ageInfo: String? = null,
-    val isProcessed: Boolean? = null
+    val ageInfo: String? = null
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = houseFullNum,
-    supportingText = streetFullName
+    headline = (territoryShortMark?.let { "$it:" }.orEmpty()
+        .plus(genderInfo?.let { " $it" }.orEmpty())
+        .plus(ageInfo?.let { " $it" }.orEmpty())
+        .plus(languageCode?.let { " [$it]" }.orEmpty())).trim(),
+    supportingText = deliveryDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
-        val matchingCombinations = listOf(
-            "${territoryShortMark.orEmpty()}$houseFullNum$streetFullName",
-            "${territoryShortMark.orEmpty()} $houseFullNum $streetFullName"
-        )
+        val matchingCombinations = listOf(territoryShortMark.orEmpty())
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
 }

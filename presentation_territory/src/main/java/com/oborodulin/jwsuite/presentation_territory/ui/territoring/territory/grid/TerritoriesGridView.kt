@@ -161,6 +161,18 @@ fun TerritoriesGridView(
                 is TerritoriesGridUiSingleEvent.OpenProcessConfirmationScreen -> {
                     appState.mainNavigate(it.navRoute)
                 }
+
+                is TerritoriesGridUiSingleEvent.OpenReportStreetsScreen -> {
+                    appState.mainNavigate(it.navRoute)
+                }
+
+                is TerritoriesGridUiSingleEvent.OpenReportHousesScreen -> {
+                    appState.mainNavigate(it.navRoute)
+                }
+
+                is TerritoriesGridUiSingleEvent.OpenReportRoomsScreen -> {
+                    appState.mainNavigate(it.navRoute)
+                }
             }
         }
     }

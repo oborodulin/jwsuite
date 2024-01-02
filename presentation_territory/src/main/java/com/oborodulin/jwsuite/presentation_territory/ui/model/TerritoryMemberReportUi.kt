@@ -4,7 +4,8 @@ import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import java.util.UUID
 
-data class TerritoryReportUi(
+data class TerritoryMemberReportUi(
+    val territoryStreet: TerritoryStreetUi? = null,
     val house: HouseUi? = null,
     val room: RoomUi? = null,
     val territoryMemberId: UUID,

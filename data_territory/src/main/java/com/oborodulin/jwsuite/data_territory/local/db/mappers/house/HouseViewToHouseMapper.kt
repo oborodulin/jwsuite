@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.house
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
@@ -20,7 +21,7 @@ class HouseViewToHouseMapper(
     private val microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
     private val territoryMapper: TerritoryViewToTerritoryMapper,
     private val houseMapper: HouseEntityToHouseMapper
-) : Mapper<HouseView, House> {
+) : Mapper<HouseView, House>, NullableMapper<HouseView, House> {
     override fun map(input: HouseView): House {
         val ldRegion = regionMapper.nullableMap(input.hldRegion)
         val ldRegionDistrict = regionDistrictMapper.nullableMap(input.hldDistrict, ldRegion)
@@ -40,4 +41,6 @@ class HouseViewToHouseMapper(
             territoryMapper.nullableMap(input.territory)
         )
     }
+
+    override fun nullableMap(input: HouseView?) = input?.let { map(it) }
 }

@@ -34,18 +34,24 @@ fun AtWorkProcessMultiFabComponent(
     territoriesGridViewModel: TerritoriesGridViewModel
 ) {
     val ctx = LocalContext.current
+    val isSingleChecked = checkedTerritories.size == 1
+    val singleCheckedTerritory = if (isSingleChecked) checkedTerritories[0] else null
 
     val minFabStreet = MinFabItem(
         labelResId = R.string.fab_territory_process_street_text,
         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_street_sign_24
     ) {
-        ctx.toast("Street process")
+        singleCheckedTerritory?.let {
+            territoriesGridViewModel.submitAction(TerritoriesGridUiAction.ReportStreets(it.id))
+        }
     }
     val minFabHouse = MinFabItem(
         labelResId = R.string.fab_territory_process_house_text,
         imageVector = Icons.Outlined.Home
     ) {
-        ctx.toast("House process")
+        singleCheckedTerritory?.let {
+            territoriesGridViewModel.submitAction(TerritoriesGridUiAction.ReportHouses(it.id))
+        }
     }
     val minFabEntrance = MinFabItem(
         labelResId = R.string.fab_territory_process_entrance_text,
@@ -63,12 +69,14 @@ fun AtWorkProcessMultiFabComponent(
         labelResId = R.string.fab_territory_process_room_text,
         painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_room_24
     ) {
-        ctx.toast("Room process")
+        singleCheckedTerritory?.let {
+            territoriesGridViewModel.submitAction(TerritoriesGridUiAction.ReportRooms(it.id))
+        }
     }
     val isShowAlert = rememberSaveable { mutableStateOf(false) }
     val minFabs = mutableListOf<MinFabItem>()
     var onClick: (() -> Unit)? = null
-    if (checkedTerritories.size == 1) {
+    if (isSingleChecked) {
         checkedTerritories[0].isPrivateSector?.let {
             if (it) {
                 minFabs.add(minFabStreet)

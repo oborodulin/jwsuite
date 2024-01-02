@@ -1,36 +1,30 @@
 package com.oborodulin.jwsuite.presentation_territory.di
 
+import com.oborodulin.jwsuite.domain.usecases.territory.report.CancelProcessMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.DeleteMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportRoomsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.ProcessMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictUiMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToStreetUiMapper
-import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetUiToStreetMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomsListConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryRoomsListConverter
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.TerritoryToTerritoryUiMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.TerritoryUiToTerritoryMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntranceToEntranceUiMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.entrance.EntranceUiToEntranceMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor.FloorToFloorUiMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.floor.FloorUiToFloorMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportsListConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryReportHousesListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHouseUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryHouseReportToTerritoryHouseReportsListItemMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportToTerritoryMemberReportUiMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportToTerritoryMemberReportsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportUiToTerritoryMemberReportMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportsListToTerritoryMemberReportsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryReportHouseToTerritoryReportHousesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryReportHousesListToTerritoryReportHousesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomUiMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
-import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomsListToRoomsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetUiMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetUiToTerritoryStreetMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,84 +35,74 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ReportingModule {
     // MAPPERS:
-    // Territory Report:
+    // Territory Member Report:
     @Singleton
     @Provides
-    fun provideRoomToRoomUiMapper(
-        localityMapper: LocalityToLocalityUiMapper,
-        localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
-        microistrictMapper: MicrodistrictToMicrodistrictUiMapper,
-        streetMapper: StreetToStreetUiMapper,
+    fun provideTerritoryMemberReportToTerritoryMemberReportUiMapper(
+        territoryStreetMapper: TerritoryStreetToTerritoryStreetUiMapper,
         houseMapper: HouseToHouseUiMapper,
-        entranceMapper: EntranceToEntranceUiMapper,
-        floorMapper: FloorToFloorUiMapper,
-        territoryMapper: TerritoryToTerritoryUiMapper
-    ): RoomToRoomUiMapper = RoomToRoomUiMapper(
-        localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper,
-        microistrictMapper = microistrictMapper, streetMapper = streetMapper,
-        houseMapper = houseMapper, entranceMapper = entranceMapper, floorMapper = floorMapper,
-        territoryMapper = territoryMapper
-    )
+        roomMapper: RoomToRoomUiMapper
+    ): TerritoryMemberReportToTerritoryMemberReportUiMapper =
+        TerritoryMemberReportToTerritoryMemberReportUiMapper(
+            territoryStreetMapper = territoryStreetMapper,
+            houseMapper = houseMapper,
+            roomMapper = roomMapper
+        )
 
     @Singleton
     @Provides
-    fun provideRoomUiToRoomMapper(
-        localityUiMapper: LocalityUiToLocalityMapper,
-        streetUiMapper: StreetUiToStreetMapper,
+    fun provideTerritoryMemberReportUiToTerritoryMemberReportMapper(
+        territoryStreetUiMapper: TerritoryStreetUiToTerritoryStreetMapper,
         houseUiMapper: HouseUiToHouseMapper,
-        entranceUiMapper: EntranceUiToEntranceMapper,
-        floorUiMapper: FloorUiToFloorMapper,
-        territoryUiMapper: TerritoryUiToTerritoryMapper
-    ): RoomUiToRoomMapper = RoomUiToRoomMapper(
-        localityUiMapper = localityUiMapper, streetUiMapper = streetUiMapper,
-        houseUiMapper = houseUiMapper, entranceUiMapper = entranceUiMapper,
-        floorUiMapper = floorUiMapper, territoryUiMapper = territoryUiMapper
-    )
+        roomUiMapper: RoomUiToRoomMapper
+    ): TerritoryMemberReportUiToTerritoryMemberReportMapper =
+        TerritoryMemberReportUiToTerritoryMemberReportMapper(
+            territoryStreetUiMapper = territoryStreetUiMapper,
+            houseUiMapper = houseUiMapper,
+            roomUiMapper = roomUiMapper
+        )
 
     @Singleton
     @Provides
-    fun provideRoomToRoomsListItemMapper(): RoomToRoomsListItemMapper =
-        RoomToRoomsListItemMapper()
+    fun provideTerritoryMemberReportToTerritoryMemberReportsListItemMapper(): TerritoryMemberReportToTerritoryMemberReportsListItemMapper =
+        TerritoryMemberReportToTerritoryMemberReportsListItemMapper()
 
     @Singleton
     @Provides
-    fun provideRoomsListToRoomsListItemMapper(mapper: RoomToRoomsListItemMapper): RoomsListToRoomsListItemMapper =
-        RoomsListToRoomsListItemMapper(mapper = mapper)
+    fun provideRoomsListToRoomsListItemMapper(mapper: TerritoryMemberReportToTerritoryMemberReportsListItemMapper): TerritoryMemberReportsListToTerritoryMemberReportsListItemMapper =
+        TerritoryMemberReportsListToTerritoryMemberReportsListItemMapper(mapper = mapper)
 
-    //Territory House Report:
+    // Territory House Report:
     @Singleton
     @Provides
-    fun provideTerritoryHouseReportToTerritoryHouseReportsListItemMapper(): TerritoryHouseReportToTerritoryHouseReportsListItemMapper =
-        TerritoryHouseReportToTerritoryHouseReportsListItemMapper()
+    fun provideTerritoryReportHouseToTerritoryReportHousesListItemMapper(): TerritoryReportHouseToTerritoryReportHousesListItemMapper =
+        TerritoryReportHouseToTerritoryReportHousesListItemMapper()
 
     @Singleton
     @Provides
-    fun provideTerritoryHouseReportsListToTerritoryHouseReportsListItemMapper(mapper: TerritoryHouseReportToTerritoryHouseReportsListItemMapper): TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper =
-        TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper(mapper = mapper)
+    fun provideTerritoryReportHousesListToTerritoryReportHousesListItemMapper(mapper: TerritoryReportHouseToTerritoryReportHousesListItemMapper): TerritoryReportHousesListToTerritoryReportHousesListItemMapper =
+        TerritoryReportHousesListToTerritoryReportHousesListItemMapper(mapper = mapper)
 
     // CONVERTERS:
-    // Room:
+    // Territory Member Report:
     @Singleton
     @Provides
-    fun provideRoomConverter(mapper: RoomToRoomUiMapper): RoomConverter =
-        RoomConverter(mapper = mapper)
+    fun provideTerritoryMemberReportConverter(mapper: TerritoryMemberReportToTerritoryMemberReportUiMapper): TerritoryMemberReportConverter =
+        TerritoryMemberReportConverter(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideRoomsListConverter(mapper: RoomsListToRoomsListItemMapper): RoomsListConverter =
-        RoomsListConverter(mapper = mapper)
+    fun provideTerritoryMemberReportsListConverter(mapper: TerritoryMemberReportsListToTerritoryMemberReportsListItemMapper): TerritoryMemberReportsListConverter =
+        TerritoryMemberReportsListConverter(mapper = mapper)
 
+    // Territory House Report:
     @Singleton
     @Provides
-    fun provideTerritoryRoomsListConverter(
-        territoryMapper: TerritoryToTerritoryUiMapper,
-        roomsListMapper: RoomsListToRoomsListItemMapper
-    ): TerritoryRoomsListConverter = TerritoryRoomsListConverter(
-        territoryMapper = territoryMapper, roomsListMapper = roomsListMapper
-    )
+    fun provideTerritoryReportHousesListConverter(mapper: TerritoryReportHousesListToTerritoryReportHousesListItemMapper): TerritoryReportHousesListConverter =
+        TerritoryReportHousesListConverter(mapper = mapper)
 
     // USE CASES:
-    // Territory Report:
+    // Territory Member Report:
     @Singleton
     @Provides
     fun provideTerritoryReportUseCases(
@@ -126,6 +110,8 @@ object ReportingModule {
         getMemberReportUseCase: GetMemberReportUseCase,
         getReportHousesUseCase: GetReportHousesUseCase,
         getReportRoomsUseCase: GetReportRoomsUseCase,
+        processMemberReportUseCase: ProcessMemberReportUseCase,
+        cancelProcessMemberReportUseCase: CancelProcessMemberReportUseCase,
         saveReportHouseUseCase: SaveReportHouseUseCase,
         saveReportRoomUseCase: SaveReportRoomUseCase,
         deleteMemberReportUseCase: DeleteMemberReportUseCase
@@ -134,6 +120,8 @@ object ReportingModule {
         getMemberReportUseCase,
         getReportHousesUseCase,
         getReportRoomsUseCase,
+        processMemberReportUseCase,
+        cancelProcessMemberReportUseCase,
         saveReportHouseUseCase,
         saveReportRoomUseCase,
         deleteMemberReportUseCase

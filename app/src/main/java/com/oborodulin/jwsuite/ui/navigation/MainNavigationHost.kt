@@ -34,6 +34,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.reporting.houses.ReportHousesScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.TerritoryRoomScreen
@@ -572,6 +573,47 @@ fun MainNavigationHost(
                 onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange*/
+            )
+        }
+
+        // REPORTING Nav Graph:
+        composable(
+            route = NavRoutes.ReportHouses.route, arguments = NavRoutes.ReportHouses.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to ReportHousesScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.ReportHouses.arguments.firstOrNull()
+                )
+            ReportHousesScreen(
+                territoryInput = NavRoutes.ReportHouses.fromEntry(it),
+                defTopBarActions = defTopBarActions
+            )
+        }
+        composable(
+            route = NavRoutes.ReportRooms.route, arguments = NavRoutes.ReportRooms.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to ReportRoomsScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.ReportRooms.arguments.firstOrNull()
+                )
+            ReportRoomsScreen(
+                territoryInput = NavRoutes.ReportRooms.fromEntry(it),
+                defTopBarActions = defTopBarActions
+            )
+        }
+        composable(
+            route = NavRoutes.MemberReport.route, arguments = NavRoutes.MemberReport.arguments
+        ) {
+            Timber.tag(TAG)
+                .d(
+                    "Navigation Graph: to MemberReportScreen [route = '%s', arguments = '%s']",
+                    it.destination.route, NavRoutes.MemberReport.arguments.firstOrNull()
+                )
+            MemberReportScreen(
+                houseInput = NavRoutes.MemberReport.fromEntry(it),
+                defTopBarActions = defTopBarActions
             )
         }
 

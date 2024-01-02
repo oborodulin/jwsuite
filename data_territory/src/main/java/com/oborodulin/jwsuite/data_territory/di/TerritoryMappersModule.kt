@@ -432,7 +432,7 @@ object TerritoryMappersModule {
     fun provideTerritoryMemberReportViewToTerritoryMemberReportMapper(
         mapper: TerritoryMemberReportEntityToTerritoryMemberReportMapper
     ): TerritoryMemberReportViewToTerritoryMemberReportMapper =
-        TerritoryMemberReportViewToTerritoryMemberReportMapper(mapper = mapper)
+        TerritoryMemberReportViewToTerritoryMemberReportMapper(territoryReportMapper = mapper)
 
     @Singleton
     @Provides

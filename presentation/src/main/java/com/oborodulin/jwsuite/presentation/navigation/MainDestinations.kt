@@ -48,9 +48,9 @@ object MainDestinations {
     const val ROUTE_FLOOR = "floor/?%s"
     const val ROUTE_ROOM = "room/?%s"
 
-    // Partial Process:
+    // Partial Process (Territory Report):
     const val ROUTE_MEMBER_REPORT = "memberReport/?%s"
-    const val ROUTE_PARTIAL_STREETS = "partialStreets/%s/?%s"
-    const val ROUTE_PARTIAL_HOUSES = "partialHouses/%s/?%s"
-    const val ROUTE_PARTIAL_ROOMS = "partialRooms/%s/?%s"
+    const val ROUTE_REPORT_STREETS = "reportStreets/?%s"
+    const val ROUTE_REPORT_HOUSES = "reportHouses/?%s"
+    const val ROUTE_REPORT_ROOMS = "reportRooms/?%s"
 }

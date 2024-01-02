@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house
 
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictUiMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictToMicrodistrictUiMapper
@@ -13,7 +14,7 @@ class HouseToHouseUiMapper(
     private val localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
     private val microistrictMapper: MicrodistrictToMicrodistrictUiMapper,
     private val territoryMapper: TerritoryToTerritoryUiMapper
-) : Mapper<House, HouseUi> {
+) : Mapper<House, HouseUi>, NullableMapper<House, HouseUi> {
     override fun map(input: House): HouseUi {
         val houseUi = HouseUi(
             street = streetMapper.map(input.street),
@@ -42,4 +43,6 @@ class HouseToHouseUiMapper(
         houseUi.id = input.id
         return houseUi
     }
+
+    override fun nullableMap(input: House?) = input?.let { map(it) }
 }

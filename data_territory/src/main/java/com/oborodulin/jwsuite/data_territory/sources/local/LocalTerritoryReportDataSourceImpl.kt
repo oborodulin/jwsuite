@@ -35,6 +35,16 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
     override fun getTerritoryReportRooms(territoryId: UUID, houseId: UUID?) =
         territoryReportDao.findRoomsByTerritoryIdAndHouseId(territoryId, houseId)
 
+    override suspend fun process(territoryReportId: UUID) =
+        withContext(dispatcher) {
+            territoryReportDao.updateIsProcess(territoryReportId, true)
+        }
+
+    override suspend fun cancelProcess(territoryReportId: UUID) =
+        withContext(dispatcher) {
+            territoryReportDao.updateIsProcess(territoryReportId, false)
+        }
+
     override suspend fun insertTerritoryReport(territoryReport: TerritoryMemberReportEntity) =
         withContext(dispatcher) {
             territoryReportDao.insert(territoryReport)

@@ -1,7 +1,7 @@
 <resources>
     <!--BUTTONS:-->
     <string name="btn_hand_out_lbl">Выдать</string>
-    <string name="btn_at_work_lbl">Обработать</string>
+    <string name="btn_at_work_process_lbl">Обработать</string>
     <!--FAB:-->
     <string name="fab_territory_hand_out_text">Выдать</string>
     <string name="fab_territory_at_work_text">Обработать</string>
@@ -137,6 +137,8 @@
     <string name="dlg_title_select_entrance">Выберите подъезд</string>
     <string name="dlg_title_select_floor">Выберите этаж</string>
     <string name="dlg_title_select_room">Выберите квартиру</string>
+    <string name="dlg_confirm_process_title">Обработать?</string>
+    <string name="dlg_confirm_cancel_process_title">Отменить обработку?</string>
     <!--участки-->
     <string name="dlg_title_select_territory">Выберите участок</string>
     <string name="dlg_title_select_territory_category">Выберите категорию участка</string>
@@ -149,6 +151,12 @@
     <string name="dlg_title_select_territory_room">Выберите квартиру участка</string>
     <!--Подтверждения-->
     <string name="dlg_confirm_process_territories">Обработать отмеченные участки?</string>
+    <string name="dlg_confirm_process_territory_street">Обработать улицу %1$s?</string>
+    <string name="dlg_confirm_process_territory_house">Обработать дом №%1$s?</string>
+    <string name="dlg_confirm_process_territory_room">Обработать квартиру №%1$s?</string>
+    <string name="dlg_confirm_cancel_process_territory_street">Отменить обработку улицы %1$s?</string>
+    <string name="dlg_confirm_cancel_process_territory_house">Отменить обработку дома №%1$s?</string>
+    <string name="dlg_confirm_cancel_process_territory_room">Отменить обработку квартиры №%1$s?</string>
     <!--удаления-->
     <string name="dlg_confirm_del_house">Удалить дом на улице №%1$s?</string>
     <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
@@ -159,6 +167,9 @@
     <string name="dlg_confirm_del_territory_street">Удалить из участка улицу %1$s?</string>
     <string name="dlg_confirm_del_territory_house">Удалить из участка дом №%1$s?</string>
     <string name="dlg_confirm_del_territory_room">Удалить из участка квартиру %1$s?</string>
+    <string name="dlg_confirm_del_territory_street_report">Удалить отчёт по улице %1$s?</string>
+    <string name="dlg_confirm_del_territory_house_report">Удалить отчёт по дому №%1$s?</string>
+    <string name="dlg_confirm_del_territory_room_report">Удалить отчёт по квартире №%1$s?</string>
     <!--отмена изменений-->
     <string name="dlg_confirm_cancel_changes_hand_out">Выдача участков не сохранится</string>
     <string name="dlg_confirm_cancel_changes_process">Обработка участка не сохранится</string>
@@ -200,6 +211,6 @@
     <string name="ter_group_ministry_cnt_desc">групповое служение</string>
     <string name="territory_menu_cnt_desc">Меню участков</string>
     <string name="hand_out_cnt_desc">Выдать</string>
-    <string name="at_work_cnt_desc">Обработать</string>
+    <string name="at_work_process_cnt_desc">Обработать</string>
 
 </resources>

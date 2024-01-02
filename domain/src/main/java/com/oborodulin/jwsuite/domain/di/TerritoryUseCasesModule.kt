@@ -52,11 +52,13 @@ import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.HandOutTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.ProcessTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.CancelProcessMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.DeleteMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportRoomsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.ProcessMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
@@ -436,6 +438,20 @@ object TerritoryUseCasesModule {
     fun provideGetReportRoomsUseCase(
         configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
     ): GetReportRoomsUseCase = GetReportRoomsUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideProcessMemberReportUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): ProcessMemberReportUseCase =
+        ProcessMemberReportUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideCancelProcessMemberReportUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): CancelProcessMemberReportUseCase =
+        CancelProcessMemberReportUseCase(configuration, territoryReportsRepository)
 
     @Singleton
     @Provides

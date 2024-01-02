@@ -36,10 +36,12 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEM
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MEMBER_ROLE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MICRODISTRICT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_MINISTRING
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PARTIAL_HOUSES
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_PROCESS_CONFIRMATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REGION_DISTRICT
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REPORT_HOUSES
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REPORT_ROOMS
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REPORT_STREETS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ROOM
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SIGNUP
@@ -63,6 +65,7 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.HouseInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberReportInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberRoleInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionDistrictInput
@@ -78,7 +81,6 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryH
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryRoomInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberReportInput
 import timber.log.Timber
 import java.util.UUID
 
@@ -117,6 +119,12 @@ import java.util.UUID
 // ic_role.png - <a href="https://www.flaticon.com/free-icons/setting" title="setting icons">Setting icons created by Tanah Basah - Flaticon</a>
 //              https://www.flaticon.com/search?word=role&shape=outline
 // ic_receive.png - <a href="https://www.flaticon.com/free-icons/download" title="download icons">Download icons created by Bharat Icons - Flaticon</a>
+// ic_housing.png - https://www.flaticon.com/search/2?type=icon&word=houses
+//                  <a href="https://www.flaticon.com/free-icons/real-estate-home" title="real estate home icons">Real estate home icons created by Eklip Studio - Flaticon</a>
+// ic_report_house.png - <a href="https://www.flaticon.com/free-icons/estate" title="estate icons">Estate icons created by Atif Arshad - Flaticon</a>
+//                  https://www.flaticon.com/search/2?type=icon&search-group=all&word=house+report&type=icon
+// ic_report_room.png - https://www.flaticon.com/authors/rsetiawan
+//                  <a href="https://www.flaticon.com/free-icons/report" title="report icons">Report icons created by rsetiawan - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -1014,10 +1022,13 @@ sealed class NavRoutes constructor(
         fun routeForMemberReport(memberReportInput: MemberReportInput? = null): String {
             val route = when (memberReportInput) {
                 null -> baseRoute()
-                else -> String.format(ROUTE_MEMBER_REPORT, memberReportInput.memberReportId)
+                else -> String.format(
+                    ROUTE_MEMBER_REPORT, memberReportInput.territoryMemberReportId
+                )
             }
             //val route = String.format(ROUTE_RATE, payerId)
-            if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberReport -> routeForMemberReport: '%s'", route)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("MemberReport -> routeForMemberReport: '%s'", route)
             return route
         }
 
@@ -1025,48 +1036,99 @@ sealed class NavRoutes constructor(
             val memberReportInput = MemberReportInput(
                 UUID.fromString(entry.arguments?.getString(ARG_MEMBER_REPORT_ID).orEmpty())
             )
-            if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberReport -> fromEntry: '%s'", memberReportInput)
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("MemberReport -> fromEntry: '%s'", memberReportInput)
             return memberReportInput
         }
     }
 
-    data object PartialHouses : NavRoutes(
-        route = String.format(
-            ROUTE_PARTIAL_HOUSES, "{$ARG_TERRITORY_ID}",
-            "$ARG_TERRITORY_STREET_ID={$ARG_TERRITORY_STREET_ID}"
-        ),
-        iconPainterResId = R.drawable.ic_territory_street_24,
-        titleResId = R.string.nav_item_territory_partial_houses,
+    data object ReportStreets : NavRoutes(
+        route = String.format(ROUTE_REPORT_STREETS, "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}"),
+        iconPainterResId = R.drawable.ic_territory_map_24,
+        titleResId = R.string.nav_item_territory_report_streets,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
-            type = NavType.StringType
-            nullable = false
-            //defaultValue = null
-        }, navArgument(ARG_TERRITORY_STREET_ID) {
             type = NavType.StringType
             nullable = true
             defaultValue = null
         })
     ) {
-        fun routeForPartialHouses(territoryStreetInput: TerritoryStreetInput? = null): String {
+        fun routeForReportStreets(territoryInput: TerritoryInput? = null): String {
             val route = String.format(
-                ROUTE_PARTIAL_HOUSES,
-                territoryStreetInput?.let { "${it.territoryId}" }.orEmpty(),
-                territoryStreetInput?.territoryStreetId?.let { "$ARG_TERRITORY_STREET_ID=${it}" }
-                    .orEmpty()
+                ROUTE_REPORT_STREETS,
+                territoryInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
-                .d("PartialHouses -> routeForPartialHouses: '%s'", route)
+                .d("ReportStreets -> routeForReportStreets: '%s'", route)
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): TerritoryStreetInput {
-            val territoryStreetInput = TerritoryStreetInput(
-                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
-                entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.let { UUID.fromString(it) }
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput? {
+            val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
+                TerritoryInput(UUID.fromString(it))
+            }
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("ReportStreets -> fromEntry: '%s'", territoryInput)
+            return territoryInput
+        }
+    }
+
+    data object ReportHouses : NavRoutes(
+        route = String.format(ROUTE_REPORT_HOUSES, "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}"),
+        iconPainterResId = R.drawable.ic_territory_map_24,
+        titleResId = R.string.nav_item_territory_report_houses,
+        arguments = listOf(navArgument(ARG_TERRITORY_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForReportHouses(territoryInput: TerritoryInput? = null): String {
+            val route = String.format(
+                ROUTE_REPORT_HOUSES,
+                territoryInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
-                .d("PartialHouses -> fromEntry: '%s'", territoryStreetInput)
-            return territoryStreetInput
+                .d("ReportHouses -> routeForReportHouses: '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
+            val territoryInput = TerritoryInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty())
+            )
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("ReportHouses -> fromEntry: '%s'", territoryInput)
+            return territoryInput
+        }
+    }
+
+    data object ReportRooms : NavRoutes(
+        route = String.format(ROUTE_REPORT_ROOMS, "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}"),
+        iconPainterResId = R.drawable.ic_territory_map_24,
+        titleResId = R.string.nav_item_territory_report_rooms,
+        arguments = listOf(navArgument(ARG_TERRITORY_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForReportRooms(territoryInput: TerritoryInput? = null): String {
+            val route = String.format(
+                ROUTE_REPORT_ROOMS,
+                territoryInput?.let { "$ARG_TERRITORY_ID=${it.territoryId}" }.orEmpty()
+            )
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("ReportRooms -> routeForReportRooms: '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput? {
+            val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
+                TerritoryInput(UUID.fromString(it))
+            }
+            if (LOG_NAVIGATION) Timber.tag(TAG)
+                .d("ReportRooms -> fromEntry: '%s'", territoryInput)
+            return territoryInput
         }
     }
 

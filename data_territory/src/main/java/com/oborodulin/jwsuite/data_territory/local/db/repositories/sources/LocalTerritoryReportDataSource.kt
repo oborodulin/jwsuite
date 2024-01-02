@@ -21,6 +21,8 @@ interface LocalTerritoryReportDataSource {
         territoryId: UUID, houseId: UUID? = null
     ): Flow<List<TerritoryReportRoomView>>
 
+    suspend fun process(territoryReportId: UUID)
+    suspend fun cancelProcess(territoryReportId: UUID)
     suspend fun insertTerritoryReport(territoryReport: TerritoryMemberReportEntity)
     suspend fun updateTerritoryReport(territoryReport: TerritoryMemberReportEntity)
     suspend fun deleteTerritoryReport(territoryReport: TerritoryMemberReportEntity)

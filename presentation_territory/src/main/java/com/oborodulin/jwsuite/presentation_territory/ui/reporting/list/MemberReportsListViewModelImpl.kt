@@ -10,12 +10,12 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.RoadType
-import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
+import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryStreetsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -31,14 +31,14 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Territoring.TerritoryStreetsListViewModelImpl"
+private const val TAG = "Reporting.TerritoryStreetsListViewModelImpl"
 
 @HiltViewModel
 class MemberReportsListViewModelImpl @Inject constructor(
-    private val useCases: TerritoryUseCases,
+    private val useCases: TerritoryReportUseCases,
     private val converter: TerritoryStreetsListConverter
 ) : MemberReportsListViewModel,
-    ListViewModel<List<TerritoryStreetsListItem>, UiState<List<TerritoryStreetsListItem>>, MemberReportsListUiAction, UiSingleEvent>() {
+    ListViewModel<List<TerritoryMemberReportsListItem>, UiState<List<TerritoryMemberReportsListItem>>, MemberReportsListUiAction, UiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
@@ -46,21 +46,21 @@ class MemberReportsListViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(TerritoryStreetsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is MemberReportsListUiAction.Load -> loadTerritoryStreets(action.territoryId)
-            is MemberReportsListUiAction.EditTerritoryStreet -> {
+            is MemberReportsListUiAction.Load -> loadTerritoryStreets(action.territoryStreetId)
+            is MemberReportsListUiAction.EditMemberReport -> {
                 submitSingleEvent(
                     MemberReportsListUiSingleEvent.OpenTerritoryStreetScreen(
                         NavRoutes.TerritoryStreet.routeForTerritoryStreet(
                             NavigationInput.TerritoryStreetInput(
-                                action.territoryId, action.territoryStreetId
+                                action.territoryMemberReportId, action.territoryStreetId
                             )
                         )
                     )
                 )
             }
 
-            is MemberReportsListUiAction.DeleteTerritoryStreet -> deleteTerritoryStreet(
-                action.territoryStreetId
+            is MemberReportsListUiAction.DeleteMemberReport -> deleteTerritoryStreet(
+                action.territoryMemberReportId
             )
         }
         return job
@@ -91,7 +91,8 @@ class MemberReportsListViewModelImpl @Inject constructor(
         return job
     }
 
-    override fun initFieldStatesByUiModel(uiModel: List<TerritoryStreetsListItem>): Job? = null
+    override fun initFieldStatesByUiModel(uiModel: List<TerritoryMemberReportsListItem>): Job? =
+        null
 
     companion object {
         fun previewModel(ctx: Context) =
@@ -121,7 +122,7 @@ class MemberReportsListViewModelImpl @Inject constructor(
             }
 
         fun previewList(ctx: Context) = listOf(
-            TerritoryStreetsListItem(
+            TerritoryMemberReportsListItem(
                 id = UUID.randomUUID(),
                 streetId = UUID.randomUUID(),
                 streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
@@ -132,7 +133,7 @@ class MemberReportsListViewModelImpl @Inject constructor(
                     ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.even_expr)
                 )
             ),
-            TerritoryStreetsListItem(
+            TerritoryMemberReportsListItem(
                 id = UUID.randomUUID(),
                 streetId = UUID.randomUUID(),
                 streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${

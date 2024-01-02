@@ -13,12 +13,14 @@ class TerritoryReportHouseViewToTerritoryReportHouseMapper(
 ) : Mapper<TerritoryReportHouseView, TerritoryReportHouse>,
     NullableMapper<TerritoryReportHouseView, TerritoryReportHouse> {
     override fun map(input: TerritoryReportHouseView): TerritoryReportHouse {
+        val house = houseMapper.map(input.house)
         val territoryMemberReport =
             territoryReportMapper.nullableMap(input.territoryReport) ?: TerritoryMemberReport(
+                house = house,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
         val territoryReportHouse = TerritoryReportHouse(
-            house = houseMapper.map(input.house),
+            house = house,
             territoryMemberReport = territoryMemberReport
         )
         territoryReportHouse.id = input.territoryReport?.territoryMemberReportId

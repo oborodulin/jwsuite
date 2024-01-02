@@ -10,12 +10,15 @@ import java.util.UUID
 data class TerritoryMemberReport(
     val ctx: Context? = null,
     val deliveryDate: OffsetDateTime? = null,
+    val territoryStreet: TerritoryStreet? = null,
+    val house: House? = null,
+    val room: Room? = null,
     val territoryMemberId: UUID,
     val territoryReportMark: TerritoryReportMark? = null,
     val languageCode: String? = null,
     val gender: Boolean? = null,
     val age: Int? = null,
-    val isProcessed: Boolean = false,
+    val isProcessed: Boolean? = null,
     val territoryReportDesc: String? = null
 ) : DomainModel() {
     val territoryMark = territoryReportMark?.let { mark ->

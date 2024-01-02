@@ -42,6 +42,16 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
         localTerritoryReportDataSource.getTerritoryReportRooms(territoryId, houseId)
             .map(mappers.territoryReportRoomViewListToTerritoryReportRoomsListMapper::map)
 
+    override fun process(territoryReportId: UUID) = flow {
+        localTerritoryReportDataSource.process(territoryReportId)
+        this.emit(territoryReportId)
+    }
+
+    override fun cancelProcess(territoryReportId: UUID) = flow {
+        localTerritoryReportDataSource.cancelProcess(territoryReportId)
+        this.emit(territoryReportId)
+    }
+
     override fun save(territoryReportHouse: TerritoryReportHouse) = flow {
         if (territoryReportHouse.id == null) {
             localTerritoryReportDataSource.insertTerritoryReport(

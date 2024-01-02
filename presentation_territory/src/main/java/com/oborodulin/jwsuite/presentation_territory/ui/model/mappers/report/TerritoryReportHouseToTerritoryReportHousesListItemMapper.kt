@@ -5,10 +5,11 @@ import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryReportHousesListItem
 import java.util.UUID
 
-class TerritoryHouseReportToTerritoryHouseReportsListItemMapper :
+class TerritoryReportHouseToTerritoryReportHousesListItemMapper :
     Mapper<TerritoryReportHouse, TerritoryReportHousesListItem> {
     override fun map(input: TerritoryReportHouse) = TerritoryReportHousesListItem(
         id = input.id ?: UUID.randomUUID(),
+        houseId = input.house.id!!,
         houseNum = input.house.houseNum,
         houseFullNum = input.house.houseFullNum,
         streetFullName = input.house.street.streetFullName,

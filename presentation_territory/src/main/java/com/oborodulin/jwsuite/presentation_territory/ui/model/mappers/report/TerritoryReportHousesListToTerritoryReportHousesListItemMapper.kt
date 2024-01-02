@@ -4,5 +4,5 @@ import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryReportHousesListItem
 
-class TerritoryHouseReportsListToTerritoryHouseReportsListItemMapper(mapper: TerritoryHouseReportToTerritoryHouseReportsListItemMapper) :
+class TerritoryReportHousesListToTerritoryReportHousesListItemMapper(mapper: TerritoryReportHouseToTerritoryReportHousesListItemMapper) :
     ListMapperImpl<TerritoryReportHouse, TerritoryReportHousesListItem>(mapper)

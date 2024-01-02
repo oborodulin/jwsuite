@@ -14,13 +14,15 @@ import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
-import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
-import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.CancelProcessMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.DeleteMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.ProcessMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
-import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryReportHousesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryReportHousesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -39,14 +41,14 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Reporting.PartialHousesViewModelImpl"
+private const val TAG = "Reporting.ReportHousesViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class ReportHousesViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val useCases: RegionUseCases,
-    private val converter: RegionsListConverter
+    private val useCases: TerritoryReportUseCases,
+    private val converter: TerritoryReportHousesListConverter
 ) :
     ReportHousesViewModel,
     SingleViewModel<List<TerritoryReportHousesListItem>, UiState<List<TerritoryReportHousesListItem>>, ReportHousesUiAction, ReportHousesUiSingleEvent, ReportHousesFields, InputWrapper>(
@@ -58,13 +60,13 @@ class ReportHousesViewModelImpl @Inject constructor(
         )
     }
 
-    override fun initState(): UiState<List<TerritoryReportHousesListItem>> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: ReportHousesUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(PartialHousesUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(ReportHousesUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is ReportHousesUiAction.Load -> loadPartialHouses(
+            is ReportHousesUiAction.Load -> loadReportHouses(
                 action.territoryId, action.territoryStreetId
             )
 
@@ -77,23 +79,21 @@ class ReportHousesViewModelImpl @Inject constructor(
             )
 
             is ReportHousesUiAction.DeleteMemberReport -> deleteMemberReport(action.territoryMemberReportId)
+            is ReportHousesUiAction.ProcessReport -> processMemberReport(action.territoryMemberReportId)
+            is ReportHousesUiAction.CancelProcessReport -> cancelProcessMemberReport(action.territoryMemberReportId)
         }
         return job
     }
 
-    private fun loadPartialHouses(territoryId: UUID, territoryStreetId: UUID? = null): Job {
+    private fun loadReportHouses(territoryId: UUID, territoryStreetId: UUID? = null): Job {
         Timber.tag(TAG)
             .d(
-                "loadPartialHouses(...) called: territoryId = %s; territoryStreetId = %s",
-                territoryId,
-                territoryStreetId
+                "loadReportHouses(...) called: territoryId = %s; territoryStreetId = %s",
+                territoryId, territoryStreetId
             )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getHousesUseCase.execute(
-                GetHousesUseCase.Request(
-                    territoryId,
-                    territoryStreetId
-                )
+            useCases.getReportHousesUseCase.execute(
+                GetReportHousesUseCase.Request(territoryId, territoryStreetId)
             ).map {
                 converter.convert(it)
             }.collect {
@@ -106,37 +106,35 @@ class ReportHousesViewModelImpl @Inject constructor(
     private fun deleteMemberReport(memberReportId: UUID): Job {
         Timber.tag(TAG).d("deleteMemberReport(...) called: memberReportId = %s", memberReportId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteHouseUseCase.execute(DeleteHouseUseCase.Request(memberReportId))
-                .collect {}
+            useCases.deleteMemberReportUseCase.execute(
+                DeleteMemberReportUseCase.Request(memberReportId)
+            ).collect {}
+        }
+        return job
+    }
+
+    private fun processMemberReport(memberReportId: UUID): Job {
+        Timber.tag(TAG).d("processMemberReport(...) called: memberReportId = %s", memberReportId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.processMemberReportUseCase.execute(
+                ProcessMemberReportUseCase.Request(memberReportId)
+            ).collect {}
+        }
+        return job
+    }
+
+    private fun cancelProcessMemberReport(memberReportId: UUID): Job {
+        Timber.tag(TAG)
+            .d("cancelProcessMemberReport(...) called: memberReportId = %s", memberReportId)
+        val job = viewModelScope.launch(errorHandler) {
+            useCases.cancelProcessMemberReportUseCase.execute(
+                CancelProcessMemberReportUseCase.Request(memberReportId)
+            ).collect {}
         }
         return job
     }
 
     override fun stateInputFields() = enumValues<ReportHousesFields>().map { it.name }
-
-    /*override fun initFieldStatesByUiModel(uiModel: TerritoringUi): Job? {
-            super.initFieldStatesByUiModel(uiModel)
-            Timber.tag(TAG)
-                .d(
-                    "initFieldStatesByUiModel(TerritoringUiModel) called: territoringUi = %s",
-                    uiModel
-                )
-            initStateValue(
-                HousingFields.HOUSES_LOCALITY, locality,
-                uiModel.isPrivateSector.toString()
-            )
-            val territoryLocation = uiModel.territoryLocations.first()
-            initStateValue(
-                HousingFields.HOUSES_STREET, street,
-                TerritoryLocationsListItem(
-                    locationId = territoryLocation.locationId,
-                    locationShortName = territoryLocation.locationShortName,
-                    territoryLocationType = territoryLocation.territoryLocationType
-                )
-            )
-            return null
-        }
-     */
 
     override suspend fun observeInputEvents() {
         if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
@@ -170,7 +168,7 @@ class ReportHousesViewModelImpl @Inject constructor(
             object : ReportHousesViewModel {
                 override val uiStateErrorMsg = MutableStateFlow("")
                 override val isUiStateChanged = MutableStateFlow(true)
-                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+                override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
                 override val singleEventFlow = Channel<ReportHousesUiSingleEvent>().receiveAsFlow()
                 override val events = Channel<ScreenEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
@@ -207,7 +205,7 @@ class ReportHousesViewModelImpl @Inject constructor(
                 }
             }
 
-        fun previewUiModel(ctx: Context) = listOf(
+        fun previewList(ctx: Context) = listOf(
             TerritoryReportHousesListItem(
                 id = UUID.randomUUID(),
                 houseNum = 1,

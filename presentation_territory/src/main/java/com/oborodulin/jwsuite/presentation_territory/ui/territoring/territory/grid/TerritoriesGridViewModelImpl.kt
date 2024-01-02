@@ -185,6 +185,24 @@ class TerritoriesGridViewModelImpl @Inject constructor(
             )
 
             is TerritoriesGridUiAction.Process -> processTerritories()
+
+            is TerritoriesGridUiAction.ReportStreets -> submitSingleEvent(
+                TerritoriesGridUiSingleEvent.OpenReportStreetsScreen(
+                    NavRoutes.ReportStreets.routeForReportStreets(TerritoryInput(action.territoryId))
+                )
+            )
+
+            is TerritoriesGridUiAction.ReportHouses -> submitSingleEvent(
+                TerritoriesGridUiSingleEvent.OpenReportHousesScreen(
+                    NavRoutes.ReportHouses.routeForReportHouses(TerritoryInput(action.territoryId))
+                )
+            )
+
+            is TerritoriesGridUiAction.ReportRooms -> submitSingleEvent(
+                TerritoriesGridUiSingleEvent.OpenReportRoomsScreen(
+                    NavRoutes.ReportRooms.routeForReportRooms(TerritoryInput(action.territoryId))
+                )
+            )
         }
         return job
     }

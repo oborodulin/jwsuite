@@ -23,8 +23,8 @@ fun AtWorkProcessButtonComponent(
         modifier = modifier,
         enabled = enabled,
         imageVector = Icons.Outlined.ThumbUp,
-        textResId = R.string.btn_at_work_lbl,
-        contentDescriptionResId = R.string.at_work_cnt_desc,
+        textResId = R.string.btn_at_work_process_lbl,
+        contentDescriptionResId = R.string.at_work_process_cnt_desc,
         onClick = onClick
     )
 }

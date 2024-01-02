@@ -26,4 +26,10 @@ sealed class TerritoriesGridUiAction(override val isEmitJob: Boolean = true) : U
     data object ProcessInitConfirmation : TerritoriesGridUiAction(false)
     data object ProcessConfirmation : TerritoriesGridUiAction(false)
     data object Process : TerritoriesGridUiAction()
+
+    // Report:
+    data class ReportStreets(val territoryId: UUID) : TerritoriesGridUiAction()
+    data class ReportHouses(val territoryId: UUID) : TerritoriesGridUiAction()
+
+    data class ReportRooms(val territoryId: UUID) : TerritoriesGridUiAction()
 }

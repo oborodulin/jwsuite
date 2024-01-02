@@ -18,6 +18,8 @@ interface TerritoryReportsRepository {
     fun getTerritoryReportRooms(territoryId: UUID, houseId: UUID? = null):
             Flow<List<TerritoryReportRoom>>
 
+    fun process(territoryReportId: UUID): Flow<UUID>
+    fun cancelProcess(territoryReportId: UUID): Flow<UUID>
     fun save(territoryReportHouse: TerritoryReportHouse): Flow<TerritoryReportHouse>
     fun save(territoryReportRoom: TerritoryReportRoom): Flow<TerritoryReportRoom>
     fun delete(territoryMemberReport: TerritoryMemberReport): Flow<TerritoryMemberReport>

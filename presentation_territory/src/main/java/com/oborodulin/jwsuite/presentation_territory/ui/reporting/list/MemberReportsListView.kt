@@ -33,21 +33,21 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsLi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Territoring.TerritoryStreetsListView"
+private const val TAG = "Reporting.MemberReportsListView"
 
 @Composable
-fun TerritoryStreetsListView(
+fun MemberReportsListView(
     viewModel: MemberReportsListViewModelImpl = hiltViewModel(),
     navController: NavController,
     territoryInput: TerritoryInput,
     isEditableList: Boolean = true
 ) {
     Timber.tag(TAG).d(
-        "TerritoryStreetsListView(...) called: territoryInput = %s", territoryInput
+        "MemberReportsListView(...) called: territoryInput = %s", territoryInput
     )
     LaunchedEffect(territoryInput.territoryId) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("MemberReportsListView -> LaunchedEffect() BEFORE collect ui state flow")
         viewModel.submitAction(MemberReportsListUiAction.Load(territoryInput.territoryId))
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
@@ -63,14 +63,14 @@ fun TerritoryStreetsListView(
                         emptyListResId = R.string.territory_streets_list_empty_text,
                         onEdit = { territoryStreet ->
                             viewModel.submitAction(
-                                MemberReportsListUiAction.EditTerritoryStreet(
+                                MemberReportsListUiAction.EditMemberReport(
                                     territoryInput.territoryId, territoryStreet.itemId!!
                                 )
                             )
                         },
                         onDelete = { territoryStreet ->
                             viewModel.submitAction(
-                                MemberReportsListUiAction.DeleteTerritoryStreet(territoryStreet.itemId!!)
+                                MemberReportsListUiAction.DeleteMemberReport(territoryStreet.itemId!!)
                             )
                         }
                     ) { territoryStreet -> viewModel.singleSelectItem(territoryStreet) }
@@ -87,7 +87,7 @@ fun TerritoryStreetsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("MemberReportsListView -> LaunchedEffect() AFTER collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
@@ -148,7 +148,7 @@ fun PreviewTerritoryStreetsList() {
     JWSuiteTheme {
         Surface {
             /*TerritoryStreetsEditableList(
-                territoryStreets = TerritoryStreetsListViewModelImpl.previewList(LocalContext.current),
+                territoryStreets = MemberReportsListViewModelImpl.previewList(LocalContext.current),
                 onEdit = {},
                 onDelete = {},
                 onClick = {}

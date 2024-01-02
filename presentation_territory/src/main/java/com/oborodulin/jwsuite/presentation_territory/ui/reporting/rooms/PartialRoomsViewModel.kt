@@ -6,7 +6,7 @@ import com.oborodulin.home.common.ui.state.SingleViewModeled
 import kotlinx.coroutines.flow.StateFlow
 
 interface PartialRoomsViewModel :
-    SingleViewModeled<Any, PartialRoomsUiAction, PartialRoomsUiSingleEvent, PartialRoomsFields> {
+    SingleViewModeled<Any, ReportRoomsUiAction, PartialRoomsUiSingleEvent, PartialRoomsFields> {
     val locality: StateFlow<InputListItemWrapper<ListItemModel>>
     val street: StateFlow<InputListItemWrapper<ListItemModel>>
 }
