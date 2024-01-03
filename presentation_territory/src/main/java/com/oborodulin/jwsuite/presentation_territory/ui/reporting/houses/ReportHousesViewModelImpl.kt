@@ -14,6 +14,8 @@ import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
+import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.oborodulin.jwsuite.domain.usecases.territory.report.CancelProcessMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.DeleteMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
@@ -58,6 +60,21 @@ class ReportHousesViewModelImpl @Inject constructor(
         state.getStateFlow(
             ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET.name, InputListItemWrapper()
         )
+    }
+
+    override fun singleSelectedItem(): ListItemModel? {
+        if (LOG_MVI_LIST) Timber.tag(TAG).d("singleSelectedItem() called")
+        var selectedItem: ListItemModel? = null
+        uiState()?.let { uiState ->
+            selectedItem = try {
+                uiState.first { it.selected }
+            } catch (e: NoSuchElementException) {
+                uiState.getOrNull(0)
+                //Timber.tag(TAG).e(e)
+            }
+            if (LOG_MVI_LIST) Timber.tag(TAG).d("selected %s list item", selectedItem)
+        }
+        return selectedItem
     }
 
     override fun initState() = UiState.Loading
@@ -184,6 +201,8 @@ class ReportHousesViewModelImpl @Inject constructor(
                 override val territoryStreet =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
+                override fun singleSelectedItem() = null
+
                 override fun submitAction(action: ReportHousesUiAction): Job? = null
                 override fun handleActionJob(
                     action: () -> Unit,
@@ -208,11 +227,12 @@ class ReportHousesViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             TerritoryReportHousesListItem(
                 id = UUID.randomUUID(),
+                territoryMemberReportId = UUID.randomUUID(),
                 houseNum = 1,
                 houseFullNum = "1Б",
                 streetFullName = "ул. Независимости",
                 territoryMemberId = UUID.randomUUID(),
-                territoryShortMark = "ПП",
+                territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.PP.ordinal],
                 languageCode = null,
                 genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
                 ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
@@ -220,11 +240,12 @@ class ReportHousesViewModelImpl @Inject constructor(
             ),
             TerritoryReportHousesListItem(
                 id = UUID.randomUUID(),
+                territoryMemberReportId = UUID.randomUUID(),
                 houseNum = 145,
                 houseFullNum = "145",
                 streetFullName = "ул. Независимости",
                 territoryMemberId = UUID.randomUUID(),
-                territoryShortMark = "ГО",
+                territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.GO.ordinal],
                 languageCode = null,
                 genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
                 ageInfo = "(54 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",

@@ -5,18 +5,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
-import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
-import com.oborodulin.jwsuite.data_geo.R
-import com.oborodulin.jwsuite.domain.types.RoadType
+import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
+import com.oborodulin.jwsuite.domain.usecases.territory.report.DeleteMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
-import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportsListItem
-import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryStreetsListConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -36,41 +34,52 @@ private const val TAG = "Reporting.TerritoryStreetsListViewModelImpl"
 @HiltViewModel
 class MemberReportsListViewModelImpl @Inject constructor(
     private val useCases: TerritoryReportUseCases,
-    private val converter: TerritoryStreetsListConverter
+    private val converter: TerritoryMemberReportsListConverter
 ) : MemberReportsListViewModel,
-    ListViewModel<List<TerritoryMemberReportsListItem>, UiState<List<TerritoryMemberReportsListItem>>, MemberReportsListUiAction, UiSingleEvent>() {
+    ListViewModel<List<TerritoryMemberReportsListItem>, UiState<List<TerritoryMemberReportsListItem>>, MemberReportsListUiAction, MemberReportsListUiSingleEvent>() {
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberReportsListUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoryStreetsListUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(MemberReportsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is MemberReportsListUiAction.Load -> loadTerritoryStreets(action.territoryStreetId)
+            is MemberReportsListUiAction.Load -> loadMemberReports(
+                territoryStreetId = action.territoryStreetId,
+                houseId = action.houseId, roomId = action.roomId
+            )
+
             is MemberReportsListUiAction.EditMemberReport -> {
                 submitSingleEvent(
-                    MemberReportsListUiSingleEvent.OpenTerritoryStreetScreen(
-                        NavRoutes.TerritoryStreet.routeForTerritoryStreet(
-                            NavigationInput.TerritoryStreetInput(
-                                action.territoryMemberReportId, action.territoryStreetId
-                            )
+                    MemberReportsListUiSingleEvent.OpenMemberReportScreen(
+                        NavRoutes.MemberReport.routeForMemberReport(
+                            NavigationInput.MemberReportInput(action.territoryMemberReportId)
                         )
                     )
                 )
             }
 
-            is MemberReportsListUiAction.DeleteMemberReport -> deleteTerritoryStreet(
+            is MemberReportsListUiAction.DeleteMemberReport -> deleteMemberReport(
                 action.territoryMemberReportId
             )
         }
         return job
     }
 
-    private fun loadTerritoryStreets(territoryId: UUID): Job {
-        Timber.tag(TAG).d("loadTerritoryStreets() called: territoryId = %s", territoryId)
+    private fun loadMemberReports(
+        territoryStreetId: UUID? = null, houseId: UUID? = null, roomId: UUID? = null
+    ): Job {
+        Timber.tag(TAG).d(
+            "loadMemberReports() called: territoryStreetId = %s, houseId = %s, roomId = %s",
+            territoryStreetId, houseId, roomId
+        )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getTerritoryStreetsUseCase.execute(
-                GetTerritoryStreetsUseCase.Request(territoryId)
+            useCases.getMemberReportsUseCase.execute(
+                GetMemberReportsUseCase.Request(
+                    territoryStreetId = territoryStreetId,
+                    houseId = houseId,
+                    roomId = roomId
+                )
             ).map {
                 converter.convert(it)
             }.collect {
@@ -80,12 +89,15 @@ class MemberReportsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun deleteTerritoryStreet(territoryStreetId: UUID): Job {
+    private fun deleteMemberReport(territoryMemberReportId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteTerritoryStreet() called: territoryStreetId = %s", territoryStreetId)
+            .d(
+                "deleteMemberReport(...) called: territoryMemberReportId = %s",
+                territoryMemberReportId
+            )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.deleteTerritoryStreetUseCase.execute(
-                DeleteTerritoryStreetUseCase.Request(territoryStreetId)
+            useCases.deleteMemberReportUseCase.execute(
+                DeleteMemberReportUseCase.Request(territoryMemberReportId)
             ).collect {}
         }
         return job
@@ -98,7 +110,8 @@ class MemberReportsListViewModelImpl @Inject constructor(
         fun previewModel(ctx: Context) =
             object : MemberReportsListViewModel {
                 override val uiStateFlow = MutableStateFlow(UiState.Success(previewList(ctx)))
-                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+                override val singleEventFlow =
+                    Channel<MemberReportsListUiSingleEvent>().receiveAsFlow()
                 override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
                 override val uiStateErrorMsg = MutableStateFlow("")
 
@@ -124,26 +137,17 @@ class MemberReportsListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             TerritoryMemberReportsListItem(
                 id = UUID.randomUUID(),
-                streetId = UUID.randomUUID(),
-                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
-                    ctx.resources.getString(R.string.def_baratynskogo_name)
-                }",
-                info = listOfNotNull(
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.private_sector_expr),
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.even_expr)
-                )
+                territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.PP.ordinal],
+                languageCode = null,
+                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
+                ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})"
             ),
             TerritoryMemberReportsListItem(
                 id = UUID.randomUUID(),
-                streetId = UUID.randomUUID(),
-                streetFullName = "${ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.road_types)[RoadType.STREET.ordinal]} ${
-                    ctx.resources.getString(R.string.def_patorgynskogo_name)
-                }",
-                info = listOfNotNull(
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.private_sector_expr),
-                    ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.even_expr),
-                    "38 ${ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.house_expr)}"
-                )
+                territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.GO.ordinal],
+                languageCode = null,
+                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
+                ageInfo = "(54 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})"
             )
         )
     }

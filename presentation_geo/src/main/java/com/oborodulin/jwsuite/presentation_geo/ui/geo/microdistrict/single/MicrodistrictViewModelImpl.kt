@@ -106,7 +106,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
         for (type in VillageType.entries) _microdistrictTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<MicrodistrictUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MicrodistrictUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

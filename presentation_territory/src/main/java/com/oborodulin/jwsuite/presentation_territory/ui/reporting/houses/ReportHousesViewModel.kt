@@ -9,4 +9,5 @@ import kotlinx.coroutines.flow.StateFlow
 interface ReportHousesViewModel :
     SingleViewModeled<List<TerritoryReportHousesListItem>, ReportHousesUiAction, ReportHousesUiSingleEvent, ReportHousesFields> {
     val territoryStreet: StateFlow<InputListItemWrapper<ListItemModel>>
+    fun singleSelectedItem(): ListItemModel?
 }

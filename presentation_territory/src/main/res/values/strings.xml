@@ -34,6 +34,7 @@
     <string name="entrances_list_empty_text">Подъездов дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="floors_list_empty_text">Этажей дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="rooms_list_empty_text">Квартир дома пока нет. Добавьте, пожалуйста, хотя бы одну</string>
+    <string name="territory_reports_list_empty_text">Отчётов пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <!--Поиск:-->
     <string name="territory_search_placeholder">Поиск участка…</string>
 
@@ -167,6 +168,7 @@
     <string name="dlg_confirm_del_territory_street">Удалить из участка улицу %1$s?</string>
     <string name="dlg_confirm_del_territory_house">Удалить из участка дом №%1$s?</string>
     <string name="dlg_confirm_del_territory_room">Удалить из участка квартиру %1$s?</string>
+    <string name="dlg_confirm_del_territory_report">Удалить отчёт?</string>
     <string name="dlg_confirm_del_territory_street_report">Удалить отчёт по улице %1$s?</string>
     <string name="dlg_confirm_del_territory_house_report">Удалить отчёт по дому №%1$s?</string>
     <string name="dlg_confirm_del_territory_room_report">Удалить отчёт по квартире №%1$s?</string>

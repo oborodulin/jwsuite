@@ -8,16 +8,15 @@ import java.util.UUID
 class TerritoryReportHouseToTerritoryReportHousesListItemMapper :
     Mapper<TerritoryReportHouse, TerritoryReportHousesListItem> {
     override fun map(input: TerritoryReportHouse) = TerritoryReportHousesListItem(
-        id = input.id ?: UUID.randomUUID(),
-        houseId = input.house.id!!,
+        id = input.house.id ?: UUID.randomUUID(),
         houseNum = input.house.houseNum,
         houseFullNum = input.house.houseFullNum,
         streetFullName = input.house.street.streetFullName,
+        territoryMemberReportId = input.territoryMemberReport.id,
         territoryMemberId = input.territoryMemberReport.territoryMemberId,
         territoryShortMark = input.territoryMemberReport.territoryShortMark,
         languageCode = input.territoryMemberReport.languageCode,
-        genderInfo = input.territoryMemberReport.genderInfo,
-        ageInfo = input.territoryMemberReport.ageInfo,
+        personInfo = input.territoryMemberReport.personInfo,
         isProcessed = input.territoryMemberReport.isProcessed
     )
 }

@@ -99,7 +99,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         false
     )
 
-    override fun initState(): UiState<TerritoryStreetUiModel> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryStreetUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

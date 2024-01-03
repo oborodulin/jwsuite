@@ -32,7 +32,7 @@ class CongregatingViewModelImpl @Inject constructor(
         state.getStateFlow(CongregatingFields.CONGREGATING_IS_SERVICE.name, InputWrapper())
     }
 
-    override fun initState(): UiState<CongregatingUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: CongregatingUiAction) = null
 

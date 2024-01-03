@@ -84,7 +84,7 @@ class CongregationViewModelImpl @Inject constructor(
             locality.errorId == null && congregationNum.errorId == null && congregationName.errorId == null && territoryMark.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<CongregationUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: CongregationUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

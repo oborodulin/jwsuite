@@ -69,27 +69,27 @@ fun ReportHousesGridView(
                 },
                 onEditMemberReport = { reportHouse ->
                     reportHousesViewModel.submitAction(
-                        ReportHousesUiAction.EditMemberReport(reportHouse.id)
+                        ReportHousesUiAction.EditMemberReport(reportHouse.territoryMemberReportId!!)
                     )
                 },
                 onDeleteMemberReport = { reportHouse ->
                     reportHousesViewModel.submitAction(
-                        ReportHousesUiAction.DeleteMemberReport(reportHouse.id)
+                        ReportHousesUiAction.DeleteMemberReport(reportHouse.territoryMemberReportId!!)
                     )
                 },
                 onProcessHouse = { reportHouse ->
                     reportHousesViewModel.submitAction(
-                        ReportHousesUiAction.ProcessReport(reportHouse.id)
+                        ReportHousesUiAction.ProcessReport(reportHouse.territoryMemberReportId!!)
                     )
                 },
                 onCancelProcessHouse = { reportHouse ->
                     reportHousesViewModel.submitAction(
-                        ReportHousesUiAction.CancelProcessReport(reportHouse.id)
+                        ReportHousesUiAction.CancelProcessReport(reportHouse.territoryMemberReportId!!)
                     )
                 }
             ) { reportHouse ->
                 with(memberReportsListViewModel) {
-                    submitAction(MemberReportsListUiAction.Load(houseId = reportHouse.houseId))
+                    submitAction(MemberReportsListUiAction.Load(houseId = reportHouse.id))
                 }
             }
         }

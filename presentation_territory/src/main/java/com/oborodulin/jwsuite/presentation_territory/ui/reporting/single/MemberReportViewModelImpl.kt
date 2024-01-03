@@ -152,7 +152,7 @@ class MemberReportViewModelImpl @Inject constructor(
         for (type in TerritoryReportMark.entries) _memberTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<MemberUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberReportUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

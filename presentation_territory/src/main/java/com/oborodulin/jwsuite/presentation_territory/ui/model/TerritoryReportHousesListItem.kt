@@ -6,15 +6,14 @@ import java.util.UUID
 
 data class TerritoryReportHousesListItem(
     val id: UUID,
-    val houseId: UUID,
     val houseNum: Int,
     val houseFullNum: String,
     val streetFullName: String,
+    val territoryMemberReportId: UUID? = null,
     val territoryMemberId: UUID,
     val territoryShortMark: String? = null,
     val languageCode: String? = null,
-    val genderInfo: String? = null,
-    val ageInfo: String? = null,
+    val personInfo: String? = null,
     val isProcessed: Boolean? = null
 ) : Parcelable, ListItemModel(
     itemId = id,

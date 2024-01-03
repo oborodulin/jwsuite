@@ -106,7 +106,7 @@ class LocalityViewModelImpl @Inject constructor(
         for (type in LocalityType.entries) _localityTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<LocalityUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: LocalityUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

@@ -83,7 +83,7 @@ class StreetMicrodistrictViewModelImpl @Inject constructor(
         }
     }
 
-    override fun initState(): UiState<StreetMicrodistrictsUiModel> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: StreetMicrodistrictUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

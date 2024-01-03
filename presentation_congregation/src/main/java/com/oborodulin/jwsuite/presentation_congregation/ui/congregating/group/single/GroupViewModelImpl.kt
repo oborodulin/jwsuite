@@ -81,7 +81,7 @@ class GroupViewModelImpl @Inject constructor(
         { congregation, groupNum -> congregation.errorId == null && groupNum.errorId == null }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<GroupUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: GroupUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

@@ -38,5 +38,7 @@ data class TerritoryMemberReport(
     val ageInfo = age?.let {
         "($it ${ctx?.resources?.getString(R.string.age_expr).orEmpty()})"
     }
+    val languageInfo = "[$languageCode]"
     val info = listOfNotNull(territoryMark, genderInfo, ageInfo)
+    val personInfo = listOfNotNull(genderInfo, ageInfo).joinToString(" ")
 }

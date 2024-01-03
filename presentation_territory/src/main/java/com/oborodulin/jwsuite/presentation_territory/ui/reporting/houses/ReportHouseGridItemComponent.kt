@@ -94,14 +94,10 @@ fun ReportHouseGridItemComponent(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.ExtraBold
                                 )
-                            ) {
-                                append(": $it")
-                            }
+                            ) { append(": $it") }
                         }
-                        reportHouse.genderInfo?.let {
-                            withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                                append("\n$it")
-                            }
+                        reportHouse.personInfo?.let {
+                            withStyle(style = SpanStyle(fontSize = 14.sp)) { append("\n$it") }
                         }
                     },
                     modifier = Modifier
@@ -129,15 +125,7 @@ fun ReportHouseGridItemComponent(
                 val isShowDeleteAlert = rememberSaveable { mutableStateOf(false) }
                 val isShowProcessAlert = rememberSaveable { mutableStateOf(false) }
                 val isShowCancelProcessAlert = rememberSaveable { mutableStateOf(false) }
-                if (reportHouse.isProcessed == null) {
-                    Image(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { onAddMemberReport() },
-                        imageVector = Icons.Outlined.Add,
-                        contentDescription = ""
-                    )
-                } else {
+                reportHouse.territoryMemberReportId?.let {
                     Image(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
@@ -148,7 +136,10 @@ fun ReportHouseGridItemComponent(
                     Spacer(Modifier.height(18.dp))
                     DeleteConfirmDialogComponent(
                         isShow = isShowDeleteAlert,
-                        text = stringResource(R.string.dlg_confirm_del_territory_house_report)
+                        text = stringResource(
+                            R.string.dlg_confirm_del_territory_house_report,
+                            reportHouse.houseFullNum
+                        )
                     ) { onDeleteMemberReport(reportHouse) }
                     Image(
                         modifier = Modifier
@@ -157,35 +148,47 @@ fun ReportHouseGridItemComponent(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = ""
                     )
-                }
-                reportHouse.isProcessed?.let {
-                    Spacer(Modifier.height(18.dp))
-                    if (reportHouse.isProcessed) {
-                        AtWorkCancelProcessConfirmDialogComponent(
-                            isShow = isShowCancelProcessAlert,
-                            text = stringResource(R.string.dlg_confirm_cancel_process_territory_house)
-                        ) { onCancelProcessHouse(reportHouse) }
-                        Image(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .clickable { isShowCancelProcessAlert.value = true },
-                            imageVector = Icons.Outlined.Clear,
-                            contentDescription = ""
-                        )
-                    } else {
-                        AtWorkProcessConfirmDialogComponent(
-                            isShow = isShowProcessAlert,
-                            text = stringResource(R.string.dlg_confirm_process_territory_house)
-                        ) { onProcessHouse(reportHouse) }
-                        Image(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .clickable { isShowProcessAlert.value = true },
-                            imageVector = Icons.Outlined.Done,
-                            contentDescription = ""
-                        )
+                    reportHouse.isProcessed?.let {
+                        Spacer(Modifier.height(18.dp))
+                        if (reportHouse.isProcessed) {
+                            AtWorkCancelProcessConfirmDialogComponent(
+                                isShow = isShowCancelProcessAlert,
+                                text = stringResource(
+                                    R.string.dlg_confirm_cancel_process_territory_house,
+                                    reportHouse.houseFullNum
+                                )
+                            ) { onCancelProcessHouse(reportHouse) }
+                            Image(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { isShowCancelProcessAlert.value = true },
+                                imageVector = Icons.Outlined.Clear,
+                                contentDescription = ""
+                            )
+                        } else {
+                            AtWorkProcessConfirmDialogComponent(
+                                isShow = isShowProcessAlert,
+                                text = stringResource(
+                                    R.string.dlg_confirm_process_territory_house,
+                                    reportHouse.houseFullNum
+                                )
+                            ) { onProcessHouse(reportHouse) }
+                            Image(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { isShowProcessAlert.value = true },
+                                imageVector = Icons.Outlined.Done,
+                                contentDescription = ""
+                            )
+                        }
                     }
-                }
+                } ?: Image(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { onAddMemberReport() },
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = ""
+                )
             }
         }
     }

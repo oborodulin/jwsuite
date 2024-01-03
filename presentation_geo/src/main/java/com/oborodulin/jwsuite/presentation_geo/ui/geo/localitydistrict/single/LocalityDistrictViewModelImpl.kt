@@ -81,7 +81,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         locality.errorId == null && districtShortName.errorId == null && districtName.errorId == null
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<LocalityDistrictUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: LocalityDistrictUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

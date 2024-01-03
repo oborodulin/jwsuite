@@ -157,7 +157,7 @@ class HouseViewModelImpl @Inject constructor(
         for (type in BuildingType.entries) _buildingTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<HouseUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: HouseUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

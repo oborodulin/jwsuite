@@ -95,7 +95,7 @@ class AppSettingViewModelImpl @Inject constructor(
             errorIdResult
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<AppSettingsUiModel> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: AppSettingUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

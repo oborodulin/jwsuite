@@ -38,7 +38,7 @@ class HousingViewModelImpl @Inject constructor(
         state.getStateFlow(HousingFields.HOUSES_STREET.name, InputListItemWrapper())
     }
 
-    override fun initState(): UiState<TerritoringUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: HousingUiAction) = null
 

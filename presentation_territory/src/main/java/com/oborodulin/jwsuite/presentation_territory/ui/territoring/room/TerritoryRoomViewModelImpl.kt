@@ -80,7 +80,7 @@ class TerritoryRoomViewModelImpl @Inject constructor(
         }
     }
 
-    override fun initState(): UiState<TerritoryRoomsUiModel> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryRoomUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

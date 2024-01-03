@@ -49,7 +49,6 @@ import com.oborodulin.jwsuite.presentation_territory.ui.reporting.list.MemberRep
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.BarTerritoryStreetComboBox
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -154,26 +153,16 @@ fun ReportHousesScreen(
             }
         }
     }
-    LaunchedEffect(Unit) {
-        Timber.tag(TAG)
-            .d("ReportHousesScreen -> LaunchedEffect() AFTER collect single Event Flow")
-        reportHousesViewModel.singleEventFlow.collectLatest {
-            Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
-            when (it) {
-                is ReportHousesUiSingleEvent.OpenMemberReportScreen -> {
-                    appState.mainNavigate(it.navRoute)
-                }
-            }
-        }
-    }
 }
 
 @Composable
 fun HousesMemberReportView(
     appState: AppState,
+    reportHousesViewModel: ReportHousesViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput
 ) {
     Timber.tag(TAG).d("HousesMemberReportView(...) called")
+    val selectedHouseId = reportHousesViewModel.singleSelectedItem()?.itemId
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -213,7 +202,10 @@ fun HousesMemberReportView(
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            MemberReportsListView(navController = appState.mainNavController)
+            MemberReportsListView(
+                navController = appState.mainNavController,
+                houseId = selectedHouseId
+            )
         }
     }
 }

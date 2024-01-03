@@ -152,7 +152,7 @@ class MemberViewModelImpl @Inject constructor(
         for (type in MemberType.entries) _memberTypes.value[type] = resArray[type.ordinal]
     }
 
-    override fun initState(): UiState<MemberUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

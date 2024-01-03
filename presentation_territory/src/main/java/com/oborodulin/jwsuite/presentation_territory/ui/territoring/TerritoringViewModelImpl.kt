@@ -58,7 +58,7 @@ class TerritoringViewModelImpl @Inject constructor(
         state.getStateFlow(TerritoringFields.TERRITORY_LOCATION.name, InputListItemWrapper())
     }
 
-    override fun initState(): UiState<TerritoringUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoringUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

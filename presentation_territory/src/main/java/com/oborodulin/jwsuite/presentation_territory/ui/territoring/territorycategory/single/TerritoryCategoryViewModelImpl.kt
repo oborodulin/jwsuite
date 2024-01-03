@@ -80,7 +80,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
             territoryCategoryCode.errorId == null && territoryCategoryMark.errorId == null && territoryCategoryName.errorId == null
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<TerritoryCategoryUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryCategoryUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

@@ -6,4 +6,4 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberRep
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
 
 interface MemberReportsListViewModel :
-    ListViewModeled<List<TerritoryMemberReportsListItem>, MemberReportsListUiAction, UiSingleEvent>
+    ListViewModeled<List<TerritoryMemberReportsListItem>, MemberReportsListUiAction, MemberReportsListUiSingleEvent>

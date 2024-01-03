@@ -30,7 +30,7 @@ class DashboardingViewModelImpl @Inject constructor(
     private val congregationConverter: FavoriteCongregationConverter
 ) : DashboardingViewModel,
     MviViewModel<DashboardingUi, UiState<DashboardingUi>, DashboardingUiAction, DashboardingUiSingleEvent>() {
-    override fun initState(): UiState<DashboardingUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: DashboardingUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

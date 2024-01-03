@@ -120,7 +120,7 @@ class TerritoryViewModelImpl @Inject constructor(
                 errorIdResult*/
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<TerritoryUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

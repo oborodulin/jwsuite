@@ -96,7 +96,7 @@ class SessionViewModelImpl @Inject constructor(
         loadSession()
     }
 
-    override fun initState(): UiState<SessionUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override fun setSessionMode(mode: SessionModeType) {
         _sessionMode.value = mode

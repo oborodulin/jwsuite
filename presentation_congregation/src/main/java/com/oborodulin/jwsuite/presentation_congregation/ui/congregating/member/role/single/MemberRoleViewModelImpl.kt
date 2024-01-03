@@ -91,7 +91,7 @@ class MemberRoleViewModelImpl @Inject constructor(
         errorIdResult
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    override fun initState(): UiState<MemberRoleUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberRoleUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)

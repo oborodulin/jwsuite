@@ -38,7 +38,7 @@ class PartialRoomsViewModelImpl @Inject constructor(
         state.getStateFlow(PartialRoomsFields.PARTIAL_ROOM_HOUSES.name, InputListItemWrapper())
     }
 
-    override fun initState(): UiState<TerritoringUi> = UiState.Loading
+    override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: ReportRoomsUiAction) = null
 
