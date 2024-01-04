@@ -23,7 +23,7 @@ class TerritoryReportHouseViewToTerritoryReportHouseMapper(
             house = house,
             territoryMemberReport = territoryMemberReport
         )
-        territoryReportHouse.id = input.territoryReport?.territoryMemberReportId
+        territoryReportHouse.id = input.house.house.houseId
         return territoryReportHouse
     }
 

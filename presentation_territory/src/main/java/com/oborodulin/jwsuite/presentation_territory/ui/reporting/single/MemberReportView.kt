@@ -81,7 +81,7 @@ fun MemberView(
     val movementDate by viewModel.movementDate.collectAsStateWithLifecycle()
     val loginExpiredDate by viewModel.loginExpiredDate.collectAsStateWithLifecycle()
 
-    val memberTypes by viewModel.territoryMarks.collectAsStateWithLifecycle()
+    val memberTypes by viewModel.reportMarks.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Member: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<MemberReportFields, InputFocusRequester>(MemberReportFields::class.java)
@@ -340,7 +340,7 @@ fun MemberView(
             inputWrapper = memberType,
             values = memberTypes.values.toList(), // resolve Enums to Resource
             keys = memberTypes.keys.map { it.name }, // Enums
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.ReportMark(it)) },
+            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.MemberReportMark(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         DatePickerComponent(

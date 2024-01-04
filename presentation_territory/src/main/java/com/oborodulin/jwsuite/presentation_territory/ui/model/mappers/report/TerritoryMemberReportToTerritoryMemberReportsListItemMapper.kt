@@ -10,9 +10,9 @@ class TerritoryMemberReportToTerritoryMemberReportsListItemMapper :
     override fun map(input: TerritoryMemberReport) = TerritoryMemberReportsListItem(
         id = input.id ?: UUID.randomUUID(),
         deliveryDate = input.deliveryDate,
+        memberShortName = input.memberShortName,
         territoryShortMark = input.territoryShortMark,
-        languageCode = input.languageCode,
-        genderInfo = input.genderInfo,
-        ageInfo = input.ageInfo
+        languageInfo = input.languageInfo,
+        personInfo = input.personInfo
     )
 }

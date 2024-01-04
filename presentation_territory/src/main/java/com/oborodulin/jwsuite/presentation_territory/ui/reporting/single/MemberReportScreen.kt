@@ -15,10 +15,10 @@ import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_congregation.R
 import timber.log.Timber
 
-private const val TAG = "Reporting.MemberScreen"
+private const val TAG = "Reporting.MemberReportScreen"
 
 @Composable
-fun MemberScreen(
+fun MemberReportScreen(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberReportViewModelImpl = hiltViewModel(),
     memberInput: MemberInput? = null,
@@ -29,7 +29,7 @@ fun MemberScreen(
     onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
     onFabChange: (@Composable () -> Unit) -> Unit*/
 ) {
-    Timber.tag(TAG).d("MemberScreen(...) called: memberInput = %s", memberInput)
+    Timber.tag(TAG).d("MemberReportScreen(...) called: memberInput = %s", memberInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }

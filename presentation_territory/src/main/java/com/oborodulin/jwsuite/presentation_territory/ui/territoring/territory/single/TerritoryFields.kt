@@ -15,7 +15,5 @@ enum class TerritoryFields : Focusable {
     TERRITORY_IS_ACTIVE,
     TERRITORY_DESC;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

@@ -47,7 +47,7 @@ import java.util.UUID
 data class TerritoryMemberReportEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val territoryMemberReportId: UUID = UUID.randomUUID(),
-    val territoryReportMark: TerritoryReportMark? = null,
+    val territoryReportMark: TerritoryReportMark = TerritoryReportMark.PP,
     val languageCode: String? = null,
     val gender: Boolean? = null,
     val age: Int? = null,
@@ -70,7 +70,7 @@ data class TerritoryMemberReportEntity(
             territoryMemberReportId: UUID = UUID.randomUUID(),
             territoryMemberId: UUID = UUID.randomUUID(),
             territoryStreetId: UUID? = null, houseId: UUID? = null, roomId: UUID? = null,
-            territoryReportMark: TerritoryReportMark? = null,
+            territoryReportMark: TerritoryReportMark = TerritoryReportMark.PP,
             languageCode: String? = null,
             gender: Boolean? = null, age: Int? = null,
             isProcessed: Boolean = false,

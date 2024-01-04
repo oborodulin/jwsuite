@@ -7,7 +7,5 @@ enum class GroupFields : Focusable {
     GROUP_CONGREGATION,
     GROUP_NUM;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

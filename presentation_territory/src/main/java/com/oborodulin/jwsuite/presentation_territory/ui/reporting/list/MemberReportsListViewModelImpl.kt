@@ -138,15 +138,15 @@ class MemberReportsListViewModelImpl @Inject constructor(
             TerritoryMemberReportsListItem(
                 id = UUID.randomUUID(),
                 territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.PP.ordinal],
-                languageCode = null,
-                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
+                languageInfo = null,
+                personInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
                 ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})"
             ),
             TerritoryMemberReportsListItem(
                 id = UUID.randomUUID(),
                 territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.GO.ordinal],
-                languageCode = null,
-                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
+                languageInfo = null,
+                personInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
                 ageInfo = "(54 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})"
             )
         )

@@ -5,7 +5,5 @@ import com.oborodulin.home.common.ui.components.field.util.Focusable
 enum class TerritoryRoomFields : Focusable {
     TERRITORY_ROOM_TERRITORY;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

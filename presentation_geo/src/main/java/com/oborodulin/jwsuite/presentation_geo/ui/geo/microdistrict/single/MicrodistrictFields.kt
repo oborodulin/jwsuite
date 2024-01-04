@@ -11,7 +11,5 @@ enum class MicrodistrictFields : Focusable {
     MICRODISTRICT_TYPE,
     MICRODISTRICT_NAME;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

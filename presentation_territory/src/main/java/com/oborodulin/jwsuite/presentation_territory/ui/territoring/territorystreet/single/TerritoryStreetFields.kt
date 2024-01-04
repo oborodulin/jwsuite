@@ -10,7 +10,5 @@ enum class TerritoryStreetFields : Focusable {
     TERRITORY_STREET_IS_EVEN_SIDE,
     TERRITORY_STREET_EST_HOUSES;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

@@ -11,7 +11,5 @@ enum class LocalityFields : Focusable {
     LOCALITY_TYPE,
     LOCALITY_NAME;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

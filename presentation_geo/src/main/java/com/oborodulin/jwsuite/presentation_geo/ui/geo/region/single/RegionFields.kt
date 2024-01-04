@@ -7,7 +7,5 @@ enum class RegionFields : Focusable {
     REGION_CODE,
     REGION_NAME;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

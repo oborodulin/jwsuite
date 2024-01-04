@@ -7,7 +7,5 @@ enum class SessionFields : Focusable {
     SESSION_PIN,
     SESSION_CONFIRM_PIN;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

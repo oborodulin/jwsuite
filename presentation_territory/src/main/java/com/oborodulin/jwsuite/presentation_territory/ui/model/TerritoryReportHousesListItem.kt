@@ -12,7 +12,7 @@ data class TerritoryReportHousesListItem(
     val territoryMemberReportId: UUID? = null,
     val territoryMemberId: UUID,
     val territoryShortMark: String? = null,
-    val languageCode: String? = null,
+    val languageInfo: String? = null,
     val personInfo: String? = null,
     val isProcessed: Boolean? = null
 ) : Parcelable, ListItemModel(

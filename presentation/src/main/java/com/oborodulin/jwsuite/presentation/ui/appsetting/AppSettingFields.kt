@@ -9,7 +9,5 @@ enum class AppSettingFields : Focusable {
     TERRITORY_ROOMS_LIMIT,
     TERRITORY_MAX_ROOMS;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

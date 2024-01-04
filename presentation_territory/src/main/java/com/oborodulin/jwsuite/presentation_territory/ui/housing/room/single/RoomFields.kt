@@ -18,7 +18,5 @@ enum class RoomFields : Focusable {
     ROOM_IS_FOREIGN_LANGUAGE,
     ROOM_DESC;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

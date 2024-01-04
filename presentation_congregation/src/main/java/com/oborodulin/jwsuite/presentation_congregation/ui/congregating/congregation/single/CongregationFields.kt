@@ -10,7 +10,5 @@ enum class CongregationFields : Focusable {
     TERRITORY_MARK,
     IS_FAVORITE;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

@@ -15,7 +15,7 @@ class TerritoryReportHouseToTerritoryReportHousesListItemMapper :
         territoryMemberReportId = input.territoryMemberReport.id,
         territoryMemberId = input.territoryMemberReport.territoryMemberId,
         territoryShortMark = input.territoryMemberReport.territoryShortMark,
-        languageCode = input.territoryMemberReport.languageCode,
+        languageInfo = input.territoryMemberReport.languageInfo,
         personInfo = input.territoryMemberReport.personInfo,
         isProcessed = input.territoryMemberReport.isProcessed
     )

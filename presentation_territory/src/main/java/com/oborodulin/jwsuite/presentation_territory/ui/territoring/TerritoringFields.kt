@@ -6,7 +6,5 @@ enum class TerritoringFields : Focusable {
     TERRITORING_IS_PRIVATE_SECTOR,
     TERRITORY_LOCATION;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

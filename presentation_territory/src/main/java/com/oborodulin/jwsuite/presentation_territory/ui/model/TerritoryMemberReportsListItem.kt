@@ -10,20 +10,21 @@ import java.util.UUID
 data class TerritoryMemberReportsListItem(
     val id: UUID,
     val deliveryDate: OffsetDateTime? = null,
-    val territoryShortMark: String? = null,
-    val languageCode: String? = null,
-    val genderInfo: String? = null,
-    val ageInfo: String? = null
+    val memberShortName: String,
+    val territoryShortMark: String,
+    val languageInfo: String? = null,
+    val personInfo: String? = null,
+    val territoryReportDesc: String? = null
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = (territoryShortMark?.let { "$it:" }.orEmpty()
-        .plus(genderInfo?.let { " $it" }.orEmpty())
-        .plus(ageInfo?.let { " $it" }.orEmpty())
-        .plus(languageCode?.let { " [$it]" }.orEmpty())).trim(),
+    headline = territoryShortMark.plus(personInfo?.let { ": $it" }.orEmpty())
+        .plus(languageInfo?.let { " $it" }.orEmpty()),
     supportingText = deliveryDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+        .orEmpty().plus(if (memberShortName.isNotEmpty()) ": $memberShortName" else "")
+        .plus(territoryReportDesc?.let { "\n$it" }.orEmpty())
 ) {
     override fun doesMatchSearchQuery(query: String): Boolean {
-        val matchingCombinations = listOf(territoryShortMark.orEmpty())
+        val matchingCombinations = listOf(territoryShortMark)
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
 }

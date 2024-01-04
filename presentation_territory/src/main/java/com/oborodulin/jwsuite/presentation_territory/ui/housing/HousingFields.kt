@@ -6,7 +6,5 @@ enum class HousingFields : Focusable {
     HOUSES_LOCALITY,
     HOUSES_STREET;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

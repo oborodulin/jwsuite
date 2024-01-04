@@ -12,7 +12,5 @@ enum class StreetFields : Focusable {
     STREET_EST_HOUSES,
     STREET_NAME;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

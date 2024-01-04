@@ -233,7 +233,7 @@ class ReportHousesViewModelImpl @Inject constructor(
                 streetFullName = "ул. Независимости",
                 territoryMemberId = UUID.randomUUID(),
                 territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.PP.ordinal],
-                languageCode = null,
+                languageInfo = null,
                 genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
                 ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
                 isProcessed = false
@@ -246,7 +246,7 @@ class ReportHousesViewModelImpl @Inject constructor(
                 streetFullName = "ул. Независимости",
                 territoryMemberId = UUID.randomUUID(),
                 territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.GO.ordinal],
-                languageCode = null,
+                languageInfo = null,
                 genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
                 ageInfo = "(54 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
                 isProcessed = true

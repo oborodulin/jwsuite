@@ -8,7 +8,5 @@ enum class TerritoryCategoryFields : Focusable {
     TERRITORY_CATEGORY_MARK,
     TERRITORY_CATEGORY_NAME;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

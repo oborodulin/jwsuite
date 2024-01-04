@@ -10,25 +10,24 @@ import java.util.UUID
 data class TerritoryMemberReport(
     val ctx: Context? = null,
     val deliveryDate: OffsetDateTime? = null,
+    val memberShortName: String = "",
     val territoryStreet: TerritoryStreet? = null,
     val house: House? = null,
     val room: Room? = null,
     val territoryMemberId: UUID,
-    val territoryReportMark: TerritoryReportMark? = null,
+    val territoryReportMark: TerritoryReportMark = TerritoryReportMark.PP,
     val languageCode: String? = null,
     val gender: Boolean? = null,
     val age: Int? = null,
-    val isProcessed: Boolean? = null,
+    val isProcessed: Boolean = false,
     val territoryReportDesc: String? = null
 ) : DomainModel() {
-    val territoryMark = territoryReportMark?.let { mark ->
-        ctx?.let { it.resources.getStringArray(R.array.territory_marks)[mark.ordinal] }
+    val territoryMark =
+        ctx?.let { it.resources.getStringArray(R.array.territory_marks)[territoryReportMark.ordinal] }
             .orEmpty()
-    }
-    val territoryShortMark = territoryReportMark?.let { mark ->
-        ctx?.let { it.resources.getStringArray(R.array.territory_short_marks)[mark.ordinal] }
+    val territoryShortMark =
+        ctx?.let { it.resources.getStringArray(R.array.territory_short_marks)[territoryReportMark.ordinal] }
             .orEmpty()
-    }
     val genderInfo = gender?.let {
         when (gender) {
             true -> ctx?.resources?.getString(R.string.male_expr).orEmpty()
@@ -38,7 +37,7 @@ data class TerritoryMemberReport(
     val ageInfo = age?.let {
         "($it ${ctx?.resources?.getString(R.string.age_expr).orEmpty()})"
     }
-    val languageInfo = "[$languageCode]"
-    val info = listOfNotNull(territoryMark, genderInfo, ageInfo)
+    val languageInfo = languageCode?.let{"[$it]"}
     val personInfo = listOfNotNull(genderInfo, ageInfo).joinToString(" ")
+    val info = listOfNotNull(territoryMark, genderInfo, ageInfo)
 }

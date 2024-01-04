@@ -26,7 +26,5 @@ enum class HouseFields : Focusable {
     HOUSE_IS_PRIVATE_SECTOR,
     HOUSE_DESC;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

@@ -7,7 +7,5 @@ enum class TerritoriesFields : Focusable {
     TERRITORY_RECEIVING_DATE,
     TERRITORY_DELIVERY_DATE;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

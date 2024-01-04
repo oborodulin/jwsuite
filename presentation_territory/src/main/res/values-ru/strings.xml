@@ -131,6 +131,12 @@
     <string name="room_subheader">Квартира</string>
     <string name="room_new_subheader">Новая квартира</string>
     <string name="room_num_hint">№ квартиры</string>
+    <!--Отчёт участка-->
+    <string name="territory_report_subheader">Отчёт по участку</string>
+    <string name="territory_report_new_subheader">Новый отчёт по участку</string>
+    <string name="territory_report_mark_hint">Признак</string>
+    <string name="territory_report_gender_hint">Пол</string>
+    <string name="territory_report_age_hint">Возраст</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->
@@ -204,6 +210,12 @@
     <!--формы квартиры-->
     <string name="room_num_empty_error">Укажите, пожалуйста, № квартиры!</string>
     <string name="room_unique_constraint_error">Квартира с таким номером уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
+    <!--формы отчёта по участку (улице, дому, квартире)-->
+    <string name="territory_street_empty_error">Укажите, пожалуйста, улицу участка!</string>
+    <string name="territory_house_empty_error">Укажите, пожалуйста, дом участка!</string>
+    <string name="territory_room_empty_error">Укажите, пожалуйста, дом участка!</string>
+    <string name="member_report_mark_empty_error">Укажите, пожалуйста, признак отчёта!</string>
+    <string name="language_empty_error">Укажите, пожалуйста, язык общения!</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <!--Участки-->

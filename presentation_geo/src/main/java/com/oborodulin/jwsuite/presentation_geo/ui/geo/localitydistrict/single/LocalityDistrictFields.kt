@@ -8,7 +8,5 @@ enum class LocalityDistrictFields : Focusable {
     LOCALITY_DISTRICT_SHORT_NAME,
     LOCALITY_DISTRICT_NAME;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }

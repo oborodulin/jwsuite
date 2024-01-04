@@ -18,6 +18,7 @@ class TerritoryMemberReportViewToTerritoryMemberReportMapper(
     override fun map(input: TerritoryMemberReportView) =
         territoryReportMapper.map(input.territoryReport).copy(
             deliveryDate = input.territoryMember.deliveryDate,
+            memberShortName = input.memberShortName,
             territoryStreet = territoryStreetMapper.nullableMap(input.territoryStreet),
             house = houseMapper.nullableMap(input.house),
             room = roomMapper.nullableMap(input.room)

@@ -89,14 +89,18 @@ fun ReportHouseGridItemComponent(
                             append(reportHouse.houseFullNum)
                         }
                         reportHouse.territoryShortMark?.let {
+                            withStyle(style = SpanStyle(fontSize = 20.sp)) { append(":") }
                             withStyle(
                                 style = SpanStyle(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.ExtraBold
                                 )
-                            ) { append(": $it") }
+                            ) { append(it) }
                         }
                         reportHouse.personInfo?.let {
+                            withStyle(style = SpanStyle(fontSize = 14.sp)) { append("\n$it") }
+                        }
+                        reportHouse.languageInfo?.let {
                             withStyle(style = SpanStyle(fontSize = 14.sp)) { append("\n$it") }
                         }
                     },

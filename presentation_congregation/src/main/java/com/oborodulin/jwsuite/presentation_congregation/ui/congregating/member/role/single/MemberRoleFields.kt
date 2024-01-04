@@ -9,7 +9,5 @@ enum class MemberRoleFields : Focusable {
     MEMBER_ROLE_ROLE,
     MEMBER_ROLE_EXPIRED_DATE;
 
-    override fun key(): String {
-        return this.name
-    }
+    override fun key() = this.name
 }
