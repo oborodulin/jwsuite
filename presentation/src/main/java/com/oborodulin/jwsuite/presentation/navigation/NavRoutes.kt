@@ -1010,23 +1010,42 @@ sealed class NavRoutes constructor(
     }
 
     data object MemberReport : NavRoutes(
-        route = String.format(ROUTE_MEMBER_REPORT, "$ARG_MEMBER_REPORT_ID={$ARG_MEMBER_REPORT_ID}"),
+        route = String.format(
+            ROUTE_MEMBER_REPORT, "$ARG_MEMBER_REPORT_ID={$ARG_MEMBER_REPORT_ID}",
+            "$ARG_TERRITORY_STREET_ID={$ARG_TERRITORY_STREET_ID}",
+            "$ARG_HOUSE_ID={$ARG_HOUSE_ID}",
+            "$ARG_ROOM_ID={$ARG_ROOM_ID}"
+        ),
         iconPainterResId = R.drawable.ic_maps_home_work_24,
         titleResId = R.string.nav_item_territory_member_report,
         arguments = listOf(navArgument(ARG_MEMBER_REPORT_ID) {
             type = NavType.StringType
             nullable = true
             defaultValue = null
+        }, navArgument(ARG_TERRITORY_STREET_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        }, navArgument(ARG_HOUSE_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        }, navArgument(ARG_ROOM_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
         })
     ) {
-        fun routeForMemberReport(memberReportInput: MemberReportInput? = null): String {
-            val route = when (memberReportInput) {
-                null -> baseRoute()
-                else -> String.format(
-                    ROUTE_MEMBER_REPORT, memberReportInput.territoryMemberReportId
-                )
-            }
-            //val route = String.format(ROUTE_RATE, payerId)
+        fun routeForMemberReport(memberReportInput: MemberReportInput): String {
+            val route = String.format(
+                ROUTE_MEMBER_REPORT,
+                memberReportInput.territoryMemberReportId?.let { "$ARG_MEMBER_REPORT_ID=${it}" }
+                    .orEmpty(),
+                memberReportInput.territoryStreetId?.let { "$ARG_TERRITORY_STREET_ID=${it}" }
+                    .orEmpty(),
+                memberReportInput.houseId?.let { "$ARG_HOUSE_ID=${it}" }.orEmpty(),
+                memberReportInput.roomId?.let { "$ARG_ROOM_ID=${it}" }.orEmpty(),
+            )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("MemberReport -> routeForMemberReport: '%s'", route)
             return route
@@ -1034,7 +1053,12 @@ sealed class NavRoutes constructor(
 
         fun fromEntry(entry: NavBackStackEntry): MemberReportInput {
             val memberReportInput = MemberReportInput(
-                UUID.fromString(entry.arguments?.getString(ARG_MEMBER_REPORT_ID).orEmpty())
+                territoryMemberReportId = entry.arguments?.getString(ARG_MEMBER_REPORT_ID)
+                    ?.let { UUID.fromString(it) },
+                territoryStreetId = entry.arguments?.getString(ARG_TERRITORY_STREET_ID)
+                    ?.let { UUID.fromString(it) },
+                houseId = entry.arguments?.getString(ARG_HOUSE_ID)?.let { UUID.fromString(it) },
+                roomId = entry.arguments?.getString(ARG_ROOM_ID)?.let { UUID.fromString(it) }
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("MemberReport -> fromEntry: '%s'", memberReportInput)

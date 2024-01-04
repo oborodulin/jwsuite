@@ -188,6 +188,7 @@
     <string name="dlg_confirm_cancel_changes_territory_room">Изменённые данные квартир участка не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_house">Изменённые данные дома не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_room">Изменённые данные квартиры не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_report">Изменённые данные отчёта не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->

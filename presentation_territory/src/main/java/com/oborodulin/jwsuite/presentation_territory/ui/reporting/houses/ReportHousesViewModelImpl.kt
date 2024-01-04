@@ -90,7 +90,7 @@ class ReportHousesViewModelImpl @Inject constructor(
             is ReportHousesUiAction.EditMemberReport -> submitSingleEvent(
                 ReportHousesUiSingleEvent.OpenMemberReportScreen(
                     NavRoutes.MemberReport.routeForMemberReport(
-                        NavigationInput.MemberReportInput(action.territoryMemberReportId)
+                        NavigationInput.MemberReportInput(territoryMemberReportId = action.territoryMemberReportId)
                     )
                 )
             )
@@ -234,8 +234,11 @@ class ReportHousesViewModelImpl @Inject constructor(
                 territoryMemberId = UUID.randomUUID(),
                 territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.PP.ordinal],
                 languageInfo = null,
-                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr),
-                ageInfo = "(45 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
+                personInfo = "${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.male_expr)} (45 ${
+                    ctx.resources?.getString(
+                        com.oborodulin.jwsuite.domain.R.string.age_expr
+                    )
+                })",
                 isProcessed = false
             ),
             TerritoryReportHousesListItem(
@@ -247,8 +250,11 @@ class ReportHousesViewModelImpl @Inject constructor(
                 territoryMemberId = UUID.randomUUID(),
                 territoryShortMark = ctx.resources.getStringArray(com.oborodulin.jwsuite.domain.R.array.territory_short_marks)[TerritoryReportMark.GO.ordinal],
                 languageInfo = null,
-                genderInfo = ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr),
-                ageInfo = "(54 ${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.age_expr)})",
+                personInfo = "${ctx.resources?.getString(com.oborodulin.jwsuite.domain.R.string.female_expr)} (54 ${
+                    ctx.resources?.getString(
+                        com.oborodulin.jwsuite.domain.R.string.age_expr
+                    )
+                })",
                 isProcessed = true
             )
         )

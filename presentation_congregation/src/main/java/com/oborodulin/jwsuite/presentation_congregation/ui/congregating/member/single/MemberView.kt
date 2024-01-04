@@ -325,10 +325,10 @@ fun MemberView(
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberFields.MEMBER_TYPE]!!.focusRequester)
                 .onFocusChanged { focusState ->
                     viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberFields.MEMBER_PHONE_NUMBER,
+                        focusedField = MemberFields.MEMBER_TYPE,
                         isFocused = focusState.isFocused
                     )
                 },

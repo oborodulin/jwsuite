@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,7 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
@@ -40,57 +38,61 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
 import com.oborodulin.jwsuite.domain.model.congregation.Member
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationComboBox
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupComboBox
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseComboBox
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomComboBox
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetViewModelImpl
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Reporting.MemberView"
+private const val TAG = "Reporting.MemberReportView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MemberView(
+fun MemberReportView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    viewModel: MemberReportViewModelImpl = hiltViewModel()
+    memberReportViewModel: MemberReportViewModelImpl = hiltViewModel(),
+    territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
+    houseViewModel: HouseViewModelImpl = hiltViewModel(),
+    roomViewModel: RoomViewModelImpl = hiltViewModel(),
+    memberReportInput: NavigationInput.MemberReportInput
 ) {
-    Timber.tag(TAG).d("MemberView(...) called")
+    Timber.tag(TAG).d("MemberReportView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+    val events = remember(memberReportViewModel.events, lifecycleOwner) {
+        memberReportViewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("Member: CollectAsStateWithLifecycle for all fields")
-    val congregation by viewModel.house.collectAsStateWithLifecycle()
-    val group by viewModel.room.collectAsStateWithLifecycle()
-    val memberNum by viewModel.gender.collectAsStateWithLifecycle()
-    val memberName by viewModel.age.collectAsStateWithLifecycle()
-    val surname by viewModel.desc.collectAsStateWithLifecycle()
-    val patronymic by viewModel.patronymic.collectAsStateWithLifecycle()
-    val pseudonym by viewModel.pseudonym.collectAsStateWithLifecycle()
-    val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
-    val dateOfBirth by viewModel.dateOfBirth.collectAsStateWithLifecycle()
-    val dateOfBaptism by viewModel.dateOfBaptism.collectAsStateWithLifecycle()
-    val memberType by viewModel.reportMark.collectAsStateWithLifecycle()
-    val movementDate by viewModel.movementDate.collectAsStateWithLifecycle()
-    val loginExpiredDate by viewModel.loginExpiredDate.collectAsStateWithLifecycle()
+    val territoryStreet by memberReportViewModel.territoryStreet.collectAsStateWithLifecycle()
+    val house by memberReportViewModel.house.collectAsStateWithLifecycle()
+    val room by memberReportViewModel.room.collectAsStateWithLifecycle()
+    val reportMark by memberReportViewModel.reportMark.collectAsStateWithLifecycle()
+    val language by memberReportViewModel.language.collectAsStateWithLifecycle()
+    val gender by memberReportViewModel.gender.collectAsStateWithLifecycle()
+    val age by memberReportViewModel.age.collectAsStateWithLifecycle()
+    val desc by memberReportViewModel.desc.collectAsStateWithLifecycle()
 
-    val memberTypes by viewModel.reportMarks.collectAsStateWithLifecycle()
+    val reportMarks by memberReportViewModel.reportMarks.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Member: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<MemberReportFields, InputFocusRequester>(MemberReportFields::class.java)
+    val focusRequesters =
+        EnumMap<MemberReportFields, InputFocusRequester>(MemberReportFields::class.java)
     enumValues<MemberReportFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
 
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MemberView -> LaunchedEffect()")
+        Timber.tag(TAG).d("MemberReportView -> LaunchedEffect()")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
@@ -111,49 +113,73 @@ fun MemberView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CongregationComboBox(
+        HouseComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_HOUSE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    memberReportViewModel.onTextFieldFocusChanged(
                         focusedField = MemberReportFields.MEMBER_REPORT_HOUSE,
                         isFocused = focusState.isFocused
                     )
                 },
             enabled = false,
             sharedViewModel = sharedViewModel,
-            inputWrapper = congregation,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.House(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            inputWrapper = house,
+            onValueChange = { memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.House(it)) },
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
         )
-        GroupComboBox(
+        RoomComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_ROOM]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_REPORT_ROOM, isFocused = focusState.isFocused
+                    memberReportViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberReportFields.MEMBER_REPORT_ROOM,
+                        isFocused = focusState.isFocused
                     )
                 },
-            inputWrapper = group,
+            enabled = false,
             sharedViewModel = sharedViewModel,
+            inputWrapper = room,
             onValueChange = { groupNum ->
-                viewModel.onTextFieldEntered(MemberReportInputEvent.Room(groupNum))
-                viewModel.onInsert {
+                memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Room(groupNum))
+                memberReportViewModel.onInsert {
                     val pseudonymVal = Member.getPseudonym(
-                        surname.value, memberName.value, groupNum.headline.toIntOrNull(),
-                        memberNum.value
+                        desc.value, age.value, groupNum.headline.toIntOrNull(),
+                        gender.value
                     )
-                    viewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
                 }
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
+        )
+        ExposedDropdownMenuBoxComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_MARK]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberReportViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberReportFields.MEMBER_REPORT_MARK,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.member_type_hint,
+            leadingPainterResId = R.drawable.ic_badge_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+            },
+            inputWrapper = reportMark,
+            values = reportMarks.values.toList(), // resolve Enums to Resource
+            keys = reportMarks.keys.map { it.name }, // Enums
+            onValueChange = {
+                memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.MemberReportMark(it))
+            },
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_GENDER]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_REPORT_GENDER, isFocused = focusState.isFocused
+                    memberReportViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberReportFields.MEMBER_REPORT_GENDER,
+                        isFocused = focusState.isFocused
                     )
                 },
             labelResId = R.string.member_num_hint,
@@ -161,53 +187,24 @@ fun MemberView(
             keyboardOptions = remember {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
-            inputWrapper = memberNum,
+            inputWrapper = gender,
             onValueChange = { numInGroup ->
-                viewModel.onTextFieldEntered(MemberReportInputEvent.Gender(numInGroup))
-                viewModel.onInsert {
+                memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Gender(numInGroup))
+                memberReportViewModel.onInsert {
                     val pseudonymVal = Member.getPseudonym(
-                        surname.value, memberName.value, group.item?.headline?.toIntOrNull(),
+                        desc.value, age.value, room.item?.headline?.toIntOrNull(),
                         numInGroup
                     )
-                    viewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
+                    memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
                 }
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_DESC]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_REPORT_DESC, isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_surname_hint,
-            leadingImageVector = Icons.Outlined.Person,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = surname,
-            onValueChange = { value ->
-                viewModel.onTextFieldEntered(MemberReportInputEvent.Desc(value))
-                viewModel.onInsert {
-                    val pseudonymVal = Member.getPseudonym(
-                        value, memberName.value, group.item?.headline?.toIntOrNull(),
-                        memberNum.value
-                    )
-                    viewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
-                }
-            },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_AGE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
+                    memberReportViewModel.onTextFieldFocusChanged(
                         focusedField = MemberReportFields.MEMBER_REPORT_AGE,
                         isFocused = focusState.isFocused
                     )
@@ -219,163 +216,47 @@ fun MemberView(
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = memberName,
+            inputWrapper = age,
             onValueChange = { name ->
-                viewModel.onTextFieldEntered(MemberReportInputEvent.Age(name))
-                viewModel.onInsert {
+                memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Age(name))
+                memberReportViewModel.onInsert {
                     val pseudonymVal = Member.getPseudonym(
-                        surname.value, name, group.item?.headline?.toIntOrNull(), memberNum.value
+                        desc.value, name, room.item?.headline?.toIntOrNull(), gender.value
                     )
-                    viewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
+                    memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
                 }
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_PATRONYMIC]!!.focusRequester)
+                .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_DESC]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_PATRONYMIC,
+                    memberReportViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberReportFields.MEMBER_REPORT_DESC,
                         isFocused = focusState.isFocused
                     )
                 },
-            labelResId = R.string.member_patronymic_hint,
+            labelResId = R.string.member_surname_hint,
+            leadingImageVector = Icons.Outlined.Person,
             keyboardOptions = remember {
                 KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                 )
             },
-            inputWrapper = patronymic,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.Patronymic(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_PSEUDONYM]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_PSEUDONYM,
-                        isFocused = focusState.isFocused
+            inputWrapper = desc,
+            onValueChange = { value ->
+                memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Desc(value))
+                memberReportViewModel.onInsert {
+                    val pseudonymVal = Member.getPseudonym(
+                        value, age.value, room.item?.headline?.toIntOrNull(),
+                        gender.value
                     )
-                },
-            labelResId = R.string.member_pseudonym_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Characters,
-                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
-                )
+                    memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(pseudonymVal))
+                }
             },
-            inputWrapper = pseudonym,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.Pseudonym(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_PHONE_NUMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_phone_number_hint,
-            leadingImageVector = Icons.Outlined.Call,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-            },
-            inputWrapper = phoneNumber,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.PhoneNumber(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_DATE_OF_BIRTH]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_DATE_OF_BIRTH,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_date_of_birth_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = dateOfBirth,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.DateOfBirth(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_DATE_OF_BAPTISM]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_DATE_OF_BAPTISM,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_date_of_baptism_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = dateOfBaptism,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.DateOfBaptism(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        ExposedDropdownMenuBoxComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_PHONE_NUMBER]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_PHONE_NUMBER,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_type_hint,
-            leadingPainterResId = R.drawable.ic_badge_36,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = memberType,
-            values = memberTypes.values.toList(), // resolve Enums to Resource
-            keys = memberTypes.keys.map { it.name }, // Enums
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.MemberReportMark(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_MOVEMENT_DATE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_MOVEMENT_DATE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_movement_date_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
-            },
-            inputWrapper = movementDate,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.MovementDate(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        DatePickerComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[MemberReportFields.MEMBER_LOGIN_EXPIRED_DATE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = MemberReportFields.MEMBER_LOGIN_EXPIRED_DATE,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.member_login_expired_date_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
-            },
-            inputWrapper = loginExpiredDate,
-            onValueChange = { viewModel.onTextFieldEntered(MemberReportInputEvent.LoginExpiredDate(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
         )
     }
 }
@@ -387,7 +268,7 @@ fun PreviewGroupView() {
     //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            MemberReportView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

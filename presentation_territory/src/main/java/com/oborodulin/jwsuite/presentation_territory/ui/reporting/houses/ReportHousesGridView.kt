@@ -23,6 +23,7 @@ import com.oborodulin.home.common.ui.components.list.EmptyListTextComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryStreetInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -64,8 +65,12 @@ fun ReportHousesGridView(
             TerritoryReportHousesGrid(
                 reportHouses = it,
                 searchedText = searchText.text,
-                onAddMemberReport = {
-                    appState.mainNavigate(NavRoutes.MemberReport.routeForMemberReport())
+                onAddMemberReport = { reportHouse ->
+                    appState.mainNavigate(
+                        NavRoutes.MemberReport.routeForMemberReport(
+                            NavigationInput.MemberReportInput(houseId = reportHouse.id)
+                        )
+                    )
                 },
                 onEditMemberReport = { reportHouse ->
                     reportHousesViewModel.submitAction(
@@ -112,7 +117,7 @@ fun ReportHousesGridView(
 fun TerritoryReportHousesGrid(
     reportHouses: List<TerritoryReportHousesListItem>,
     searchedText: String = "",
-    onAddMemberReport: () -> Unit = {},
+    onAddMemberReport: (TerritoryReportHousesListItem) -> Unit = {},
     onEditMemberReport: (TerritoryReportHousesListItem) -> Unit = {},
     onDeleteMemberReport: (TerritoryReportHousesListItem) -> Unit = {},
     onProcessHouse: (TerritoryReportHousesListItem) -> Unit = {},

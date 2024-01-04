@@ -49,7 +49,7 @@ object MainDestinations {
     const val ROUTE_ROOM = "room/?%s"
 
     // Partial Process (Territory Report):
-    const val ROUTE_MEMBER_REPORT = "memberReport/?%s"
+    const val ROUTE_MEMBER_REPORT = "memberReport/?%s&%s&%s&%s"
     const val ROUTE_REPORT_STREETS = "reportStreets/?%s"
     const val ROUTE_REPORT_HOUSES = "reportHouses/?%s"
     const val ROUTE_REPORT_ROOMS = "reportRooms/?%s"

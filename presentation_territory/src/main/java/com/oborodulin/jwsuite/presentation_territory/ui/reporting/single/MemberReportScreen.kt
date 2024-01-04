@@ -10,28 +10,22 @@ import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation_congregation.R
+import com.oborodulin.jwsuite.presentation_territory.R
 import timber.log.Timber
 
 private const val TAG = "Reporting.MemberReportScreen"
 
 @Composable
 fun MemberReportScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberReportViewModelImpl = hiltViewModel(),
-    memberInput: MemberInput? = null,
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    memberReportInput: NavigationInput.MemberReportInput,
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
-    Timber.tag(TAG).d("MemberReportScreen(...) called: memberInput = %s", memberInput)
+    Timber.tag(TAG).d("MemberReportScreen(...) called: memberReportInput = %s", memberReportInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
@@ -43,19 +37,20 @@ fun MemberReportScreen(
     ) { innerPadding ->
         SaveDialogScreenComponent(
             viewModel = viewModel,
-            inputId = memberInput?.memberId,
-            loadUiAction = MemberReportUiAction.Load(memberInput?.memberId),
+            inputId = memberReportInput.territoryMemberReportId,
+            loadUiAction = MemberReportUiAction.Load(memberReportInput.territoryMemberReportId),
             saveUiAction = MemberReportUiAction.Save,
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
-            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_member,
-            uniqueConstraintFailedResId = R.string.member_unique_constraint_error,
-            /*onActionBarChange = onActionBarChange,
-            onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
+            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_report,
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { MemberView(appState.congregationSharedViewModel.value) }
+        ) {
+            MemberReportView(
+                sharedViewModel = appState.congregationSharedViewModel.value,
+                memberReportInput = memberReportInput
+            )
+        }
     }
 }

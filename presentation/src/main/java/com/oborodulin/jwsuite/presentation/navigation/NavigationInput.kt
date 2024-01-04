@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.presentation.navigation
 
 import java.util.UUID
 
-sealed class NavigationInput(val id: UUID) {
+sealed class NavigationInput(val id: UUID?) {
     // Geo:
     data class RegionInput(val regionId: UUID) : NavigationInput(regionId)
     data class RegionDistrictInput(val regionDistrictId: UUID) : NavigationInput(regionDistrictId)
@@ -49,8 +49,12 @@ sealed class NavigationInput(val id: UUID) {
     data class FloorInput(val floorId: UUID) : NavigationInput(floorId)
     data class RoomInput(val roomId: UUID) : NavigationInput(roomId)
 
-    data class MemberReportInput(val territoryMemberReportId: UUID) :
-        NavigationInput(territoryMemberReportId)
+    data class MemberReportInput(
+        val territoryMemberReportId: UUID? = null,
+        val territoryStreetId: UUID? = null,
+        val houseId: UUID? = null,
+        val roomId: UUID? = null
+    ) : NavigationInput(territoryMemberReportId)
 }
 
 

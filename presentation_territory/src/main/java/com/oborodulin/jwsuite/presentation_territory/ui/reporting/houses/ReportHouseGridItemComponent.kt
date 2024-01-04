@@ -55,7 +55,7 @@ private const val TAG = "Reporting.ReportHouseGridItemComponent"
 @Composable
 fun ReportHouseGridItemComponent(
     reportHouse: TerritoryReportHousesListItem,
-    onAddMemberReport: () -> Unit = {},
+    onAddMemberReport: (TerritoryReportHousesListItem) -> Unit = {},
     onEditMemberReport: (TerritoryReportHousesListItem) -> Unit = {},
     onDeleteMemberReport: (TerritoryReportHousesListItem) -> Unit = {},
     onProcessHouse: (TerritoryReportHousesListItem) -> Unit = {},
@@ -189,7 +189,7 @@ fun ReportHouseGridItemComponent(
                 } ?: Image(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { onAddMemberReport() },
+                        .clickable { onAddMemberReport(reportHouse) },
                     imageVector = Icons.Outlined.Add,
                     contentDescription = ""
                 )

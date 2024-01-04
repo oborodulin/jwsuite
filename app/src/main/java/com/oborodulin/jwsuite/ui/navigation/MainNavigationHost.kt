@@ -35,6 +35,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.reporting.houses.ReportHousesScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.reporting.single.MemberReportScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.TerritoryRoomScreen
@@ -612,7 +613,7 @@ fun MainNavigationHost(
                     it.destination.route, NavRoutes.MemberReport.arguments.firstOrNull()
                 )
             MemberReportScreen(
-                houseInput = NavRoutes.MemberReport.fromEntry(it),
+                memberReportInput = NavRoutes.MemberReport.fromEntry(it),
                 defTopBarActions = defTopBarActions
             )
         }
