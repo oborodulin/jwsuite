@@ -37,8 +37,15 @@ fun MemberReportScreen(
     ) { innerPadding ->
         SaveDialogScreenComponent(
             viewModel = viewModel,
-            inputId = memberReportInput.territoryMemberReportId,
-            loadUiAction = MemberReportUiAction.Load(memberReportInput.territoryMemberReportId),
+            inputId = memberReportInput.territoryMemberReportId
+                ?: memberReportInput.territoryStreetId ?: memberReportInput.houseId
+                ?: memberReportInput.roomId,
+            loadUiAction = MemberReportUiAction.Load(
+                territoryMemberReportId = memberReportInput.territoryMemberReportId,
+                territoryStreetId = memberReportInput.territoryStreetId,
+                houseId = memberReportInput.houseId,
+                roomId = memberReportInput.roomId
+            ),
             saveUiAction = MemberReportUiAction.Save,
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
@@ -46,8 +53,9 @@ fun MemberReportScreen(
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
             innerPadding = innerPadding
-        ) {
+        ) { uiModel ->
             MemberReportView(
+                uiModel = uiModel,
                 sharedViewModel = appState.congregationSharedViewModel.value,
                 memberReportInput = memberReportInput
             )

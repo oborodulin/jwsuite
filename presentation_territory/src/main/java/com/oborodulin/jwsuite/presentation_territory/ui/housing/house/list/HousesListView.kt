@@ -21,7 +21,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.list.RoomsL
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Territoring.HousesListView"
+private const val TAG = "Housing.HousesListView"
 
 @Composable
 fun HousesListView(

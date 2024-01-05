@@ -502,7 +502,9 @@ object TerritoryMappersModule {
     @Provides
     fun provideTerritoryReportMappers(
         territoryMemberReportViewListToTerritoryMemberReportsListMapper: TerritoryMemberReportViewListToTerritoryMemberReportsListMapper,
+        territoryReportHouseViewToTerritoryReportHouseMapper: TerritoryReportHouseViewToTerritoryReportHouseMapper,
         territoryReportHouseViewListToTerritoryReportHousesListMapper: TerritoryReportHouseViewListToTerritoryReportHousesListMapper,
+        territoryReportRoomViewToTerritoryReportRoomMapper: TerritoryReportRoomViewToTerritoryReportRoomMapper,
         territoryReportRoomViewListToTerritoryReportRoomsListMapper: TerritoryReportRoomViewListToTerritoryReportRoomsListMapper,
         territoryMemberReportEntityToTerritoryMemberReportMapper: TerritoryMemberReportEntityToTerritoryMemberReportMapper,
         territoryMemberReportEntityListToTerritoryMemberReportsListMapper: TerritoryMemberReportEntityListToTerritoryMemberReportsListMapper,
@@ -511,7 +513,9 @@ object TerritoryMappersModule {
         territoryReportRoomToTerritoryMemberReportEntityMapper: TerritoryReportRoomToTerritoryMemberReportEntityMapper
     ): TerritoryReportMappers = TerritoryReportMappers(
         territoryMemberReportViewListToTerritoryMemberReportsListMapper,
+        territoryReportHouseViewToTerritoryReportHouseMapper,
         territoryReportHouseViewListToTerritoryReportHousesListMapper,
+        territoryReportRoomViewToTerritoryReportRoomMapper,
         territoryReportRoomViewListToTerritoryReportRoomsListMapper,
         territoryMemberReportEntityToTerritoryMemberReportMapper,
         territoryMemberReportEntityListToTerritoryMemberReportsListMapper,

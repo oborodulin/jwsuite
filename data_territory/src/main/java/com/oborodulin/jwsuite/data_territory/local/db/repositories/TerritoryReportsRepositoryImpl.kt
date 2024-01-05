@@ -34,9 +34,17 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
         localTerritoryReportDataSource.getRoomTerritoryReports(roomId)
             .map(mappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
 
+    override fun getTerritoryReportHouse(houseId: UUID) =
+        localTerritoryReportDataSource.getTerritoryReportHouse(houseId)
+            .map(mappers.territoryReportHouseViewToTerritoryReportHouseMapper::map)
+
     override fun getTerritoryReportHouses(territoryId: UUID, territoryStreetId: UUID?) =
         localTerritoryReportDataSource.getTerritoryReportHouses(territoryId, territoryStreetId)
             .map(mappers.territoryReportHouseViewListToTerritoryReportHousesListMapper::map)
+
+    override fun getTerritoryReportRoom(roomId: UUID) =
+        localTerritoryReportDataSource.getTerritoryReportRoom(roomId)
+            .map(mappers.territoryReportRoomViewToTerritoryReportRoomMapper::map)
 
     override fun getTerritoryReportRooms(territoryId: UUID, houseId: UUID?) =
         localTerritoryReportDataSource.getTerritoryReportRooms(territoryId, houseId)

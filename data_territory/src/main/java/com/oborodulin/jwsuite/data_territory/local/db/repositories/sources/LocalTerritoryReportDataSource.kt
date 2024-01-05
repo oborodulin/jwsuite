@@ -13,10 +13,12 @@ interface LocalTerritoryReportDataSource {
     fun getTerritoryStreetReports(territoryStreetId: UUID): Flow<List<TerritoryMemberReportView>>
     fun getHouseTerritoryReports(houseId: UUID): Flow<List<TerritoryMemberReportView>>
     fun getRoomTerritoryReports(roomId: UUID): Flow<List<TerritoryMemberReportView>>
+    fun getTerritoryReportHouse(houseId: UUID): Flow<TerritoryReportHouseView>
     fun getTerritoryReportHouses(
         territoryId: UUID, territoryStreetId: UUID? = null
     ): Flow<List<TerritoryReportHouseView>>
 
+    fun getTerritoryReportRoom(roomId: UUID): Flow<TerritoryReportRoomView>
     fun getTerritoryReportRooms(
         territoryId: UUID, houseId: UUID? = null
     ): Flow<List<TerritoryReportRoomView>>

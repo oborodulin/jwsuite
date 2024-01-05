@@ -418,8 +418,11 @@ object TerritoryUseCasesModule {
     @Singleton
     @Provides
     fun provideGetMemberReportUseCase(
-        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
-    ): GetMemberReportUseCase = GetMemberReportUseCase(configuration, territoryReportsRepository)
+        configuration: UseCase.Configuration,
+        territoryReportsRepository: TerritoryReportsRepository,
+        territoriesRepository: TerritoriesRepository
+    ): GetMemberReportUseCase =
+        GetMemberReportUseCase(configuration, territoryReportsRepository, territoriesRepository)
 
     @Singleton
     @Provides

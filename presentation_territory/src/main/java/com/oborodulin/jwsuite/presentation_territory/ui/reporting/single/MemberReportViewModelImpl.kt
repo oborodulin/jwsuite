@@ -27,10 +27,12 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMembersListIt
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toHousesListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -75,7 +77,7 @@ class MemberReportViewModelImpl @Inject constructor(
             MemberReportFields.MEMBER_REPORT_TERRITORY_STREET.name, InputListItemWrapper()
         )
     }
-    override val house: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val house: StateFlow<InputListItemWrapper<HousesListItem>> by lazy {
         state.getStateFlow(MemberReportFields.MEMBER_REPORT_HOUSE.name, InputListItemWrapper())
     }
     override val room: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
@@ -140,12 +142,23 @@ class MemberReportViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadMemberReport(territoryMemberReportId: UUID): Job {
-        Timber.tag(TAG).d("loadMemberReport(UUID) called: %s", territoryMemberReportId.toString())
+    private fun loadMemberReport(
+        territoryMemberReportId: UUID? = null,
+        territoryStreetId: UUID? = null,
+        houseId: UUID? = null,
+        roomId: UUID? = null
+    ): Job {
+        Timber.tag(TAG).d(
+            "loadMemberReport(...) called: territoryMemberReportId = %s; territoryStreetId = %s; houseId = %s; roomId = %s",
+            territoryMemberReportId, territoryStreetId, houseId, roomId
+        )
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMemberReportUseCase.execute(
                 GetMemberReportUseCase.Request(
-                    territoryMemberReportId
+                    territoryReportId = territoryMemberReportId,
+                    territoryStreetId = territoryStreetId,
+                    houseId = houseId,
+                    roomId = roomId
                 )
             )
                 .map {
@@ -214,10 +227,9 @@ class MemberReportViewModelImpl @Inject constructor(
                 uiModel.territoryStreet?.street?.streetFullName.orEmpty()
             )
         )
-        initStateValue(
-            MemberReportFields.MEMBER_REPORT_HOUSE, house,
-            ListItemModel(uiModel.house?.id, uiModel.house?.houseFullNum.orEmpty())
-        )
+        uiModel.house?.let {
+            initStateValue(MemberReportFields.MEMBER_REPORT_HOUSE, house, it.toHousesListItem())
+        }
         initStateValue(
             MemberReportFields.MEMBER_REPORT_ROOM, room,
             ListItemModel(uiModel.room?.id, uiModel.room?.roomNum?.toString().orEmpty())
@@ -421,7 +433,7 @@ class MemberReportViewModelImpl @Inject constructor(
                 override val territoryStreet =
                     MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val house =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                    MutableStateFlow(InputListItemWrapper<HousesListItem>())
                 override val room = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val reportMark = MutableStateFlow(InputWrapper())
                 override val language = MutableStateFlow(InputListItemWrapper<ListItemModel>())

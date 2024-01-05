@@ -30,7 +30,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Territoring.RoomsListViewModelImpl"
+private const val TAG = "Housing.RoomsListViewModelImpl"
 
 @HiltViewModel
 class RoomsListViewModelImpl @Inject constructor(

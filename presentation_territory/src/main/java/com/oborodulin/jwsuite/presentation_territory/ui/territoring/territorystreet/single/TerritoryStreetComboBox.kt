@@ -31,6 +31,7 @@ private const val TAG = "Territoring.TerritoryStreetComboBox"
 @Composable
 fun TerritoryStreetComboBox(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     territoryId: UUID,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
@@ -55,6 +56,7 @@ fun TerritoryStreetComboBox(
     )
     ComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
         loadListUiAction = TerritoryStreetsListUiAction.Load(territoryId),
         isShowListDialog = isShowListDialog,

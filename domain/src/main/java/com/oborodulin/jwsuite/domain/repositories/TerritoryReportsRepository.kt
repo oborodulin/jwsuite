@@ -12,12 +12,14 @@ interface TerritoryReportsRepository {
     fun getAllByTerritoryStreet(territoryStreetId: UUID): Flow<List<TerritoryMemberReport>>
     fun getAllByHouse(houseId: UUID): Flow<List<TerritoryMemberReport>>
     fun getAllByRoom(roomId: UUID): Flow<List<TerritoryMemberReport>>
+    fun getTerritoryReportHouse(houseId: UUID): Flow<TerritoryReportHouse>
     fun getTerritoryReportHouses(territoryId: UUID, territoryStreetId: UUID? = null):
             Flow<List<TerritoryReportHouse>>
 
     fun getTerritoryReportRooms(territoryId: UUID, houseId: UUID? = null):
             Flow<List<TerritoryReportRoom>>
 
+    fun getTerritoryReportRoom(roomId: UUID): Flow<TerritoryReportRoom>
     fun process(territoryReportId: UUID): Flow<UUID>
     fun cancelProcess(territoryReportId: UUID): Flow<UUID>
     fun save(territoryReportHouse: TerritoryReportHouse): Flow<TerritoryReportHouse>

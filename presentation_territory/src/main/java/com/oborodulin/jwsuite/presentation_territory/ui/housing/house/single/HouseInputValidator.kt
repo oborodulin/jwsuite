@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import com.oborodulin.jwsuite.presentation_geo.R
 
-private const val TAG = "Territoring.TerritoryStreetInputValidator"
+private const val TAG = "Housing.TerritoryStreetInputValidator"
 
 sealed class HouseInputValidator : Validatable {
     data object Locality : HouseInputValidator() {

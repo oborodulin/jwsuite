@@ -27,13 +27,19 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
 
     override fun getHouseTerritoryReports(houseId: UUID) = territoryReportDao.findByHouseId(houseId)
     override fun getRoomTerritoryReports(roomId: UUID) = territoryReportDao.findByRoomId(roomId)
+    override fun getTerritoryReportHouse(houseId: UUID) =
+        territoryReportDao.findReportHouseByHouseId(houseId)
+
     override fun getTerritoryReportHouses(territoryId: UUID, territoryStreetId: UUID?) =
-        territoryReportDao.findHousesByTerritoryIdAndTerritoryStreetId(
+        territoryReportDao.findReportHousesByTerritoryIdAndTerritoryStreetId(
             territoryId, territoryStreetId
         )
 
+    override fun getTerritoryReportRoom(roomId: UUID) =
+        territoryReportDao.findDistinctReportRoomByRoomId(roomId)
+
     override fun getTerritoryReportRooms(territoryId: UUID, houseId: UUID?) =
-        territoryReportDao.findRoomsByTerritoryIdAndHouseId(territoryId, houseId)
+        territoryReportDao.findReportRoomsByTerritoryIdAndHouseId(territoryId, houseId)
 
     override suspend fun process(territoryReportId: UUID) =
         withContext(dispatcher) {

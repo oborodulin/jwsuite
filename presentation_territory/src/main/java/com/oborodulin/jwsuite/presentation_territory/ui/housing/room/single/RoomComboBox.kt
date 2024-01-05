@@ -25,12 +25,13 @@ import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.list.RoomsL
 import timber.log.Timber
 import java.util.UUID
 
-private const val TAG = "Territoring.RoomComboBox"
+private const val TAG = "Housing.RoomComboBox"
 
 @Composable
 fun RoomComboBox(
     modifier: Modifier = Modifier,
-    houseId: UUID,
+    enabled: Boolean = true,
+    houseId: UUID? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     listViewModel: RoomsListViewModelImpl = hiltViewModel(),
     singleViewModel: RoomViewModelImpl = hiltViewModel(),
@@ -53,8 +54,9 @@ fun RoomComboBox(
     )
     ComboBoxComponent(
         modifier = modifier,
+        enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = RoomsListUiAction.Load(houseId),
+        loadListUiAction = RoomsListUiAction.Load(houseId = houseId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

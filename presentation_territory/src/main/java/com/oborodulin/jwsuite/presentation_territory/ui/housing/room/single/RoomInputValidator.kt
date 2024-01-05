@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import com.oborodulin.jwsuite.presentation_geo.R
 
-private const val TAG = "Territoring.RoomInputValidator"
+private const val TAG = "Housing.RoomInputValidator"
 
 sealed class RoomInputValidator : Validatable {
     data object Locality : RoomInputValidator() {

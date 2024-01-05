@@ -2,10 +2,11 @@ package com.oborodulin.jwsuite.presentation_territory.ui.reporting.single
 
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.model.ListItemModel
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 
 sealed class MemberReportInputEvent(val value: String) : Inputable {
     data class TerritoryStreet(val input: ListItemModel) : MemberReportInputEvent(input.headline)
-    data class House(val input: ListItemModel) : MemberReportInputEvent(input.headline)
+    data class House(val input: HousesListItem) : MemberReportInputEvent(input.headline)
     data class Room(val input: ListItemModel) : MemberReportInputEvent(input.headline)
     data class MemberReportMark(val input: String) : MemberReportInputEvent(input)
     data class Language(val input: ListItemModel) : MemberReportInputEvent(input.headline)

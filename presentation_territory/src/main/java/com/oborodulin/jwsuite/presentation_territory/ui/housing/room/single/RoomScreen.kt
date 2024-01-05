@@ -19,7 +19,7 @@ import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
 import timber.log.Timber
 
-private const val TAG = "Territoring.RoomScreen"
+private const val TAG = "Housing.RoomScreen"
 
 @Composable
 fun RoomScreen(

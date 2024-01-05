@@ -59,7 +59,7 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Territoring.RoomViewModelImpl"
+private const val TAG = "Housing.RoomViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel

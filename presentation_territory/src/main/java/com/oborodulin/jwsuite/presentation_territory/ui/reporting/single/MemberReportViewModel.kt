@@ -6,6 +6,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModeled
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportUi
 import kotlinx.coroutines.flow.StateFlow
 
@@ -14,7 +15,7 @@ interface MemberReportViewModel :
     val reportMarks: StateFlow<MutableMap<TerritoryReportMark, String>>
 
     val territoryStreet: StateFlow<InputListItemWrapper<ListItemModel>>
-    val house: StateFlow<InputListItemWrapper<ListItemModel>>
+    val house: StateFlow<InputListItemWrapper<HousesListItem>>
     val room: StateFlow<InputListItemWrapper<ListItemModel>>
     val reportMark: StateFlow<InputWrapper>
     val language: StateFlow<InputListItemWrapper<ListItemModel>>

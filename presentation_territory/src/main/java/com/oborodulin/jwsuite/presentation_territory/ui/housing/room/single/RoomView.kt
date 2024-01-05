@@ -51,7 +51,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.si
 import timber.log.Timber
 import java.util.EnumMap
 
-private const val TAG = "Territoring.RoomView"
+private const val TAG = "Housing.RoomView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

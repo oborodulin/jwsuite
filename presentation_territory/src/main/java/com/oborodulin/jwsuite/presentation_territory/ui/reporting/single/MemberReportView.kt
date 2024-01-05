@@ -46,6 +46,8 @@ import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.Hou
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomViewModelImpl
+import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportUi
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.TerritoryStreetViewModelImpl
 import timber.log.Timber
 import java.util.EnumMap
@@ -55,6 +57,7 @@ private const val TAG = "Reporting.MemberReportView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemberReportView(
+    uiModel: TerritoryMemberReportUi,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     memberReportViewModel: MemberReportViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
@@ -72,7 +75,7 @@ fun MemberReportView(
         memberReportViewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
-    Timber.tag(TAG).d("Member: CollectAsStateWithLifecycle for all fields")
+    Timber.tag(TAG).d("MemberReport: CollectAsStateWithLifecycle for all fields")
     val territoryStreet by memberReportViewModel.territoryStreet.collectAsStateWithLifecycle()
     val house by memberReportViewModel.house.collectAsStateWithLifecycle()
     val room by memberReportViewModel.room.collectAsStateWithLifecycle()
@@ -84,7 +87,7 @@ fun MemberReportView(
 
     val reportMarks by memberReportViewModel.reportMarks.collectAsStateWithLifecycle()
 
-    Timber.tag(TAG).d("Member: Init Focus Requesters for all fields")
+    Timber.tag(TAG).d("MemberReport: Init Focus Requesters for all fields")
     val focusRequesters =
         EnumMap<MemberReportFields, InputFocusRequester>(MemberReportFields::class.java)
     enumValues<MemberReportFields>().forEach {
@@ -113,6 +116,21 @@ fun MemberReportView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        TerritoryStreetComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_TERRITORY_STREET]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    memberReportViewModel.onTextFieldFocusChanged(
+                        focusedField = MemberReportFields.MEMBER_REPORT_TERRITORY_STREET,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            enabled = false,
+            sharedViewModel = sharedViewModel,
+            inputWrapper = territoryStreet,
+            onValueChange = { memberReportViewModel.onTextFieldEntered(MemberReportInputEvent.House(it)) },
+            onImeKeyAction = memberReportViewModel::moveFocusImeAction
+        )
         HouseComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberReportFields.MEMBER_REPORT_HOUSE]!!.focusRequester)

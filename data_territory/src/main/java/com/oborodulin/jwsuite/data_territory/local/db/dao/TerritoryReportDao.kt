@@ -70,6 +70,14 @@ interface TerritoryReportDao {
     fun findDistinctByRoomId(roomId: UUID) = findByRoomId(roomId).distinctUntilChanged()
 
     //-----------------------------
+    @Query("SELECT * FROM ${TerritoryReportHouseView.VIEW_NAME} WHERE houseId = :houseId")
+    fun findReportHouseByHouseId(houseId: UUID): Flow<TerritoryReportHouseView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctReportHouseByHouseId(houseId: UUID) =
+        findReportHouseByHouseId(houseId).distinctUntilChanged()
+
+    //-----------------------------
     @Query(
         """
     SELECT * FROM ${TerritoryReportHouseView.VIEW_NAME}
@@ -77,15 +85,23 @@ interface TerritoryReportDao {
     ORDER BY hStreetsId, houseNum, houseLetter, buildingNum
         """
     )
-    fun findHousesByTerritoryIdAndTerritoryStreetId(
+    fun findReportHousesByTerritoryIdAndTerritoryStreetId(
         territoryId: UUID, territoryStreetId: UUID? = null
     ): Flow<List<TerritoryReportHouseView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctHousesByTerritoryIdAndTerritoryStreetId(
+    fun findDistinctReportHousesByTerritoryIdAndTerritoryStreetId(
         territoryId: UUID, territoryStreetId: UUID? = null
-    ) = findHousesByTerritoryIdAndTerritoryStreetId(territoryId, territoryStreetId)
+    ) = findReportHousesByTerritoryIdAndTerritoryStreetId(territoryId, territoryStreetId)
         .distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${TerritoryReportRoomView.VIEW_NAME} WHERE roomId = :roomId")
+    fun findReportRoomByRoomId(roomId: UUID): Flow<TerritoryReportRoomView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctReportRoomByRoomId(roomId: UUID) =
+        findReportRoomByRoomId(roomId).distinctUntilChanged()
 
     //-----------------------------
     @Query(
@@ -95,13 +111,12 @@ interface TerritoryReportDao {
     ORDER BY hStreetsId, houseNum, houseLetter, buildingNum
         """
     )
-    fun findRoomsByTerritoryIdAndHouseId(
-        territoryId: UUID, houseId: UUID? = null
-    ): Flow<List<TerritoryReportRoomView>>
+    fun findReportRoomsByTerritoryIdAndHouseId(territoryId: UUID, houseId: UUID? = null):
+            Flow<List<TerritoryReportRoomView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctRoomsByTerritoryIdAndHouseId(territoryId: UUID, houseId: UUID? = null) =
-        findRoomsByTerritoryIdAndHouseId(territoryId, houseId).distinctUntilChanged()
+    fun findDistinctReportRoomsByTerritoryIdAndHouseId(territoryId: UUID, houseId: UUID? = null) =
+        findReportRoomsByTerritoryIdAndHouseId(territoryId, houseId).distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
