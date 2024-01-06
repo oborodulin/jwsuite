@@ -1150,10 +1150,10 @@ sealed class NavRoutes constructor(
             return route
         }
 
-        fun fromEntry(entry: NavBackStackEntry): TerritoryInput? {
-            val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
-                TerritoryInput(UUID.fromString(it))
-            }
+        fun fromEntry(entry: NavBackStackEntry): TerritoryInput {
+            val territoryInput = TerritoryInput(
+                UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty())
+            )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("ReportRooms -> fromEntry: '%s'", territoryInput)
             return territoryInput

@@ -35,6 +35,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.housing.HousingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.room.single.RoomScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.reporting.houses.ReportHousesScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.reporting.rooms.ReportRoomsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.reporting.single.MemberReportScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.TerritoryHouseScreen
