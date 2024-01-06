@@ -9,7 +9,5 @@ sealed class MemberRoleInputEvent(val value: String) : Inputable {
     data class Role(val input: ListItemModel) : MemberRoleInputEvent(input.headline)
     data class RoleExpiredDate(val input: String) : MemberRoleInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

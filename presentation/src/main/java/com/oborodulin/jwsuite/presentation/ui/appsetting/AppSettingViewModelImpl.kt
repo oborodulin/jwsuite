@@ -144,7 +144,7 @@ class AppSettingViewModelImpl @Inject constructor(
             useCases.saveAppSettingsUseCase.execute(
                 SaveAppSettingsUseCase.Request(appSettingsUiMapper.map(appSettings))
             ).collect {
-                Timber.tag(TAG).d("saveMember() collect: %s", it)
+                Timber.tag(TAG).d("saveAppSettings() collect: %s", it)
             }
         }
         return job

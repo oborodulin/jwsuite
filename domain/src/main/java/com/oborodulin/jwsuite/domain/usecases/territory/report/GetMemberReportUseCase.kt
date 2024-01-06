@@ -2,15 +2,13 @@ package com.oborodulin.jwsuite.domain.usecases.territory.report
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
-import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryReportsRepository
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class GetMemberReportUseCase(
     configuration: Configuration,
-    private val territoryReportsRepository: TerritoryReportsRepository,
-    private val territoriesRepository: TerritoriesRepository
+    private val territoryReportsRepository: TerritoryReportsRepository
 ) : UseCase<GetMemberReportUseCase.Request, GetMemberReportUseCase.Response>(configuration) {
     override fun process(request: Request) = when (request.territoryReportId) {
         null -> when (request.territoryStreetId) {
@@ -19,6 +17,7 @@ class GetMemberReportUseCase(
                     Response(
                         TerritoryMemberReport(
                             room = it.room,
+                            territoryId = it.territoryMemberReport.territoryId,
                             territoryMemberId = it.territoryMemberReport.territoryMemberId
                         )
                     )
@@ -28,18 +27,20 @@ class GetMemberReportUseCase(
                     Response(
                         TerritoryMemberReport(
                             house = it.house,
+                            territoryId = it.territoryMemberReport.territoryId,
                             territoryMemberId = it.territoryMemberReport.territoryMemberId
                         )
                     )
                 }
             }
 
-            else -> territoriesRepository.getTerritoryStreet(request.territoryStreetId)
+            else -> territoryReportsRepository.getTerritoryReportStreet(request.territoryStreetId)
                 .map {
                     Response(
                         TerritoryMemberReport(
-                            territoryStreet = it,
-                            territoryMemberId = UUID.randomUUID()
+                            territoryStreet = it.territoryStreet,
+                            territoryId = it.territoryMemberReport.territoryId,
+                            territoryMemberId = it.territoryMemberReport.territoryMemberId
                         )
                     )
                 }

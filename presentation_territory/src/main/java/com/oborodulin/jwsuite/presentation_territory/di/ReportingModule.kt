@@ -7,12 +7,14 @@ import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportsU
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.ProcessMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportsListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryReportHousesListConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryReportRoomsListConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHouseUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportToTerritoryMemberReportUiMapper
@@ -21,6 +23,8 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.Ter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportsListToTerritoryMemberReportsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryReportHouseToTerritoryReportHousesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryReportHousesListToTerritoryReportHousesListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryReportRoomToTerritoryReportRoomsListItemMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryReportRoomsListToTerritoryReportRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomUiMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.street.TerritoryStreetToTerritoryStreetUiMapper
@@ -83,6 +87,17 @@ object ReportingModule {
     fun provideTerritoryReportHousesListToTerritoryReportHousesListItemMapper(mapper: TerritoryReportHouseToTerritoryReportHousesListItemMapper): TerritoryReportHousesListToTerritoryReportHousesListItemMapper =
         TerritoryReportHousesListToTerritoryReportHousesListItemMapper(mapper = mapper)
 
+    // Territory Room Report:
+    @Singleton
+    @Provides
+    fun provideTerritoryReportRoomToTerritoryReportRoomsListItemMapper(): TerritoryReportRoomToTerritoryReportRoomsListItemMapper =
+        TerritoryReportRoomToTerritoryReportRoomsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryReportRoomsListToTerritoryReportRoomsListItemMapper(mapper: TerritoryReportRoomToTerritoryReportRoomsListItemMapper): TerritoryReportRoomsListToTerritoryReportRoomsListItemMapper =
+        TerritoryReportRoomsListToTerritoryReportRoomsListItemMapper(mapper = mapper)
+
     // CONVERTERS:
     // Territory Member Report:
     @Singleton
@@ -101,6 +116,12 @@ object ReportingModule {
     fun provideTerritoryReportHousesListConverter(mapper: TerritoryReportHousesListToTerritoryReportHousesListItemMapper): TerritoryReportHousesListConverter =
         TerritoryReportHousesListConverter(mapper = mapper)
 
+    // Territory Room Report:
+    @Singleton
+    @Provides
+    fun provideTerritoryReportRoomsListConverter(mapper: TerritoryReportRoomsListToTerritoryReportRoomsListItemMapper): TerritoryReportRoomsListConverter =
+        TerritoryReportRoomsListConverter(mapper = mapper)
+
     // USE CASES:
     // Territory Member Report:
     @Singleton
@@ -112,6 +133,7 @@ object ReportingModule {
         getReportRoomsUseCase: GetReportRoomsUseCase,
         processMemberReportUseCase: ProcessMemberReportUseCase,
         cancelProcessMemberReportUseCase: CancelProcessMemberReportUseCase,
+        saveMemberReportUseCase: SaveMemberReportUseCase,
         saveReportHouseUseCase: SaveReportHouseUseCase,
         saveReportRoomUseCase: SaveReportRoomUseCase,
         deleteMemberReportUseCase: DeleteMemberReportUseCase
@@ -122,6 +144,7 @@ object ReportingModule {
         getReportRoomsUseCase,
         processMemberReportUseCase,
         cancelProcessMemberReportUseCase,
+        saveMemberReportUseCase,
         saveReportHouseUseCase,
         saveReportRoomUseCase,
         deleteMemberReportUseCase

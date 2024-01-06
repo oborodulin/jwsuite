@@ -2,14 +2,22 @@ package com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -38,6 +46,8 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
@@ -64,7 +74,8 @@ fun HouseView(
     territoryUiModel: TerritoryUi? = null,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModelImpl = hiltViewModel(),
-    viewModel: HouseViewModelImpl = hiltViewModel()
+    viewModel: HouseViewModelImpl = hiltViewModel(),
+    handleSaveAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("HouseView(...) called")
     val context = LocalContext.current
@@ -120,7 +131,8 @@ fun HouseView(
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("HouseView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -143,7 +155,7 @@ fun HouseView(
                 shape = RoundedCornerShape(16.dp)
             )
             .then(modifier),
-            //.verticalScroll(rememberScrollState()),
+        //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -494,7 +506,7 @@ fun HouseView(
             },
             inputWrapper = houseDesc,
             onValueChange = { viewModel.onTextFieldEntered(HouseInputEvent.HouseDesc(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = handleSaveAction
         )
     }
 }

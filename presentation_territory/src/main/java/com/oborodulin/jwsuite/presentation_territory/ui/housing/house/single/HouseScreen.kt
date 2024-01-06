@@ -61,10 +61,11 @@ fun HouseScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) {
+        ) { _, handleSaveAction ->
             HouseView(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
-                sharedViewModel = appState.congregationSharedViewModel.value
+                sharedViewModel = appState.congregationSharedViewModel.value,
+                handleSaveAction = handleSaveAction
             )
         }
     }

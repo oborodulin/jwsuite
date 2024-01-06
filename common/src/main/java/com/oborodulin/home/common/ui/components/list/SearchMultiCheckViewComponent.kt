@@ -47,7 +47,7 @@ fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : F
     loadUiAction: SA,
     confirmUiAction: SA,
     @StringRes emptyListTextResId: Int,
-    dialogView: @Composable (ST) -> Unit
+    dialogView: @Composable (ST, () -> Unit) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SearchMultiCheckViewComponent(...) called")
     val searchText by listViewModel.searchText.collectAsStateWithLifecycle()

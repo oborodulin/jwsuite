@@ -7,6 +7,7 @@ data class TerritoryReportUseCases(
     val getReportRoomsUseCase: GetReportRoomsUseCase,
     val processMemberReportUseCase: ProcessMemberReportUseCase,
     val cancelProcessMemberReportUseCase: CancelProcessMemberReportUseCase,
+    val saveMemberReportUseCase: SaveMemberReportUseCase,
     val saveReportHouseUseCase: SaveReportHouseUseCase,
     val saveReportRoomUseCase: SaveReportRoomUseCase,
     val deleteMemberReportUseCase: DeleteMemberReportUseCase

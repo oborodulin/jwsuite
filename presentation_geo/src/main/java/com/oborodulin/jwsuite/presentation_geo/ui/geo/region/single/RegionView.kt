@@ -40,6 +40,8 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
@@ -49,7 +51,7 @@ private const val TAG = "Geo.RegionView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegionView(viewModel: RegionViewModel) {
+fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
     Timber.tag(TAG).d("RegionView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -73,7 +75,8 @@ fun RegionView(viewModel: RegionViewModel) {
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("RegionView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -132,7 +135,7 @@ fun RegionView(viewModel: RegionViewModel) {
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = regionName,
             onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionName(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = handleSaveAction
         )
     }
 }
@@ -143,7 +146,7 @@ fun RegionView(viewModel: RegionViewModel) {
 fun PreviewRegionView() {
     JWSuiteTheme {
         Surface {
-            RegionView(viewModel = RegionViewModelImpl.previewModel(LocalContext.current))
+            RegionView(viewModel = RegionViewModelImpl.previewModel(LocalContext.current)) {}
         }
     }
 }

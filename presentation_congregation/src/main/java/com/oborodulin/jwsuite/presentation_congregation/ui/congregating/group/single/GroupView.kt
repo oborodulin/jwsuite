@@ -2,13 +2,22 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.s
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,6 +42,8 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationViewModelImpl
@@ -46,7 +57,8 @@ private const val TAG = "Congregating.GroupView"
 @Composable
 fun GroupView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
-    viewModel: GroupViewModelImpl = hiltViewModel()
+    viewModel: GroupViewModelImpl = hiltViewModel(),
+    handleSaveAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("GroupView(...) called")
     val context = LocalContext.current
@@ -71,7 +83,8 @@ fun GroupView(
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("GroupView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -117,11 +130,13 @@ fun GroupView(
             labelResId = R.string.code_hint,
             leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done
+                )
             },
             inputWrapper = groupNum,
             onValueChange = { viewModel.onTextFieldEntered(GroupInputEvent.GroupNum(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = handleSaveAction
         )
     }
 }
@@ -133,7 +148,7 @@ fun PreviewGroupView() {
     //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            GroupView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            GroupView(sharedViewModel = FavoriteCongregationViewModelImpl.previewModel) {}
         }
     }
 }

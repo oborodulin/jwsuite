@@ -2,15 +2,24 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,6 +45,8 @@ import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityComboBox
@@ -46,7 +57,10 @@ private const val TAG = "Geo.StreetView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
+fun StreetView(
+    viewModel: StreetViewModelImpl = hiltViewModel(),
+    handleSaveAction: OnImeKeyAction
+) {
     Timber.tag(TAG).d("StreetView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -54,10 +68,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val events = remember(viewModel.events, lifecycleOwner) {
-        viewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("Street: CollectAsStateWithLifecycle for all fields")
@@ -80,7 +91,8 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("StreetView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -222,7 +234,7 @@ fun StreetView(viewModel: StreetViewModelImpl = hiltViewModel()) {
             onValueChange = {
                 viewModel.onTextFieldEntered(StreetInputEvent.EstimatedHouses(it.toIntOrNull()))
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = handleSaveAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
         )
     }

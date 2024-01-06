@@ -7,7 +7,5 @@ sealed class TerritoryCategoryInputEvent(val value: String) : Inputable {
     data class TerritoryCategoryMark(val input: String) : TerritoryCategoryInputEvent(input)
     data class TerritoryCategoryName(val input: String) : TerritoryCategoryInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

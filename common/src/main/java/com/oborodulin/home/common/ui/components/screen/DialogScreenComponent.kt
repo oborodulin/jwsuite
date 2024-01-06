@@ -68,7 +68,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
-    dialogView: @Composable (T) -> Unit
+    dialogView: @Composable (T, () -> Unit) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG)
         .d("DialogScreenComponent(...) called: inputId = %s", inputId)
@@ -76,7 +76,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
     //val errorMessage by viewModel.uiStateErrorMsg.collectAsStateWithLifecycle()
     val isErrorShowAlert = rememberSaveable { mutableStateOf(false) }
-    val handleTopBarActionButtonClick = {
+    val handleDialogConfirmAction = {
         if (LOG_UI_COMPONENTS) Timber.tag(TAG)
             .d("DialogScreenComponent: Top Bar Action Button click...")
         viewModel.onContinueClick {
@@ -138,7 +138,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         if (isControlsShow) {
             //onTopBarActionsChange(true) {
             onTopBarActionsChange {
-                IconButton(enabled = areInputsValid, onClick = handleTopBarActionButtonClick) {
+                IconButton(enabled = areInputsValid, onClick = handleDialogConfirmAction) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }
@@ -154,11 +154,11 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                dialogView.invoke(it)
+                dialogView.invoke(it, handleDialogConfirmAction)
                 if (isControlsShow) {
                     // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                     Spacer(Modifier.height(8.dp))
-                    confirmButton.invoke(areInputsValid, handleTopBarActionButtonClick)
+                    confirmButton.invoke(areInputsValid, handleDialogConfirmAction)
                 }
             }
         }

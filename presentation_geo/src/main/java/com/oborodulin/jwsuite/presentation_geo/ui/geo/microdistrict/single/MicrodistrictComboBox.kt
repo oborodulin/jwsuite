@@ -52,7 +52,7 @@ fun MicrodistrictComboBox(
         viewModel = singleViewModel,
         loadUiAction = MicrodistrictUiAction.Load(),
         confirmUiAction = MicrodistrictUiAction.Save,
-        dialogView = { MicrodistrictView() },
+        dialogView = { _, handleConfirmAction -> MicrodistrictView(handleSaveAction = handleConfirmAction) },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(

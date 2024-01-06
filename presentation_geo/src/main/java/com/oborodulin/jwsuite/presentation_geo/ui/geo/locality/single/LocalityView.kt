@@ -2,13 +2,22 @@ package com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,6 +42,8 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionComboBox
@@ -44,39 +55,40 @@ private const val TAG = "Geo.LocalityView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
+fun LocalityView(
+    viewModel: LocalityViewModelImpl = hiltViewModel(),
+    handleSaveAction: OnImeKeyAction
+) {
     Timber.tag(TAG).d("LocalityView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val events = remember(localityViewModel.events, lifecycleOwner) {
-        localityViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
-        )
+    val events = remember(viewModel.events, lifecycleOwner) {
+        viewModel.events.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
     }
 
     Timber.tag(TAG).d("Locality: CollectAsStateWithLifecycle for all fields")
-    val region by localityViewModel.region.collectAsStateWithLifecycle()
-    val regionDistrict by localityViewModel.regionDistrict.collectAsStateWithLifecycle()
-    val localityCode by localityViewModel.localityCode.collectAsStateWithLifecycle()
-    val localityShortName by localityViewModel.localityShortName.collectAsStateWithLifecycle()
-    val localityType by localityViewModel.localityType.collectAsStateWithLifecycle()
-    val localityName by localityViewModel.localityName.collectAsStateWithLifecycle()
+    val region by viewModel.region.collectAsStateWithLifecycle()
+    val regionDistrict by viewModel.regionDistrict.collectAsStateWithLifecycle()
+    val localityCode by viewModel.localityCode.collectAsStateWithLifecycle()
+    val localityShortName by viewModel.localityShortName.collectAsStateWithLifecycle()
+    val localityType by viewModel.localityType.collectAsStateWithLifecycle()
+    val localityName by viewModel.localityName.collectAsStateWithLifecycle()
 
-    val localityTypes by localityViewModel.localityTypes.collectAsStateWithLifecycle()
+    val localityTypes by viewModel.localityTypes.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Locality: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<LocalityFields, InputFocusRequester>(LocalityFields::class.java)
     enumValues<LocalityFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
-
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("LocalityView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -99,37 +111,35 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_REGION,
                         isFocused = focusState.isFocused
                     )
                 },
             inputWrapper = region,
-            onValueChange = { localityViewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.Region(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         RegionDistrictComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_REGION_DISTRICT]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_REGION_DISTRICT,
                         isFocused = focusState.isFocused
                     )
                 },
             regionId = region.item?.itemId,
             inputWrapper = regionDistrict,
-            onValueChange = {
-                localityViewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it))
-            },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.RegionDistrict(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         val pattern = remember { Regex("^\\d+\$") }
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_CODE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_CODE,
                         isFocused = focusState.isFocused
                     )
@@ -145,16 +155,16 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             onValueChange = {
                 //https://stackoverflow.com/questions/73400126/restrict-only-numbers-in-textfield-in-jetpack-compose
                 if (it.isEmpty() || it.matches(pattern)) {
-                    localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityCode(it))
+                    viewModel.onTextFieldEntered(LocalityInputEvent.LocalityCode(it))
                 }
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_SHORT_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_SHORT_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -170,16 +180,16 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             inputWrapper = localityShortName,
             maxLength = 4,
             onValueChange = {
-                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityShortName(it))
+                viewModel.onTextFieldEntered(LocalityInputEvent.LocalityShortName(it))
             },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onImeKeyAction = viewModel::moveFocusImeAction
             //onImeKeyAction = { } //viewModel.onContinueClick { onSubmit() }
         )
         ExposedDropdownMenuBoxComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_TYPE]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_TYPE,
                         isFocused = focusState.isFocused
                     )
@@ -192,16 +202,14 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             inputWrapper = localityType,
             values = localityTypes.values.toList(), // resolve Enums to Resource
             keys = localityTypes.keys.map { it.name }, // Enums
-            onValueChange = {
-                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it))
-            },
-            onImeKeyAction = localityViewModel::moveFocusImeAction,
+            onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.LocalityType(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction,
         )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[LocalityFields.LOCALITY_NAME]!!.focusRequester)
                 .onFocusChanged { focusState ->
-                    localityViewModel.onTextFieldFocusChanged(
+                    viewModel.onTextFieldFocusChanged(
                         focusedField = LocalityFields.LOCALITY_NAME,
                         isFocused = focusState.isFocused
                     )
@@ -216,10 +224,8 @@ fun LocalityView(localityViewModel: LocalityViewModelImpl = hiltViewModel()) {
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = localityName,
-            onValueChange = {
-                localityViewModel.onTextFieldEntered(LocalityInputEvent.LocalityName(it))
-            },
-            onImeKeyAction = localityViewModel::moveFocusImeAction
+            onValueChange = { viewModel.onTextFieldEntered(LocalityInputEvent.LocalityName(it)) },
+            onImeKeyAction = handleSaveAction
         )
     }
 }

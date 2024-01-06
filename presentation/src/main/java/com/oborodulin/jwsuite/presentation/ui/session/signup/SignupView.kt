@@ -44,6 +44,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.session.SessionFields
 import com.oborodulin.jwsuite.presentation.ui.session.SessionInputEvent
@@ -59,7 +60,10 @@ private const val TAG = "Presentation.SignupView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SignupView(viewModel: SessionViewModel, handleSignup: () -> Unit) { //areInputsValid: Boolean,
+fun SignupView(
+    viewModel: SessionViewModel,
+    handleSignupAction: () -> Unit
+) { //areInputsValid: Boolean,
     Timber.tag(TAG).d("SignupView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -85,7 +89,8 @@ fun SignupView(viewModel: SessionViewModel, handleSignup: () -> Unit) { //areInp
         Timber.tag(TAG).d("SignupView -> LaunchedEffect()")
         viewModel.setSessionMode(SessionModeType.SIGNUP)
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -169,7 +174,7 @@ fun SignupView(viewModel: SessionViewModel, handleSignup: () -> Unit) { //areInp
             onValueChange = { viewModel.onTextFieldEntered(SessionInputEvent.ConfirmPin(it)) },
             onImeKeyAction = {
                 //if (areInputsValid) {
-                handleSignup()
+                handleSignupAction()
                 //}
             }
         )

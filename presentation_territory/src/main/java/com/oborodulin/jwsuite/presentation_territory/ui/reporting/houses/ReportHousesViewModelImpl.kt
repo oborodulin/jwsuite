@@ -58,7 +58,7 @@ class ReportHousesViewModelImpl @Inject constructor(
     ) {
     override val territoryStreet: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
-            ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET.name, InputListItemWrapper()
+            ReportHousesFields.REPORT_HOUSES_TERRITORY_STREET.name, InputListItemWrapper()
         )
     }
 
@@ -159,7 +159,7 @@ class ReportHousesViewModelImpl @Inject constructor(
             .onEach { event ->
                 when (event) {
                     is ReportHousesInputEvent.Street -> setStateValue(
-                        ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET, territoryStreet,
+                        ReportHousesFields.REPORT_HOUSES_TERRITORY_STREET, territoryStreet,
                         event.input, true
                     )
                 }
@@ -169,7 +169,7 @@ class ReportHousesViewModelImpl @Inject constructor(
                 when (event) {
                     is ReportHousesInputEvent.Street ->
                         setStateValue(
-                            ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET, territoryStreet,
+                            ReportHousesFields.REPORT_HOUSES_TERRITORY_STREET, territoryStreet,
                             null
                         )
                 }

@@ -8,7 +8,5 @@ sealed class TerritoriesInputEvent(val value: String) : Inputable {
     data class ReceivingDate(val input: String) : TerritoriesInputEvent(input)
     data class DeliveryDate(val input: String) : TerritoriesInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

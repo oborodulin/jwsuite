@@ -71,10 +71,11 @@ fun TerritoryStreetScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel ->
+        ) { uiModel, handleSaveAction ->
             TerritoryStreetView(
                 uiModel = uiModel, sharedViewModel = appState.congregationSharedViewModel.value,
-                territoryViewModel = territoryViewModel
+                territoryViewModel = territoryViewModel,
+                handleSaveAction = handleSaveAction
             )
         }
     }

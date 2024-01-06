@@ -19,7 +19,5 @@ sealed class MemberInputEvent(val value: String) : Inputable {
     data class MovementDate(val input: String) : MemberInputEvent(input)
     data class LoginExpiredDate(val input: String) : MemberInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

@@ -94,12 +94,13 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberLastReceivingDateView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
@@ -154,7 +155,8 @@ private const val TAG = "JwSuiteDatabase"
         TerritoriesHandOutView::class, TerritoriesAtWorkView::class, TerritoriesIdleView::class,
         HouseView::class, EntranceView::class, FloorView::class, RoomView::class,
         RoleTransferObjectView::class, MemberRoleTransferObjectView::class,
-        TerritoryMemberReportView::class, TerritoryReportHouseView::class, TerritoryReportRoomView::class
+        TerritoryMemberReportView::class, TerritoryReportStreetView::class,
+        TerritoryReportHouseView::class, TerritoryReportRoomView::class
         //TerritoryInfoView::class
     ],
     version = 1, exportSchema = true

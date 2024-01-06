@@ -51,7 +51,14 @@ fun TerritoryStreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryStreetUiAction.Load(),
         confirmUiAction = TerritoryStreetUiAction.Save,
-        dialogView = { TerritoryStreetView(it, sharedViewModel, territoryViewModel) },
+        dialogView = { uiModel, handleConfirmAction ->
+            TerritoryStreetView(
+                uiModel,
+                sharedViewModel = sharedViewModel,
+                territoryViewModel = territoryViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
         onValueChange = onValueChange,
     )
     ComboBoxComponent(

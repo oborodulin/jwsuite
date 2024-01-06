@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.repositories
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportRoom
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportStreet
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -12,6 +13,8 @@ interface TerritoryReportsRepository {
     fun getAllByTerritoryStreet(territoryStreetId: UUID): Flow<List<TerritoryMemberReport>>
     fun getAllByHouse(houseId: UUID): Flow<List<TerritoryMemberReport>>
     fun getAllByRoom(roomId: UUID): Flow<List<TerritoryMemberReport>>
+    fun getTerritoryReportStreet(territoryStreetId: UUID): Flow<TerritoryReportStreet>
+    fun getTerritoryReportStreets(territoryId: UUID): Flow<List<TerritoryReportStreet>>
     fun getTerritoryReportHouse(houseId: UUID): Flow<TerritoryReportHouse>
     fun getTerritoryReportHouses(territoryId: UUID, territoryStreetId: UUID? = null):
             Flow<List<TerritoryReportHouse>>
@@ -22,6 +25,7 @@ interface TerritoryReportsRepository {
     fun getTerritoryReportRoom(roomId: UUID): Flow<TerritoryReportRoom>
     fun process(territoryReportId: UUID): Flow<UUID>
     fun cancelProcess(territoryReportId: UUID): Flow<UUID>
+    fun save(territoryMemberReport: TerritoryMemberReport): Flow<TerritoryMemberReport>
     fun save(territoryReportHouse: TerritoryReportHouse): Flow<TerritoryReportHouse>
     fun save(territoryReportRoom: TerritoryReportRoom): Flow<TerritoryReportRoom>
     fun delete(territoryMemberReport: TerritoryMemberReport): Flow<TerritoryMemberReport>

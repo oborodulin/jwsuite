@@ -5,7 +5,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -45,7 +44,12 @@ fun RegionComboBox(
         viewModel = singleViewModel,
         loadUiAction = RegionUiAction.Load(),
         confirmUiAction = RegionUiAction.Save,
-        dialogView = { RegionView(singleViewModel) },
+        dialogView = { _, handleConfirmAction ->
+            RegionView(
+                viewModel = singleViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )

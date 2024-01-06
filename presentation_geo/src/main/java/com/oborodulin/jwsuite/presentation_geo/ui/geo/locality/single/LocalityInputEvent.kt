@@ -11,7 +11,5 @@ sealed class LocalityInputEvent(val value: String) : Inputable {
     data class LocalityType(val input: String) : LocalityInputEvent(input)
     data class LocalityName(val input: String) : LocalityInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

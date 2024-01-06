@@ -34,6 +34,14 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
         localTerritoryReportDataSource.getRoomTerritoryReports(roomId)
             .map(mappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
 
+    override fun getTerritoryReportStreet(territoryStreetId: UUID) =
+        localTerritoryReportDataSource.getTerritoryReportStreet(territoryStreetId)
+            .map(mappers.territoryReportStreetViewToTerritoryReportStreetMapper::map)
+
+    override fun getTerritoryReportStreets(territoryId: UUID) =
+        localTerritoryReportDataSource.getTerritoryReportStreets(territoryId)
+            .map(mappers.territoryReportStreetViewListToTerritoryReportStreetsListMapper::map)
+
     override fun getTerritoryReportHouse(houseId: UUID) =
         localTerritoryReportDataSource.getTerritoryReportHouse(houseId)
             .map(mappers.territoryReportHouseViewToTerritoryReportHouseMapper::map)
@@ -60,8 +68,25 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
         this.emit(territoryReportId)
     }
 
+    override fun save(territoryMemberReport: TerritoryMemberReport) = flow {
+        if (territoryMemberReport.id == null) {
+            localTerritoryReportDataSource.insertTerritoryReport(
+                mappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
+                    territoryMemberReport
+                )
+            )
+        } else {
+            localTerritoryReportDataSource.updateTerritoryReport(
+                mappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
+                    territoryMemberReport
+                )
+            )
+        }
+        emit(territoryMemberReport)
+    }
+
     override fun save(territoryReportHouse: TerritoryReportHouse) = flow {
-        if (territoryReportHouse.id == null) {
+        if (territoryReportHouse.territoryMemberReport.id == null) {
             localTerritoryReportDataSource.insertTerritoryReport(
                 mappers.territoryReportHouseToTerritoryMemberReportEntityMapper.map(
                     territoryReportHouse
@@ -78,7 +103,7 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
     }
 
     override fun save(territoryReportRoom: TerritoryReportRoom) = flow {
-        if (territoryReportRoom.id == null) {
+        if (territoryReportRoom.territoryMemberReport.id == null) {
             localTerritoryReportDataSource.insertTerritoryReport(
                 mappers.territoryReportRoomToTerritoryMemberReportEntityMapper.map(
                     territoryReportRoom

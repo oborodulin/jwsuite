@@ -57,6 +57,6 @@ fun RegionDistrictScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { RegionDistrictView() }
+        ) { _, handleSaveAction -> RegionDistrictView(handleSaveAction = handleSaveAction) }
     }
 }

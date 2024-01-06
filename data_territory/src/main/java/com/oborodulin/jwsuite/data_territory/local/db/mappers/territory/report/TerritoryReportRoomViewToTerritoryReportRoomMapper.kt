@@ -10,24 +10,23 @@ import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportRoom
 class TerritoryReportRoomViewToTerritoryReportRoomMapper(
     private val roomMapper: RoomViewToRoomMapper,
     private val territoryReportMapper: TerritoryMemberReportEntityToTerritoryMemberReportMapper
-) :
-    Mapper<TerritoryReportRoomView, TerritoryReportRoom>,
+) : Mapper<TerritoryReportRoomView, TerritoryReportRoom>,
     NullableMapper<TerritoryReportRoomView, TerritoryReportRoom> {
     override fun map(input: TerritoryReportRoomView): TerritoryReportRoom {
         val room = roomMapper.map(input.room)
         val territoryMemberReport =
             territoryReportMapper.nullableMap(input.territoryReport) ?: TerritoryMemberReport(
                 room = room,
+                territoryId = input.territoryMember.tmcTerritoriesId,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
         val territoryReportRoom = TerritoryReportRoom(
             room = room,
             territoryMemberReport = territoryMemberReport
         )
-        territoryReportRoom.id = input.territoryReport?.territoryMemberReportId
+        territoryReportRoom.id = input.room.room.roomId
         return territoryReportRoom
     }
 
-    override fun nullableMap(input: TerritoryReportRoomView?) =
-        input?.let { map(it) }
+    override fun nullableMap(input: TerritoryReportRoomView?) = input?.let { map(it) }
 }

@@ -6,7 +6,5 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 sealed class StreetLocalityDistrictInputEvent(val value: String) : Inputable {
     data class Street(val input: StreetsListItem) : StreetLocalityDistrictInputEvent(input.headline)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

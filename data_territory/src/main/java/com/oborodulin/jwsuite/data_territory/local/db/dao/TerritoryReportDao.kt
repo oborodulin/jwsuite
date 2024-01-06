@@ -10,10 +10,12 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberRe
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.util.Locale
 import java.util.UUID
 
 @Dao
@@ -70,8 +72,28 @@ interface TerritoryReportDao {
     fun findDistinctByRoomId(roomId: UUID) = findByRoomId(roomId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${TerritoryReportHouseView.VIEW_NAME} WHERE houseId = :houseId")
-    fun findReportHouseByHouseId(houseId: UUID): Flow<TerritoryReportHouseView>
+    @Query("SELECT * FROM ${TerritoryReportStreetView.VIEW_NAME} WHERE territoryStreetId = :territoryStreetId AND streetLocCode = :locale")
+    fun findReportStreetByTerritoryStreetId(
+        territoryStreetId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<TerritoryReportStreetView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctReportStreetByTerritoryStreetId(territoryStreetId: UUID) =
+        findReportStreetByTerritoryStreetId(territoryStreetId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${TerritoryReportStreetView.VIEW_NAME} WHERE tmcTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY streetName")
+    fun findReportStreetsByTerritoryId(
+        territoryId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryReportStreetView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctReportStreetsByTerritoryId(territoryId: UUID) =
+        findReportStreetsByTerritoryId(territoryId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${TerritoryReportHouseView.VIEW_NAME} WHERE houseId = :houseId AND streetLocCode = :locale")
+    fun findReportHouseByHouseId(houseId: UUID, locale: String? = Locale.getDefault().language): Flow<TerritoryReportHouseView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctReportHouseByHouseId(houseId: UUID) =
@@ -81,12 +103,13 @@ interface TerritoryReportDao {
     @Query(
         """
     SELECT * FROM ${TerritoryReportHouseView.VIEW_NAME}
-    WHERE tmcTerritoriesId = :territoryId AND ifnull(territoryStreetId, '') = ifnull(:territoryStreetId, ifnull(territoryStreetId, '')) 
+    WHERE tmcTerritoriesId = :territoryId AND ifnull(territoryStreetId, '') = ifnull(:territoryStreetId, ifnull(territoryStreetId, ''))
+         AND streetLocCode = :locale
     ORDER BY hStreetsId, houseNum, houseLetter, buildingNum
         """
     )
     fun findReportHousesByTerritoryIdAndTerritoryStreetId(
-        territoryId: UUID, territoryStreetId: UUID? = null
+        territoryId: UUID, territoryStreetId: UUID? = null, locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoryReportHouseView>>
 
     @ExperimentalCoroutinesApi
@@ -96,8 +119,8 @@ interface TerritoryReportDao {
         .distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${TerritoryReportRoomView.VIEW_NAME} WHERE roomId = :roomId")
-    fun findReportRoomByRoomId(roomId: UUID): Flow<TerritoryReportRoomView>
+    @Query("SELECT * FROM ${TerritoryReportRoomView.VIEW_NAME} WHERE roomId = :roomId AND streetLocCode = :locale")
+    fun findReportRoomByRoomId(roomId: UUID, locale: String? = Locale.getDefault().language): Flow<TerritoryReportRoomView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctReportRoomByRoomId(roomId: UUID) =
@@ -107,12 +130,14 @@ interface TerritoryReportDao {
     @Query(
         """
     SELECT * FROM ${TerritoryReportRoomView.VIEW_NAME}
-    WHERE tmcTerritoriesId = :territoryId AND ifnull(rHousesId, '') = ifnull(:houseId, ifnull(rHousesId, '')) 
+    WHERE tmcTerritoriesId = :territoryId AND ifnull(rHousesId, '') = ifnull(:houseId, ifnull(rHousesId, ''))
+        AND streetLocCode = :locale
     ORDER BY hStreetsId, houseNum, houseLetter, buildingNum
         """
     )
-    fun findReportRoomsByTerritoryIdAndHouseId(territoryId: UUID, houseId: UUID? = null):
-            Flow<List<TerritoryReportRoomView>>
+    fun findReportRoomsByTerritoryIdAndHouseId(
+        territoryId: UUID, houseId: UUID? = null, locale: String? = Locale.getDefault().language
+    ): Flow<List<TerritoryReportRoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctReportRoomsByTerritoryIdAndHouseId(territoryId: UUID, houseId: UUID? = null) =

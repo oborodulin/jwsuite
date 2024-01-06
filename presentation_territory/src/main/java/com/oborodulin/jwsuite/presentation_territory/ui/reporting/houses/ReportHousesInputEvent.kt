@@ -6,7 +6,5 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 sealed class ReportHousesInputEvent(val value: String) : Inputable {
     data class Street(val input: ListItemModel) : ReportHousesInputEvent(input.headline)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

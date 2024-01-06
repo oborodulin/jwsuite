@@ -57,6 +57,6 @@ fun StreetScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { StreetView() }
+        ) { _, handleSaveAction -> StreetView(handleSaveAction = handleSaveAction) }
     }
 }

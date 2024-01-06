@@ -8,7 +8,5 @@ sealed class LocalityDistrictInputEvent(val value: String) : Inputable {
     data class DistrictShortName(val input: String) : LocalityDistrictInputEvent(input)
     data class DistrictName(val input: String) : LocalityDistrictInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

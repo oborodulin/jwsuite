@@ -61,7 +61,7 @@ fun StreetMicrodistrictScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel ->
+        ) { uiModel, _ ->
             StreetMicrodistrictView(
                 streetMicrodistrictsUiModel = uiModel,
                 streetMicrodistrictViewModel = viewModel

@@ -2,15 +2,22 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territoryst
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,6 +43,8 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.components.radio.RadioBooleanComponent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SharedViewModeled
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetComboBox
@@ -54,7 +63,8 @@ fun TerritoryStreetView(
     uiModel: TerritoryStreetUiModel,
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
-    viewModel: TerritoryStreetViewModelImpl = hiltViewModel()
+    viewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
+    handleSaveAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
     val context = LocalContext.current
@@ -74,14 +84,16 @@ fun TerritoryStreetView(
     val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
-    val focusRequesters = EnumMap<TerritoryStreetFields, InputFocusRequester>(TerritoryStreetFields::class.java)
+    val focusRequesters =
+        EnumMap<TerritoryStreetFields, InputFocusRequester>(TerritoryStreetFields::class.java)
     enumValues<TerritoryStreetFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("TerritoryStreetView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -181,7 +193,7 @@ fun TerritoryStreetView(
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = estimatedHouses,
             onValueChange = { viewModel.onTextFieldEntered(TerritoryStreetInputEvent.EstHouses(it)) },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = handleSaveAction
         )
     }
 }

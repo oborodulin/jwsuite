@@ -73,7 +73,7 @@ fun AppSettingScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel ->
+        ) { uiModel, _ ->
             AppSettingView(
                 appSettingsUiModel = uiModel,
                 appSettingViewModel = appSettingViewModel,

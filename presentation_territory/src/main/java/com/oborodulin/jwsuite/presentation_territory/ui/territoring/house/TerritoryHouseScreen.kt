@@ -58,7 +58,7 @@ fun TerritoryHouseScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel ->
+        ) { uiModel, _ ->
             TerritoryHouseView(
                 territoryHousesUiModel = uiModel,
                 sharedViewModel = appState.congregationSharedViewModel.value,

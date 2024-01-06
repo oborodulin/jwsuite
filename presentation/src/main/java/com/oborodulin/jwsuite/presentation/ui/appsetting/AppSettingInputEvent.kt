@@ -9,7 +9,5 @@ sealed class AppSettingInputEvent(val value: String) : Inputable {
     data class TerritoryRoomsLimit(val input: String) : AppSettingInputEvent(input)
     data class TerritoryMaxRooms(val input: String) : AppSettingInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

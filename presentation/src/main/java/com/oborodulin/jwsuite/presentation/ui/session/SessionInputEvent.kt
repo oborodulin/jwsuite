@@ -7,7 +7,5 @@ sealed class SessionInputEvent(val value: String) : Inputable {
     data class Pin(val input: String) : SessionInputEvent(input)
     data class ConfirmPin(val input: String) : SessionInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

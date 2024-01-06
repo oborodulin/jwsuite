@@ -1,6 +1,11 @@
 package com.oborodulin.jwsuite.data_territory.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.util.Constants
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
@@ -11,7 +16,8 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.FloorView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface FloorDao {
@@ -23,30 +29,36 @@ interface FloorDao {
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE floorId = :floorId")
-    fun findById(floorId: UUID): Flow<FloorView>
+    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE floorId = :floorId AND streetLocCode = :locale")
+    fun findById(floorId: UUID, locale: String? = Locale.getDefault().language): Flow<FloorView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fHousesId = :houseId ORDER BY floorNum")
-    fun findByHouseId(houseId: UUID): Flow<List<FloorView>>
+    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fHousesId = :houseId AND streetLocCode = :locale ORDER BY floorNum")
+    fun findByHouseId(
+        houseId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<FloorView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(entranceId: UUID) = findByHouseId(entranceId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fEntrancesId = :entranceId ORDER BY entranceNum, floorNum")
-    fun findByEntranceId(entranceId: UUID): Flow<List<FloorView>>
+    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fEntrancesId = :entranceId AND streetLocCode = :locale ORDER BY entranceNum, floorNum")
+    fun findByEntranceId(
+        entranceId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<FloorView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByEntranceId(entranceId: UUID) =
         findByEntranceId(entranceId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fTerritoriesId = :territoryId ORDER BY houseNum, floorNum")
-    fun findByTerritoryId(territoryId: UUID): Flow<List<FloorView>>
+    @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY houseNum, floorNum")
+    fun findByTerritoryId(
+        territoryId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<FloorView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
@@ -74,9 +86,8 @@ interface FloorDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
         territoryId: UUID
-    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
-        territoryId
-    ).distinctUntilChanged()
+    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(territoryId)
+        .distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

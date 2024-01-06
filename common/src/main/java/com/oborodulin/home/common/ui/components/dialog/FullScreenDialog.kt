@@ -48,7 +48,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
     viewModel: DialogViewModeled<T, A, E, F>,
     loadUiAction: A,
     confirmUiAction: A,
-    dialogView: @Composable (T) -> Unit,
+    dialogView: @Composable (T, () -> Unit) -> Unit,
     onDismissRequest: () -> Unit = {},
     onShowListDialog: () -> Unit = {},
     onValueChange: OnListItemEvent,
@@ -58,11 +58,30 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
     if (isShow) {
-        //val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                 .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
             viewModel.submitAction(loadUiAction)
+        }
+        val handleConfirmAction = {
+            // check for errors
+            viewModel.onContinueClick {
+                // if success,
+                viewModel.handleActionJob({
+                    // execute viewModel.Save()
+                    viewModel.submitAction(confirmUiAction)
+                }) {
+                    // wait wile actionsJob executed
+                    // hide single dialog and onConfirmButtonClick
+                    viewModel.onDialogConfirm(onConfirmButtonClick)
+                    val savedListItem = viewModel.savedListItem.value
+                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                        .d("Done: savedListItem = %s", savedListItem.itemId)
+                    onValueChange(savedListItem)
+                    // show list dialog (option)
+                    onShowListDialog()
+                }
+            }
         }
         Dialog(
             onDismissRequest = {
@@ -104,53 +123,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                         )
                                     }
                                 }, actions = {
-                                    IconButton(onClick = {
-                                        // check for errors
-                                        viewModel.onContinueClick {
-                                            // if success,
-                                            viewModel.handleActionJob({
-                                                // execute viewModel.Save()
-                                                viewModel.submitAction(confirmUiAction)
-                                            }) {
-                                                // wait wile actionsJob executed
-                                                // hide single dialog and onConfirmButtonClick
-                                                viewModel.onDialogConfirm(onConfirmButtonClick)
-                                                val savedListItem = viewModel.savedListItem.value
-                                                if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                                                    .d(
-                                                        "Done: savedListItem = %s",
-                                                        savedListItem.itemId
-                                                    )
-                                                onValueChange(savedListItem)
-                                                // show list dialog (option)
-                                                onShowListDialog()
-                                            }
-                                            /*coroutineScope.launch {
-                                                // wait wile actionsJob executed
-                                                viewModel.actionsJobFlow.collectLatest { job ->
-                                                    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
-                                                        "FullScreenDialog: Start actionsJobFlow.collect [job = %s]",
-                                                        job?.toString()
-                                                    )
-                                                    job?.join()
-                                                    // hide single dialog and onConfirmButtonClick
-                                                    viewModel.onDialogConfirm(onConfirmButtonClick)
-                                                    val savedListItem =
-                                                        viewModel.savedListItem.value
-                                                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                                                        .d(
-                                                            "Done: savedListItem = %s",
-                                                            savedListItem.itemId
-                                                        )
-                                                    onValueChange(savedListItem)
-                                                    // show list dialog (option)
-                                                    onShowListDialog()
-                                                }
-                                            }
-                                            // execute viewModel.Save()
-                                            viewModel.submitAction(confirmUiAction)*/
-                                        }
-                                    }) {
+                                    IconButton(onClick = handleConfirmAction) {
                                         Icon(
                                             Icons.Outlined.Done,
                                             stringResource(R.string.dlg_done_cnt_desc)
@@ -158,7 +131,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                                     }
                                 })
                             Spacer(modifier = Modifier.height(8.dp))
-                            dialogView(it)
+                            dialogView(it, handleConfirmAction)
                         }
                     }
                 }

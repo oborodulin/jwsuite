@@ -19,6 +19,7 @@ class TerritoryMemberReportToTerritoryMemberReportUiMapper(
             territoryStreet = territoryStreetMapper.nullableMap(input.territoryStreet),
             house = houseMapper.nullableMap(input.house),
             room = roomMapper.nullableMap(input.room),
+            territoryId = input.territoryId,
             territoryMemberId = input.territoryMemberId,
             territoryReportMark = input.territoryReportMark,
             languageCode = input.languageCode,

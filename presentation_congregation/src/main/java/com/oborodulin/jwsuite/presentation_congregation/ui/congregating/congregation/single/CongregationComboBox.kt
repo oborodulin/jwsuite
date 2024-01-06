@@ -48,7 +48,7 @@ fun CongregationComboBox(
         viewModel = singleViewModel,
         loadUiAction = CongregationUiAction.Load(),
         confirmUiAction = CongregationUiAction.Save,
-        dialogView = { CongregationView() },
+        dialogView = { _, handleConfirmAction -> CongregationView(handleSaveAction = handleConfirmAction) },
         onValueChange = { onValueChange(it.toCongregationsListItem()) },
         //onShowListDialog = onShowListDialog
     )

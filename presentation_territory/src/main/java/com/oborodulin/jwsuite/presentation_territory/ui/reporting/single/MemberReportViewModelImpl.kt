@@ -21,9 +21,8 @@ import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportUseCase
-import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportHouseUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMembersListItem
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
@@ -32,6 +31,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportConverter
+import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportUiToTerritoryMemberReportMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toHousesListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -63,7 +63,8 @@ class MemberReportViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val resHelper: ResourcesHelper,
     private val useCases: TerritoryReportUseCases,
-    private val converter: TerritoryMemberReportConverter
+    private val converter: TerritoryMemberReportConverter,
+    private val memberReportUiMapper: TerritoryMemberReportUiToTerritoryMemberReportMapper
 ) : MemberReportViewModel,
     DialogViewModel<TerritoryMemberReportUi, UiState<TerritoryMemberReportUi>, MemberReportUiAction, UiSingleEvent, MemberReportFields, InputWrapper>(
         state, MemberReportFields.MEMBER_REPORT_ID.name//, MemberReportFields.MEMBER_REPORT_GENDER
@@ -83,6 +84,11 @@ class MemberReportViewModelImpl @Inject constructor(
     override val room: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberReportFields.MEMBER_REPORT_ROOM.name, InputListItemWrapper())
     }
+    override val territoryMemberId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(
+            MemberReportFields.MEMBER_REPORT_TERRITORY_MEMBER_ID.name, InputWrapper()
+        )
+    }
     override val reportMark: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberReportFields.MEMBER_REPORT_MARK.name, InputWrapper())
     }
@@ -98,17 +104,16 @@ class MemberReportViewModelImpl @Inject constructor(
     override val isProcessed: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberReportFields.MEMBER_REPORT_IS_PROCESSED.name, InputWrapper())
     }
-    override val desc: StateFlow<InputWrapper> by lazy {
+    override val reportDesc: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberReportFields.MEMBER_REPORT_DESC.name, InputWrapper())
     }
 
-    override val areInputsValid =
-        combine(reportMark, age)
-        { stateFlowsArray ->
-            var errorIdResult = true
-            for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
-            errorIdResult
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    override val areInputsValid = combine(reportMark, language, age)
+    { stateFlowsArray ->
+        var errorIdResult = true
+        for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
+        errorIdResult
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
         initMemberReportMarks(com.oborodulin.jwsuite.domain.R.array.territory_marks)
@@ -123,17 +128,20 @@ class MemberReportViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: MemberReportUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoryMemberReportUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(MemberReportUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is MemberReportUiAction.Load -> when (action.territoryMemberReportId) {
                 null -> {
                     setDialogTitleResId(R.string.territory_report_new_subheader)
-                    submitState(UiState.Success(TerritoryMemberReportUi()))
+                    loadMemberReport(
+                        territoryStreetId = action.territoryStreetId,
+                        houseId = action.houseId, roomId = action.roomId
+                    )
                 }
 
                 else -> {
                     setDialogTitleResId(R.string.territory_report_subheader)
-                    loadMemberReport(action.territoryMemberReportId)
+                    loadMemberReport(territoryMemberReportId = action.territoryMemberReportId)
                 }
             }
 
@@ -182,33 +190,22 @@ class MemberReportViewModelImpl @Inject constructor(
             territoryStreet = territoryStreetUi,
             house = houseUi,
             room = roomUi,
+            territoryMemberId = UUID.fromString(territoryMemberId.value.value),
             territoryReportMark = TerritoryReportMark.valueOf(reportMark.value.value),
             languageCode = null,
             gender = gender.value.value.toBooleanStrictOrNull(),
             age = age.value.value.toIntOrNull(),
             isProcessed = isProcessed.value.value.toBoolean(),
-            territoryReportDesc = desc.value.value.ifEmpty { null }
+            territoryReportDesc = reportDesc.value.value.ifEmpty { null }
         )
         territoryMemberReportUi.id = id.value.value.toUUIDOrNull()
         Timber.tag(TAG).d("saveMemberReport() called: UI model %s", territoryMemberReportUi)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.saveReportHouseUseCase.execute(
-                SaveReportHouseUseCase.Request(
-                    memberUiMapper.map(
-                        territoryMemberReportUi
-                    )
-                )
-            )
-                .map {
-                    saveConverter.convert(it)
-                }
-                .collect {
-                    Timber.tag(TAG).d("saveMember() collect: %s", it)
-                    if (it is UiState.Success) {
-                        setSavedListItem(it.data.toMembersListItem())
-                    }
-                    submitState(it)
-                }
+            useCases.saveMemberReportUseCase.execute(
+                SaveMemberReportUseCase.Request(memberReportUiMapper.map(territoryMemberReportUi))
+            ).collect {
+                Timber.tag(TAG).d("saveMemberReport() collect: %s", it)
+            }
         }
         return job
     }
@@ -235,6 +232,10 @@ class MemberReportViewModelImpl @Inject constructor(
             ListItemModel(uiModel.room?.id, uiModel.room?.roomNum?.toString().orEmpty())
         )
         initStateValue(
+            MemberReportFields.MEMBER_REPORT_TERRITORY_MEMBER_ID, territoryMemberId,
+            uiModel.territoryMemberId.toString()
+        )
+        initStateValue(
             MemberReportFields.MEMBER_REPORT_MARK, reportMark, uiModel.territoryReportMark.name
         )
         initStateValue(MemberReportFields.MEMBER_REPORT_GENDER, gender, uiModel.gender.toString())
@@ -244,7 +245,7 @@ class MemberReportViewModelImpl @Inject constructor(
             uiModel.isProcessed.toString()
         )
         initStateValue(
-            MemberReportFields.MEMBER_REPORT_DESC, desc, uiModel.territoryReportDesc.orEmpty()
+            MemberReportFields.MEMBER_REPORT_DESC, reportDesc, uiModel.territoryReportDesc.orEmpty()
         )
         return null
     }
@@ -294,7 +295,7 @@ class MemberReportViewModelImpl @Inject constructor(
                     )
 
                     is MemberReportInputEvent.Desc -> setStateValue(
-                        MemberReportFields.MEMBER_REPORT_DESC, desc, event.input, true
+                        MemberReportFields.MEMBER_REPORT_DESC, reportDesc, event.input, true
                     )
                 }
             }
@@ -337,7 +338,7 @@ class MemberReportViewModelImpl @Inject constructor(
                         setStateValue(MemberReportFields.MEMBER_REPORT_AGE, age, null)
 
                     is MemberReportInputEvent.Desc ->
-                        setStateValue(MemberReportFields.MEMBER_REPORT_DESC, desc, null)
+                        setStateValue(MemberReportFields.MEMBER_REPORT_DESC, reportDesc, null)
                 }
             }
     }
@@ -435,12 +436,13 @@ class MemberReportViewModelImpl @Inject constructor(
                 override val house =
                     MutableStateFlow(InputListItemWrapper<HousesListItem>())
                 override val room = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val territoryMemberId = MutableStateFlow(InputWrapper())
                 override val reportMark = MutableStateFlow(InputWrapper())
                 override val language = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val gender = MutableStateFlow(InputWrapper())
                 override val age = MutableStateFlow(InputWrapper())
                 override val isProcessed = MutableStateFlow(InputWrapper())
-                override val desc = MutableStateFlow(InputWrapper())
+                override val reportDesc = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 

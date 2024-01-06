@@ -38,6 +38,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.state.CommonScreen
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryInput
@@ -98,7 +99,8 @@ fun ReportHousesScreen(
             .d("ReportHousesScreen -> LaunchedEffect() BEFORE collect ui state flow: events.collect")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput?.territoryId))
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -119,10 +121,10 @@ fun ReportHousesScreen(
                 onActionBarChange {
                     BarTerritoryStreetComboBox(
                         modifier = Modifier
-                            .focusRequester(focusRequesters[ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET]!!.focusRequester)
+                            .focusRequester(focusRequesters[ReportHousesFields.REPORT_HOUSES_TERRITORY_STREET]!!.focusRequester)
                             .onFocusChanged { focusState ->
                                 reportHousesViewModel.onTextFieldFocusChanged(
-                                    focusedField = ReportHousesFields.PARTIAL_HOUSES_TERRITORY_STREET,
+                                    focusedField = ReportHousesFields.REPORT_HOUSES_TERRITORY_STREET,
                                     isFocused = focusState.isFocused
                                 )
                             },

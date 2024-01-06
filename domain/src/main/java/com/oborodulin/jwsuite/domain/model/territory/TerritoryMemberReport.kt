@@ -14,6 +14,7 @@ data class TerritoryMemberReport(
     val territoryStreet: TerritoryStreet? = null,
     val house: House? = null,
     val room: Room? = null,
+    val territoryId: UUID? = null,
     val territoryMemberId: UUID,
     val territoryReportMark: TerritoryReportMark = TerritoryReportMark.PP,
     val languageCode: String? = null,
@@ -34,10 +35,8 @@ data class TerritoryMemberReport(
             else -> ctx?.resources?.getString(R.string.female_expr).orEmpty()
         }
     }
-    val ageInfo = age?.let {
-        "($it ${ctx?.resources?.getString(R.string.age_expr).orEmpty()})"
-    }
-    val languageInfo = languageCode?.let{"[$it]"}
+    val ageInfo = age?.let { "($it ${ctx?.resources?.getString(R.string.age_expr).orEmpty()})" }
+    val languageInfo = languageCode?.let { "[$it]" }
     val personInfo = listOfNotNull(genderInfo, ageInfo).joinToString(" ")
     val info = listOfNotNull(territoryMark, genderInfo, ageInfo)
 }

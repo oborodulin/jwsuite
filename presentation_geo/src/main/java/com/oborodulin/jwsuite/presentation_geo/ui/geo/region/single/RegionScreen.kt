@@ -57,6 +57,11 @@ fun RegionScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { RegionView(viewModel) }
+        ) { _, handleSaveAction ->
+            RegionView(
+                viewModel = viewModel,
+                handleSaveAction = handleSaveAction
+            )
+        }
     }
 }

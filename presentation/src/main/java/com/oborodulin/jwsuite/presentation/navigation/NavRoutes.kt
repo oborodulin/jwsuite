@@ -125,6 +125,10 @@ import java.util.UUID
 //                  https://www.flaticon.com/search/2?type=icon&search-group=all&word=house+report&type=icon
 // ic_report_room.png - https://www.flaticon.com/authors/rsetiawan
 //                  <a href="https://www.flaticon.com/free-icons/report" title="report icons">Report icons created by rsetiawan - Flaticon</a>
+// ic_report_mark.png - https://www.flaticon.com/search?type=icon&search-group=all&word=report+mark&type=icon
+//                  <a href="https://www.flaticon.com/free-icons/exclamation-mark" title="exclamation mark icons">Exclamation mark icons created by Anggara - Flaticon</a>
+// ic_gender.png - https://www.flaticon.com/authors/icon-mela
+//                  <a href="https://www.flaticon.com/free-icons/wc" title="wc icons">Wc icons created by Icon Mela - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 

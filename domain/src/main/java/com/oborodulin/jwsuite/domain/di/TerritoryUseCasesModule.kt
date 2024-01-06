@@ -59,6 +59,7 @@ import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportsU
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetReportRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.ProcessMemberReportUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveReportRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
@@ -419,10 +420,9 @@ object TerritoryUseCasesModule {
     @Provides
     fun provideGetMemberReportUseCase(
         configuration: UseCase.Configuration,
-        territoryReportsRepository: TerritoryReportsRepository,
-        territoriesRepository: TerritoriesRepository
+        territoryReportsRepository: TerritoryReportsRepository
     ): GetMemberReportUseCase =
-        GetMemberReportUseCase(configuration, territoryReportsRepository, territoriesRepository)
+        GetMemberReportUseCase(configuration, territoryReportsRepository)
 
     @Singleton
     @Provides
@@ -462,6 +462,12 @@ object TerritoryUseCasesModule {
         configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
     ): DeleteMemberReportUseCase =
         DeleteMemberReportUseCase(configuration, territoryReportsRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveMemberReportUseCase(
+        configuration: UseCase.Configuration, territoryReportsRepository: TerritoryReportsRepository
+    ): SaveMemberReportUseCase = SaveMemberReportUseCase(configuration, territoryReportsRepository)
 
     @Singleton
     @Provides

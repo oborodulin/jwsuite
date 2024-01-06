@@ -10,7 +10,5 @@ sealed class MicrodistrictInputEvent(val value: String) : Inputable {
     data class MicrodistrictType(val input: String) : MicrodistrictInputEvent(input)
     data class MicrodistrictName(val input: String) : MicrodistrictInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

@@ -70,6 +70,11 @@ fun GroupScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { GroupView(appState.congregationSharedViewModel.value) }
+        ) { _, handleSaveAction ->
+            GroupView(
+                sharedViewModel = appState.congregationSharedViewModel.value,
+                handleSaveAction = handleSaveAction
+            )
+        }
     }
 }

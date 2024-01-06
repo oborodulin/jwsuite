@@ -54,7 +54,7 @@ fun BarStreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = StreetUiAction.Load(),
         confirmUiAction = StreetUiAction.Save,
-        dialogView = { StreetView() },
+        dialogView = { _, handleConfirmAction -> StreetView(handleSaveAction = handleConfirmAction) },
         onValueChange = onValueChange
     )
     BarComboBoxComponent(

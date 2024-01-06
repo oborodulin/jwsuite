@@ -19,7 +19,5 @@ sealed class TerritoryInputEvent(val value: String) : Inputable {
     data class IsActive(val input: Boolean) : TerritoryInputEvent(input.toString())
     data class TerritoryDesc(val input: String) : TerritoryInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

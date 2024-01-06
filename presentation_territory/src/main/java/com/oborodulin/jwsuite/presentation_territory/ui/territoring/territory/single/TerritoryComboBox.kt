@@ -49,8 +49,14 @@ fun TerritoryComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryUiAction.Load(),
         confirmUiAction = TerritoryUiAction.Save,
-        dialogView = { TerritoryView(sharedViewModel, viewModel = singleViewModel) },
-        onValueChange = onValueChange,
+        dialogView = { _, handleConfirmAction ->
+            TerritoryView(
+                sharedViewModel = sharedViewModel,
+                viewModel = singleViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
+        onValueChange = onValueChange
         //onShowListDialog = onShowListDialog
     )
     val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value

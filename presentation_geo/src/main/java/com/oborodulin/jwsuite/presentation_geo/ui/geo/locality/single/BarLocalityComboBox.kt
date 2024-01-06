@@ -52,8 +52,8 @@ fun BarLocalityComboBox(
         viewModel = singleViewModel,
         loadUiAction = LocalityUiAction.Load(),
         confirmUiAction = LocalityUiAction.Save,
-        dialogView = { LocalityView() },
-        onValueChange = onValueChange,
+        dialogView = { _, handleConfirmAction -> LocalityView(handleSaveAction = handleConfirmAction) },
+        onValueChange = onValueChange
     )
     BarComboBoxComponent(
         modifier = modifier,

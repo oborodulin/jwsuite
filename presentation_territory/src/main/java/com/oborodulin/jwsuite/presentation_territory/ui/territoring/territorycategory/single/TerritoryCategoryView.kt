@@ -2,13 +2,22 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territoryca
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -31,6 +40,8 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import timber.log.Timber
@@ -40,7 +51,7 @@ private const val TAG = "Territoring.TerritoryCategoryView"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
+fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel, handleSaveAction: OnImeKeyAction) {
     Timber.tag(TAG).d("TerritoryCategoryView(...) called")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -66,7 +77,8 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("TerritoryCategoryView -> LaunchedEffect()")
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -150,7 +162,7 @@ fun TerritoryCategoryView(viewModel: TerritoryCategoryViewModel) {
             onValueChange = {
                 viewModel.onTextFieldEntered(TerritoryCategoryInputEvent.TerritoryCategoryName(it))
             },
-            onImeKeyAction = viewModel::moveFocusImeAction
+            onImeKeyAction = handleSaveAction
         )
     }
 }
@@ -162,10 +174,8 @@ fun PreviewTerritoryCategoryView() {
     JWSuiteTheme {
         Surface {
             TerritoryCategoryView(
-                viewModel = TerritoryCategoryViewModelImpl.previewModel(
-                    LocalContext.current
-                )
-            )
+                viewModel = TerritoryCategoryViewModelImpl.previewModel(LocalContext.current)
+            ) {}
         }
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -45,8 +44,13 @@ fun TerritoryCategoryComboBox(
         viewModel = singleViewModel,
         loadUiAction = TerritoryCategoryUiAction.Load(),
         confirmUiAction = TerritoryCategoryUiAction.Save,
-        dialogView = { TerritoryCategoryView(singleViewModel) },
-        onValueChange = { onValueChange(it.toTerritoryCategoriesListItem()) },
+        dialogView = { _, handleConfirmAction ->
+            TerritoryCategoryView(
+                viewModel = singleViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
+        onValueChange = { onValueChange(it.toTerritoryCategoriesListItem()) }
         //onShowListDialog = onShowListDialog
     )
     ComboBoxComponent(

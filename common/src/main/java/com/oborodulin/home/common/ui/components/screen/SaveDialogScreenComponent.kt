@@ -33,7 +33,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
-    dialogView: @Composable (T) -> Unit
+    dialogView: @Composable (T, () -> Unit) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG)
         .d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)

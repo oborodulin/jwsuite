@@ -29,7 +29,5 @@ sealed class HouseInputEvent(val value: String) : Inputable {
     data class IsPrivateSector(val input: Boolean) : HouseInputEvent(input.toString())
     data class HouseDesc(val input: String?) : HouseInputEvent(input.orEmpty())
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

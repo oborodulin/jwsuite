@@ -56,6 +56,11 @@ fun MemberScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { MemberView(appState.congregationSharedViewModel.value) }
+        ) { _, handleSaveAction ->
+            MemberView(
+                sharedViewModel = appState.congregationSharedViewModel.value,
+                handleSaveAction = handleSaveAction
+            )
+        }
     }
 }

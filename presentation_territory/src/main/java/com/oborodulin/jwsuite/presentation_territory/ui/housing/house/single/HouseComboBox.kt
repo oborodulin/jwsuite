@@ -52,8 +52,13 @@ fun HouseComboBox(
         viewModel = singleViewModel,
         loadUiAction = HouseUiAction.Load(),
         confirmUiAction = HouseUiAction.Save,
-        dialogView = { HouseView(sharedViewModel = sharedViewModel) },
-        onValueChange = { onValueChange(it.toHousesListItem()) },
+        dialogView = { _, handleConfirmAction ->
+            HouseView(
+                sharedViewModel = sharedViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
+        onValueChange = { onValueChange(it.toHousesListItem()) }
     )
     ComboBoxComponent(
         modifier = modifier,

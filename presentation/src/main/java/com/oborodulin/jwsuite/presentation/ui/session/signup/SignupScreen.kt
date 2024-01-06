@@ -59,7 +59,7 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
             SignupView(
                 viewModel = viewModel,
                 //areInputsValid = areInputsValid,
-                handleSignup = handleSignup
+                handleSignupAction = handleSignup
             )
             Spacer(Modifier.height(8.dp))
             SignupButtonComponent(enabled = areInputsValid, onClick = handleSignup)

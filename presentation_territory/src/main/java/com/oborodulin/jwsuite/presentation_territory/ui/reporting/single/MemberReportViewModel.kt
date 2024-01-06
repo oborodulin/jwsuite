@@ -17,10 +17,11 @@ interface MemberReportViewModel :
     val territoryStreet: StateFlow<InputListItemWrapper<ListItemModel>>
     val house: StateFlow<InputListItemWrapper<HousesListItem>>
     val room: StateFlow<InputListItemWrapper<ListItemModel>>
+    val territoryMemberId: StateFlow<InputWrapper>
     val reportMark: StateFlow<InputWrapper>
     val language: StateFlow<InputListItemWrapper<ListItemModel>>
     val gender: StateFlow<InputWrapper>
     val age: StateFlow<InputWrapper>
     val isProcessed: StateFlow<InputWrapper>
-    val desc: StateFlow<InputWrapper>
+    val reportDesc: StateFlow<InputWrapper>
 }

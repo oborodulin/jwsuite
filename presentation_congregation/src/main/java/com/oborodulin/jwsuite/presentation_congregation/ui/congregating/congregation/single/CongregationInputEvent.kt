@@ -10,7 +10,5 @@ sealed class CongregationInputEvent(val value: String) : Inputable {
     data class TerritoryMark(val input: String) : CongregationInputEvent(input)
     data class IsFavorite(val input: Boolean) : CongregationInputEvent(input.toString())
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

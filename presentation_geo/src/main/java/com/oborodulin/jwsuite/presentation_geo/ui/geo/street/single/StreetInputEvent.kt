@@ -12,7 +12,5 @@ sealed class StreetInputEvent(val value: String) : Inputable {
     data class EstimatedHouses(val input: Int?) : StreetInputEvent(input?.toString().orEmpty())
     data class StreetName(val input: String) : StreetInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

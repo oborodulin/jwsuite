@@ -4,8 +4,10 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
@@ -27,6 +29,10 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
 
     override fun getHouseTerritoryReports(houseId: UUID) = territoryReportDao.findByHouseId(houseId)
     override fun getRoomTerritoryReports(roomId: UUID) = territoryReportDao.findByRoomId(roomId)
+    override fun getTerritoryReportStreet(territoryStreetId: UUID) =
+        territoryReportDao.findReportStreetByTerritoryStreetId(territoryStreetId)
+    override fun getTerritoryReportStreets(territoryId: UUID) =
+        territoryReportDao.findReportStreetsByTerritoryId(territoryId)
     override fun getTerritoryReportHouse(houseId: UUID) =
         territoryReportDao.findReportHouseByHouseId(houseId)
 

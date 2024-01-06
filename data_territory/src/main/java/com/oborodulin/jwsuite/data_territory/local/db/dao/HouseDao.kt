@@ -26,22 +26,22 @@ interface HouseDao {
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE houseId = :houseId")
-    fun findById(houseId: UUID): Flow<HouseView>
+    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE houseId = :houseId AND streetLocCode = :locale")
+    fun findById(houseId: UUID, locale: String? = Locale.getDefault().language): Flow<HouseView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId ORDER BY houseNum, houseLetter, buildingNum")
-    fun findByStreetId(streetId: UUID): Flow<List<HouseView>>
+    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId AND streetLocCode = :locale ORDER BY houseNum, houseLetter, buildingNum")
+    fun findByStreetId(streetId: UUID, locale: String? = Locale.getDefault().language): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByStreetId(streetId: UUID) = findByStreetId(streetId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId ORDER BY streetName, houseNum, houseLetter, buildingNum")
-    fun findByTerritoryId(territoryId: UUID): Flow<List<HouseView>>
+    @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY streetName, houseNum, houseLetter, buildingNum")
+    fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =

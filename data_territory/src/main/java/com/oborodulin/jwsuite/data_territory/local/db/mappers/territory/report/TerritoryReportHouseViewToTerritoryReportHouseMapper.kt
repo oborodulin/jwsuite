@@ -17,6 +17,7 @@ class TerritoryReportHouseViewToTerritoryReportHouseMapper(
         val territoryMemberReport =
             territoryReportMapper.nullableMap(input.territoryReport) ?: TerritoryMemberReport(
                 house = house,
+                territoryId = input.territoryMember.tmcTerritoriesId,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
         val territoryReportHouse = TerritoryReportHouse(

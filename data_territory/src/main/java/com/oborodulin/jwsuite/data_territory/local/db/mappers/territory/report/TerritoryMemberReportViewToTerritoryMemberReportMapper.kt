@@ -21,7 +21,8 @@ class TerritoryMemberReportViewToTerritoryMemberReportMapper(
             memberShortName = input.memberShortName,
             territoryStreet = territoryStreetMapper.nullableMap(input.territoryStreet),
             house = houseMapper.nullableMap(input.house),
-            room = roomMapper.nullableMap(input.room)
+            room = roomMapper.nullableMap(input.room),
+            territoryId = input.territoryMember.tmcTerritoriesId,
         )
 
     override fun nullableMap(input: TerritoryMemberReportView?) = input?.let { map(it) }

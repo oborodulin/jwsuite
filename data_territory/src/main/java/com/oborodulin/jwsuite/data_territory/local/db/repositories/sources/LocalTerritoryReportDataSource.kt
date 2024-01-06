@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberRe
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -13,6 +14,8 @@ interface LocalTerritoryReportDataSource {
     fun getTerritoryStreetReports(territoryStreetId: UUID): Flow<List<TerritoryMemberReportView>>
     fun getHouseTerritoryReports(houseId: UUID): Flow<List<TerritoryMemberReportView>>
     fun getRoomTerritoryReports(roomId: UUID): Flow<List<TerritoryMemberReportView>>
+    fun getTerritoryReportStreet(territoryStreetId: UUID): Flow<TerritoryReportStreetView>
+    fun getTerritoryReportStreets(territoryId: UUID): Flow<List<TerritoryReportStreetView>>
     fun getTerritoryReportHouse(houseId: UUID): Flow<TerritoryReportHouseView>
     fun getTerritoryReportHouses(
         territoryId: UUID, territoryStreetId: UUID? = null

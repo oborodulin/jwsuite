@@ -7,7 +7,5 @@ sealed class GroupInputEvent(val value: String) : Inputable {
     data class Congregation(val input: CongregationsListItem) : GroupInputEvent(input.headline)
     data class GroupNum(val input: String) : GroupInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

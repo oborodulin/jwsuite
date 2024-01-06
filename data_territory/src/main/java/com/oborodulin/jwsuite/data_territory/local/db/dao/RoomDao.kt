@@ -29,37 +29,49 @@ interface RoomDao {
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE roomId = :roomId")
-    fun findById(roomId: UUID): Flow<RoomView>
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE roomId = :roomId AND streetLocCode = :locale")
+    fun findById(roomId: UUID, locale: String? = Locale.getDefault().language): Flow<RoomView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rHousesId = :houseId ORDER BY roomNum")
-    fun findByHouseId(houseId: UUID): Flow<List<RoomView>>
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rHousesId = :houseId AND streetLocCode = :locale ORDER BY roomNum")
+    fun findByHouseId(
+        houseId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rEntrancesId = :entranceId ORDER BY roomNum")
-    fun findByEntranceId(entranceId: UUID): Flow<List<RoomView>>
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rEntrancesId = :entranceId AND streetLocCode = :locale ORDER BY roomNum")
+    fun findByEntranceId(
+        entranceId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByEntranceId(entranceId: UUID) =
         findByEntranceId(entranceId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rFloorsId = :floorId ORDER BY roomNum")
-    fun findByFloorId(floorId: UUID): Flow<List<RoomView>>
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rFloorsId = :floorId AND streetLocCode = :locale ORDER BY roomNum")
+    fun findByFloorId(
+        floorId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFloorId(floorId: UUID) = findByFloorId(floorId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rTerritoriesId = :territoryId ORDER BY roomNum")
-    fun findByTerritoryId(territoryId: UUID): Flow<List<RoomView>>
+    @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY roomNum")
+    fun findByTerritoryId(
+        territoryId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<RoomView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
@@ -88,9 +100,8 @@ interface RoomDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
         territoryId: UUID
-    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
-        territoryId
-    ).distinctUntilChanged()
+    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(territoryId)
+        .distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

@@ -8,7 +8,5 @@ sealed class TerritoringInputEvent(val value: String) : Inputable {
     data class Location(val input: TerritoryLocationsListItem) :
         TerritoringInputEvent(input.headline)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

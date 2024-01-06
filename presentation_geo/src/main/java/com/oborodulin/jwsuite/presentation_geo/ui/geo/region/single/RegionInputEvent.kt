@@ -6,7 +6,5 @@ sealed class RegionInputEvent(val value: String) : Inputable {
     data class RegionCode(val input: String) : RegionInputEvent(input)
     data class RegionName(val input: String) : RegionInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

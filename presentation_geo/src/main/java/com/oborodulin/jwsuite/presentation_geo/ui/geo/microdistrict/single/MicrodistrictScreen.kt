@@ -58,6 +58,6 @@ fun MicrodistrictScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { MicrodistrictView() }
+        ) { _, handleSaveAction -> MicrodistrictView(handleSaveAction = handleSaveAction) }
     }
 }

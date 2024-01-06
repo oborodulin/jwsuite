@@ -49,8 +49,13 @@ fun RoomComboBox(
         viewModel = singleViewModel,
         loadUiAction = RoomUiAction.Load(),
         confirmUiAction = RoomUiAction.Save,
-        dialogView = { RoomView(sharedViewModel = sharedViewModel) },
-        onValueChange = onValueChange,
+        dialogView = { _, handleConfirmAction ->
+            RoomView(
+                sharedViewModel = sharedViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
+        onValueChange = onValueChange
     )
     ComboBoxComponent(
         modifier = modifier,

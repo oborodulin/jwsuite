@@ -50,8 +50,13 @@ fun MemberComboBox(
         viewModel = singleViewModel,
         loadUiAction = MemberUiAction.Load(),
         confirmUiAction = MemberUiAction.Save,
-        dialogView = { MemberView(sharedViewModel) },
-        onValueChange = onValueChange,
+        dialogView = { _, handleConfirmAction ->
+            MemberView(
+                sharedViewModel = sharedViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
+        onValueChange = onValueChange
         //onShowListDialog = onShowListDialog
     )
     val currentCongregation = sharedViewModel?.sharedFlow?.collectAsStateWithLifecycle()?.value

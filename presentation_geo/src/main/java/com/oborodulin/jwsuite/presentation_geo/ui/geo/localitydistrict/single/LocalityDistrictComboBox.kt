@@ -47,7 +47,7 @@ fun LocalityDistrictComboBox(
         viewModel = singleViewModel,
         loadUiAction = LocalityDistrictUiAction.Load(),
         confirmUiAction = LocalityDistrictUiAction.Save,
-        dialogView = { LocalityDistrictView() },
+        dialogView = { _, handleConfirmAction -> LocalityDistrictView(handleSaveAction = handleConfirmAction) },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )

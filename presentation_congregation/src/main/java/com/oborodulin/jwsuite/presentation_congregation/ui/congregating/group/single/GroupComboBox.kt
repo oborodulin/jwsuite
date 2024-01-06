@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,7 +46,12 @@ fun GroupComboBox(
         viewModel = singleViewModel,
         loadUiAction = GroupUiAction.Load(),
         confirmUiAction = GroupUiAction.Save,
-        dialogView = { GroupView(sharedViewModel) },
+        dialogView = { _, handleConfirmAction ->
+            GroupView(
+                sharedViewModel = sharedViewModel,
+                handleSaveAction = handleConfirmAction
+            )
+        },
         onValueChange = onValueChange,
         //onShowListDialog = onShowListDialog
     )

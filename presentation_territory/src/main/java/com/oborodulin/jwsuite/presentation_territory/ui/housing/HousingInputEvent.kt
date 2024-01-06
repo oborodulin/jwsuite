@@ -7,7 +7,5 @@ sealed class HousingInputEvent(val value: String) : Inputable {
     data class Locality(val input: ListItemModel) : HousingInputEvent(input.headline)
     data class Street(val input: ListItemModel) : HousingInputEvent(input.headline)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

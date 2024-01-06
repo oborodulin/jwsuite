@@ -57,6 +57,6 @@ fun LocalityScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { LocalityView() }
+        ) { _, handleSaveAction -> LocalityView(handleSaveAction = handleSaveAction) }
     }
 }

@@ -40,6 +40,8 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
@@ -56,7 +58,8 @@ private const val TAG = "Congregating.MemberRoleView"
 @Composable
 fun MemberRoleView(
     memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel()
+    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    handleSaveAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("MemberRoleView(...) called")
     val appState = LocalAppState.current
@@ -105,7 +108,8 @@ fun MemberRoleView(
             }
         }
         events.collect { event ->
-            Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) Timber.tag(TAG)
+                .d("IF# Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -184,7 +188,7 @@ fun PreviewGroupView() {
     //val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {
-            MemberRoleView()//sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
+            MemberRoleView() {}//sharedViewModel = FavoriteCongregationViewModelImpl.previewModel)
         }
     }
 }

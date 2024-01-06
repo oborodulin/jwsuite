@@ -20,7 +20,5 @@ sealed class RoomInputEvent(val value: String) : Inputable {
     data class IsForeignLanguage(val input: Boolean) : RoomInputEvent(input.toString())
     data class RoomDesc(val input: String?) : RoomInputEvent(input.orEmpty())
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }

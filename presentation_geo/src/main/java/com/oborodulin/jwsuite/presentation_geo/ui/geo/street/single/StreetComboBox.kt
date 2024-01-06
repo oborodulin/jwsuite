@@ -59,7 +59,7 @@ fun StreetComboBox(
         viewModel = singleViewModel,
         loadUiAction = StreetUiAction.Load(),
         confirmUiAction = StreetUiAction.Save,
-        dialogView = { StreetView() },
+        dialogView = { _, handleConfirmAction -> StreetView(handleSaveAction = handleConfirmAction) },
         onValueChange = { onValueChange(it.toStreetsListItem()) }
     )
     ComboBoxComponent(

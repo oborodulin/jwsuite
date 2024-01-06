@@ -8,7 +8,5 @@ sealed class RegionDistrictInputEvent(val value: String) : Inputable {
     data class DistrictShortName(val input: String) : RegionDistrictInputEvent(input)
     data class DistrictName(val input: String) : RegionDistrictInputEvent(input)
 
-    override fun value(): String {
-        return this.value
-    }
+    override fun value() = this.value
 }
