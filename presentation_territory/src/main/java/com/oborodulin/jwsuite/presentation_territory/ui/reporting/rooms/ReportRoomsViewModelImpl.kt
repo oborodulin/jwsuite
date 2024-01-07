@@ -23,6 +23,7 @@ import com.oborodulin.jwsuite.domain.usecases.territory.report.ProcessMemberRepo
 import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
+import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryReportRoomsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryReportRoomsListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,7 +57,7 @@ class ReportRoomsViewModelImpl @Inject constructor(
     SingleViewModel<List<TerritoryReportRoomsListItem>, UiState<List<TerritoryReportRoomsListItem>>, ReportRoomsUiAction, ReportRoomsUiSingleEvent, ReportRoomsFields, InputWrapper>(
         state
     ) {
-    override val house: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+    override val house: StateFlow<InputListItemWrapper<HousesListItem>> by lazy {
         state.getStateFlow(ReportRoomsFields.REPORT_ROOMS_HOUSE.name, InputListItemWrapper())
     }
 
@@ -190,8 +191,7 @@ class ReportRoomsViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
-                override val house =
-                    MutableStateFlow(InputListItemWrapper<ListItemModel>())
+                override val house = MutableStateFlow(InputListItemWrapper<HousesListItem>())
 
                 override fun singleSelectedItem() = null
 

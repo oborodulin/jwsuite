@@ -46,10 +46,10 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.TerritoryI
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_territory.R
+import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.BarHouseComboBox
 import com.oborodulin.jwsuite.presentation_territory.ui.reporting.list.MemberReportsListView
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryUiAction
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territorystreet.single.BarTerritoryStreetComboBox
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -119,7 +119,7 @@ fun ReportRoomsScreen(
                 defTopBarActions = defTopBarActions
             ) { innerPadding ->
                 onActionBarChange {
-                    BarTerritoryStreetComboBox(
+                    BarHouseComboBox(
                         modifier = Modifier
                             .focusRequester(focusRequesters[ReportRoomsFields.REPORT_ROOMS_HOUSE]!!.focusRequester)
                             .onFocusChanged { focusState ->
@@ -130,12 +130,9 @@ fun ReportRoomsScreen(
                             },
                         territoryId = territory.id!!,
                         sharedViewModel = appState.congregationSharedViewModel.value,
-                        territoryViewModel = territoryViewModel,
                         inputWrapper = house,
                         onValueChange = {
-                            reportRoomsViewModel.onTextFieldEntered(
-                                ReportRoomsInputEvent.Room(it)
-                            )
+                            reportRoomsViewModel.onTextFieldEntered(ReportRoomsInputEvent.House(it))
                         }
                     )
                 }

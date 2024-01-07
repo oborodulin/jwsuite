@@ -121,6 +121,8 @@
     <string name="house_rooms_by_floor_hint">Кол-во квартир на этаже</string>
     <string name="house_estimated_rooms_hint">Общее кол-во квартир в доме</string>
     <string name="house_desc_hint">Описание</string>
+
+    <string name="house_placeholder">Укажите дом…</string>
     <!--Подъезд-->
     <string name="entrance_subheader">Подъезд</string>
     <string name="entrance_new_subheader">Новый подъезд</string>
