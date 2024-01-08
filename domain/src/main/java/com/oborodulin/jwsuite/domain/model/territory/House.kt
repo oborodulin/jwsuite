@@ -11,9 +11,9 @@ import com.oborodulin.jwsuite.domain.types.BuildingType
 data class House(
     val ctx: Context? = null,
     val street: GeoStreet,
-    val localityDistrict: GeoLocalityDistrict?,
-    val microdistrict: GeoMicrodistrict?,
-    val territory: Territory?,
+    val localityDistrict: GeoLocalityDistrict? = null,
+    val microdistrict: GeoMicrodistrict? = null,
+    val territory: Territory? = null,
     val zipCode: String? = null,
     val houseNum: Int,
     val houseLetter: String? = null,

@@ -77,6 +77,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.dao.RoomDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryCategoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryStreetDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
@@ -187,7 +188,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     abstract fun entranceDao(): EntranceDao
     abstract fun floorDao(): FloorDao
     abstract fun roomDao(): RoomDao
-
+    abstract fun territoryStreetDao(): TerritoryStreetDao
     abstract fun territoryReportDao(): TerritoryReportDao
 
     companion object {
@@ -1120,7 +1121,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             db: JwSuiteDatabase, territory: TerritoryEntity, street: GeoStreetEntity,
             isEven: Boolean? = null, isPrivateSector: Boolean? = null
         ) {
-            val territoryDao = db.territoryDao()
+            val territoryDao = db.territoryStreetDao()
             val territoryStreet = TerritoryStreetEntity.privateSectorTerritoryStreet(
                 territoryId = territory.territoryId, streetId = street.streetId, isEven = isEven
             )

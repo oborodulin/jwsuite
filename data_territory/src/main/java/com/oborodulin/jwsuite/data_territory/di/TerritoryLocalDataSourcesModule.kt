@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.dao.RoomDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryCategoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
+import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryStreetDao
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
@@ -15,6 +16,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.Local
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
+import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryStreetDataSource
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalEntranceDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalFloorDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalHouseDataSourceImpl
@@ -22,6 +24,7 @@ import com.oborodulin.jwsuite.data_territory.sources.local.LocalRoomDataSourceIm
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryCategoryDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryReportDataSourceImpl
+import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryStreetDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -69,6 +72,13 @@ object TerritoryLocalDataSourcesModule {
     fun provideLocalTerritoryDataSource(
         territoryDao: TerritoryDao, @IoDispatcher dispatcher: CoroutineDispatcher
     ): LocalTerritoryDataSource = LocalTerritoryDataSourceImpl(territoryDao, dispatcher)
+
+    @Singleton
+    @Provides
+    fun provideLocalTerritoryStreetDataSource(
+        territoryStreetDao: TerritoryStreetDao, @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalTerritoryStreetDataSource =
+        LocalTerritoryStreetDataSourceImpl(territoryStreetDao, dispatcher)
 
     @Singleton
     @Provides

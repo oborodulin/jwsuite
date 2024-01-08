@@ -2,17 +2,16 @@ package com.oborodulin.jwsuite.domain.usecases.territory.street
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
-import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
+import com.oborodulin.jwsuite.domain.repositories.TerritoryStreetsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class GetTerritoryStreetsUseCase(
-    configuration: Configuration,
-    private val territoriesRepository: TerritoriesRepository
+    configuration: Configuration, private val territoryStreetsRepository: TerritoryStreetsRepository
 ) : UseCase<GetTerritoryStreetsUseCase.Request, GetTerritoryStreetsUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> =
-        territoriesRepository.getTerritoryStreets(request.territoryId).map {
+        territoryStreetsRepository.getTerritoryStreets(request.territoryId).map {
             Response(it)
         }
 

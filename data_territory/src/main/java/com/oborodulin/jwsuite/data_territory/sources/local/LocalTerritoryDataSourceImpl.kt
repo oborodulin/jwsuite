@@ -3,12 +3,10 @@ package com.oborodulin.jwsuite.data_territory.sources.local
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
@@ -72,9 +70,6 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
         territoryDao.nextTerritoryNum(congregationId, territoryCategoryId)
 
     //override fun getTerritoryInfo(territoryId: UUID) = territoryDao.findInfoByTerritoryId(territoryId)
-
-    override fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID?) =
-        territoryDao.findStreetNamesAndHouseNumsByCongregationId(congregationId)
 
     override fun getTerritory(territoryId: UUID) = territoryDao.findDistinctById(territoryId)
 
@@ -153,45 +148,6 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
 
     override suspend fun deleteMembers(territoryId: UUID) = withContext(dispatcher) {
         territoryDao.deleteMembersByTerritoryId(territoryId)
-    }
-
-    // Streets:
-    override fun getTerritoryStreet(territoryStreetId: UUID) =
-        territoryDao.findTerritoryStreetById(territoryStreetId)
-
-    override fun getTerritoryStreets(territoryId: UUID) =
-        territoryDao.findStreetsByTerritoryId(territoryId)
-
-    override fun getStreetsForTerritory(territoryId: UUID) =
-        territoryDao.findStreetsForTerritoryByTerritoryId(territoryId)
-
-    /*    override fun getTerritoryStreetNames(territoryId: UUID) =
-            territoryDao.findNamesByTerritoryId(territoryId)*/
-
-    override suspend fun insertStreet(
-        territory: TerritoryEntity, street: GeoStreetEntity,
-        isEvenSide: Boolean?, isPrivateSector: Boolean?, estimatedHouses: Int?
-    ) = withContext(dispatcher) {
-        territoryDao.insert(territory, street, isEvenSide, isPrivateSector, estimatedHouses)
-    }
-
-    override suspend fun insertStreet(territoryStreet: TerritoryStreetEntity) =
-        withContext(dispatcher) {
-            territoryDao.insert(territoryStreet)
-        }
-
-    override suspend fun updateStreet(territoryStreet: TerritoryStreetEntity) =
-        withContext(dispatcher) { territoryDao.update(territoryStreet) }
-
-    override suspend fun deleteStreet(territoryStreet: TerritoryStreetEntity) =
-        withContext(dispatcher) { territoryDao.deleteStreet(territoryStreet) }
-
-    override suspend fun deleteStreet(territoryStreetId: UUID) = withContext(dispatcher) {
-        territoryDao.deleteStreetById(territoryStreetId)
-    }
-
-    override suspend fun deleteStreets(territoryId: UUID) = withContext(dispatcher) {
-        territoryDao.deleteStreetsByTerritoryId(territoryId)
     }
 
     // API:

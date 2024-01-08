@@ -16,4 +16,5 @@ interface TerritoryStreetViewModel :
     val isPrivateSector: StateFlow<InputWrapper>
     val isEvenSide: StateFlow<InputWrapper>
     val estimatedHouses: StateFlow<InputWrapper>
+    val isCreateEstHouses: StateFlow<InputWrapper>
 }

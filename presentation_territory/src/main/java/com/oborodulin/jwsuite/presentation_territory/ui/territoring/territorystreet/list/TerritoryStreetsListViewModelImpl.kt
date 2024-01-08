@@ -10,9 +10,9 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.RoadType
-import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.TerritoryStreetUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetsListItem
@@ -35,7 +35,7 @@ private const val TAG = "Territoring.TerritoryStreetsListViewModelImpl"
 
 @HiltViewModel
 class TerritoryStreetsListViewModelImpl @Inject constructor(
-    private val useCases: TerritoryUseCases,
+    private val useCases: TerritoryStreetUseCases,
     private val converter: TerritoryStreetsListConverter
 ) : TerritoryStreetsListViewModel,
     ListViewModel<List<TerritoryStreetsListItem>, UiState<List<TerritoryStreetsListItem>>, TerritoryStreetsListUiAction, UiSingleEvent>() {

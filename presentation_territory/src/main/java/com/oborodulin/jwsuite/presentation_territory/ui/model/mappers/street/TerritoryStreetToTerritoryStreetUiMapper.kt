@@ -14,7 +14,8 @@ class TerritoryStreetToTerritoryStreetUiMapper(private val mapper: StreetToStree
             street = mapper.map(input.street),
             isEvenSide = input.isEvenSide,
             isPrivateSector = input.isPrivateSector,
-            estimatedHouses = input.estimatedHouses
+            estimatedHouses = input.estimatedHouses,
+            isExistsHouses = input.isExistsHouses
         )
         territoryStreetUi.id = input.id
         return territoryStreetUi

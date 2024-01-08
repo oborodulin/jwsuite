@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
 import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -29,6 +30,9 @@ class HousesRepositoryImpl @Inject constructor(
 
     override fun get(houseId: UUID) = localHouseDataSource.getHouse(houseId)
         .map(mappers.houseViewToHouseMapper::map)
+
+    override fun isTerritoryStreetExistsHouses(territoryStreetId: UUID) =
+        localHouseDataSource.isTerritoryStreetExistsHouses(territoryStreetId)
 
     override fun save(house: House) = flow {
         if (house.id == null) {

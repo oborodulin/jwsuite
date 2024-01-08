@@ -2,18 +2,13 @@ package com.oborodulin.jwsuite.data_territory.local.db.repositories.sources
 
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
-import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +46,6 @@ interface LocalTerritoryDataSource {
     fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
 
     //    fun getTerritoryInfo(territoryId: UUID): Flow<List<TerritoryView>>
-    fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNumsView>>
     fun getTerritory(territoryId: UUID): Flow<TerritoryView>
     suspend fun insertTerritory(territory: TerritoryEntity)
     suspend fun updateTerritory(territory: TerritoryEntity)
@@ -90,25 +84,6 @@ interface LocalTerritoryDataSource {
     suspend fun deleteMember(territoryMember: TerritoryMemberCrossRefEntity)
     suspend fun deleteMember(territoryMemberId: UUID)
     suspend fun deleteMembers(territoryId: UUID)
-
-    // Streets:
-    fun getTerritoryStreet(territoryStreetId: UUID): Flow<TerritoryStreetView>
-    fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
-
-    fun getStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreetView>>
-
-    //fun getTerritoryStreetNames(territoryId: UUID): Flow<String?>
-    suspend fun insertStreet(
-        territory: TerritoryEntity, street: GeoStreetEntity,
-        isEvenSide: Boolean? = null, isPrivateSector: Boolean? = null, estimatedHouses: Int? = null
-    )
-
-    suspend fun insertStreet(territoryStreet: TerritoryStreetEntity)
-
-    suspend fun updateStreet(territoryStreet: TerritoryStreetEntity)
-    suspend fun deleteStreet(territoryStreet: TerritoryStreetEntity)
-    suspend fun deleteStreet(territoryStreetId: UUID)
-    suspend fun deleteStreets(territoryId: UUID)
 
     // API:
     suspend fun handOut(

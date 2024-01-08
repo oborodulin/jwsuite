@@ -1,12 +1,19 @@
 package com.oborodulin.jwsuite.data_territory.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
@@ -14,7 +21,8 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface HouseDao {
@@ -34,14 +42,20 @@ interface HouseDao {
 
     //-----------------------------
     @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId AND streetLocCode = :locale ORDER BY houseNum, houseLetter, buildingNum")
-    fun findByStreetId(streetId: UUID, locale: String? = Locale.getDefault().language): Flow<List<HouseView>>
+    fun findByStreetId(
+        streetId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByStreetId(streetId: UUID) = findByStreetId(streetId).distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY streetName, houseNum, houseLetter, buildingNum")
-    fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language): Flow<List<HouseView>>
+    fun findByTerritoryId(
+        territoryId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
@@ -93,6 +107,16 @@ interface HouseDao {
     @ExperimentalCoroutinesApi
     fun findNumsDistinctByTerritoryId(territoryId: UUID) =
         findNumsByTerritoryId(territoryId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query(
+        """
+    SELECT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = h.hStreetsId
+                        JOIN ${TerritoryStreetEntity.TABLE_NAME} ts ON ts.tsStreetsId = s.streetId
+                    WHERE ts.territoryStreetId = :territoryStreetId LIMIT 1)
+    """
+    )
+    fun existsByTerritoryStreetId(territoryStreetId: UUID): Flow<Boolean>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

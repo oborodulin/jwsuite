@@ -53,6 +53,7 @@ import com.oborodulin.jwsuite.domain.usecases.territory.street.DeleteTerritorySt
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.TerritoryStreetUseCases
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.DeleteTerritoryCategoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
@@ -523,6 +524,21 @@ object TerritoringModule {
         deleteTerritoryCategoryUseCase
     )
 
+    // Territory Street:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetUseCases(
+        getTerritoryStreetsUseCase: GetTerritoryStreetsUseCase,
+        getTerritoryStreetUseCase: GetTerritoryStreetUseCase,
+        saveTerritoryStreetUseCase: SaveTerritoryStreetUseCase,
+        deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase
+    ): TerritoryStreetUseCases = TerritoryStreetUseCases(
+        getTerritoryStreetsUseCase,
+        getTerritoryStreetUseCase,
+        saveTerritoryStreetUseCase,
+        deleteTerritoryStreetUseCase,
+    )
+
     // Territory:
     @Singleton
     @Provides
@@ -534,10 +550,6 @@ object TerritoringModule {
         saveTerritoryUseCase: SaveTerritoryUseCase,
         deleteTerritoryUseCase: DeleteTerritoryUseCase,
         getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
-        getTerritoryStreetsUseCase: GetTerritoryStreetsUseCase,
-        getTerritoryStreetUseCase: GetTerritoryStreetUseCase,
-        saveTerritoryStreetUseCase: SaveTerritoryStreetUseCase,
-        deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase,
         handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
         processTerritoriesUseCase: ProcessTerritoriesUseCase
     ): TerritoryUseCases = TerritoryUseCases(
@@ -548,10 +560,6 @@ object TerritoringModule {
         saveTerritoryUseCase,
         deleteTerritoryUseCase,
         getTerritoryDetailsUseCase,
-        getTerritoryStreetsUseCase,
-        getTerritoryStreetUseCase,
-        saveTerritoryStreetUseCase,
-        deleteTerritoryStreetUseCase,
         handOutTerritoriesUseCase,
         processTerritoriesUseCase
     )

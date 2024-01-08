@@ -9,5 +9,7 @@ data class TerritoryStreetUi(
     val street: StreetUi = StreetUi(),
     val isEvenSide: Boolean? = null,
     val isPrivateSector: Boolean? = null,
-    val estimatedHouses: Int? = null
+    val estimatedHouses: Int? = null,
+    val isCreateEstHouses: Boolean = false,
+    val isExistsHouses: Boolean = false
 ) : ModelUi()

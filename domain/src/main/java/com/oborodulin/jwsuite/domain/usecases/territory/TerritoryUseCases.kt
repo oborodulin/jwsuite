@@ -14,11 +14,6 @@ data class TerritoryUseCases(
     val deleteTerritoryUseCase: DeleteTerritoryUseCase,
     val getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
 
-    val getTerritoryStreetsUseCase: GetTerritoryStreetsUseCase,
-    val getTerritoryStreetUseCase: GetTerritoryStreetUseCase,
-    val saveTerritoryStreetUseCase: SaveTerritoryStreetUseCase,
-    val deleteTerritoryStreetUseCase: DeleteTerritoryStreetUseCase,
-
     val handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
     val processTerritoriesUseCase: ProcessTerritoriesUseCase
 )

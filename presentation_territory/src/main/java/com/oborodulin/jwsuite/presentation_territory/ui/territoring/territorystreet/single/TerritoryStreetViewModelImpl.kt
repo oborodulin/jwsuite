@@ -17,9 +17,9 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.toUUIDOrNull
-import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.street.TerritoryStreetUseCases
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
@@ -58,7 +58,7 @@ private const val TAG = "Territoring.TerritoryStreetViewModelImpl"
 @HiltViewModel
 class TerritoryStreetViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
-    private val useCases: TerritoryUseCases,
+    private val useCases: TerritoryStreetUseCases,
     private val converter: TerritoryStreetConverter,
     private val territoryStreetUiMapper: TerritoryStreetUiToTerritoryStreetMapper,
     private val territoryStreetMapper: TerritoryStreetToTerritoryStreetsListItemMapper
@@ -91,6 +91,11 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
     override val estimatedHouses: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES.name, InputWrapper())
+    }
+    override val isCreateEstHouses: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(
+            TerritoryStreetFields.TERRITORY_STREET_IS_CREATE_EST_HOUSES.name, InputWrapper()
+        )
     }
 
     override val areInputsValid = flow { emit(street.value.errorId == null) }.stateIn(
@@ -322,6 +327,7 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val isEvenSide = MutableStateFlow(InputWrapper())
                 override val estimatedHouses = MutableStateFlow(InputWrapper())
+                override val isCreateEstHouses = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 

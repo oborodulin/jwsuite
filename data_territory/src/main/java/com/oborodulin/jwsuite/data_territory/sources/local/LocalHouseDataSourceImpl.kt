@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.Local
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -30,6 +30,8 @@ class LocalHouseDataSourceImpl @Inject constructor(
         )
 
     override fun getHouse(houseId: UUID) = houseDao.findDistinctById(houseId)
+    override fun isTerritoryStreetExistsHouses(territoryStreetId: UUID) =
+        houseDao.existsByTerritoryStreetId(territoryStreetId)
 
     override suspend fun insertHouse(house: HouseEntity) = withContext(dispatcher) {
         houseDao.insert(house)

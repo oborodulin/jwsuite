@@ -392,15 +392,19 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideTerritoryStreetMappers(
+        geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
         territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
         territoryStreetViewToTerritoryStreetMapper: TerritoryStreetViewToTerritoryStreetMapper,
         territoryStreetsListToTerritoryStreetEntityListMapper: TerritoryStreetsListToTerritoryStreetEntityListMapper,
-        territoryStreetToTerritoryStreetEntityMapper: TerritoryStreetToTerritoryStreetEntityMapper
+        territoryStreetToTerritoryStreetEntityMapper: TerritoryStreetToTerritoryStreetEntityMapper,
+        territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper: TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper,
     ): TerritoryStreetMappers = TerritoryStreetMappers(
+        geoStreetViewListToGeoStreetsListMapper,
         territoryStreetViewListToTerritoryStreetsListMapper,
         territoryStreetViewToTerritoryStreetMapper,
         territoryStreetsListToTerritoryStreetEntityListMapper,
-        territoryStreetToTerritoryStreetEntityMapper
+        territoryStreetToTerritoryStreetEntityMapper,
+        territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper
     )
 
     // TerritoryStreetHouses:
@@ -698,19 +702,14 @@ object TerritoryMappersModule {
         territoryToTerritoryEntityMapper: TerritoryToTerritoryEntityMapper,
         territoryLocationViewListToTerritoryLocationsListMapper: TerritoryLocationViewListToTerritoryLocationsListMapper,
         territoryLocationViewToTerritoryLocationMapper: TerritoryLocationViewToTerritoryLocationMapper,
-        territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
-        territoryStreetViewToTerritoryStreetMapper: TerritoryStreetViewToTerritoryStreetMapper,
-        territoryStreetToTerritoryStreetEntityMapper: TerritoryStreetToTerritoryStreetEntityMapper,
         territoryStreetHouseViewListToTerritoryStreetsListMapper: TerritoryStreetHouseViewListToTerritoryStreetsListMapper,
-        geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper: HouseViewListToHousesListMapper,
         entranceViewListToEntrancesListMapper: EntranceViewListToEntrancesListMapper,
         floorViewListToFloorsListMapper: FloorViewListToFloorsListMapper,
         roomViewListToRoomsListMapper: RoomViewListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
-        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
-        territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper: TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper,
+        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper
         memberToMemberEntityMapper: MemberToMemberEntityMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,
@@ -719,11 +718,7 @@ object TerritoryMappersModule {
         territoryToTerritoryEntityMapper,
         territoryLocationViewListToTerritoryLocationsListMapper,
         territoryLocationViewToTerritoryLocationMapper,
-        territoryStreetViewListToTerritoryStreetsListMapper,
-        territoryStreetViewToTerritoryStreetMapper,
-        territoryStreetToTerritoryStreetEntityMapper,
         territoryStreetHouseViewListToTerritoryStreetsListMapper,
-        geoStreetViewListToGeoStreetsListMapper,
         houseViewListToHousesListMapper,
         entranceViewListToEntrancesListMapper,
         floorViewListToFloorsListMapper,
@@ -731,7 +726,6 @@ object TerritoryMappersModule {
         territoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper,
-        territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper,
         memberToMemberEntityMapper
     )
 }

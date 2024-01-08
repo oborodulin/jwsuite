@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryReportsRepository
+import com.oborodulin.jwsuite.domain.repositories.TerritoryStreetsRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.entrance.DeleteEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.DeleteTerritoryEntranceUseCase
@@ -183,27 +184,39 @@ object TerritoryUseCasesModule {
     @Singleton
     @Provides
     fun provideGetTerritoryStreetUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
-    ): GetTerritoryStreetUseCase = GetTerritoryStreetUseCase(configuration, territoriesRepository)
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository,
+        territoryStreetsRepository: TerritoryStreetsRepository,
+        housesRepository: HousesRepository
+    ): GetTerritoryStreetUseCase =
+        GetTerritoryStreetUseCase(
+            configuration,
+            territoriesRepository,
+            territoryStreetsRepository,
+            housesRepository
+        )
 
     @Singleton
     @Provides
     fun provideGetTerritoryStreetsUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
-    ): GetTerritoryStreetsUseCase = GetTerritoryStreetsUseCase(configuration, territoriesRepository)
+        configuration: UseCase.Configuration, territoryStreetsRepository: TerritoryStreetsRepository
+    ): GetTerritoryStreetsUseCase =
+        GetTerritoryStreetsUseCase(configuration, territoryStreetsRepository)
 
     @Singleton
     @Provides
     fun provideDeleteTerritoryStreetUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+        configuration: UseCase.Configuration, territoryStreetsRepository: TerritoryStreetsRepository
     ): DeleteTerritoryStreetUseCase =
-        DeleteTerritoryStreetUseCase(configuration, territoriesRepository)
+        DeleteTerritoryStreetUseCase(configuration, territoryStreetsRepository)
 
     @Singleton
     @Provides
     fun provideSaveTerritoryStreetUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
-    ): SaveTerritoryStreetUseCase = SaveTerritoryStreetUseCase(configuration, territoriesRepository)
+        configuration: UseCase.Configuration,
+        territoryStreetsRepository: TerritoryStreetsRepository,
+        housesRepository: HousesRepository
+    ): SaveTerritoryStreetUseCase =
+        SaveTerritoryStreetUseCase(configuration, territoryStreetsRepository, housesRepository)
 
     // House:
     @Singleton
