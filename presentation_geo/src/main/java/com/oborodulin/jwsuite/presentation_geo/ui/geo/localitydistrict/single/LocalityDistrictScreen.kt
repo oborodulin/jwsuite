@@ -58,6 +58,6 @@ fun LocalityDistrictScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, handleSaveAction -> LocalityDistrictView(handleSaveAction = handleSaveAction) }
+        ) { _, _, _, handleSaveAction -> LocalityDistrictView(handleSaveAction = handleSaveAction) }
     }
 }

@@ -60,7 +60,7 @@ fun StreetLocalityDistrictScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel, _ ->
+        ) { uiModel, _, _, _ ->
             StreetLocalityDistrictView(
                 streetLocalityDistrictsUiModel = uiModel,
                 streetLocalityDistrictViewModel = viewModel

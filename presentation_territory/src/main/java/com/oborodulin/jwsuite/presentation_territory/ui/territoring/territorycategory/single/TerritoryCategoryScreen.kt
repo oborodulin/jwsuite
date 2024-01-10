@@ -59,7 +59,7 @@ fun TerritoryCategoryScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, handleSaveAction ->
+        ) { _, _, _, handleSaveAction ->
             TerritoryCategoryView(
                 viewModel = viewModel,
                 handleSaveAction = handleSaveAction

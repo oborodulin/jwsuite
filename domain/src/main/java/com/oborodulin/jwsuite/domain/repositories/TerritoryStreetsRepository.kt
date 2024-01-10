@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface TerritoryStreetsRepository {
-    fun getTerritoryStreet(territoryStreetId: UUID): Flow<TerritoryStreet>
-    fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreet>>
-    fun getStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreet>>
+    fun get(territoryStreetId: UUID): Flow<TerritoryStreet>
+    fun getAllByTerritory(territoryId: UUID): Flow<List<TerritoryStreet>>
+    fun getGeoStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreet>>
     fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNums>>
-    fun saveTerritoryStreet(territoryStreet: TerritoryStreet): Flow<TerritoryStreet>
-    fun deleteTerritoryStreetById(territoryStreetId: UUID): Flow<UUID>
+    fun save(territoryStreet: TerritoryStreet): Flow<TerritoryStreet>
+    fun deleteById(territoryStreetId: UUID): Flow<UUID>
 }

@@ -11,7 +11,7 @@ class GetTerritoryStreetsUseCase(
     configuration: Configuration, private val territoryStreetsRepository: TerritoryStreetsRepository
 ) : UseCase<GetTerritoryStreetsUseCase.Request, GetTerritoryStreetsUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> =
-        territoryStreetsRepository.getTerritoryStreets(request.territoryId).map {
+        territoryStreetsRepository.getAllByTerritory(request.territoryId).map {
             Response(it)
         }
 

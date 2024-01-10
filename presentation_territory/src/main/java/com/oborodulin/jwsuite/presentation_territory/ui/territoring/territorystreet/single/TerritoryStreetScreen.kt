@@ -23,17 +23,11 @@ private const val TAG = "Territoring.TerritoryStreetScreen"
 
 @Composable
 fun TerritoryStreetScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     territoryViewModel: TerritoryViewModel,
     territoryStreetsListViewModel: TerritoryStreetsListViewModelImpl = hiltViewModel(),
     territoryStreetViewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
     territoryStreetInput: TerritoryStreetInput? = null,
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
     Timber.tag(TAG)
         .d("TerritoryStreetScreen(...) called: territoryStreetInput = %s", territoryStreetInput)
@@ -65,16 +59,15 @@ fun TerritoryStreetScreen(
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
             cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_street,
-            /*onActionBarChange = onActionBarChange,
-    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel, handleSaveAction ->
+        ) { uiModel, onConfirmShowAlertChange, onConfirmTextChange, handleSaveAction ->
             TerritoryStreetView(
                 uiModel = uiModel, sharedViewModel = appState.congregationSharedViewModel.value,
                 territoryViewModel = territoryViewModel,
+                onConfirmShowAlertChange = onConfirmShowAlertChange,
+                onConfirmTextChange = onConfirmTextChange,
                 handleSaveAction = handleSaveAction
             )
         }

@@ -55,6 +55,6 @@ fun MemberRoleScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, handleSaveAction -> MemberRoleView(handleSaveAction = handleSaveAction) }
+        ) { _, _, _, handleSaveAction -> MemberRoleView(handleSaveAction = handleSaveAction) }
     }
 }

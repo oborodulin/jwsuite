@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territoryst
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
@@ -41,8 +42,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -67,10 +68,6 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         state, TerritoryStreetFields.TERRITORY_STREET_ID.name,
         TerritoryStreetFields.TERRITORY_STREET_TERRITORY
     ) {
-    val localityId: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE.name, InputWrapper())
-    }
-
     override val territory: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(
             TerritoryStreetFields.TERRITORY_STREET_TERRITORY.name, InputListItemWrapper()
@@ -92,17 +89,26 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     override val estimatedHouses: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES.name, InputWrapper())
     }
-    override val isCreateEstHouses: StateFlow<InputWrapper> by lazy {
+    override val isNeedAddEstHouses: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(
-            TerritoryStreetFields.TERRITORY_STREET_IS_CREATE_EST_HOUSES.name, InputWrapper()
+            TerritoryStreetFields.TERRITORY_STREET_IS_NEED_ADD_EST_HOUSES.name, InputWrapper()
+        )
+    }
+    override val isExistsHouses: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(
+            TerritoryStreetFields.TERRITORY_STREET_IS_EXISTS_HOUSES.name, InputWrapper()
         )
     }
 
-    override val areInputsValid = flow { emit(street.value.errorId == null) }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        false
-    )
+    override val areNeedAddEstHousesValid = combine(estimatedHouses, isExistsHouses)
+    { estimatedHouses, isExistsHouses ->
+        estimatedHouses.value.isDigitsOnly() && isExistsHouses.value.toBoolean().not()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    override val areInputsValid = combine(street, estimatedHouses, isNeedAddEstHouses)
+    { street, estimatedHouses, isNeedAddEstHouses ->
+        street.errorId == null && estimatedHouses.errorId == null && isNeedAddEstHouses.errorId == null
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState() = UiState.Loading
 
@@ -209,6 +215,14 @@ class TerritoryStreetViewModelImpl @Inject constructor(
             TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
             uiModel.territoryStreet.estimatedHouses?.toString().orEmpty()
         )
+        initStateValue(
+            TerritoryStreetFields.TERRITORY_STREET_IS_NEED_ADD_EST_HOUSES, isNeedAddEstHouses,
+            uiModel.territoryStreet.isNeedAddEstHouses.toString()
+        )
+        initStateValue(
+            TerritoryStreetFields.TERRITORY_STREET_IS_EXISTS_HOUSES, isExistsHouses,
+            uiModel.territoryStreet.isExistsHouses.toString()
+        )
         return null
     }
 
@@ -222,50 +236,58 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                         TerritoryStreetInputValidator.Street.isValid(event.input.headline)
                     )
 
-                    is TerritoryStreetInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
-                            isPrivateSector, event.input.toString(), true
-                        )
+                    is TerritoryStreetInputEvent.IsPrivateSector -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
+                        isPrivateSector, event.input.toString(), true
+                    )
 
-                    is TerritoryStreetInputEvent.IsEvenSide ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide,
-                            event.input.toString(), true
-                        )
+                    is TerritoryStreetInputEvent.IsEvenSide -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide,
+                        event.input.toString(), true
+                    )
 
-                    is TerritoryStreetInputEvent.EstHouses ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
-                            event.input.toString(), true
+                    is TerritoryStreetInputEvent.EstHouses -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
+                        event.input,
+                        TerritoryStreetInputValidator.EstHouses.isValid(
+                            event.input, isNeedAddEstHouses.value.value
                         )
+                    )
+
+                    is TerritoryStreetInputEvent.IsNeedAddEstHouses -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_IS_NEED_ADD_EST_HOUSES,
+                        isNeedAddEstHouses, event.input.toString(), true
+                    )
                 }
             }
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is TerritoryStreetInputEvent.Street ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_STREET, street,
-                            TerritoryStreetInputValidator.Street.errorIdOrNull(event.input.headline)
-                        )
+                    is TerritoryStreetInputEvent.Street -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_STREET, street,
+                        TerritoryStreetInputValidator.Street.errorIdOrNull(event.input.headline)
+                    )
 
-                    is TerritoryStreetInputEvent.IsPrivateSector ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
-                            isPrivateSector, null
-                        )
+                    is TerritoryStreetInputEvent.IsPrivateSector -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_IS_PRIVATE_SECTOR,
+                        isPrivateSector, null
+                    )
 
-                    is TerritoryStreetInputEvent.IsEvenSide ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide, null
-                        )
+                    is TerritoryStreetInputEvent.IsEvenSide -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_IS_EVEN_SIDE, isEvenSide, null
+                    )
 
-                    is TerritoryStreetInputEvent.EstHouses ->
-                        setStateValue(
-                            TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses, null
+                    is TerritoryStreetInputEvent.EstHouses -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES, estimatedHouses,
+                        TerritoryStreetInputValidator.EstHouses.errorIdOrNull(
+                            event.input, isNeedAddEstHouses.value.value
                         )
+                    )
 
+                    is TerritoryStreetInputEvent.IsNeedAddEstHouses -> setStateValue(
+                        TerritoryStreetFields.TERRITORY_STREET_IS_NEED_ADD_EST_HOUSES,
+                        isNeedAddEstHouses, null
+                    )
                 }
             }
     }
@@ -281,6 +303,13 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 )
             )
         }
+        TerritoryStreetInputValidator.EstHouses.errorIdOrNull(estimatedHouses.value.value)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES.name, errorId = it
+                )
+            )
+        }
         return inputErrors.ifEmpty { null }
     }
 
@@ -290,6 +319,10 @@ class TerritoryStreetViewModelImpl @Inject constructor(
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoryStreetFields.valueOf(error.fieldName)) {
                 TerritoryStreetFields.TERRITORY_STREET_STREET -> street.value.copy(
+                    errorId = error.errorId
+                )
+
+                TerritoryStreetFields.TERRITORY_STREET_EST_HOUSES -> estimatedHouses.value.copy(
                     errorId = error.errorId
                 )
 
@@ -327,8 +360,10 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 override val isPrivateSector = MutableStateFlow(InputWrapper())
                 override val isEvenSide = MutableStateFlow(InputWrapper())
                 override val estimatedHouses = MutableStateFlow(InputWrapper())
-                override val isCreateEstHouses = MutableStateFlow(InputWrapper())
+                override val isNeedAddEstHouses = MutableStateFlow(InputWrapper())
+                override val isExistsHouses = MutableStateFlow(InputWrapper())
 
+                override val areNeedAddEstHousesValid = MutableStateFlow(true)
                 override val areInputsValid = MutableStateFlow(true)
 
                 override fun submitAction(action: TerritoryStreetUiAction): Job? = null

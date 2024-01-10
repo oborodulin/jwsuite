@@ -16,42 +16,14 @@ class SaveTerritoryStreetUseCase(
     private val housesRepository: HousesRepository
 ) : UseCase<SaveTerritoryStreetUseCase.Request, SaveTerritoryStreetUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return territoryStreetsRepository.saveTerritoryStreet(request.territoryStreet)
+        return territoryStreetsRepository.save(request.territoryStreet)
             .map { territoryStreet ->
                 territoryStreet.id?.let {
-                    if (territoryStreet.isCreateEstHouses) {
+                    if (territoryStreet.isNeedAddEstHouses) {
                         territoryStreet.isEvenSide?.let { isEven ->
-                            if (isEven) (1..territoryStreet.estimatedHouses!!).filter { it % 2 == 0 }
-                                .forEach { num ->
-                                    housesRepository.save(
-                                        House(
-                                            street = territoryStreet.street,
-                                            houseNum = num,
-                                            isPrivateSector = territoryStreet.isPrivateSector
-                                                ?: territoryStreet.street.isPrivateSector
-                                        )
-                                    )
-                                } else (1..territoryStreet.estimatedHouses!!).filter { it % 2 != 0 }
-                                .forEach { num ->
-                                    housesRepository.save(
-                                        House(
-                                            street = territoryStreet.street,
-                                            houseNum = num,
-                                            isPrivateSector = territoryStreet.isPrivateSector
-                                                ?: territoryStreet.street.isPrivateSector
-                                        )
-                                    )
-                                }
-                        } ?: (1..territoryStreet.estimatedHouses!!).forEach { num ->
-                            housesRepository.save(
-                                House(
-                                    street = territoryStreet.street,
-                                    houseNum = num,
-                                    isPrivateSector = territoryStreet.isPrivateSector
-                                        ?: territoryStreet.street.isPrivateSector
-                                )
-                            )
-                        }
+                            if (isEven) createEstHouses(territoryStreet) { it % 2 == 0 }
+                            else createEstHouses(territoryStreet) { it % 2 != 0 }
+                        } ?: createEstHouses(territoryStreet) { true }
                     }
                 }
                 Response(territoryStreet)
@@ -60,4 +32,18 @@ class SaveTerritoryStreetUseCase(
 
     data class Request(val territoryStreet: TerritoryStreet) : UseCase.Request
     data class Response(val territoryStreet: TerritoryStreet) : UseCase.Response
+
+    private fun createEstHouses(territoryStreet: TerritoryStreet, predicate: (Int) -> Boolean) {
+        (1..territoryStreet.estimatedHouses!!).filter { predicate(it) }
+            .forEach { num ->
+                housesRepository.save(
+                    House(
+                        street = territoryStreet.street,
+                        houseNum = num,
+                        isPrivateSector = territoryStreet.isPrivateSector
+                            ?: territoryStreet.street.isPrivateSector
+                    )
+                )
+            }
+    }
 }

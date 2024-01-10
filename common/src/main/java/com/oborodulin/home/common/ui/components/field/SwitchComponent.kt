@@ -42,7 +42,6 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnCheckedChange
 import timber.log.Timber
@@ -51,8 +50,9 @@ private const val TAG = "Common.ui.SwitchComponent"
 
 @Composable
 fun SwitchComponent(
-    componentModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     switchModifier: Modifier = Modifier,
+    enabled: Boolean = true,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
     imageVector: ImageVector? = null,
     @DrawableRes painterResId: Int? = null,
@@ -88,7 +88,7 @@ fun SwitchComponent(
             .semantics(mergeDescendants = true) {}
             .requiredHeight(ButtonDefaults.MinHeight)
             .padding(4.dp)
-            .then(componentModifier),
+            .then(modifier),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = horizontalArrangement) {
             val labelRowModifier = when (horizontalArrangement) {
@@ -129,6 +129,7 @@ fun SwitchComponent(
                         modifier = Modifier.size(SwitchDefaults.IconSize)
                     )
                 },
+                enabled = enabled,
                 colors = colors
             )
         }

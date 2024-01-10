@@ -58,7 +58,7 @@ fun TerritoryRoomScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel, _ ->
+        ) { uiModel, _, _, _ ->
             TerritoryRoomView(
                 territoryRoomsUiModel = uiModel,
                 sharedViewModel = appState.congregationSharedViewModel.value,

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.ui.components.field.SwitchComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
@@ -64,6 +67,8 @@ fun TerritoryStreetView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
+    onConfirmShowAlertChange: (Boolean) -> Unit,
+    onConfirmTextChange: (String) -> Unit,
     handleSaveAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
@@ -82,6 +87,7 @@ fun TerritoryStreetView(
     val isPrivateSector by viewModel.isPrivateSector.collectAsStateWithLifecycle()
     val isEvenSide by viewModel.isEvenSide.collectAsStateWithLifecycle()
     val estimatedHouses by viewModel.estimatedHouses.collectAsStateWithLifecycle()
+    val isNeedAddEstHouses by viewModel.isNeedAddEstHouses.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Territory Street: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -188,12 +194,48 @@ fun TerritoryStreetView(
             labelResId = R.string.territory_street_estimated_houses_hint,
             leadingImageVector = Icons.Outlined.Home,
             keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
+                KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Next
+                )
             },
             //  visualTransformation = ::creditCardFilter,
             inputWrapper = estimatedHouses,
-            onValueChange = { viewModel.onTextFieldEntered(TerritoryStreetInputEvent.EstHouses(it)) },
-            onImeKeyAction = handleSaveAction
+            onValueChange = {
+                viewModel.onTextFieldEntered(TerritoryStreetInputEvent.EstHouses(it))
+                if (it.isEmpty()) {
+                    viewModel.onTextFieldEntered(TerritoryStreetInputEvent.IsNeedAddEstHouses(false))
+                    onConfirmShowAlertChange(false)
+                    onConfirmTextChange("")
+                }
+            },
+            onImeKeyAction = viewModel::moveFocusImeAction //handleSaveAction
+        )
+        val areNeedAddEstHousesValid by viewModel.areNeedAddEstHousesValid.collectAsStateWithLifecycle()
+        val confirmText =
+            stringResource(
+                R.string.dlg_confirm_done_territory_street_is_need_add_est_houses,
+                street.item?.streetFullName.orEmpty(),
+                estimatedHouses.value.ifEmpty { "0" }.toInt()
+            )
+        SwitchComponent(
+            switchModifier = Modifier
+                .height(90.dp)
+                .focusRequester(focusRequesters[TerritoryStreetFields.TERRITORY_STREET_IS_NEED_ADD_EST_HOUSES]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = TerritoryStreetFields.TERRITORY_STREET_IS_NEED_ADD_EST_HOUSES,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            enabled = areNeedAddEstHousesValid,
+            painterResId = R.drawable.ic_add_house_36,
+            labelResId = R.string.territory_street_is_need_add_est_houses_hint,
+            inputWrapper = isNeedAddEstHouses,
+            onCheckedChange = {
+                viewModel.onTextFieldEntered(TerritoryStreetInputEvent.IsNeedAddEstHouses(it))
+                onConfirmShowAlertChange(it)
+                onConfirmTextChange(confirmText)
+            }
         )
     }
 }

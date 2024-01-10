@@ -103,6 +103,18 @@ interface RoomDao {
     ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(territoryId)
         .distinctUntilChanged()
 
+    //-----------------------------
+    @Query("SELECT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rHousesId = :houseId LIMIT 1)")
+    fun existsByHouseId(houseId: UUID): Flow<Boolean>
+
+    //-----------------------------
+    @Query("SELECT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rEntrancesId = :entranceId LIMIT 1)")
+    fun existsByEntranceId(entranceId: UUID): Flow<Boolean>
+
+    //-----------------------------
+    @Query("SELECT EXISTS (SELECT r.roomId FROM ${RoomEntity.TABLE_NAME} r WHERE r.rFloorsId = :floorId LIMIT 1)")
+    fun existsByFloorId(floorId: UUID): Flow<Boolean>
+
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(room: RoomEntity)

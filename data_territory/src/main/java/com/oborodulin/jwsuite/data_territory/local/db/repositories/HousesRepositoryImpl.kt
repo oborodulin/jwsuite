@@ -31,7 +31,7 @@ class HousesRepositoryImpl @Inject constructor(
     override fun get(houseId: UUID) = localHouseDataSource.getHouse(houseId)
         .map(mappers.houseViewToHouseMapper::map)
 
-    override fun isTerritoryStreetExistsHouses(territoryStreetId: UUID) =
+    override fun isExistsInTerritoryStreet(territoryStreetId: UUID) =
         localHouseDataSource.isTerritoryStreetExistsHouses(territoryStreetId)
 
     override fun save(house: House) = flow {

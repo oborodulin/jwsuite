@@ -84,7 +84,7 @@ fun TerritoryScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, handleSaveAction ->
+        ) { _, _, _, handleSaveAction ->
             TerritoryView(
                 sharedViewModel = appState.congregationSharedViewModel.value,
                 viewModel = viewModel,

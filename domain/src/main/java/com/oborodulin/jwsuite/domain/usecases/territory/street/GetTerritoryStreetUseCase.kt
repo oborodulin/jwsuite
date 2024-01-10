@@ -24,7 +24,7 @@ class GetTerritoryStreetUseCase(
         //Timber.tag(TAG).d("process(...) called: request = %s", request)
         null -> combine(
             territoriesRepository.get(request.territoryId),
-            territoryStreetsRepository.getTerritoryStreets(request.territoryId)
+            territoryStreetsRepository.getAllByTerritory(request.territoryId)
         ) { territory, territoryStreets ->
             Timber.tag(TAG).d(
                 "process -> combine(...): territory = %s; territoryStreets = %s",
@@ -38,9 +38,9 @@ class GetTerritoryStreetUseCase(
 
         else -> combine(
             territoriesRepository.get(request.territoryId),
-            territoryStreetsRepository.getTerritoryStreet(request.territoryStreetId),
-            territoryStreetsRepository.getTerritoryStreets(request.territoryId),
-            housesRepository.isTerritoryStreetExistsHouses(request.territoryStreetId)
+            territoryStreetsRepository.get(request.territoryStreetId),
+            territoryStreetsRepository.getAllByTerritory(request.territoryId),
+            housesRepository.isExistsInTerritoryStreet(request.territoryStreetId)
         ) { territory, territoryStreet, territoryStreets, isExistsHouses ->
             Timber.tag(TAG).d(
                 "process -> combine(...): territory = %s; territoryStreet = %s; territoryStreets = %s; isExistsHouses = %s",

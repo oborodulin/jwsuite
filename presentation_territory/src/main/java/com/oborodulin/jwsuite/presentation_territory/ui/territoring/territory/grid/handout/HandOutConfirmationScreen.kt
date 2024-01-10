@@ -65,7 +65,7 @@ fun HandOutConfirmationScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, _ ->
+        ) { _, _, _, _ ->
             HandOutConfirmationView(
                 sharedViewModel = appState.congregationSharedViewModel.value,
                 viewModel = viewModel

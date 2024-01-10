@@ -53,7 +53,7 @@ fun MemberReportScreen(
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
             innerPadding = innerPadding
-        ) { uiModel, handleSaveAction ->
+        ) { uiModel, _, _, handleSaveAction ->
             MemberReportView(
                 uiModel = uiModel,
                 sharedViewModel = appState.congregationSharedViewModel.value,

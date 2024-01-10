@@ -26,14 +26,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     handleTopBarNavClick: MutableState<() -> Unit>,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
-    /*onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,*/
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
-    //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
-    dialogView: @Composable (T, () -> Unit) -> Unit
+    dialogView: @Composable (T, (Boolean) -> Unit, (String) -> Unit, () -> Unit) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG)
         .d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
@@ -49,11 +45,8 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         confirmButton = { areValid, handleSaveButtonClick ->
             SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
         },
-        /*onActionBarChange = onActionBarChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
         onActionBarSubtitleChange = onActionBarSubtitleChange,
         onTopBarActionsChange = onTopBarActionsChange,
-        //onFabChange = onFabChange,
         innerPadding = innerPadding,
         dialogView = dialogView
     )

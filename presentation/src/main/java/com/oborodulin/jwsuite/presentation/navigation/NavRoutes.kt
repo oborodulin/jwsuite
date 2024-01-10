@@ -121,6 +121,8 @@ import java.util.UUID
 // ic_receive.png - <a href="https://www.flaticon.com/free-icons/download" title="download icons">Download icons created by Bharat Icons - Flaticon</a>
 // ic_housing.png - https://www.flaticon.com/search/2?type=icon&word=houses
 //                  <a href="https://www.flaticon.com/free-icons/real-estate-home" title="real estate home icons">Real estate home icons created by Eklip Studio - Flaticon</a>
+// ic_member_report.png - https://www.flaticon.com/authors/lagot-design
+//                  <a href="https://www.flaticon.com/free-icons/member" title="member icons">Member icons created by Lagot Design - Flaticon</a>
 // ic_report_house.png - <a href="https://www.flaticon.com/free-icons/estate" title="estate icons">Estate icons created by Atif Arshad - Flaticon</a>
 //                  https://www.flaticon.com/search/2?type=icon&search-group=all&word=house+report&type=icon
 // ic_report_room.png - https://www.flaticon.com/authors/rsetiawan
@@ -129,6 +131,8 @@ import java.util.UUID
 //                  <a href="https://www.flaticon.com/free-icons/exclamation-mark" title="exclamation mark icons">Exclamation mark icons created by Anggara - Flaticon</a>
 // ic_gender.png - https://www.flaticon.com/authors/icon-mela
 //                  <a href="https://www.flaticon.com/free-icons/wc" title="wc icons">Wc icons created by Icon Mela - Flaticon</a>
+// ic_add_house.png - https://www.flaticon.com/authors/edi-prast
+//                  <a href="https://www.flaticon.com/free-icons/real-estate" title="real estate icons">Real estate icons created by Edi Prast - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -162,7 +166,7 @@ private const val ARG_MEMBER_REPORT_ID = "memberReportId"
 /**
  * Created by oborodulin on 12.December.2021
  */
-sealed class NavRoutes constructor(
+sealed class NavRoutes(
     val route: String,
     val iconImageVector: ImageVector? = null,
     @DrawableRes open val iconPainterResId: Int? = null,
@@ -228,7 +232,7 @@ sealed class NavRoutes constructor(
 
     data object Housing : NavRoutes(
         route = ROUTE_HOUSING,
-        iconImageVector = Icons.Outlined.Home,
+        iconPainterResId = R.drawable.ic_housing_24,
         titleResId = R.string.nav_item_housing
     )
 
@@ -1020,7 +1024,7 @@ sealed class NavRoutes constructor(
             "$ARG_HOUSE_ID={$ARG_HOUSE_ID}",
             "$ARG_ROOM_ID={$ARG_ROOM_ID}"
         ),
-        iconPainterResId = R.drawable.ic_maps_home_work_24,
+        iconPainterResId = R.drawable.ic_member_report_24,
         titleResId = R.string.nav_item_territory_member_report,
         arguments = listOf(navArgument(ARG_MEMBER_REPORT_ID) {
             type = NavType.StringType
@@ -1102,7 +1106,7 @@ sealed class NavRoutes constructor(
 
     data object ReportHouses : NavRoutes(
         route = String.format(ROUTE_REPORT_HOUSES, "$ARG_TERRITORY_ID={$ARG_TERRITORY_ID}"),
-        iconPainterResId = R.drawable.ic_territory_map_24,
+        iconPainterResId = R.drawable.ic_report_house_24,
         titleResId = R.string.nav_item_territory_report_houses,
         arguments = listOf(navArgument(ARG_TERRITORY_ID) {
             type = NavType.StringType

@@ -113,7 +113,9 @@ interface HouseDao {
         """
     SELECT EXISTS (SELECT h.houseId FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetEntity.TABLE_NAME} s ON s.streetId = h.hStreetsId
                         JOIN ${TerritoryStreetEntity.TABLE_NAME} ts ON ts.tsStreetsId = s.streetId
-                    WHERE ts.territoryStreetId = :territoryStreetId LIMIT 1)
+                    WHERE ts.territoryStreetId = :territoryStreetId
+                        AND (ts.isEvenSide IS NULL OR (ts.isEvenSide = 1 AND h.houseNum % 2 = 0 OR ts.isEvenSide = 0 AND h.houseNum % 2 <> 0))
+                    LIMIT 1)
     """
     )
     fun existsByTerritoryStreetId(territoryStreetId: UUID): Flow<Boolean>

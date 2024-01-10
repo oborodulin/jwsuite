@@ -10,6 +10,7 @@ interface EntrancesRepository {
     fun getAllByTerritory(territoryId: UUID): Flow<List<Entrance>>
     fun getAllForTerritory(territoryId: UUID): Flow<List<Entrance>>
     fun get(entranceId: UUID): Flow<Entrance>
+    fun isExistsInHouse(houseId: UUID): Flow<Boolean>
     fun save(entrance: Entrance): Flow<Entrance>
     fun delete(entrance: Entrance): Flow<Entrance>
     fun deleteById(entranceId: UUID): Flow<UUID>

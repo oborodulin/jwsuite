@@ -34,6 +34,10 @@ class FloorsRepositoryImpl @Inject constructor(
     override fun get(floorId: UUID) = localFloorDataSource.getFloor(floorId)
         .map(mappers.floorViewToFloorMapper::map)
 
+    override fun isExistsInHouse(houseId: UUID) = localFloorDataSource.isHouseExistsRooms(houseId)
+    override fun isExistsInEntrance(entranceId: UUID) =
+        localFloorDataSource.isEntranceExistsRooms(entranceId)
+
     override fun save(floor: Floor) = flow {
         if (floor.id == null) {
             localFloorDataSource.insertFloor(mappers.floorToFloorEntityMapper.map(floor))

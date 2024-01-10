@@ -30,6 +30,9 @@ class EntrancesRepositoryImpl @Inject constructor(
     override fun get(entranceId: UUID) = localEntranceDataSource.getEntrance(entranceId)
         .map(mappers.entranceViewToEntranceMapper::map)
 
+    override fun isExistsInHouse(houseId: UUID) =
+        localEntranceDataSource.isHouseExistsRooms(houseId)
+
     override fun save(entrance: Entrance) = flow {
         if (entrance.id == null) {
             localEntranceDataSource.insertEntrance(

@@ -54,6 +54,6 @@ fun CongregationScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, handleSaveAction -> CongregationView(handleSaveAction = handleSaveAction) }
+        ) { _, _, _, handleSaveAction -> CongregationView(handleSaveAction = handleSaveAction) }
     }
 }

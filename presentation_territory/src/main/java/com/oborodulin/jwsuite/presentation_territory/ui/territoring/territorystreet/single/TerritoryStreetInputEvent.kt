@@ -10,6 +10,7 @@ sealed class TerritoryStreetInputEvent(val value: String) : Inputable {
     data class IsPrivateSector(val input: Boolean?) : TerritoryStreetInputEvent(input.toString())
     data class IsEvenSide(val input: Boolean?) : TerritoryStreetInputEvent(input.toString())
     data class EstHouses(val input: String) : TerritoryStreetInputEvent(input)
+    data class IsNeedAddEstHouses(val input: Boolean) : TerritoryStreetInputEvent(input.toString())
 
     override fun value() = this.value
 }

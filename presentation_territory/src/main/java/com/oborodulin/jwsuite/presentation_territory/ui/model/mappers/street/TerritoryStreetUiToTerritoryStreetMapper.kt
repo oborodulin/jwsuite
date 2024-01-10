@@ -15,7 +15,7 @@ class TerritoryStreetUiToTerritoryStreetMapper(private val mapper: StreetUiToStr
             isEvenSide = input.isEvenSide,
             isPrivateSector = input.isPrivateSector,
             estimatedHouses = input.estimatedHouses,
-            isCreateEstHouses = input.isCreateEstHouses
+            isNeedAddEstHouses = input.isNeedAddEstHouses
         )
         territoryStreet.id = input.id
         return territoryStreet

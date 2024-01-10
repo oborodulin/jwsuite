@@ -12,6 +12,9 @@ interface RoomsRepository {
     fun getAllByTerritory(territoryId: UUID): Flow<List<Room>>
     fun getAllForTerritory(territoryId: UUID): Flow<List<Room>>
     fun get(roomId: UUID): Flow<Room>
+    fun isExistsInHouse(houseId: UUID): Flow<Boolean>
+    fun isExistsInEntrance(entranceId: UUID): Flow<Boolean>
+    fun isExistsInFloor(floorId: UUID): Flow<Boolean>
     fun save(room: Room): Flow<Room>
     fun delete(room: Room): Flow<Room>
     fun deleteById(roomId: UUID): Flow<UUID>

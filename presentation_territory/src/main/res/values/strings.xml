@@ -99,6 +99,7 @@
     <string name="territory_street_new_subheader">Новая улица участка</string>
     <string name="territory_street_is_even_side_hint">Чётная сторона?</string>
     <string name="territory_street_estimated_houses_hint">Кол-во домов</string>
+    <string name="territory_street_is_need_add_est_houses_hint">Добавить эти дома?</string>
     <string name="territory_street_placeholder">Улица участка…</string>
     <!--Дом участка-->
     <string name="territory_house_subheader">Дом участка</string>
@@ -166,6 +167,7 @@
     <string name="dlg_confirm_cancel_process_territory_street">Отменить обработку улицы %1$s?</string>
     <string name="dlg_confirm_cancel_process_territory_house">Отменить обработку дома №%1$s?</string>
     <string name="dlg_confirm_cancel_process_territory_room">Отменить обработку квартиры №%1$s?</string>
+    <string name="dlg_confirm_done_territory_street_is_need_add_est_houses">Принять изменения улицы участка %1$s с добавлением %2$d домов?</string>
     <!--удаления-->
     <string name="dlg_confirm_del_house">Удалить дом на улице №%1$s?</string>
     <string name="dlg_confirm_del_entrance">Удалить подъезд №%1$s?</string>
@@ -206,6 +208,8 @@
     <string name="territory_receiving_date_empty_error">Укажите, пожалуйста, дату выдачи участка!</string>
     <!--формы подтверждения обработки участка-->
     <string name="territory_delivery_date_empty_error">Укажите, пожалуйста, дату обработки участка!</string>
+    <!--формы улицы участка-->
+    <string name="territory_street_est_houses_empty_error">Укажите, пожалуйста, кол-во добавляемых домов!</string>
     <!--формы дома-->
     <string name="house_num_empty_error">Укажите, пожалуйста, № дома!</string>
     <string name="building_type_empty_error">Укажите, пожалуйста, тип строения!</string>

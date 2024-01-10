@@ -13,15 +13,15 @@ class TerritoryStreetsRepositoryImpl @Inject constructor(
     private val localTerritoryDataSource: LocalTerritoryStreetDataSource,
     private val mappers: TerritoryStreetMappers
 ) : TerritoryStreetsRepository {
-    override fun getTerritoryStreet(territoryStreetId: UUID) =
+    override fun get(territoryStreetId: UUID) =
         localTerritoryDataSource.getTerritoryStreet(territoryStreetId)
             .map(mappers.territoryStreetViewToTerritoryStreetMapper::map)
 
-    override fun getTerritoryStreets(territoryId: UUID) =
+    override fun getAllByTerritory(territoryId: UUID) =
         localTerritoryDataSource.getTerritoryStreets(territoryId)
             .map(mappers.territoryStreetViewListToTerritoryStreetsListMapper::map)
 
-    override fun getStreetsForTerritory(territoryId: UUID) =
+    override fun getGeoStreetsForTerritory(territoryId: UUID) =
         localTerritoryDataSource.getStreetsForTerritory(territoryId)
             .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
 
@@ -29,7 +29,7 @@ class TerritoryStreetsRepositoryImpl @Inject constructor(
         localTerritoryDataSource.getTerritoryStreetNamesAndHouseNums(congregationId)
             .map(mappers.territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper::map)
 
-    override fun saveTerritoryStreet(territoryStreet: TerritoryStreet) = flow {
+    override fun save(territoryStreet: TerritoryStreet) = flow {
         if (territoryStreet.id == null) {
             localTerritoryDataSource.insertStreet(
                 mappers.territoryStreetToTerritoryStreetEntityMapper.map(territoryStreet),
@@ -42,7 +42,7 @@ class TerritoryStreetsRepositoryImpl @Inject constructor(
         emit(territoryStreet)
     }
 
-    override fun deleteTerritoryStreetById(territoryStreetId: UUID) = flow {
+    override fun deleteById(territoryStreetId: UUID) = flow {
         localTerritoryDataSource.deleteStreet(territoryStreetId)
         this.emit(territoryStreetId)
     }

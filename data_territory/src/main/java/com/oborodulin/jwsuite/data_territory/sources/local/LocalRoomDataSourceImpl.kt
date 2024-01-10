@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.Local
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -31,7 +31,9 @@ class LocalRoomDataSourceImpl @Inject constructor(
         )
 
     override fun getRoom(roomId: UUID) = roomDao.findDistinctById(roomId)
-
+    override fun isHouseExistsRooms(houseId: UUID) = roomDao.existsByHouseId(houseId)
+    override fun isEntranceExistsRooms(entranceId: UUID) = roomDao.existsByEntranceId(entranceId)
+    override fun isFloorExistsRooms(floorId: UUID) = roomDao.existsByFloorId(floorId)
     override suspend fun insertRoom(room: RoomEntity) = withContext(dispatcher) {
         roomDao.insert(room)
     }

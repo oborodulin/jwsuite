@@ -30,21 +30,30 @@ interface EntranceDao {
 
     //-----------------------------
     @Query("SELECT * FROM ${EntranceView.VIEW_NAME} WHERE entranceId = :entranceId AND streetLocCode = :locale")
-    fun findById(entranceId: UUID, locale: String? = Locale.getDefault().language): Flow<EntranceView>
+    fun findById(
+        entranceId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<EntranceView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT * FROM ${EntranceView.VIEW_NAME} WHERE eHousesId = :houseId AND streetLocCode = :locale ORDER BY entranceNum")
-    fun findByHouseId(houseId: UUID, locale: String? = Locale.getDefault().language): Flow<List<EntranceView>>
+    fun findByHouseId(
+        houseId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<EntranceView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT * FROM ${EntranceView.VIEW_NAME} WHERE eTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY streetName, houseNum, houseLetter, entranceNum")
-    fun findByTerritoryId(territoryId: UUID, locale: String? = Locale.getDefault().language): Flow<List<EntranceView>>
+    fun findByTerritoryId(
+        territoryId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<EntranceView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryId(territoryId: UUID) =
@@ -72,9 +81,12 @@ interface EntranceDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
         territoryId: UUID
-    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(
-        territoryId
-    ).distinctUntilChanged()
+    ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(territoryId)
+        .distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT EXISTS (SELECT e.entranceId FROM ${EntranceEntity.TABLE_NAME} e WHERE e.eHousesId = :houseId LIMIT 1)")
+    fun existsByHouseId(houseId: UUID): Flow<Boolean>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

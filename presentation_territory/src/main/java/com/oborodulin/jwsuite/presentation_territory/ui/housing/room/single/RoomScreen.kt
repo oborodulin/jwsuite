@@ -61,7 +61,7 @@ fun RoomScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { _, handleSaveAction ->
+        ) { _, _, _, handleSaveAction ->
             RoomView(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 sharedViewModel = appState.congregationSharedViewModel.value,

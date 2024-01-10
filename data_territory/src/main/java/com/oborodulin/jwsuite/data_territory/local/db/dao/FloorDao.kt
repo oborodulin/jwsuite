@@ -89,6 +89,14 @@ interface FloorDao {
     ) = findByTerritoryMicrodistrictAndTerritoryLocalityDistrictAndTerritoryIdIsNull(territoryId)
         .distinctUntilChanged()
 
+    //-----------------------------
+    @Query("SELECT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fHousesId = :houseId LIMIT 1)")
+    fun existsByHouseId(houseId: UUID): Flow<Boolean>
+
+    //-----------------------------
+    @Query("SELECT EXISTS (SELECT f.floorId FROM ${FloorEntity.TABLE_NAME} f WHERE f.fEntrancesId = :entranceId LIMIT 1)")
+    fun existsByEntranceId(entranceId: UUID): Flow<Boolean>
+
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(floor: FloorEntity)

@@ -37,6 +37,11 @@ class RoomsRepositoryImpl @Inject constructor(
     override fun get(roomId: UUID) = localRoomDataSource.getRoom(roomId)
         .map(mappers.roomViewToRoomMapper::map)
 
+    override fun isExistsInHouse(houseId: UUID) = localRoomDataSource.isHouseExistsRooms(houseId)
+    override fun isExistsInEntrance(entranceId: UUID) =
+        localRoomDataSource.isEntranceExistsRooms(entranceId)
+
+    override fun isExistsInFloor(floorId: UUID) = localRoomDataSource.isFloorExistsRooms(floorId)
     override fun save(room: Room) = flow {
         if (room.id == null) {
             localRoomDataSource.insertRoom(mappers.roomToRoomEntityMapper.map(room))

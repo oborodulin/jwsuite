@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.dialog.alert.CancelChangesConfirmDialogComponent
+import com.oborodulin.home.common.ui.components.dialog.alert.DoneConfirmDialogComponent
 import com.oborodulin.home.common.ui.components.dialog.alert.ErrorAlertDialogComponent
 import com.oborodulin.home.common.ui.components.field.util.Focusable
 import com.oborodulin.home.common.ui.state.CommonScreen
@@ -68,7 +69,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
     //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
-    dialogView: @Composable (T, () -> Unit) -> Unit
+    dialogView: @Composable (T, (Boolean) -> Unit, (String) -> Unit, () -> Unit) -> Unit
 ) {
     if (LOG_UI_COMPONENTS) Timber.tag(TAG)
         .d("DialogScreenComponent(...) called: inputId = %s", inputId)
@@ -147,6 +148,30 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
             onTopBarActionsChange {}
         }
         //onFabChange {}
+        // Confirmation
+        var isConfirmAction by rememberSaveable { mutableStateOf(false) }
+        var isHandleConfirmAction by rememberSaveable { mutableStateOf(false) }
+        val isDoneConfirmShowAlert = rememberSaveable { mutableStateOf(false) }
+        val onConfirmShowAlertChange: (Boolean) -> Unit = {
+            isDoneConfirmShowAlert.value = it
+            isConfirmAction = it.not()
+        }
+        var confirmText by rememberSaveable { mutableStateOf("") }
+        val onConfirmTextChange: (String) -> Unit = { confirmText = it }
+        if (isHandleConfirmAction) {
+            DoneConfirmDialogComponent(isShow = isDoneConfirmShowAlert,
+                text = confirmText,
+                onDismiss = {
+                    isDoneConfirmShowAlert.value = false
+                    isConfirmAction = false
+                }) {
+                isDoneConfirmShowAlert.value = false//; handleDialogConfirmAction()
+                isConfirmAction = true
+            }
+            if (isConfirmAction) {
+                handleDialogConfirmAction()
+            }
+        }
         CommonScreen(paddingValues = innerPadding, state = state) {
             Column(
                 modifier = Modifier
@@ -154,11 +179,13 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                dialogView.invoke(it, handleDialogConfirmAction)
+                dialogView.invoke(it, onConfirmShowAlertChange, onConfirmTextChange) {
+                    isHandleConfirmAction = true
+                }//handleDialogConfirmAction
                 if (isControlsShow) {
                     // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                     Spacer(Modifier.height(8.dp))
-                    confirmButton.invoke(areInputsValid, handleDialogConfirmAction)
+                    confirmButton.invoke(areInputsValid) { isHandleConfirmAction = true }
                 }
             }
         }
