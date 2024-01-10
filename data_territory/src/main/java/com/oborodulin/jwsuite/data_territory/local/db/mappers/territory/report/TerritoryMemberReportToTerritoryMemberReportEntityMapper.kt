@@ -15,7 +15,7 @@ class TerritoryMemberReportToTerritoryMemberReportEntityMapper :
         languageCode = input.languageCode,
         gender = input.gender,
         age = input.age,
-        isProcessed = input.isProcessed,
+        isReportProcessed = input.isProcessed,
         territoryReportDesc = input.territoryReportDesc,
         tmrTerritoryMembersId = input.territoryMemberId
     )

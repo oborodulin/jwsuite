@@ -17,7 +17,7 @@ class TerritoryMemberReportEntityToTerritoryMemberReportMapper(private val ctx: 
             languageCode = input.languageCode,
             gender = input.gender,
             age = input.age,
-            isProcessed = input.isProcessed,
+            isProcessed = input.isReportProcessed,
             territoryReportDesc = input.territoryReportDesc
         )
         territoryMemberReport.id = input.territoryMemberReportId

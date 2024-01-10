@@ -4,10 +4,8 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
-import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
@@ -49,12 +47,12 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
 
     override suspend fun process(territoryReportId: UUID) =
         withContext(dispatcher) {
-            territoryReportDao.updateIsProcess(territoryReportId, true)
+            territoryReportDao.updateIsReportProcessed(territoryReportId, true)
         }
 
     override suspend fun cancelProcess(territoryReportId: UUID) =
         withContext(dispatcher) {
-            territoryReportDao.updateIsProcess(territoryReportId, false)
+            territoryReportDao.updateIsReportProcessed(territoryReportId, false)
         }
 
     override suspend fun insertTerritoryReport(territoryReport: TerritoryMemberReportEntity) =

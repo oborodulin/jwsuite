@@ -13,6 +13,7 @@ data class TerritoryStreet(
     val isEvenSide: Boolean? = null,
     val isPrivateSector: Boolean? = null,
     val estimatedHouses: Int? = null,
+    var houses: List<House> = emptyList(),
     val isNeedAddEstHouses: Boolean = false,
     val isExistsHouses: Boolean = false
 ) : DomainModel() {

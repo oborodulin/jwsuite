@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.usecases.territory
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
+import com.oborodulin.jwsuite.domain.repositories.TerritoryStreetsRepository
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
@@ -11,8 +12,8 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class GetProcessAndLocationTerritoriesUseCase(
-    configuration: Configuration,
-    private val territoriesRepository: TerritoriesRepository
+    configuration: Configuration, private val territoriesRepository: TerritoriesRepository,
+    private val territoryStreetsRepository: TerritoryStreetsRepository
 ) : UseCase<GetProcessAndLocationTerritoriesUseCase.Request, GetProcessAndLocationTerritoriesUseCase.Response>(
     configuration
 ) {
@@ -26,7 +27,7 @@ class GetProcessAndLocationTerritoriesUseCase(
                 isPrivateSector = request.isPrivateSector,
                 congregationId = request.congregationId
             ),
-            territoriesRepository.getTerritoryStreetNamesAndHouseNums()
+            territoryStreetsRepository.getTerritoryStreetNamesAndHouseNums()
         ) { territories, territoryStreetNamesAndHouseNums ->
             territories.map { territory ->
                 val streetNamesAndHouseNums =

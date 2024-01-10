@@ -97,9 +97,12 @@ object TerritoryUseCasesModule {
     @Singleton
     @Provides
     fun provideGetProcessAndLocationTerritoriesUseCase(
-        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository,
+        territoryStreetsRepository: TerritoryStreetsRepository
     ): GetProcessAndLocationTerritoriesUseCase =
-        GetProcessAndLocationTerritoriesUseCase(configuration, territoriesRepository)
+        GetProcessAndLocationTerritoriesUseCase(
+            configuration, territoriesRepository, territoryStreetsRepository
+        )
 
     @Singleton
     @Provides

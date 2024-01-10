@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.data_territory.local.db.views
 
 import androidx.room.DatabaseView
 import androidx.room.Embedded
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
@@ -10,8 +9,6 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_HOUSE_LD_LOCALITY
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_HOUSE_LD_LOCALITY_DISTRICT
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_HOUSE_LD_REGION
@@ -22,8 +19,6 @@ import com.oborodulin.jwsuite.data_territory.util.Constants.PX_HOUSE_M_LOCALITY_
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_HOUSE_M_REGION
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_HOUSE_M_REGION_DISTRICT
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_TERRITORY_LOCALITY
-import com.oborodulin.jwsuite.domain.util.Constants
-import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 
 @DatabaseView(
     viewName = HouseView.VIEW_NAME,
@@ -67,7 +62,7 @@ SELECT sv.*,
             mdv.mLocalitiesId AS ${PX_HOUSE_MICRODISTRICT}mLocalitiesId, mdv.microdistrictTlId AS ${PX_HOUSE_MICRODISTRICT}microdistrictTlId, 
             mdv.microdistrictLocCode AS ${PX_HOUSE_MICRODISTRICT}microdistrictLocCode, mdv.microdistrictName AS ${PX_HOUSE_MICRODISTRICT}microdistrictName, 
             mdv.microdistrictsId AS ${PX_HOUSE_MICRODISTRICT}microdistrictsId,
-        tv.*, h.*, tmr.*
+        tv.*, h.*
 FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId
     LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvl ON ldvl.localityDistrictId = h.hLocalityDistrictsId AND ldvl.locDistrictLocCode = sv.streetLocCode
     LEFT JOIN ${LocalityView.VIEW_NAME} lvl ON lvl.localityId = ldvl.ldLocalitiesId AND lvl.localityLocCode = sv.streetLocCode 
@@ -81,9 +76,6 @@ FROM ${HouseEntity.TABLE_NAME} h JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.street
     LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvm ON rdvm.regionDistrictId = lvm.lRegionDistrictsId AND rdvm.regDistrictLocCode = sv.streetLocCode
 
     LEFT JOIN ${TerritoryView.VIEW_NAME} tv ON tv.territoryId = h.hTerritoriesId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode  = sv.streetLocCode
-    
-    LEFT JOIN ${TerritoryMemberCrossRefEntity.TABLE_NAME} tmc ON tmc.tmcTerritoriesId = tv.territoryId AND tmc.deliveryDate IS NULL 
-    LEFT JOIN ${TerritoryMemberReportEntity.TABLE_NAME} tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrHousesId = h.houseId
 """
 )
 class HouseView(
@@ -101,8 +93,7 @@ class HouseView(
     @Embedded(prefix = PX_HOUSE_MICRODISTRICT) val hMicrodistrict: MicrodistrictView?,
 
     @Embedded val territory: TerritoryView?,
-    @Embedded val house: HouseEntity,
-    @Embedded val territoryReport: TerritoryMemberReportEntity?
+    @Embedded val house: HouseEntity
 ) {
     companion object {
         const val VIEW_NAME = "houses_view"

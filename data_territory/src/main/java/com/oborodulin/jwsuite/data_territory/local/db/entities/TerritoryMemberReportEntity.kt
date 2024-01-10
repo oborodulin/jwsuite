@@ -51,7 +51,7 @@ data class TerritoryMemberReportEntity(
     val languageCode: String? = null,
     val gender: Boolean? = null,
     val age: Int? = null,
-    val isProcessed: Boolean = false,
+    val isReportProcessed: Boolean = false,
     val territoryReportDesc: String? = null,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmrRoomsId: UUID? = null,
@@ -73,7 +73,7 @@ data class TerritoryMemberReportEntity(
             territoryReportMark: TerritoryReportMark = TerritoryReportMark.PP,
             languageCode: String? = null,
             gender: Boolean? = null, age: Int? = null,
-            isProcessed: Boolean = false,
+            isReportProcessed: Boolean = false,
             territoryReportDesc: String? = null
         ) = TerritoryMemberReportEntity(
             tmrTerritoryMembersId = territoryMemberId,
@@ -81,7 +81,7 @@ data class TerritoryMemberReportEntity(
             tmrTerritoryStreetsId = territoryStreetId, tmrHousesId = houseId, tmrRoomsId = roomId,
             territoryReportMark = territoryReportMark, languageCode = languageCode,
             gender = gender, age = age,
-            isProcessed = isProcessed, territoryReportDesc = territoryReportDesc
+            isReportProcessed = isReportProcessed, territoryReportDesc = territoryReportDesc
         )
 
     }
@@ -100,7 +100,7 @@ data class TerritoryMemberReportEntity(
         val str = StringBuffer()
         str.append("Territory Member Report Entity ")
             .append(" [territoryMemberMark = ").append(territoryReportMark)
-            .append("; isProcessed = ").append(isProcessed)
+            .append("; isProcessed = ").append(isReportProcessed)
         tmrTerritoryStreetsId?.let { str.append("; tmrTerritoryStreetsId = ").append(it) }
         tmrHousesId?.let { str.append("; tmrHousesId = ").append(it) }
         tmrRoomsId?.let { str.append("; tmrRoomsId = ").append(it) }

@@ -22,14 +22,8 @@ private const val TAG = "Territoring.HandOutConfirmationScreen"
 
 @Composable
 fun HandOutConfirmationScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel,//Impl = hiltViewModel()
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
     Timber.tag(TAG).d("HandOutConfirmationScreen(...) called")
     val appState = LocalAppState.current
@@ -59,11 +53,8 @@ fun HandOutConfirmationScreen(
                     onClick = handleHandOutButtonClick
                 )
             },
-            /*onActionBarChange = onActionBarChange,
-    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
         ) { _, _, _, _ ->
             HandOutConfirmationView(
@@ -72,6 +63,4 @@ fun HandOutConfirmationScreen(
             )
         }
     }
-// Scaffold Hoisting:
-//onActionBarSubtitleChange(stringResource(dialogTitleResId))
 }

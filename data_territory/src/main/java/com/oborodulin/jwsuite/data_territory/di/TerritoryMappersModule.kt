@@ -436,15 +436,9 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideTerritoryMemberReportViewToTerritoryMemberReportMapper(
-        territoryStreetMapper: TerritoryStreetViewToTerritoryStreetMapper,
-        houseMapper: HouseViewToHouseMapper,
-        roomMapper: RoomViewToRoomMapper,
         territoryReportMapper: TerritoryMemberReportEntityToTerritoryMemberReportMapper
     ): TerritoryMemberReportViewToTerritoryMemberReportMapper =
         TerritoryMemberReportViewToTerritoryMemberReportMapper(
-            territoryStreetMapper = territoryStreetMapper,
-            houseMapper = houseMapper,
-            roomMapper = roomMapper,
             territoryReportMapper = territoryReportMapper
         )
 
@@ -709,7 +703,7 @@ object TerritoryMappersModule {
         roomViewListToRoomsListMapper: RoomViewListToRoomsListMapper,
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
-        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper
+        territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
         memberToMemberEntityMapper: MemberToMemberEntityMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,

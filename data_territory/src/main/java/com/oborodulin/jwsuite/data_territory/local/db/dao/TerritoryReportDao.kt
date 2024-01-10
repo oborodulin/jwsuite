@@ -160,8 +160,8 @@ interface TerritoryReportDao {
     @Update
     suspend fun update(vararg territoryMemberReports: TerritoryMemberReportEntity)
 
-    @Query("UPDATE ${TerritoryMemberReportEntity.TABLE_NAME} SET isProcess = :isProcess WHERE territoryMemberReportId = :territoryMemberReportId")
-    suspend fun updateIsProcess(territoryMemberReportId: UUID, isProcess: Boolean)
+    @Query("UPDATE ${TerritoryMemberReportEntity.TABLE_NAME} SET isReportProcessed = :isProcessed WHERE territoryMemberReportId = :territoryMemberReportId")
+    suspend fun updateIsReportProcessed(territoryMemberReportId: UUID, isProcessed: Boolean)
 
     // DELETES:
     @Delete

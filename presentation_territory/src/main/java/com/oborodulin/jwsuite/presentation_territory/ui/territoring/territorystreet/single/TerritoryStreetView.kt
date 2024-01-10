@@ -67,9 +67,9 @@ fun TerritoryStreetView(
     sharedViewModel: SharedViewModeled<ListItemModel?>?,
     territoryViewModel: TerritoryViewModel,
     viewModel: TerritoryStreetViewModelImpl = hiltViewModel(),
-    onConfirmShowAlertChange: (Boolean) -> Unit,
-    onConfirmTextChange: (String) -> Unit,
-    handleSaveAction: OnImeKeyAction
+    onConfirmShowAlertChange: (Boolean) -> Unit = {},
+    onConfirmTextChange: (String) -> Unit = {},
+    handleSaveAction: OnImeKeyAction = {}
 ) {
     Timber.tag(TAG).d("TerritoryStreetView(...) called")
     val context = LocalContext.current

@@ -22,14 +22,8 @@ private const val TAG = "Territoring.ProcessConfirmationScreen"
 
 @Composable
 fun ProcessConfirmationScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: TerritoriesGridViewModel,//Impl = hiltViewModel()
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
     Timber.tag(TAG).d("ProcessConfirmationScreen(...) called")
     val appState = LocalAppState.current
@@ -62,7 +56,7 @@ fun ProcessConfirmationScreen(
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
             innerPadding = innerPadding
-        ) {
+        ) { _, _, _, _ ->
             ProcessConfirmationView(
                 sharedViewModel = appState.congregationSharedViewModel.value,
                 viewModel = viewModel
