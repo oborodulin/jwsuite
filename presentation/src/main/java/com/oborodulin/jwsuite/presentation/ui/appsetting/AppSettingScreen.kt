@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.presentation.ui.appsetting
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -8,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
@@ -75,6 +78,7 @@ fun AppSettingScreen(
             innerPadding = innerPadding
         ) { uiModel, _, _, _ ->
             AppSettingView(
+                //modifier = Modifier.verticalScroll(rememberScrollState()),
                 appSettingsUiModel = uiModel,
                 appSettingViewModel = appSettingViewModel,
                 sessionViewModel = sessionViewModel

@@ -147,10 +147,8 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
             //onTopBarActionsChange(true) {}
             onTopBarActionsChange {}
         }
-        //onFabChange {}
         // Confirmation
         var isConfirmAction by rememberSaveable { mutableStateOf(false) }
-        var isHandleConfirmAction by rememberSaveable { mutableStateOf(false) }
         val isDoneConfirmShowAlert = rememberSaveable { mutableStateOf(false) }
         val onConfirmShowAlertChange: (Boolean) -> Unit = {
             isDoneConfirmShowAlert.value = it
@@ -158,19 +156,34 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         }
         var confirmText by rememberSaveable { mutableStateOf("") }
         val onConfirmTextChange: (String) -> Unit = { confirmText = it }
-        if (isHandleConfirmAction) {
-            DoneConfirmDialogComponent(isShow = isDoneConfirmShowAlert,
-                text = confirmText,
-                onDismiss = {
-                    isDoneConfirmShowAlert.value = false
-                    isConfirmAction = false
-                }) {
-                isDoneConfirmShowAlert.value = false//; handleDialogConfirmAction()
-                isConfirmAction = true
-            }
-            if (isConfirmAction) {
-                handleDialogConfirmAction()
-            }
+        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+            .d(
+                "DialogScreenComponent: isConfirmAction = %s; isDoneConfirmShowAlert.value = %s; confirmText = %s",
+                isConfirmAction, isDoneConfirmShowAlert.value, confirmText
+            )
+        DoneConfirmDialogComponent(isShow = isDoneConfirmShowAlert,
+            text = confirmText,
+            onDismiss = {
+                if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                    .d("DoneConfirmDialogComponent -> onDismiss()")
+                isDoneConfirmShowAlert.value = false
+                isConfirmAction = false
+            }) {
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                .d("DoneConfirmDialogComponent -> onConfirm()")
+            isDoneConfirmShowAlert.value = false//; handleDialogConfirmAction()
+            isConfirmAction = true
+        }
+        if (isConfirmAction) {
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                .d("DialogScreenComponent -> handleDialogConfirmAction()")
+            isConfirmAction = false
+            handleDialogConfirmAction()
+        }
+        val handleConfirmAction = {
+            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
+                .d("DialogScreenComponent -> handleConfirmAction()")
+            isConfirmAction = isDoneConfirmShowAlert.value.not()
         }
         CommonScreen(paddingValues = innerPadding, state = state) {
             Column(
@@ -179,13 +192,13 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                dialogView.invoke(it, onConfirmShowAlertChange, onConfirmTextChange) {
-                    isHandleConfirmAction = true
-                }//handleDialogConfirmAction
+                dialogView.invoke(
+                    it, onConfirmShowAlertChange, onConfirmTextChange, handleConfirmAction
+                )
                 if (isControlsShow) {
                     // https://developer.android.com/guide/topics/resources/more-resources#Dimension
                     Spacer(Modifier.height(8.dp))
-                    confirmButton.invoke(areInputsValid) { isHandleConfirmAction = true }
+                    confirmButton.invoke(areInputsValid, handleConfirmAction)
                 }
             }
         }

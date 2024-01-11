@@ -53,6 +53,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.Region
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import timber.log.Timber
+import java.util.UUID
 
 /**
  * Created by o.borodulin 10.June.2023
@@ -203,8 +204,10 @@ fun GeoScreen(
     //onActionBarTitleChange(stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo))
     //onActionBarSubtitleChange("")
     //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
-    appState.handleTopBarNavClick.value =
-        {
+    Timber.tag(TAG).d("GeoScreen: appState.handleTopBarNavClick assign")
+    //appState.handleTopBarNavClick.value =
+    val onTopBarNavClick by remember {
+        mutableStateOf({
             if (isShowSearchBar) {
                 isShowSearchBar = false
                 when (GeoTabType.valueOf(tabType)) {
@@ -219,9 +222,10 @@ fun GeoScreen(
                 appState.mainNavigateUp()
                 appState.navigateToBarRoute(NavRoutes.Dashboarding.route)
             } //backToBottomBarScreen()
-        }
+        })
+    }
     // https://stackoverflow.com/questions/69151521/how-to-override-the-system-onbackpress-in-jetpack-compose
-    BackHandler { appState.handleTopBarNavClick.value.invoke() }
+    BackHandler { onTopBarNavClick.invoke() } // appState.handleTopBarNavClick.value
     /*onTopBarNavClickChange {
         Timber.tag(TAG).d("GeoScreen -> onTopBarNavClickChange()")
         appState.mainNavigateUp()// .backToBottomBarScreen()
@@ -231,6 +235,7 @@ fun GeoScreen(
         topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_geo),
         topBarSubtitle = "",
         actionBar = actionBar,
+        onTopBarNavClick = onTopBarNavClick,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions,
         floatingActionButton = floatingActionButton
@@ -320,7 +325,8 @@ fun RegionRegionDistrictsLocalitiesView(
     regionsListViewModel: RegionsListViewModelImpl
 ) {
     Timber.tag(TAG).d("RegionRegionDistrictsLocalitiesView(...) called")
-    val selectedRegionId = regionsListViewModel.singleSelectedItem()?.itemId
+    var selectedRegionId: UUID? by remember { mutableStateOf(regionsListViewModel.singleSelectedItem()?.itemId) }
+    val onClickTab = { selectedRegionId = regionsListViewModel.singleSelectedItem()?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -361,14 +367,20 @@ fun RegionRegionDistrictsLocalitiesView(
             Column(modifier = Modifier.fillMaxSize()) {
                 CustomScrollableTabRow(
                     listOf(
-                        TabRowItem(title = stringResource(R.string.geo_tab_region_districts)) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_region_districts),
+                            onClick = onClickTab
+                        ) {
                             RegionDistrictsListView(
                                 navController = appState.mainNavController,
                                 regionInput = selectedRegionId?.let { NavigationInput.RegionInput(it) },
                                 isEditableList = false
                             )
                         },
-                        TabRowItem(title = stringResource(R.string.geo_tab_localities)) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_localities),
+                            onClick = onClickTab
+                        ) {
                             LocalitiesListView(
                                 navController = appState.mainNavController,
                                 regionInput = selectedRegionId?.let { NavigationInput.RegionInput(it) },
@@ -444,7 +456,8 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
     localitiesListViewModel: LocalitiesListViewModelImpl
 ) {
     Timber.tag(TAG).d("LocalitiesLocalitiesDistrictsMicrodistrictsView(...) called")
-    val selectedLocalityId = localitiesListViewModel.singleSelectedItem()?.itemId
+    var selectedLocalityId: UUID? by remember { mutableStateOf(localitiesListViewModel.singleSelectedItem()?.itemId) }
+    val onClickTab = { selectedLocalityId = localitiesListViewModel.singleSelectedItem()?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -485,7 +498,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
             Column(modifier = Modifier.fillMaxSize()) {
                 CustomScrollableTabRow(
                     listOf(
-                        TabRowItem(title = stringResource(R.string.geo_tab_locality_districts)) {
+                        TabRowItem(title = stringResource(R.string.geo_tab_locality_districts), onClick = onClickTab) {
                             LocalityDistrictsListView(
                                 navController = appState.mainNavController,
                                 localityInput = selectedLocalityId?.let {
@@ -494,7 +507,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                                 isEditableList = false
                             )
                         },
-                        TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
+                        TabRowItem(title = stringResource(R.string.geo_tab_microdistricts), onClick = onClickTab) {
                             MicrodistrictsListView(
                                 navController = appState.mainNavController,
                                 localityInput = selectedLocalityId?.let {
@@ -503,7 +516,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                                 isEditableList = false
                             )
                         },
-                        TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
+                        TabRowItem(title = stringResource(R.string.geo_tab_streets), onClick = onClickTab) {
                             StreetsListView(
                                 navController = appState.mainNavController,
                                 localityInput = selectedLocalityId?.let {

@@ -43,6 +43,7 @@ fun ScaffoldComponent(
     @DrawableRes topBarNavPainterResId: Int? = null,
     @StringRes topBarNavCntDescResId: Int? = null,
     navigationIcon: @Composable (() -> Unit)? = null,
+    onTopBarNavClick: (() -> Unit)? = null,
     defTopBarActions: @Composable RowScope.() -> Unit = {},
     topBarActions: @Composable RowScope.() -> Unit = {},
     isActionsLeading: Boolean = true,
@@ -96,7 +97,9 @@ fun ScaffoldComponent(
                     // check icons for auth screens: Signup and Login
                     if (topBarNavImageVector != null || topBarNavPainterResId != null) {
                         topBarNavImageVector?.let {
-                            IconButton(onClick = appState.handleTopBarNavClick.value) { // onTopBarNavClick
+                            IconButton(
+                                onClick = onTopBarNavClick ?: appState.handleTopBarNavClick.value
+                            ) {
                                 IconComponent(
                                     imageVector = it,
                                     painterResId = topBarNavPainterResId,

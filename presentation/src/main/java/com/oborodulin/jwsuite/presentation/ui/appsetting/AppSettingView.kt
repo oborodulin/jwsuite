@@ -73,6 +73,7 @@ private const val TAG = "Presentation.AppSettingView"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppSettingView(
+    modifier: Modifier = Modifier,
     appSettingsUiModel: AppSettingsUiModel,
     appSettingViewModel: AppSettingViewModel,//Impl = hiltViewModel()
     sessionViewModel: SessionViewModel//Impl = hiltViewModel()
@@ -86,8 +87,7 @@ fun AppSettingView(
 
     val events = remember(appSettingViewModel.events, lifecycleOwner) {
         appSettingViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
 
@@ -128,7 +128,8 @@ fun AppSettingView(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp)
-            ),
+            )
+            .then(modifier),
         //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
