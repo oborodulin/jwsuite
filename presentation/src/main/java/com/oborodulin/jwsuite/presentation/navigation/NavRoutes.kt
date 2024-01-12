@@ -145,6 +145,7 @@ private const val ARG_LOCALITY_ID = "localityId"
 private const val ARG_LOCALITY_DISTRICT_ID = "localityDistrictId"
 private const val ARG_MICRODISTRICT_ID = "microdistrictId"
 private const val ARG_STREET_ID = "streetId"
+private const val ARG_STREET_DISTRICT_ID = "streetDistrictId"
 
 // Congregation:
 private const val ARG_CONGREGATION_ID = "congregationId"
@@ -415,19 +416,29 @@ sealed class NavRoutes(
     }
 
     data object StreetLocalityDistrict : NavRoutes(
-        route = String.format(ROUTE_STREET_LOCALITY_DISTRICT, "{$ARG_STREET_ID}"),
+        route = String.format(
+            ROUTE_STREET_LOCALITY_DISTRICT,
+            "{$ARG_STREET_ID}",
+            "$ARG_STREET_DISTRICT_ID={$ARG_STREET_DISTRICT_ID}"
+        ),
         iconPainterResId = R.drawable.ic_locality_district_24,
         titleResId = R.string.nav_item_street_locality_district,
         arguments = listOf(navArgument(ARG_STREET_ID) {
             type = NavType.StringType
             nullable = false
             //defaultValue = null
+        }, navArgument(ARG_STREET_DISTRICT_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
         })
     ) {
         fun routeForStreetLocalityDistrict(streetLocalityDistrictInput: StreetLocalityDistrictInput? = null): String {
             val route = String.format(
                 ROUTE_STREET_LOCALITY_DISTRICT,
-                streetLocalityDistrictInput?.let { "${it.streetId}" }.orEmpty()
+                streetLocalityDistrictInput?.let { "${it.streetId}" }.orEmpty(),
+                streetLocalityDistrictInput?.streetDistrictId?.let { "$ARG_STREET_DISTRICT_ID=${it}" }
+                    .orEmpty()
             )
             Timber.tag(TAG)
                 .d("StreetLocalityDistrict -> routeForStreetLocalityDistrict: '%s'", route)
@@ -436,7 +447,8 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): StreetLocalityDistrictInput {
             val streetLocalityDistrictInput = StreetLocalityDistrictInput(
-                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty())
+                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty()),
+                entry.arguments?.getString(ARG_STREET_DISTRICT_ID)?.let { UUID.fromString(it) }
             )
             Timber.tag(TAG)
                 .d("StreetLocalityDistrict -> fromEntry: '%s'", streetLocalityDistrictInput)
@@ -445,19 +457,29 @@ sealed class NavRoutes(
     }
 
     data object StreetMicrodistrict : NavRoutes(
-        route = String.format(ROUTE_STREET_MICRODISTRICT, "{$ARG_STREET_ID}"),
+        route = String.format(
+            ROUTE_STREET_MICRODISTRICT,
+            "{$ARG_STREET_ID}",
+            "$ARG_STREET_DISTRICT_ID={$ARG_STREET_DISTRICT_ID}"
+        ),
         iconPainterResId = R.drawable.ic_microdistrict_24,
         titleResId = R.string.nav_item_street_microdistrict,
         arguments = listOf(navArgument(ARG_STREET_ID) {
             type = NavType.StringType
             nullable = false
             //defaultValue = null
+        }, navArgument(ARG_STREET_DISTRICT_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
         })
     ) {
         fun routeForStreetMicrodistrict(streetMicrodistrictInput: StreetMicrodistrictInput? = null): String {
             val route = String.format(
                 ROUTE_STREET_MICRODISTRICT,
-                streetMicrodistrictInput?.let { "${it.streetId}" }.orEmpty()
+                streetMicrodistrictInput?.let { "${it.streetId}" }.orEmpty(),
+                streetMicrodistrictInput?.streetDistrictId?.let { "$ARG_STREET_DISTRICT_ID=${it}" }
+                    .orEmpty()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("StreetMicrodistrict -> routeForStreetMicrodistrict: '%s'", route)
@@ -466,7 +488,8 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): StreetMicrodistrictInput {
             val streetMicrodistrictInput = StreetMicrodistrictInput(
-                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty())
+                UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty()),
+                entry.arguments?.getString(ARG_STREET_DISTRICT_ID)?.let { UUID.fromString(it) }
             )
             Timber.tag(TAG)
                 .d("StreetMicrodistrict -> fromEntry: '%s'", streetMicrodistrictInput)
@@ -577,8 +600,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MemberRoleInput? {
             val memberRoleInput =
-                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)
-                    ?.let { MemberRoleInput(UUID.fromString(it)) }
+                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)?.let { MemberRoleInput(UUID.fromString(it)) }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberRole -> fromEntry: '%s'", memberRoleInput)
             return memberRoleInput
         }

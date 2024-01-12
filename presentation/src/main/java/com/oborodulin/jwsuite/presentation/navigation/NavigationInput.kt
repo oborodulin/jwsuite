@@ -12,9 +12,11 @@ sealed class NavigationInput(val id: UUID?) {
 
     data class MicrodistrictInput(val microdistrictId: UUID) : NavigationInput(microdistrictId)
     data class StreetInput(val streetId: UUID) : NavigationInput(streetId)
-    data class StreetLocalityDistrictInput(val streetId: UUID) : NavigationInput(streetId)
+    data class StreetLocalityDistrictInput(val streetId: UUID, val streetDistrictId: UUID? = null) :
+        NavigationInput(streetDistrictId)
 
-    data class StreetMicrodistrictInput(val streetId: UUID) : NavigationInput(streetId)
+    data class StreetMicrodistrictInput(val streetId: UUID, val streetDistrictId: UUID? = null) :
+        NavigationInput(streetDistrictId)
 
     // Congregation:
     data class CongregationInput(val congregationId: UUID) : NavigationInput(congregationId)

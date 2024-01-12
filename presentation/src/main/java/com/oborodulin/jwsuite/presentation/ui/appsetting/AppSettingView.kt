@@ -159,8 +159,11 @@ fun AppSettingView(
                 }, modifier = Modifier
                     .padding(8.dp)
                     .weight(1f)
+                    .alignByBaseline()
             )
-            SignoutButtonComponent { isSignoutShowAlert.value = true }
+            SignoutButtonComponent(modifier = Modifier.alignByBaseline()) {
+                isSignoutShowAlert.value = true
+            }
         }
         // https://alexzh.com/jetpack-compose-building-grids/
         Box(
@@ -241,9 +244,9 @@ fun AppSettingView(
             horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
         ) {
             if (isSendButtonShow) {
-                SendButtonComponent(modifier = Modifier.weight(1f))
+                SendButtonComponent(modifier = Modifier.weight(1f).alignByBaseline())
             }
-            ReceiveButtonComponent()
+            ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
         }
         Divider(Modifier.fillMaxWidth())
         Text(

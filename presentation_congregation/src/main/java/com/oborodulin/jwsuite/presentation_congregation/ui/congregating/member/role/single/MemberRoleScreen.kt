@@ -19,19 +19,13 @@ private const val TAG = "Congregating.MemberRoleScreen"
 
 @Composable
 fun MemberRoleScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: MemberRoleViewModelImpl = hiltViewModel(),
     memberRoleInput: NavigationInput.MemberRoleInput? = null,
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
     Timber.tag(TAG).d("MemberRoleScreen(...) called: memberRoleInput = %s", memberRoleInput)
     val appState = LocalAppState.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
@@ -49,11 +43,8 @@ fun MemberRoleScreen(
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
             cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_member_role,
-            /*onActionBarChange = onActionBarChange,
-    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
         ) { _, _, _, handleSaveAction -> MemberRoleView(handleSaveAction = handleSaveAction) }
     }

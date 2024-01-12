@@ -50,7 +50,9 @@ class MemberRolesListViewModelImpl @Inject constructor(
             is MemberRolesListUiAction.EditMemberRole -> {
                 submitSingleEvent(
                     MemberRolesListUiSingleEvent.OpenMemberRoleScreen(
-                        NavRoutes.MemberRole.routeForMemberRole(MemberRoleInput(action.memberRoleId))
+                        NavRoutes.MemberRole.routeForMemberRole(
+                            MemberRoleInput(action.memberRoleId)
+                        )
                     )
                 )
             }
