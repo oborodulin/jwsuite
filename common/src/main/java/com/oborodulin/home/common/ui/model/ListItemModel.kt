@@ -50,12 +50,12 @@ open class ListItemModel(
         if (javaClass != other?.javaClass) return false
 
         other as ListItemModel
-        if (itemId != other.itemId) return false
-
-        return true
+        return itemId == other.itemId
     }
 
     override fun hashCode(): Int {
         return itemId.hashCode()
     }
 }
+
+fun ListItemModel?.isEmptyOrNull() = this == null || this.itemId == null || this.headline.isEmpty()

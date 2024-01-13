@@ -40,6 +40,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.field.DatePickerComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.model.isEmptyOrNull
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
@@ -70,8 +71,7 @@ fun MemberRoleView(
 
     val events = remember(memberRoleViewModel.events, lifecycleOwner) {
         memberRoleViewModel.events.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
+            lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
 
@@ -93,12 +93,12 @@ fun MemberRoleView(
     var currentMember = member.item
     Timber.tag(TAG)
         .d(
-            "currentCongregation = %s; selectedMember = %s; currentMember = %s",
+            "currentCongregation = %s; selectedMember = %s; currentMember = %s; member",
             currentCongregation, selectedMember, currentMember
         )
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MemberRoleView -> LaunchedEffect()")
-        if (currentMember == null) {
+        Timber.tag(TAG).d("MemberRoleView -> LaunchedEffect(): currentMember = %s", currentMember)
+        if (currentMember.isEmptyOrNull()) {
             currentMember = selectedMember
             currentCongregation?.let {
                 memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Congregation(it))
@@ -138,7 +138,7 @@ fun MemberRoleView(
                         isFocused = focusState.isFocused
                     )
                 },
-            enabled = member.item?.itemId == null,
+            enabled = currentMember.isEmptyOrNull(),
             sharedViewModel = appState.congregationSharedViewModel.value,
             inputWrapper = member,
             onValueChange = { memberRoleViewModel.onTextFieldEntered(MemberRoleInputEvent.Member(it)) },
