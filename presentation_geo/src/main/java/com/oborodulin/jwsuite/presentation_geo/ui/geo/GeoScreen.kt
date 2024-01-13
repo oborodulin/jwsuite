@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
@@ -160,28 +161,38 @@ fun GeoScreen(
     }
     var streetTabType by rememberSaveable { mutableStateOf(GeoStreetDistrictTabType.LOCALITY_DISTRICTS.name) }
     val onStreetTabChange: (GeoStreetDistrictTabType) -> Unit = { streetTabType = it.name }
+    val areSingleSelected by streetsListViewModel.areSingleSelected.collectAsStateWithLifecycle()
+    Timber.tag(TAG).d("Streets List View Model: areSingleSelected = %s", areSingleSelected)
     onFabChange {
         when (GeoTabType.valueOf(tabType)) {
             GeoTabType.STREETS ->
                 @Composable {
                     when (GeoStreetDistrictTabType.valueOf(streetTabType)) {
                         GeoStreetDistrictTabType.LOCALITY_DISTRICTS -> ExtFabComponent(
-                            enabled = true,
+                            enabled = areSingleSelected,
                             imageVector = Icons.Outlined.Add,
                             textResId = R.string.fab_street_locality_district_text
                         ) {
+                            val selectedStreet = streetsListViewModel.singleSelectedItem()
+                            Timber.tag(TAG).d("selectedStreet = %s", selectedStreet)
                             appState.mainNavigate(
-                                NavRoutes.StreetLocalityDistrict.routeForStreetLocalityDistrict()
+                                NavRoutes.StreetLocalityDistrict.routeForStreetLocalityDistrict(
+                                    NavigationInput.StreetLocalityDistrictInput(streetId = selectedStreet?.itemId!!)
+                                )
                             )
                         }
 
                         GeoStreetDistrictTabType.MICRODISTRICTS -> ExtFabComponent(
-                            enabled = true,
+                            enabled = areSingleSelected,
                             imageVector = Icons.Outlined.Add,
                             textResId = R.string.fab_street_microdistrict_text
                         ) {
+                            val selectedStreet = streetsListViewModel.singleSelectedItem()
+                            Timber.tag(TAG).d("selectedStreet = %s", selectedStreet)
                             appState.mainNavigate(
-                                NavRoutes.StreetMicrodistrict.routeForStreetMicrodistrict()
+                                NavRoutes.StreetMicrodistrict.routeForStreetMicrodistrict(
+                                    NavigationInput.StreetMicrodistrictInput(streetId = selectedStreet?.itemId!!)
+                                )
                             )
                         }
                     }
@@ -498,7 +509,10 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
             Column(modifier = Modifier.fillMaxSize()) {
                 CustomScrollableTabRow(
                     listOf(
-                        TabRowItem(title = stringResource(R.string.geo_tab_locality_districts), onClick = onClickTab) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_locality_districts),
+                            onClick = onClickTab
+                        ) {
                             LocalityDistrictsListView(
                                 navController = appState.mainNavController,
                                 localityInput = selectedLocalityId?.let {
@@ -507,7 +521,10 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                                 isEditableList = false
                             )
                         },
-                        TabRowItem(title = stringResource(R.string.geo_tab_microdistricts), onClick = onClickTab) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_microdistricts),
+                            onClick = onClickTab
+                        ) {
                             MicrodistrictsListView(
                                 navController = appState.mainNavController,
                                 localityInput = selectedLocalityId?.let {
@@ -516,7 +533,10 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                                 isEditableList = false
                             )
                         },
-                        TabRowItem(title = stringResource(R.string.geo_tab_streets), onClick = onClickTab) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_streets),
+                            onClick = onClickTab
+                        ) {
                             StreetsListView(
                                 navController = appState.mainNavController,
                                 localityInput = selectedLocalityId?.let {

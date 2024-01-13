@@ -18,6 +18,9 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityIn
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MicrodistrictInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListUiAction
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -26,6 +29,8 @@ private const val TAG = "Geo.StreetsListView"
 @Composable
 fun StreetsListView(
     viewModel: StreetsListViewModelImpl = hiltViewModel(),
+    localityDistrictsListViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
+    microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
     navController: NavController,
     localityInput: LocalityInput? = null,
     localityDistrictInput: LocalityDistrictInput? = null,
@@ -74,7 +79,15 @@ fun StreetsListView(
                         onDelete = { street ->
                             viewModel.submitAction(StreetsListUiAction.DeleteStreet(street.itemId!!))
                         }
-                    ) { street -> viewModel.singleSelectItem(street) }
+                    ) { street ->
+                        viewModel.singleSelectItem(street)
+                        with(localityDistrictsListViewModel) {
+                            submitAction(LocalityDistrictsListUiAction.Load(streetId = street.itemId!!))
+                        }
+                        with(microdistrictsListViewModel) {
+                            submitAction(LocalityDistrictsListUiAction.Load(streetId = street.itemId!!))
+                        }
+                    }
                 }
 
                 false -> {

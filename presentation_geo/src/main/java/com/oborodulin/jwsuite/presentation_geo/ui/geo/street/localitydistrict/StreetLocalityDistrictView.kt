@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -96,14 +97,15 @@ fun StreetLocalityDistrictView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .height(IntrinsicSize.Min)
+            .heightIn(min = 350.dp, max = 550.dp)
+            //.height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
+            //.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
