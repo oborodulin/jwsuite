@@ -39,13 +39,12 @@ data class SessionUi(
     else -> lastDestination // navigate to previous startDestination
 }*/
 
-    fun containsRole(roleType: MemberRoleType) = roles.map { it.roleType }.contains(roleType)
+    val userRoles: List<MemberRoleType> get() = roles.map { it.roleType }
+    fun containsRole(roleType: MemberRoleType) = userRoles.contains(roleType)
 
-    fun containsRoles(roleTypes: List<MemberRoleType>) =
-        roles.map { it.roleType }.containsAll(roleTypes)
+    fun containsRoles(roleTypes: List<MemberRoleType>) = userRoles.containsAll(roleTypes)
 
-    fun existsAnyRoleExcept(roleType: MemberRoleType) =
-        roles.map { it.roleType }.any { it != roleType }
+    fun existsAnyRoleExcept(roleType: MemberRoleType) = userRoles.any { it != roleType }
 
     override fun toString(): String {
         return "SessionUi(isSigned=$isSigned, isLogged=$isLogged, roles=$roles, lastDestination='$lastDestination', authStartDestination='$authStartDestination', mainRoute='$mainRoute', startDestination='$startDestination')"

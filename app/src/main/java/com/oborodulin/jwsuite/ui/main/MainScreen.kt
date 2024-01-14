@@ -32,6 +32,7 @@ import com.oborodulin.jwsuite.presentation.components.BottomNavigationComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
@@ -49,6 +50,7 @@ private const val TAG = "App.ui.MainScreen"
 fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
     Timber.tag(TAG).d("MainScreen(...) called")
     val appState = LocalAppState.current
+    val session = LocalSession.current
     val activity = (LocalContext.current as? Activity)
     val bottomBarHeight = 72.dp
     val bottomBarHeightPx = with(LocalDensity.current) {
@@ -73,7 +75,8 @@ fun MainScreen(sessionViewModel: SessionViewModel) { // Impl = hiltViewModel()
             BottomNavigationComponent(
                 modifier = Modifier
                     .height(bottomBarHeight)
-                    .offset { IntOffset(x = 0, y = -bottomBarOffsetHeightPx.roundToInt()) }
+                    .offset { IntOffset(x = 0, y = -bottomBarOffsetHeightPx.roundToInt()) },
+                userRoles = session.userRoles
             )
         }
     }

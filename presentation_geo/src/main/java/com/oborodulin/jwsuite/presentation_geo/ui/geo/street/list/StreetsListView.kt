@@ -20,6 +20,7 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -28,7 +29,7 @@ private const val TAG = "Geo.StreetsListView"
 
 @Composable
 fun StreetsListView(
-    viewModel: StreetsListViewModelImpl = hiltViewModel(),
+    streetsListViewModel: StreetsListViewModelImpl = hiltViewModel(),
     localityDistrictsListViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
     microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
     navController: NavController,
@@ -52,7 +53,7 @@ fun StreetsListView(
         isPrivateSector
     ) {
         Timber.tag(TAG).d("StreetsListView -> LaunchedEffect() BEFORE collect ui state flow")
-        viewModel.submitAction(
+        streetsListViewModel.submitAction(
             StreetsListUiAction.Load(
                 localityInput?.localityId,
                 localityDistrictInput?.localityDistrictId,
@@ -61,8 +62,8 @@ fun StreetsListView(
             )
         )
     }
-    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
-    viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+    val searchText by streetsListViewModel.searchText.collectAsStateWithLifecycle()
+    streetsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
             when (isEditableList) {
@@ -74,18 +75,18 @@ fun StreetsListView(
                         emptyListResId = R.string.streets_list_empty_text,
                         isEmptyListTextOutput = localityInput?.localityId != null || localityDistrictInput?.localityDistrictId != null || microdistrictInput?.microdistrictId != null,
                         onEdit = { street ->
-                            viewModel.submitAction(StreetsListUiAction.EditStreet(street.itemId!!))
+                            streetsListViewModel.submitAction(StreetsListUiAction.EditStreet(street.itemId!!))
                         },
                         onDelete = { street ->
-                            viewModel.submitAction(StreetsListUiAction.DeleteStreet(street.itemId!!))
+                            streetsListViewModel.submitAction(StreetsListUiAction.DeleteStreet(street.itemId!!))
                         }
                     ) { street ->
-                        viewModel.singleSelectItem(street)
+                        streetsListViewModel.singleSelectItem(street)
                         with(localityDistrictsListViewModel) {
                             submitAction(LocalityDistrictsListUiAction.Load(streetId = street.itemId!!))
                         }
                         with(microdistrictsListViewModel) {
-                            submitAction(LocalityDistrictsListUiAction.Load(streetId = street.itemId!!))
+                            submitAction(MicrodistrictsListUiAction.Load(streetId = street.itemId!!))
                         }
                     }
                 }
@@ -102,7 +103,7 @@ fun StreetsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("StreetsListView -> LaunchedEffect() AFTER collect single Event Flow")
-        viewModel.singleEventFlow.collectLatest {
+        streetsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
                 is StreetsListUiSingleEvent.OpenStreetScreen -> navController.navigate(it.navRoute)

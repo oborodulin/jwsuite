@@ -24,7 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.oborodulin.home.common.ui.components.IconComponent
+import com.oborodulin.home.common.ui.components.bar.action.BarActionItem
 import com.oborodulin.home.common.ui.theme.Typography
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
 
@@ -46,11 +48,13 @@ fun ScaffoldComponent(
     onTopBarNavClick: (() -> Unit)? = null,
     defTopBarActions: @Composable RowScope.() -> Unit = {},
     topBarActions: @Composable RowScope.() -> Unit = {},
+    barActionItems: List<BarActionItem> = emptyList(),
     isActionsLeading: Boolean = true,
     topBar: @Composable (() -> Unit)? = null,
     bottomBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
+    userRoles: List<MemberRoleType> = emptyList(),
     content: @Composable (PaddingValues) -> Unit
 ) {
     Timber.tag(TAG).d("ScaffoldComponent(...) called")
@@ -117,10 +121,34 @@ fun ScaffoldComponent(
                     }*/
                 },
                 actions = {
-                    if (isActionsLeading) {
-                        topBarActions(); defTopBarActions()
+                    if (barActionItems.isNotEmpty()) {
+                        if (isActionsLeading.not()) {
+                            defTopBarActions()
+                        }
+                        repeat(barActionItems.size) {
+                            if (userRoles.isEmpty() || barActionItems[it].userRoles.isEmpty() ||
+                                barActionItems[it].userRoles.any { role ->
+                                    userRoles.contains(MemberRoleType.valueOf(role))
+                                }
+                            ) {
+                                IconButton(onClick = barActionItems[it].onClick) {
+                                    IconComponent(
+                                        imageVector = barActionItems[it].iconImageVector,
+                                        painterResId = barActionItems[it].iconPainterResId,
+                                        contentDescriptionResId = barActionItems[it].cntDescResId
+                                    )
+                                }
+                            }
+                        }
+                        if (isActionsLeading) {
+                            defTopBarActions()
+                        }
                     } else {
-                        defTopBarActions(); topBarActions()
+                        if (isActionsLeading) {
+                            topBarActions(); defTopBarActions()
+                        } else {
+                            defTopBarActions(); topBarActions()
+                        }
                     }
                 }
             )

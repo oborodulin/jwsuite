@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.oborodulin.home.common.ui.components.IconComponent
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import timber.log.Timber
@@ -19,7 +20,10 @@ import timber.log.Timber
 private const val TAG = "Presentation.BottomNavBarComponent"
 
 @Composable
-fun BottomNavigationComponent(modifier: Modifier) {
+fun BottomNavigationComponent(
+    modifier: Modifier,
+    userRoles: List<MemberRoleType> = emptyList()
+) {
     Timber.tag(TAG).d("BottomNavigationBar(...) called")
     val appState = LocalAppState.current
     NavigationBar(
@@ -41,31 +45,35 @@ fun BottomNavigationComponent(modifier: Modifier) {
         val navBackStackEntry by appState.barNavController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         NavRoutes.bottomNavBarRoutes().forEach { item ->
-            NavigationBarItem(
-                icon = {
-                    IconComponent(
-                        imageVector = item.iconImageVector,
-                        painterResId = item.iconPainterResId,
-                        contentDescriptionResId = item.titleResId,
-                        //tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(item.titleResId),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        softWrap = false,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                //colors = NavigationBarItemDefaults.colors(selectedIconColor = SpeechRed,)
-                //unselectedContentColor = Color.White.copy(0.4f),
-                alwaysShowLabel = true,
-                selected = currentRoute == item.route,
-                onClick = { appState.navigateToBarRoute(item.route) }
-            )
+            if (userRoles.isEmpty() || item.userRoles.isEmpty() ||
+                item.userRoles.any { role -> userRoles.contains(role) }
+            ) {
+                NavigationBarItem(
+                    icon = {
+                        IconComponent(
+                            imageVector = item.iconImageVector,
+                            painterResId = item.iconPainterResId,
+                            contentDescriptionResId = item.titleResId,
+                            //tint = MaterialTheme.colorScheme.onSurface,
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(item.titleResId),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = false,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    //colors = NavigationBarItemDefaults.colors(selectedIconColor = SpeechRed,)
+                    //unselectedContentColor = Color.White.copy(0.4f),
+                    alwaysShowLabel = true,
+                    selected = currentRoute == item.route,
+                    onClick = { appState.navigateToBarRoute(item.route) }
+                )
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
 import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityDistrictInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
@@ -31,17 +32,24 @@ fun MicrodistrictsListView(
     navController: NavController,
     localityInput: LocalityInput? = null,
     localityDistrictInput: LocalityDistrictInput? = null,
+    streetInput: NavigationInput.StreetInput? = null,
     isEditableList: Boolean = true
 ) {
     Timber.tag(TAG).d(
-        "MicrodistrictsListView(...) called: localityInput = %s; localityDistrictInput = %s",
-        localityInput, localityDistrictInput
+        "MicrodistrictsListView(...) called: localityInput = %s; localityDistrictInput = %s; streetInput = %s",
+        localityInput, localityDistrictInput, streetInput
     )
-    LaunchedEffect(localityInput?.localityId, localityDistrictInput?.localityDistrictId) {
+    LaunchedEffect(
+        localityInput?.localityId,
+        localityDistrictInput?.localityDistrictId,
+        streetInput?.streetId
+    ) {
         Timber.tag(TAG).d("MicrodistrictsListView -> LaunchedEffect() BEFORE collect ui state flow")
         microdistrictsListViewModel.submitAction(
             MicrodistrictsListUiAction.Load(
-                localityInput?.localityId, localityDistrictInput?.localityDistrictId
+                localityId = localityInput?.localityId,
+                localityDistrictId = localityDistrictInput?.localityDistrictId,
+                streetId = streetInput?.streetId
             )
         )
     }
@@ -49,36 +57,67 @@ fun MicrodistrictsListView(
     microdistrictsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            when (isEditableList) {
-                true -> {
-                    EditableListViewComponent(
-                        items = it,
-                        searchedText = searchText.text,
-                        dlgConfirmDelResId = R.string.dlg_confirm_del_microdistrict,
-                        emptyListResId = R.string.microdistricts_list_empty_text,
-                        isEmptyListTextOutput = localityInput?.localityId != null || localityDistrictInput?.localityDistrictId != null,
-                        onEdit = { microdistrict ->
-                            microdistrictsListViewModel.submitAction(
-                                MicrodistrictsListUiAction.EditMicrodistrict(microdistrict.itemId!!)
-                            )
-                        },
-                        onDelete = { microdistrict ->
-                            microdistrictsListViewModel.submitAction(
-                                MicrodistrictsListUiAction.DeleteMicrodistrict(microdistrict.itemId!!)
+            when (streetInput?.streetId) {
+                null -> when (isEditableList) {
+                    true -> {
+                        EditableListViewComponent(
+                            items = it,
+                            searchedText = searchText.text,
+                            dlgConfirmDelResId = R.string.dlg_confirm_del_microdistrict,
+                            emptyListResId = R.string.microdistricts_list_empty_text,
+                            isEmptyListTextOutput = localityInput?.localityId != null || localityDistrictInput?.localityDistrictId != null,
+                            onEdit = { microdistrict ->
+                                microdistrictsListViewModel.submitAction(
+                                    MicrodistrictsListUiAction.EditMicrodistrict(microdistrict.itemId!!)
+                                )
+                            },
+                            onDelete = { microdistrict ->
+                                microdistrictsListViewModel.submitAction(
+                                    MicrodistrictsListUiAction.DeleteMicrodistrict(microdistrict.itemId!!)
+                                )
+                            }
+                        ) { microdistrict ->
+                            microdistrictsListViewModel.singleSelectItem(microdistrict)
+                            streetsListViewModel.submitAction(
+                                StreetsListUiAction.Load(
+                                    microdistrictId = microdistrict.itemId!!
+                                )
                             )
                         }
-                    ) { microdistrict ->
-                        microdistrictsListViewModel.singleSelectItem(microdistrict)
-                        streetsListViewModel.submitAction(StreetsListUiAction.Load(microdistrictId = microdistrict.itemId!!))
+                    }
+
+                    false -> {
+                        ListViewComponent(
+                            items = it,
+                            emptyListResId = R.string.microdistricts_list_empty_text,
+                            isEmptyListTextOutput = localityInput?.localityId != null || localityDistrictInput?.localityDistrictId != null
+                        )
                     }
                 }
 
-                false -> {
-                    ListViewComponent(
-                        items = it,
-                        emptyListResId = R.string.microdistricts_list_empty_text,
-                        isEmptyListTextOutput = localityInput?.localityId != null || localityDistrictInput?.localityDistrictId != null
-                    )
+                else -> when (isEditableList) {
+                    true -> {
+                        EditableListViewComponent(
+                            items = it,
+                            searchedText = searchText.text,
+                            dlgConfirmDelResId = R.string.dlg_confirm_del_street_microdistrict,
+                            emptyListResId = R.string.street_microdistricts_list_empty_text,
+                            onDelete = { microdistrict ->
+                                microdistrictsListViewModel.submitAction(
+                                    MicrodistrictsListUiAction.DeleteStreetMicrodistrict(
+                                        streetInput.streetId, microdistrict.itemId!!
+                                    )
+                                )
+                            }
+                        )
+                    }
+
+                    false -> {
+                        ListViewComponent(
+                            items = it,
+                            emptyListResId = R.string.street_microdistricts_list_empty_text
+                        )
+                    }
                 }
             }
         }

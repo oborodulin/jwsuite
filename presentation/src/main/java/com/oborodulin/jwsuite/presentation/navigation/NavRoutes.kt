@@ -16,6 +16,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.oborodulin.home.common.util.LogLevel.LOG_NAVIGATION
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
@@ -172,7 +173,8 @@ sealed class NavRoutes(
     val iconImageVector: ImageVector? = null,
     @DrawableRes open val iconPainterResId: Int? = null,
     @StringRes open val titleResId: Int,
-    val arguments: List<NamedNavArgument> = emptyList()
+    val arguments: List<NamedNavArgument> = emptyList(),
+    val userRoles: List<MemberRoleType> = emptyList()
 ) {
     // Bottom Navigation:
     data object Home : NavRoutes(
@@ -190,13 +192,15 @@ sealed class NavRoutes(
     data object Congregating : NavRoutes(
         route = ROUTE_CONGREGATING,
         iconPainterResId = R.drawable.ic_congregation_24,
-        titleResId = R.string.nav_item_congregating
+        titleResId = R.string.nav_item_congregating,
+        userRoles = listOf(MemberRoleType.ADMIN)
     )
 
     data object Territoring : NavRoutes(
         route = ROUTE_TERRITORING,
         iconPainterResId = R.drawable.ic_territory_map_24,
-        titleResId = R.string.nav_item_territoring
+        titleResId = R.string.nav_item_territoring,
+        userRoles = listOf(MemberRoleType.TERRITORIES)
     )
 
     data object Ministring : NavRoutes(

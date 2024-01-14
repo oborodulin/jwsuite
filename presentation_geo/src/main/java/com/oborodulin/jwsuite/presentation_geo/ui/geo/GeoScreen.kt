@@ -44,14 +44,17 @@ import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModel
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModel
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.list.MicrodistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModel
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import timber.log.Timber
 import java.util.UUID
@@ -63,24 +66,13 @@ private const val TAG = "Geo.GeoScreen"
 
 @Composable
 fun GeoScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    //membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
-    //nestedScrollConnection: NestedScrollConnection,
-    //bottomBar: @Composable () -> Unit
     regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
     localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     localityDistrictsListViewModel: LocalityDistrictsListViewModelImpl = hiltViewModel(),
     microdistrictsListViewModel: MicrodistrictsListViewModelImpl = hiltViewModel(),
     streetsListViewModel: StreetsListViewModelImpl = hiltViewModel(),
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarTitleChange: (String) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarNavClickChange: (() -> Unit) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
     val appState = LocalAppState.current
@@ -262,7 +254,7 @@ fun GeoScreen(
                         title = stringResource(R.string.geo_tab_regions),
                         onClick = { onTabChange(GeoTabType.REGIONS) }
                     ) {
-                        RegionRegionDistrictsLocalitiesView(
+                        RegionWithRegionDistrictsAndLocalitiesView(
                             appState = appState,
                             regionsListViewModel = regionsListViewModel
                         )
@@ -271,7 +263,7 @@ fun GeoScreen(
                         title = stringResource(R.string.geo_tab_region_districts),
                         onClick = { onTabChange(GeoTabType.REGION_DISTRICTS) }
                     ) {
-                        RegionDistrictsLocalitiesView(
+                        RegionDistrictsWithLocalitiesView(
                             appState = appState,
                             regionDistrictsListViewModel = regionDistrictsListViewModel
                         )
@@ -280,7 +272,7 @@ fun GeoScreen(
                         title = stringResource(R.string.geo_tab_localities),
                         onClick = { onTabChange(GeoTabType.LOCALITIES) }
                     ) {
-                        LocalitiesLocalitiesDistrictsMicrodistrictsView(
+                        LocalitiesWithLocalitiesDistrictsAndMicrodistrictsView(
                             appState = appState,
                             localitiesListViewModel = localitiesListViewModel
                         )
@@ -289,28 +281,28 @@ fun GeoScreen(
                         title = stringResource(R.string.geo_tab_locality_districts),
                         onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
                     ) {
-                        LocalitiesDistrictsMicrodistrictsStreetsView(
+                        LocalitiesDistrictsWithMicrodistrictsAndStreetsView(
                             appState = appState,
-                            //sharedViewModel = sharedViewModel,
+                            localityDistrictsListViewModel = localityDistrictsListViewModel
                         )
                     },
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_microdistricts),
                         onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
                     ) {
-                        MicrodistrictsStreetsView(
+                        MicrodistrictsWithStreetsView(
                             appState = appState,
-                            //sharedViewModel = sharedViewModel,
+                            microdistrictsListViewModel = microdistrictsListViewModel
                         )
                     },
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_streets),
                         onClick = { onTabChange(GeoTabType.STREETS) }
                     ) {
-                        StreetsView(
+                        StreetsWithLocalityDistrictsAndMicrodistrictsView(
                             appState = appState,
-                            onStreetTabChange = onStreetTabChange
-                            //sharedViewModel = sharedViewModel,
+                            onStreetTabChange = onStreetTabChange,
+                            streetsListViewModel = streetsListViewModel
                         )
                     }
                 )
@@ -331,13 +323,13 @@ fun GeoScreen(
 }
 
 @Composable
-fun RegionRegionDistrictsLocalitiesView(
+fun RegionWithRegionDistrictsAndLocalitiesView(
     appState: AppState,
     regionsListViewModel: RegionsListViewModelImpl
 ) {
     Timber.tag(TAG).d("RegionRegionDistrictsLocalitiesView(...) called")
     var selectedRegionId: UUID? by remember { mutableStateOf(regionsListViewModel.singleSelectedItem()?.itemId) }
-    val onClickTab = { selectedRegionId = regionsListViewModel.singleSelectedItem()?.itemId }
+    val onTabClick = { selectedRegionId = regionsListViewModel.singleSelectedItem()?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -380,7 +372,7 @@ fun RegionRegionDistrictsLocalitiesView(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_region_districts),
-                            onClick = onClickTab
+                            onClick = onTabClick
                         ) {
                             RegionDistrictsListView(
                                 navController = appState.mainNavController,
@@ -390,7 +382,7 @@ fun RegionRegionDistrictsLocalitiesView(
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_localities),
-                            onClick = onClickTab
+                            onClick = onTabClick
                         ) {
                             LocalitiesListView(
                                 navController = appState.mainNavController,
@@ -406,12 +398,12 @@ fun RegionRegionDistrictsLocalitiesView(
 }
 
 @Composable
-fun RegionDistrictsLocalitiesView(
+fun RegionDistrictsWithLocalitiesView(
     appState: AppState,
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl
 ) {
     Timber.tag(TAG).d("RegionDistrictsLocalitiesView(...) called")
-    val selectedRegionDistrictId = regionDistrictsListViewModel.singleSelectedItem()?.itemId
+    val selectedRegionDistrictId: UUID? by remember { mutableStateOf(regionDistrictsListViewModel.singleSelectedItem()?.itemId) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -462,13 +454,13 @@ fun RegionDistrictsLocalitiesView(
 }
 
 @Composable
-fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
+fun LocalitiesWithLocalitiesDistrictsAndMicrodistrictsView(
     appState: AppState,
     localitiesListViewModel: LocalitiesListViewModelImpl
 ) {
     Timber.tag(TAG).d("LocalitiesLocalitiesDistrictsMicrodistrictsView(...) called")
     var selectedLocalityId: UUID? by remember { mutableStateOf(localitiesListViewModel.singleSelectedItem()?.itemId) }
-    val onClickTab = { selectedLocalityId = localitiesListViewModel.singleSelectedItem()?.itemId }
+    val onTabClick = { selectedLocalityId = localitiesListViewModel.singleSelectedItem()?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -511,7 +503,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_locality_districts),
-                            onClick = onClickTab
+                            onClick = onTabClick
                         ) {
                             LocalityDistrictsListView(
                                 navController = appState.mainNavController,
@@ -523,7 +515,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_microdistricts),
-                            onClick = onClickTab
+                            onClick = onTabClick
                         ) {
                             MicrodistrictsListView(
                                 navController = appState.mainNavController,
@@ -535,7 +527,7 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_streets),
-                            onClick = onClickTab
+                            onClick = onTabClick
                         ) {
                             StreetsListView(
                                 navController = appState.mainNavController,
@@ -553,12 +545,16 @@ fun LocalitiesLocalitiesDistrictsMicrodistrictsView(
 }
 
 @Composable
-fun LocalitiesDistrictsMicrodistrictsStreetsView(
+fun LocalitiesDistrictsWithMicrodistrictsAndStreetsView(
     appState: AppState,
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    //membersListViewModel: MembersListViewModel
+    localityDistrictsListViewModel: LocalityDistrictsListViewModel,
 ) {
     Timber.tag(TAG).d("LocalitiesDistrictsMicrodistrictsStreetsView(...) called")
+    var selectedLocalityDistrictId: UUID? by remember {
+        mutableStateOf(localityDistrictsListViewModel.singleSelectedItem()?.itemId)
+    }
+    val onTabClick =
+        { selectedLocalityDistrictId = localityDistrictsListViewModel.singleSelectedItem()?.itemId }
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
@@ -600,15 +596,27 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
             Column(modifier = Modifier.fillMaxSize()) {
                 CustomScrollableTabRow(
                     listOf(
-                        TabRowItem(title = stringResource(R.string.geo_tab_microdistricts)) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_microdistricts),
+                            onClick = onTabClick
+                        ) {
                             MicrodistrictsListView(
                                 navController = appState.mainNavController,
+                                localityDistrictInput = selectedLocalityDistrictId?.let {
+                                    NavigationInput.LocalityDistrictInput(it)
+                                },
                                 isEditableList = false
                             )
                         },
-                        TabRowItem(title = stringResource(R.string.geo_tab_streets)) {
+                        TabRowItem(
+                            title = stringResource(R.string.geo_tab_streets),
+                            onClick = onTabClick
+                        ) {
                             StreetsListView(
                                 navController = appState.mainNavController,
+                                localityDistrictInput = selectedLocalityDistrictId?.let {
+                                    NavigationInput.LocalityDistrictInput(it)
+                                },
                                 isEditableList = false
                             )
                         }
@@ -620,12 +628,12 @@ fun LocalitiesDistrictsMicrodistrictsStreetsView(
 }
 
 @Composable
-fun MicrodistrictsStreetsView(
+fun MicrodistrictsWithStreetsView(
     appState: AppState,
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    //membersListViewModel: MembersListViewModel
+    microdistrictsListViewModel: MicrodistrictsListViewModel
 ) {
     Timber.tag(TAG).d("MicrodistrictsStreetsView(...) called")
+    val selectedMicrodistrictId: UUID? by remember { mutableStateOf(microdistrictsListViewModel.singleSelectedItem()?.itemId) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -666,6 +674,9 @@ fun MicrodistrictsStreetsView(
         ) {
             StreetsListView(
                 navController = appState.mainNavController,
+                microdistrictInput = selectedMicrodistrictId?.let {
+                    NavigationInput.MicrodistrictInput(it)
+                },
                 isEditableList = false
             )
         }
@@ -673,13 +684,14 @@ fun MicrodistrictsStreetsView(
 }
 
 @Composable
-fun StreetsView(
+fun StreetsWithLocalityDistrictsAndMicrodistrictsView(
     appState: AppState,
-    onStreetTabChange: (GeoStreetDistrictTabType) -> Unit
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    //membersListViewModel: MembersListViewModel
+    onStreetTabChange: (GeoStreetDistrictTabType) -> Unit,
+    streetsListViewModel: StreetsListViewModel
 ) {
     Timber.tag(TAG).d("StreetsView(...) called")
+    var selectedStreetId: UUID? by remember { mutableStateOf(streetsListViewModel.singleSelectedItem()?.itemId) }
+    val onTabClick = { selectedStreetId = streetsListViewModel.singleSelectedItem()?.itemId }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -722,18 +734,24 @@ fun StreetsView(
                     listOf(
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_locality_districts),
-                            onClick = { onStreetTabChange(GeoStreetDistrictTabType.LOCALITY_DISTRICTS) }) {
+                            onClick = {
+                                onStreetTabChange(GeoStreetDistrictTabType.LOCALITY_DISTRICTS)
+                                onTabClick()
+                            }) {
                             LocalityDistrictsListView(
                                 navController = appState.mainNavController,
-                                isEditableList = false
+                                streetInput = selectedStreetId?.let { NavigationInput.StreetInput(it) }
                             )
                         },
                         TabRowItem(
                             title = stringResource(R.string.geo_tab_microdistricts),
-                            onClick = { onStreetTabChange(GeoStreetDistrictTabType.MICRODISTRICTS) }) {
+                            onClick = {
+                                onStreetTabChange(GeoStreetDistrictTabType.MICRODISTRICTS)
+                                onTabClick()
+                            }) {
                             MicrodistrictsListView(
                                 navController = appState.mainNavController,
-                                isEditableList = false
+                                streetInput = selectedStreetId?.let { NavigationInput.StreetInput(it) }
                             )
                         }
                     )

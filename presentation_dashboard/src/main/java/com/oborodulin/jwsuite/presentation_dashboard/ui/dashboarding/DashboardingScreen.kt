@@ -9,18 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.oborodulin.home.common.ui.components.bar.action.BarActionItem
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
@@ -41,15 +39,9 @@ private const val TAG = "Dashboarding.ui.DashboardingScreen"
 
 @Composable
 fun DashboardingScreen(
-    //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     viewModel: DashboardingViewModelImpl = hiltViewModel(),
     defTopBarActions: @Composable RowScope.() -> Unit = {},
-    bottomBar: @Composable () -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarTitleChange: (String) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    bottomBar: @Composable () -> Unit = {}
 ) {
     Timber.tag(TAG).d("DashboardingScreen(...) called")
     val appState = LocalAppState.current
@@ -62,18 +54,20 @@ fun DashboardingScreen(
         topBarTitle = stringResource(R.string.nav_item_dashboarding),
         topBarNavImageVector = null,
         defTopBarActions = defTopBarActions,
-        topBarActions = {
-            IconButton(onClick = { appState.mainNavigate(NavRoutes.Geo.route) }) {
-                Icon(
-                    painterResource(R.drawable.ic_geo_24), stringResource(NavRoutes.Geo.titleResId)
-                )
-            }
-            // context.toast("Settings button clicked...")
-            IconButton(onClick = { appState.mainNavigate(NavRoutes.Settings.route) }) {
-                Icon(Icons.Outlined.Settings, stringResource(NavRoutes.Settings.titleResId))
-            }
-        },
-        bottomBar = bottomBar
+        // context.toast("Settings button clicked...")
+        barActionItems = listOf(
+            BarActionItem(
+                iconPainterResId = R.drawable.ic_geo_24,
+                cntDescResId = NavRoutes.Geo.titleResId,
+                userRoles = listOf(MemberRoleType.TERRITORIES.name)
+            ) { appState.mainNavigate(NavRoutes.Geo.route) },
+            BarActionItem(
+                iconImageVector = Icons.Outlined.Settings,
+                cntDescResId = NavRoutes.Settings.titleResId
+            ) { appState.mainNavigate(NavRoutes.Settings.route) }
+        ),
+        bottomBar = bottomBar,
+        userRoles = session.userRoles
     ) { innerPadding ->
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
             if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
