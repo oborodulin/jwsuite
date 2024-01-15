@@ -44,7 +44,7 @@ interface GeoLocalityDistrictDao {
     //-----------------------------
     @Query(
         """
-    SELECT ldv.* FROM ${GeoLocalityDistrictView.VIEW_NAME} ldv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} sd 
+    SELECT ldv.* FROM ${GeoLocalityDistrictView.VIEW_NAME} ldv JOIN (SELECT dsStreetsId, dsLocalityDistrictsId FROM ${GeoStreetDistrictEntity.TABLE_NAME} GROUP BY dsLocalityDistrictsId, dsStreetsId) sd 
         ON sd.dsStreetsId = :streetId AND ldv.${PX_LOCALITY_DISTRICT}localityDistrictId = sd.dsLocalityDistrictsId 
             AND ldv.${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale 
     ORDER BY ldv.${PX_LOCALITY_DISTRICT}locDistrictName

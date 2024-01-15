@@ -13,6 +13,7 @@ import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Entity(
@@ -76,9 +77,12 @@ data class CongregationEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Congregation Entity №").append(congregationNum)
-            .append(" '").append(congregationName).append("' [territoryMark = '")
-            .append(territoryMark)
-            .append("; cLocalitiesId = ").append(cLocalitiesId)
+            .append(" '").append(congregationName).append("' territoryMark = '")
+            .append(territoryMark).append("'")
+        lastVisitDate?.let {
+            str.append(". Date of last visit ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(it))
+        }
+        str.append(" [cLocalitiesId = ").append(cLocalitiesId)
             .append("; isFavorite = ").append(isFavorite)
             .append("'] congregationId = ").append(congregationId)
         return str.toString()

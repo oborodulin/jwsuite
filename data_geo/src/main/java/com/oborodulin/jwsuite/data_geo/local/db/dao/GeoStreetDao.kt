@@ -48,8 +48,8 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds 
-            ON ds.dsStreetsId = sv.streetId AND ds.dsLocalityDistrictsId = :localityDistrictId 
+        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN (SELECT dsStreetsId, dsLocalityDistrictsId FROM ${GeoStreetDistrictEntity.TABLE_NAME} GROUP BY dsLocalityDistrictsId, dsStreetsId) sd 
+            ON sd.dsStreetsId = sv.streetId AND sd.dsLocalityDistrictsId = :localityDistrictId 
                 AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
         ORDER BY sv.streetName                
         """

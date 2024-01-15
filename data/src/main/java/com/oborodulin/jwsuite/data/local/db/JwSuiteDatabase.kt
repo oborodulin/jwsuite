@@ -23,6 +23,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
@@ -88,6 +89,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
 import com.oborodulin.jwsuite.data_territory.local.db.views.FloorView
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
@@ -135,11 +137,11 @@ private const val TAG = "JwSuiteDatabase"
         GeoLocalityDistrictEntity::class, GeoLocalityDistrictTlEntity::class,
         GeoMicrodistrictEntity::class, GeoMicrodistrictTlEntity::class,
         GeoStreetEntity::class, GeoStreetTlEntity::class, GeoStreetDistrictEntity::class,
-        CongregationEntity::class, GroupEntity::class, MemberEntity::class, MemberMovementEntity::class,
-        MemberRoleEntity::class, MemberCongregationCrossRefEntity::class, MemberMinistryEntity::class,
-        TerritoryCategoryEntity::class, TerritoryEntity::class, TerritoryStreetEntity::class,
-        TransferObjectEntity::class, RoleTransferObjectEntity::class,
-        TerritoryMemberCrossRefEntity::class,
+        CongregationEntity::class, CongregationTotalEntity::class, GroupEntity::class, MemberEntity::class,
+        MemberMovementEntity::class, MemberRoleEntity::class, MemberCongregationCrossRefEntity::class,
+        MemberMinistryEntity::class, TerritoryCategoryEntity::class, TerritoryEntity::class,
+        TerritoryStreetEntity::class, TransferObjectEntity::class, RoleTransferObjectEntity::class,
+        TerritoryMemberCrossRefEntity::class, TerritoryTotalEntity::class,
         HouseEntity::class, EntranceEntity::class, FloorEntity::class, RoomEntity::class,
         TerritoryMemberReportEntity::class,
         CongregationTerritoryCrossRefEntity::class],

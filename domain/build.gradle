@@ -55,6 +55,9 @@ dependencies {
     // JSON
     implementation deps.json.kotlinx
 
+    // CSV
+    implementation deps.csv.opencsv
+
     // Work
     implementation deps.work.runtimeKtx
 

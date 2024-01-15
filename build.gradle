@@ -52,6 +52,7 @@ buildscript {
                 navigation             : '2.5.3',
                 nvi18n                 : '1.29',
                 okhttpLogging          : '5.0.0-alpha.11',
+                opencsv                : '5.9',
                 paging                 : '3.1.1',
                 pagingCompose          : '1.0.0-alpha19',
                 poolingcontainer       : '1.0.0',
@@ -237,6 +238,7 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                 work                : [runtimeKtx: "androidx.work:work-runtime-ktx:$versions.work",
                                        testing   : "androidx.work:work-testing:$versions.work"],
                 xml                 : [xmlpull: "xmlpull:xmlpull:$versions.xmlpull"],
+                csv                 : [opencsv: "com.opencsv:opencsv:$versions.opencsv"]
         ]
     }
     repositories {
