@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalCongregationDataSource {
+    fun selectCongregations(): Flow<List<CongregationEntity>>
     fun getCongregations(): Flow<List<CongregationView>>
     fun getCongregation(congregationId: UUID): Flow<CongregationView>
     fun getFavoriteCongregation(): Flow<CongregationView?>

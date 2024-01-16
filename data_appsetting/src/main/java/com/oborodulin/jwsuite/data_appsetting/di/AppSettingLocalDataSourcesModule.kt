@@ -19,7 +19,5 @@ object AppSettingLocalDataSourcesModule {
     @Provides
     fun provideAppSettingDataSource(
         appSettingDao: AppSettingDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalAppSettingDataSource = LocalAppSettingDataSourceImpl(
-        appSettingDao, dispatcher
-    )
+    ): LocalAppSettingDataSource = LocalAppSettingDataSourceImpl(appSettingDao, dispatcher)
 }

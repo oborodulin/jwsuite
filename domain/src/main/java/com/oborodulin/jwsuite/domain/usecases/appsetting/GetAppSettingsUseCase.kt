@@ -5,6 +5,7 @@ import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.util.getAppVersion
 import com.oborodulin.jwsuite.domain.model.appsetting.AppSettingsWithSession
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
+import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import kotlinx.coroutines.flow.combine
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.first
 class GetAppSettingsUseCase(
     private val ctx: Context,
     configuration: Configuration,
+    private val databaseRepository: DatabaseRepository,
     private val appSettingsRepository: AppSettingsRepository,
     private val sessionManagerRepository: SessionManagerRepository,
     private val membersRepository: MembersRepository
@@ -21,8 +23,8 @@ class GetAppSettingsUseCase(
     override fun process(request: Request) = combine(
         appSettingsRepository.getAll(),
         sessionManagerRepository.username(),
-        appSettingsRepository.sqliteVersion(),
-        appSettingsRepository.dbVersion()
+        databaseRepository.sqliteVersion(),
+        databaseRepository.dbVersion()
     ) { settings, username, sqliteVersion, dbVersion ->
         val roles = membersRepository.getMemberRoles(username.orEmpty()).first()
         val roleTransferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()

@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
+import com.oborodulin.jwsuite.data.local.db.dao.DatabaseDao
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
@@ -32,6 +33,10 @@ import javax.inject.Singleton
 object DaoModule {
     // PERSISTENCE
     // DAO:
+    @Singleton
+    @Provides
+    fun provideDatabaseDao(db: JwSuiteDatabase): DatabaseDao = db.databaseDao()
+
     @Singleton
     @Provides
     fun provideAppSettingDao(db: JwSuiteDatabase): AppSettingDao = db.appSettingDao()

@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_appsetting.sources.local
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
@@ -8,7 +7,7 @@ import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.Loca
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -52,9 +51,5 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
 
     override suspend fun deleteAppSettings() = withContext(dispatcher) {
         appSettingDao.deleteAll()
-    }
-
-    override suspend fun checkpoint() = withContext(dispatcher) {
-        appSettingDao.checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
     }
 }

@@ -13,6 +13,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_SECURE
 import com.oborodulin.home.common.util.Mapper
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.converters.JwSuiteTypeConverters
+import com.oborodulin.jwsuite.data.local.db.dao.DatabaseDao
 import com.oborodulin.jwsuite.data.local.db.entities.MemberMinistryEntity
 import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.DATABASE_PASSPHRASE
@@ -167,6 +168,7 @@ private const val TAG = "JwSuiteDatabase"
 @TypeConverters(JwSuiteTypeConverters::class)
 abstract class JwSuiteDatabase : RoomDatabase() {
     // DAOs:
+    abstract fun databaseDao(): DatabaseDao
     abstract fun appSettingDao(): AppSettingDao
 
     // Geo:

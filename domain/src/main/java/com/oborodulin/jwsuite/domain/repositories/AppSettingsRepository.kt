@@ -13,9 +13,4 @@ interface AppSettingsRepository {
     fun deleteById(settingId: UUID): Flow<UUID>
     fun delete(settings: List<AppSetting>): Flow<List<AppSetting>>
     suspend fun deleteAll()
-
-    // API:
-    fun sqliteVersion(): Flow<String>
-    fun dbVersion(): Flow<String>
-    suspend fun checkpoint(): Int
 }

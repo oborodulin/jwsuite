@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.di
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
+import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
@@ -34,12 +35,14 @@ object AppUseCasesModule {
     fun provideGetAppSettingsUseCase(
         @ApplicationContext ctx: Context,
         configuration: UseCase.Configuration,
+        databaseRepository: DatabaseRepository,
         appSettingsRepository: AppSettingsRepository,
         sessionManagerRepository: SessionManagerRepository,
         membersRepository: MembersRepository
     ): GetAppSettingsUseCase = GetAppSettingsUseCase(
         ctx,
         configuration,
+        databaseRepository,
         appSettingsRepository,
         sessionManagerRepository,
         membersRepository

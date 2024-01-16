@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data.di
 import android.content.Context
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
-import com.oborodulin.jwsuite.data_appsetting.local.db.DatabaseVersion
+import com.oborodulin.jwsuite.data.local.db.DatabaseVersion
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides

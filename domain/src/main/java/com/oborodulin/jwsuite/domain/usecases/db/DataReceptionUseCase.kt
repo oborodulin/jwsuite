@@ -2,18 +2,15 @@ package com.oborodulin.jwsuite.domain.usecases.db
 
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
-import com.oborodulin.home.common.util.getAppVersion
 import com.oborodulin.jwsuite.domain.model.appsetting.AppSettingsWithSession
-import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.internal.NopCollector.emit
 
-class ExportUseCase(
+class DataReceptionUseCase(
     private val ctx: Context,
     configuration: Configuration,
     private val sessionManagerRepository: SessionManagerRepository,

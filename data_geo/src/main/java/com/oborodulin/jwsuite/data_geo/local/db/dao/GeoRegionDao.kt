@@ -1,17 +1,30 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface GeoRegionDao {
     // READS:
+    @Query("SELECT * FROM ${GeoRegionEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GeoRegionEntity>>
+
+    @Query("SELECT * FROM ${GeoRegionTlEntity.TABLE_NAME}")
+    fun selectTlEntities(): Flow<List<GeoRegionTlEntity>>
+
     @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionLocCode = :locale ORDER BY regionName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionView>>
 

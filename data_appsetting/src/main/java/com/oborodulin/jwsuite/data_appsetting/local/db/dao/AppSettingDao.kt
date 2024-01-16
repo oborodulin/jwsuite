@@ -1,13 +1,17 @@
 package com.oborodulin.jwsuite.data_appsetting.local.db.dao
 
-import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface AppSettingDao {
@@ -66,8 +70,4 @@ interface AppSettingDao {
 
     @Query("DELETE FROM ${AppSettingEntity.TABLE_NAME}")
     suspend fun deleteAll()
-
-    // API:
-    @RawQuery
-    suspend fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Int
 }

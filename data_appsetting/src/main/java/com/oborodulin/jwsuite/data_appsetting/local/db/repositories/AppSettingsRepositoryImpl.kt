@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.data_appsetting.local.db.repositories
 
-import com.oborodulin.jwsuite.data_appsetting.local.db.DatabaseVersion
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingMappers
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
 import com.oborodulin.jwsuite.domain.model.appsetting.AppSetting
@@ -12,7 +11,6 @@ import javax.inject.Inject
 
 class AppSettingsRepositoryImpl @Inject constructor(
     private val localAppSettingDataSource: LocalAppSettingDataSource,
-    private val databaseVersion: DatabaseVersion,
     private val mappers: AppSettingMappers
 ) : AppSettingsRepository {
     override fun getAll() =
@@ -63,10 +61,4 @@ class AppSettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAll() = localAppSettingDataSource.deleteAppSettings()
-
-    // API:
-    override fun sqliteVersion() = flow { emit(databaseVersion.sqliteVersion) }
-    override fun dbVersion() = flow { emit(databaseVersion.dbVersion) }
-    override suspend fun checkpoint() = localAppSettingDataSource.checkpoint()
-
 }

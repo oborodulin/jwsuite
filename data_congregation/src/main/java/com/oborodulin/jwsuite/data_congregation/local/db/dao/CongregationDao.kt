@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.pojo.CongregationWithGroupMembers
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
@@ -12,13 +18,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 
 private const val TAG = "Data.CongregationDao"
 
 @Dao
 interface CongregationDao {
     // READS:
+    @Query("SELECT * FROM ${CongregationEntity.TABLE_NAME}")
+    fun selectAll(): Flow<List<CongregationEntity>>
+
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} ORDER BY isFavorite DESC")
     fun findAll(): Flow<List<CongregationView>>
 

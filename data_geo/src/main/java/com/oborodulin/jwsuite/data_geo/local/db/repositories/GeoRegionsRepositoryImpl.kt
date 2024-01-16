@@ -13,6 +13,13 @@ class GeoRegionsRepositoryImpl @Inject constructor(
     private val localRegionDataSource: LocalGeoRegionDataSource,
     private val mappers: GeoRegionMappers
 ) : GeoRegionsRepository {
+
+    override fun getAllEntities() = localRegionDataSource.getRegionEntities()
+        .map(mappers.geoRegionViewListToGeoRegionsListMapper::map)
+
+    override fun getAllTlEntities() = localRegionDataSource.getRegionTlEntities()
+        .map(mappers.geoRegionViewListToGeoRegionsListMapper::map)
+
     override fun getAll() = localRegionDataSource.getRegions()
         .map(mappers.geoRegionViewListToGeoRegionsListMapper::map)
 

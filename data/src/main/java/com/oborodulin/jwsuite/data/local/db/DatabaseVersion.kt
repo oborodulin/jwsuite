@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_appsetting.local.db
+package com.oborodulin.jwsuite.data.local.db
 
 data class DatabaseVersion(
     val sqliteVersion: String,
