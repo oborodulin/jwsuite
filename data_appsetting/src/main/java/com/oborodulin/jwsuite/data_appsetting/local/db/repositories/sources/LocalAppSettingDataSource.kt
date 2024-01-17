@@ -15,4 +15,6 @@ interface LocalAppSettingDataSource {
     suspend fun deleteAppSettingById(settingId: UUID)
     suspend fun deleteAppSettings(settings: List<AppSettingEntity>)
     suspend fun deleteAppSettings()
+    fun getAppSettingEntities(): Flow<List<AppSettingEntity>>
+    suspend fun loadAppSettingEntities(settings: List<AppSettingEntity>)
 }

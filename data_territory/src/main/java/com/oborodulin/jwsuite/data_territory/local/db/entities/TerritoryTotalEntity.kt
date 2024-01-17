@@ -31,6 +31,7 @@ data class TerritoryTotalEntity(
     @PrimaryKey val territoryTotalId: UUID = UUID.randomUUID(),
     @Serializable(with = OffsetDateTimeSerializer::class)
     val lastVisitDate: OffsetDateTime? = null,
+    val totalQty: Int,
     val totalIssued: Int,
     val totalProcessed: Int,
     @Serializable(with = UUIDSerializer::class)
@@ -51,7 +52,8 @@ data class TerritoryTotalEntity(
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Territory Total Entity totalIssued = ").append(totalIssued)
+        str.append("Territory Total Entity totalQty = ").append(totalQty)
+            .append("; totalIssued = ").append(totalIssued)
             .append("; totalProcessed = ").append(totalProcessed)
         lastVisitDate?.let {
             str.append(". Date of last visit ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(it))

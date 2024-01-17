@@ -1,9 +1,9 @@
 package com.oborodulin.jwsuite.data.di
 
 import android.content.Context
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.geolocality.GeoLocalityMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.geolocality.GeoLocalityToGeoLocalityEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.geolocality.GeoLocalityToGeoLocalityTlEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.geolocality.GeoLocalityViewListToGeoLocalitiesListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.geolocality.GeoLocalityViewToGeoLocalityMapper
@@ -22,12 +22,12 @@ import com.oborodulin.jwsuite.data.local.db.mappers.csv.geomicrodistrict.GeoMicr
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.geomicrodistrict.GeoMicrodistrictsListToGeoMicrodistrictEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionMappers
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionToGeoRegionEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionToGeoRegionTlEntityMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionViewListToGeoRegionsListMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionsListToGeoRegionEntityListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionCsvMappers
+import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionCsvToGeoRegionEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.tl.GeoRegionTlCsvToGeoRegionTlEntityMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionEntityListToGeoRegionCsvListMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionEntityToGeoRegionCsvMapper
+import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegion.GeoRegionCsvListToGeoRegionEntityListMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegiondistrict.GeoRegionDistrictMappers
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictEntityMapper
 import com.oborodulin.jwsuite.data.local.db.mappers.csv.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictTlEntityMapper
@@ -56,43 +56,43 @@ object GeoMappersModule {
     // Regions:
     @Singleton
     @Provides
-    fun provideGeoRegionViewToGeoRegionMapper(): GeoRegionViewToGeoRegionMapper =
-        GeoRegionViewToGeoRegionMapper()
+    fun provideGeoRegionViewToGeoRegionMapper(): GeoRegionEntityToGeoRegionCsvMapper =
+        GeoRegionEntityToGeoRegionCsvMapper()
 
     @Singleton
     @Provides
-    fun provideGeoRegionViewListToGeoRegionsListMapper(mapper: GeoRegionViewToGeoRegionMapper): GeoRegionViewListToGeoRegionsListMapper =
-        GeoRegionViewListToGeoRegionsListMapper(mapper = mapper)
+    fun provideGeoRegionViewListToGeoRegionsListMapper(mapper: GeoRegionEntityToGeoRegionCsvMapper): GeoRegionEntityListToGeoRegionCsvListMapper =
+        GeoRegionEntityListToGeoRegionCsvListMapper(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideGeoRegionToGeoRegionEntityMapper(): GeoRegionToGeoRegionEntityMapper =
-        GeoRegionToGeoRegionEntityMapper()
+    fun provideGeoRegionToGeoRegionEntityMapper(): GeoRegionCsvToGeoRegionEntityMapper =
+        GeoRegionCsvToGeoRegionEntityMapper()
 
     @Singleton
     @Provides
-    fun provideGeoRegionToGeoRegionTlEntityMapper(): GeoRegionToGeoRegionTlEntityMapper =
-        GeoRegionToGeoRegionTlEntityMapper()
+    fun provideGeoRegionToGeoRegionTlEntityMapper(): GeoRegionTlCsvToGeoRegionTlEntityMapper =
+        GeoRegionTlCsvToGeoRegionTlEntityMapper()
 
     @Singleton
     @Provides
-    fun provideGeoRegionsListToGeoRegionEntityListMapper(mapper: GeoRegionToGeoRegionEntityMapper): GeoRegionsListToGeoRegionEntityListMapper =
-        GeoRegionsListToGeoRegionEntityListMapper(mapper = mapper)
+    fun provideGeoRegionsListToGeoRegionEntityListMapper(mapper: GeoRegionCsvToGeoRegionEntityMapper): GeoRegionCsvListToGeoRegionEntityListMapper =
+        GeoRegionCsvListToGeoRegionEntityListMapper(mapper = mapper)
 
     @Singleton
     @Provides
     fun provideGeoRegionMappers(
-        geoRegionViewListToGeoRegionsListMapper: GeoRegionViewListToGeoRegionsListMapper,
-        geoRegionViewToGeoRegionMapper: GeoRegionViewToGeoRegionMapper,
-        geoRegionsListToGeoRegionEntityListMapper: GeoRegionsListToGeoRegionEntityListMapper,
-        geoRegionToGeoRegionEntityMapper: GeoRegionToGeoRegionEntityMapper,
-        geoRegionToGeoRegionTlEntityMapper: GeoRegionToGeoRegionTlEntityMapper
-    ): GeoRegionMappers = GeoRegionMappers(
-        geoRegionViewListToGeoRegionsListMapper,
-        geoRegionViewToGeoRegionMapper,
-        geoRegionsListToGeoRegionEntityListMapper,
-        geoRegionToGeoRegionEntityMapper,
-        geoRegionToGeoRegionTlEntityMapper
+        geoRegionEntityListToGeoRegionCsvListMapper: GeoRegionEntityListToGeoRegionCsvListMapper,
+        geoRegionEntityToGeoRegionCsvMapper: GeoRegionEntityToGeoRegionCsvMapper,
+        geoRegionCsvListToGeoRegionEntityListMapper: GeoRegionCsvListToGeoRegionEntityListMapper,
+        geoRegionCsvToGeoRegionEntityMapper: GeoRegionCsvToGeoRegionEntityMapper,
+        geoRegionTlCsvToGeoRegionTlEntityMapper: GeoRegionTlCsvToGeoRegionTlEntityMapper
+    ): GeoRegionCsvMappers = GeoRegionCsvMappers(
+        geoRegionEntityListToGeoRegionCsvListMapper,
+        geoRegionEntityToGeoRegionCsvMapper,
+        geoRegionCsvListToGeoRegionEntityListMapper,
+        geoRegionCsvToGeoRegionEntityMapper,
+        geoRegionTlCsvToGeoRegionTlEntityMapper
     )
 
     // RegionDistricts:
@@ -103,7 +103,7 @@ object GeoMappersModule {
 
     @Singleton
     @Provides
-    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(mapper: GeoRegionViewToGeoRegionMapper): GeoRegionDistrictViewToGeoRegionDistrictMapper =
+    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(mapper: GeoRegionEntityToGeoRegionCsvMapper): GeoRegionDistrictViewToGeoRegionDistrictMapper =
         GeoRegionDistrictViewToGeoRegionDistrictMapper(mapper = mapper)
 
     @Singleton
@@ -151,7 +151,7 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoLocalityViewToGeoLocalityMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: GeoRegionEntityToGeoRegionCsvMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper
     ): GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
@@ -166,8 +166,8 @@ object GeoMappersModule {
 
     @Singleton
     @Provides
-    fun provideGeoLocalityToGeoLocalityEntityMapper(): GeoLocalityToGeoLocalityEntityMapper =
-        GeoLocalityToGeoLocalityEntityMapper()
+    fun provideGeoLocalityToGeoLocalityEntityMapper(): com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper =
+        com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper()
 
     @Singleton
     @Provides
@@ -176,24 +176,27 @@ object GeoMappersModule {
 
     @Singleton
     @Provides
-    fun provideGeoLocalitiesListToGeoLocalityEntityListMapper(mapper: GeoLocalityToGeoLocalityEntityMapper): GeoLocalitiesListToGeoLocalityEntityListMapper =
-        GeoLocalitiesListToGeoLocalityEntityListMapper(mapper = mapper)
+    fun provideGeoLocalitiesListToGeoLocalityEntityListMapper(mapper: com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper): com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper =
+        com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper(
+            mapper = mapper
+        )
 
     @Singleton
     @Provides
     fun provideGeoLocalityMappers(
         geoLocalityViewListToGeoLocalitiesListMapper: GeoLocalityViewListToGeoLocalitiesListMapper,
         geoLocalityViewToGeoLocalityMapper: GeoLocalityViewToGeoLocalityMapper,
-        geoLocalitiesListToGeoLocalityEntityListMapper: GeoLocalitiesListToGeoLocalityEntityListMapper,
-        geoLocalityToGeoLocalityEntityMapper: GeoLocalityToGeoLocalityEntityMapper,
+        geoLocalitiesListToGeoLocalityEntityListMapper: com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper,
+        geoLocalityToGeoLocalityEntityMapper: com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper,
         geoLocalityToGeoLocalityTlEntityMapper: GeoLocalityToGeoLocalityTlEntityMapper
-    ): GeoLocalityMappers = GeoLocalityMappers(
-        geoLocalityViewListToGeoLocalitiesListMapper,
-        geoLocalityViewToGeoLocalityMapper,
-        geoLocalitiesListToGeoLocalityEntityListMapper,
-        geoLocalityToGeoLocalityEntityMapper,
-        geoLocalityToGeoLocalityTlEntityMapper
-    )
+    ): com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityMappers =
+        com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityMappers(
+            geoLocalityViewListToGeoLocalitiesListMapper,
+            geoLocalityViewToGeoLocalityMapper,
+            geoLocalitiesListToGeoLocalityEntityListMapper,
+            geoLocalityToGeoLocalityEntityMapper,
+            geoLocalityToGeoLocalityTlEntityMapper
+        )
 
     // LocalityDistricts:
     @Singleton
@@ -204,7 +207,7 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoLocalityDistrictViewToGeoLocalityDistrictMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: GeoRegionEntityToGeoRegionCsvMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper
@@ -259,7 +262,7 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoMicrodistrictViewToGeoMicrodistrictMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: GeoRegionEntityToGeoRegionCsvMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,

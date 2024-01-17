@@ -4,6 +4,8 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappe
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
+import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionTlCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -11,39 +13,33 @@ import javax.inject.Inject
 
 class GeoRegionsRepositoryImpl @Inject constructor(
     private val localRegionDataSource: LocalGeoRegionDataSource,
-    private val mappers: GeoRegionMappers
+    private val domainMappers: GeoRegionMappers,
+    private val csvMappers: GeoRegionCsvMappers
 ) : GeoRegionsRepository {
-
-    override fun getAllEntities() = localRegionDataSource.getRegionEntities()
-        .map(mappers.geoRegionViewListToGeoRegionsListMapper::map)
-
-    override fun getAllTlEntities() = localRegionDataSource.getRegionTlEntities()
-        .map(mappers.geoRegionViewListToGeoRegionsListMapper::map)
-
     override fun getAll() = localRegionDataSource.getRegions()
-        .map(mappers.geoRegionViewListToGeoRegionsListMapper::map)
+        .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
 
     override fun get(regionId: UUID) =
         localRegionDataSource.getRegion(regionId)
-            .map(mappers.geoRegionViewToGeoRegionMapper::map)
+            .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
 
     override fun save(region: GeoRegion) = flow {
         if (region.id == null) {
             localRegionDataSource.insertRegion(
-                mappers.geoRegionToGeoRegionEntityMapper.map(region),
-                mappers.geoRegionToGeoRegionTlEntityMapper.map(region)
+                domainMappers.geoRegionToGeoRegionEntityMapper.map(region),
+                domainMappers.geoRegionToGeoRegionTlEntityMapper.map(region)
             )
         } else {
             localRegionDataSource.updateRegion(
-                mappers.geoRegionToGeoRegionEntityMapper.map(region),
-                mappers.geoRegionToGeoRegionTlEntityMapper.map(region)
+                domainMappers.geoRegionToGeoRegionEntityMapper.map(region),
+                domainMappers.geoRegionToGeoRegionTlEntityMapper.map(region)
             )
         }
         emit(region)
     }
 
     override fun delete(region: GeoRegion) = flow {
-        localRegionDataSource.deleteRegion(mappers.geoRegionToGeoRegionEntityMapper.map(region))
+        localRegionDataSource.deleteRegion(domainMappers.geoRegionToGeoRegionEntityMapper.map(region))
         this.emit(region)
     }
 
@@ -54,4 +50,17 @@ class GeoRegionsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localRegionDataSource.deleteAllRegions()
 
+    override fun extractRegions() = localRegionDataSource.getRegionEntities()
+        .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+
+    override fun extractRegionTls() = localRegionDataSource.getRegionTlEntities()
+        .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+
+    override fun loadRegions(regions: List<GeoRegionCsv>) =
+        localRegionDataSource.getRegion(regionId)
+            .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
+
+    override fun loadRegionTls(regionTls: List<GeoRegionTlCsv>) =
+        localRegionDataSource.getRegion(regionId)
+            .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
 }

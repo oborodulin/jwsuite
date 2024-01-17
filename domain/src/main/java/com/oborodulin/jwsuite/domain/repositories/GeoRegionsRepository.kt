@@ -7,12 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface GeoRegionsRepository {
-    fun getAllEntities(): Flow<List<GeoRegionCsv>>
-    fun getAllTlEntities(): Flow<List<GeoRegionTlCsv>>
     fun getAll(): Flow<List<GeoRegion>>
     fun get(regionId: UUID): Flow<GeoRegion>
     fun save(region: GeoRegion): Flow<GeoRegion>
     fun delete(region: GeoRegion): Flow<GeoRegion>
     fun deleteById(regionId: UUID): Flow<UUID>
     suspend fun deleteAll()
+    fun extractRegions(): Flow<List<GeoRegionCsv>>
+    fun extractRegionTls(): Flow<List<GeoRegionTlCsv>>
+    fun loadRegions(regions: List<GeoRegionCsv>): Flow<Int>
+    fun loadRegionTls(regionTls: List<GeoRegionTlCsv>): Flow<Int>
 }

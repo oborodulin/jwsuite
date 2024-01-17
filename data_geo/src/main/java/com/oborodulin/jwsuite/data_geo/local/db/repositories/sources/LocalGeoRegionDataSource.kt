@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoRegionDataSource {
-    fun getRegionEntities(): Flow<List<GeoRegionEntity>>
-    fun getRegionTlEntities(): Flow<List<GeoRegionTlEntity>>
     fun getRegions(): Flow<List<GeoRegionView>>
     fun getRegion(regionId: UUID): Flow<GeoRegionView>
 
@@ -19,4 +17,6 @@ interface LocalGeoRegionDataSource {
     suspend fun deleteRegionById(regionId: UUID)
     suspend fun deleteRegions(regions: List<GeoRegionEntity>)
     suspend fun deleteAllRegions()
+    fun getRegionEntities(): Flow<List<GeoRegionEntity>>
+    fun getRegionTlEntities(): Flow<List<GeoRegionTlEntity>>
 }

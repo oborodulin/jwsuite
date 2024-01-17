@@ -52,4 +52,10 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
     override suspend fun deleteAppSettings() = withContext(dispatcher) {
         appSettingDao.deleteAll()
     }
+
+    override fun getAppSettingEntities() = appSettingDao.selectEntities()
+    override suspend fun loadAppSettingEntities(settings: List<AppSettingEntity>) =
+        withContext(dispatcher) {
+            appSettingDao.insert(settings)
+        }
 }

@@ -17,6 +17,9 @@ import java.util.UUID
 interface AppSettingDao {
     // READS:
     @Query("SELECT * FROM ${AppSettingEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<AppSettingEntity>>
+
+    @Query("SELECT * FROM ${AppSettingEntity.TABLE_NAME}")
     fun findAll(): Flow<List<AppSettingEntity>>
 
     @ExperimentalCoroutinesApi

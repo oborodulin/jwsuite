@@ -1,9 +1,11 @@
 package com.oborodulin.jwsuite.data_appsetting.local.db.repositories
 
+import com.oborodulin.jwsuite.data_appsetting.local.csv.mappers.AppSettingCsvMappers
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingMappers
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
 import com.oborodulin.jwsuite.domain.model.appsetting.AppSetting
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
+import com.oborodulin.jwsuite.domain.services.csv.model.appsetting.AppSettingCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -11,24 +13,25 @@ import javax.inject.Inject
 
 class AppSettingsRepositoryImpl @Inject constructor(
     private val localAppSettingDataSource: LocalAppSettingDataSource,
-    private val mappers: AppSettingMappers
+    private val domainMappers: AppSettingMappers,
+    private val csvMappers: AppSettingCsvMappers
 ) : AppSettingsRepository {
     override fun getAll() =
         localAppSettingDataSource.getAppSettings()
-            .map(mappers.appSettingEntityListToAppSettingListMapper::map)
+            .map(domainMappers.appSettingEntityListToAppSettingListMapper::map)
 
     override fun get(settingId: UUID) =
         localAppSettingDataSource.getAppSetting(settingId)
-            .map(mappers.appSettingEntityToAppSettingMapper::map)
+            .map(domainMappers.appSettingEntityToAppSettingMapper::map)
 
     override fun save(setting: AppSetting) = flow {
         if (setting.id == null) {
             localAppSettingDataSource.insertAppSetting(
-                mappers.appSettingToAppSettingEntityMapper.map(setting)
+                domainMappers.appSettingToAppSettingEntityMapper.map(setting)
             )
         } else {
             localAppSettingDataSource.updateAppSetting(
-                mappers.appSettingToAppSettingEntityMapper.map(setting)
+                domainMappers.appSettingToAppSettingEntityMapper.map(setting)
             )
         }
         emit(setting)
@@ -41,7 +44,7 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
     override fun delete(setting: AppSetting) = flow {
         localAppSettingDataSource.deleteAppSetting(
-            mappers.appSettingToAppSettingEntityMapper.map(
+            domainMappers.appSettingToAppSettingEntityMapper.map(
                 setting
             )
         )
@@ -55,10 +58,21 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
     override fun delete(settings: List<AppSetting>) = flow {
         localAppSettingDataSource.deleteAppSettings(settings.map {
-            mappers.appSettingToAppSettingEntityMapper.map(it)
+            domainMappers.appSettingToAppSettingEntityMapper.map(it)
         })
         this.emit(settings)
     }
 
     override suspend fun deleteAll() = localAppSettingDataSource.deleteAppSettings()
+
+    override fun extractAppSettings() =
+        localAppSettingDataSource.getAppSettingEntities()
+            .map(csvMappers.appSettingEntityListToAppSettingCsvListMapper::map)
+
+    override fun loadAppSettings(settings: List<AppSettingCsv>) = flow {
+        localAppSettingDataSource.loadAppSettingEntities(
+            csvMappers.appSettingCsvListToAppSettingEntityListMapper.map(settings)
+        )
+        emit(settings.size)
+    }
 }

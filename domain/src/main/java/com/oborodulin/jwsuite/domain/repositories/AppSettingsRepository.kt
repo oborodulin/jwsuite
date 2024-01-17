@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.appsetting.AppSetting
+import com.oborodulin.jwsuite.domain.services.csv.model.appsetting.AppSettingCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -13,4 +14,6 @@ interface AppSettingsRepository {
     fun deleteById(settingId: UUID): Flow<UUID>
     fun delete(settings: List<AppSetting>): Flow<List<AppSetting>>
     suspend fun deleteAll()
+    fun extractAppSettings(): Flow<List<AppSettingCsv>>
+    fun loadAppSettings(settings: List<AppSettingCsv>): Flow<Int>
 }
