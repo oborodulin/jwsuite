@@ -18,9 +18,8 @@ object ExportService {
 
     @WorkerThread
     private fun <T : Exportable> writeToCSV(csvConfig: CsvConfig, content: List<T>) =
-        flow<Boolean> {
+        flow {
             with(csvConfig) {
-
                 hostPath.ifEmpty { throw IllegalStateException("Wrong Path") }
                 val hostDirectory = File(hostPath)
                 if (!hostDirectory.exists()) {
@@ -36,7 +35,6 @@ object ExportService {
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                     .build()
                     .write(content)
-
                 csvWriter.close()
             }
             // emit success

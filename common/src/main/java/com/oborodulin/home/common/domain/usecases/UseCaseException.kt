@@ -38,6 +38,9 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class ReportHouseSaveException(cause: Throwable) : UseCaseException(cause)
     class ReportRoomSaveException(cause: Throwable) : UseCaseException(cause)
 
+    // Services
+    class ExportException(cause: Throwable) : UseCaseException(cause)
+
     class UnknownException(cause: Throwable) : UseCaseException(cause)
 
     companion object {

@@ -22,6 +22,11 @@ class CsvImportUseCase(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun process(request: Request) =
+        databaseRepository.orderedDataTableNames().map { tableNames ->
+            val
+                    tableNames.forEach { name -> }
+            exportService.export()
+        }
         sessionManagerRepository.username().flatMapLatest { username ->
             combine(
                 membersRepository.getMemberTransferObjects(username.orEmpty()),
