@@ -1,10 +1,11 @@
 package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryCategory
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface TerritoryCategoriesRepository {
+interface TerritoryCategoriesRepository : CsvTransferableRepo {
     fun getAll(): Flow<List<TerritoryCategory>>
     fun get(territoryCategoryId: UUID): Flow<TerritoryCategory>
     fun save(territoryCategory: TerritoryCategory): Flow<TerritoryCategory>

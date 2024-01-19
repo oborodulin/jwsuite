@@ -1,6 +1,5 @@
 package com.oborodulin.jwsuite.domain.repositories
 
-import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.model.territory.Entrance
 import com.oborodulin.jwsuite.domain.model.territory.Floor
 import com.oborodulin.jwsuite.domain.model.territory.House
@@ -8,14 +7,14 @@ import com.oborodulin.jwsuite.domain.model.territory.Room
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryLocation
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
-import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreetNamesAndHouseNums
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
 import java.time.OffsetDateTime
 import java.util.UUID
 
-interface TerritoriesRepository {
+interface TerritoriesRepository : CsvTransferableRepo {
     fun getCongregationTerritories(congregationId: UUID? = null): Flow<List<Territory>>
     fun getCongregationTerritoryLocations(isPrivateSector: Boolean, congregationId: UUID? = null):
             Flow<List<TerritoryLocation>>

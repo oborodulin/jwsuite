@@ -1,10 +1,13 @@
 package com.oborodulin.jwsuite.data_appsetting.local.db.repositories
 
 import com.oborodulin.jwsuite.data_appsetting.local.csv.mappers.AppSettingCsvMappers
+import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_appsetting.local.db.mappers.AppSettingMappers
 import com.oborodulin.jwsuite.data_appsetting.local.db.repositories.sources.LocalAppSettingDataSource
 import com.oborodulin.jwsuite.domain.model.appsetting.AppSetting
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
 import com.oborodulin.jwsuite.domain.services.csv.model.appsetting.AppSettingCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -65,10 +68,15 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localAppSettingDataSource.deleteAppSettings()
 
+    @CsvExtract(fileNamePrefix = AppSettingEntity.TABLE_NAME)
     override fun extractAppSettings() =
         localAppSettingDataSource.getAppSettingEntities()
             .map(csvMappers.appSettingEntityListToAppSettingCsvListMapper::map)
 
+    @CsvLoad<AppSettingCsv>(
+        fileNamePrefix = AppSettingEntity.TABLE_NAME,
+        contentType = AppSettingCsv::class
+    )
     override fun loadAppSettings(settings: List<AppSettingCsv>) = flow {
         localAppSettingDataSource.loadAppSettingEntities(
             csvMappers.appSettingCsvListToAppSettingEntityListMapper.map(settings)

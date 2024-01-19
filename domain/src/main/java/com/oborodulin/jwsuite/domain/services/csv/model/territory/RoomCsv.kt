@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.services.csv.model.territory
 
 import com.oborodulin.jwsuite.domain.services.Exportable
+import com.oborodulin.jwsuite.domain.services.Importable
 import com.opencsv.bean.CsvBindByName
 import java.util.UUID
 
@@ -15,4 +16,4 @@ data class RoomCsv(
     @CsvBindByName val rFloorsId: UUID? = null,
     @CsvBindByName val rEntrancesId: UUID? = null,
     @CsvBindByName val rHousesId: UUID
-) : Exportable
+) : Exportable, Importable

@@ -1,10 +1,11 @@
 package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface GeoStreetsRepository {
+interface GeoStreetsRepository: CsvTransferableRepo {
     fun getAll(): Flow<List<GeoStreet>>
     fun getAllByLocality(localityId: UUID, isPrivateSector: Boolean? = null): Flow<List<GeoStreet>>
     fun getAllByLocalityDistrict(localityDistrictId: UUID, isPrivateSector: Boolean? = null):

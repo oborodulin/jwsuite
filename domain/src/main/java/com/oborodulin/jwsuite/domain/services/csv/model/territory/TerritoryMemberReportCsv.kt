@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.services.csv.model.territory
 
 import com.oborodulin.jwsuite.domain.services.Exportable
+import com.oborodulin.jwsuite.domain.services.Importable
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.opencsv.bean.CsvBindByName
 import java.util.UUID
@@ -17,4 +18,4 @@ data class TerritoryMemberReportCsv(
     @CsvBindByName val tmrHousesId: UUID? = null,
     @CsvBindByName val tmrTerritoryStreetsId: UUID? = null,
     @CsvBindByName val tmrTerritoryMembersId: UUID
-) : Exportable
+) : Exportable, Importable

@@ -1,9 +1,12 @@
 package com.oborodulin.jwsuite.data_geo.local.db.repositories
 
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionTlCsv
 import kotlinx.coroutines.flow.flow
@@ -50,16 +53,20 @@ class GeoRegionsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localRegionDataSource.deleteAllRegions()
 
+    @CsvExtract(fileNamePrefix = GeoRegionEntity.TABLE_NAME)
     override fun extractRegions() = localRegionDataSource.getRegionEntities()
         .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
 
+    @CsvExtract
     override fun extractRegionTls() = localRegionDataSource.getRegionTlEntities()
         .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
 
+    @CsvLoad
     override fun loadRegions(regions: List<GeoRegionCsv>) =
         localRegionDataSource.getRegion(regionId)
             .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
 
+    @CsvLoad
     override fun loadRegionTls(regionTls: List<GeoRegionTlCsv>) =
         localRegionDataSource.getRegion(regionId)
             .map(domainMappers.geoRegionViewToGeoRegionMapper::map)

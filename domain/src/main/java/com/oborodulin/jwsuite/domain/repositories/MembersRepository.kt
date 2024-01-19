@@ -6,10 +6,11 @@ import com.oborodulin.jwsuite.domain.model.congregation.MemberRoleTransferObject
 import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.model.congregation.RoleTransferObject
 import com.oborodulin.jwsuite.domain.model.congregation.TransferObject
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface MembersRepository {
+interface MembersRepository: CsvTransferableRepo {
     // Members by Congregation:
     fun getAllByFavoriteCongregation(isService: Boolean = false): Flow<List<Member>>
     fun getAllByCongregation(

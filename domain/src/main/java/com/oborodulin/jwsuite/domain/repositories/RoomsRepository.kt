@@ -1,10 +1,11 @@
 package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.territory.Room
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface RoomsRepository {
+interface RoomsRepository: CsvTransferableRepo {
     fun getAll(): Flow<List<Room>>
     fun getAllByHouse(houseId: UUID): Flow<List<Room>>
     fun getAllByEntrance(entranceId: UUID): Flow<List<Room>>

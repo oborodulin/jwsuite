@@ -4,10 +4,11 @@ import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportRoom
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportStreet
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface TerritoryReportsRepository {
+interface TerritoryReportsRepository : CsvTransferableRepo {
     fun getAll(): Flow<List<TerritoryMemberReport>>
     fun get(territoryReportId: UUID): Flow<TerritoryMemberReport>
     fun getAllByTerritoryStreet(territoryStreetId: UUID): Flow<List<TerritoryMemberReport>>

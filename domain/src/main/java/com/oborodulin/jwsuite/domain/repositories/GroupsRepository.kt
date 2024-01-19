@@ -1,10 +1,11 @@
 package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.congregation.Group
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface GroupsRepository {
+interface GroupsRepository: CsvTransferableRepo {
     fun getAllByCongregation(congregationId: UUID): Flow<List<Group>>
     fun getAllByFavoriteCongregation(): Flow<List<Group>>
     fun getNextGroupNum(congregationId: UUID): Flow<Int>

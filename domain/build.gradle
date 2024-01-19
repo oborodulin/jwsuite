@@ -51,6 +51,7 @@ dependencies {
 
     implementation deps.coroutines.core
     implementation deps.jvm.inject
+    implementation deps.kotlin.reflect
 
     // JSON
     implementation deps.json.kotlinx
