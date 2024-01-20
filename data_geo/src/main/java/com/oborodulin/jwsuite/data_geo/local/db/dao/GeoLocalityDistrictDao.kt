@@ -1,22 +1,34 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.LocalityDistrictWithStreets
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityDistrictView
-import com.oborodulin.jwsuite.data_geo.local.db.views.GeoMicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_DISTRICT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface GeoLocalityDistrictDao {
     // READS:
+    @Query("SELECT * FROM ${GeoLocalityDistrictEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GeoLocalityDistrictEntity>>
+
+    @Query("SELECT * FROM ${GeoLocalityDistrictTlEntity.TABLE_NAME}")
+    fun selectTlEntities(): Flow<List<GeoLocalityDistrictTlEntity>>
+
     @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoLocalityDistrictView>>
 
@@ -92,6 +104,9 @@ interface GeoLocalityDistrictDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(localityDistricts: List<GeoLocalityDistrictEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(localityDistrictTls: List<GeoLocalityDistrictTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoLocalityDistrictTlEntity)

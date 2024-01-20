@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoMic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -62,4 +62,17 @@ class LocalGeoMicrodistrictDataSourceImpl @Inject constructor(
     override suspend fun deleteAllMicrodistricts() = withContext(dispatcher) {
         microdistrictDao.deleteAll()
     }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getMicrodistrictEntities() = microdistrictDao.selectEntities()
+    override fun getMicrodistrictTlEntities() = microdistrictDao.selectTlEntities()
+    override suspend fun loadMicrodistrictEntities(microdistricts: List<GeoMicrodistrictEntity>) =
+        withContext(dispatcher) {
+            microdistrictDao.insert(microdistricts)
+        }
+
+    override suspend fun loadMicrodistrictTlEntities(microdistrictTls: List<GeoMicrodistrictTlEntity>) =
+        withContext(dispatcher) {
+            microdistrictDao.insert(microdistrictTls)
+        }
 }

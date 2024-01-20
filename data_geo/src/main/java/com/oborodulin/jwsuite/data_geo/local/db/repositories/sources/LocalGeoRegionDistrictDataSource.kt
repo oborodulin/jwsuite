@@ -22,4 +22,10 @@ interface LocalGeoRegionDistrictDataSource {
     suspend fun deleteRegionDistrictById(regionDistrictId: UUID)
     suspend fun deleteRegionDistricts(regionDistricts: List<GeoRegionDistrictEntity>)
     suspend fun deleteAllRegionDistricts()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getRegionDistrictEntities(): Flow<List<GeoRegionDistrictEntity>>
+    fun getRegionDistrictTlEntities(): Flow<List<GeoRegionDistrictTlEntity>>
+    suspend fun loadRegionDistrictEntities(regionDistricts: List<GeoRegionDistrictEntity>)
+    suspend fun loadRegionDistrictTlEntities(regionDistrictTls: List<GeoRegionDistrictTlEntity>)
 }

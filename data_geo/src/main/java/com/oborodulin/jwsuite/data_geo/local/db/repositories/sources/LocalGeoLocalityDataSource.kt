@@ -17,4 +17,10 @@ interface LocalGeoLocalityDataSource {
     suspend fun deleteLocalityById(localityId: UUID)
     suspend fun deleteLocalities(localities: List<GeoLocalityEntity>)
     suspend fun deleteAllLocalities()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getLocalityEntities(): Flow<List<GeoLocalityEntity>>
+    fun getLocalityTlEntities(): Flow<List<GeoLocalityTlEntity>>
+    suspend fun loadLocalityEntities(localities: List<GeoLocalityEntity>)
+    suspend fun loadLocalityTlEntities(localityTls: List<GeoLocalityTlEntity>)
 }

@@ -11,7 +11,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoStr
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -109,5 +109,18 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
     override suspend fun deleteStreetMicrodistrict(streetId: UUID, microdistrictId: UUID) =
         withContext(dispatcher) {
             streetDao.deleteStreetDistrictByMicrodistrictId(streetId, microdistrictId)
+        }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getStreetEntities() = streetDao.selectEntities()
+    override fun getStreetTlEntities() = streetDao.selectTlEntities()
+    override suspend fun loadStreetEntities(streets: List<GeoStreetEntity>) =
+        withContext(dispatcher) {
+            streetDao.insert(streets)
+        }
+
+    override suspend fun loadStreetTlEntities(streetTls: List<GeoStreetTlEntity>) =
+        withContext(dispatcher) {
+            streetDao.insert(streetTls)
         }
 }

@@ -4,8 +4,6 @@ import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
 import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
-import com.oborodulin.jwsuite.domain.services.Exportable
-import com.oborodulin.jwsuite.domain.services.Exports
 import com.oborodulin.jwsuite.domain.services.ImportService
 import com.oborodulin.jwsuite.domain.services.Imports
 import com.oborodulin.jwsuite.domain.services.csv.CsvConfig
@@ -15,10 +13,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.internal.NopCollector.emit
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
+
+private const val TAG = "Domain.CsvImportUseCase"
 
 class CsvImportUseCase(
     private val ctx: Context,
@@ -26,58 +24,59 @@ class CsvImportUseCase(
     private val importService: ImportService,
     private val databaseRepository: DatabaseRepository,
     private val csvRepositories: List<CsvTransferableRepo> = emptyList()
-) : UseCase<ExportUseCase.Request, ExportUseCase.Response>(configuration) {
+) : UseCase<CsvImportUseCase.Request, CsvImportUseCase.Response>(configuration) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun process(request: Request) =
-        databaseRepository.orderedDataTableNames().flatMapLatest { tableNames ->
-            tableNames.forEach { name ->
-                csvRepositories.forEach { repo ->
-                    repo.javaClass.kotlin.members.filter { it.annotations.any { anno -> anno is CsvLoad<*> } }
-                        .forEach { loadMethod ->
-                            val csvLoad = (loadMethod.annotations.first { anno -> anno is CsvLoad } as CsvLoad<*>)
-                            val csvFilePrefix = csvLoad.fileNamePrefix
-                            val contentType = csvLoad.contentType
+    override fun process(request: Request) = flow {
+        var importResult = false
+        databaseRepository.orderedDataTableNames().first().forEach { name ->
+            csvRepositories.forEach { repo ->
+                repo.javaClass.kotlin.members.find { method ->
+                    method.annotations.any { anno ->
+                        anno is CsvLoad<*> && anno.fileNamePrefix == name
+                    }
+                }?.let { loadMethod ->
+                    val csvLoad =
+                        loadMethod.annotations.first { it is CsvLoad<*> } as CsvLoad<*>
+                    val csvFilePrefix = csvLoad.fileNamePrefix
+                    val contentType = csvLoad.contentType
+                    Timber.tag(TAG).d(
+                        "CSV Importing -> %s: csvFilePrefix = %s; contentType = %s",
+                        loadMethod.name, csvFilePrefix, contentType
+                    )
+                    // call import function from Import service with apply config + type of import data
+                    val importList = importService.import(
+                        type = Imports.CSV(CsvConfig(ctx = ctx, prefix = csvFilePrefix)),
+                        contentType = contentType.java    // define importable type of data
+                    ).catch {
+                        // handle error here
+                        throw UseCaseException.ImportException(it)
+                    }.first()
+                    if (importList.isNotEmpty() && loadMethod.returnType is Flow<*>) {
+                        // transformation data to importable type and load
+                        val loadListSize = (loadMethod.call(importList) as Flow<*>).first()
+                        if (loadListSize is Int) {
+                            importResult = loadListSize > 0
                             Timber.tag(TAG).d(
-                                "CSV Exporting -> %s: csvFilePrefix = %s",
-                                loadMethod.name, csvFilePrefix
+                                "CSV Importing -> %s: loadListSize = %s",
+                                loadMethod.name, loadListSize
                             )
-                            if (loadMethod.returnType is Flow<*>) {
-                                // get and transformation data to exportable type
-                                val extractData = (loadMethod.call() as Flow<*>).first()
-                                if (extractData is List<*> && extractData.isNotEmpty()) {
-                                    val exportableList = (extractData as List<Exportable>)
-                                    Timber.tag(TAG).d(
-                                        "CSV Exporting -> %s: list.size = %d",
-                                        loadMethod.name, exportableList.size
-                                    )
-                                    // call export function from Export serivce with apply config + type of export
-                                    importService.import(
-                                        type = Imports.CSV(
-                                            CsvConfig(ctx = ctx, prefix = csvFilePrefix)
-                                        ),
-                                        contentType = contentType    // send transformed data of exportable type
-                                    ).catch {
-                                        // handle error here
-                                        throw UseCaseException.ExportException(it)
-                                    }.map {
-                                        emit(
-                                            CsvExportUseCase.Response(
-                                                csvFilePrefix = csvFilePrefix,
-                                                isSuccess = it
-                                            )
-                                        )
-                                    }/*.collect { _ ->
-            // do anything on success
-            //_exportCsvState.value = ViewState.Success(emptyList())
-        }*/
-
-                                }
-                            }
+                            emit(
+                                Response(csvFilePrefix = csvFilePrefix, loadListSize = loadListSize)
+                            )
                         }
+                    }
                 }
             }
         }
+        if (importResult.not()){
+            emit(Response(isSuccess = importResult))
+        }
+    }
 
     data object Request : UseCase.Request
-    data class Response(val csvFilePrefix: String, val isSuccess: Boolean) : UseCase.Response
+    data class Response(
+        val csvFilePrefix: String = "",
+        val loadListSize: Int = 0,
+        val isSuccess: Boolean = true
+    ) : UseCase.Response
 }

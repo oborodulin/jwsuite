@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoReg
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -19,8 +19,6 @@ class LocalGeoRegionDataSourceImpl @Inject constructor(
     private val regionDao: GeoRegionDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoRegionDataSource {
-    override fun getRegionEntities() = regionDao.selectEntities()
-    override fun getRegionTlEntities() = regionDao.selectTlEntities()
     override fun getRegions() = regionDao.findDistinctAll()
     override fun getRegion(regionId: UUID) = regionDao.findDistinctById(regionId)
     //override fun getFavoriteCongregationRegion() = regionDao.findByFavoriteCongregation()
@@ -51,4 +49,17 @@ class LocalGeoRegionDataSourceImpl @Inject constructor(
     override suspend fun deleteAllRegions() = withContext(dispatcher) {
         regionDao.deleteAll()
     }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getRegionEntities() = regionDao.selectEntities()
+    override fun getRegionTlEntities() = regionDao.selectTlEntities()
+    override suspend fun loadRegionEntities(regions: List<GeoRegionEntity>) =
+        withContext(dispatcher) {
+            regionDao.insert(regions)
+        }
+
+    override suspend fun loadRegionTlEntities(regionTls: List<GeoRegionTlEntity>) =
+        withContext(dispatcher) {
+            regionDao.insert(regionTls)
+        }
 }

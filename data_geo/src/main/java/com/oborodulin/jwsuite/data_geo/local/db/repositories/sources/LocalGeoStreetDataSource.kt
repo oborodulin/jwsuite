@@ -56,4 +56,10 @@ interface LocalGeoStreetDataSource {
     )
 
     suspend fun deleteStreetMicrodistrict(streetId: UUID, microdistrictId: UUID)
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getStreetEntities(): Flow<List<GeoStreetEntity>>
+    fun getStreetTlEntities(): Flow<List<GeoStreetTlEntity>>
+    suspend fun loadStreetEntities(streets: List<GeoStreetEntity>)
+    suspend fun loadStreetTlEntities(streetTls: List<GeoStreetTlEntity>)
 }

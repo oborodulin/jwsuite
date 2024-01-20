@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
@@ -12,11 +18,18 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface GeoStreetDao {
     // READS:
+    @Query("SELECT * FROM ${GeoStreetEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GeoStreetEntity>>
+
+    @Query("SELECT * FROM ${GeoStreetTlEntity.TABLE_NAME}")
+    fun selectTlEntities(): Flow<List<GeoStreetTlEntity>>
+
     @Query("SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE streetLocCode = :locale ORDER BY streetName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoStreetView>>
 
@@ -139,6 +152,9 @@ interface GeoStreetDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(streets: List<GeoStreetEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(streetTls: List<GeoStreetTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoStreetTlEntity)

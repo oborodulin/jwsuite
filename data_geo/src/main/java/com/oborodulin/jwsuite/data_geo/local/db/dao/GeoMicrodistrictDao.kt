@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
@@ -10,11 +16,18 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface GeoMicrodistrictDao {
     // READS:
+    @Query("SELECT * FROM ${GeoMicrodistrictEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GeoMicrodistrictEntity>>
+
+    @Query("SELECT * FROM ${GeoMicrodistrictTlEntity.TABLE_NAME}")
+    fun selectTlEntities(): Flow<List<GeoMicrodistrictTlEntity>>
+
     @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE microdistrictLocCode = :locale ORDER BY mLocalitiesId, mLocalityDistrictsId, microdistrictName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoMicrodistrictView>>
 
@@ -105,6 +118,9 @@ interface GeoMicrodistrictDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(microdistricts: List<GeoMicrodistrictEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(microdistrictTls: List<GeoMicrodistrictTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoMicrodistrictTlEntity)

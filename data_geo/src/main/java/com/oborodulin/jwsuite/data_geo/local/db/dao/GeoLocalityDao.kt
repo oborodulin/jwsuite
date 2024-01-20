@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityView
@@ -8,11 +14,18 @@ import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface GeoLocalityDao {
     // READS:
+    @Query("SELECT * FROM ${GeoLocalityEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GeoLocalityEntity>>
+
+    @Query("SELECT * FROM ${GeoLocalityTlEntity.TABLE_NAME}")
+    fun selectTlEntities(): Flow<List<GeoLocalityTlEntity>>
+
     @Query("SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE ${PX_LOCALITY}localityLocCode = :locale ORDER BY ${PX_LOCALITY}lRegionsId, ${PX_LOCALITY}lRegionDistrictsId, ${PX_LOCALITY}localityName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoLocalityView>>
 
@@ -68,6 +81,9 @@ interface GeoLocalityDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(localities: List<GeoLocalityEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(localityTls: List<GeoLocalityTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoLocalityTlEntity)

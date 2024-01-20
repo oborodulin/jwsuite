@@ -25,4 +25,10 @@ interface LocalGeoMicrodistrictDataSource {
     suspend fun deleteMicrodistrictById(microdistrictId: UUID)
     suspend fun deleteMicrodistricts(microdistricts: List<GeoMicrodistrictEntity>)
     suspend fun deleteAllMicrodistricts()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getMicrodistrictEntities(): Flow<List<GeoMicrodistrictEntity>>
+    fun getMicrodistrictTlEntities(): Flow<List<GeoMicrodistrictTlEntity>>
+    suspend fun loadMicrodistrictEntities(microdistricts: List<GeoMicrodistrictEntity>)
+    suspend fun loadMicrodistrictTlEntities(microdistrictTls: List<GeoMicrodistrictTlEntity>)
 }

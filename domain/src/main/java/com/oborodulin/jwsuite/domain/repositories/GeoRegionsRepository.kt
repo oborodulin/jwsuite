@@ -7,13 +7,15 @@ import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionTlCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface GeoRegionsRepository: CsvTransferableRepo {
+interface GeoRegionsRepository : CsvTransferableRepo {
     fun getAll(): Flow<List<GeoRegion>>
     fun get(regionId: UUID): Flow<GeoRegion>
     fun save(region: GeoRegion): Flow<GeoRegion>
     fun delete(region: GeoRegion): Flow<GeoRegion>
     fun deleteById(regionId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
     fun extractRegions(): Flow<List<GeoRegionCsv>>
     fun extractRegionTls(): Flow<List<GeoRegionTlCsv>>
     fun loadRegions(regions: List<GeoRegionCsv>): Flow<Int>

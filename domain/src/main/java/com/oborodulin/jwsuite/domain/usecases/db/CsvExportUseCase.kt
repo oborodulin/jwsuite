@@ -7,8 +7,8 @@ import com.oborodulin.jwsuite.domain.services.ExportService
 import com.oborodulin.jwsuite.domain.services.Exportable
 import com.oborodulin.jwsuite.domain.services.Exports
 import com.oborodulin.jwsuite.domain.services.csv.CsvConfig
-import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -43,10 +43,10 @@ class CsvExportUseCase(
                         // get and transformation data to exportable type
                         val extractData = (extractMethod.call() as Flow<*>).first()
                         if (extractData is List<*> && extractData.isNotEmpty()) {
-                            val exportableList = (extractData as List<Exportable>)
+                            val exportableList = extractData as List<Exportable>
                             Timber.tag(TAG).d(
                                 "CSV Exporting -> %s: list.size = %d",
-                                extractMethod.name,  exportableList.size
+                                extractMethod.name, exportableList.size
                             )
                             // call export function from Export serivce with apply config + type of export
                             exportService.export(

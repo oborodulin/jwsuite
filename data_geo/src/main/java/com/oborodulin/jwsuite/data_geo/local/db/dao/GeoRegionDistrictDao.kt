@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_geo.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionDistrictView
@@ -8,11 +14,18 @@ import com.oborodulin.jwsuite.data_geo.util.Constants.PX_REGION_DISTRICT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 @Dao
 interface GeoRegionDistrictDao {
     // READS:
+    @Query("SELECT * FROM ${GeoRegionDistrictEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GeoRegionDistrictEntity>>
+
+    @Query("SELECT * FROM ${GeoRegionDistrictTlEntity.TABLE_NAME}")
+    fun selectTlEntities(): Flow<List<GeoRegionDistrictTlEntity>>
+
     @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE ${PX_REGION_DISTRICT}regDistrictLocCode = :locale ORDER BY ${PX_REGION_DISTRICT}rRegionsId, ${PX_REGION_DISTRICT}regDistrictName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionDistrictView>>
 
@@ -48,6 +61,9 @@ interface GeoRegionDistrictDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(regionDistricts: List<GeoRegionDistrictEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(regionDistrictTls: List<GeoRegionDistrictTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg textContent: GeoRegionDistrictTlEntity)

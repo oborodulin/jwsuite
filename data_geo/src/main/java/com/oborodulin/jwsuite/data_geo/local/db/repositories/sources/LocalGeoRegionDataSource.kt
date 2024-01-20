@@ -17,6 +17,10 @@ interface LocalGeoRegionDataSource {
     suspend fun deleteRegionById(regionId: UUID)
     suspend fun deleteRegions(regions: List<GeoRegionEntity>)
     suspend fun deleteAllRegions()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
     fun getRegionEntities(): Flow<List<GeoRegionEntity>>
     fun getRegionTlEntities(): Flow<List<GeoRegionTlEntity>>
+    suspend fun loadRegionEntities(regions: List<GeoRegionEntity>)
+    suspend fun loadRegionTlEntities(regionTls: List<GeoRegionTlEntity>)
 }

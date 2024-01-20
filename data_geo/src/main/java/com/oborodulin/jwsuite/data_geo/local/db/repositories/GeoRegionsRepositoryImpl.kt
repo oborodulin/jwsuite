@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.data_geo.local.db.repositories
 
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
@@ -53,21 +55,34 @@ class GeoRegionsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localRegionDataSource.deleteAllRegions()
 
+    // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = GeoRegionEntity.TABLE_NAME)
     override fun extractRegions() = localRegionDataSource.getRegionEntities()
-        .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+        .map(csvMappers.geoRegionEntityListToGeoRegionCsvListMapper::map)
 
-    @CsvExtract
+    @CsvExtract(fileNamePrefix = GeoRegionTlEntity.TABLE_NAME)
     override fun extractRegionTls() = localRegionDataSource.getRegionTlEntities()
-        .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+        .map(csvMappers.geoRegionTlEntityListToGeoRegionTlCsvListMapper::map)
 
-    @CsvLoad
-    override fun loadRegions(regions: List<GeoRegionCsv>) =
-        localRegionDataSource.getRegion(regionId)
-            .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
+    @CsvLoad<GeoRegionCsv>(
+        fileNamePrefix = GeoRegionEntity.TABLE_NAME,
+        contentType = GeoRegionCsv::class
+    )
+    override fun loadRegions(regions: List<GeoRegionCsv>) = flow {
+        localRegionDataSource.loadRegionEntities(
+            csvMappers.geoRegionCsvListToGeoRegionEntityListMapper.map(regions)
+        )
+        emit(regions.size)
+    }
 
-    @CsvLoad
-    override fun loadRegionTls(regionTls: List<GeoRegionTlCsv>) =
-        localRegionDataSource.getRegion(regionId)
-            .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
+    @CsvLoad<GeoRegionTlCsv>(
+        fileNamePrefix = GeoRegionTlEntity.TABLE_NAME,
+        contentType = GeoRegionTlCsv::class
+    )
+    override fun loadRegionTls(regionTls: List<GeoRegionTlCsv>) = flow {
+        localRegionDataSource.loadRegionTlEntities(
+            csvMappers.geoRegionTlCsvListToGeoRegionTlEntityListMapper.map(regionTls)
+        )
+        emit(regionTls.size)
+    }
 }

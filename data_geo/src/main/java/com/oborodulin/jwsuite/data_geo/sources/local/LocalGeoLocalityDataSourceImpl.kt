@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLoc
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -49,4 +49,17 @@ class LocalGeoLocalityDataSourceImpl @Inject constructor(
     override suspend fun deleteAllLocalities() = withContext(dispatcher) {
         localityDao.deleteAll()
     }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getLocalityEntities() = localityDao.selectEntities()
+    override fun getLocalityTlEntities() = localityDao.selectTlEntities()
+    override suspend fun loadLocalityEntities(localities: List<GeoLocalityEntity>) =
+        withContext(dispatcher) {
+            localityDao.insert(localities)
+        }
+
+    override suspend fun loadLocalityTlEntities(localityTls: List<GeoLocalityTlEntity>) =
+        withContext(dispatcher) {
+            localityDao.insert(localityTls)
+        }
 }

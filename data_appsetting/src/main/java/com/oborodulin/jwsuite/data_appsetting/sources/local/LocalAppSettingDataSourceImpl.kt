@@ -53,6 +53,7 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
         appSettingDao.deleteAll()
     }
 
+    // -------------------------------------- CSV Transfer --------------------------------------
     override fun getAppSettingEntities() = appSettingDao.selectEntities()
     override suspend fun loadAppSettingEntities(settings: List<AppSettingEntity>) =
         withContext(dispatcher) {
