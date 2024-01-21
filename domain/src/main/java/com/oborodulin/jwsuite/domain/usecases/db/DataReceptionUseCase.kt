@@ -15,7 +15,7 @@ class DataReceptionUseCase(
     configuration: Configuration,
     private val sessionManagerRepository: SessionManagerRepository,
     private val membersRepository: MembersRepository
-) : UseCase<ExportUseCase.Request, ExportUseCase.Response>(configuration) {
+) : UseCase<DataReceptionUseCase.Request, DataReceptionUseCase.Response>(configuration) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun process(request: Request) = sessionManagerRepository.username().flatMapLatest { username ->
@@ -36,5 +36,10 @@ class DataReceptionUseCase(
     }
 
     data object Request : UseCase.Request
-    data class Response(val appSettingsWithSession: AppSettingsWithSession) : UseCase.Response
+data class Response(
+    val csvFilePrefix: String = "",
+    val loadListSize: Int = 0,
+    val isSuccess: Boolean = true
+) : UseCase.Response
+
 }

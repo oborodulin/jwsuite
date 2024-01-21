@@ -4,6 +4,10 @@ package com.oborodulin.jwsuite.domain.util
  * Created by o.borodulin on 06.October.2023
  */
 object Constants {
+    // Internal Storage constants:
+    const val BACKUP_PATH = "/backup"
+    const val TRANSFER_PATH = "/transfer"
+
     // Database constants:
     const val DB_TRUE = 1
     const val DB_FALSE = 0

@@ -2,19 +2,43 @@ package com.oborodulin.jwsuite.domain.services
 
 import androidx.annotation.WorkerThread
 import com.oborodulin.jwsuite.domain.services.csv.CsvConfig
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import com.opencsv.CSVWriter
 import com.opencsv.bean.StatefulBeanToCsvBuilder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import java.io.File
 import java.io.FileWriter
+import kotlin.reflect.KCallable
+
+private const val TAG = "Domain.ExportService"
 
 // https://chetangupta.net/db-to-csv/
-object ExportService {
-    fun <T : Exportable> export(type: Exports, content: List<T>): Flow<Boolean> =
-        when (type) {
+class ExportService(private val csvRepositories: List<CsvTransferableRepo> = emptyList()) {
+    fun <T : Exportable> export(type: Exports, content: List<T>): Flow<Boolean> {
+        Timber.tag(TAG)
+            .d("export(...) called: type = %s; content.size = %d", type, content.size)
+        return when (type) {
             is Exports.CSV -> writeToCSV(type.csvConfig, content)
         }
+    }
+
+    fun csvRepositoryExtracts(fileNamePrefix: String? = null): Map<CsvExtract, KCallable<*>> {
+        val callables: MutableMap<CsvExtract, KCallable<*>> = mutableMapOf()
+        csvRepositories.forEach { repo ->
+            repo.javaClass.kotlin.members.forEach { method ->
+                method.annotations.find { anno -> anno is CsvExtract && fileNamePrefix?.let { it == anno.fileNamePrefix } ?: true }
+                    ?.let { anno ->
+                        anno as CsvExtract
+                        callables[anno] = method
+                    }
+            }
+        }
+        Timber.tag(TAG).d("ExportService: callables = %s", callables)
+        return callables
+    }
 
     @WorkerThread
     private fun <T : Exportable> writeToCSV(csvConfig: CsvConfig, content: List<T>) =
@@ -29,6 +53,8 @@ object ExportService {
                 // create csv file
                 val csvFile = File("${hostDirectory.path}/$fileName")
                 val csvWriter = CSVWriter(FileWriter(csvFile))
+                Timber.tag(TAG)
+                    .d("writeToCSV: hostPath = %s; csvFile.path = %s", hostPath, csvFile.path)
 
                 // write csv file
                 StatefulBeanToCsvBuilder<T>(csvWriter)

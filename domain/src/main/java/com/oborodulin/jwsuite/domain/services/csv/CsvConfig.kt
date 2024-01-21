@@ -5,6 +5,7 @@ import java.text.DateFormat
 
 data class CsvConfig(
     private val ctx: Context,
+    private val subDir: String? = null,
     private val prefix: String,
     private val isUseSuffix: Boolean = false,
     private val suffix: String = DateFormat
@@ -15,6 +16,6 @@ data class CsvConfig(
 
     val fileName: String = prefix.plus(if (isUseSuffix) "-$suffix" else "").plus(".csv"),
     //@Suppress("DEPRECATION")
-    val hostPath: String = ctx.filesDir.path.plus("/csv")
+    val hostPath: String = ctx.filesDir.path.plus("/csv${subDir.orEmpty()}")
     //Environment.getExternalStorageDirectory()?.absolutePath?.plus("/Documents/Expenso") ?: ""
 )
