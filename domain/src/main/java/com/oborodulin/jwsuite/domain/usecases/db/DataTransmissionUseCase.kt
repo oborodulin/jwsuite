@@ -34,46 +34,51 @@ class DataTransmissionUseCase(
             membersRepository.get(it).first().pseudonym
         } ?: sessionManagerRepository.username().first()
         val transferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
-            .map { it.transferObject.transferObjectType }
-        databaseRepository.transferObjectTableNames(transferObjects).first().forEach { name ->
-            exportService.csvRepositoryExtracts(name).forEach { callable ->
-                val csvFilePrefix = callable.key.fileNamePrefix
-                val extractMethod = callable.value
-                Timber.tag(TAG).d(
-                    "CSV Data Transmission -> %s: csvFilePrefix = %s",
-                    extractMethod.name, csvFilePrefix
-                )
-                if (extractMethod.returnType is Flow<*>) {
-                    // get and transformation data to exportable type
-                    val extractData = (extractMethod.call() as Flow<*>).first()
-                    if (extractData is List<*> && extractData.isNotEmpty()) {
-                        val exportableList = extractData as List<Exportable>
-                        Timber.tag(TAG).d(
-                            "CSV Data Transmission -> %s: list.size = %d",
-                            extractMethod.name, exportableList.size
-                        )
-                        // call export function from Export serivce with apply config + type of export
-                        exportService.export(
-                            type = Exports.CSV(
-                                CsvConfig(
-                                    ctx = ctx,
-                                    subDir = "$TRANSFER_PATH${
-                                        request.memberId?.let { "/$it" }.orEmpty()
-                                    }",
-                                    prefix = csvFilePrefix
-                                )
-                            ),
-                            content = exportableList    // send transformed data of exportable type
-                        ).catch {
-                            // handle error here
-                            throw UseCaseException.DataTransmissionException(it)
-                        }.map {
-                            emit(Response(csvFilePrefix = csvFilePrefix, isSuccess = it))
+            .map { Pair(it.transferObject.transferObjectType, it.isPersonalData) }
+        databaseRepository.transferObjectTableNames(transferObjects).first()
+            .forEach { name ->
+                exportService.csvRepositoryExtracts(name.key).forEach { callable ->
+                    val csvFilePrefix = callable.key.fileNamePrefix
+                    val extractMethod = callable.value
+                    Timber.tag(TAG).d(
+                        "CSV Data Transmission -> %s: csvFilePrefix = %s",
+                        extractMethod.name, csvFilePrefix
+                    )
+                    if (extractMethod.returnType is Flow<*>) {
+                        // get and transformation data to exportable type
+                        val param = when (name.value) {
+                            true -> username
+                            false -> null
+                        }
+                        val extractData = (extractMethod.call(param) as Flow<*>).first()
+                        if (extractData is List<*> && extractData.isNotEmpty()) {
+                            val exportableList = extractData as List<Exportable>
+                            Timber.tag(TAG).d(
+                                "CSV Data Transmission -> %s(%s): list.size = %d",
+                                extractMethod.name, param, exportableList.size
+                            )
+                            // call export function from Export serivce with apply config + type of export
+                            exportService.export(
+                                type = Exports.CSV(
+                                    CsvConfig(
+                                        ctx = ctx,
+                                        subDir = "$TRANSFER_PATH${
+                                            request.memberId?.let { "/$it" }.orEmpty()
+                                        }",
+                                        prefix = csvFilePrefix
+                                    )
+                                ),
+                                content = exportableList    // send transformed data of exportable type
+                            ).catch {
+                                // handle error here
+                                throw UseCaseException.DataTransmissionException(it)
+                            }.map {
+                                emit(Response(csvFilePrefix = csvFilePrefix, isSuccess = it))
+                            }
                         }
                     }
                 }
             }
-        }
     }
 
     data class Request(val memberId: UUID? = null) : UseCase.Request

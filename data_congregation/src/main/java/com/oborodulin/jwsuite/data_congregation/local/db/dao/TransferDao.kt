@@ -6,11 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.Constants.TOT_ALL_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +51,20 @@ interface TransferDao {
     GROUP BY mrv.memberId, rtov.transferObjectId
     UNION ALL
     SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
-    WHERE mrv.pseudonym = :pseudonym 
+    WHERE mrv.pseudonym = :pseudonym
+        AND rtov.isPersonalData = $DB_FALSE
+        AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
+                        WHERE pseudonym = :pseudonym AND transferObjectType = $TOT_ALL_VAL)
+    GROUP BY mrv.memberId, rtov.transferObjectId
+    UNION ALL
+    SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
+    WHERE mrv.pseudonym = :pseudonym
+        AND rtov.isPersonalData = $DB_TRUE
+        AND NOT EXISTS (SELECT rto.roleTransferObjectId FROM ${RoleTransferObjectEntity.TABLE_NAME} rto 
+                            JOIN ${MemberRoleEntity.TABLE_NAME} mr ON mr.mrRolesId = rto.rtoRolesId
+                                AND mr.mrMembersId = mrv.memberId
+                                AND rto.rtoTransferObjectsId = rtov.transferObjectId
+                                AND rto.isPersonalData = $DB_FALSE)
         AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
                         WHERE pseudonym = :pseudonym AND transferObjectType = $TOT_ALL_VAL)
     GROUP BY mrv.memberId, rtov.transferObjectId

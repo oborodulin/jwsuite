@@ -68,8 +68,9 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localAppSettingDataSource.deleteAppSettings()
 
+    // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = AppSettingEntity.TABLE_NAME)
-    override fun extractAppSettings() =
+    override fun extractAppSettings(username: String?) =
         localAppSettingDataSource.getAppSettingEntities()
             .map(csvMappers.appSettingEntityListToAppSettingCsvListMapper::map)
 

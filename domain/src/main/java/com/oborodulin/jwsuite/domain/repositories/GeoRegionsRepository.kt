@@ -16,8 +16,8 @@ interface GeoRegionsRepository : CsvTransferableRepo {
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractRegions(): Flow<List<GeoRegionCsv>>
-    fun extractRegionTls(): Flow<List<GeoRegionTlCsv>>
+    fun extractRegions(username: String? = null): Flow<List<GeoRegionCsv>>
+    fun extractRegionTls(username: String? = null): Flow<List<GeoRegionTlCsv>>
     fun loadRegions(regions: List<GeoRegionCsv>): Flow<Int>
     fun loadRegionTls(regionTls: List<GeoRegionTlCsv>): Flow<Int>
 }

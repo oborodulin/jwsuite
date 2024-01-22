@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data.local.db.repositories
 
-import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalDatabaseDataSource
 import com.oborodulin.jwsuite.data.local.db.DatabaseVersion
+import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalDatabaseDataSource
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
 import com.oborodulin.jwsuite.domain.types.TransferObjectType
@@ -12,15 +12,16 @@ class DatabaseRepositoryImpl @Inject constructor(
     private val localDatabaseDataSource: LocalDatabaseDataSource,
     private val databaseVersion: DatabaseVersion
 ) : DatabaseRepository {
-    override fun transferObjectTableNames(transferObjects: List<TransferObjectType>) = flow {
-        val tables = mutableSetOf<String>()
-        transferObjects.forEach { transferObject ->
-            transferObjectTables[transferObject]?.let {
-                tables.addAll(it)
+    override fun transferObjectTableNames(transferObjects: List<Pair<TransferObjectType, Boolean>>) =
+        flow {
+            val tables = mutableMapOf<String, Boolean>()
+            transferObjects.sortedBy { it.second }.forEach { transferObject ->
+                transferObjectTables[transferObject.first]?.let { names ->
+                    names.forEach { tables[it] = transferObject.second }
+                }
             }
+            emit(tables)
         }
-        emit(tables.toList())
-    }
 
     override fun orderedDataTableNames() = localDatabaseDataSource.getDataTables()
 
@@ -31,6 +32,9 @@ class DatabaseRepositoryImpl @Inject constructor(
 
     companion object {
         val transferObjectTables =
-            mapOf(TransferObjectType.ALL to listOf(AppSettingEntity.TABLE_NAME))
+            mapOf(
+                TransferObjectType.ALL to listOf(AppSettingEntity.TABLE_NAME),
+                TransferObjectType.MEMBERS to listOf(AppSettingEntity.TABLE_NAME)
+            )
     }
 }
