@@ -1,5 +1,11 @@
 package com.oborodulin.jwsuite.data_geo.di
 
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.GeoRegionDistrictCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictMappers
@@ -37,42 +43,50 @@ object GeoRepositoriesModule {
     @Singleton //@ViewModelScoped
     @Provides
     fun provideGeoRegionsRepository(
-        localRegionDataSource: LocalGeoRegionDataSource, mappers: GeoRegionMappers
-    ): GeoRegionsRepository = GeoRegionsRepositoryImpl(localRegionDataSource, mappers)
+        localRegionDataSource: LocalGeoRegionDataSource,
+        domainMappers: GeoRegionMappers, csvMappers: GeoRegionCsvMappers
+    ): GeoRegionsRepository =
+        GeoRegionsRepositoryImpl(localRegionDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideGeoRegionDistrictsRepository(
         localRegionDistrictDataSource: LocalGeoRegionDistrictDataSource,
-        mappers: GeoRegionDistrictMappers
+        domainMappers: GeoRegionDistrictMappers, csvMappers: GeoRegionDistrictCsvMappers
     ): GeoRegionDistrictsRepository =
-        GeoRegionDistrictsRepositoryImpl(localRegionDistrictDataSource, mappers)
+        GeoRegionDistrictsRepositoryImpl(localRegionDistrictDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideGeoLocalitiesRepository(
-        localLocalityDataSource: LocalGeoLocalityDataSource, mappers: GeoLocalityMappers
-    ): GeoLocalitiesRepository = GeoLocalitiesRepositoryImpl(localLocalityDataSource, mappers)
+        localLocalityDataSource: LocalGeoLocalityDataSource,
+        domainMappers: GeoLocalityMappers, csvMappers: GeoLocalityCsvMappers
+    ): GeoLocalitiesRepository =
+        GeoLocalitiesRepositoryImpl(localLocalityDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideGeoLocalityDistrictsRepository(
         localLocalityDistrictDataSource: LocalGeoLocalityDistrictDataSource,
-        mappers: GeoLocalityDistrictMappers
+        domainMappers: GeoLocalityDistrictMappers, csvMappers: GeoLocalityDistrictCsvMappers
     ): GeoLocalityDistrictsRepository =
-        GeoLocalityDistrictsRepositoryImpl(localLocalityDistrictDataSource, mappers)
+        GeoLocalityDistrictsRepositoryImpl(
+            localLocalityDistrictDataSource, domainMappers, csvMappers
+        )
 
     @Singleton
     @Provides
     fun provideGeoMicrodistrictsRepository(
         localMicrodistrictDataSource: LocalGeoMicrodistrictDataSource,
-        mappers: GeoMicrodistrictMappers
+        domainMappers: GeoMicrodistrictMappers, csvMappers: GeoMicrodistrictCsvMappers
     ): GeoMicrodistrictsRepository =
-        GeoMicrodistrictsRepositoryImpl(localMicrodistrictDataSource, mappers)
+        GeoMicrodistrictsRepositoryImpl(localMicrodistrictDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideGeoStreetsRepository(
-        localStreetDataSource: LocalGeoStreetDataSource, mappers: GeoStreetMappers
-    ): GeoStreetsRepository = GeoStreetsRepositoryImpl(localStreetDataSource, mappers)
+        localStreetDataSource: LocalGeoStreetDataSource,
+        domainMappers: GeoStreetMappers, csvMappers: GeoStreetCsvMappers
+    ): GeoStreetsRepository =
+        GeoStreetsRepositoryImpl(localStreetDataSource, domainMappers, csvMappers)
 }

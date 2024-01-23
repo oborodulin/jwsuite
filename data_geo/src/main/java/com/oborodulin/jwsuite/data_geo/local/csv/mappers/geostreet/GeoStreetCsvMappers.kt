@@ -1,0 +1,11 @@
+package com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet
+
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlCsvListToGeoStreetTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityListToGeoStreetTlCsvListMapper
+
+data class GeoStreetCsvMappers(
+    val geoStreetEntityListToGeoStreetCsvListMapper: GeoStreetEntityListToGeoStreetCsvListMapper,
+    val geoStreetCsvListToGeoStreetEntityListMapper: GeoStreetCsvListToGeoStreetEntityListMapper,
+    val geoStreetTlEntityListToGeoStreetTlCsvListMapper: GeoStreetTlEntityListToGeoStreetTlCsvListMapper,
+    val geoStreetTlCsvListToGeoStreetTlEntityListMapper: GeoStreetTlCsvListToGeoStreetTlEntityListMapper
+)

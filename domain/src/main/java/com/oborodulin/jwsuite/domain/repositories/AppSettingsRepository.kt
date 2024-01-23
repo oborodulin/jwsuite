@@ -17,6 +17,6 @@ interface AppSettingsRepository : CsvTransferableRepo {
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractAppSettings(username: String? = null): Flow<List<AppSettingCsv>>
+    fun extractAppSettings(): Flow<List<AppSettingCsv>>
     fun loadAppSettings(settings: List<AppSettingCsv>): Flow<Int>
 }

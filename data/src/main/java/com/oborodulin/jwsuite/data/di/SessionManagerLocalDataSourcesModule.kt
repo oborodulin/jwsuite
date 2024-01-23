@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.sources.local.LocalSessionManagerDataSourceImpl
-import com.oborodulin.jwsuite.data.services.csv.model.session.AuthData
+import com.oborodulin.jwsuite.domain.model.session.AuthData
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides

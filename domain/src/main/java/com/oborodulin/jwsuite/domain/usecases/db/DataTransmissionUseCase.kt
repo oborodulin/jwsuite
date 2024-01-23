@@ -50,7 +50,9 @@ class DataTransmissionUseCase(
                             true -> username
                             false -> null
                         }
-                        val extractData = (extractMethod.call(param) as Flow<*>).first()
+                        val extractData = extractMethod.parameters.getOrNull(0)?.let {
+                            (extractMethod.call(param) as Flow<*>).first()
+                        } ?: (extractMethod.call() as Flow<*>).first()
                         if (extractData is List<*> && extractData.isNotEmpty()) {
                             val exportableList = extractData as List<Exportable>
                             Timber.tag(TAG).d(

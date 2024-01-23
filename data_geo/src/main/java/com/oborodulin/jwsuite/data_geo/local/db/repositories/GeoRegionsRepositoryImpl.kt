@@ -57,11 +57,11 @@ class GeoRegionsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = GeoRegionEntity.TABLE_NAME)
-    override fun extractRegions(username: String?) = localRegionDataSource.getRegionEntities()
+    override fun extractRegions() = localRegionDataSource.getRegionEntities()
         .map(csvMappers.geoRegionEntityListToGeoRegionCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = GeoRegionTlEntity.TABLE_NAME)
-    override fun extractRegionTls(username: String?) = localRegionDataSource.getRegionTlEntities()
+    override fun extractRegionTls() = localRegionDataSource.getRegionTlEntities()
         .map(csvMappers.geoRegionTlEntityListToGeoRegionTlCsvListMapper::map)
 
     @CsvLoad<GeoRegionCsv>(

@@ -70,9 +70,8 @@ class AppSettingsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = AppSettingEntity.TABLE_NAME)
-    override fun extractAppSettings(username: String?) =
-        localAppSettingDataSource.getAppSettingEntities()
-            .map(csvMappers.appSettingEntityListToAppSettingCsvListMapper::map)
+    override fun extractAppSettings() = localAppSettingDataSource.getAppSettingEntities()
+        .map(csvMappers.appSettingEntityListToAppSettingCsvListMapper::map)
 
     @CsvLoad<AppSettingCsv>(
         fileNamePrefix = AppSettingEntity.TABLE_NAME,

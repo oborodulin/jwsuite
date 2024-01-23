@@ -1,6 +1,33 @@
 package com.oborodulin.jwsuite.data_geo.di
 
 import android.content.Context
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvListToGeoLocalityEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvToGeoLocalityEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityEntityListToGeoLocalityCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityEntityToGeoLocalityCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.tl.GeoLocalityTlCsvListToGeoLocalityTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.tl.GeoLocalityTlCsvToGeoLocalityTlEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.tl.GeoLocalityTlEntityListToGeoLocalityTlCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.tl.GeoLocalityTlEntityToGeoLocalityTlCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictCsvToGeoLocalityDistrictEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.tl.GeoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.tl.GeoLocalityDistrictTlCsvToGeoLocalityDistrictTlEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.tl.GeoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.tl.GeoLocalityDistrictTlEntityToGeoLocalityDistrictTlCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictEntityToGeoMicrodistrictCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.tl.GeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.tl.GeoMicrodistrictTlCsvToGeoMicrodistrictTlEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.tl.GeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.tl.GeoMicrodistrictTlEntityToGeoMicrodistrictTlCsvMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvListToGeoRegionEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvToGeoRegionEntityMapper
@@ -19,6 +46,15 @@ import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.tl.Ge
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.tl.GeoRegionDistrictTlCsvToGeoRegionDistrictTlEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.tl.GeoRegionDistrictTlEntityListToGeoRegionDistrictTlCsvListMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.tl.GeoRegionDistrictTlEntityToGeoRegionDistrictTlCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvListToGeoStreetEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvToGeoStreetEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetEntityListToGeoStreetCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetEntityToGeoStreetCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlCsvListToGeoStreetTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlCsvToGeoStreetTlEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityListToGeoStreetTlCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityToGeoStreetTlCsvMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper
@@ -372,7 +408,7 @@ object GeoMappersModule {
     )
 
     // CSV:
-    // Region
+    // RegionCsv
     @Singleton
     @Provides
     fun provideGeoRegionEntityToGeoRegionCsvMapper(): GeoRegionEntityToGeoRegionCsvMapper =
@@ -393,7 +429,7 @@ object GeoMappersModule {
     fun provideGeoRegionCsvListToGeoRegionEntityListMapper(mapper: GeoRegionCsvToGeoRegionEntityMapper): GeoRegionCsvListToGeoRegionEntityListMapper =
         GeoRegionCsvListToGeoRegionEntityListMapper(mapper = mapper)
 
-    // RegionTl
+    // RegionTlCsv
     @Singleton
     @Provides
     fun provideGeoRegionTlEntityToGeoRegionTlCsvMapper(): GeoRegionTlEntityToGeoRegionTlCsvMapper =
@@ -428,7 +464,7 @@ object GeoMappersModule {
         geoRegionTlCsvListToGeoRegionTlEntityListMapper
     )
 
-    // RegionDistrict
+    // RegionDistrictCsv
     @Singleton
     @Provides
     fun provideGeoRegionDistrictEntityToGeoRegionDistrictCsvMapper(): GeoRegionDistrictEntityToGeoRegionDistrictCsvMapper =
@@ -449,7 +485,7 @@ object GeoMappersModule {
     fun provideGeoRegionDistrictCsvListToGeoRegionDistrictEntityListMapper(mapper: GeoRegionDistrictCsvToGeoRegionDistrictEntityMapper): GeoRegionDistrictCsvListToGeoRegionDistrictEntityListMapper =
         GeoRegionDistrictCsvListToGeoRegionDistrictEntityListMapper(mapper = mapper)
 
-    // RegionDistrictTl
+    // RegionDistrictTlCsv
     @Singleton
     @Provides
     fun provideGeoRegionDistrictTlEntityToGeoRegionDistrictTlCsvMapper(): GeoRegionDistrictTlEntityToGeoRegionDistrictTlCsvMapper =
@@ -482,5 +518,229 @@ object GeoMappersModule {
         geoRegionDistrictCsvListToGeoRegionDistrictEntityListMapper,
         geoRegionDistrictTlEntityListToGeoRegionDistrictTlCsvListMapper,
         geoRegionDistrictTlCsvListToGeoRegionDistrictTlEntityListMapper
+    )
+
+    // LocalityCsv
+    @Singleton
+    @Provides
+    fun provideGeoLocalityEntityToGeoLocalityCsvMapper(): GeoLocalityEntityToGeoLocalityCsvMapper =
+        GeoLocalityEntityToGeoLocalityCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityEntityListToGeoLocalityCsvListMapper(mapper: GeoLocalityEntityToGeoLocalityCsvMapper): GeoLocalityEntityListToGeoLocalityCsvListMapper =
+        GeoLocalityEntityListToGeoLocalityCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityCsvToGeoLocalityEntityMapper(): GeoLocalityCsvToGeoLocalityEntityMapper =
+        GeoLocalityCsvToGeoLocalityEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityCsvListToGeoLocalityEntityListMapper(mapper: GeoLocalityCsvToGeoLocalityEntityMapper): GeoLocalityCsvListToGeoLocalityEntityListMapper =
+        GeoLocalityCsvListToGeoLocalityEntityListMapper(mapper = mapper)
+
+    // LocalityTlCsv
+    @Singleton
+    @Provides
+    fun provideGeoLocalityTlEntityToGeoLocalityTlCsvMapper(): GeoLocalityTlEntityToGeoLocalityTlCsvMapper =
+        GeoLocalityTlEntityToGeoLocalityTlCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityTlEntityListToGeoLocalityTlCsvListMapper(mapper: GeoLocalityTlEntityToGeoLocalityTlCsvMapper): GeoLocalityTlEntityListToGeoLocalityTlCsvListMapper =
+        GeoLocalityTlEntityListToGeoLocalityTlCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityTlCsvToGeoLocalityTlEntityMapper(): GeoLocalityTlCsvToGeoLocalityTlEntityMapper =
+        GeoLocalityTlCsvToGeoLocalityTlEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityTlCsvListToGeoLocalityTlEntityListMapper(mapper: GeoLocalityTlCsvToGeoLocalityTlEntityMapper): GeoLocalityTlCsvListToGeoLocalityTlEntityListMapper =
+        GeoLocalityTlCsvListToGeoLocalityTlEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityCsvMappers(
+        geoLocalityEntityListToGeoLocalityCsvListMapper: GeoLocalityEntityListToGeoLocalityCsvListMapper,
+        geoLocalityCsvListToGeoLocalityEntityListMapper: GeoLocalityCsvListToGeoLocalityEntityListMapper,
+        geoLocalityTlEntityListToGeoLocalityTlCsvListMapper: GeoLocalityTlEntityListToGeoLocalityTlCsvListMapper,
+        geoLocalityTlCsvListToGeoLocalityTlEntityListMapper: GeoLocalityTlCsvListToGeoLocalityTlEntityListMapper
+    ): GeoLocalityCsvMappers = GeoLocalityCsvMappers(
+        geoLocalityEntityListToGeoLocalityCsvListMapper,
+        geoLocalityCsvListToGeoLocalityEntityListMapper,
+        geoLocalityTlEntityListToGeoLocalityTlCsvListMapper,
+        geoLocalityTlCsvListToGeoLocalityTlEntityListMapper
+    )
+
+    // LocalityDistrictCsv
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper(): GeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper =
+        GeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper(mapper: GeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper): GeoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper =
+        GeoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictCsvToGeoLocalityDistrictEntityMapper(): GeoLocalityDistrictCsvToGeoLocalityDistrictEntityMapper =
+        GeoLocalityDistrictCsvToGeoLocalityDistrictEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper(mapper: GeoLocalityDistrictCsvToGeoLocalityDistrictEntityMapper): GeoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper =
+        GeoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper(mapper = mapper)
+
+    // LocalityDistrictTlCsv
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictTlEntityToGeoLocalityDistrictTlCsvMapper(): GeoLocalityDistrictTlEntityToGeoLocalityDistrictTlCsvMapper =
+        GeoLocalityDistrictTlEntityToGeoLocalityDistrictTlCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper(mapper: GeoLocalityDistrictTlEntityToGeoLocalityDistrictTlCsvMapper): GeoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper =
+        GeoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictTlCsvToGeoLocalityDistrictTlEntityMapper(): GeoLocalityDistrictTlCsvToGeoLocalityDistrictTlEntityMapper =
+        GeoLocalityDistrictTlCsvToGeoLocalityDistrictTlEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper(mapper: GeoLocalityDistrictTlCsvToGeoLocalityDistrictTlEntityMapper): GeoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper =
+        GeoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoLocalityDistrictCsvMappers(
+        geoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper: GeoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper,
+        geoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper: GeoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper,
+        geoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper: GeoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper,
+        geoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper: GeoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper
+    ): GeoLocalityDistrictCsvMappers = GeoLocalityDistrictCsvMappers(
+        geoLocalityDistrictEntityListToGeoLocalityDistrictCsvListMapper,
+        geoLocalityDistrictCsvListToGeoLocalityDistrictEntityListMapper,
+        geoLocalityDistrictTlEntityListToGeoLocalityDistrictTlCsvListMapper,
+        geoLocalityDistrictTlCsvListToGeoLocalityTlEntityListMapper
+    )
+
+    // MicrodistrictCsv
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictEntityToGeoMicrodistrictCsvMapper(): GeoMicrodistrictEntityToGeoMicrodistrictCsvMapper =
+        GeoMicrodistrictEntityToGeoMicrodistrictCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper(mapper: GeoMicrodistrictEntityToGeoMicrodistrictCsvMapper): GeoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper =
+        GeoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictCsvToGeoMicrodistrictEntityMapper(): GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper =
+        GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper(mapper: GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper): GeoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper =
+        GeoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper(mapper = mapper)
+
+    // MicrodistrictTlCsv
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictTlEntityToGeoMicrodistrictTlCsvMapper(): GeoMicrodistrictTlEntityToGeoMicrodistrictTlCsvMapper =
+        GeoMicrodistrictTlEntityToGeoMicrodistrictTlCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper(mapper: GeoMicrodistrictTlEntityToGeoMicrodistrictTlCsvMapper): GeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper =
+        GeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictTlCsvToGeoMicrodistrictTlEntityMapper(): GeoMicrodistrictTlCsvToGeoMicrodistrictTlEntityMapper =
+        GeoMicrodistrictTlCsvToGeoMicrodistrictTlEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper(mapper: GeoMicrodistrictTlCsvToGeoMicrodistrictTlEntityMapper): GeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper =
+        GeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoMicrodistrictCsvMappers(
+        geoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper: GeoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper,
+        geoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper: GeoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper,
+        geoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper: GeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper,
+        geoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper: GeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper
+    ): GeoMicrodistrictCsvMappers = GeoMicrodistrictCsvMappers(
+        geoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper,
+        geoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper,
+        geoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper,
+        geoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper
+    )
+
+    // StreetCsv
+    @Singleton
+    @Provides
+    fun provideGeoStreetEntityToGeoStreetCsvMapper(): GeoStreetEntityToGeoStreetCsvMapper =
+        GeoStreetEntityToGeoStreetCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetEntityListToGeoStreetCsvListMapper(mapper: GeoStreetEntityToGeoStreetCsvMapper): GeoStreetEntityListToGeoStreetCsvListMapper =
+        GeoStreetEntityListToGeoStreetCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetCsvToGeoStreetEntityMapper(): GeoStreetCsvToGeoStreetEntityMapper =
+        GeoStreetCsvToGeoStreetEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetCsvListToGeoStreetEntityListMapper(mapper: GeoStreetCsvToGeoStreetEntityMapper): GeoStreetCsvListToGeoStreetEntityListMapper =
+        GeoStreetCsvListToGeoStreetEntityListMapper(mapper = mapper)
+
+    // StreetTlCsv
+    @Singleton
+    @Provides
+    fun provideGeoStreetTlEntityToGeoStreetTlCsvMapper(): GeoStreetTlEntityToGeoStreetTlCsvMapper =
+        GeoStreetTlEntityToGeoStreetTlCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetTlEntityListToGeoStreetTlCsvListMapper(mapper: GeoStreetTlEntityToGeoStreetTlCsvMapper): GeoStreetTlEntityListToGeoStreetTlCsvListMapper =
+        GeoStreetTlEntityListToGeoStreetTlCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetTlCsvToGeoStreetTlEntityMapper(): GeoStreetTlCsvToGeoStreetTlEntityMapper =
+        GeoStreetTlCsvToGeoStreetTlEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetTlCsvListToGeoStreetTlEntityListMapper(mapper: GeoStreetTlCsvToGeoStreetTlEntityMapper): GeoStreetTlCsvListToGeoStreetTlEntityListMapper =
+        GeoStreetTlCsvListToGeoStreetTlEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoStreetCsvMappers(
+        geoStreetEntityListToGeoStreetCsvListMapper: GeoStreetEntityListToGeoStreetCsvListMapper,
+        geoStreetCsvListToGeoStreetEntityListMapper: GeoStreetCsvListToGeoStreetEntityListMapper,
+        geoStreetTlEntityListToGeoStreetTlCsvListMapper: GeoStreetTlEntityListToGeoStreetTlCsvListMapper,
+        geoStreetTlCsvListToGeoStreetTlEntityListMapper: GeoStreetTlCsvListToGeoStreetTlEntityListMapper
+    ): GeoStreetCsvMappers = GeoStreetCsvMappers(
+        geoStreetEntityListToGeoStreetCsvListMapper,
+        geoStreetCsvListToGeoStreetEntityListMapper,
+        geoStreetTlEntityListToGeoStreetTlCsvListMapper,
+        geoStreetTlCsvListToGeoStreetTlEntityListMapper
     )
 }

@@ -2,10 +2,12 @@ package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
+import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoStreetCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoStreetTlCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface GeoStreetsRepository: CsvTransferableRepo {
+interface GeoStreetsRepository : CsvTransferableRepo {
     fun getAll(): Flow<List<GeoStreet>>
     fun getAllByLocality(localityId: UUID, isPrivateSector: Boolean? = null): Flow<List<GeoStreet>>
     fun getAllByLocalityDistrict(localityDistrictId: UUID, isPrivateSector: Boolean? = null):
@@ -39,4 +41,10 @@ interface GeoStreetsRepository: CsvTransferableRepo {
             Flow<List<UUID>>
 
     fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID): Flow<UUID>
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun extractStreets(): Flow<List<GeoStreetCsv>>
+    fun extractStreetTls(): Flow<List<GeoStreetTlCsv>>
+    fun loadStreets(streets: List<GeoStreetCsv>): Flow<Int>
+    fun loadStreetTls(streetTls: List<GeoStreetTlCsv>): Flow<Int>
 }

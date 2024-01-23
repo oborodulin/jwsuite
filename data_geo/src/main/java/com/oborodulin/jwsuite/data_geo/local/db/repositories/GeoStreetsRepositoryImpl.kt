@@ -1,9 +1,16 @@
 package com.oborodulin.jwsuite.data_geo.local.db.repositories
 
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetMappers
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
+import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoStreetCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoStreetTlCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -11,42 +18,43 @@ import javax.inject.Inject
 
 class GeoStreetsRepositoryImpl @Inject constructor(
     private val localStreetDataSource: LocalGeoStreetDataSource,
-    private val mappers: GeoStreetMappers
+    private val domainMappers: GeoStreetMappers,
+    private val csvMappers: GeoStreetCsvMappers
 ) : GeoStreetsRepository {
     override fun getAll() = localStreetDataSource.getAllStreets()
-        .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+        .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
 
     override fun getAllByLocality(localityId: UUID, isPrivateSector: Boolean?) =
         localStreetDataSource.getLocalityStreets(localityId, isPrivateSector)
-            .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
 
     override fun getAllByLocalityDistrict(localityDistrictId: UUID, isPrivateSector: Boolean?) =
         localStreetDataSource.getLocalityDistrictStreets(localityDistrictId, isPrivateSector)
-            .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
 
     override fun getAllByMicrodistrict(microdistrictId: UUID, isPrivateSector: Boolean?) =
         localStreetDataSource.getMicrodistrictStreets(microdistrictId, isPrivateSector)
-            .map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
 
     override fun getAllForTerritory(
         localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?, excludes: List<UUID>
     ) = localStreetDataSource.getStreetsForTerritory(
         localityId, localityDistrictId, microdistrictId, excludes
-    ).map(mappers.geoStreetViewListToGeoStreetsListMapper::map)
+    ).map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
 
     override fun get(streetId: UUID) = localStreetDataSource.getStreet(streetId)
-        .map(mappers.geoStreetViewToGeoStreetMapper::map)
+        .map(domainMappers.geoStreetViewToGeoStreetMapper::map)
 
     override fun save(street: GeoStreet) = flow {
         if (street.id == null) {
             localStreetDataSource.insertStreet(
-                mappers.geoStreetToGeoStreetEntityMapper.map(street),
-                mappers.geoStreetToGeoStreetTlEntityMapper.map(street)
+                domainMappers.geoStreetToGeoStreetEntityMapper.map(street),
+                domainMappers.geoStreetToGeoStreetTlEntityMapper.map(street)
             )
         } else {
             localStreetDataSource.updateStreet(
-                mappers.geoStreetToGeoStreetEntityMapper.map(street),
-                mappers.geoStreetToGeoStreetTlEntityMapper.map(street)
+                domainMappers.geoStreetToGeoStreetEntityMapper.map(street),
+                domainMappers.geoStreetToGeoStreetTlEntityMapper.map(street)
             )
         }
         emit(street)
@@ -54,7 +62,7 @@ class GeoStreetsRepositoryImpl @Inject constructor(
 
     override fun delete(street: GeoStreet) = flow {
         localStreetDataSource.deleteStreet(
-            mappers.geoStreetToGeoStreetEntityMapper.map(street)
+            domainMappers.geoStreetToGeoStreetEntityMapper.map(street)
         )
         this.emit(street)
     }
@@ -100,5 +108,37 @@ class GeoStreetsRepositoryImpl @Inject constructor(
     override fun deleteMicrodistrict(streetId: UUID, microdistrictId: UUID) = flow {
         localStreetDataSource.deleteStreetLocalityDistrict(streetId, microdistrictId)
         this.emit(microdistrictId)
+    }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    @CsvExtract(fileNamePrefix = GeoStreetEntity.TABLE_NAME)
+    override fun extractStreets() = localStreetDataSource.getStreetEntities()
+        .map(csvMappers.geoStreetEntityListToGeoStreetCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = GeoStreetTlEntity.TABLE_NAME)
+    override fun extractStreetTls() =
+        localStreetDataSource.getStreetTlEntities()
+            .map(csvMappers.geoStreetTlEntityListToGeoStreetTlCsvListMapper::map)
+
+    @CsvLoad<GeoStreetCsv>(
+        fileNamePrefix = GeoStreetEntity.TABLE_NAME,
+        contentType = GeoStreetCsv::class
+    )
+    override fun loadStreets(streets: List<GeoStreetCsv>) = flow {
+        localStreetDataSource.loadStreetEntities(
+            csvMappers.geoStreetCsvListToGeoStreetEntityListMapper.map(streets)
+        )
+        emit(streets.size)
+    }
+
+    @CsvLoad<GeoStreetTlCsv>(
+        fileNamePrefix = GeoStreetTlEntity.TABLE_NAME,
+        contentType = GeoStreetTlCsv::class
+    )
+    override fun loadStreetTls(streetTls: List<GeoStreetTlCsv>) = flow {
+        localStreetDataSource.loadStreetTlEntities(
+            csvMappers.geoStreetTlCsvListToGeoStreetTlEntityListMapper.map(streetTls)
+        )
+        emit(streetTls.size)
     }
 }

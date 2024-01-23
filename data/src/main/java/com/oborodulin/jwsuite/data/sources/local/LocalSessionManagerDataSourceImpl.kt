@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.home.common.secure.AesCipherProvider
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
-import com.oborodulin.jwsuite.data.services.csv.model.session.AuthData
+import com.oborodulin.jwsuite.domain.model.session.AuthData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow

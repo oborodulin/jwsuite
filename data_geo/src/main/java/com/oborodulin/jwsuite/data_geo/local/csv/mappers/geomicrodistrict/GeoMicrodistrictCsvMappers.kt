@@ -1,0 +1,11 @@
+package com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict
+
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.tl.GeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.tl.GeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper
+
+data class GeoMicrodistrictCsvMappers(
+    val geoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper: GeoMicrodistrictEntityListToGeoMicrodistrictCsvListMapper,
+    val geoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper: GeoMicrodistrictCsvListToGeoMicrodistrictEntityListMapper,
+    val geoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper: GeoMicrodistrictTlEntityListToGeoMicrodistrictTlCsvListMapper,
+    val geoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper: GeoMicrodistrictTlCsvListToGeoMicrodistrictTlEntityListMapper
+)
