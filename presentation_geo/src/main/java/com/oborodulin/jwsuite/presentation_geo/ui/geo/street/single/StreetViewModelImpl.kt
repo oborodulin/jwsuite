@@ -19,7 +19,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase

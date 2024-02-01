@@ -24,4 +24,8 @@ interface LocalFloorDataSource {
     fun getNextEntranceNum(houseId: UUID): Int
     suspend fun clearTerritoryById(floorId: UUID)
     suspend fun setTerritoryById(floorId: UUID, territoryId: UUID)
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getFloorEntities(): Flow<List<FloorEntity>>
+    suspend fun loadFloorEntities(floors: List<FloorEntity>)
 }

@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
@@ -8,11 +14,14 @@ import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_GROUP_CONGREGA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface GroupDao {
     // READS:
+    @Query("SELECT * FROM ${GroupEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<GroupEntity>>
+
     @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY ${PX_GROUP_CONGREGATION}congregationName, groupNum")
     fun findAll(): Flow<List<GroupView>>
 

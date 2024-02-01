@@ -22,4 +22,8 @@ interface LocalEntranceDataSource {
     fun getNextEntranceNum(houseId: UUID): Int
     suspend fun clearTerritoryById(entranceId: UUID)
     suspend fun setTerritoryById(entranceId: UUID, territoryId: UUID)
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getEntranceEntities(): Flow<List<EntranceEntity>>
+    suspend fun loadEntranceEntities(entrances: List<EntranceEntity>)
 }

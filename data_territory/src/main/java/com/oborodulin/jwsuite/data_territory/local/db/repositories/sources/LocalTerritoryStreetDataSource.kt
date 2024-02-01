@@ -29,4 +29,8 @@ interface LocalTerritoryStreetDataSource {
     suspend fun deleteStreet(territoryStreet: TerritoryStreetEntity)
     suspend fun deleteStreet(territoryStreetId: UUID)
     suspend fun deleteStreets(territoryId: UUID)
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getTerritoryStreetEntities(): Flow<List<TerritoryStreetEntity>>
+    suspend fun loadTerritoryStreetEntities(territoryStreets: List<TerritoryStreetEntity>)
 }

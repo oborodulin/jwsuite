@@ -74,4 +74,20 @@ interface LocalMemberDataSource {
     suspend fun insertRoleTransferObject(roleTransferObject: RoleTransferObjectEntity)
     suspend fun updateRoleTransferObject(roleTransferObject: RoleTransferObjectEntity)
     suspend fun deleteRoleTransferObjectById(roleTransferObjectId: UUID)
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getMemberEntities(): Flow<List<MemberEntity>>
+    fun getMemberCongregationEntities(): Flow<List<MemberCongregationCrossRefEntity>>
+    fun getMemberMovementEntities(): Flow<List<MemberMovementEntity>>
+    fun getRoleEntities(): Flow<List<RoleEntity>>
+    fun getMemberRoleEntities(): Flow<List<MemberRoleEntity>>
+    fun getTransferObjectEntities(): Flow<List<TransferObjectEntity>>
+    fun getRoleTransferObjectEntities(): Flow<List<RoleTransferObjectEntity>>
+    suspend fun loadMemberEntities(members: List<MemberEntity>)
+    suspend fun loadMemberCongregationEntities(memberCongregations: List<MemberCongregationCrossRefEntity>)
+    suspend fun loadMemberMovementEntities(memberMovements: List<MemberMovementEntity>)
+    suspend fun loadRoleEntities(roles: List<RoleEntity>)
+    suspend fun loadMemberRoleEntities(memberRoles: List<MemberRoleEntity>)
+    suspend fun loadTransferObjectEntities(transferObjects: List<TransferObjectEntity>)
+    suspend fun loadRoleTransferObjectEntities(roleTransferObjects: List<RoleTransferObjectEntity>)
 }

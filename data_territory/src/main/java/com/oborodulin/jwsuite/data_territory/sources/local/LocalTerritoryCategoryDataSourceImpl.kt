@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.Local
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -37,9 +37,10 @@ class LocalTerritoryCategoryDataSourceImpl @Inject constructor(
             territoryCategoryDao.delete(territoryCategory)
         }
 
-    override suspend fun deleteTerritoryCategoryById(territoryCategoryId: UUID) = withContext(dispatcher) {
-        territoryCategoryDao.deleteById(territoryCategoryId)
-    }
+    override suspend fun deleteTerritoryCategoryById(territoryCategoryId: UUID) =
+        withContext(dispatcher) {
+            territoryCategoryDao.deleteById(territoryCategoryId)
+        }
 
     override suspend fun deleteTerritoryCategories(territoryCategories: List<TerritoryCategoryEntity>) =
         withContext(dispatcher) {
@@ -49,4 +50,11 @@ class LocalTerritoryCategoryDataSourceImpl @Inject constructor(
     override suspend fun deleteAllTerritoryCategories() = withContext(dispatcher) {
         territoryCategoryDao.deleteAll()
     }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getTerritoryCategoryEntities() = territoryCategoryDao.selectEntities()
+    override suspend fun loadTerritoryCategoryEntities(territoryCategories: List<TerritoryCategoryEntity>) =
+        withContext(dispatcher) {
+            territoryCategoryDao.insert(territoryCategories)
+        }
 }

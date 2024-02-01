@@ -67,4 +67,11 @@ class LocalEntranceDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             entranceDao.updateTerritoryIdById(entranceId, territoryId)
         }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getEntranceEntities() = entranceDao.selectEntities()
+    override suspend fun loadEntranceEntities(entrances: List<EntranceEntity>) =
+        withContext(dispatcher) {
+            entranceDao.insert(entrances)
+        }
 }

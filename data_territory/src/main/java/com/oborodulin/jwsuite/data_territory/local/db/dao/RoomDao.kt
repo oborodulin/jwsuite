@@ -22,6 +22,9 @@ import java.util.UUID
 @Dao
 interface RoomDao {
     // READS:
+    @Query("SELECT * FROM ${RoomEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<RoomEntity>>
+
     @Query("SELECT * FROM ${RoomView.VIEW_NAME} ORDER BY rHousesId, roomNum")
     fun findAll(): Flow<List<RoomView>>
 

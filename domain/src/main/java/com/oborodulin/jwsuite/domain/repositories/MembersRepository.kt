@@ -7,10 +7,17 @@ import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.domain.model.congregation.RoleTransferObject
 import com.oborodulin.jwsuite.domain.model.congregation.TransferObject
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCongregationCrossRefCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberMovementCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberRoleCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.RoleCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.RoleTransferObjectCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.TransferObjectCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface MembersRepository: CsvTransferableRepo {
+interface MembersRepository : CsvTransferableRepo {
     // Members by Congregation:
     fun getAllByFavoriteCongregation(isService: Boolean = false): Flow<List<Member>>
     fun getAllByCongregation(
@@ -49,4 +56,21 @@ interface MembersRepository: CsvTransferableRepo {
 
     // Movements:
     fun deleteMovementById(memberMovementId: UUID): Flow<UUID>
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun extractMembers(): Flow<List<MemberCsv>>
+    fun extractMemberCongregations(): Flow<List<MemberCongregationCrossRefCsv>>
+    fun extractMemberMovements(): Flow<List<MemberMovementCsv>>
+    fun extractRoles(): Flow<List<RoleCsv>>
+    fun extractMemberRoles(): Flow<List<MemberRoleCsv>>
+    fun extractTransferObjects(): Flow<List<TransferObjectCsv>>
+    fun extractRoleTransferObjects(): Flow<List<RoleTransferObjectCsv>>
+
+    fun loadMembers(members: List<MemberCsv>): Flow<Int>
+    fun loadMemberCongregations(memberCongregations: List<MemberCongregationCrossRefCsv>): Flow<Int>
+    fun loadMemberMovements(memberMovements: List<MemberMovementCsv>): Flow<Int>
+    fun loadRoles(roles: List<RoleCsv>): Flow<Int>
+    fun loadMemberRoles(memberRoles: List<MemberRoleCsv>): Flow<Int>
+    fun loadTransferObjects(transferObjects: List<TransferObjectCsv>): Flow<Int>
+    fun loadRoleTransferObjects(roleTransferObjects: List<RoleTransferObjectCsv>): Flow<Int>
 }

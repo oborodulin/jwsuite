@@ -4,5 +4,5 @@ import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.CongregationCsv
 
-class CongregationCsvListToCongregationEntityListMapper(mapper: com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationCsvToCongregationEntityMapper) :
+class CongregationCsvListToCongregationEntityListMapper(mapper: CongregationCsvToCongregationEntityMapper) :
     ListMapperImpl<CongregationCsv, CongregationEntity>(mapper)

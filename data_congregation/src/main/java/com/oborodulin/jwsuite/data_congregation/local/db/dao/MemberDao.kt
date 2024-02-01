@@ -1,6 +1,12 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
@@ -10,20 +16,36 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
+import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
-import com.oborodulin.jwsuite.domain.types.MemberType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface MemberDao {
     // READS:
+    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<MemberEntity>>
+
+    @Query("SELECT * FROM ${MemberCongregationCrossRefEntity.TABLE_NAME}")
+    fun selectMemberCongregationEntities(): Flow<List<MemberCongregationCrossRefEntity>>
+
+    @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME}")
+    fun selectMemberMovementEntities(): Flow<List<MemberMovementEntity>>
+
+    @Query("SELECT * FROM ${RoleEntity.TABLE_NAME}")
+    fun selectRoleEntities(): Flow<List<RoleEntity>>
+
+    @Query("SELECT * FROM ${MemberRoleEntity.TABLE_NAME}")
+    fun selectMemberRoleEntities(): Flow<List<MemberRoleEntity>>
+
+    //-----------------------------
     @Query("SELECT * FROM ${MemberView.VIEW_NAME} ORDER BY groupNum, surname, memberName, patronymic, pseudonym")
     fun findAll(): Flow<List<MemberView>>
 
@@ -195,14 +217,26 @@ interface MemberDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(memberCongregations: List<MemberCongregationCrossRefEntity>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg roles: RoleEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(roles: List<RoleEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberRoles: MemberRoleEntity)
 
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(memberRoles: List<MemberRoleEntity>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberMovements: MemberMovementEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(memberMovements: List<MemberMovementEntity>)
 
     suspend fun insert(
         member: MemberEntity, memberType: MemberType = MemberType.PREACHER,

@@ -13,4 +13,8 @@ interface LocalTerritoryCategoryDataSource {
     suspend fun deleteTerritoryCategoryById(territoryCategoryId: UUID)
     suspend fun deleteTerritoryCategories(territoryCategories: List<TerritoryCategoryEntity>)
     suspend fun deleteAllTerritoryCategories()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getTerritoryCategoryEntities(): Flow<List<TerritoryCategoryEntity>>
+    suspend fun loadTerritoryCategoryEntities(territoryCategories: List<TerritoryCategoryEntity>)
 }

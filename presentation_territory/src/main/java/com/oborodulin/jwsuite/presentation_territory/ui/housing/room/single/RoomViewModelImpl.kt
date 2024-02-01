@@ -16,7 +16,7 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
 import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase

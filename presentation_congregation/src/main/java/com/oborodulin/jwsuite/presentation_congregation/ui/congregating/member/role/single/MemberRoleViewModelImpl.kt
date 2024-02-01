@@ -17,10 +17,10 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.util.toFullFormatOffsetDateTimeOrNull
-import com.oborodulin.home.common.util.toOffsetDateTime
-import com.oborodulin.home.common.util.toShortFormatString
-import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
+import com.oborodulin.home.common.extensions.toOffsetDateTime
+import com.oborodulin.home.common.extensions.toShortFormatString
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase

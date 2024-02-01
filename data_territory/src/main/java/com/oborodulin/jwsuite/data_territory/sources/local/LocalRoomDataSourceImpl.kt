@@ -67,4 +67,10 @@ class LocalRoomDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             roomDao.updateTerritoryIdById(roomId, territoryId)
         }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getRoomEntities() = roomDao.selectEntities()
+    override suspend fun loadRoomEntities(rooms: List<RoomEntity>) = withContext(dispatcher) {
+        roomDao.insert(rooms)
+    }
 }

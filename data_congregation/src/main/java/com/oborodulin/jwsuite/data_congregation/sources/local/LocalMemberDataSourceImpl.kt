@@ -7,12 +7,14 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongrega
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -129,5 +131,47 @@ class LocalMemberDataSourceImpl @Inject constructor(
     override suspend fun deleteRoleTransferObjectById(roleTransferObjectId: UUID) =
         withContext(dispatcher) {
             transferDao.deleteRoleTransferObjectById(roleTransferObjectId)
+        }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getMemberEntities() = memberDao.selectEntities()
+    override fun getMemberCongregationEntities() = memberDao.selectMemberCongregationEntities()
+    override fun getMemberMovementEntities() = memberDao.selectMemberMovementEntities()
+    override fun getRoleEntities() = memberDao.selectRoleEntities()
+    override fun getMemberRoleEntities() = memberDao.selectMemberRoleEntities()
+    override fun getTransferObjectEntities() = transferDao.selectEntities()
+    override fun getRoleTransferObjectEntities() = transferDao.selectRoleTransferObjectEntities()
+    override suspend fun loadMemberEntities(members: List<MemberEntity>) =
+        withContext(dispatcher) {
+            memberDao.insert(members)
+        }
+
+    override suspend fun loadMemberCongregationEntities(memberCongregations: List<MemberCongregationCrossRefEntity>) =
+        withContext(dispatcher) {
+            memberDao.insert(memberCongregations)
+        }
+
+    override suspend fun loadMemberMovementEntities(memberMovements: List<MemberMovementEntity>) =
+        withContext(dispatcher) {
+            memberDao.insert(memberMovements)
+        }
+
+    override suspend fun loadRoleEntities(roles: List<RoleEntity>) = withContext(dispatcher) {
+        memberDao.insert(roles)
+    }
+
+    override suspend fun loadMemberRoleEntities(memberRoles: List<MemberRoleEntity>) =
+        withContext(dispatcher) {
+            memberDao.insert(memberRoles)
+        }
+
+    override suspend fun loadTransferObjectEntities(transferObjects: List<TransferObjectEntity>) =
+        withContext(dispatcher) {
+            transferDao.insert(transferObjects)
+        }
+
+    override suspend fun loadRoleTransferObjectEntities(roleTransferObjects: List<RoleTransferObjectEntity>) =
+        withContext(dispatcher) {
+            transferDao.insert(roleTransferObjects)
         }
 }

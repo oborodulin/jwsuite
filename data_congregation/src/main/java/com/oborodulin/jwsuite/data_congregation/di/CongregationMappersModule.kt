@@ -1,5 +1,50 @@
 package com.oborodulin.jwsuite.data_congregation.di
 
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationCsvListToCongregationEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationCsvToCongregationEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationEntityListToCongregationCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationEntityToCongregationCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.total.CongregationTotalCsvListToCongregationTotalEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.total.CongregationTotalCsvToCongregationTotalEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.total.CongregationTotalEntityListToCongregationTotalCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.total.CongregationTotalEntityToCongregationTotalCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.group.GroupCsvListToGroupEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.group.GroupCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.group.GroupCsvToGroupEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.group.GroupEntityListToGroupCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.group.GroupEntityToGroupCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberCsvListToMemberEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberCsvToMemberEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberEntityListToMemberCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberEntityToMemberCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.congregation.MemberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.congregation.MemberCongregationCrossRefCsvToMemberCongregationCrossRefEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.congregation.MemberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.congregation.MemberCongregationCrossRefEntityToMemberCongregationCrossRefCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.movement.MemberMovementCsvListToMemberMovementEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.movement.MemberMovementCsvToMemberMovementEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.movement.MemberMovementEntityListToMemberMovementCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.movement.MemberMovementEntityToMemberMovementCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleCsvListToMemberRoleEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleCsvToMemberRoleEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleEntityListToMemberRoleCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleEntityToMemberRoleCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectCsvToRoleTransferObjectEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectEntityToRoleTransferObjectCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvListToRoleEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvToRoleEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleEntityListToRoleCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleEntityToRoleCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvListToTransferObjectEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvToTransferObjectEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectEntityListToTransferObjectCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectEntityToTransferObjectCsvMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationEntityToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationToCongregationEntityMapper
@@ -26,15 +71,15 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.Mem
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewListToRolesListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewToMemberRoleMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewToRoleMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.RoleEntityListToRolesListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.RoleEntityToRoleMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.MemberRoleTransferObjectToRoleTransferObjectEntityMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.MemberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.MemberRoleTransferObjectViewListToTransferObjectsListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.MemberRoleTransferObjectViewToMemberRoleTransferObjectMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.MemberRoleTransferObjectViewToTransferObjectMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.RoleTransferObjectViewListToRoleTransferObjectsListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.RoleTransferObjectViewToRoleTransferObjectMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectToRoleTransferObjectEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewListToTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewToMemberRoleTransferObjectMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewToTransferObjectMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.RoleTransferObjectViewListToRoleTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.RoleTransferObjectViewToRoleTransferObjectMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.RoleEntityListToRolesListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.RoleEntityToRoleMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectEntityListToTransferObjectsListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectEntityToTransferObjectMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectMappers
@@ -335,5 +380,284 @@ object CongregationMappersModule {
         memberRoleTransferObjectViewListToTransferObjectsListMapper,
         memberRoleTransferObjectViewToMemberRoleTransferObjectMapper,
         memberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
+    )
+
+    // ------------------------------------------- CSV: -------------------------------------------
+    // CongregationCsv
+    @Singleton
+    @Provides
+    fun provideCongregationEntityToCongregationCsvMapper(): CongregationEntityToCongregationCsvMapper =
+        CongregationEntityToCongregationCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideCongregationEntityListToCongregationCsvListMapper(mapper: CongregationEntityToCongregationCsvMapper): CongregationEntityListToCongregationCsvListMapper =
+        CongregationEntityListToCongregationCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCongregationCsvToCongregationEntityMapper(): CongregationCsvToCongregationEntityMapper =
+        CongregationCsvToCongregationEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideCongregationCsvListToCongregationEntityListMapper(mapper: CongregationCsvToCongregationEntityMapper): CongregationCsvListToCongregationEntityListMapper =
+        CongregationCsvListToCongregationEntityListMapper(mapper = mapper)
+
+    // CongregationTotalCsv
+    @Singleton
+    @Provides
+    fun provideCongregationTotalEntityToCongregationTotalCsvMapper(): CongregationTotalEntityToCongregationTotalCsvMapper =
+        CongregationTotalEntityToCongregationTotalCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideCongregationTotalEntityListToCongregationTotalCsvListMapper(mapper: CongregationTotalEntityToCongregationTotalCsvMapper): CongregationTotalEntityListToCongregationTotalCsvListMapper =
+        CongregationTotalEntityListToCongregationTotalCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCongregationTotalCsvToCongregationTotalEntityMapper(): CongregationTotalCsvToCongregationTotalEntityMapper =
+        CongregationTotalCsvToCongregationTotalEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideCongregationTotalCsvListToCongregationTotalEntityListMapper(mapper: CongregationTotalCsvToCongregationTotalEntityMapper): CongregationTotalCsvListToCongregationTotalEntityListMapper =
+        CongregationTotalCsvListToCongregationTotalEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCongregationCsvMappers(
+        congregationEntityListToCongregationCsvListMapper: CongregationEntityListToCongregationCsvListMapper,
+        congregationTotalEntityListToCongregationTotalCsvListMapper: CongregationTotalEntityListToCongregationTotalCsvListMapper,
+        congregationCsvListToCongregationEntityListMapper: CongregationCsvListToCongregationEntityListMapper,
+        congregationTotalCsvListToCongregationTotalEntityListMapper: CongregationTotalCsvListToCongregationTotalEntityListMapper
+    ): CongregationCsvMappers = CongregationCsvMappers(
+        congregationEntityListToCongregationCsvListMapper,
+        congregationTotalEntityListToCongregationTotalCsvListMapper,
+        congregationCsvListToCongregationEntityListMapper,
+        congregationTotalCsvListToCongregationTotalEntityListMapper
+    )
+
+    // GroupCsv
+    @Singleton
+    @Provides
+    fun provideGroupEntityToGroupCsvMapper(): GroupEntityToGroupCsvMapper =
+        GroupEntityToGroupCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGroupEntityListToGroupCsvListMapper(mapper: GroupEntityToGroupCsvMapper): GroupEntityListToGroupCsvListMapper =
+        GroupEntityListToGroupCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGroupCsvToGroupEntityMapper(): GroupCsvToGroupEntityMapper =
+        GroupCsvToGroupEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGroupCsvListToGroupEntityListMapper(mapper: GroupCsvToGroupEntityMapper): GroupCsvListToGroupEntityListMapper =
+        GroupCsvListToGroupEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGroupCsvMappers(
+        groupEntityListToGroupCsvListMapper: GroupEntityListToGroupCsvListMapper,
+        groupCsvListToGroupEntityListMapper: GroupCsvListToGroupEntityListMapper
+    ): GroupCsvMappers = GroupCsvMappers(
+        groupEntityListToGroupCsvListMapper,
+        groupCsvListToGroupEntityListMapper
+    )
+
+    // RoleCsv
+    @Singleton
+    @Provides
+    fun provideRoleEntityToRoleCsvMapper(): RoleEntityToRoleCsvMapper = RoleEntityToRoleCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleEntityListToRoleCsvListMapper(mapper: RoleEntityToRoleCsvMapper): RoleEntityListToRoleCsvListMapper =
+        RoleEntityListToRoleCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoleCsvToRoleEntityMapper(): RoleCsvToRoleEntityMapper = RoleCsvToRoleEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleCsvListToRoleEntityListMapper(mapper: RoleCsvToRoleEntityMapper): RoleCsvListToRoleEntityListMapper =
+        RoleCsvListToRoleEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoleCsvMappers(
+        roleEntityListToRoleCsvListMapper: RoleEntityListToRoleCsvListMapper,
+        roleCsvListToRoleEntityListMapper: RoleCsvListToRoleEntityListMapper
+    ): RoleCsvMappers = RoleCsvMappers(
+        roleEntityListToRoleCsvListMapper,
+        roleCsvListToRoleEntityListMapper
+    )
+
+    // TransferObjectCsv
+    @Singleton
+    @Provides
+    fun provideTransferObjectEntityToTransferObjectCsvMapper(): TransferObjectEntityToTransferObjectCsvMapper =
+        TransferObjectEntityToTransferObjectCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTransferObjectEntityListToTransferObjectCsvListMapper(mapper: TransferObjectEntityToTransferObjectCsvMapper): TransferObjectEntityListToTransferObjectCsvListMapper =
+        TransferObjectEntityListToTransferObjectCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTransferObjectCsvToTransferObjectEntityMapper(): TransferObjectCsvToTransferObjectEntityMapper =
+        TransferObjectCsvToTransferObjectEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTransferObjectCsvListToTransferObjectEntityListMapper(mapper: TransferObjectCsvToTransferObjectEntityMapper): TransferObjectCsvListToTransferObjectEntityListMapper =
+        TransferObjectCsvListToTransferObjectEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTransferObjectMappers(
+        transferObjectEntityListToTransferObjectCsvListMapper: TransferObjectEntityListToTransferObjectCsvListMapper,
+        transferObjectCsvListToTransferObjectEntityListMapper: TransferObjectCsvListToTransferObjectEntityListMapper
+    ): TransferObjectCsvMappers = TransferObjectCsvMappers(
+        transferObjectEntityListToTransferObjectCsvListMapper,
+        transferObjectCsvListToTransferObjectEntityListMapper
+    )
+
+    // MemberCongregationCrossRefCsv
+    @Singleton
+    @Provides
+    fun provideMemberCongregationCrossRefEntityToMemberCongregationCrossRefCsvMapper(): MemberCongregationCrossRefEntityToMemberCongregationCrossRefCsvMapper =
+        MemberCongregationCrossRefEntityToMemberCongregationCrossRefCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper(mapper: MemberCongregationCrossRefEntityToMemberCongregationCrossRefCsvMapper): MemberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper =
+        MemberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberCongregationCrossRefCsvToMemberCongregationCrossRefEntityMapper(): MemberCongregationCrossRefCsvToMemberCongregationCrossRefEntityMapper =
+        MemberCongregationCrossRefCsvToMemberCongregationCrossRefEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper(mapper: MemberCongregationCrossRefCsvToMemberCongregationCrossRefEntityMapper): MemberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper =
+        MemberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper(mapper = mapper)
+
+    // MemberMovementCsv
+    @Singleton
+    @Provides
+    fun provideMemberMovementEntityToMemberMovementCsvMapper(): MemberMovementEntityToMemberMovementCsvMapper =
+        MemberMovementEntityToMemberMovementCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberMovementEntityListToMemberMovementCsvListMapper(mapper: MemberMovementEntityToMemberMovementCsvMapper): MemberMovementEntityListToMemberMovementCsvListMapper =
+        MemberMovementEntityListToMemberMovementCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberMovementCsvToMemberMovementEntityMapper(): MemberMovementCsvToMemberMovementEntityMapper =
+        MemberMovementCsvToMemberMovementEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberMovementCsvListToMemberMovementEntityListMapper(mapper: MemberMovementCsvToMemberMovementEntityMapper): MemberMovementCsvListToMemberMovementEntityListMapper =
+        MemberMovementCsvListToMemberMovementEntityListMapper(mapper = mapper)
+
+    // MemberRoleCsv
+    @Singleton
+    @Provides
+    fun provideMemberRoleEntityToMemberRoleCsvMapper(): MemberRoleEntityToMemberRoleCsvMapper =
+        MemberRoleEntityToMemberRoleCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleEntityListToMemberRoleCsvListMapper(mapper: MemberRoleEntityToMemberRoleCsvMapper): MemberRoleEntityListToMemberRoleCsvListMapper =
+        MemberRoleEntityListToMemberRoleCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleCsvToMemberRoleEntityMapper(): MemberRoleCsvToMemberRoleEntityMapper =
+        MemberRoleCsvToMemberRoleEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleCsvListToMemberRoleEntityListMapper(mapper: MemberRoleCsvToMemberRoleEntityMapper): MemberRoleCsvListToMemberRoleEntityListMapper =
+        MemberRoleCsvListToMemberRoleEntityListMapper(mapper = mapper)
+
+    // RoleTransferObjectCsv
+    @Singleton
+    @Provides
+    fun provideRoleTransferObjectEntityToRoleTransferObjectCsvMapper(): RoleTransferObjectEntityToRoleTransferObjectCsvMapper =
+        RoleTransferObjectEntityToRoleTransferObjectCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleTransferObjectEntityListToRoleTransferObjectCsvListMapper(mapper: RoleTransferObjectEntityToRoleTransferObjectCsvMapper): RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper =
+        RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoleTransferObjectCsvToRoleTransferObjectEntityMapper(): RoleTransferObjectCsvToRoleTransferObjectEntityMapper =
+        RoleTransferObjectCsvToRoleTransferObjectEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleTransferObjectCsvListToRoleTransferObjectEntityListMapper(mapper: RoleTransferObjectCsvToRoleTransferObjectEntityMapper): RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper =
+        RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper(mapper = mapper)
+
+    // MemberCsv
+    @Singleton
+    @Provides
+    fun provideMemberEntityToMemberCsvMapper(): MemberEntityToMemberCsvMapper =
+        MemberEntityToMemberCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberEntityListToMemberCsvListMapper(mapper: MemberEntityToMemberCsvMapper): MemberEntityListToMemberCsvListMapper =
+        MemberEntityListToMemberCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberCsvToMemberEntityMapper(): MemberCsvToMemberEntityMapper =
+        MemberCsvToMemberEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberCsvListToMemberEntityListMapper(mapper: MemberCsvToMemberEntityMapper): MemberCsvListToMemberEntityListMapper =
+        MemberCsvListToMemberEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberCsvMappers(
+        memberEntityListToMemberCsvListMapper: MemberEntityListToMemberCsvListMapper,
+        memberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper: MemberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper,
+        memberMovementEntityListToMemberMovementCsvListMapper: MemberMovementEntityListToMemberMovementCsvListMapper,
+        memberRoleEntityListToMemberRoleCsvListMapper: MemberRoleEntityListToMemberRoleCsvListMapper,
+        roleTransferObjectEntityListToRoleTransferObjectCsvListMapper: RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
+        memberCsvListToMemberEntityListMapper: MemberCsvListToMemberEntityListMapper,
+        memberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper: MemberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper,
+        memberMovementCsvListToMemberMovementEntityListMapper: MemberMovementCsvListToMemberMovementEntityListMapper,
+        memberRoleCsvListToMemberRoleEntityListMapper: MemberRoleCsvListToMemberRoleEntityListMapper,
+        roleTransferObjectCsvListToRoleTransferObjectEntityListMapper: RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+    ): MemberCsvMappers = MemberCsvMappers(
+        memberEntityListToMemberCsvListMapper,
+        memberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper,
+        memberMovementEntityListToMemberMovementCsvListMapper,
+        memberRoleEntityListToMemberRoleCsvListMapper,
+        roleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
+        memberCsvListToMemberEntityListMapper,
+        memberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper,
+        memberMovementCsvListToMemberMovementEntityListMapper,
+        memberRoleCsvListToMemberRoleEntityListMapper,
+        roleTransferObjectCsvListToRoleTransferObjectEntityListMapper
     )
 }

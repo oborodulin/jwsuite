@@ -23,6 +23,13 @@ import java.util.UUID
 @Dao
 interface TransferDao {
     // READS:
+    @Query("SELECT * FROM ${TransferObjectEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<TransferObjectEntity>>
+
+    @Query("SELECT * FROM ${RoleTransferObjectEntity.TABLE_NAME}")
+    fun selectRoleTransferObjectEntities(): Flow<List<RoleTransferObjectEntity>>
+
+    //-----------------------------
     @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} ORDER BY transferObjectName")
     fun findAll(): Flow<List<MemberRoleTransferObjectView>>
 
@@ -104,6 +111,9 @@ interface TransferDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg roleTransferObjects: RoleTransferObjectEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(roleTransferObjects: List<RoleTransferObjectEntity>)
 
     // UPDATES:
     @Update

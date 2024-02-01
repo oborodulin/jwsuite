@@ -16,7 +16,7 @@ import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_SINGLE
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_UI_STATE
-import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

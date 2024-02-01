@@ -2,10 +2,11 @@ package com.oborodulin.jwsuite.domain.repositories
 
 import com.oborodulin.jwsuite.domain.model.congregation.Group
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.GroupCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-interface GroupsRepository: CsvTransferableRepo {
+interface GroupsRepository : CsvTransferableRepo {
     fun getAllByCongregation(congregationId: UUID): Flow<List<Group>>
     fun getAllByFavoriteCongregation(): Flow<List<Group>>
     fun getNextGroupNum(congregationId: UUID): Flow<Int>
@@ -14,4 +15,8 @@ interface GroupsRepository: CsvTransferableRepo {
     fun delete(group: Group): Flow<Group>
     fun deleteById(groupId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun extractGroups(): Flow<List<GroupCsv>>
+    fun loadGroups(groups: List<GroupCsv>): Flow<Int>
 }

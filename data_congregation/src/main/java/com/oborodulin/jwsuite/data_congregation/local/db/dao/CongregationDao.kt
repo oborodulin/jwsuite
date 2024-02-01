@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.pojo.CongregationWithGroupMembers
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
@@ -26,7 +27,10 @@ private const val TAG = "Data.CongregationDao"
 interface CongregationDao {
     // READS:
     @Query("SELECT * FROM ${CongregationEntity.TABLE_NAME}")
-    fun selectAll(): Flow<List<CongregationEntity>>
+    fun selectEntities(): Flow<List<CongregationEntity>>
+
+    @Query("SELECT * FROM ${CongregationTotalEntity.TABLE_NAME}")
+    fun selectTotalEntities(): Flow<List<CongregationTotalEntity>>
 
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} ORDER BY isFavorite DESC")
     fun findAll(): Flow<List<CongregationView>>
@@ -80,6 +84,9 @@ interface CongregationDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(congregations: List<CongregationEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(congregationTotals: List<CongregationTotalEntity>)
 
     // UPDATES:
     @Update

@@ -1,0 +1,11 @@
+package com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation
+
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.total.CongregationTotalCsvListToCongregationTotalEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.total.CongregationTotalEntityListToCongregationTotalCsvListMapper
+
+data class CongregationCsvMappers(
+    val congregationEntityListToCongregationCsvListMapper: CongregationEntityListToCongregationCsvListMapper,
+    val congregationTotalEntityListToCongregationTotalCsvListMapper: CongregationTotalEntityListToCongregationTotalCsvListMapper,
+    val congregationCsvListToCongregationEntityListMapper: CongregationCsvListToCongregationEntityListMapper,
+    val congregationTotalCsvListToCongregationTotalEntityListMapper: CongregationTotalCsvListToCongregationTotalEntityListMapper
+)

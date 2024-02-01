@@ -1,11 +1,30 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.model.congregation.MemberRole
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCongregationCrossRefCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberMovementCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberRoleCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.RoleCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.RoleTransferObjectCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.TransferObjectCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -14,7 +33,10 @@ import javax.inject.Inject
 class MembersRepositoryImpl @Inject constructor(
     private val localMemberDataSource: LocalMemberDataSource,
     private val memberMappers: MemberMappers,
-    private val transferObjectMappers: TransferObjectMappers
+    private val transferObjectMappers: TransferObjectMappers,
+    private val csvMemberMappers: MemberCsvMappers,
+    private val csvRoleMappers: RoleCsvMappers,
+    private val csvTransferObjectMappers: TransferObjectCsvMappers
 ) : MembersRepository {
     // Members by Congregation:
     override fun getAllByFavoriteCongregation(isService: Boolean) =
@@ -124,5 +146,116 @@ class MembersRepositoryImpl @Inject constructor(
     override fun deleteMovementById(memberMovementId: UUID) = flow {
         localMemberDataSource.deleteMovementById(memberMovementId)
         this.emit(memberMovementId)
+    }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    @CsvExtract(fileNamePrefix = MemberEntity.TABLE_NAME)
+    override fun extractMembers() = localMemberDataSource.getMemberEntities()
+        .map(csvMemberMappers.memberEntityListToMemberCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = MemberCongregationCrossRefEntity.TABLE_NAME)
+    override fun extractMemberCongregations() =
+        localMemberDataSource.getMemberCongregationEntities()
+            .map(csvMemberMappers.memberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = MemberMovementEntity.TABLE_NAME)
+    override fun extractMemberMovements() = localMemberDataSource.getMemberMovementEntities()
+        .map(csvMemberMappers.memberMovementEntityListToMemberMovementCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = RoleEntity.TABLE_NAME)
+    override fun extractRoles() = localMemberDataSource.getRoleEntities()
+        .map(csvRoleMappers.roleEntityListToRoleCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = MemberRoleEntity.TABLE_NAME)
+    override fun extractMemberRoles() = localMemberDataSource.getMemberRoleEntities()
+        .map(csvMemberMappers.memberRoleEntityListToMemberRoleCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = TransferObjectEntity.TABLE_NAME)
+    override fun extractTransferObjects() = localMemberDataSource.getTransferObjectEntities()
+        .map(csvTransferObjectMappers.transferObjectEntityListToTransferObjectCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = RoleTransferObjectEntity.TABLE_NAME)
+    override fun extractRoleTransferObjects() =
+        localMemberDataSource.getRoleTransferObjectEntities()
+            .map(csvMemberMappers.roleTransferObjectEntityListToRoleTransferObjectCsvListMapper::map)
+
+    @CsvLoad<MemberCsv>(fileNamePrefix = MemberEntity.TABLE_NAME, contentType = MemberCsv::class)
+    override fun loadMembers(members: List<MemberCsv>) = flow {
+        localMemberDataSource.loadMemberEntities(
+            csvMemberMappers.memberCsvListToMemberEntityListMapper.map(members)
+        )
+        emit(members.size)
+    }
+
+    @CsvLoad<MemberCongregationCrossRefCsv>(
+        fileNamePrefix = MemberCongregationCrossRefEntity.TABLE_NAME,
+        contentType = MemberCongregationCrossRefCsv::class
+    )
+    override fun loadMemberCongregations(memberCongregations: List<MemberCongregationCrossRefCsv>) =
+        flow {
+            localMemberDataSource.loadMemberCongregationEntities(
+                csvMemberMappers.memberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper.map(
+                    memberCongregations
+                )
+            )
+            emit(memberCongregations.size)
+        }
+
+    @CsvLoad<MemberMovementCsv>(
+        fileNamePrefix = MemberMovementEntity.TABLE_NAME,
+        contentType = MemberMovementCsv::class
+    )
+    override fun loadMemberMovements(memberMovements: List<MemberMovementCsv>) = flow {
+        localMemberDataSource.loadMemberMovementEntities(
+            csvMemberMappers.memberMovementCsvListToMemberMovementEntityListMapper.map(
+                memberMovements
+            )
+        )
+        emit(memberMovements.size)
+    }
+
+    @CsvLoad<RoleCsv>(fileNamePrefix = RoleEntity.TABLE_NAME, contentType = RoleCsv::class)
+    override fun loadRoles(roles: List<RoleCsv>) = flow {
+        localMemberDataSource.loadRoleEntities(
+            csvRoleMappers.roleCsvListToRoleEntityListMapper.map(roles)
+        )
+        emit(roles.size)
+    }
+
+    @CsvLoad<MemberRoleCsv>(
+        fileNamePrefix = MemberRoleEntity.TABLE_NAME,
+        contentType = MemberRoleCsv::class
+    )
+    override fun loadMemberRoles(memberRoles: List<MemberRoleCsv>) = flow {
+        localMemberDataSource.loadMemberRoleEntities(
+            csvMemberMappers.memberRoleCsvListToMemberRoleEntityListMapper.map(memberRoles)
+        )
+        emit(memberRoles.size)
+    }
+
+    @CsvLoad<TransferObjectCsv>(
+        fileNamePrefix = TransferObjectEntity.TABLE_NAME,
+        contentType = TransferObjectCsv::class
+    )
+    override fun loadTransferObjects(transferObjects: List<TransferObjectCsv>) = flow {
+        localMemberDataSource.loadTransferObjectEntities(
+            csvTransferObjectMappers.transferObjectCsvListToTransferObjectEntityListMapper.map(
+                transferObjects
+            )
+        )
+        emit(transferObjects.size)
+    }
+
+    @CsvLoad<RoleTransferObjectCsv>(
+        fileNamePrefix = RoleTransferObjectEntity.TABLE_NAME,
+        contentType = RoleTransferObjectCsv::class
+    )
+    override fun loadRoleTransferObjects(roleTransferObjects: List<RoleTransferObjectCsv>) = flow {
+        localMemberDataSource.loadRoleTransferObjectEntities(
+            csvMemberMappers.roleTransferObjectCsvListToRoleTransferObjectEntityListMapper.map(
+                roleTransferObjects
+            )
+        )
+        emit(roleTransferObjects.size)
     }
 }

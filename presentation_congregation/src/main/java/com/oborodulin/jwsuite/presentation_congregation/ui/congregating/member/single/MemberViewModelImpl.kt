@@ -18,11 +18,11 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
-import com.oborodulin.home.common.util.toFullFormatOffsetDateTimeOrNull
-import com.oborodulin.home.common.util.toOffsetDateTime
-import com.oborodulin.home.common.util.toShortFormatString
-import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
+import com.oborodulin.home.common.extensions.toOffsetDateTime
+import com.oborodulin.home.common.extensions.toShortFormatString
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.types.MemberType

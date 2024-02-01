@@ -68,4 +68,10 @@ class LocalFloorDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             floorDao.updateTerritoryIdById(floorId, territoryId)
         }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getFloorEntities() = floorDao.selectEntities()
+    override suspend fun loadFloorEntities(floors: List<FloorEntity>) = withContext(dispatcher) {
+        floorDao.insert(floors)
+    }
 }

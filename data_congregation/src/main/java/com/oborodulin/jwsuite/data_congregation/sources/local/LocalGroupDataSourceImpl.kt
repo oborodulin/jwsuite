@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.Lo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -51,4 +51,10 @@ class LocalGroupDataSourceImpl @Inject constructor(
         groupDao.deleteAll()
     }
 
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getGroupEntities() = groupDao.selectEntities()
+    override suspend fun loadGroupEntities(groups: List<GroupEntity>) =
+        withContext(dispatcher) {
+            groupDao.insert(groups)
+        }
 }

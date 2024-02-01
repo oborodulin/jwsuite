@@ -26,8 +26,8 @@ class CsvImportUseCase(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun process(request: Request) = flow {
         var importResult = false
-        databaseRepository.orderedDataTableNames().first().forEach { name ->
-            importService.csvRepositoryLoads(name).forEach { callables ->
+        databaseRepository.orderedDataTableNames().first().forEach { tableName ->
+            importService.csvRepositoryLoads(tableName).forEach { callables ->
                 val csvFilePrefix = callables.key.fileNamePrefix
                 val contentType = callables.key.contentType
                 val loadMethod = callables.value

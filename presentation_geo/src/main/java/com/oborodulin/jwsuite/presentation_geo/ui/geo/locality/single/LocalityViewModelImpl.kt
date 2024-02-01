@@ -18,7 +18,7 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.util.toUUIDOrNull
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase

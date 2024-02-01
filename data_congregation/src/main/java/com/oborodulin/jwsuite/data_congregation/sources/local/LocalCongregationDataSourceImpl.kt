@@ -3,11 +3,12 @@ package com.oborodulin.jwsuite.data_congregation.sources.local
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -56,5 +57,18 @@ class LocalCongregationDataSourceImpl @Inject constructor(
     override suspend fun makeFavoriteCongregationById(congregationId: UUID) =
         withContext(dispatcher) {
             congregationDao.makeFavoriteById(congregationId)
+        }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getCongregationEntities() = congregationDao.selectEntities()
+    override fun getCongregationTotalEntities() = congregationDao.selectTotalEntities()
+    override suspend fun loadCongregationEntities(congregations: List<CongregationEntity>) =
+        withContext(dispatcher) {
+            congregationDao.insert(congregations)
+        }
+
+    override suspend fun loadCongregationTotalEntities(congregationTotals: List<CongregationTotalEntity>) =
+        withContext(dispatcher) {
+            congregationDao.insert(congregationTotals)
         }
 }

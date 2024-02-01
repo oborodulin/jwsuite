@@ -68,4 +68,11 @@ class LocalHouseDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             houseDao.updateTerritoryIdById(houseId, territoryId)
         }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getHouseEntities() = houseDao.selectEntities()
+    override suspend fun loadHouseEntities(houses: List<HouseEntity>) =
+        withContext(dispatcher) {
+            houseDao.insert(houses)
+        }
 }

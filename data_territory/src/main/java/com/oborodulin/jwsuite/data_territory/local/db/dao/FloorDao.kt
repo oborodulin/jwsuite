@@ -22,6 +22,9 @@ import java.util.UUID
 @Dao
 interface FloorDao {
     // READS:
+    @Query("SELECT * FROM ${FloorEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<FloorEntity>>
+
     @Query("SELECT * FROM ${FloorView.VIEW_NAME} ORDER BY houseNum, floorNum")
     fun findAll(): Flow<List<FloorView>>
 

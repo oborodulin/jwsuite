@@ -14,7 +14,7 @@ data class CsvConfig(
         .replace(",", "")
         .replace(" ", "_"),
 
-    val fileName: String = prefix.plus(if (isUseSuffix) "-$suffix" else "").plus(".csv"),
+    val fileName: String = prefix.plus("-$suffix".takeIf { isUseSuffix }.orEmpty()).plus(".csv"),
     //@Suppress("DEPRECATION")
     val hostPath: String = ctx.filesDir.path.plus("/csv${subDir.orEmpty()}")
     //Environment.getExternalStorageDirectory()?.absolutePath?.plus("/Documents/Expenso") ?: ""

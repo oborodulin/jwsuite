@@ -16,4 +16,8 @@ interface LocalGroupDataSource {
     suspend fun deleteGroupById(groupId: UUID)
     suspend fun deleteGroups(groups: List<GroupEntity>)
     suspend fun deleteAllGroups()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getGroupEntities(): Flow<List<GroupEntity>>
+    suspend fun loadGroupEntities(groups: List<GroupEntity>)
 }

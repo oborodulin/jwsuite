@@ -42,6 +42,7 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class ExportException(cause: Throwable) : UseCaseException(cause)
     class ImportException(cause: Throwable) : UseCaseException(cause)
     class DataTransmissionException(cause: Throwable) : UseCaseException(cause)
+    class DataReceptionException(cause: Throwable) : UseCaseException(cause)
 
     class UnknownException(cause: Throwable) : UseCaseException(cause)
 

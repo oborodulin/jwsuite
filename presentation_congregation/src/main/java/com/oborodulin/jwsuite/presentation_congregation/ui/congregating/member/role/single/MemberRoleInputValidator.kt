@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single
 
 import com.oborodulin.home.common.ui.components.field.util.Validatable
-import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
 import com.oborodulin.jwsuite.presentation_congregation.R
 import java.time.OffsetDateTime
 

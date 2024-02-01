@@ -59,4 +59,11 @@ class LocalTerritoryStreetDataSourceImpl @Inject constructor(
     override suspend fun deleteStreets(territoryId: UUID) = withContext(dispatcher) {
         territoryStreetDao.deleteStreetsByTerritoryId(territoryId)
     }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getTerritoryStreetEntities() = territoryStreetDao.selectEntities()
+    override suspend fun loadTerritoryStreetEntities(territoryStreets: List<TerritoryStreetEntity>) =
+        withContext(dispatcher) {
+            territoryStreetDao.insert(territoryStreets)
+        }
 }

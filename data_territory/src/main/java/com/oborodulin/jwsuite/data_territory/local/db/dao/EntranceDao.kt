@@ -22,6 +22,9 @@ import java.util.UUID
 @Dao
 interface EntranceDao {
     // READS:
+    @Query("SELECT * FROM ${EntranceEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<EntranceEntity>>
+
     @Query("SELECT * FROM ${EntranceView.VIEW_NAME} ORDER BY streetName, houseNum, houseLetter, entranceNum")
     fun findAll(): Flow<List<EntranceView>>
 

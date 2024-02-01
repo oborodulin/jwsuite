@@ -1,9 +1,16 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories
 
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
 import com.oborodulin.jwsuite.domain.model.congregation.Congregation
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.CongregationCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.congregation.CongregationTotalCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -14,32 +21,31 @@ private const val TAG = "Data.CongregationsRepositoryImpl"
 
 class CongregationsRepositoryImpl @Inject constructor(
     private val localCongregationDataSource: LocalCongregationDataSource,
-    private val mappers: CongregationMappers
+    private val domainMappers: CongregationMappers,
+    private val csvMappers: CongregationCsvMappers
 ) : CongregationsRepository {
     override fun getAll() = localCongregationDataSource.getCongregations()
-        .map(mappers.congregationViewListToCongregationsListMapper::map)
+        .map(domainMappers.congregationViewListToCongregationsListMapper::map)
 
     override fun get(congregationId: UUID) =
         localCongregationDataSource.getCongregation(congregationId)
-            .map(mappers.congregationViewToCongregationMapper::map)
+            .map(domainMappers.congregationViewToCongregationMapper::map)
 
-    override fun getFavorite() =
-        localCongregationDataSource.getFavoriteCongregation()
-            .map(mappers.congregationViewToCongregationMapper::nullableMap)
+    override fun getFavorite() = localCongregationDataSource.getFavoriteCongregation()
+        .map(domainMappers.congregationViewToCongregationMapper::nullableMap)
 
-    override fun getFavoriteTotals() =
-        localCongregationDataSource.getFavoriteCongregationTotals()
-            .map(mappers.congregationTotalViewToCongregationTotalsMapper::nullableMap)
+    override fun getFavoriteTotals() = localCongregationDataSource.getFavoriteCongregationTotals()
+        .map(domainMappers.congregationTotalViewToCongregationTotalsMapper::nullableMap)
 
     override fun save(congregation: Congregation) = flow {
         if (congregation.id == null) {
             localCongregationDataSource.insertCongregation(
-                mappers.congregationToCongregationEntityMapper.map(congregation)
+                domainMappers.congregationToCongregationEntityMapper.map(congregation)
             )
             Timber.tag(TAG).d("save(...) called: inserted congregation = %s", congregation)
         } else {
             localCongregationDataSource.updateCongregation(
-                mappers.congregationToCongregationEntityMapper.map(congregation)
+                domainMappers.congregationToCongregationEntityMapper.map(congregation)
             )
             Timber.tag(TAG).d("save(...) called: updated congregation = %s", congregation)
         }
@@ -49,9 +55,7 @@ class CongregationsRepositoryImpl @Inject constructor(
 
     override fun delete(congregation: Congregation) = flow {
         localCongregationDataSource.deleteCongregation(
-            mappers.congregationToCongregationEntityMapper.map(
-                congregation
-            )
+            domainMappers.congregationToCongregationEntityMapper.map(congregation)
         )
         this.emit(congregation)
     }
@@ -67,6 +71,7 @@ class CongregationsRepositoryImpl @Inject constructor(
         localCongregationDataSource.makeFavoriteCongregationById(congregationId)
         this.emit(congregationId)
     }
+
     /*
         fun nowPlaying(): Flow<PagingData<NetworkMovie>> {
             val config = PagingConfig(
@@ -81,4 +86,37 @@ class CongregationsRepositoryImpl @Inject constructor(
             }.flow
         }
       */
+    // -------------------------------------- CSV Transfer --------------------------------------
+    @CsvExtract(fileNamePrefix = CongregationEntity.TABLE_NAME)
+    override fun extractCongregations() = localCongregationDataSource.getCongregationEntities()
+        .map(csvMappers.congregationEntityListToCongregationCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = CongregationTotalEntity.TABLE_NAME)
+    override fun extractCongregationTotals() =
+        localCongregationDataSource.getCongregationTotalEntities()
+            .map(csvMappers.congregationTotalEntityListToCongregationTotalCsvListMapper::map)
+
+    @CsvLoad<CongregationCsv>(
+        fileNamePrefix = CongregationEntity.TABLE_NAME,
+        contentType = CongregationCsv::class
+    )
+    override fun loadCongregations(congregations: List<CongregationCsv>) = flow {
+        localCongregationDataSource.loadCongregationEntities(
+            csvMappers.congregationCsvListToCongregationEntityListMapper.map(congregations)
+        )
+        emit(congregations.size)
+    }
+
+    @CsvLoad<CongregationTotalCsv>(
+        fileNamePrefix = CongregationTotalEntity.TABLE_NAME,
+        contentType = CongregationTotalCsv::class
+    )
+    override fun loadCongregationTotals(congregationTotals: List<CongregationTotalCsv>) = flow {
+        localCongregationDataSource.loadCongregationTotalEntities(
+            csvMappers.congregationTotalCsvListToCongregationTotalEntityListMapper.map(
+                congregationTotals
+            )
+        )
+        emit(congregationTotals.size)
+    }
 }

@@ -6,13 +6,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
@@ -26,6 +24,9 @@ import java.util.UUID
 @Dao
 interface TerritoryStreetDao {
     // READS:
+    @Query("SELECT * FROM ${TerritoryStreetEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<TerritoryStreetEntity>>
+
     @Query(
         "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.territoryStreetId = :territoryStreetId AND tsv.streetLocCode = :locale"
     )
@@ -99,6 +100,9 @@ interface TerritoryStreetDao {
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg territoryStreet: TerritoryStreetEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(territoryStreets: List<TerritoryStreetEntity>)
 
     suspend fun insert(
         territory: TerritoryEntity,

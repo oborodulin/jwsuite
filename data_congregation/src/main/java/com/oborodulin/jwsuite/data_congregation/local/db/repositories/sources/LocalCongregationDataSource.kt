@@ -1,13 +1,13 @@
 package com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources
 
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalCongregationDataSource {
-    fun selectCongregations(): Flow<List<CongregationEntity>>
     fun getCongregations(): Flow<List<CongregationView>>
     fun getCongregation(congregationId: UUID): Flow<CongregationView>
     fun getFavoriteCongregation(): Flow<CongregationView?>
@@ -19,4 +19,10 @@ interface LocalCongregationDataSource {
     suspend fun makeFavoriteCongregationById(congregationId: UUID)
     suspend fun deleteCongregations(congregations: List<CongregationEntity>)
     suspend fun deleteAllCongregations()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getCongregationEntities(): Flow<List<CongregationEntity>>
+    fun getCongregationTotalEntities(): Flow<List<CongregationTotalEntity>>
+    suspend fun loadCongregationEntities(congregations: List<CongregationEntity>)
+    suspend fun loadCongregationTotalEntities(congregationTotals: List<CongregationTotalEntity>)
 }

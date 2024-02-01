@@ -15,8 +15,8 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
-import com.oborodulin.home.common.util.toFullFormatOffsetDateTime
-import com.oborodulin.home.common.util.toOffsetDateTime
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
