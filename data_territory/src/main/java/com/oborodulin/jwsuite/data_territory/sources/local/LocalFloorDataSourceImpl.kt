@@ -29,6 +29,7 @@ class LocalFloorDataSourceImpl @Inject constructor(
             territoryId
         )
 
+    override fun getNextFloor(floorId: UUID) = floorDao.findNextById(floorId)
     override fun getFloor(floorId: UUID) = floorDao.findDistinctById(floorId)
 
     override fun isHouseExistsRooms(houseId: UUID) = floorDao.existsByHouseId(houseId)

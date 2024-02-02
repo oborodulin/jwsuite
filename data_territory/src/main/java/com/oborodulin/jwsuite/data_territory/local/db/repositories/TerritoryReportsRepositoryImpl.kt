@@ -1,11 +1,16 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryReportCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report.TerritoryReportMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryReportDataSource
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportRoom
 import com.oborodulin.jwsuite.domain.repositories.TerritoryReportsRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryMemberReportCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -13,50 +18,51 @@ import javax.inject.Inject
 
 class TerritoryReportsRepositoryImpl @Inject constructor(
     private val localTerritoryReportDataSource: LocalTerritoryReportDataSource,
-    private val mappers: TerritoryReportMappers
+    private val domainMappers: TerritoryReportMappers,
+    private val csvMappers: TerritoryReportCsvMappers
 ) : TerritoryReportsRepository {
     override fun getAll() = localTerritoryReportDataSource.getTerritoryReports()
-        .map(mappers.territoryMemberReportEntityListToTerritoryMemberReportsListMapper::map)
+        .map(domainMappers.territoryMemberReportEntityListToTerritoryMemberReportsListMapper::map)
 
     override fun get(territoryReportId: UUID) =
         localTerritoryReportDataSource.getTerritoryReport(territoryReportId)
-            .map(mappers.territoryMemberReportEntityToTerritoryMemberReportMapper::map)
+            .map(domainMappers.territoryMemberReportEntityToTerritoryMemberReportMapper::map)
 
     override fun getAllByTerritoryStreet(territoryStreetId: UUID) =
         localTerritoryReportDataSource.getTerritoryStreetReports(territoryStreetId)
-            .map(mappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
+            .map(domainMappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
 
     override fun getAllByHouse(houseId: UUID) =
         localTerritoryReportDataSource.getHouseTerritoryReports(houseId)
-            .map(mappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
+            .map(domainMappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
 
     override fun getAllByRoom(roomId: UUID) =
         localTerritoryReportDataSource.getRoomTerritoryReports(roomId)
-            .map(mappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
+            .map(domainMappers.territoryMemberReportViewListToTerritoryMemberReportsListMapper::map)
 
     override fun getTerritoryReportStreet(territoryStreetId: UUID) =
         localTerritoryReportDataSource.getTerritoryReportStreet(territoryStreetId)
-            .map(mappers.territoryReportStreetViewToTerritoryReportStreetMapper::map)
+            .map(domainMappers.territoryReportStreetViewToTerritoryReportStreetMapper::map)
 
     override fun getTerritoryReportStreets(territoryId: UUID) =
         localTerritoryReportDataSource.getTerritoryReportStreets(territoryId)
-            .map(mappers.territoryReportStreetViewListToTerritoryReportStreetsListMapper::map)
+            .map(domainMappers.territoryReportStreetViewListToTerritoryReportStreetsListMapper::map)
 
     override fun getTerritoryReportHouse(houseId: UUID) =
         localTerritoryReportDataSource.getTerritoryReportHouse(houseId)
-            .map(mappers.territoryReportHouseViewToTerritoryReportHouseMapper::map)
+            .map(domainMappers.territoryReportHouseViewToTerritoryReportHouseMapper::map)
 
     override fun getTerritoryReportHouses(territoryId: UUID, territoryStreetId: UUID?) =
         localTerritoryReportDataSource.getTerritoryReportHouses(territoryId, territoryStreetId)
-            .map(mappers.territoryReportHouseViewListToTerritoryReportHousesListMapper::map)
+            .map(domainMappers.territoryReportHouseViewListToTerritoryReportHousesListMapper::map)
 
     override fun getTerritoryReportRoom(roomId: UUID) =
         localTerritoryReportDataSource.getTerritoryReportRoom(roomId)
-            .map(mappers.territoryReportRoomViewToTerritoryReportRoomMapper::map)
+            .map(domainMappers.territoryReportRoomViewToTerritoryReportRoomMapper::map)
 
     override fun getTerritoryReportRooms(territoryId: UUID, houseId: UUID?) =
         localTerritoryReportDataSource.getTerritoryReportRooms(territoryId, houseId)
-            .map(mappers.territoryReportRoomViewListToTerritoryReportRoomsListMapper::map)
+            .map(domainMappers.territoryReportRoomViewListToTerritoryReportRoomsListMapper::map)
 
     override fun process(territoryReportId: UUID) = flow {
         localTerritoryReportDataSource.process(territoryReportId)
@@ -71,13 +77,13 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
     override fun save(territoryMemberReport: TerritoryMemberReport) = flow {
         if (territoryMemberReport.id == null) {
             localTerritoryReportDataSource.insertTerritoryReport(
-                mappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
+                domainMappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
                     territoryMemberReport
                 )
             )
         } else {
             localTerritoryReportDataSource.updateTerritoryReport(
-                mappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
+                domainMappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
                     territoryMemberReport
                 )
             )
@@ -88,13 +94,13 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
     override fun save(territoryReportHouse: TerritoryReportHouse) = flow {
         if (territoryReportHouse.territoryMemberReport.id == null) {
             localTerritoryReportDataSource.insertTerritoryReport(
-                mappers.territoryReportHouseToTerritoryMemberReportEntityMapper.map(
+                domainMappers.territoryReportHouseToTerritoryMemberReportEntityMapper.map(
                     territoryReportHouse
                 )
             )
         } else {
             localTerritoryReportDataSource.updateTerritoryReport(
-                mappers.territoryReportHouseToTerritoryMemberReportEntityMapper.map(
+                domainMappers.territoryReportHouseToTerritoryMemberReportEntityMapper.map(
                     territoryReportHouse
                 )
             )
@@ -105,13 +111,13 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
     override fun save(territoryReportRoom: TerritoryReportRoom) = flow {
         if (territoryReportRoom.territoryMemberReport.id == null) {
             localTerritoryReportDataSource.insertTerritoryReport(
-                mappers.territoryReportRoomToTerritoryMemberReportEntityMapper.map(
+                domainMappers.territoryReportRoomToTerritoryMemberReportEntityMapper.map(
                     territoryReportRoom
                 )
             )
         } else {
             localTerritoryReportDataSource.updateTerritoryReport(
-                mappers.territoryReportRoomToTerritoryMemberReportEntityMapper.map(
+                domainMappers.territoryReportRoomToTerritoryMemberReportEntityMapper.map(
                     territoryReportRoom
                 )
             )
@@ -121,7 +127,7 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
 
     override fun delete(territoryMemberReport: TerritoryMemberReport) = flow {
         localTerritoryReportDataSource.deleteTerritoryReport(
-            mappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
+            domainMappers.territoryMemberReportToTerritoryMemberReportEntityMapper.map(
                 territoryMemberReport
             )
         )
@@ -135,4 +141,22 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAll() = localTerritoryReportDataSource.deleteAllTerritoryReports()
 
+    // -------------------------------------- CSV Transfer --------------------------------------
+    @CsvExtract(fileNamePrefix = TerritoryMemberReportEntity.TABLE_NAME)
+    override fun extractTerritoryReports() =
+        localTerritoryReportDataSource.getTerritoryReportEntities()
+            .map(csvMappers.territoryMemberReportEntityListToTerritoryMemberReportCsvListMapper::map)
+
+    @CsvLoad<TerritoryMemberReportCsv>(
+        fileNamePrefix = TerritoryMemberReportEntity.TABLE_NAME,
+        contentType = TerritoryMemberReportCsv::class
+    )
+    override fun loadTerritoryReports(territoryReports: List<TerritoryMemberReportCsv>) = flow {
+        localTerritoryReportDataSource.loadTerritoryReportEntities(
+            csvMappers.territoryMemberReportCsvListToTerritoryMemberReportEntityListMapper.map(
+                territoryReports
+            )
+        )
+        emit(territoryReports.size)
+    }
 }

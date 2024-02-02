@@ -83,4 +83,11 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
     override suspend fun deleteAllTerritoryReports() = withContext(dispatcher) {
         territoryReportDao.deleteAll()
     }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getTerritoryReportEntities() = territoryReportDao.selectEntities()
+    override suspend fun loadTerritoryReportEntities(territoryReports: List<TerritoryMemberReportEntity>) =
+        withContext(dispatcher) {
+            territoryReportDao.insert(territoryReports)
+        }
 }

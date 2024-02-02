@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreetNamesAndHouseNums
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryStreetCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -14,4 +15,8 @@ interface TerritoryStreetsRepository : CsvTransferableRepo {
     fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNums>>
     fun save(territoryStreet: TerritoryStreet): Flow<TerritoryStreet>
     fun deleteById(territoryStreetId: UUID): Flow<UUID>
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun extractTerritoryStreets(): Flow<List<TerritoryStreetCsv>>
+    fun loadTerritoryStreets(territoryStreets: List<TerritoryStreetCsv>): Flow<Int>
 }

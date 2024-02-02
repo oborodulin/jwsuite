@@ -1,0 +1,6 @@
+package com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet
+
+data class TerritoryStreetCsvMappers(
+    val territoryStreetEntityListToTerritoryStreetCsvListMapper: TerritoryStreetEntityListToTerritoryStreetCsvListMapper,
+    val territoryStreetCsvListToTerritoryStreetEntityListMapper: TerritoryStreetCsvListToTerritoryStreetEntityListMapper
+)

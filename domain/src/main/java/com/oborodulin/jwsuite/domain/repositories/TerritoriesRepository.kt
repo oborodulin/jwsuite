@@ -8,6 +8,10 @@ import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryLocation
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.CongregationTerritoryCrossRefCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryMemberCrossRefCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryTotalCsv
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.Flow
@@ -54,4 +58,14 @@ interface TerritoriesRepository : CsvTransferableRepo {
     fun processTerritories(
         territoryIds: List<UUID> = emptyList(), deliveryDate: OffsetDateTime
     ): Flow<List<UUID>>
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun extractTerritories(): Flow<List<TerritoryCsv>>
+    fun extractCongregationTerritories(): Flow<List<CongregationTerritoryCrossRefCsv>>
+    fun extractTerritoryMembers(): Flow<List<TerritoryMemberCrossRefCsv>>
+    fun extractTerritoryTotals(): Flow<List<TerritoryTotalCsv>>
+    fun loadTerritories(territories: List<TerritoryCsv>): Flow<Int>
+    fun loadCongregationTerritories(congregationTerritories: List<CongregationTerritoryCrossRefCsv>): Flow<Int>
+    fun loadTerritoryMembers(territoryMembers: List<TerritoryMemberCrossRefCsv>): Flow<Int>
+    fun loadTerritoryTotals(territoryTotals: List<TerritoryTotalCsv>): Flow<Int>
 }

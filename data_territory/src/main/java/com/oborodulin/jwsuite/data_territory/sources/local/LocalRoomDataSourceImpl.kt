@@ -30,6 +30,7 @@ class LocalRoomDataSourceImpl @Inject constructor(
             territoryId
         )
 
+    override fun getNextRoom(roomId: UUID) = roomDao.findNextById(roomId)
     override fun getRoom(roomId: UUID) = roomDao.findDistinctById(roomId)
     override fun isHouseExistsRooms(houseId: UUID) = roomDao.existsByHouseId(houseId)
     override fun isEntranceExistsRooms(entranceId: UUID) = roomDao.existsByEntranceId(entranceId)

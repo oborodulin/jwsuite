@@ -39,6 +39,19 @@ interface FloorDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
+    @Query("""
+    SELECT fv.* FROM ${FloorView.VIEW_NAME} fv
+        JOIN (SELECT fg.fHousesId, MIN(fg.floorNum) AS minFloorNum
+                FROM ${FloorEntity.TABLE_NAME} fg JOIN ${FloorEntity.TABLE_NAME} f ON f.floorId = :floorId
+                                                        AND fg.fHousesId = f.fHousesId AND fg.floorNum > f.floorNum
+                GROUP BY fg.fHousesId) fm ON fv.fHousesId = fm.fHousesId AND fv.floorNum = fm.minFloorNum AND fv.streetLocCode = :locale 
+    """)
+    fun findNextById(floorId: UUID, locale: String? = Locale.getDefault().language): Flow<FloorView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctNextById(id: UUID) = findNextById(id).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${FloorView.VIEW_NAME} WHERE fHousesId = :houseId AND streetLocCode = :locale ORDER BY floorNum")
     fun findByHouseId(
         houseId: UUID, locale: String? = Locale.getDefault().language

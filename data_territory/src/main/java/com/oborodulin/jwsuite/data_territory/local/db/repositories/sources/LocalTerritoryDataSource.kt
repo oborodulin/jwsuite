@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
@@ -91,4 +92,15 @@ interface LocalTerritoryDataSource {
     )
 
     suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime)
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getTerritoryEntities(): Flow<List<TerritoryEntity>>
+    fun getCongregationTerritoryEntities(): Flow<List<CongregationTerritoryCrossRefEntity>>
+    fun getTerritoryMemberEntities(): Flow<List<TerritoryMemberCrossRefEntity>>
+    fun getTerritoryTotalEntities(): Flow<List<TerritoryTotalEntity>>
+
+    suspend fun loadTerritoryEntities(territories: List<TerritoryEntity>)
+    suspend fun loadCongregationTerritoryEntities(congregationTerritories: List<CongregationTerritoryCrossRefEntity>)
+    suspend fun loadTerritoryMemberEntities(territoryMembers: List<TerritoryMemberCrossRefEntity>)
+    suspend fun loadTerritoryTotalEntities(territoryTotals: List<TerritoryTotalEntity>)
 }

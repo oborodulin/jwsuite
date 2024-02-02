@@ -44,6 +44,36 @@ interface HouseDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
+    @Query(
+        """
+    SELECT hv.* FROM ${HouseView.VIEW_NAME} hv 
+        JOIN (SELECT hg.hStreetsId, MIN(CAST(CAST(hg.houseNum AS TEXT) || 
+                                            CASE WHEN hg.houseLetter IS NOT NULL THEN CAST(unicode(hg.houseLetter) AS TEXT) ELSE '' END || 
+                                            CASE WHEN hg.buildingNum IS NOT NULL THEN CAST(hg.buildingNum AS TEXT) ELSE '' END AS INT)
+                                    ) minHouseFullNum,
+                    hg.houseNum, hg.houseLetter, hg.buildingNum
+                FROM ${HouseEntity.TABLE_NAME} hg JOIN ${HouseEntity.TABLE_NAME} h ON h.houseId = :houseId 
+                                                    AND hg.hStreetsId = h.hStreetsId
+                                                    AND CAST(CAST(hg.houseNum AS TEXT) || 
+                                                            CASE WHEN hg.houseLetter IS NOT NULL THEN CAST(unicode(hg.houseLetter) AS TEXT) ELSE '' END || 
+                                                            CASE WHEN hg.buildingNum IS NOT NULL THEN CAST(hg.buildingNum AS TEXT) ELSE '' END AS INT) > 
+                                                        CAST(CAST(h.houseNum AS TEXT) || 
+                                                            CASE WHEN h.houseLetter IS NOT NULL THEN CAST(unicode(h.houseLetter) AS TEXT) ELSE '' END || 
+                                                            CASE WHEN h.buildingNum IS NOT NULL THEN CAST(hg.buildingNum AS TEXT) ELSE '' END AS INT)
+                GROUP BY hg.hStreetsId, hg.houseNum, hg.houseLetter, hg.buildingNum) hm ON hv.hStreetsId = hm.hStreetsId 
+            AND hv.houseNum = hm.houseNum AND ifnull(hv.houseLetter, '') = ifnull(hm.houseLetter, '')
+            AND ifnull(hv.buildingNum, 0) = ifnull(hm.buildingNum, 0)
+            AND hv.streetLocCode = :locale
+    """
+    )
+    fun findNextById(
+        houseId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<HouseView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctNextById(id: UUID) = findNextById(id).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId AND streetLocCode = :locale ORDER BY houseNum, houseLetter, buildingNum")
     fun findByStreetId(
         streetId: UUID,

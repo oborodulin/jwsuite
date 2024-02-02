@@ -1,0 +1,6 @@
+package com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total
+
+data class TerritoryTotalCsvMappers(
+    val territoryTotalEntityListToTerritoryTotalCsvListMapper: TerritoryTotalEntityListToTerritoryTotalCsvListMapper,
+    val territoryTotalCsvListToTerritoryTotalEntityListMapper: TerritoryTotalCsvListToTerritoryTotalEntityListMapper
+)

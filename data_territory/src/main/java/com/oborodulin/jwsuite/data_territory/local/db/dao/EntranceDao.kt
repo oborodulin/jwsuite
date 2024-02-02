@@ -42,6 +42,21 @@ interface EntranceDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
+    @Query("""
+    SELECT ev.* FROM ${EntranceView.VIEW_NAME} ev
+        JOIN (SELECT eg.eHousesId, MIN(eg.entranceNum) AS minEntranceNum
+                FROM ${EntranceEntity.TABLE_NAME} eg JOIN ${EntranceEntity.TABLE_NAME} e ON e.entranceId = :entranceId
+                                                        AND eg.eHousesId = e.eHousesId AND eg.entranceNum > e.entranceNum
+                GROUP BY eg.eHousesId) em ON ev.eHousesId = em.eHousesId AND ev.entranceNum = em.minEntranceNum AND ev.streetLocCode = :locale 
+    """)
+    fun findNextById(
+        entranceId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<EntranceView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctNextById(id: UUID) = findNextById(id).distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${EntranceView.VIEW_NAME} WHERE eHousesId = :houseId AND streetLocCode = :locale ORDER BY entranceNum")
     fun findByHouseId(
         houseId: UUID,

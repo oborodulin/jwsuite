@@ -1,0 +1,6 @@
+package com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory
+
+data class TerritoryCategoryCsvMappers(
+    val territoryCategoryEntityListToTerritoryCategoryCsvListMapper: TerritoryCategoryEntityListToTerritoryCategoryCsvListMapper,
+    val territoryCategoryCsvListToTerritoryCategoryEntityListMapper: TerritoryCategoryCsvListToTerritoryCategoryEntityListMapper
+)

@@ -25,6 +25,7 @@ interface RoomDao {
     @Query("SELECT * FROM ${RoomEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<RoomEntity>>
 
+    //-----------------------------
     @Query("SELECT * FROM ${RoomView.VIEW_NAME} ORDER BY rHousesId, roomNum")
     fun findAll(): Flow<List<RoomView>>
 
@@ -37,6 +38,19 @@ interface RoomDao {
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
+
+    //-----------------------------
+    @Query(""" 
+    SELECT rv.* FROM ${RoomView.VIEW_NAME} rv 
+        JOIN (SELECT rg.rHousesId, MIN(rg.roomNum) AS minRoomNum
+                FROM ${RoomEntity.TABLE_NAME} rg JOIN ${RoomEntity.TABLE_NAME} r ON r.roomId = :roomId
+                                                    AND rg.rHousesId = r.rHousesId AND rg.roomNum > r.roomNum
+                GROUP BY rg.rHousesId) rm ON rv.rHousesId = rm.rHousesId AND rv.roomNum = rm.minRoomNum AND rv.streetLocCode = :locale 
+    """)
+    fun findNextById(roomId: UUID, locale: String? = Locale.getDefault().language): Flow<RoomView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctNextById(id: UUID) = findNextById(id).distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT * FROM ${RoomView.VIEW_NAME} WHERE rHousesId = :houseId AND streetLocCode = :locale ORDER BY roomNum")

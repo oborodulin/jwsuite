@@ -34,4 +34,8 @@ interface LocalTerritoryReportDataSource {
     suspend fun deleteTerritoryReportById(territoryReportId: UUID)
     suspend fun deleteTerritoryReports(territoryReports: List<TerritoryMemberReportEntity>)
     suspend fun deleteAllTerritoryReports()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun getTerritoryReportEntities(): Flow<List<TerritoryMemberReportEntity>>
+    suspend fun loadTerritoryReportEntities(territoryReports: List<TerritoryMemberReportEntity>)
 }

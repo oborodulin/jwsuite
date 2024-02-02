@@ -12,6 +12,7 @@ interface LocalRoomDataSource {
     fun getFloorRooms(floorId: UUID): Flow<List<RoomView>>
     fun getTerritoryRooms(territoryId: UUID): Flow<List<RoomView>>
     fun getRoomsForTerritory(territoryId: UUID): Flow<List<RoomView>>
+    fun getNextRoom(roomId: UUID): Flow<RoomView?>
     fun getRoom(roomId: UUID): Flow<RoomView>
     fun isHouseExistsRooms(houseId: UUID): Flow<Boolean>
     fun isEntranceExistsRooms(entranceId: UUID): Flow<Boolean>

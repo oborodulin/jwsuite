@@ -22,6 +22,9 @@ import java.util.UUID
 interface TerritoryReportDao {
     // READS:
     @Query("SELECT * FROM ${TerritoryMemberReportEntity.TABLE_NAME}")
+    fun selectEntities(): Flow<List<TerritoryMemberReportEntity>>
+
+    @Query("SELECT * FROM ${TerritoryMemberReportEntity.TABLE_NAME}")
     fun findAll(): Flow<List<TerritoryMemberReportEntity>>
 
     @ExperimentalCoroutinesApi
@@ -93,7 +96,10 @@ interface TerritoryReportDao {
 
     //-----------------------------
     @Query("SELECT * FROM ${TerritoryReportHouseView.VIEW_NAME} WHERE houseId = :houseId AND streetLocCode = :locale")
-    fun findReportHouseByHouseId(houseId: UUID, locale: String? = Locale.getDefault().language): Flow<TerritoryReportHouseView>
+    fun findReportHouseByHouseId(
+        houseId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<TerritoryReportHouseView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctReportHouseByHouseId(houseId: UUID) =
@@ -109,7 +115,9 @@ interface TerritoryReportDao {
         """
     )
     fun findReportHousesByTerritoryIdAndTerritoryStreetId(
-        territoryId: UUID, territoryStreetId: UUID? = null, locale: String? = Locale.getDefault().language
+        territoryId: UUID,
+        territoryStreetId: UUID? = null,
+        locale: String? = Locale.getDefault().language
     ): Flow<List<TerritoryReportHouseView>>
 
     @ExperimentalCoroutinesApi
@@ -120,7 +128,10 @@ interface TerritoryReportDao {
 
     //-----------------------------
     @Query("SELECT * FROM ${TerritoryReportRoomView.VIEW_NAME} WHERE roomId = :roomId AND streetLocCode = :locale")
-    fun findReportRoomByRoomId(roomId: UUID, locale: String? = Locale.getDefault().language): Flow<TerritoryReportRoomView>
+    fun findReportRoomByRoomId(
+        roomId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<TerritoryReportRoomView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctReportRoomByRoomId(roomId: UUID) =

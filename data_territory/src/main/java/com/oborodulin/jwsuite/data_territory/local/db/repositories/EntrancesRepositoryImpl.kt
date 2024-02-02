@@ -1,9 +1,14 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.domain.model.territory.Entrance
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.EntranceCsv
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -11,24 +16,28 @@ import javax.inject.Inject
 
 class EntrancesRepositoryImpl @Inject constructor(
     private val localEntranceDataSource: LocalEntranceDataSource,
-    private val mappers: EntranceMappers
+    private val domainMappers: EntranceMappers,
+    private val csvMappers: EntranceCsvMappers
 ) : EntrancesRepository {
     override fun getAll() = localEntranceDataSource.getAllEntrances()
-        .map(mappers.entranceViewListToEntrancesListMapper::map)
+        .map(domainMappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getAllByHouse(houseId: UUID) = localEntranceDataSource.getHouseEntrances(houseId)
-        .map(mappers.entranceViewListToEntrancesListMapper::map)
+        .map(domainMappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getAllByTerritory(territoryId: UUID) =
         localEntranceDataSource.getTerritoryEntrances(territoryId)
-            .map(mappers.entranceViewListToEntrancesListMapper::map)
+            .map(domainMappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getAllForTerritory(territoryId: UUID) =
         localEntranceDataSource.getEntrancesForTerritory(territoryId)
-            .map(mappers.entranceViewListToEntrancesListMapper::map)
+            .map(domainMappers.entranceViewListToEntrancesListMapper::map)
+
+    override fun getNext(entranceId: UUID) = localEntranceDataSource.getNextEntrance(entranceId)
+        .map(domainMappers.entranceViewToEntranceMapper::nullableMap)
 
     override fun get(entranceId: UUID) = localEntranceDataSource.getEntrance(entranceId)
-        .map(mappers.entranceViewToEntranceMapper::map)
+        .map(domainMappers.entranceViewToEntranceMapper::map)
 
     override fun isExistsInHouse(houseId: UUID) =
         localEntranceDataSource.isHouseExistsRooms(houseId)
@@ -36,18 +45,22 @@ class EntrancesRepositoryImpl @Inject constructor(
     override fun save(entrance: Entrance) = flow {
         if (entrance.id == null) {
             localEntranceDataSource.insertEntrance(
-                mappers.entranceToEntranceEntityMapper.map(entrance)
+                domainMappers.entranceToEntranceEntityMapper.map(entrance)
             )
         } else {
             localEntranceDataSource.updateEntrance(
-                mappers.entranceToEntranceEntityMapper.map(entrance)
+                domainMappers.entranceToEntranceEntityMapper.map(entrance)
             )
         }
         emit(entrance)
     }
 
     override fun delete(entrance: Entrance) = flow {
-        localEntranceDataSource.deleteEntrance(mappers.entranceToEntranceEntityMapper.map(entrance))
+        localEntranceDataSource.deleteEntrance(
+            domainMappers.entranceToEntranceEntityMapper.map(
+                entrance
+            )
+        )
         this.emit(entrance)
     }
 
@@ -70,5 +83,21 @@ class EntrancesRepositoryImpl @Inject constructor(
     override fun setTerritory(entranceIds: List<UUID>, territoryId: UUID) = flow {
         entranceIds.forEach { localEntranceDataSource.setTerritoryById(it, territoryId) }
         this.emit(entranceIds)
+    }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    @CsvExtract(fileNamePrefix = EntranceEntity.TABLE_NAME)
+    override fun extractEntrances() = localEntranceDataSource.getEntranceEntities()
+        .map(csvMappers.entranceEntityListToEntranceCsvListMapper::map)
+
+    @CsvLoad<EntranceCsv>(
+        fileNamePrefix = EntranceEntity.TABLE_NAME,
+        contentType = EntranceCsv::class
+    )
+    override fun loadEntrances(entrances: List<EntranceCsv>) = flow {
+        localEntranceDataSource.loadEntranceEntities(
+            csvMappers.entranceCsvListToEntranceEntityListMapper.map(entrances)
+        )
+        emit(entrances.size)
     }
 }

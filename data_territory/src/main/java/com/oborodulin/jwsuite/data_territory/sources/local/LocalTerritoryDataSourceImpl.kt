@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.CoroutineDispatcher
@@ -157,4 +158,32 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
 
     override suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime) =
         withContext(dispatcher) { territoryDao.process(territoryId, deliveryDate) }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    override fun getTerritoryEntities() = territoryDao.selectEntities()
+    override fun getCongregationTerritoryEntities() =
+        territoryDao.selectCongregationTerritoryEntities()
+
+    override fun getTerritoryMemberEntities() = territoryDao.selectTerritoryMemberEntities()
+    override fun getTerritoryTotalEntities() = territoryDao.selectTotalEntities()
+
+    override suspend fun loadTerritoryEntities(territories: List<TerritoryEntity>) =
+        withContext(dispatcher) {
+            territoryDao.insert(territories)
+        }
+
+    override suspend fun loadCongregationTerritoryEntities(congregationTerritories: List<CongregationTerritoryCrossRefEntity>) =
+        withContext(dispatcher) {
+            territoryDao.insert(congregationTerritories)
+        }
+
+    override suspend fun loadTerritoryMemberEntities(territoryMembers: List<TerritoryMemberCrossRefEntity>) =
+        withContext(dispatcher) {
+            territoryDao.insert(territoryMembers)
+        }
+
+    override suspend fun loadTerritoryTotalEntities(territoryTotals: List<TerritoryTotalEntity>) =
+        withContext(dispatcher) {
+            territoryDao.insert(territoryTotals)
+        }
 }

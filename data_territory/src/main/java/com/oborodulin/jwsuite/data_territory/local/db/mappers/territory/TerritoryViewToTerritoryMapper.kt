@@ -62,6 +62,5 @@ class TerritoryViewToTerritoryMapper(
         return territory
     }
 
-    override fun nullableMap(input: TerritoryView?) =
-        input?.let { map(it) }
+    override fun nullableMap(input: TerritoryView?) = input?.let { map(it) }
 }

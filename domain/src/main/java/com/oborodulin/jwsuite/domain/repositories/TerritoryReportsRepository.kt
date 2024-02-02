@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportRoom
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportStreet
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryMemberReportCsv
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -32,4 +33,8 @@ interface TerritoryReportsRepository : CsvTransferableRepo {
     fun delete(territoryMemberReport: TerritoryMemberReport): Flow<TerritoryMemberReport>
     fun deleteById(territoryReportId: UUID): Flow<UUID>
     suspend fun deleteAll()
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    fun extractTerritoryReports(): Flow<List<TerritoryMemberReportCsv>>
+    fun loadTerritoryReports(territoryReports: List<TerritoryMemberReportCsv>): Flow<Int>
 }

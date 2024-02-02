@@ -1,0 +1,6 @@
+package com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.congregation
+
+data class CongregationTerritoryCsvMappers(
+    val congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper: CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
+    val congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper: CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper
+)

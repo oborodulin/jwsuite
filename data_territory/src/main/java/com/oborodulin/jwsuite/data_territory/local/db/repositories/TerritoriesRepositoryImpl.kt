@@ -1,5 +1,10 @@
 package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
@@ -8,6 +13,12 @@ import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.Local
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryDataSource
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
+import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
+import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.CongregationTerritoryCrossRefCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryMemberCrossRefCsv
+import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryTotalCsv
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.flow
@@ -22,20 +33,21 @@ class TerritoriesRepositoryImpl @Inject constructor(
     private val localEntranceDataSource: LocalEntranceDataSource,
     private val localFloorDataSource: LocalFloorDataSource,
     private val localRoomDataSource: LocalRoomDataSource,
-    private val mappers: TerritoryMappers
+    private val domainMappers: TerritoryMappers,
+    private val csvMappers: TerritoryCsvMappers
 ) : TerritoriesRepository {
     override fun getCongregationTerritories(congregationId: UUID?) =
         when (congregationId) {
             null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
             else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
-        }.map(mappers.territoryViewListToTerritoriesListMapper::map)
+        }.map(domainMappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getCongregationTerritoryLocations(
         isPrivateSector: Boolean,
         congregationId: UUID?
     ) =
         localTerritoryDataSource.getCongregationTerritoryLocations(isPrivateSector, congregationId)
-            .map(mappers.territoryLocationViewListToTerritoryLocationsListMapper::map)
+            .map(domainMappers.territoryLocationViewListToTerritoryLocationsListMapper::map)
 
     override fun getTerritories(
         territoryProcessType: TerritoryProcessType,
@@ -45,31 +57,31 @@ class TerritoriesRepositoryImpl @Inject constructor(
     ) = when (territoryProcessType) {
         TerritoryProcessType.HAND_OUT -> localTerritoryDataSource.getHandOutTerritories(
             congregationId, isPrivateSector, territoryLocationType, locationId
-        ).map(mappers.territoriesHandOutViewListToTerritoriesListMapper::map)
+        ).map(domainMappers.territoriesHandOutViewListToTerritoriesListMapper::map)
 
         TerritoryProcessType.AT_WORK -> localTerritoryDataSource.getAtWorkTerritories(
             congregationId, isPrivateSector, territoryLocationType, locationId
-        ).map(mappers.territoriesAtWorkViewListToTerritoriesListMapper::map)
+        ).map(domainMappers.territoriesAtWorkViewListToTerritoriesListMapper::map)
 
         TerritoryProcessType.IDLE -> localTerritoryDataSource.getIdleTerritories(
             congregationId, isPrivateSector, territoryLocationType, locationId
-        ).map(mappers.territoriesIdleViewListToTerritoriesListMapper::map)
+        ).map(domainMappers.territoriesIdleViewListToTerritoriesListMapper::map)
 
         TerritoryProcessType.ALL -> when (congregationId) {
             null -> localTerritoryDataSource.getFavoriteCongregationTerritories()
             else -> localTerritoryDataSource.getCongregationTerritories(congregationId)
-        }.map(mappers.territoryViewListToTerritoriesListMapper::map)
+        }.map(domainMappers.territoryViewListToTerritoriesListMapper::map)
     }
 
     override fun getAllByGeo(
         localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?
     ) = localTerritoryDataSource.getTerritoriesByGeo(
         localityId, localityDistrictId, microdistrictId
-    ).map(mappers.territoryViewListToTerritoriesListMapper::map)
+    ).map(domainMappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getAllForHouse(houseId: UUID) =
         localTerritoryDataSource.getTerritoriesForHouse(houseId)
-            .map(mappers.territoryViewListToTerritoriesListMapper::map)
+            .map(domainMappers.territoryViewListToTerritoriesListMapper::map)
 
     override fun getNextNum(congregationId: UUID, territoryCategoryId: UUID) = flow {
         emit(localTerritoryDataSource.getNextTerritoryNum(congregationId, territoryCategoryId))
@@ -78,34 +90,34 @@ class TerritoriesRepositoryImpl @Inject constructor(
     // Territory Streets:
     override fun getTerritoryStreetHouses(territoryId: UUID) =
         localHouseDataSource.getTerritoryStreetHouses(territoryId)
-            .map(mappers.territoryStreetHouseViewListToTerritoryStreetsListMapper::map)
+            .map(domainMappers.territoryStreetHouseViewListToTerritoryStreetsListMapper::map)
 
     // Territory Houses:
     override fun getHouses(territoryId: UUID) = localHouseDataSource.getTerritoryHouses(territoryId)
-        .map(mappers.houseViewListToHousesListMapper::map)
+        .map(domainMappers.houseViewListToHousesListMapper::map)
 
     override fun getEntrances(territoryId: UUID) =
         localEntranceDataSource.getTerritoryEntrances(territoryId)
-            .map(mappers.entranceViewListToEntrancesListMapper::map)
+            .map(domainMappers.entranceViewListToEntrancesListMapper::map)
 
     override fun getFloors(territoryId: UUID) = localFloorDataSource.getTerritoryFloors(territoryId)
-        .map(mappers.floorViewListToFloorsListMapper::map)
+        .map(domainMappers.floorViewListToFloorsListMapper::map)
 
     override fun getRooms(territoryId: UUID) = localRoomDataSource.getTerritoryRooms(territoryId)
-        .map(mappers.roomViewListToRoomsListMapper::map)
+        .map(domainMappers.roomViewListToRoomsListMapper::map)
 
     override fun get(territoryId: UUID) =
         localTerritoryDataSource.getTerritory(territoryId)
-            .map(mappers.territoryViewToTerritoryMapper::map)
+            .map(domainMappers.territoryViewToTerritoryMapper::map)
 
     override fun save(territory: Territory) = flow {
         if (territory.id == null) {
             localTerritoryDataSource.insertTerritory(
-                mappers.territoryToTerritoryEntityMapper.map(territory)
+                domainMappers.territoryToTerritoryEntityMapper.map(territory)
             )
         } else {
             localTerritoryDataSource.updateTerritory(
-                mappers.territoryToTerritoryEntityMapper.map(territory)
+                domainMappers.territoryToTerritoryEntityMapper.map(territory)
             )
         }
         emit(territory)
@@ -113,7 +125,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     override fun delete(territory: Territory) = flow {
         localTerritoryDataSource.deleteTerritory(
-            mappers.territoryToTerritoryEntityMapper.map(territory)
+            domainMappers.territoryToTerritoryEntityMapper.map(territory)
         )
         this.emit(territory)
     }
@@ -144,5 +156,72 @@ class TerritoriesRepositoryImpl @Inject constructor(
             ids.add(it)
         }
         this.emit(ids)
+    }
+
+    // -------------------------------------- CSV Transfer --------------------------------------
+    @CsvExtract(fileNamePrefix = TerritoryEntity.TABLE_NAME)
+    override fun extractTerritories() = localTerritoryDataSource.getTerritoryEntities()
+        .map(csvMappers.territoryEntityListToTerritoryCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = CongregationTerritoryCrossRefEntity.TABLE_NAME)
+    override fun extractCongregationTerritories() =
+        localTerritoryDataSource.getCongregationTerritoryEntities()
+            .map(csvMappers.congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = TerritoryMemberCrossRefEntity.TABLE_NAME)
+    override fun extractTerritoryMembers() = localTerritoryDataSource.getTerritoryMemberEntities()
+        .map(csvMappers.territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper::map)
+
+    @CsvExtract(fileNamePrefix = TerritoryTotalEntity.TABLE_NAME)
+    override fun extractTerritoryTotals() = localTerritoryDataSource.getTerritoryTotalEntities()
+        .map(csvMappers.territoryTotalEntityListToTerritoryTotalCsvListMapper::map)
+
+    @CsvLoad<TerritoryCsv>(
+        fileNamePrefix = TerritoryEntity.TABLE_NAME,
+        contentType = TerritoryCsv::class
+    )
+    override fun loadTerritories(territories: List<TerritoryCsv>) = flow {
+        localTerritoryDataSource.loadTerritoryEntities(
+            csvMappers.territoryCsvListToTerritoryEntityListMapper.map(territories)
+        )
+        emit(territories.size)
+    }
+
+    @CsvLoad<CongregationTerritoryCrossRefCsv>(
+        fileNamePrefix = CongregationTerritoryCrossRefEntity.TABLE_NAME,
+        contentType = CongregationTerritoryCrossRefCsv::class
+    )
+    override fun loadCongregationTerritories(congregationTerritories: List<CongregationTerritoryCrossRefCsv>) =
+        flow {
+            localTerritoryDataSource.loadCongregationTerritoryEntities(
+                csvMappers.congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper.map(
+                    congregationTerritories
+                )
+            )
+            emit(congregationTerritories.size)
+        }
+
+    @CsvLoad<TerritoryMemberCrossRefCsv>(
+        fileNamePrefix = TerritoryMemberCrossRefEntity.TABLE_NAME,
+        contentType = TerritoryMemberCrossRefCsv::class
+    )
+    override fun loadTerritoryMembers(territoryMembers: List<TerritoryMemberCrossRefCsv>) = flow {
+        localTerritoryDataSource.loadTerritoryMemberEntities(
+            csvMappers.territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper.map(
+                territoryMembers
+            )
+        )
+        emit(territoryMembers.size)
+    }
+
+    @CsvLoad<TerritoryTotalCsv>(
+        fileNamePrefix = TerritoryTotalEntity.TABLE_NAME,
+        contentType = TerritoryTotalCsv::class
+    )
+    override fun loadTerritoryTotals(territoryTotals: List<TerritoryTotalCsv>) = flow {
+        localTerritoryDataSource.loadTerritoryTotalEntities(
+            csvMappers.territoryTotalCsvListToTerritoryTotalEntityListMapper.map(territoryTotals)
+        )
+        emit(territoryTotals.size)
     }
 }

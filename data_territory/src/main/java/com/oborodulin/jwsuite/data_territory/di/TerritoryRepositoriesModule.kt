@@ -1,5 +1,13 @@
 package com.oborodulin.jwsuite.data_territory.di
 
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.house.HouseCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.room.RoomCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryReportCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
@@ -45,50 +53,59 @@ object TerritoryRepositoriesModule {
     @Singleton //@ViewModelScoped
     @Provides
     fun provideHousesRepository(
-        localHouseDataSource: LocalHouseDataSource, mappers: HouseMappers
-    ): HousesRepository = HousesRepositoryImpl(localHouseDataSource, mappers)
+        localHouseDataSource: LocalHouseDataSource,
+        domainMappers: HouseMappers, csvMappers: HouseCsvMappers
+    ): HousesRepository = HousesRepositoryImpl(localHouseDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideEntrancesRepository(
-        localEntranceDataSource: LocalEntranceDataSource, mappers: EntranceMappers
-    ): EntrancesRepository = EntrancesRepositoryImpl(localEntranceDataSource, mappers)
+        localEntranceDataSource: LocalEntranceDataSource,
+        domainMappers: EntranceMappers, csvMappers: EntranceCsvMappers
+    ): EntrancesRepository =
+        EntrancesRepositoryImpl(localEntranceDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideFloorsRepository(
-        localFloorDataSource: LocalFloorDataSource, mappers: FloorMappers
-    ): FloorsRepository = FloorsRepositoryImpl(localFloorDataSource, mappers)
+        localFloorDataSource: LocalFloorDataSource,
+        domainMappers: FloorMappers, csvMappers: FloorCsvMappers
+    ): FloorsRepository = FloorsRepositoryImpl(localFloorDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideRoomsRepository(
-        localRoomDataSource: LocalRoomDataSource, mappers: RoomMappers
-    ): RoomsRepository = RoomsRepositoryImpl(localRoomDataSource, mappers)
+        localRoomDataSource: LocalRoomDataSource,
+        domainMappers: RoomMappers, csvMappers: RoomCsvMappers
+    ): RoomsRepository = RoomsRepositoryImpl(localRoomDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideTerritoryCategoriesRepository(
         localTerritoryCategoryDataSource: LocalTerritoryCategoryDataSource,
-        mappers: TerritoryCategoryMappers
+        domainMappers: TerritoryCategoryMappers, csvMappers: TerritoryCategoryCsvMappers
     ): TerritoryCategoriesRepository =
-        TerritoryCategoriesRepositoryImpl(localTerritoryCategoryDataSource, mappers)
+        TerritoryCategoriesRepositoryImpl(
+            localTerritoryCategoryDataSource,
+            domainMappers,
+            csvMappers
+        )
 
     @Singleton
     @Provides
     fun provideTerritoryStreetsRepository(
         localTerritoryDataSource: LocalTerritoryStreetDataSource,
-        mappers: TerritoryStreetMappers
+        domainMappers: TerritoryStreetMappers, csvMappers: TerritoryStreetCsvMappers
     ): TerritoryStreetsRepository =
-        TerritoryStreetsRepositoryImpl(localTerritoryDataSource, mappers)
+        TerritoryStreetsRepositoryImpl(localTerritoryDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideTerritoryReportsRepository(
         localTerritoryReportDataSource: LocalTerritoryReportDataSource,
-        mappers: TerritoryReportMappers
+        domainMappers: TerritoryReportMappers, csvMappers: TerritoryReportCsvMappers
     ): TerritoryReportsRepository =
-        TerritoryReportsRepositoryImpl(localTerritoryReportDataSource, mappers)
+        TerritoryReportsRepositoryImpl(localTerritoryReportDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
@@ -98,13 +115,15 @@ object TerritoryRepositoriesModule {
         localEntranceDataSource: LocalEntranceDataSource,
         localFloorDataSource: LocalFloorDataSource,
         localRoomDataSource: LocalRoomDataSource,
-        mappers: TerritoryMappers
+        domainMappers: TerritoryMappers,
+        csvMappers: TerritoryCsvMappers
     ): TerritoriesRepository = TerritoriesRepositoryImpl(
         localTerritoryDataSource,
         localHouseDataSource,
         localEntranceDataSource,
         localFloorDataSource,
         localRoomDataSource,
-        mappers
+        domainMappers,
+        csvMappers
     )
 }

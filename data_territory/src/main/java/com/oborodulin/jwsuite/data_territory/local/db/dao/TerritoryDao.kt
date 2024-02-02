@@ -15,7 +15,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerri
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.pojo.TerritoryWithMembers
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
@@ -45,15 +44,16 @@ interface TerritoryDao {
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<TerritoryEntity>>
 
+    @Query("SELECT * FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME}")
+    fun selectCongregationTerritoryEntities(): Flow<List<CongregationTerritoryCrossRefEntity>>
+
     @Query("SELECT * FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME}")
     fun selectTerritoryMemberEntities(): Flow<List<TerritoryMemberCrossRefEntity>>
-
-    @Query("SELECT * FROM ${TerritoryMemberReportEntity.TABLE_NAME}")
-    fun selectTerritoryMemberReportEntities(): Flow<List<TerritoryMemberReportEntity>>
 
     @Query("SELECT * FROM ${TerritoryTotalEntity.TABLE_NAME}")
     fun selectTotalEntities(): Flow<List<TerritoryTotalEntity>>
 
+    //-----------------------------
     @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${PX_TERRITORY_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryCategoryMark, territoryNum")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
@@ -254,8 +254,14 @@ interface TerritoryDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(territories: List<TerritoryEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(territoryTotals: List<TerritoryTotalEntity>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg congregationTerritory: CongregationTerritoryCrossRefEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(congregationTerritories: List<CongregationTerritoryCrossRefEntity>)
 
     suspend fun insert(
         congregation: CongregationEntity,
@@ -271,6 +277,9 @@ interface TerritoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg territoryMember: TerritoryMemberCrossRefEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(territoryMembers: List<TerritoryMemberCrossRefEntity>)
 
     suspend fun insert(
         territory: TerritoryEntity,

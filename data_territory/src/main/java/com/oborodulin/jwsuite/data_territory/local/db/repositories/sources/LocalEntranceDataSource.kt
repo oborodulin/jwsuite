@@ -10,6 +10,7 @@ interface LocalEntranceDataSource {
     fun getHouseEntrances(houseId: UUID): Flow<List<EntranceView>>
     fun getTerritoryEntrances(territoryId: UUID): Flow<List<EntranceView>>
     fun getEntrancesForTerritory(territoryId: UUID): Flow<List<EntranceView>>
+    fun getNextEntrance(entranceId: UUID): Flow<EntranceView?>
     fun getEntrance(entranceId: UUID): Flow<EntranceView>
     fun isHouseExistsRooms(houseId: UUID): Flow<Boolean>
     suspend fun insertEntrance(entrance: EntranceEntity)

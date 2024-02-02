@@ -12,6 +12,61 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewT
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvListToEntranceEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvToEntranceEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceEntityListToEntranceCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceEntityToEntranceCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorCsvListToFloorEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorCsvToFloorEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorEntityListToFloorCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.floor.FloorEntityToFloorCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.house.HouseCsvListToHouseEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.house.HouseCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.house.HouseCsvToHouseEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.house.HouseEntityListToHouseCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.house.HouseEntityToHouseCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.room.RoomCsvListToRoomEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.room.RoomCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.room.RoomCsvToRoomEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.room.RoomEntityListToRoomCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.room.RoomEntityToRoomCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryCsvListToTerritoryEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryCsvToTerritoryEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryEntityListToTerritoryCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.TerritoryEntityToTerritoryCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.congregation.CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.congregation.CongregationTerritoryCrossRefCsvToCongregationTerritoryCrossRefEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.congregation.CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.congregation.CongregationTerritoryCrossRefEntityToCongregationTerritoryCrossRefCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.congregation.CongregationTerritoryCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCrossRefCsvToTerritoryMemberCrossRefEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCrossRefEntityToTerritoryMemberCrossRefCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalCsvListToTerritoryTotalEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalCsvToTerritoryTotalEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalEntityListToTerritoryTotalCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalEntityToTerritoryTotalCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvListToTerritoryCategoryEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvToTerritoryCategoryEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryEntityListToTerritoryCategoryCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryMemberReportCsvListToTerritoryMemberReportEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryMemberReportCsvToTerritoryMemberReportEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryMemberReportEntityListToTerritoryMemberReportCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryMemberReportEntityToTerritoryMemberReportCsvMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territoryreport.TerritoryReportCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetCsvListToTerritoryStreetEntityListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetCsvMappers
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetCsvToTerritoryStreetEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetEntityListToTerritoryStreetCsvListMapper
+import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorystreet.TerritoryStreetEntityToTerritoryStreetCsvMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceEntityToEntranceMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceToEntranceEntityMapper
@@ -721,5 +776,365 @@ object TerritoryMappersModule {
         territoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper,
         memberToMemberEntityMapper
+    )
+
+    // CSV:
+    // HouseCsv:
+    @Singleton
+    @Provides
+    fun provideHouseEntityToHouseCsvMapper(): HouseEntityToHouseCsvMapper =
+        HouseEntityToHouseCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideHouseEntityListToHouseCsvListMapper(mapper: HouseEntityToHouseCsvMapper): HouseEntityListToHouseCsvListMapper =
+        HouseEntityListToHouseCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideHouseCsvToHouseEntityMapper(): HouseCsvToHouseEntityMapper =
+        HouseCsvToHouseEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideHouseCsvListToHouseEntityListMapper(mapper: HouseCsvToHouseEntityMapper): HouseCsvListToHouseEntityListMapper =
+        HouseCsvListToHouseEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideHouseCsvMappers(
+        houseEntityListToHouseCsvListMapper: HouseEntityListToHouseCsvListMapper,
+        houseCsvListToHouseEntityListMapper: HouseCsvListToHouseEntityListMapper
+    ): HouseCsvMappers = HouseCsvMappers(
+        houseEntityListToHouseCsvListMapper,
+        houseCsvListToHouseEntityListMapper
+    )
+
+    // EntranceCsv:
+    @Singleton
+    @Provides
+    fun provideEntranceEntityToEntranceCsvMapper(): EntranceEntityToEntranceCsvMapper =
+        EntranceEntityToEntranceCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideEntranceEntityListToEntranceCsvListMapper(mapper: EntranceEntityToEntranceCsvMapper): EntranceEntityListToEntranceCsvListMapper =
+        EntranceEntityListToEntranceCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideEntranceCsvToEntranceEntityMapper(): EntranceCsvToEntranceEntityMapper =
+        EntranceCsvToEntranceEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideEntranceCsvListToEntranceEntityListMapper(mapper: EntranceCsvToEntranceEntityMapper): EntranceCsvListToEntranceEntityListMapper =
+        EntranceCsvListToEntranceEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideEntranceCsvMappers(
+        entranceEntityListToEntranceCsvListMapper: EntranceEntityListToEntranceCsvListMapper,
+        entranceCsvListToEntranceEntityListMapper: EntranceCsvListToEntranceEntityListMapper
+    ): EntranceCsvMappers = EntranceCsvMappers(
+        entranceEntityListToEntranceCsvListMapper,
+        entranceCsvListToEntranceEntityListMapper
+    )
+
+    // FloorCsv:
+    @Singleton
+    @Provides
+    fun provideFloorEntityToFloorCsvMapper(): FloorEntityToFloorCsvMapper =
+        FloorEntityToFloorCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideFloorEntityListToFloorCsvListMapper(mapper: FloorEntityToFloorCsvMapper): FloorEntityListToFloorCsvListMapper =
+        FloorEntityListToFloorCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideFloorCsvToFloorEntityMapper(): FloorCsvToFloorEntityMapper =
+        FloorCsvToFloorEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideFloorCsvListToFloorEntityListMapper(mapper: FloorCsvToFloorEntityMapper): FloorCsvListToFloorEntityListMapper =
+        FloorCsvListToFloorEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideFloorCsvMappers(
+        floorEntityListToFloorCsvListMapper: FloorEntityListToFloorCsvListMapper,
+        floorCsvListToFloorEntityListMapper: FloorCsvListToFloorEntityListMapper
+    ): FloorCsvMappers = FloorCsvMappers(
+        floorEntityListToFloorCsvListMapper,
+        floorCsvListToFloorEntityListMapper
+    )
+
+    // RoomCsv:
+    @Singleton
+    @Provides
+    fun provideRoomEntityToRoomCsvMapper(): RoomEntityToRoomCsvMapper = RoomEntityToRoomCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoomEntityListToRoomCsvListMapper(mapper: RoomEntityToRoomCsvMapper): RoomEntityListToRoomCsvListMapper =
+        RoomEntityListToRoomCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoomCsvToRoomEntityMapper(): RoomCsvToRoomEntityMapper = RoomCsvToRoomEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoomCsvListToRoomEntityListMapper(mapper: RoomCsvToRoomEntityMapper): RoomCsvListToRoomEntityListMapper =
+        RoomCsvListToRoomEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoomCsvMappers(
+        roomEntityListToRoomCsvListMapper: RoomEntityListToRoomCsvListMapper,
+        roomCsvListToRoomEntityListMapper: RoomCsvListToRoomEntityListMapper
+    ): RoomCsvMappers = RoomCsvMappers(
+        roomEntityListToRoomCsvListMapper,
+        roomCsvListToRoomEntityListMapper
+    )
+
+    // TerritoryCategoryCsv:
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoryEntityToTerritoryCategoryCsvMapper(): TerritoryCategoryEntityToTerritoryCategoryCsvMapper =
+        TerritoryCategoryEntityToTerritoryCategoryCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoryEntityListToTerritoryCategoryCsvListMapper(mapper: TerritoryCategoryEntityToTerritoryCategoryCsvMapper): TerritoryCategoryEntityListToTerritoryCategoryCsvListMapper =
+        TerritoryCategoryEntityListToTerritoryCategoryCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoryCsvToTerritoryCategoryEntityMapper(): TerritoryCategoryCsvToTerritoryCategoryEntityMapper =
+        TerritoryCategoryCsvToTerritoryCategoryEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoryCsvListToTerritoryCategoryEntityListMapper(mapper: TerritoryCategoryCsvToTerritoryCategoryEntityMapper): TerritoryCategoryCsvListToTerritoryCategoryEntityListMapper =
+        TerritoryCategoryCsvListToTerritoryCategoryEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCategoryCsvMappers(
+        territoryCategoryEntityListToTerritoryCategoryCsvListMapper: TerritoryCategoryEntityListToTerritoryCategoryCsvListMapper,
+        territoryCategoryCsvListToTerritoryCategoryEntityListMapper: TerritoryCategoryCsvListToTerritoryCategoryEntityListMapper
+    ): TerritoryCategoryCsvMappers = TerritoryCategoryCsvMappers(
+        territoryCategoryEntityListToTerritoryCategoryCsvListMapper,
+        territoryCategoryCsvListToTerritoryCategoryEntityListMapper
+    )
+
+    // TerritoryMemberReportCsv:
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberReportEntityToTerritoryMemberReportCsvMapper(): TerritoryMemberReportEntityToTerritoryMemberReportCsvMapper =
+        TerritoryMemberReportEntityToTerritoryMemberReportCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberReportEntityListToTerritoryMemberReportCsvListMapper(mapper: TerritoryMemberReportEntityToTerritoryMemberReportCsvMapper): TerritoryMemberReportEntityListToTerritoryMemberReportCsvListMapper =
+        TerritoryMemberReportEntityListToTerritoryMemberReportCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberReportCsvToTerritoryMemberReportEntityMapper(): TerritoryMemberReportCsvToTerritoryMemberReportEntityMapper =
+        TerritoryMemberReportCsvToTerritoryMemberReportEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberReportCsvListToTerritoryMemberReportEntityListMapper(mapper: TerritoryMemberReportCsvToTerritoryMemberReportEntityMapper): TerritoryMemberReportCsvListToTerritoryMemberReportEntityListMapper =
+        TerritoryMemberReportCsvListToTerritoryMemberReportEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryReportCsvMappers(
+        territoryMemberReportEntityListToTerritoryMemberReportCsvListMapper: TerritoryMemberReportEntityListToTerritoryMemberReportCsvListMapper,
+        territoryMemberReportCsvListToTerritoryMemberReportEntityListMapper: TerritoryMemberReportCsvListToTerritoryMemberReportEntityListMapper
+    ): TerritoryReportCsvMappers = TerritoryReportCsvMappers(
+        territoryMemberReportEntityListToTerritoryMemberReportCsvListMapper,
+        territoryMemberReportCsvListToTerritoryMemberReportEntityListMapper
+    )
+
+    // TerritoryStreetCsv:
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetEntityToTerritoryStreetCsvMapper(): TerritoryStreetEntityToTerritoryStreetCsvMapper =
+        TerritoryStreetEntityToTerritoryStreetCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetEntityListToTerritoryStreetCsvListMapper(mapper: TerritoryStreetEntityToTerritoryStreetCsvMapper): TerritoryStreetEntityListToTerritoryStreetCsvListMapper =
+        TerritoryStreetEntityListToTerritoryStreetCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetCsvToTerritoryStreetEntityMapper(): TerritoryStreetCsvToTerritoryStreetEntityMapper =
+        TerritoryStreetCsvToTerritoryStreetEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetCsvListToTerritoryStreetEntityListMapper(mapper: TerritoryStreetCsvToTerritoryStreetEntityMapper): TerritoryStreetCsvListToTerritoryStreetEntityListMapper =
+        TerritoryStreetCsvListToTerritoryStreetEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryStreetCsvMappers(
+        territoryStreetEntityListToTerritoryStreetCsvListMapper: TerritoryStreetEntityListToTerritoryStreetCsvListMapper,
+        territoryStreetCsvListToTerritoryStreetEntityListMapper: TerritoryStreetCsvListToTerritoryStreetEntityListMapper
+    ): TerritoryStreetCsvMappers = TerritoryStreetCsvMappers(
+        territoryStreetEntityListToTerritoryStreetCsvListMapper,
+        territoryStreetCsvListToTerritoryStreetEntityListMapper
+    )
+
+    // CongregationTerritoryCrossRefCsv:
+    @Singleton
+    @Provides
+    fun provideCongregationTerritoryCrossRefEntityToCongregationTerritoryCrossRefCsvMapper(): CongregationTerritoryCrossRefEntityToCongregationTerritoryCrossRefCsvMapper =
+        CongregationTerritoryCrossRefEntityToCongregationTerritoryCrossRefCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideCongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper(
+        mapper: CongregationTerritoryCrossRefEntityToCongregationTerritoryCrossRefCsvMapper
+    ): CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper =
+        CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCongregationTerritoryCrossRefCsvToCongregationTerritoryCrossRefEntityMapper(): CongregationTerritoryCrossRefCsvToCongregationTerritoryCrossRefEntityMapper =
+        CongregationTerritoryCrossRefCsvToCongregationTerritoryCrossRefEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideCongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper(
+        mapper: CongregationTerritoryCrossRefCsvToCongregationTerritoryCrossRefEntityMapper
+    ): CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper =
+        CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCongregationTerritoryCsvMappers(
+        congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper: CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
+        congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper: CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper
+    ): CongregationTerritoryCsvMappers = CongregationTerritoryCsvMappers(
+        congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
+        congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper
+    )
+
+    // TerritoryMemberCrossRefCsv:
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberCrossRefEntityToTerritoryMemberCrossRefCsvMapper(): TerritoryMemberCrossRefEntityToTerritoryMemberCrossRefCsvMapper =
+        TerritoryMemberCrossRefEntityToTerritoryMemberCrossRefCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper(
+        mapper: TerritoryMemberCrossRefEntityToTerritoryMemberCrossRefCsvMapper
+    ): TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper =
+        TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberCrossRefCsvToTerritoryMemberCrossRefEntityMapper(): TerritoryMemberCrossRefCsvToTerritoryMemberCrossRefEntityMapper =
+        TerritoryMemberCrossRefCsvToTerritoryMemberCrossRefEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper(
+        mapper: TerritoryMemberCrossRefCsvToTerritoryMemberCrossRefEntityMapper
+    ): TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper =
+        TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryMemberCsvMappers(
+        territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper: TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
+        territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper: TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
+    ): TerritoryMemberCsvMappers = TerritoryMemberCsvMappers(
+        territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
+        territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
+    )
+
+    // TerritoryTotalCsv:
+    @Singleton
+    @Provides
+    fun provideTerritoryTotalEntityToTerritoryTotalCsvMapper(): TerritoryTotalEntityToTerritoryTotalCsvMapper =
+        TerritoryTotalEntityToTerritoryTotalCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryTotalEntityListToTerritoryTotalCsvListMapper(mapper: TerritoryTotalEntityToTerritoryTotalCsvMapper): TerritoryTotalEntityListToTerritoryTotalCsvListMapper =
+        TerritoryTotalEntityListToTerritoryTotalCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryTotalCsvToTerritoryTotalEntityMapper(): TerritoryTotalCsvToTerritoryTotalEntityMapper =
+        TerritoryTotalCsvToTerritoryTotalEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryTotalCsvListToTerritoryTotalEntityListMapper(mapper: TerritoryTotalCsvToTerritoryTotalEntityMapper): TerritoryTotalCsvListToTerritoryTotalEntityListMapper =
+        TerritoryTotalCsvListToTerritoryTotalEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryTotalCsvMappers(
+        territoryTotalEntityListToTerritoryTotalCsvListMapper: TerritoryTotalEntityListToTerritoryTotalCsvListMapper,
+        territoryTotalCsvListToTerritoryTotalEntityListMapper: TerritoryTotalCsvListToTerritoryTotalEntityListMapper
+    ): TerritoryTotalCsvMappers = TerritoryTotalCsvMappers(
+        territoryTotalEntityListToTerritoryTotalCsvListMapper,
+        territoryTotalCsvListToTerritoryTotalEntityListMapper
+    )
+
+    // TerritoryCsv:
+    @Singleton
+    @Provides
+    fun provideTerritoryEntityToTerritoryCsvMapper(): TerritoryEntityToTerritoryCsvMapper =
+        TerritoryEntityToTerritoryCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryEntityListToTerritoryCsvListMapper(mapper: TerritoryEntityToTerritoryCsvMapper): TerritoryEntityListToTerritoryCsvListMapper =
+        TerritoryEntityListToTerritoryCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCsvToTerritoryEntityMapper(): TerritoryCsvToTerritoryEntityMapper =
+        TerritoryCsvToTerritoryEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCsvListToTerritoryEntityListMapper(mapper: TerritoryCsvToTerritoryEntityMapper): TerritoryCsvListToTerritoryEntityListMapper =
+        TerritoryCsvListToTerritoryEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideTerritoryCsvMappers(
+        territoryEntityListToTerritoryCsvListMapper: TerritoryEntityListToTerritoryCsvListMapper,
+        territoryTotalEntityListToTerritoryTotalCsvListMapper: TerritoryTotalEntityListToTerritoryTotalCsvListMapper,
+        congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper: CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
+        territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper: TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
+        territoryCsvListToTerritoryEntityListMapper: TerritoryCsvListToTerritoryEntityListMapper,
+        territoryTotalCsvListToTerritoryTotalEntityListMapper: TerritoryTotalCsvListToTerritoryTotalEntityListMapper,
+        congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper: CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper,
+        territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper: TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
+    ): TerritoryCsvMappers = TerritoryCsvMappers(
+        territoryEntityListToTerritoryCsvListMapper,
+        territoryTotalEntityListToTerritoryTotalCsvListMapper,
+        congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
+        territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
+        territoryCsvListToTerritoryEntityListMapper,
+        territoryTotalCsvListToTerritoryTotalEntityListMapper,
+        congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper,
+        territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
     )
 }

@@ -29,6 +29,7 @@ class LocalHouseDataSourceImpl @Inject constructor(
             territoryId
         )
 
+    override fun getNextHouse(houseId: UUID) = houseDao.findNextById(houseId)
     override fun getHouse(houseId: UUID) = houseDao.findDistinctById(houseId)
     override fun isTerritoryStreetExistsHouses(territoryStreetId: UUID) =
         houseDao.existsByTerritoryStreetId(territoryStreetId)

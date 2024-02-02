@@ -1,0 +1,6 @@
+package com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member
+
+data class TerritoryMemberCsvMappers(
+    val territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper: TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
+    val territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper: TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
+)
