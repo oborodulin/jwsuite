@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.street
+package com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet
 
 import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView

@@ -1,5 +1,10 @@
 package com.oborodulin.jwsuite.data_congregation.di
 
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.congregation.CongregationCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.group.GroupCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.MemberCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvMappers
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
@@ -27,21 +32,32 @@ object CongregationRepositoriesModule {
     @Provides
     fun provideCongregationsRepository(
         localCongregationDataSource: LocalCongregationDataSource,
-        mappers: CongregationMappers
+        domainMappers: CongregationMappers, csvMappers: CongregationCsvMappers
     ): CongregationsRepository =
-        CongregationsRepositoryImpl(localCongregationDataSource, mappers)
+        CongregationsRepositoryImpl(localCongregationDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideGroupsRepository(
-        localGroupDataSource: LocalGroupDataSource, mappers: GroupMappers
-    ): GroupsRepository = GroupsRepositoryImpl(localGroupDataSource, mappers)
+        localGroupDataSource: LocalGroupDataSource,
+        domainMappers: GroupMappers, csvMappers: GroupCsvMappers
+    ): GroupsRepository = GroupsRepositoryImpl(localGroupDataSource, domainMappers, csvMappers)
 
     @Singleton
     @Provides
     fun provideMembersRepository(
         localMemberDataSource: LocalMemberDataSource, memberMappers: MemberMappers,
-        transferObjectMappers: TransferObjectMappers
+        transferObjectMappers: TransferObjectMappers,
+        csvMemberMappers: MemberCsvMappers,
+        csvRoleMappers: RoleCsvMappers,
+        csvTransferObjectMappers: TransferObjectCsvMappers
     ): MembersRepository =
-        MembersRepositoryImpl(localMemberDataSource, memberMappers, transferObjectMappers)
+        MembersRepositoryImpl(
+            localMemberDataSource,
+            memberMappers,
+            transferObjectMappers,
+            csvMemberMappers,
+            csvRoleMappers,
+            csvTransferObjectMappers
+        )
 }

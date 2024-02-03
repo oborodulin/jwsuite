@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report
+package com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper

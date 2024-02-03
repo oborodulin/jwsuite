@@ -2,6 +2,8 @@ package com.oborodulin.jwsuite.domain.usecases.territory.street
 
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
+import com.oborodulin.home.common.extensions.isEven
+import com.oborodulin.home.common.extensions.isOdd
 import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
@@ -21,8 +23,8 @@ class SaveTerritoryStreetUseCase(
                 territoryStreet.id?.let {
                     if (territoryStreet.isNeedAddEstHouses) {
                         territoryStreet.isEvenSide?.let { isEven ->
-                            if (isEven) createEstHouses(territoryStreet) { it % 2 == 0 }
-                            else createEstHouses(territoryStreet) { it % 2 != 0 }
+                            if (isEven) createEstHouses(territoryStreet) { it.isEven() }
+                            else createEstHouses(territoryStreet) { it.isOdd() }
                         } ?: createEstHouses(territoryStreet) { true }
                     }
                 }
@@ -34,7 +36,7 @@ class SaveTerritoryStreetUseCase(
     data class Response(val territoryStreet: TerritoryStreet) : UseCase.Response
 
     private fun createEstHouses(territoryStreet: TerritoryStreet, predicate: (Int) -> Boolean) {
-        (1..territoryStreet.estimatedHouses!!).filter { predicate(it) }
+        (1..territoryStreet.estimatedHouses!!).filter { num -> predicate(num) }
             .forEach { num ->
                 housesRepository.save(
                     House(

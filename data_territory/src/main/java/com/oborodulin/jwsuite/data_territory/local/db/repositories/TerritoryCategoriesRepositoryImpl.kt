@@ -2,7 +2,7 @@ package com.oborodulin.jwsuite.data_territory.local.db.repositories
 
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryCategoryEntity
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryMappers
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalTerritoryCategoryDataSource
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryCategory
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository

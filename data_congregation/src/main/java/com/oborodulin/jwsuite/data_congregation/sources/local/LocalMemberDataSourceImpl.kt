@@ -84,7 +84,7 @@ class LocalMemberDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteMemberById(memberId: UUID) = withContext(dispatcher) {
-        memberDao.deleteById(memberId)
+        memberDao.deleteByIdWithTotals(memberId)
     }
 
     override suspend fun deleteMembers(members: List<MemberEntity>) = withContext(dispatcher) {

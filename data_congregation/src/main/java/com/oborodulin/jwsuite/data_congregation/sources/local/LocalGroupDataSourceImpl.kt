@@ -28,7 +28,7 @@ class LocalGroupDataSourceImpl @Inject constructor(
     override fun getGroup(groupId: UUID) = groupDao.findDistinctById(groupId)
 
     override suspend fun insertGroup(group: GroupEntity) = withContext(dispatcher) {
-        groupDao.insert(group)
+        groupDao.insertWithTotals(group)
     }
 
     override suspend fun updateGroup(group: GroupEntity) = withContext(dispatcher) {
@@ -40,7 +40,7 @@ class LocalGroupDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteGroupById(groupId: UUID) = withContext(dispatcher) {
-        groupDao.deleteById(groupId)
+        groupDao.deleteByIdWithTotals(groupId)
     }
 
     override suspend fun deleteGroups(groups: List<GroupEntity>) = withContext(dispatcher) {

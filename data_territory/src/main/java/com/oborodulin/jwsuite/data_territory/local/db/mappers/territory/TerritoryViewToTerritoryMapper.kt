@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.Loca
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryEntityToTerritoryCategoryMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 

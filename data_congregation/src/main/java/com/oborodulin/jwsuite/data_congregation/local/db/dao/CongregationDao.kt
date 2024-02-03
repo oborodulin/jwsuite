@@ -17,8 +17,10 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
+import java.time.OffsetDateTime
 import java.util.UUID
 
 private const val TAG = "Data.CongregationDao"
@@ -73,7 +75,18 @@ interface CongregationDao {
     fun findTotals(): Flow<CongregationTotalView?>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctfindTotals() = findTotals().distinctUntilChanged()
+    fun findDistinctTotals() = findTotals().distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${CongregationTotalEntity.TABLE_NAME} WHERE ctlCongregationsId = :congregationId AND ifnull(lastVisitDate, '') = ifnull(:lastVisitDate, '')")
+    fun findTotalByCongregationId(
+        congregationId: UUID, lastVisitDate: OffsetDateTime? = null
+    ): Flow<CongregationTotalEntity?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctTotalByCongregationId(
+        congregationId: UUID, lastVisitDate: OffsetDateTime? = null
+    ) = findTotalByCongregationId(congregationId, lastVisitDate).distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -85,6 +98,9 @@ interface CongregationDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(congregations: List<CongregationEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(congregationTotal: CongregationTotalEntity)
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(congregationTotals: List<CongregationTotalEntity>)
 
@@ -94,6 +110,9 @@ interface CongregationDao {
 
     @Update
     suspend fun update(vararg congregations: CongregationEntity)
+
+    @Update
+    suspend fun update(congregationTotal: CongregationTotalEntity)
 
     // DELETES:
     @Delete
@@ -125,31 +144,53 @@ interface CongregationDao {
     }
 
     @Transaction
-    suspend fun insertWithFavorite(congregation: CongregationEntity) {
+    suspend fun insertWithFavoriteAndTotals(congregation: CongregationEntity) {
         insert(congregation)
         if (congregation.isFavorite) {
             clearFavoritesById(congregation.congregationId)
         }
+        insert(
+            CongregationTotalEntity(
+                lastVisitDate = congregation.lastVisitDate,
+                ctlCongregationsId = congregation.congregationId
+            )
+        )
+        congregation.lastVisitDate?.let {
+            insert(CongregationTotalEntity(ctlCongregationsId = congregation.congregationId))
+        }
     }
 
     @Transaction
-    suspend fun updateWithFavorite(congregation: CongregationEntity) {
-        Timber.tag(TAG).d("updateWithFavorite(...) called: congregation = %s", congregation)
+    suspend fun updateWithFavoriteAndTotals(congregation: CongregationEntity) {
+        Timber.tag(TAG)
+            .d("updateWithFavoriteAndTotals(...) called: congregation = %s", congregation)
         if (congregation.isFavorite) {
             clearFavoritesById(congregation.congregationId)
             update(congregation)
         } else {
             var updatedCongregation = congregation
             findFavoriteCongregation()?.let { favorite ->
-                Timber.tag(TAG).d("findFavorite() called: favorite = %s", favorite)
+                Timber.tag(TAG).d("findFavoriteCongregation() called: favorite = %s", favorite)
                 if (favorite.congregation.congregationId == congregation.congregationId) {
                     updatedCongregation = congregation.copy(isFavorite = true)
                 }
             }
             update(updatedCongregation)
             Timber.tag(TAG)
-                .d("updateWithFavorite: updatedCongregation = %s", updatedCongregation)
+                .d("updateWithFavoriteAndTotals: updatedCongregation = %s", updatedCongregation)
         }
-        Timber.tag(TAG).d("updateWithFavorite(...) ending")
+        congregation.lastVisitDate?.let { lastVisitDate ->
+            if (findTotalByCongregationId(
+                    congregation.congregationId,
+                    lastVisitDate
+                ).first() == null
+            ) {
+                findTotalByCongregationId(congregation.congregationId).first()?.let {
+                    update(it.copy(lastVisitDate = lastVisitDate))
+                    insert(CongregationTotalEntity(ctlCongregationsId = congregation.congregationId))
+                }
+            }
+        }
+        Timber.tag(TAG).d("updateWithFavoriteAndTotals(...) ending")
     }
 }

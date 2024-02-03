@@ -1,8 +1,9 @@
-package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report
+package com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.house
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseViewToHouseMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryMemberReportEntityToTerritoryMemberReportMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryReportHouse

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
@@ -24,6 +25,7 @@ import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -204,6 +206,56 @@ interface MemberDao {
     fun findDistinctMovementsByMemberId(memberId: UUID) =
         findMovementsByMemberId(memberId).distinctUntilChanged()
 
+    //-----------------------------
+    @Query(
+        """
+    SELECT mm.* FROM ${MemberMovementEntity.TABLE_NAME} mm  
+        JOIN (SELECT mMembersId, MAX(strftime($DB_FRACT_SEC_TIME, movementDate)) AS maxMovementDate FROM ${MemberMovementEntity.TABLE_NAME} GROUP BY mMembersId) gmm 
+            ON gmm.mMembersId = :memberId AND mm.mMembersId = :memberId AND strftime($DB_FRACT_SEC_TIME, mm.movementDate) = gmm.maxMovementDate
+    """
+    )
+    fun findMovementByMemberId(memberId: UUID): Flow<MemberMovementEntity>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctMovementByMemberId(memberId: UUID) =
+        findMovementByMemberId(memberId).distinctUntilChanged()
+
+    // UPDATES TOTALS:
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalMembers = totalMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
+    suspend fun incTotalMembersByMemberId(congregationId: UUID, diff: Int = 1)
+
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
+    suspend fun incTotalFulltimeMembersByCongregationId(congregationId: UUID, diff: Int = 1)
+
+    @Query(
+        """
+    UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalMembers = totalMembers + :diff
+    WHERE lastVisitDate IS NULL
+        AND ctlCongregationsId = (SELECT mc.mcCongregationsId FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mc
+                                        JOIN (SELECT mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, activityDate)) AS maxActivityDate 
+                                                FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} GROUP BY mcMembersId ) gmc
+                                            ON gmc.mcMembersId = :memberId AND mc.mcMembersId = :memberId
+                                                AND strftime($DB_FRACT_SEC_TIME, mc.activityDate) = gmc.maxActivityDate)
+    """
+    )
+    suspend fun decTotalMembersByMemberId(memberId: UUID, diff: Int = -1)
+
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
+    suspend fun decTotalFulltimeMembersByCongregationId(congregationId: UUID, diff: Int = -1)
+
+    @Query(
+        """
+    UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff
+    WHERE lastVisitDate IS NULL
+        AND ctlCongregationsId = (SELECT mc.mcCongregationsId FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mc
+                                        JOIN (SELECT mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, activityDate)) AS maxActivityDate 
+                                                FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} GROUP BY mcMembersId ) gmc
+                                            ON gmc.mcMembersId = :memberId AND mc.mcMembersId = :memberId
+                                                AND strftime($DB_FRACT_SEC_TIME, mc.activityDate) = gmc.maxActivityDate)
+    """
+    )
+    suspend fun decTotalFulltimeMembersByMemberId(memberId: UUID, diff: Int = -1)
+
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(member: MemberEntity)
@@ -255,7 +307,11 @@ interface MemberDao {
     ) {
         insert(member)
         insert(memberCongregation)
+        incTotalMembersByMemberId(memberCongregation.mcCongregationsId)
         insert(memberMovement)
+        if (memberMovement.memberType == MemberType.FULL_TIME) {
+            incTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId)
+        }
     }
 
     // UPDATES:
@@ -281,8 +337,19 @@ interface MemberDao {
         memberMovement: MemberMovementEntity
     ) {
         update(member)
-        insert(memberCongregation)
-        insert(memberMovement)
+        insert(memberCongregation) // OnConflictStrategy.REPLACE
+        val lastMovement = findMovementByMemberId(member.memberId).first()
+        if (lastMovement.memberType != memberMovement.memberType) {
+            insert(memberMovement)
+            if (memberMovement.memberType == MemberType.FULL_TIME) {
+                incTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId)
+            }
+            if (lastMovement.memberType == MemberType.FULL_TIME) {
+                decTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId)
+            }
+        } else {
+            update(memberMovement)
+        }
     }
 
     // DELETES:
@@ -329,4 +396,15 @@ interface MemberDao {
 
     @Query("DELETE FROM ${MemberMovementEntity.TABLE_NAME} WHERE mMembersId = :memberId")
     suspend fun deleteMovementsByMemberId(memberId: UUID)
+
+    // API:
+    @Transaction
+    suspend fun deleteByIdWithTotals(memberId: UUID) {
+        decTotalMembersByMemberId(memberId)
+        val lastMovement = findMovementByMemberId(memberId).first()
+        if (lastMovement.memberType == MemberType.FULL_TIME) {
+            decTotalFulltimeMembersByMemberId(memberId)
+        }
+        deleteById(memberId)
+    }
 }

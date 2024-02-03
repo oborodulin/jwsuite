@@ -30,8 +30,9 @@ data class CongregationTotalEntity(
     @PrimaryKey val congregationTotalId: UUID = UUID.randomUUID(),
     @Serializable(with = OffsetDateTimeSerializer::class)
     val lastVisitDate: OffsetDateTime? = null,
-    val totalMembers: Int,
-    val totalFulltimeMembers: Int,
+    val totalGroups: Int = 0,
+    val totalMembers: Int = 0,
+    val totalFulltimeMembers: Int = 0,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val ctlCongregationsId: UUID
 ) : BaseEntity() {
@@ -50,8 +51,9 @@ data class CongregationTotalEntity(
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Congregation Total Entity totalMembers = ").append(totalMembers)
-            .append("; totalFulltimeMembers = ").append(totalMembers)
+        str.append("Congregation Total Entity totalGroups = ").append(totalGroups)
+            .append("; totalMembers = ").append(totalMembers)
+            .append("; totalFulltimeMembers = ").append(totalFulltimeMembers)
         lastVisitDate?.let {
             str.append(". Date of last visit ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(it))
         }

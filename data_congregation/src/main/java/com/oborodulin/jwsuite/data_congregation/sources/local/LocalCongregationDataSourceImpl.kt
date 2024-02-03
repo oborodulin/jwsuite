@@ -25,15 +25,15 @@ class LocalCongregationDataSourceImpl @Inject constructor(
         congregationDao.findDistinctById(congregationId)
 
     override fun getFavoriteCongregation() = congregationDao.findDistinctFavorite()
-    override fun getFavoriteCongregationTotals() = congregationDao.findDistinctfindTotals()
+    override fun getFavoriteCongregationTotals() = congregationDao.findDistinctTotals()
     override suspend fun insertCongregation(congregation: CongregationEntity) =
         withContext(dispatcher) {
-            congregationDao.insertWithFavorite(congregation)
+            congregationDao.insertWithFavoriteAndTotals(congregation)
         }
 
     override suspend fun updateCongregation(congregation: CongregationEntity) =
         withContext(dispatcher) {
-            congregationDao.updateWithFavorite(congregation)
+            congregationDao.updateWithFavoriteAndTotals(congregation)
         }
 
     override suspend fun deleteCongregation(congregation: CongregationEntity) =

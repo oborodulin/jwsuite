@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report
+package com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.house
 
 import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView

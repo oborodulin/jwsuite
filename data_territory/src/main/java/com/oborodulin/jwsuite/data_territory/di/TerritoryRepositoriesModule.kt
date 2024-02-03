@@ -13,9 +13,9 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.floor.FloorMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.house.HouseMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.room.RoomMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryMappers
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.category.TerritoryCategoryMappers
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.report.TerritoryReportMappers
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.street.TerritoryStreetMappers
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryMappers
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryReportMappers
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet.TerritoryStreetMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.EntrancesRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.FloorsRepositoryImpl
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.HousesRepositoryImpl

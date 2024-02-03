@@ -11,10 +11,12 @@ class CongregationTotalViewToCongregationTotalsMapper(
     NullableMapper<CongregationTotalView, CongregationTotals> {
     override fun map(input: CongregationTotalView) = CongregationTotals(
         congregation = mapper.map(input.congregation),
+        totalGroups = input.totalGroups,
         totalMembers = input.totalMembers,
-        prevMemberTotals = input.prevMemberTotals,
         totalFulltimeMembers = input.totalFulltimeMembers,
-        prevFulltimeMemberTotals = input.prevFulltimeMemberTotals
+        diffGroups = input.diffGroups,
+        diffMembers = input.diffMembers,
+        diffFulltimeMembers = input.diffFulltimeMembers
     )
 
     override fun nullableMap(input: CongregationTotalView?) = input?.let { map(it) }

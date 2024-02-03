@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
@@ -100,5 +101,23 @@ interface GroupDao {
     suspend fun updateWithGroupNum(group: GroupEntity) {
         updateGroupNum(group.gCongregationsId, group.groupNum)
         update(group)
+    }
+
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalGroups = totalGroups + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
+    suspend fun incTotalGroupsByCongregationId(congregationId: UUID, diff: Int = 1)
+
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalGroups = totalGroups + :diff WHERE ctlCongregationsId = (SELECT gCongregationsId FROM ${GroupEntity.TABLE_NAME} WHERE groupId = :groupId) AND lastVisitDate IS NULL")
+    suspend fun decTotalGroupsByGroupId(groupId: UUID, diff: Int = -1)
+
+    @Transaction
+    suspend fun insertWithTotals(group: GroupEntity) {
+        insert(group)
+        incTotalGroupsByCongregationId(group.gCongregationsId)
+    }
+
+    @Transaction
+    suspend fun deleteByIdWithTotals(groupId: UUID) {
+        decTotalGroupsByGroupId(groupId)
+        deleteById(groupId)
     }
 }

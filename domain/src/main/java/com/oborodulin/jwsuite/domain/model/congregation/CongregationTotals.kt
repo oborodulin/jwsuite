@@ -4,11 +4,10 @@ import com.oborodulin.home.common.domain.model.DomainModel
 
 data class CongregationTotals(
     val congregation: Congregation,
+    val totalGroups: Int,
     val totalMembers: Int,
-    val prevMemberTotals: Int,
     val totalFulltimeMembers: Int,
-    val prevFulltimeMemberTotals: Int
-) : DomainModel() {
-    val diffMemberTotals = totalMembers - prevMemberTotals
-    val diffFulltimeMemberTotals = totalFulltimeMembers - prevFulltimeMemberTotals
-}
+    val diffGroups: Int,
+    val diffMembers: Int,
+    val diffFulltimeMembers: Int
+) : DomainModel()
