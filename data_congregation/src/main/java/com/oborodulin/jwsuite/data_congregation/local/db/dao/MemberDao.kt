@@ -221,11 +221,9 @@ interface MemberDao {
         findMovementByMemberId(memberId).distinctUntilChanged()
 
     // UPDATES TOTALS:
+    // totalMembers:
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalMembers = totalMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
-    suspend fun incTotalMembersByMemberId(congregationId: UUID, diff: Int = 1)
-
-    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
-    suspend fun incTotalFulltimeMembersByCongregationId(congregationId: UUID, diff: Int = 1)
+    suspend fun incTotalMembersByCongregationId(congregationId: UUID, diff: Int = 1)
 
     @Query(
         """
@@ -240,8 +238,9 @@ interface MemberDao {
     )
     suspend fun decTotalMembersByMemberId(memberId: UUID, diff: Int = -1)
 
+    // totalFulltimeMembers:
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
-    suspend fun decTotalFulltimeMembersByCongregationId(congregationId: UUID, diff: Int = -1)
+    suspend fun updateTotalFulltimeMembersByCongregationId(congregationId: UUID, diff: Int)
 
     @Query(
         """
@@ -266,12 +265,14 @@ interface MemberDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(members: List<MemberEntity>)
 
+    //----------------------------- Congregations:
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(memberCongregations: List<MemberCongregationCrossRefEntity>)
 
+    //----------------------------- Roles:
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg roles: RoleEntity)
 
@@ -284,12 +285,14 @@ interface MemberDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(memberRoles: List<MemberRoleEntity>)
 
+    //----------------------------- Movements:
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberMovements: MemberMovementEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(memberMovements: List<MemberMovementEntity>)
 
+    //----------------------------- Member:
     suspend fun insert(
         member: MemberEntity, memberType: MemberType = MemberType.PREACHER,
         movementDate: OffsetDateTime = OffsetDateTime.now()
@@ -307,10 +310,10 @@ interface MemberDao {
     ) {
         insert(member)
         insert(memberCongregation)
-        incTotalMembersByMemberId(memberCongregation.mcCongregationsId)
+        incTotalMembersByCongregationId(memberCongregation.mcCongregationsId)
         insert(memberMovement)
         if (memberMovement.memberType == MemberType.FULL_TIME) {
-            incTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId)
+            updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
         }
     }
 
@@ -321,12 +324,15 @@ interface MemberDao {
     @Update
     suspend fun update(vararg members: MemberEntity)
 
+    //----------------------------- Congregations:
     @Update
     suspend fun update(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
+    //----------------------------- Roles:
     @Update
     suspend fun update(vararg memberRoles: MemberRoleEntity)
 
+    //----------------------------- Movements:
     @Update
     suspend fun update(vararg memberMovements: MemberMovementEntity)
 
@@ -340,12 +346,12 @@ interface MemberDao {
         insert(memberCongregation) // OnConflictStrategy.REPLACE
         val lastMovement = findMovementByMemberId(member.memberId).first()
         if (lastMovement.memberType != memberMovement.memberType) {
-            insert(memberMovement)
+            insert(memberMovement)  // OnConflictStrategy.REPLACE
             if (memberMovement.memberType == MemberType.FULL_TIME) {
-                incTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId)
+                updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
             }
             if (lastMovement.memberType == MemberType.FULL_TIME) {
-                decTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId)
+                updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, -1)
             }
         } else {
             update(memberMovement)

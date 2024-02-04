@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.domain.usecases
 
-import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.dashboard.GetDashboardInfoUseCase
 
 data class DashboardingUseCases(
-    val getFavoriteCongregationUseCase: GetFavoriteCongregationUseCase
+    val getDashboardInfoUseCase: GetDashboardInfoUseCase
 )

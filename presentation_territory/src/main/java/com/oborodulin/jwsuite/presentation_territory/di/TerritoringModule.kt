@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntrancesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntrancesUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.GetNextEntranceNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.GetNextEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.SaveEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.SaveTerritoryEntrancesUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.DeleteFloorUseCase
@@ -18,6 +19,7 @@ import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorsUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.GetNextFloorNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.GetNextFloorUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.SaveFloorUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.SaveTerritoryFloorsUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
@@ -26,12 +28,14 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
@@ -577,6 +581,7 @@ object TerritoringModule {
     fun provideHouseUseCases(
         getHousesUseCase: GetHousesUseCase,
         getHouseUseCase: GetHouseUseCase,
+        getNextHouseUseCase: GetNextHouseUseCase,
         getNextHouseNumUseCase: GetNextHouseNumUseCase,
         getHousesForTerritoryUseCase: GetHousesForTerritoryUseCase,
         saveHouseUseCase: SaveHouseUseCase,
@@ -586,6 +591,7 @@ object TerritoringModule {
     ): HouseUseCases = HouseUseCases(
         getHousesUseCase,
         getHouseUseCase,
+        getNextHouseUseCase,
         getNextHouseNumUseCase,
         getHousesForTerritoryUseCase,
         saveHouseUseCase,
@@ -600,6 +606,7 @@ object TerritoringModule {
     fun provideEntranceUseCases(
         getEntrancesUseCase: GetEntrancesUseCase,
         getEntranceUseCase: GetEntranceUseCase,
+        getNextEntranceUseCase: GetNextEntranceUseCase,
         getNextEntranceNumUseCase: GetNextEntranceNumUseCase,
         getEntrancesForTerritoryUseCase: GetEntrancesForTerritoryUseCase,
         saveEntranceUseCase: SaveEntranceUseCase,
@@ -609,6 +616,7 @@ object TerritoringModule {
     ): EntranceUseCases = EntranceUseCases(
         getEntrancesUseCase,
         getEntranceUseCase,
+        getNextEntranceUseCase,
         getNextEntranceNumUseCase,
         getEntrancesForTerritoryUseCase,
         saveEntranceUseCase,
@@ -623,6 +631,7 @@ object TerritoringModule {
     fun provideFloorUseCases(
         getFloorsUseCase: GetFloorsUseCase,
         getFloorUseCase: GetFloorUseCase,
+        getNextFloorUseCase: GetNextFloorUseCase,
         getNextFloorNumUseCase: GetNextFloorNumUseCase,
         getFloorsForTerritoryUseCase: GetFloorsForTerritoryUseCase,
         saveFloorUseCase: SaveFloorUseCase,
@@ -632,6 +641,7 @@ object TerritoringModule {
     ): FloorUseCases = FloorUseCases(
         getFloorsUseCase,
         getFloorUseCase,
+        getNextFloorUseCase,
         getNextFloorNumUseCase,
         getFloorsForTerritoryUseCase,
         saveFloorUseCase,
@@ -646,6 +656,7 @@ object TerritoringModule {
     fun provideRoomUseCases(
         getRoomsUseCase: GetRoomsUseCase,
         getRoomUseCase: GetRoomUseCase,
+        getNextRoomUseCase: GetNextRoomUseCase,
         getNextRoomNumUseCase: GetNextRoomNumUseCase,
         getRoomsForTerritoryUseCase: GetRoomsForTerritoryUseCase,
         saveRoomUseCase: SaveRoomUseCase,
@@ -655,6 +666,7 @@ object TerritoringModule {
     ): RoomUseCases = RoomUseCases(
         getRoomsUseCase,
         getRoomUseCase,
+        getNextRoomUseCase,
         getNextRoomNumUseCase,
         getRoomsForTerritoryUseCase,
         saveRoomUseCase,

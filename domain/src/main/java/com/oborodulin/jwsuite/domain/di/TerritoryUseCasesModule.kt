@@ -17,6 +17,7 @@ import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntrancesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.GetEntrancesUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.GetNextEntranceNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.entrance.GetNextEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.SaveEntranceUseCase
 import com.oborodulin.jwsuite.domain.usecases.entrance.SaveTerritoryEntrancesUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.DeleteFloorUseCase
@@ -25,6 +26,7 @@ import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.GetFloorsUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.GetNextFloorNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.floor.GetNextFloorUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.SaveFloorUseCase
 import com.oborodulin.jwsuite.domain.usecases.floor.SaveTerritoryFloorsUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.DeleteHouseUseCase
@@ -33,11 +35,13 @@ import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.house.GetNextHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.SaveTerritoryHousesUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.DeleteTerritoryRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomNumUseCase
+import com.oborodulin.jwsuite.domain.usecases.room.GetNextRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsForTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomsUseCase
@@ -230,6 +234,12 @@ object TerritoryUseCasesModule {
 
     @Singleton
     @Provides
+    fun provideGetNextHouseUseCase(
+        configuration: UseCase.Configuration, housesRepository: HousesRepository
+    ): GetNextHouseUseCase = GetNextHouseUseCase(configuration, housesRepository)
+
+    @Singleton
+    @Provides
     fun provideGetHousesUseCase(
         configuration: UseCase.Configuration, housesRepository: HousesRepository
     ): GetHousesUseCase = GetHousesUseCase(configuration, housesRepository)
@@ -279,6 +289,12 @@ object TerritoryUseCasesModule {
     fun provideGetEntranceUseCase(
         configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
     ): GetEntranceUseCase = GetEntranceUseCase(configuration, entrancesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextEntranceUseCase(
+        configuration: UseCase.Configuration, entrancesRepository: EntrancesRepository
+    ): GetNextEntranceUseCase = GetNextEntranceUseCase(configuration, entrancesRepository)
 
     @Singleton
     @Provides
@@ -336,6 +352,12 @@ object TerritoryUseCasesModule {
 
     @Singleton
     @Provides
+    fun provideGetNextFloorUseCase(
+        configuration: UseCase.Configuration, floorsRepository: FloorsRepository
+    ): GetNextFloorUseCase = GetNextFloorUseCase(configuration, floorsRepository)
+
+    @Singleton
+    @Provides
     fun provideGetFloorsUseCase(
         configuration: UseCase.Configuration, floorsRepository: FloorsRepository
     ): GetFloorsUseCase = GetFloorsUseCase(configuration, floorsRepository)
@@ -385,6 +407,12 @@ object TerritoryUseCasesModule {
     fun provideGetRoomUseCase(
         configuration: UseCase.Configuration, roomsRepository: RoomsRepository
     ): GetRoomUseCase = GetRoomUseCase(configuration, roomsRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetNextRoomUseCase(
+        configuration: UseCase.Configuration, roomsRepository: RoomsRepository
+    ): GetNextRoomUseCase = GetNextRoomUseCase(configuration, roomsRepository)
 
     @Singleton
     @Provides

@@ -28,11 +28,11 @@ class LocalGroupDataSourceImpl @Inject constructor(
     override fun getGroup(groupId: UUID) = groupDao.findDistinctById(groupId)
 
     override suspend fun insertGroup(group: GroupEntity) = withContext(dispatcher) {
-        groupDao.insertWithTotals(group)
+        groupDao.insertWithGroupNumAndTotals(group)
     }
 
     override suspend fun updateGroup(group: GroupEntity) = withContext(dispatcher) {
-        groupDao.update(group)
+        groupDao.updateWithGroupNum(group)
     }
 
     override suspend fun deleteGroup(group: GroupEntity) = withContext(dispatcher) {

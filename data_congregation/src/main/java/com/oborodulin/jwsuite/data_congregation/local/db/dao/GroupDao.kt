@@ -23,18 +23,21 @@ interface GroupDao {
     @Query("SELECT * FROM ${GroupEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<GroupEntity>>
 
+    //-----------------------------
     @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY ${PX_GROUP_CONGREGATION}congregationName, groupNum")
     fun findAll(): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE groupId = :groupId")
     fun findById(groupId: UUID): Flow<GroupView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE gCongregationsId = :congregationId ORDER BY groupNum")
     fun findByCongregationId(congregationId: UUID): Flow<List<GroupView>>
 
@@ -42,11 +45,25 @@ interface GroupDao {
     fun findDistinctByCongregationId(congregationId: UUID) =
         findByCongregationId(congregationId).distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT g.* FROM ${GroupView.VIEW_NAME} g JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = g.gCongregationsId ORDER BY groupNum")
     fun findByFavoriteCongregation(): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFavoriteCongregation() = findByFavoriteCongregation().distinctUntilChanged()
+
+    @Query(
+        """
+    SELECT EXISTS(SELECT groupId FROM ${GroupEntity.TABLE_NAME} 
+                    WHERE gCongregationsId = :congregationId
+                        AND groupNum = :groupNum 
+                        AND groupId <> ifnull(:groupId, groupId) 
+                LIMIT 1)
+       """
+    )
+    fun existsWithGroupNum(
+        congregationId: UUID, groupNum: Int, groupId: UUID? = null
+    ): Flow<Boolean>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -91,28 +108,27 @@ interface GroupDao {
     @Query("UPDATE ${GroupEntity.TABLE_NAME} SET groupNum = groupNum + 1 WHERE groupNum >= :groupNum AND gCongregationsId = :congregationId")
     suspend fun updateGroupNum(congregationId: UUID, groupNum: Int)
 
-    @Transaction
-    suspend fun insertWithGroupNum(group: GroupEntity) {
-        updateGroupNum(group.gCongregationsId, group.groupNum)
-        insert(group)
-    }
-
-    @Transaction
-    suspend fun updateWithGroupNum(group: GroupEntity) {
-        updateGroupNum(group.gCongregationsId, group.groupNum)
-        update(group)
-    }
-
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalGroups = totalGroups + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
     suspend fun incTotalGroupsByCongregationId(congregationId: UUID, diff: Int = 1)
 
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalGroups = totalGroups + :diff WHERE ctlCongregationsId = (SELECT gCongregationsId FROM ${GroupEntity.TABLE_NAME} WHERE groupId = :groupId) AND lastVisitDate IS NULL")
     suspend fun decTotalGroupsByGroupId(groupId: UUID, diff: Int = -1)
 
+    // C[R]UD:
     @Transaction
-    suspend fun insertWithTotals(group: GroupEntity) {
+    suspend fun insertWithGroupNumAndTotals(group: GroupEntity) {
+        // updateGroupNum(group.gCongregationsId, group.groupNum) // destructive behavior
         insert(group)
         incTotalGroupsByCongregationId(group.gCongregationsId)
+    }
+
+    @Transaction
+    suspend fun updateWithGroupNum(group: GroupEntity) {
+        /* // destructive behavior
+        if (existsWithGroupNum(group.gCongregationsId, group.groupNum, group.groupId).first()) {
+            updateGroupNum(group.gCongregationsId, group.groupNum)
+        }*/
+        update(group)
     }
 
     @Transaction

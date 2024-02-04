@@ -6,10 +6,11 @@ import com.oborodulin.home.common.ui.state.MviViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.domain.usecases.DashboardingUseCases
-import com.oborodulin.jwsuite.domain.usecases.congregation.GetFavoriteCongregationUseCase
+import com.oborodulin.jwsuite.domain.usecases.dashboard.GetDashboardInfoUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.CongregationTotalsUi
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardingUi
-import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.FavoriteCongregationConverter
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DashboardingConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -26,8 +27,8 @@ private const val TAG = "Dashboarding.ui.DashboardingViewModelImpl"
 
 @HiltViewModel
 class DashboardingViewModelImpl @Inject constructor(
-    private val dashboardingUseCases: DashboardingUseCases,
-    private val congregationConverter: FavoriteCongregationConverter
+    private val useCases: DashboardingUseCases,
+    private val converter: DashboardingConverter
 ) : DashboardingViewModel,
     MviViewModel<DashboardingUi, UiState<DashboardingUi>, DashboardingUiAction, DashboardingUiSingleEvent>() {
     override fun initState() = UiState.Loading
@@ -45,21 +46,20 @@ class DashboardingViewModelImpl @Inject constructor(
             )
          */
         val job = when (action) {
-            is DashboardingUiAction.Init -> loadFavoriteCongregation()
+            is DashboardingUiAction.Init -> loadDashboard()
         }
         return job
     }
 
-    private fun loadFavoriteCongregation(): Job {
-        Timber.tag(TAG).d("loadFavoriteCongregation() called")
+    private fun loadDashboard(): Job {
+        Timber.tag(TAG).d("loadDashboard() called")
         val job = viewModelScope.launch(errorHandler) {
-            dashboardingUseCases.getFavoriteCongregationUseCase.execute(
-                GetFavoriteCongregationUseCase.Request
-            ).map {
-                congregationConverter.convert(it)
-            }.collect {
-                submitState(it)
-            }
+            useCases.getDashboardInfoUseCase.execute(GetDashboardInfoUseCase.Request)
+                .map {
+                    converter.convert(it)
+                }.collect {
+                    submitState(it)
+                }
         }
         return job
     }
@@ -92,6 +92,20 @@ class DashboardingViewModelImpl @Inject constructor(
             )
             congregationUi.id = UUID.randomUUID()
             return congregationUi
+        }
+
+        fun previewCongregationTotalsModel(ctx: Context): CongregationTotalsUi {
+            val congregationTotalsUi = CongregationTotalsUi(
+                congregation = previewCongregationModel(ctx),
+                totalGroups = 7,
+                totalMembers = 124,
+                totalFulltimeMembers = 28,
+                diffGroups = 1,
+                diffMembers = 0,
+                diffFulltimeMembers = 3
+            )
+            congregationTotalsUi.id = UUID.randomUUID()
+            return congregationTotalsUi
         }
     }
 }

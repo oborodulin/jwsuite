@@ -907,7 +907,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 else -> null
             }
             group?.let {
-                groupDao.insertWithTotals(it)
+                groupDao.insertWithGroupNumAndTotals(it)
                 Timber.tag(TAG).i("CONGREGATION: Default group imported")
                 jsonLogger?.let { logger ->
                     Timber.tag(TAG).i(": {\"group\": {%s}}", logger.encodeToString(it))

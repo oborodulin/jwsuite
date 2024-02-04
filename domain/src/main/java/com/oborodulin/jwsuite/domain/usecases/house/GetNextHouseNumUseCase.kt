@@ -7,10 +7,8 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 class GetNextHouseNumUseCase(
-    configuration: Configuration,
-    private val housesRepository: HousesRepository
+    configuration: Configuration, private val housesRepository: HousesRepository
 ) : UseCase<GetNextHouseNumUseCase.Request, GetNextHouseNumUseCase.Response>(configuration) {
-
     override fun process(request: Request): Flow<Response> =
         housesRepository.getNextNum(request.streetId).map { Response(it) }
 

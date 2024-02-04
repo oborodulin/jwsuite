@@ -12,6 +12,9 @@
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
 
     <!--ФОРМЫ:-->
+    <string name="total_groups_hint">Кол-во групп</string>
+    <string name="total_members_hint">Всего возвещателей</string>
+    <string name="total_fulltime_members_hint">Из них полновременных</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

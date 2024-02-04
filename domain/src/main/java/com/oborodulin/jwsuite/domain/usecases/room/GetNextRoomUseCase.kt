@@ -6,13 +6,13 @@ import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
-class GetRoomUseCase(
+class GetNextRoomUseCase(
     configuration: Configuration, private val roomsRepository: RoomsRepository
-) : UseCase<GetRoomUseCase.Request, GetRoomUseCase.Response>(configuration) {
-    override fun process(request: Request) = roomsRepository.get(request.roomId).map {
+) : UseCase<GetNextRoomUseCase.Request, GetNextRoomUseCase.Response>(configuration) {
+    override fun process(request: Request) = roomsRepository.getNext(request.roomId).map {
         Response(it)
     }
 
     data class Request(val roomId: UUID) : UseCase.Request
-    data class Response(val room: Room) : UseCase.Response
+    data class Response(val room: Room?) : UseCase.Response
 }

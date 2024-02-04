@@ -18,7 +18,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -58,12 +57,12 @@ interface CongregationDao {
     fun findByCongregationName(congregationName: String): Flow<List<CongregationView>>
 
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE isFavorite = $DB_TRUE")
-    fun findFavoriteCongregation(): CongregationView?
+    fun findFavoriteCongregation(): Flow<CongregationView?>
 
-    fun findFavorite() = flow { emit(findFavoriteCongregation()) }
+    //fun findFavorite() = flow { emit(findFavoriteCongregation()) }
 
     @ExperimentalCoroutinesApi
-    fun findDistinctFavorite() = findFavorite().distinctUntilChanged()
+    fun findDistinctFavorite() = findFavoriteCongregation().distinctUntilChanged()
 
     //-----------------------------
     @Transaction
@@ -169,7 +168,7 @@ interface CongregationDao {
             update(congregation)
         } else {
             var updatedCongregation = congregation
-            findFavoriteCongregation()?.let { favorite ->
+            findFavoriteCongregation().first()?.let { favorite ->
                 Timber.tag(TAG).d("findFavoriteCongregation() called: favorite = %s", favorite)
                 if (favorite.congregation.congregationId == congregation.congregationId) {
                     updatedCongregation = congregation.copy(isFavorite = true)
