@@ -1,25 +1,28 @@
 package com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,7 +30,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.oborodulin.home.common.extensions.toShortFormatString
 import com.oborodulin.home.common.extensions.withSign
 import com.oborodulin.home.common.ui.components.bar.action.BarActionItem
 import com.oborodulin.home.common.ui.state.CommonScreen
@@ -57,6 +63,7 @@ import com.oborodulin.jwsuite.presentation_dashboard.R
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.CongregationTotalsUi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.time.OffsetDateTime
 
 /**
  * Created by o.borodulin 10.June.2023
@@ -130,15 +137,29 @@ fun DashboardingScreen(
                                     appState.congregationSharedViewModel.value, currentCongregation
                                 )
                             }
-                            when {
-                                session.containsRole(MemberRoleType.REPORTS) ->
-                                    CongregationSection(
-                                        navController = appState.mainNavController,
-                                        congregation = dashboardingUi.favoriteCongregation,
-                                        congregationTotals = dashboardingUi.congregationTotals
-                                    )
+                            dashboardingUi.favoriteCongregation?.let { favoriteCongregation ->
+                                when {
+                                    session.containsRole(MemberRoleType.REPORTS) ->
+                                        CongregationSection(
+                                            navController = appState.mainNavController,
+                                            congregation = favoriteCongregation,
+                                            congregationTotals = dashboardingUi.congregationTotals
+                                        )
 
-                                else -> {}
+                                    session.containsRoles(
+                                        listOf(
+                                            MemberRoleType.REPORTS,
+                                            MemberRoleType.TERRITORIES
+                                        )
+                                    ) ->
+                                        TerritorySection(
+                                            navController = appState.mainNavController,
+                                            congregation = favoriteCongregation,
+                                            congregationTotals = dashboardingUi.congregationTotals
+                                        )
+
+                                    else -> {}
+                                }
                             }
                         }
                     }
@@ -160,149 +181,222 @@ fun DashboardingScreen(
     }
 }
 
-// https://www.youtube.com/watch?v=ZotJ6eZ3TE8
+@Composable
+fun TotalTitle(
+    imageVector: ImageVector? = null,
+    @DrawableRes painterResId: Int? = null,
+    @StringRes contentDescriptionResId: Int? = null,
+    title: String,
+    sinceDate: OffsetDateTime?
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 8.dp)
+    ) {
+        when {
+            painterResId != null -> Image(
+                painter = painterResource(painterResId),
+                contentDescription = contentDescriptionResId?.let { stringResource(it) },
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(12.dp)
+            )
+
+            imageVector != null -> Image(
+                imageVector = imageVector,
+                contentDescription = contentDescriptionResId?.let { stringResource(it) },
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(12.dp)
+            )
+        }
+        Text(
+            text = title,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.weight(1f)
+        )
+        sinceDate.toShortFormatString()?.let { lastVisitDate ->
+            Text(
+                text = lastVisitDate,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TotalsRow(
+    imageVector: ImageVector? = null,
+    @DrawableRes painterResId: Int? = null,
+    @StringRes contentDescriptionResId: Int? = null,
+    @StringRes subheadResId: Int,
+    totalValue: Int,
+    diffTotal: Int
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+            .padding(top = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        when {
+            painterResId != null -> Image(
+                painter = painterResource(painterResId),
+                contentDescription = contentDescriptionResId?.let { stringResource(it) },
+                colorFilter = ColorFilter.tint(colorResource(com.oborodulin.home.common.R.color.white)),
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(colorResource(com.oborodulin.home.common.R.color.black))
+                    .padding(12.dp)
+            )
+
+            imageVector != null -> Image(
+                imageVector = imageVector,
+                contentDescription = contentDescriptionResId?.let { stringResource(it) },
+                colorFilter = ColorFilter.tint(colorResource(com.oborodulin.home.common.R.color.white)),
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(colorResource(com.oborodulin.home.common.R.color.black))
+                    .padding(12.dp)
+            )
+        }
+        Text(
+            text = stringResource(subheadResId),
+            fontSize = 20.sp,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp)
+        )
+        BadgedBox(badge = {
+            diffTotal.withSign()?.let { Badge { Text(it) } }
+        }) {
+            Text(
+                text = totalValue.toString(),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+    }
+}
+
+// https://www.youtube.com/watch?v=ZotJ6eZ3TE8
 @Composable
 fun CongregationSection(
     navController: NavHostController,
-    congregation: CongregationUi?,
+    congregation: CongregationUi,
     congregationTotals: CongregationTotalsUi?
 ) {
-    val boxBackgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            colorResource(com.oborodulin.home.common.R.color.purple_700),
-            colorResource(com.oborodulin.home.common.R.color.purple_200)
-        )
-    )
-    Column {
-        congregation?.let {
-            Text(
-                text = it.congregationName,
-                fontSize = 26.sp,
-                modifier = Modifier.weight(1f)
+    /*    val boxBackgroundGradient = Brush.verticalGradient(
+            colors = listOf(
+                colorResource(com.oborodulin.home.common.R.color.purple_700),
+                colorResource(com.oborodulin.home.common.R.color.purple_200)
             )
-        }
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .padding(top = 8.dp, bottom = 24.dp)
-                .border(1.dp, colorResource(com.oborodulin.home.common.R.color.black))
-                .weight(1f)
-        ) {
-            Row {
-                Box(
-                    modifier = Modifier
-                        .background(boxBackgroundGradient)
-                        .fillMaxHeight()
-                        .width(12.dp)
-                        .border(1.dp, colorResource(com.oborodulin.home.common.R.color.black))
-                )
-                congregationTotals?.let { totals ->
-                    Column(
+        )
+     */
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .padding(horizontal = 4.dp, vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        Column {
+            TotalTitle(
+                painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_congregation_24,
+                title = congregation.congregationName,
+                sinceDate = congregation.lastVisitDate
+            )
+            /*Box(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 8.dp, bottom = 24.dp)
+                    .border(1.dp, colorResource(com.oborodulin.home.common.R.color.black))
+                    .weight(1f)
+            ) {
+                Row {
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 16.dp)
-                    ) {
-                        // totalGroups:
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(com.oborodulin.jwsuite.presentation.R.drawable.ic_group_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .padding(12.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.total_groups_hint),
-                                fontSize = 20.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 16.dp)
-                            )
-                            BadgedBox(badge = {
-                                totals.diffGroups.withSign()?.let { Badge { Text(it) } }
-                            }) {
-                                Text(
-                                    text = totals.totalGroups.toString(),
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    modifier = Modifier.padding(4.dp)
-                                )
-                            }
-                        }
-                        // totalMembers:
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .padding(12.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.total_members_hint),
-                                fontSize = 20.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 16.dp)
-                            )
-                            BadgedBox(badge = {
-                                totals.diffMembers.withSign()?.let { Badge { Text(it) } }
-                            }) {
-                                Text(
-                                    text = totals.totalMembers.toString(),
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    modifier = Modifier.padding(4.dp)
-                                )
-                            }
-                        }
-                        // totalFulltimeMembers:
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                imageVector = Icons.Outlined.DateRange,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .padding(12.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.total_fulltime_members_hint),
-                                fontSize = 20.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 16.dp)
-                            )
-                            BadgedBox(badge = {
-                                totals.diffFulltimeMembers.withSign()?.let { Badge { Text(it) } }
-                            }) {
-                                Text(
-                                    text = totals.totalFulltimeMembers.toString(),
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    modifier = Modifier.padding(4.dp)
-                                )
-                            }
-                        }
-                    }
+                            .background(boxBackgroundGradient)
+                            .fillMaxHeight()
+                            .width(12.dp)
+                            .border(1.dp, colorResource(com.oborodulin.home.common.R.color.black))
+                    )
+                    }*/
+            congregationTotals?.let { totals ->
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                ) {
+                    TotalsRow(
+                        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_group_24,
+                        subheadResId = R.string.total_groups_hint,
+                        totalValue = totals.totalGroups,
+                        diffTotal = totals.diffGroups
+                    )
+                    TotalsRow(
+                        imageVector = Icons.Outlined.Person,
+                        subheadResId = R.string.total_members_hint,
+                        totalValue = totals.totalMembers,
+                        diffTotal = totals.diffMembers
+                    )
+                    TotalsRow(
+                        imageVector = Icons.Outlined.DateRange,
+                        subheadResId = R.string.total_fulltime_members_hint,
+                        totalValue = totals.totalFulltimeMembers,
+                        diffTotal = totals.diffFulltimeMembers
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun TerritorySection(
+    navController: NavHostController,
+    congregation: CongregationUi,
+    congregationTotals: CongregationTotalsUi?
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .padding(horizontal = 4.dp, vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        TotalTitle(
+            painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24,
+            title = stringResource(R.string.territories_title),
+            sinceDate = congregation.lastVisitDate
+        )
+        congregationTotals?.let { totals ->
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+            ) {
+                TotalsRow(
+                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24,
+                    subheadResId = R.string.total_territories_hint,
+                    totalValue = totals.totalGroups,
+                    diffTotal = totals.diffGroups
+                )
+                TotalsRow(
+                    painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
+                    subheadResId = R.string.total_territory_issued_hint,
+                    totalValue = totals.totalTerritoryIssued,
+                    diffTotal = totals.diffTerritoryIssued
+                )
+                TotalsRow(
+                    imageVector = Icons.Outlined.Done,
+                    subheadResId = R.string.total_territory_processed_hint,
+                    totalValue = totals.totalTerritoryProcessed,
+                    diffTotal = totals.diffTerritoryProcessed
+                )
             }
         }
     }
@@ -318,7 +412,16 @@ fun PreviewCongregationSection() {
             CongregationSection(
                 navController = rememberNavController(),
                 congregation = CongregationViewModelImpl.previewUiModel(ctx),
-                congregationTotals = DashboardingViewModelImpl.previewCongregationTotalsModel(ctx)
+                congregationTotals = DashboardingViewModelImpl.previewCongregationTotalsModel(
+                    ctx
+                )
+            )
+            TerritorySection(
+                navController = rememberNavController(),
+                congregation = CongregationViewModelImpl.previewUiModel(ctx),
+                congregationTotals = DashboardingViewModelImpl.previewCongregationTotalsModel(
+                    ctx
+                )
             )
         }
     }

@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 class GetDashboardInfoUseCase(
-    configuration: Configuration,
-    private val congregationsRepository: CongregationsRepository
+    configuration: Configuration, private val congregationsRepository: CongregationsRepository
 ) : UseCase<GetDashboardInfoUseCase.Request, GetDashboardInfoUseCase.Response>(
     configuration
 ) {

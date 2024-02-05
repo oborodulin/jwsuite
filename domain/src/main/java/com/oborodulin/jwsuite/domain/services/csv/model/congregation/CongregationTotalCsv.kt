@@ -11,5 +11,8 @@ data class CongregationTotalCsv(
     @CsvBindByName val lastVisitDate: OffsetDateTime? = null,
     @CsvBindByName val totalMembers: Int,
     @CsvBindByName val totalFulltimeMembers: Int,
+    @CsvBindByName val totalTerritories: Int,
+    @CsvBindByName val totalTerritoryIssued: Int,
+    @CsvBindByName val totalTerritoryProcessed: Int,
     @CsvBindByName val ctlCongregationsId: UUID
 ) : Exportable, Importable

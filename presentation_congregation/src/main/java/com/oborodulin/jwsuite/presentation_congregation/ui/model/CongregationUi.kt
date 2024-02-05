@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model
 
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import java.time.OffsetDateTime
 import java.util.UUID
 
 data class CongregationUi(
@@ -9,6 +10,7 @@ data class CongregationUi(
     val congregationName: String = "",
     val territoryMark: String = "",
     val isFavorite: Boolean = false,
+    val lastVisitDate: OffsetDateTime? = null,
     val locality: LocalityUi = LocalityUi()
 ) : ModelUi()
 

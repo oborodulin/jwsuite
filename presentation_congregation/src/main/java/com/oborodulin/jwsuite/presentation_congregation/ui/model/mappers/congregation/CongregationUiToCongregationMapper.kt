@@ -13,6 +13,7 @@ class CongregationUiToCongregationMapper(private val localityUiMapper: LocalityU
             congregationName = input.congregationName,
             territoryMark = input.territoryMark,
             isFavorite = input.isFavorite,
+            lastVisitDate = input.lastVisitDate,
             locality = localityUiMapper.map(input.locality),
         )
         congregation.id = input.id

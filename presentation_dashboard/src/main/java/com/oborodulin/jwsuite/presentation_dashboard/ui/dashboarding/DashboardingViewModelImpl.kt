@@ -86,7 +86,7 @@ class DashboardingViewModelImpl @Inject constructor(
             val congregationUi = CongregationUi(
                 congregationNum = "12",// ctx.resources.getString(R.string.def_congregation1_num),
                 congregationName = "",//ctx.resources.getString(R.string.def_congregation1_name),
-                territoryMark = "R",//ctx.resources.getString(R.string.def_congregation1_card_mark),
+                territoryMark = "К",//ctx.resources.getString(R.string.def_congregation1_card_mark),
                 locality = LocalityViewModelImpl.previewUiModel(ctx),
                 isFavorite = true
             )
@@ -100,9 +100,15 @@ class DashboardingViewModelImpl @Inject constructor(
                 totalGroups = 7,
                 totalMembers = 124,
                 totalFulltimeMembers = 28,
+                totalTerritories = 175,
+                totalTerritoryIssued = 59,
+                totalTerritoryProcessed = 99,
                 diffGroups = 1,
                 diffMembers = 0,
-                diffFulltimeMembers = 3
+                diffFulltimeMembers = 3,
+                diffTerritories = 9,
+                diffTerritoryIssued = 16,
+                diffTerritoryProcessed = 11
             )
             congregationTotalsUi.id = UUID.randomUUID()
             return congregationTotalsUi

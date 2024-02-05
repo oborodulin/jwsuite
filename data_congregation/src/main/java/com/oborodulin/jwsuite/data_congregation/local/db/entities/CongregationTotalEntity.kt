@@ -33,6 +33,9 @@ data class CongregationTotalEntity(
     val totalGroups: Int = 0,
     val totalMembers: Int = 0,
     val totalFulltimeMembers: Int = 0,
+    val totalTerritories: Int = 0,
+    val totalTerritoryIssued: Int = 0,
+    val totalTerritoryProcessed: Int = 0,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val ctlCongregationsId: UUID
 ) : BaseEntity() {
@@ -54,6 +57,9 @@ data class CongregationTotalEntity(
         str.append("Congregation Total Entity totalGroups = ").append(totalGroups)
             .append("; totalMembers = ").append(totalMembers)
             .append("; totalFulltimeMembers = ").append(totalFulltimeMembers)
+            .append("; totalTerritories = ").append(totalTerritories)
+            .append("; totalTerritoryIssued = ").append(totalTerritoryIssued)
+            .append("; totalTerritoryProcessed = ").append(totalTerritoryProcessed)
         lastVisitDate?.let {
             str.append(". Date of last visit ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(it))
         }

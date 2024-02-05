@@ -11,6 +11,9 @@ class CongregationTotalCsvToCongregationTotalEntityMapper :
         lastVisitDate = input.lastVisitDate,
         totalMembers = input.totalMembers,
         totalFulltimeMembers = input.totalFulltimeMembers,
+        totalTerritories = input.totalTerritories,
+        totalTerritoryIssued = input.totalTerritoryIssued,
+        totalTerritoryProcessed = input.totalTerritoryProcessed,
         ctlCongregationsId = input.ctlCongregationsId
     )
 }

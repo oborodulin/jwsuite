@@ -8,9 +8,12 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTo
     viewName = CongregationTotalView.VIEW_NAME,
     value = """
     SELECT c.*, ct.sumTotalGroups AS totalGroups, ct.sumTotalMembers AS totalMembers, ct.sumTotalFulltimeMembers AS totalFulltimeMembers,
-        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffMembers, ctd.totalFulltimeMembers AS diffFulltimeMembers  
+        ct.sumTotalTerritories AS totalTerritories, ct.sumTotalTerritoryIssued AS totalTerritoryIssued, ct.sumTotalTerritoryProcessed AS totalTerritoryProcessed,
+        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffTerritoryIssued, ctd.totalFulltimeMembers AS diffFulltimeMembers,  
+        ctd.totalTerritories AS diffTerritories, ctd.totalTerritoryIssued AS diffMembers, ctd.totalTerritoryProcessed AS diffTerritoryProcessed
     FROM ${FavoriteCongregationView.VIEW_NAME} c 
-        JOIN (SELECT ctlCongregationsId, SUM(totalGroups) AS sumTotalGroups, SUM(totalMembers) AS sumTotalMembers, SUM(totalFulltimeMembers) AS sumTotalFulltimeMembers
+        JOIN (SELECT ctlCongregationsId, SUM(totalGroups) AS sumTotalGroups, SUM(totalMembers) AS sumTotalMembers, SUM(totalFulltimeMembers) AS sumTotalFulltimeMembers,
+                    SUM(totalTerritories) AS sumTotalTerritories, SUM(totalTerritoryIssued) AS sumTotalTerritoryIssued, SUM(totalTerritoryProcessed) AS sumTotalTerritoryProcessed
                 FROM ${CongregationTotalEntity.TABLE_NAME}
                 GROUP BY ctlCongregationsId
             ) ct ON ct.ctlCongregationsId = c.congregationId
@@ -22,9 +25,15 @@ class CongregationTotalView(
     val totalGroups: Int,
     val totalMembers: Int,
     val totalFulltimeMembers: Int,
+    val totalTerritories: Int,
+    val totalTerritoryIssued: Int,
+    val totalTerritoryProcessed: Int,
     val diffGroups: Int,
     val diffMembers: Int,
-    val diffFulltimeMembers: Int
+    val diffFulltimeMembers: Int,
+    val diffTerritories: Int,
+    val diffTerritoryIssued: Int,
+    val diffTerritoryProcessed: Int
 ) {
     companion object {
         const val VIEW_NAME = "congregation_totals_view"

@@ -7,14 +7,14 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
 
 class CongregationToCongregationUiMapper(private val localityMapper: LocalityToLocalityUiMapper) :
-    Mapper<Congregation, CongregationUi>,
-    NullableMapper<Congregation, CongregationUi> {
+    Mapper<Congregation, CongregationUi>, NullableMapper<Congregation, CongregationUi> {
     override fun map(input: Congregation): CongregationUi {
         val congregationUi = CongregationUi(
             congregationNum = input.congregationNum,
             congregationName = input.congregationName,
             territoryMark = input.territoryMark,
             isFavorite = input.isFavorite,
+            lastVisitDate = input.lastVisitDate,
             locality = localityMapper.map(input.locality)
         )
         congregationUi.id = input.id

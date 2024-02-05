@@ -4,7 +4,6 @@ import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.Territo
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryMappers
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
@@ -18,7 +17,6 @@ import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
 import com.oborodulin.jwsuite.domain.services.csv.model.territory.CongregationTerritoryCrossRefCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryMemberCrossRefCsv
-import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryTotalCsv
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
 import kotlinx.coroutines.flow.flow
@@ -172,10 +170,6 @@ class TerritoriesRepositoryImpl @Inject constructor(
     override fun extractTerritoryMembers() = localTerritoryDataSource.getTerritoryMemberEntities()
         .map(csvMappers.territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper::map)
 
-    @CsvExtract(fileNamePrefix = TerritoryTotalEntity.TABLE_NAME)
-    override fun extractTerritoryTotals() = localTerritoryDataSource.getTerritoryTotalEntities()
-        .map(csvMappers.territoryTotalEntityListToTerritoryTotalCsvListMapper::map)
-
     @CsvLoad<TerritoryCsv>(
         fileNamePrefix = TerritoryEntity.TABLE_NAME,
         contentType = TerritoryCsv::class
@@ -212,16 +206,5 @@ class TerritoriesRepositoryImpl @Inject constructor(
             )
         )
         emit(territoryMembers.size)
-    }
-
-    @CsvLoad<TerritoryTotalCsv>(
-        fileNamePrefix = TerritoryTotalEntity.TABLE_NAME,
-        contentType = TerritoryTotalCsv::class
-    )
-    override fun loadTerritoryTotals(territoryTotals: List<TerritoryTotalCsv>) = flow {
-        localTerritoryDataSource.loadTerritoryTotalEntities(
-            csvMappers.territoryTotalCsvListToTerritoryTotalEntityListMapper.map(territoryTotals)
-        )
-        emit(territoryTotals.size)
     }
 }

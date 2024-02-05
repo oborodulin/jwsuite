@@ -12,6 +12,7 @@ class CongregationToCongregationEntityMapper : Mapper<Congregation, Congregation
         congregationName = input.congregationName,
         territoryMark = input.territoryMark,
         isFavorite = input.isFavorite,
+        lastVisitDate = input.lastVisitDate,
         cLocalitiesId = input.locality.id!!
     )
 }

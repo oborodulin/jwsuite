@@ -12,9 +12,15 @@
     <!--ЭКРАНЫ МОДУЛЕЙ:-->
 
     <!--ФОРМЫ:-->
+    <!--собрание-->
     <string name="total_groups_hint">Кол-во групп</string>
     <string name="total_members_hint">Всего возвещателей</string>
     <string name="total_fulltime_members_hint">Из них полновременных</string>
+    <!--участки-->
+    <string name="territories_title">Участки</string>
+    <string name="total_territories_hint">Кол-во активных</string>
+    <string name="total_territory_issued_hint">Выдано</string>
+    <string name="total_territory_processed_hint">Обработано</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->

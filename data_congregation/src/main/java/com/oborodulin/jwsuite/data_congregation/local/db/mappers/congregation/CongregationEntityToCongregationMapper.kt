@@ -20,6 +20,7 @@ class CongregationEntityToCongregationMapper :
             congregationName = input.congregationName,
             territoryMark = input.territoryMark,
             isFavorite = input.isFavorite,
+            lastVisitDate = input.lastVisitDate,
             locality = properties[0] as GeoLocality
         )
         congregation.id = input.congregationId

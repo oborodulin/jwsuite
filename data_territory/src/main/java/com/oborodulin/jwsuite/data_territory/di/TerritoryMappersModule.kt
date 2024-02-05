@@ -47,11 +47,6 @@ import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCrossRefEntityToTerritoryMemberCrossRefCsvMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.member.TerritoryMemberCsvMappers
-import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalCsvListToTerritoryTotalEntityListMapper
-import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalCsvMappers
-import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalCsvToTerritoryTotalEntityMapper
-import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalEntityListToTerritoryTotalCsvListMapper
-import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territory.total.TerritoryTotalEntityToTerritoryTotalCsvMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvListToTerritoryCategoryEntityListMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvMappers
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.territorycategory.TerritoryCategoryCsvToTerritoryCategoryEntityMapper
@@ -105,22 +100,22 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.Territor
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryToTerritoryEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryViewToTerritoryMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewListToTerritoryLocationsListMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewToTerritoryLocationMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoriesListToTerritoryCategoryEntityListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityListToTerritoryCategoriesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryToTerritoryCategoryEntityMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewListToTerritoryLocationsListMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewToTerritoryLocationMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryMemberReportEntityListToTerritoryMemberReportsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryMemberReportEntityToTerritoryMemberReportMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryMemberReportToTerritoryMemberReportEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryMemberReportViewListToTerritoryMemberReportsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryMemberReportViewToTerritoryMemberReportMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryReportMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.house.TerritoryReportHouseToTerritoryMemberReportEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.house.TerritoryReportHouseViewListToTerritoryReportHousesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.house.TerritoryReportHouseViewToTerritoryReportHouseMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.TerritoryReportMappers
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.room.TerritoryReportRoomToTerritoryMemberReportEntityMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.room.TerritoryReportRoomViewListToTerritoryReportRoomsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territoryreport.room.TerritoryReportRoomViewToTerritoryReportRoomMapper
@@ -1064,37 +1059,6 @@ object TerritoryMappersModule {
         territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
     )
 
-    // TerritoryTotalCsv:
-    @Singleton
-    @Provides
-    fun provideTerritoryTotalEntityToTerritoryTotalCsvMapper(): TerritoryTotalEntityToTerritoryTotalCsvMapper =
-        TerritoryTotalEntityToTerritoryTotalCsvMapper()
-
-    @Singleton
-    @Provides
-    fun provideTerritoryTotalEntityListToTerritoryTotalCsvListMapper(mapper: TerritoryTotalEntityToTerritoryTotalCsvMapper): TerritoryTotalEntityListToTerritoryTotalCsvListMapper =
-        TerritoryTotalEntityListToTerritoryTotalCsvListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideTerritoryTotalCsvToTerritoryTotalEntityMapper(): TerritoryTotalCsvToTerritoryTotalEntityMapper =
-        TerritoryTotalCsvToTerritoryTotalEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideTerritoryTotalCsvListToTerritoryTotalEntityListMapper(mapper: TerritoryTotalCsvToTerritoryTotalEntityMapper): TerritoryTotalCsvListToTerritoryTotalEntityListMapper =
-        TerritoryTotalCsvListToTerritoryTotalEntityListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideTerritoryTotalCsvMappers(
-        territoryTotalEntityListToTerritoryTotalCsvListMapper: TerritoryTotalEntityListToTerritoryTotalCsvListMapper,
-        territoryTotalCsvListToTerritoryTotalEntityListMapper: TerritoryTotalCsvListToTerritoryTotalEntityListMapper
-    ): TerritoryTotalCsvMappers = TerritoryTotalCsvMappers(
-        territoryTotalEntityListToTerritoryTotalCsvListMapper,
-        territoryTotalCsvListToTerritoryTotalEntityListMapper
-    )
-
     // TerritoryCsv:
     @Singleton
     @Provides
@@ -1120,20 +1084,16 @@ object TerritoryMappersModule {
     @Provides
     fun provideTerritoryCsvMappers(
         territoryEntityListToTerritoryCsvListMapper: TerritoryEntityListToTerritoryCsvListMapper,
-        territoryTotalEntityListToTerritoryTotalCsvListMapper: TerritoryTotalEntityListToTerritoryTotalCsvListMapper,
         congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper: CongregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
         territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper: TerritoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
         territoryCsvListToTerritoryEntityListMapper: TerritoryCsvListToTerritoryEntityListMapper,
-        territoryTotalCsvListToTerritoryTotalEntityListMapper: TerritoryTotalCsvListToTerritoryTotalEntityListMapper,
         congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper: CongregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper,
         territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper: TerritoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
     ): TerritoryCsvMappers = TerritoryCsvMappers(
         territoryEntityListToTerritoryCsvListMapper,
-        territoryTotalEntityListToTerritoryTotalCsvListMapper,
         congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper,
         territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper,
         territoryCsvListToTerritoryEntityListMapper,
-        territoryTotalCsvListToTerritoryTotalEntityListMapper,
         congregationTerritoryCrossRefCsvListToCongregationTerritoryCrossRefEntityListMapper,
         territoryMemberCrossRefCsvListToTerritoryMemberCrossRefEntityListMapper
     )
