@@ -18,6 +18,9 @@ interface LocalGroupDataSource {
     suspend fun deleteAllGroups()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getGroupEntities(): Flow<List<GroupEntity>>
+    fun getGroupEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<GroupEntity>>
+
     suspend fun loadGroupEntities(groups: List<GroupEntity>)
 }

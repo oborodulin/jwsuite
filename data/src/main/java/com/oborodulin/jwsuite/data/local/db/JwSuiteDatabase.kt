@@ -1143,7 +1143,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 TransferObjectType.ALL -> TransferObjectEntity.allTransferObject(ctx)
                 TransferObjectType.MEMBERS -> TransferObjectEntity.membersTransferObject(ctx)
                 TransferObjectType.TERRITORIES -> TransferObjectEntity.territoriesTransferObject(ctx)
+                TransferObjectType.TERRITORY_REPORT -> TransferObjectEntity.territoryReportTransferObject(
+                    ctx
+                )
+
                 TransferObjectType.BILLS -> TransferObjectEntity.billsTransferObject(ctx)
+                TransferObjectType.REPORTS -> TransferObjectEntity.reportsTransferObject(ctx)
             }
             transferDao.insert(transferObject)
             Timber.tag(TAG).i("Default transfer object imported")
@@ -1432,13 +1437,17 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 val membersTransferObject = insertDefTransferObject(db, TransferObjectType.MEMBERS)
                 val territoriesTransferObject =
                     insertDefTransferObject(db, TransferObjectType.TERRITORIES)
+                val territoryReportTransferObject =
+                    insertDefTransferObject(db, TransferObjectType.TERRITORY_REPORT)
                 val billsTransferObject = insertDefTransferObject(db, TransferObjectType.BILLS)
+                val reportsTransferObject = insertDefTransferObject(db, TransferObjectType.REPORTS)
 
                 insertDefRoleTransferObject(db, adminRole, allTransferObject, false)
-                insertDefRoleTransferObject(db, reportsRole, allTransferObject, false)
-                insertDefRoleTransferObject(db, userRole, territoriesTransferObject, true)
+                insertDefRoleTransferObject(db, reportsRole, reportsTransferObject, false)
                 insertDefRoleTransferObject(db, territoriesRole, territoriesTransferObject, false)
                 insertDefRoleTransferObject(db, billsRole, billsTransferObject, true)
+                insertDefRoleTransferObject(db, userRole, territoriesTransferObject, true)
+                insertDefRoleTransferObject(db, userRole, territoryReportTransferObject, true)
 
                 // ==============================
                 db.setTransactionSuccessful()
@@ -2037,7 +2046,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     ctx
                 )
 
+                TransferObjectType.TERRITORY_REPORT -> TransferObjectEntity.territoryReportTransferObject(
+                    ctx
+                )
+
                 TransferObjectType.BILLS -> TransferObjectEntity.billsTransferObject(ctx)
+                TransferObjectType.REPORTS -> TransferObjectEntity.reportsTransferObject(ctx)
             }
             db.insert(
                 TransferObjectEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,

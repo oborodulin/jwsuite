@@ -36,8 +36,8 @@ class DataTransmissionUseCase(
         val transferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
             .map { Pair(it.transferObject.transferObjectType, it.isPersonalData) }
         databaseRepository.transferObjectTableNames(transferObjects).first()
-            .forEach { name ->
-                exportService.csvRepositoryExtracts(name.key).forEach { callable ->
+            .forEach { tableName ->
+                exportService.csvRepositoryExtracts(tableName.key).forEach { callable ->
                     val csvFilePrefix = callable.key.fileNamePrefix
                     val extractMethod = callable.value
                     Timber.tag(TAG).d(
@@ -46,18 +46,18 @@ class DataTransmissionUseCase(
                     )
                     if (extractMethod.returnType is Flow<*>) {
                         // get and transformation data to exportable type
-                        val param = when (name.value) {
+                        val paramUsername = when (tableName.value) {
                             true -> username
                             false -> null
                         }
                         val extractData = extractMethod.parameters.getOrNull(0)?.let {
-                            (extractMethod.call(param) as Flow<*>).first()
+                            (extractMethod.call(paramUsername) as Flow<*>).first()
                         } ?: (extractMethod.call() as Flow<*>).first()
                         if (extractData is List<*> && extractData.isNotEmpty()) {
                             val exportableList = extractData as List<Exportable>
                             Timber.tag(TAG).d(
                                 "CSV Data Transmission -> %s(%s): list.size = %d",
-                                extractMethod.name, param, exportableList.size
+                                extractMethod.name, paramUsername, exportableList.size
                             )
                             // call export function from Export serivce with apply config + type of export
                             exportService.export(

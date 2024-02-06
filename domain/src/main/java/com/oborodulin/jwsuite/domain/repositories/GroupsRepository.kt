@@ -17,6 +17,6 @@ interface GroupsRepository : CsvTransferableRepo {
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractGroups(): Flow<List<GroupCsv>>
+    fun extractGroups(username: String? = null, byFavorite: Boolean = false): Flow<List<GroupCsv>>
     fun loadGroups(groups: List<GroupCsv>): Flow<Int>
 }

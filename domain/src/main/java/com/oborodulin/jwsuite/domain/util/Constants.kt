@@ -46,6 +46,13 @@ object Constants {
     const val MT_SERVICE_VAL = "'SERVICE'"
     const val MT_IN_ACTIVE_VAL = "'IN_ACTIVE'"
 
+    // MemberRoleType:
+    const val MR_ADMIN_VAL = "'ADMIN'"
+    const val MR_USER_VAL = "'USER'"
+    const val MR_TERRITORIES_VAL = "'TERRITORIES'"
+    const val MR_BILLS_VAL = "'BILLS'"
+    const val MR_REPORTS_VAL = "'REPORTS'"
+
     // TransferObjectType:
     const val TOT_ALL_VAL = "'ALL'"
     const val TOT_MEMBERS_VAL = "'MEMBERS'"

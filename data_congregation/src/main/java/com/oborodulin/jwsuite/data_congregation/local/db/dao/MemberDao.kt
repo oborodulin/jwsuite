@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
@@ -21,6 +22,7 @@ import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.domain.util.Constants.MR_TERRITORIES_VAL
 import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -32,20 +34,58 @@ import java.util.UUID
 @Dao
 interface MemberDao {
     // READS:
-    @Query("SELECT * FROM ${MemberEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<MemberEntity>>
+    @Query(
+        """
+    SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc 
+            ON mc.mcMembersId = m.memberId AND m.pseudonym = ifnull(:username, m.pseudonym) 
+        JOIN ${CongregationEntity.TABLE_NAME} c 
+            ON mc.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+    UNION ALL            
+    SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberRoleEntity.TABLE_NAME} mr ON m.memberId = mr.mrMembersId 
+        JOIN ${RoleEntity.TABLE_NAME} r ON mr.mrRolesId = r.roleId AND r.roleType IN ($MR_TERRITORIES_VAL)
+        JOIN (SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN 
+                (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
+                    FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
+                        ON mcc.mcMembersId = m.memberId
+                    GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
+            ) mcm ON m.memberId = mcm.mcMembersId
+        JOIN (SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN 
+                (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
+                    FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
+                        ON mcc.mcMembersId = m.memberId AND m.pseudonym = :username
+                    GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
+            ) mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId
+    """
+    )
+    fun selectEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberEntity>>
 
-    @Query("SELECT * FROM ${MemberCongregationCrossRefEntity.TABLE_NAME}")
-    fun selectMemberCongregationEntities(): Flow<List<MemberCongregationCrossRefEntity>>
+    @Query("""
+    SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN ${CongregationEntity.TABLE_NAME} c 
+            ON mccr.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+        LEFT JOIN (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
+                    FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
+                        ON mcc.mcMembersId = m.memberId AND m.pseudonym = :username
+                    GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
+    WHERE (:username IS NULL OR mc.mcMembersId IS NOT NULL)
+     """)
+    fun selectMemberCongregationEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberCongregationCrossRefEntity>>
 
     @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME}")
-    fun selectMemberMovementEntities(): Flow<List<MemberMovementEntity>>
+    fun selectMemberMovementEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberMovementEntity>>
 
     @Query("SELECT * FROM ${RoleEntity.TABLE_NAME}")
     fun selectRoleEntities(): Flow<List<RoleEntity>>
 
     @Query("SELECT * FROM ${MemberRoleEntity.TABLE_NAME}")
-    fun selectMemberRoleEntities(): Flow<List<MemberRoleEntity>>
+    fun selectMemberRoleEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberRoleEntity>>
 
     //-----------------------------
     @Query("SELECT * FROM ${MemberView.VIEW_NAME} ORDER BY groupNum, surname, memberName, patronymic, pseudonym")

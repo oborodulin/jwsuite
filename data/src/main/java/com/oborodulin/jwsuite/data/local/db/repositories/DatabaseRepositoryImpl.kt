@@ -61,6 +61,7 @@ class DatabaseRepositoryImpl @Inject constructor(
     override suspend fun checkpoint() = localDatabaseDataSource.setCheckpoint()
 
     companion object {
+        //Common:
         private val localityTables = listOf(
             GeoRegionEntity.TABLE_NAME,
             GeoRegionTlEntity.TABLE_NAME,
@@ -78,6 +79,8 @@ class DatabaseRepositoryImpl @Inject constructor(
             GeoStreetTlEntity.TABLE_NAME,
             GeoStreetDistrictEntity.TABLE_NAME
         )
+
+        //Favorite congregation:
         private val congregationTables = listOf(CongregationEntity.TABLE_NAME)
         private val memberTables = listOf(
             GroupEntity.TABLE_NAME,
@@ -97,21 +100,29 @@ class DatabaseRepositoryImpl @Inject constructor(
             TerritoryMemberCrossRefEntity.TABLE_NAME,
             TerritoryMemberReportEntity.TABLE_NAME
         )
-        private val personalTerritoryTables = listOf(
+        private val totalsTables = listOf(CongregationTotalEntity.TABLE_NAME)
+
+        //Personal usage:
+        private val personalTerritoryReportTables = listOf(
             TerritoryMemberReportEntity.TABLE_NAME
         )
-        private val totalsTables = listOf(CongregationTotalEntity.TABLE_NAME)
 
         val transferObjectTables =
             mapOf(
-                TransferObjectType.ALL to mapOf(false to geoTables + congregationTables),
-                TransferObjectType.MEMBERS to mapOf(false to localityTables + congregationTables + memberTables),
+                TransferObjectType.ALL to mapOf(false to geoTables + congregationTables + memberTables + territoryTables + totalsTables),
+                TransferObjectType.MEMBERS to mapOf(
+                    false to localityTables + congregationTables + memberTables,
+                    true to localityTables + congregationTables + memberTables
+                ),
                 TransferObjectType.TERRITORIES to mapOf(
                     false to geoTables + congregationTables + memberTables + territoryTables,
-                    true to personalTerritoryTables
+                    true to geoTables + territoryTables
+                ),
+                TransferObjectType.TERRITORY_REPORT to mapOf(
+                    true to personalTerritoryReportTables
                 ),
                 TransferObjectType.BILLS to mapOf(false to listOf(AppSettingEntity.TABLE_NAME)),
-                TransferObjectType.REPORTS to mapOf(false to congregationTables + totalsTables)
+                TransferObjectType.REPORTS to mapOf(false to localityTables + congregationTables + totalsTables)
             )
     }
 }

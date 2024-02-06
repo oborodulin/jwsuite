@@ -21,8 +21,14 @@ interface LocalCongregationDataSource {
     suspend fun deleteAllCongregations()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getCongregationEntities(): Flow<List<CongregationEntity>>
-    fun getCongregationTotalEntities(): Flow<List<CongregationTotalEntity>>
+    fun getCongregationEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationEntity>>
+
+    fun getCongregationTotalEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationTotalEntity>>
+
     suspend fun loadCongregationEntities(congregations: List<CongregationEntity>)
     suspend fun loadCongregationTotalEntities(congregationTotals: List<CongregationTotalEntity>)
 }

@@ -50,8 +50,18 @@ data class TransferObjectEntity(
             transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_territories)
         )
 
+        fun territoryReportTransferObject(ctx: Context) = defaultTransferObject(
+            transferObjectType = TransferObjectType.TERRITORY_REPORT,
+            transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_territory_report)
+        )
+
         fun billsTransferObject(ctx: Context) = defaultTransferObject(
             transferObjectType = TransferObjectType.BILLS,
+            transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_bills)
+        )
+
+        fun reportsTransferObject(ctx: Context) = defaultTransferObject(
+            transferObjectType = TransferObjectType.REPORTS,
             transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_bills)
         )
     }

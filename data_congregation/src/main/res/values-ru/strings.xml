@@ -70,5 +70,7 @@
     <string name="def_trans_obj_name_all">Всё</string>
     <string name="def_trans_obj_name_members">Возвещатели</string>
     <string name="def_trans_obj_name_territories">Участки</string>
+    <string name="def_trans_obj_name_territory_report">Участки: отчёт</string>
     <string name="def_trans_obj_name_bills">Счета</string>
+    <string name="def_trans_obj_name_reports">Отчёты</string>
 </resources>

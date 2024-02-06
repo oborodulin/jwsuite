@@ -52,7 +52,9 @@ class LocalGroupDataSourceImpl @Inject constructor(
     }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getGroupEntities() = groupDao.selectEntities()
+    override fun getGroupEntities(username: String?, byFavorite: Boolean) =
+        groupDao.selectEntities(username, byFavorite)
+
     override suspend fun loadGroupEntities(groups: List<GroupEntity>) =
         withContext(dispatcher) {
             groupDao.insert(groups)

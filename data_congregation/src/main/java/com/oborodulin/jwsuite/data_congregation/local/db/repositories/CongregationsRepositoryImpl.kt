@@ -88,12 +88,13 @@ class CongregationsRepositoryImpl @Inject constructor(
       */
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = CongregationEntity.TABLE_NAME)
-    override fun extractCongregations() = localCongregationDataSource.getCongregationEntities()
-        .map(csvMappers.congregationEntityListToCongregationCsvListMapper::map)
+    override fun extractCongregations(username: String?, byFavorite: Boolean) =
+        localCongregationDataSource.getCongregationEntities(username, byFavorite)
+            .map(csvMappers.congregationEntityListToCongregationCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = CongregationTotalEntity.TABLE_NAME)
-    override fun extractCongregationTotals() =
-        localCongregationDataSource.getCongregationTotalEntities()
+    override fun extractCongregationTotals(username: String?, byFavorite: Boolean) =
+        localCongregationDataSource.getCongregationTotalEntities(username, byFavorite)
             .map(csvMappers.congregationTotalEntityListToCongregationTotalCsvListMapper::map)
 
     @CsvLoad<CongregationCsv>(

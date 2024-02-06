@@ -57,8 +57,9 @@ class GroupsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = GroupEntity.TABLE_NAME)
-    override fun extractGroups() = localGroupDataSource.getGroupEntities()
-        .map(csvMappers.groupEntityListToGroupCsvListMapper::map)
+    override fun extractGroups(username: String?, byFavorite: Boolean) =
+        localGroupDataSource.getGroupEntities(username, byFavorite)
+            .map(csvMappers.groupEntityListToGroupCsvListMapper::map)
 
     @CsvLoad<GroupCsv>(
         fileNamePrefix = GroupEntity.TABLE_NAME,

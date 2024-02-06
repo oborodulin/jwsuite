@@ -4,5 +4,7 @@ enum class TransferObjectType {
     ALL,
     MEMBERS,
     TERRITORIES,
-    BILLS
+    TERRITORY_REPORT,
+    BILLS,
+    REPORTS
 }

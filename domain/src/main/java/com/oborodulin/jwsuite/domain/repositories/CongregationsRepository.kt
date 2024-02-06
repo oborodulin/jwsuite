@@ -20,8 +20,14 @@ interface CongregationsRepository : CsvTransferableRepo {
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractCongregations(): Flow<List<CongregationCsv>>
-    fun extractCongregationTotals(): Flow<List<CongregationTotalCsv>>
+    fun extractCongregations(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationCsv>>
+
+    fun extractCongregationTotals(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationTotalCsv>>
+
     fun loadCongregations(congregations: List<CongregationCsv>): Flow<Int>
     fun loadCongregationTotals(congregationTotals: List<CongregationTotalCsv>): Flow<Int>
 }
