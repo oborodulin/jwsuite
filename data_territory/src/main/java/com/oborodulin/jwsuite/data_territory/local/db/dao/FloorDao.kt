@@ -12,7 +12,11 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
 import com.oborodulin.jwsuite.data_territory.local.db.views.FloorView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,10 +25,21 @@ import java.util.UUID
 
 @Dao
 interface FloorDao {
-    // READS:
-    @Query("SELECT * FROM ${FloorEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<FloorEntity>>
+    // EXTRACTS:
+    @Query(
+        """
+    SELECT * FROM ${FloorEntity.TABLE_NAME} f LEFT JOIN ${TerritoryEntity.TABLE_NAME} t ON f.fTerritoriesId = t.territoryId  
+        LEFT JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
+            ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username
+    WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) AND (:byFavorite = $DB_FALSE OR ctv.ctTerritoriesId IS NOT NULL) 
+    """
+    )
+    fun selectEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<FloorEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${FloorView.VIEW_NAME} ORDER BY houseNum, floorNum")
     fun findAll(): Flow<List<FloorView>>
 
@@ -39,14 +54,19 @@ interface FloorDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("""
+    @Query(
+        """
     SELECT fv.* FROM ${FloorView.VIEW_NAME} fv
         JOIN (SELECT fg.fHousesId, MIN(fg.floorNum) AS minFloorNum
                 FROM ${FloorEntity.TABLE_NAME} fg JOIN ${FloorEntity.TABLE_NAME} f ON f.floorId = :floorId
                                                         AND fg.fHousesId = f.fHousesId AND fg.floorNum > f.floorNum
                 GROUP BY fg.fHousesId) fm ON fv.fHousesId = fm.fHousesId AND fv.floorNum = fm.minFloorNum AND fv.streetLocCode = :locale 
-    """)
-    fun findNextById(floorId: UUID, locale: String? = Locale.getDefault().language): Flow<FloorView?>
+    """
+    )
+    fun findNextById(
+        floorId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<FloorView?>
 
     @ExperimentalCoroutinesApi
     fun findDistinctNextById(id: UUID) = findNextById(id).distinctUntilChanged()

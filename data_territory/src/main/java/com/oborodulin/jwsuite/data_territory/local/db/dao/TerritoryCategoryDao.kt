@@ -14,10 +14,11 @@ import java.util.UUID
 
 @Dao
 interface TerritoryCategoryDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${TerritoryCategoryEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<TerritoryCategoryEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${TerritoryCategoryEntity.TABLE_NAME} ORDER BY territoryCategoryName")
     fun findAll(): Flow<List<TerritoryCategoryEntity>>
 

@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.services.ExportService
 import com.oborodulin.jwsuite.domain.services.Exportable
 import com.oborodulin.jwsuite.domain.services.Exports
 import com.oborodulin.jwsuite.domain.services.csv.CsvConfig
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.domain.util.Constants.TRANSFER_PATH
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -30,13 +31,17 @@ class DataTransmissionUseCase(
     private val databaseRepository: DatabaseRepository
 ) : UseCase<DataTransmissionUseCase.Request, DataTransmissionUseCase.Response>(configuration) {
     override fun process(request: Request) = flow {
+        // data assigned to member
         val username = request.memberId?.let {
             membersRepository.get(it).first().pseudonym
-        } ?: sessionManagerRepository.username().first()
+        } ?: sessionManagerRepository.username().first() // data from owner to roled member
+        Timber.tag(TAG).d("CSV Data Transmission: username = %s", username)
         val transferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
             .map { Pair(it.transferObject.transferObjectType, it.isPersonalData) }
+        Timber.tag(TAG).d("CSV Data Transmission: transferObjects = %s", transferObjects)
         databaseRepository.transferObjectTableNames(transferObjects).first()
             .forEach { tableName ->
+                Timber.tag(TAG).d("CSV Data Transmission: tableName = %s", tableName)
                 exportService.csvRepositoryExtracts(tableName.key).forEach { callable ->
                     val csvFilePrefix = callable.key.fileNamePrefix
                     val extractMethod = callable.value
@@ -50,14 +55,48 @@ class DataTransmissionUseCase(
                             true -> username
                             false -> null
                         }
-                        val extractData = extractMethod.parameters.getOrNull(0)?.let {
-                            (extractMethod.call(paramUsername) as Flow<*>).first()
+                        val paramByFavorite = tableName.value.not()
+                        val extractData = extractMethod.parameters.getOrNull(0)?.let { param1 ->
+                            Timber.tag(TAG).d(
+                                "CSV Data Transmission -> %s: param1.type = %s",
+                                extractMethod.name, param1.type.toString()
+                            )
+                            extractMethod.parameters.getOrNull(1)?.let { param2 ->
+                                Timber.tag(TAG).d(
+                                    "CSV Data Transmission -> %s: param2.type = %s",
+                                    extractMethod.name, param2.type.toString()
+                                )
+                                if (param1.type.toString() == "kotlin.String?" && param2.type.toString() == "kotlin.Boolean?") {
+                                    Timber.tag(TAG).d(
+                                        "CSV Data Transmission -> %s(%s, %s)",
+                                        extractMethod.name, paramUsername, paramByFavorite
+                                    )
+                                    (extractMethod.call(paramUsername, paramByFavorite) as Flow<*>)
+                                        .first()
+                                }
+                            } ?: when (param1.type.toString()) {
+                                "kotlin.Boolean?" -> {
+                                    Timber.tag(TAG).d(
+                                        "CSV Data Transmission -> %s(%s)",
+                                        extractMethod.name, paramByFavorite
+                                    )
+                                    (extractMethod.call(paramByFavorite) as Flow<*>).first()
+                                }
+
+                                else -> {
+                                    Timber.tag(TAG).d(
+                                        "CSV Data Transmission -> %s(%s)",
+                                        extractMethod.name, paramUsername
+                                    )
+                                    (extractMethod.call(paramUsername) as Flow<*>).first()
+                                }
+                            }
                         } ?: (extractMethod.call() as Flow<*>).first()
                         if (extractData is List<*> && extractData.isNotEmpty()) {
                             val exportableList = extractData as List<Exportable>
                             Timber.tag(TAG).d(
-                                "CSV Data Transmission -> %s(%s): list.size = %d",
-                                extractMethod.name, paramUsername, exportableList.size
+                                "CSV Data Transmission -> %s: return exportableList.size = %d",
+                                extractMethod.name, exportableList.size
                             )
                             // call export function from Export serivce with apply config + type of export
                             exportService.export(
@@ -83,6 +122,8 @@ class DataTransmissionUseCase(
             }
     }
 
-    data class Request(val memberId: UUID? = null) : UseCase.Request
+    data class Request(val memberId: UUID? = null, val memberRoleType: MemberRoleType? = null) :
+        UseCase.Request
+
     data class Response(val csvFilePrefix: String, val isSuccess: Boolean) : UseCase.Response
 }

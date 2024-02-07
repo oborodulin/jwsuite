@@ -16,13 +16,15 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovement
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberActualRoleView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
-import com.oborodulin.jwsuite.domain.util.Constants.MR_TERRITORIES_VAL
 import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -33,61 +35,70 @@ import java.util.UUID
 
 @Dao
 interface MemberDao {
-    // READS:
+    // EXTRACTS:
     @Query(
         """
-    SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc 
-            ON mc.mcMembersId = m.memberId AND m.pseudonym = ifnull(:username, m.pseudonym) 
+    SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON m.memberId = mc.mcMembersId 
         JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mc.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
+                                                            AND mcv.pseudonym = :username AND m.pseudonym = mcv.pseudonym
+    WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
     UNION ALL            
-    SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberRoleEntity.TABLE_NAME} mr ON m.memberId = mr.mrMembersId 
-        JOIN ${RoleEntity.TABLE_NAME} r ON mr.mrRolesId = r.roleId AND r.roleType IN ($MR_TERRITORIES_VAL)
-        JOIN (SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN 
-                (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
-                    FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
-                        ON mcc.mcMembersId = m.memberId
-                    GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
-            ) mcm ON m.memberId = mcm.mcMembersId
-        JOIN (SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN 
-                (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
-                    FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
-                        ON mcc.mcMembersId = m.memberId AND m.pseudonym = :username
-                    GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
-            ) mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId
+    SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON m.memberId = msrv.mrMembersId 
+        JOIN ${MemberCongregationView.VIEW_NAME} mcm ON m.memberId = mcm.mcMembersId
+        JOIN ${MemberCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
     """
     )
     fun selectEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberEntity>>
 
-    @Query("""
+    @Query(
+        """
     SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mccr.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
-                    FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
-                        ON mcc.mcMembersId = m.memberId AND m.pseudonym = :username
-                    GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
-    WHERE (:username IS NULL OR mc.mcMembersId IS NOT NULL)
-     """)
+        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON mccr.memberCongregationId = mcv.memberCongregationId AND mcv.pseudonym = :username 
+    WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
+     """
+    )
     fun selectMemberCongregationEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberCongregationCrossRefEntity>>
 
-    @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME}")
-    fun selectMemberMovementEntities(
-        username: String? = null, byFavorite: Boolean = false
-    ): Flow<List<MemberMovementEntity>>
+    @Query("""
+    SELECT mm.* FROM ${MemberMovementEntity.TABLE_NAME} mm JOIN ${MemberEntity.TABLE_NAME} m ON mm.mMembersId = m.memberId
+        JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON m.memberId = mc.mcMembersId 
+        JOIN ${CongregationEntity.TABLE_NAME} c 
+            ON mc.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+    """)
+    fun selectMemberMovementEntities(byFavorite: Boolean = false): Flow<List<MemberMovementEntity>>
 
     @Query("SELECT * FROM ${RoleEntity.TABLE_NAME}")
     fun selectRoleEntities(): Flow<List<RoleEntity>>
 
-    @Query("SELECT * FROM ${MemberRoleEntity.TABLE_NAME}")
+    @Query(
+        """
+    SELECT mr.* FROM ${MemberRoleEntity.TABLE_NAME} mr JOIN ${MemberEntity.TABLE_NAME} m ON mr.mrMembersId = m.memberId 
+        JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON mc.mcMembersId = m.memberId 
+        JOIN ${CongregationEntity.TABLE_NAME} c ON mc.mcCongregationsId = c.congregationId
+                                                    AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
+                                                            AND mcv.pseudonym = :username AND m.pseudonym = mcv.pseudonym
+        LEFT JOIN ${MemberActualRoleView.VIEW_NAME} marv ON mr.memberRoleId = marv.memberRoleId
+    WHERE (:username IS NULL OR (mcv.memberCongregationId IS NOT NULL AND marv.memberRoleId IS NOT NULL))
+        AND (:byFavorite = $DB_FALSE OR marv.memberRoleId IS NOT NULL)
+    UNION ALL            
+    SELECT mr.* FROM ${MemberRoleEntity.TABLE_NAME} mr JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON mr.mrMembersId = msrv.mrMembersId 
+        JOIN ${MemberCongregationView.VIEW_NAME} mcm ON msrv.mrMembersId = mcm.mcMembersId
+        JOIN ${MemberCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
+    """
+    )
     fun selectMemberRoleEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberRoleEntity>>
 
-    //-----------------------------
+    // READS:
     @Query("SELECT * FROM ${MemberView.VIEW_NAME} ORDER BY groupNum, surname, memberName, patronymic, pseudonym")
     fun findAll(): Flow<List<MemberView>>
 

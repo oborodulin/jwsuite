@@ -8,6 +8,6 @@ import com.oborodulin.jwsuite.domain.model.congregation.Role
 
 class MemberRoleViewToRoleMapper(private val mapper: RoleEntityToRoleMapper) :
     NullableMapper<MemberRoleView, Role>, Mapper<MemberRoleView, Role> {
-    override fun map(input: MemberRoleView) = mapper.map(input.role)
+    override fun map(input: MemberRoleView) = mapper.map(input.memberActualRole.role)
     override fun nullableMap(input: MemberRoleView?) = input?.let { map(it) }
 }

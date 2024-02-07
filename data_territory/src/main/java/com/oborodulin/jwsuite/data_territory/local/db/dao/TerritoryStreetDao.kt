@@ -13,8 +13,11 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,10 +26,21 @@ import java.util.UUID
 
 @Dao
 interface TerritoryStreetDao {
-    // READS:
-    @Query("SELECT * FROM ${TerritoryStreetEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<TerritoryStreetEntity>>
+    // EXTRACTS:
+    @Query(
+        """
+    SELECT ts.* FROM ${TerritoryStreetEntity.TABLE_NAME} ts JOIN ${TerritoryEntity.TABLE_NAME} t ON ts.tsTerritoriesId = t.territoryId  
+        JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
+            ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username
+    WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) 
+    """
+    )
+    fun selectEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryStreetEntity>>
 
+    // READS:
     @Query(
         "SELECT tsv.* FROM ${TerritoryStreetView.VIEW_NAME} tsv WHERE tsv.territoryStreetId = :territoryStreetId AND tsv.streetLocCode = :locale"
     )

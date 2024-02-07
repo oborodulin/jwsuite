@@ -14,9 +14,12 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetView
+import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -26,10 +29,21 @@ import java.util.UUID
 
 @Dao
 interface HouseDao {
-    // READS:
-    @Query("SELECT * FROM ${HouseEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<HouseEntity>>
+    // EXTRACTS:
+    @Query(
+        """
+    SELECT h.* FROM ${HouseEntity.TABLE_NAME} h LEFT JOIN ${TerritoryEntity.TABLE_NAME} t ON h.hTerritoriesId = t.territoryId  
+        LEFT JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
+            ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username
+    WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) AND (:byFavorite = $DB_FALSE OR ctv.ctTerritoriesId IS NOT NULL) 
+    """
+    )
+    fun selectEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<HouseEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${HouseView.VIEW_NAME} ORDER BY hStreetsId, houseNum, houseLetter, buildingNum")
     fun findAll(): Flow<List<HouseView>>
 

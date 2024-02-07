@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTo
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
@@ -86,6 +87,7 @@ class DatabaseRepositoryImpl @Inject constructor(
             GroupEntity.TABLE_NAME,
             MemberEntity.TABLE_NAME,
             MemberCongregationCrossRefEntity.TABLE_NAME,
+            MemberMovementEntity.TABLE_NAME,
             MemberRoleEntity.TABLE_NAME
         )
         private val territoryTables = listOf(
@@ -102,6 +104,14 @@ class DatabaseRepositoryImpl @Inject constructor(
         )
         private val totalsTables = listOf(CongregationTotalEntity.TABLE_NAME)
 
+        //Strict usage:
+        private val strictMemberTables = listOf(
+            GroupEntity.TABLE_NAME,
+            MemberEntity.TABLE_NAME,
+            MemberCongregationCrossRefEntity.TABLE_NAME,
+            MemberRoleEntity.TABLE_NAME
+        )
+
         //Personal usage:
         private val personalTerritoryReportTables = listOf(
             TerritoryMemberReportEntity.TABLE_NAME
@@ -112,16 +122,19 @@ class DatabaseRepositoryImpl @Inject constructor(
                 TransferObjectType.ALL to mapOf(false to geoTables + congregationTables + memberTables + territoryTables + totalsTables),
                 TransferObjectType.MEMBERS to mapOf(
                     false to localityTables + congregationTables + memberTables,
-                    true to localityTables + congregationTables + memberTables
+                    true to localityTables + congregationTables + strictMemberTables
                 ),
                 TransferObjectType.TERRITORIES to mapOf(
-                    false to geoTables + congregationTables + memberTables + territoryTables,
+                    false to geoTables + congregationTables + strictMemberTables + territoryTables,
                     true to geoTables + territoryTables
                 ),
                 TransferObjectType.TERRITORY_REPORT to mapOf(
                     true to personalTerritoryReportTables
                 ),
-                TransferObjectType.BILLS to mapOf(false to listOf(AppSettingEntity.TABLE_NAME)),
+                TransferObjectType.BILLS to mapOf(
+                    false to listOf(AppSettingEntity.TABLE_NAME),
+                    true to geoTables + territoryTables
+                ),
                 TransferObjectType.REPORTS to mapOf(false to localityTables + congregationTables + totalsTables)
             )
     }

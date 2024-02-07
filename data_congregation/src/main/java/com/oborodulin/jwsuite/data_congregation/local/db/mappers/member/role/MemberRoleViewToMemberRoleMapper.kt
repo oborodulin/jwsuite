@@ -15,10 +15,10 @@ class MemberRoleViewToMemberRoleMapper(
     override fun map(input: MemberRoleView): MemberRole {
         val memberRole = MemberRole(
             member = memberMapper.map(input.member),
-            role = roleMapper.map(input.role),
-            roleExpiredDate = input.memberRole.roleExpiredDate
+            role = roleMapper.map(input.memberActualRole.role),
+            roleExpiredDate = input.memberActualRole.memberRole.roleExpiredDate
         )
-        memberRole.id = input.memberRole.memberRoleId
+        memberRole.id = input.memberActualRole.memberRole.memberRoleId
         return memberRole
     }
 

@@ -37,9 +37,12 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotal
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberActualRoleView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberMovementView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
@@ -90,6 +93,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
 //import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
 import com.oborodulin.jwsuite.data_territory.local.db.views.FloorView
@@ -101,6 +105,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberLastReceivingDateView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryPrivateSectorView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
@@ -152,7 +157,9 @@ private const val TAG = "JwSuiteDatabase"
         GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
-        MemberRoleView::class, MemberMovementView::class, CongregationTotalView::class,
+        MemberCongregationView::class, MemberActualRoleView::class, MemberRoleView::class, MemberServiceRoleView::class,
+        MemberMovementView::class, CongregationTotalView::class,
+        CongregationTerritoryView::class, TerritoryMemberView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
         TerritoryView::class, TerritoryStreetView::class, TerritoryStreetHouseView::class,
         TerritoryStreetNamesAndHouseNumsView::class, TerritoryLocationView::class,

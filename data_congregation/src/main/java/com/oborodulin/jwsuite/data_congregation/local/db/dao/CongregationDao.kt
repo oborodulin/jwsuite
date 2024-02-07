@@ -9,14 +9,11 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.pojo.CongregationWithGroupMembers
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
-import com.oborodulin.jwsuite.domain.util.Constants
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
-import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -30,36 +27,31 @@ private const val TAG = "Data.CongregationDao"
 
 @Dao
 interface CongregationDao {
-    // READS:
-    @Query("""
-    SELECT c.* FROM ${CongregationEntity.TABLE_NAME} c
-        LEFT JOIN (SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN 
-                        (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
-                        FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
-                            ON mcc.mcMembersId = m.memberId AND m.pseudonym = :username
-                        GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
-                    ) mcg ON c.congregationId = mcg.mcCongregationsId
-    WHERE (:username IS NULL OR mcg.mcCongregationsId IS NOT NULL) AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-    """)
+    // EXTRACTS:
+    @Query(
+        """
+    SELECT c.* FROM ${CongregationEntity.TABLE_NAME} c LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv
+        ON c.congregationId = mcv.mcCongregationsId AND mcv.pseudonym = :username
+    WHERE (:username IS NULL OR mcv.mcCongregationsId IS NOT NULL) AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+    """
+    )
     fun selectEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<CongregationEntity>>
 
-    @Query("""
+    @Query(
+        """
     SELECT ct.* FROM ${CongregationTotalEntity.TABLE_NAME} ct JOIN ${CongregationEntity.TABLE_NAME} c
             ON ct.ctlCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN (SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN 
-                        (SELECT mcc.mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, mcc.activityDate)) AS maxActivityDate 
-                        FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcc JOIN ${MemberEntity.TABLE_NAME} m
-                            ON mcc.mcMembersId = m.memberId AND m.pseudonym = :username
-                        GROUP BY mcc.mcMembersId) mc ON mccr.mcMembersId = mc.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mccr.activityDate) = mc.maxActivityDate 
-                    ) mcg ON c.congregationId = mcg.mcCongregationsId
-    WHERE (:username IS NULL OR mcg.mcCongregationsId IS NOT NULL)
-    """)
+        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON ct.ctlCongregationsId = mcv.mcCongregationsId AND mcv.pseudonym = :username
+    WHERE (:username IS NULL OR mcv.mcCongregationsId IS NOT NULL)
+    """
+    )
     fun selectTotalEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<CongregationTotalEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${CongregationView.VIEW_NAME} ORDER BY isFavorite DESC")
     fun findAll(): Flow<List<CongregationView>>
 

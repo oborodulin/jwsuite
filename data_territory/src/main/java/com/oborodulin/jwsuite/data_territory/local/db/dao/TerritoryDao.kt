@@ -39,17 +39,23 @@ import java.util.UUID
 
 @Dao
 interface TerritoryDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<TerritoryEntity>>
+    fun selectEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryEntity>>
 
     @Query("SELECT * FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME}")
-    fun selectCongregationTerritoryEntities(): Flow<List<CongregationTerritoryCrossRefEntity>>
+    fun selectCongregationTerritoryEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationTerritoryCrossRefEntity>>
 
     @Query("SELECT * FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME}")
-    fun selectTerritoryMemberEntities(): Flow<List<TerritoryMemberCrossRefEntity>>
+    fun selectTerritoryMemberEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryMemberCrossRefEntity>>
 
-    //-----------------------------
+    // READS:
     @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${PX_TERRITORY_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryCategoryMark, territoryNum")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 

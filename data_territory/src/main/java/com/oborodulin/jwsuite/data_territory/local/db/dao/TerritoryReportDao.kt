@@ -20,10 +20,13 @@ import java.util.UUID
 
 @Dao
 interface TerritoryReportDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${TerritoryMemberReportEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<TerritoryMemberReportEntity>>
+    fun selectEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryMemberReportEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${TerritoryMemberReportEntity.TABLE_NAME}")
     fun findAll(): Flow<List<TerritoryMemberReportEntity>>
 
