@@ -27,6 +27,9 @@ interface LocalFloorDataSource {
     suspend fun setTerritoryById(floorId: UUID, territoryId: UUID)
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getFloorEntities(): Flow<List<FloorEntity>>
+    fun getFloorEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<FloorEntity>>
+
     suspend fun loadFloorEntities(floors: List<FloorEntity>)
 }

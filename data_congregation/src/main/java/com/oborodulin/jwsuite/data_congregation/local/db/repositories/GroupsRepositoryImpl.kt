@@ -65,10 +65,10 @@ class GroupsRepositoryImpl @Inject constructor(
         fileNamePrefix = GroupEntity.TABLE_NAME,
         contentType = GroupCsv::class
     )
-    override fun loadGroups(congregations: List<GroupCsv>) = flow {
+    override fun loadGroups(groups: List<GroupCsv>) = flow {
         localGroupDataSource.loadGroupEntities(
-            csvMappers.groupCsvListToGroupEntityListMapper.map(congregations)
+            csvMappers.groupCsvListToGroupEntityListMapper.map(groups)
         )
-        emit(congregations.size)
+        emit(groups.size)
     }
 }

@@ -24,6 +24,6 @@ interface HousesRepository : CsvTransferableRepo {
     fun setTerritory(houseIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractHouses(): Flow<List<HouseCsv>>
+    fun extractHouses(username: String? = null, byFavorite: Boolean = false): Flow<List<HouseCsv>>
     fun loadHouses(houses: List<HouseCsv>): Flow<Int>
 }

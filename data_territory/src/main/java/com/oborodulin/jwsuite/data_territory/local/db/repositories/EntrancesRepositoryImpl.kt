@@ -87,8 +87,9 @@ class EntrancesRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = EntranceEntity.TABLE_NAME)
-    override fun extractEntrances() = localEntranceDataSource.getEntranceEntities()
-        .map(csvMappers.entranceEntityListToEntranceCsvListMapper::map)
+    override fun extractEntrances(username: String?, byFavorite: Boolean) =
+        localEntranceDataSource.getEntranceEntities(username, byFavorite)
+            .map(csvMappers.entranceEntityListToEntranceCsvListMapper::map)
 
     @CsvLoad<EntranceCsv>(
         fileNamePrefix = EntranceEntity.TABLE_NAME,

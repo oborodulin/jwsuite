@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.usecases.dashboard.GetDashboardInfoUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.CongregationTotalsUi
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardingUi
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.TerritoryTotalsUi
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DashboardingConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -100,18 +101,26 @@ class DashboardingViewModelImpl @Inject constructor(
                 totalGroups = 7,
                 totalMembers = 124,
                 totalFulltimeMembers = 28,
+                diffGroups = 1,
+                diffMembers = 0,
+                diffFulltimeMembers = 3
+            )
+            congregationTotalsUi.id = UUID.randomUUID()
+            return congregationTotalsUi
+        }
+
+        fun previewTerritoryTotalsModel(ctx: Context): TerritoryTotalsUi {
+            val territoryTotalsUi = TerritoryTotalsUi(
+                congregation = previewCongregationModel(ctx),
                 totalTerritories = 175,
                 totalTerritoryIssued = 59,
                 totalTerritoryProcessed = 99,
-                diffGroups = 1,
-                diffMembers = 0,
-                diffFulltimeMembers = 3,
                 diffTerritories = 9,
                 diffTerritoryIssued = 16,
                 diffTerritoryProcessed = 11
             )
-            congregationTotalsUi.id = UUID.randomUUID()
-            return congregationTotalsUi
+            territoryTotalsUi.id = UUID.randomUUID()
+            return territoryTotalsUi
         }
     }
 }

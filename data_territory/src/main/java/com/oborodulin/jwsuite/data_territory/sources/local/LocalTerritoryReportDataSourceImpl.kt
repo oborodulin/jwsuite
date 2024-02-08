@@ -29,8 +29,10 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
     override fun getRoomTerritoryReports(roomId: UUID) = territoryReportDao.findByRoomId(roomId)
     override fun getTerritoryReportStreet(territoryStreetId: UUID) =
         territoryReportDao.findReportStreetByTerritoryStreetId(territoryStreetId)
+
     override fun getTerritoryReportStreets(territoryId: UUID) =
         territoryReportDao.findReportStreetsByTerritoryId(territoryId)
+
     override fun getTerritoryReportHouse(houseId: UUID) =
         territoryReportDao.findReportHouseByHouseId(houseId)
 
@@ -85,7 +87,9 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
     }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getTerritoryReportEntities() = territoryReportDao.selectEntities()
+    override fun getTerritoryReportEntities(username: String?, byFavorite: Boolean) =
+        territoryReportDao.selectEntities(username, byFavorite)
+
     override suspend fun loadTerritoryReportEntities(territoryReports: List<TerritoryMemberReportEntity>) =
         withContext(dispatcher) {
             territoryReportDao.insert(territoryReports)

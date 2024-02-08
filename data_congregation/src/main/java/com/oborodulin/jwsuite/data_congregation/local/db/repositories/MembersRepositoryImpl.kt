@@ -150,25 +150,28 @@ class MembersRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = MemberEntity.TABLE_NAME)
-    override fun extractMembers() = localMemberDataSource.getMemberEntities()
-        .map(csvMemberMappers.memberEntityListToMemberCsvListMapper::map)
+    override fun extractMembers(username: String?, byFavorite: Boolean) =
+        localMemberDataSource.getMemberEntities(username, byFavorite)
+            .map(csvMemberMappers.memberEntityListToMemberCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = MemberCongregationCrossRefEntity.TABLE_NAME)
-    override fun extractMemberCongregations() =
-        localMemberDataSource.getMemberCongregationEntities()
+    override fun extractMemberCongregations(username: String?, byFavorite: Boolean) =
+        localMemberDataSource.getMemberCongregationEntities(username, byFavorite)
             .map(csvMemberMappers.memberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = MemberMovementEntity.TABLE_NAME)
-    override fun extractMemberMovements() = localMemberDataSource.getMemberMovementEntities()
-        .map(csvMemberMappers.memberMovementEntityListToMemberMovementCsvListMapper::map)
+    override fun extractMemberMovements(byFavorite: Boolean) =
+        localMemberDataSource.getMemberMovementEntities(byFavorite)
+            .map(csvMemberMappers.memberMovementEntityListToMemberMovementCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = RoleEntity.TABLE_NAME)
     override fun extractRoles() = localMemberDataSource.getRoleEntities()
         .map(csvRoleMappers.roleEntityListToRoleCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = MemberRoleEntity.TABLE_NAME)
-    override fun extractMemberRoles() = localMemberDataSource.getMemberRoleEntities()
-        .map(csvMemberMappers.memberRoleEntityListToMemberRoleCsvListMapper::map)
+    override fun extractMemberRoles(username: String?, byFavorite: Boolean) =
+        localMemberDataSource.getMemberRoleEntities(username, byFavorite)
+            .map(csvMemberMappers.memberRoleEntityListToMemberRoleCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = TransferObjectEntity.TABLE_NAME)
     override fun extractTransferObjects() = localMemberDataSource.getTransferObjectEntities()

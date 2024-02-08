@@ -32,7 +32,7 @@ interface TerritoryStreetDao {
     SELECT ts.* FROM ${TerritoryStreetEntity.TABLE_NAME} ts JOIN ${TerritoryEntity.TABLE_NAME} t ON ts.tsTerritoriesId = t.territoryId  
         JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
             ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
-        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username AND tmv.deliveryDate IS NULL
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) 
     """
     )

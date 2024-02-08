@@ -76,11 +76,20 @@ interface LocalMemberDataSource {
     suspend fun deleteRoleTransferObjectById(roleTransferObjectId: UUID)
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getMemberEntities(): Flow<List<MemberEntity>>
-    fun getMemberCongregationEntities(): Flow<List<MemberCongregationCrossRefEntity>>
-    fun getMemberMovementEntities(): Flow<List<MemberMovementEntity>>
+    fun getMemberEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberEntity>>
+
+    fun getMemberCongregationEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberCongregationCrossRefEntity>>
+
+    fun getMemberMovementEntities(byFavorite: Boolean = false): Flow<List<MemberMovementEntity>>
     fun getRoleEntities(): Flow<List<RoleEntity>>
-    fun getMemberRoleEntities(): Flow<List<MemberRoleEntity>>
+    fun getMemberRoleEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberRoleEntity>>
+
     fun getTransferObjectEntities(): Flow<List<TransferObjectEntity>>
     fun getRoleTransferObjectEntities(): Flow<List<RoleTransferObjectEntity>>
     suspend fun loadMemberEntities(members: List<MemberEntity>)

@@ -55,8 +55,9 @@ class TerritoryStreetsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = TerritoryStreetEntity.TABLE_NAME)
-    override fun extractTerritoryStreets() = localTerritoryDataSource.getTerritoryStreetEntities()
-        .map(csvMappers.territoryStreetEntityListToTerritoryStreetCsvListMapper::map)
+    override fun extractTerritoryStreets(username: String?, byFavorite: Boolean) =
+        localTerritoryDataSource.getTerritoryStreetEntities(username, byFavorite)
+            .map(csvMappers.territoryStreetEntityListToTerritoryStreetCsvListMapper::map)
 
     @CsvLoad<TerritoryStreetCsv>(
         fileNamePrefix = TerritoryStreetEntity.TABLE_NAME,

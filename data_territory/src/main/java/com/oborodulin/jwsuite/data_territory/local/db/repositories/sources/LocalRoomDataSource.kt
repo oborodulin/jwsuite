@@ -29,6 +29,9 @@ interface LocalRoomDataSource {
     suspend fun setTerritoryById(roomId: UUID, territoryId: UUID)
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getRoomEntities(): Flow<List<RoomEntity>>
+    fun getRoomEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<RoomEntity>>
+
     suspend fun loadRoomEntities(rooms: List<RoomEntity>)
 }

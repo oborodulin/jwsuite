@@ -24,6 +24,9 @@ interface EntrancesRepository : CsvTransferableRepo {
     fun setTerritory(entranceIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractEntrances(): Flow<List<EntranceCsv>>
+    fun extractEntrances(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<EntranceCsv>>
+
     fun loadEntrances(entrances: List<EntranceCsv>): Flow<Int>
 }

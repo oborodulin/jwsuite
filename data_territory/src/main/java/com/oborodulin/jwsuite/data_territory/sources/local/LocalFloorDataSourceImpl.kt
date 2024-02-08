@@ -71,7 +71,9 @@ class LocalFloorDataSourceImpl @Inject constructor(
         }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getFloorEntities() = floorDao.selectEntities()
+    override fun getFloorEntities(username: String?, byFavorite: Boolean) =
+        floorDao.selectEntities(username, byFavorite)
+
     override suspend fun loadFloorEntities(floors: List<FloorEntity>) = withContext(dispatcher) {
         floorDao.insert(floors)
     }

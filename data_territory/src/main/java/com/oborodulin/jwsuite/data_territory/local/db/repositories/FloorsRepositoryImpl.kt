@@ -84,8 +84,9 @@ class FloorsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = FloorEntity.TABLE_NAME)
-    override fun extractFloors() = localFloorDataSource.getFloorEntities()
-        .map(csvMappers.floorEntityListToFloorCsvListMapper::map)
+    override fun extractFloors(username: String?, byFavorite: Boolean) =
+        localFloorDataSource.getFloorEntities(username, byFavorite)
+            .map(csvMappers.floorEntityListToFloorCsvListMapper::map)
 
     @CsvLoad<FloorCsv>(fileNamePrefix = FloorEntity.TABLE_NAME, contentType = FloorCsv::class)
     override fun loadFloors(floors: List<FloorCsv>) = flow {

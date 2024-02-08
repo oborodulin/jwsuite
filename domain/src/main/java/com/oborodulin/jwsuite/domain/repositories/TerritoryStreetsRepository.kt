@@ -17,6 +17,9 @@ interface TerritoryStreetsRepository : CsvTransferableRepo {
     fun deleteById(territoryStreetId: UUID): Flow<UUID>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractTerritoryStreets(): Flow<List<TerritoryStreetCsv>>
+    fun extractTerritoryStreets(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryStreetCsv>>
+
     fun loadTerritoryStreets(territoryStreets: List<TerritoryStreetCsv>): Flow<Int>
 }

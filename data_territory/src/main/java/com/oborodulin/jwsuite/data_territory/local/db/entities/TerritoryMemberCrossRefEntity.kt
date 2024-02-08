@@ -77,7 +77,7 @@ data class TerritoryMemberCrossRefEntity(
         str.append("Territory Member Entity").append(" for period ")
             .append(DateTimeFormatter.ISO_LOCAL_DATE.format(receivingDate))
             .append(" - ").append(
-                if (deliveryDate != null) DateTimeFormatter.ISO_LOCAL_DATE.format(deliveryDate) else "..."
+                deliveryDate?.let { DateTimeFormatter.ISO_LOCAL_DATE.format(it) } ?: "..."
             )
         str.append(" [tmcTerritoriesId = ").append(tmcTerritoriesId)
             .append("; tmcMembersId = ").append(tmcMembersId)

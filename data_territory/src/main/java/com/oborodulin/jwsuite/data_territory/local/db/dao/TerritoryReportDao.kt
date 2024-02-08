@@ -6,12 +6,18 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
+import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
+import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberReportView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
+import com.oborodulin.jwsuite.domain.util.Constants
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
+import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,7 +27,15 @@ import java.util.UUID
 @Dao
 interface TerritoryReportDao {
     // EXTRACTS:
-    @Query("SELECT * FROM ${TerritoryMemberReportEntity.TABLE_NAME}")
+    @Query("""
+    SELECT tmr.* FROM ${TerritoryMemberReportEntity.TABLE_NAME} tmr JOIN ${TerritoryMemberCrossRefEntity.TABLE_NAME} tmc ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId  
+        JOIN ${TerritoryEntity.TABLE_NAME} t ON tmc.tmcTerritoriesId = t.territoryId  
+        JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
+            ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON tmr.tmrTerritoryMembersId = tmv.tmrTerritoryMembersId AND t.territoryId = tmv.tmcTerritoriesId
+                                                        AND tmv.pseudonym = :username AND tmv.deliveryDate IS NULL
+    WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL)
+    """)
     fun selectEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryMemberReportEntity>>

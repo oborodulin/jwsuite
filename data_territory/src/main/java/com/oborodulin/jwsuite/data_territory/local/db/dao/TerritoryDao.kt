@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
@@ -16,10 +17,13 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.pojo.TerritoryWithMembers
+import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryTotalView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.data_territory.util.Constants.PX_TERRITORY_LOCALITY
 import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_ALL_VAL
@@ -40,17 +44,39 @@ import java.util.UUID
 @Dao
 interface TerritoryDao {
     // EXTRACTS:
-    @Query("SELECT * FROM ${TerritoryEntity.TABLE_NAME}")
+    @Query(
+        """
+    SELECT t.* FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
+            ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username AND tmv.deliveryDate IS NULL
+    WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL)
+    """
+    )
     fun selectEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryEntity>>
 
-    @Query("SELECT * FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME}")
+    @Query(
+        """
+    SELECT ct.* FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct JOIN ${CongregationEntity.TABLE_NAME} c
+            ON ct.ctCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON ct.ctTerritoriesId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username AND tmv.deliveryDate IS NULL
+    WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL)
+    """
+    )
     fun selectCongregationTerritoryEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<CongregationTerritoryCrossRefEntity>>
 
-    @Query("SELECT * FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME}")
+    @Query(
+        """
+    SELECT tm.* FROM ${TerritoryMemberCrossRefEntity.TABLE_NAME} tm JOIN ${TerritoryEntity.TABLE_NAME} t ON tm.tmcTerritoriesId = t.territoryId  
+        JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
+            ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
+        LEFT JOIN ${MemberEntity.TABLE_NAME} m ON tm.tmcMembersId = m.memberId AND m.pseudonym = :username AND tm.deliveryDate IS NULL
+    WHERE (:username IS NULL OR m.memberId IS NOT NULL)
+    """
+    )
     fun selectTerritoryMemberEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryMemberCrossRefEntity>>
@@ -68,6 +94,13 @@ interface TerritoryDao {
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(territoryId: UUID) = findById(territoryId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${TerritoryTotalView.VIEW_NAME}")
+    fun findTotals(): Flow<TerritoryTotalView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctTotals() = findTotals().distinctUntilChanged()
 
     //-----------------------------
     @Query(
@@ -246,6 +279,40 @@ interface TerritoryDao {
     @ExperimentalCoroutinesApi
     fun findDistinctByHouseId(houseId: UUID) = findByHouseId(houseId).distinctUntilChanged()
 
+    // UPDATES TOTALS:
+    // totalTerritories:
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalTerritories = totalTerritories + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
+    suspend fun updateTotalTerritoriesByCongregationId(congregationId: UUID, diff: Int)
+
+    @Query(
+        """
+    UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalTerritories = totalTerritories + :diff
+    WHERE lastVisitDate IS NULL
+        AND ctlCongregationsId = (SELECT ct.ctCongregationsId FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct WHERE ct.ctTerritoriesId = :territoryId)
+    """
+    )
+    suspend fun decTotalTerritoriesByTerritoryId(territoryId: UUID, diff: Int = -1)
+
+    // totalTerritoryIssued:
+    @Query(
+        """
+    UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalTerritoryIssued = totalTerritoryIssued + :diff
+    WHERE lastVisitDate IS NULL
+        AND ctlCongregationsId = (SELECT ct.ctCongregationsId FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct WHERE ct.ctTerritoriesId = :territoryId)
+    """
+    )
+    suspend fun updateTotalTerritoryIssuedByTerritoryId(territoryId: UUID, diff: Int)
+
+    // totalTerritoryProcessed:
+    @Query(
+        """
+    UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalTerritoryProcessed = totalTerritoryProcessed + :diff
+    WHERE lastVisitDate IS NULL
+        AND ctlCongregationsId = (SELECT ct.ctCongregationsId FROM ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct WHERE ct.ctTerritoriesId = :territoryId)
+    """
+    )
+    suspend fun updateTotalTerritoryProcessedByTerritoryId(territoryId: UUID, diff: Int)
+
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(territory: TerritoryEntity)
@@ -360,6 +427,9 @@ interface TerritoryDao {
     suspend fun deleteAll()
 
     // API:
+    @Query("SELECT EXISTS (SELECT * FROM ${TerritoryEntity.TABLE_NAME} WHERE territoryId = :territoryId AND isActive = $DB_TRUE LIMIT 1)")
+    fun isActiveById(territoryId: UUID): Boolean
+
     @Query("UPDATE ${TerritoryEntity.TABLE_NAME} SET isProcessed = :isProcessed WHERE territoryId = :territoryId")
     suspend fun updateProcessedMark(territoryId: UUID, isProcessed: Boolean)
 
@@ -399,11 +469,14 @@ interface TerritoryDao {
             )
         ) {
             updateTerritoryNum(
-                territory.tCongregationsId, territory.tTerritoryCategoriesId, territory.territoryNum
+                territory.tCongregationsId,
+                territory.tTerritoryCategoriesId,
+                territory.territoryNum
             )
         }
     }
 
+    // C[R]UD:
     @Transaction
     suspend fun insertWithTerritoryNum(territory: TerritoryEntity) {
         changeWithTerritoryNum(territory)
@@ -414,12 +487,28 @@ interface TerritoryDao {
                 ctTerritoriesId = territory.territoryId
             )
         )
+        if (territory.isActive) {
+            updateTotalTerritoriesByCongregationId(territory.tCongregationsId, 1)
+        }
     }
 
     @Transaction
     suspend fun updateWithTerritoryNum(territory: TerritoryEntity) {
         changeWithTerritoryNum(territory)
+        if (isActiveById(territory.territoryId) != territory.isActive) {
+            if (territory.isActive) {
+                updateTotalTerritoriesByCongregationId(territory.tCongregationsId, 1)
+            } else {
+                updateTotalTerritoriesByCongregationId(territory.tCongregationsId, -1)
+            }
+        }
         update(territory)
+    }
+
+    @Transaction
+    suspend fun deleteByIdWithTotals(territoryId: UUID) {
+        decTotalTerritoriesByTerritoryId(territoryId)
+        deleteById(territoryId)
     }
 
     @Transaction
@@ -434,12 +523,16 @@ interface TerritoryDao {
             )
         )
         updateProcessedMark(territoryId = territoryId, isProcessed = false)
+        updateTotalTerritoryIssuedByTerritoryId(territoryId, 1)
     }
 
     @Transaction
-    suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime = OffsetDateTime.now()) {
+    suspend fun process(
+        territoryId: UUID, deliveryDate: OffsetDateTime = OffsetDateTime.now()
+    ) {
         updateDeliveryDate(territoryId = territoryId, deliveryDate = deliveryDate)
         updateProcessedMark(territoryId = territoryId, isProcessed = true)
+        updateTotalTerritoryProcessedByTerritoryId(territoryId = territoryId, 1)
     }
 
     /*

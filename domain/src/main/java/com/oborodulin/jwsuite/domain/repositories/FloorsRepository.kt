@@ -26,6 +26,6 @@ interface FloorsRepository : CsvTransferableRepo {
     fun setTerritory(floorIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractFloors(): Flow<List<FloorCsv>>
+    fun extractFloors(username: String? = null, byFavorite: Boolean = false): Flow<List<FloorCsv>>
     fun loadFloors(floors: List<FloorCsv>): Flow<Int>
 }

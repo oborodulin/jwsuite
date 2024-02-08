@@ -27,6 +27,9 @@ interface LocalHouseDataSource {
     suspend fun setTerritoryById(houseId: UUID, territoryId: UUID)
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getHouseEntities(): Flow<List<HouseEntity>>
+    fun getHouseEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<HouseEntity>>
+
     suspend fun loadHouseEntities(houses: List<HouseEntity>)
 }

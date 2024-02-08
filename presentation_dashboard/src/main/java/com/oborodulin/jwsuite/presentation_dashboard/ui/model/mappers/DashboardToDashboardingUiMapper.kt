@@ -7,10 +7,12 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardingUi
 
 class DashboardToDashboardingUiMapper(
     private val congregationMapper: CongregationToCongregationUiMapper,
-    private val totalsMapper: CongregationTotalsToCongregationTotalsUiMapper
+    private val congregationTotalsMapper: CongregationTotalsToCongregationTotalsUiMapper,
+    private val territoryTotalsMapper: TerritoryTotalsToTerritoryTotalsUiMapper
 ) : Mapper<Dashboard, DashboardingUi> {
     override fun map(input: Dashboard) = DashboardingUi(
         favoriteCongregation = congregationMapper.nullableMap(input.favoriteCongregation),
-        congregationTotals = totalsMapper.nullableMap(input.congregationTotals)
+        congregationTotals = congregationTotalsMapper.nullableMap(input.congregationTotals),
+        territoryTotals = territoryTotalsMapper.nullableMap(input.territoryTotals),
     )
 }

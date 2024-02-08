@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.domain.model.territory.Room
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryLocation
 import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreet
+import com.oborodulin.jwsuite.domain.model.territory.TerritoryTotals
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import com.oborodulin.jwsuite.domain.services.csv.model.territory.CongregationTerritoryCrossRefCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.territory.TerritoryCsv
@@ -44,6 +45,7 @@ interface TerritoriesRepository : CsvTransferableRepo {
     fun getRooms(territoryId: UUID): Flow<List<Room>>
 
     fun get(territoryId: UUID): Flow<Territory>
+    fun getFavoriteTotals(): Flow<TerritoryTotals?>
     fun save(territory: Territory): Flow<Territory>
     fun delete(territory: Territory): Flow<Territory>
     fun deleteById(territoryId: UUID): Flow<UUID>
@@ -59,9 +61,18 @@ interface TerritoriesRepository : CsvTransferableRepo {
     ): Flow<List<UUID>>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractTerritories(): Flow<List<TerritoryCsv>>
-    fun extractCongregationTerritories(): Flow<List<CongregationTerritoryCrossRefCsv>>
-    fun extractTerritoryMembers(): Flow<List<TerritoryMemberCrossRefCsv>>
+    fun extractTerritories(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryCsv>>
+
+    fun extractCongregationTerritories(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationTerritoryCrossRefCsv>>
+
+    fun extractTerritoryMembers(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryMemberCrossRefCsv>>
+
     fun loadTerritories(territories: List<TerritoryCsv>): Flow<Int>
     fun loadCongregationTerritories(congregationTerritories: List<CongregationTerritoryCrossRefCsv>): Flow<Int>
     fun loadTerritoryMembers(territoryMembers: List<TerritoryMemberCrossRefCsv>): Flow<Int>

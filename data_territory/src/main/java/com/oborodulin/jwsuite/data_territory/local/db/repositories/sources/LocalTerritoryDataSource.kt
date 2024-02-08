@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkVie
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationView
+import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryTotalView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import kotlinx.coroutines.flow.Flow
@@ -45,8 +46,8 @@ interface LocalTerritoryDataSource {
 
     fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID): Int
 
-    //    fun getTerritoryInfo(territoryId: UUID): Flow<List<TerritoryView>>
     fun getTerritory(territoryId: UUID): Flow<TerritoryView>
+    fun getFavoriteTerritoryTotals(): Flow<TerritoryTotalView?>
     suspend fun insertTerritory(territory: TerritoryEntity)
     suspend fun updateTerritory(territory: TerritoryEntity)
     suspend fun deleteTerritory(territory: TerritoryEntity)
@@ -93,9 +94,17 @@ interface LocalTerritoryDataSource {
     suspend fun process(territoryId: UUID, deliveryDate: OffsetDateTime)
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun getTerritoryEntities(): Flow<List<TerritoryEntity>>
-    fun getCongregationTerritoryEntities(): Flow<List<CongregationTerritoryCrossRefEntity>>
-    fun getTerritoryMemberEntities(): Flow<List<TerritoryMemberCrossRefEntity>>
+    fun getTerritoryEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryEntity>>
+
+    fun getCongregationTerritoryEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<CongregationTerritoryCrossRefEntity>>
+
+    fun getTerritoryMemberEntities(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryMemberCrossRefEntity>>
 
     suspend fun loadTerritoryEntities(territories: List<TerritoryEntity>)
     suspend fun loadCongregationTerritoryEntities(congregationTerritories: List<CongregationTerritoryCrossRefEntity>)

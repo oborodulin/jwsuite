@@ -90,8 +90,9 @@ class RoomsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = RoomEntity.TABLE_NAME)
-    override fun extractRooms() = localRoomDataSource.getRoomEntities()
-        .map(csvMappers.roomEntityListToRoomCsvListMapper::map)
+    override fun extractRooms(username: String?, byFavorite: Boolean) =
+        localRoomDataSource.getRoomEntities(username, byFavorite)
+            .map(csvMappers.roomEntityListToRoomCsvListMapper::map)
 
     @CsvLoad<RoomCsv>(fileNamePrefix = RoomEntity.TABLE_NAME, contentType = RoomCsv::class)
     override fun loadRooms(rooms: List<RoomCsv>) = flow {

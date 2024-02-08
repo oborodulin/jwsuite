@@ -35,7 +35,7 @@ interface RoomDao {
     SELECT * FROM ${RoomEntity.TABLE_NAME} r LEFT JOIN ${TerritoryEntity.TABLE_NAME} t ON r.rTerritoriesId = t.territoryId  
         LEFT JOIN ${CongregationTerritoryView.VIEW_NAME} ctv 
             ON t.territoryId = ctv.ctTerritoriesId AND ctv.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE ctv.isFavorite END)
-        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username
+        LEFT JOIN ${TerritoryMemberView.VIEW_NAME} tmv ON t.territoryId = tmv.tmcTerritoriesId AND tmv.pseudonym = :username AND tmv.deliveryDate IS NULL
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) AND (:byFavorite = $DB_FALSE OR ctv.ctTerritoriesId IS NOT NULL) 
     """
     )

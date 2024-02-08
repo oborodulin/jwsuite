@@ -5,10 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.oborodulin.home.common.data.OffsetDateTimeSerializer
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import kotlinx.serialization.Serializable
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Entity(
@@ -52,6 +55,8 @@ data class TerritoryMemberReportEntity(
     val gender: Boolean? = null,
     val age: Int? = null,
     val isReportProcessed: Boolean = false,
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val reportSentTime: OffsetDateTime? = null,
     val territoryReportDesc: String? = null,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val tmrRoomsId: UUID? = null,
@@ -73,7 +78,7 @@ data class TerritoryMemberReportEntity(
             territoryReportMark: TerritoryReportMark = TerritoryReportMark.PP,
             languageCode: String? = null,
             gender: Boolean? = null, age: Int? = null,
-            isReportProcessed: Boolean = false,
+            isReportProcessed: Boolean = false, reportSentTime: OffsetDateTime? = null,
             territoryReportDesc: String? = null
         ) = TerritoryMemberReportEntity(
             tmrTerritoryMembersId = territoryMemberId,
@@ -81,7 +86,8 @@ data class TerritoryMemberReportEntity(
             tmrTerritoryStreetsId = territoryStreetId, tmrHousesId = houseId, tmrRoomsId = roomId,
             territoryReportMark = territoryReportMark, languageCode = languageCode,
             gender = gender, age = age,
-            isReportProcessed = isReportProcessed, territoryReportDesc = territoryReportDesc
+            isReportProcessed = isReportProcessed, reportSentTime = reportSentTime,
+            territoryReportDesc = territoryReportDesc
         )
 
     }
@@ -101,6 +107,8 @@ data class TerritoryMemberReportEntity(
         str.append("Territory Member Report Entity ")
             .append(" [territoryMemberMark = ").append(territoryReportMark)
             .append("; isProcessed = ").append(isReportProcessed)
+            .append("; reportSentTime = ")
+            .append(reportSentTime?.let { DateTimeFormatter.ISO_LOCAL_DATE.format(it) })
         tmrTerritoryStreetsId?.let { str.append("; tmrTerritoryStreetsId = ").append(it) }
         tmrHousesId?.let { str.append("; tmrHousesId = ").append(it) }
         tmrRoomsId?.let { str.append("; tmrRoomsId = ").append(it) }

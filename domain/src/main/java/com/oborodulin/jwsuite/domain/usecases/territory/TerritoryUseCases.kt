@@ -13,6 +13,7 @@ data class TerritoryUseCases(
     val saveTerritoryUseCase: SaveTerritoryUseCase,
     val deleteTerritoryUseCase: DeleteTerritoryUseCase,
     val getTerritoryDetailsUseCase: GetTerritoryDetailsUseCase,
+    val getFavoriteTerritoryTotalsUseCase: GetFavoriteTerritoryTotalsUseCase,
 
     val handOutTerritoriesUseCase: HandOutTerritoriesUseCase,
     val processTerritoriesUseCase: ProcessTerritoriesUseCase

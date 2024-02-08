@@ -28,6 +28,6 @@ interface RoomsRepository: CsvTransferableRepo {
     fun setTerritory(roomIds: List<UUID> = emptyList(), territoryId: UUID): Flow<List<UUID>>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractRooms(): Flow<List<RoomCsv>>
+    fun extractRooms(username: String? = null, byFavorite: Boolean = false): Flow<List<RoomCsv>>
     fun loadRooms(rooms: List<RoomCsv>): Flow<Int>
 }

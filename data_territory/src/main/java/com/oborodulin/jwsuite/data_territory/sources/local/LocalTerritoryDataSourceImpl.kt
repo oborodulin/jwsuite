@@ -69,7 +69,7 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     override fun getNextTerritoryNum(congregationId: UUID, territoryCategoryId: UUID) =
         territoryDao.nextTerritoryNum(congregationId, territoryCategoryId)
 
-    //override fun getTerritoryInfo(territoryId: UUID) = territoryDao.findInfoByTerritoryId(territoryId)
+    override fun getFavoriteTerritoryTotals() = territoryDao.findDistinctTotals()
 
     override fun getTerritory(territoryId: UUID) = territoryDao.findDistinctById(territoryId)
 
@@ -86,7 +86,7 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteTerritoryById(territoryId: UUID) = withContext(dispatcher) {
-        territoryDao.deleteById(territoryId)
+        territoryDao.deleteByIdWithTotals(territoryId)
     }
 
     override suspend fun deleteTerritories(territories: List<TerritoryEntity>) =
@@ -159,11 +159,14 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
         withContext(dispatcher) { territoryDao.process(territoryId, deliveryDate) }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getTerritoryEntities() = territoryDao.selectEntities()
-    override fun getCongregationTerritoryEntities() =
-        territoryDao.selectCongregationTerritoryEntities()
+    override fun getTerritoryEntities(username: String?, byFavorite: Boolean) =
+        territoryDao.selectEntities(username, byFavorite)
 
-    override fun getTerritoryMemberEntities() = territoryDao.selectTerritoryMemberEntities()
+    override fun getCongregationTerritoryEntities(username: String?, byFavorite: Boolean) =
+        territoryDao.selectCongregationTerritoryEntities(username, byFavorite)
+
+    override fun getTerritoryMemberEntities(username: String?, byFavorite: Boolean) =
+        territoryDao.selectTerritoryMemberEntities(username, byFavorite)
 
     override suspend fun loadTerritoryEntities(territories: List<TerritoryEntity>) =
         withContext(dispatcher) {

@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.Dashboa
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.FavoriteCongregationConverter
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.mappers.CongregationTotalsToCongregationTotalsUiMapper
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.mappers.DashboardToDashboardingUiMapper
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.mappers.TerritoryTotalsToTerritoryTotalsUiMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,12 +25,19 @@ object DashboardingModule {
 
     @Singleton
     @Provides
+    fun provideTerritoryTotalsToTerritoryTotalsUiMapper(mapper: CongregationToCongregationUiMapper): TerritoryTotalsToTerritoryTotalsUiMapper =
+        TerritoryTotalsToTerritoryTotalsUiMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideDashboardToDashboardingUiMapper(
         congregationMapper: CongregationToCongregationUiMapper,
-        totalsMapper: CongregationTotalsToCongregationTotalsUiMapper
+        congregationTotalsMapper: CongregationTotalsToCongregationTotalsUiMapper,
+        territoryTotalsMapper: TerritoryTotalsToTerritoryTotalsUiMapper
     ): DashboardToDashboardingUiMapper = DashboardToDashboardingUiMapper(
         congregationMapper = congregationMapper,
-        totalsMapper = totalsMapper
+        congregationTotalsMapper = congregationTotalsMapper,
+        territoryTotalsMapper = territoryTotalsMapper
     )
 
     // CONVERTERS:

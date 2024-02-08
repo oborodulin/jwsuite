@@ -81,8 +81,9 @@ class HousesRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = HouseEntity.TABLE_NAME)
-    override fun extractHouses() = localHouseDataSource.getHouseEntities()
-        .map(csvMappers.houseEntityListToHouseCsvListMapper::map)
+    override fun extractHouses(username: String?, byFavorite: Boolean) =
+        localHouseDataSource.getHouseEntities(username, byFavorite)
+            .map(csvMappers.houseEntityListToHouseCsvListMapper::map)
 
     @CsvLoad<HouseCsv>(fileNamePrefix = HouseEntity.TABLE_NAME, contentType = HouseCsv::class)
     override fun loadHouses(houses: List<HouseCsv>) = flow {

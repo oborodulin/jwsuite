@@ -58,11 +58,17 @@ interface MembersRepository : CsvTransferableRepo {
     fun deleteMovementById(memberMovementId: UUID): Flow<UUID>
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractMembers(): Flow<List<MemberCsv>>
-    fun extractMemberCongregations(): Flow<List<MemberCongregationCrossRefCsv>>
-    fun extractMemberMovements(): Flow<List<MemberMovementCsv>>
+    fun extractMembers(username: String? = null, byFavorite: Boolean = false): Flow<List<MemberCsv>>
+    fun extractMemberCongregations(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberCongregationCrossRefCsv>>
+
+    fun extractMemberMovements(byFavorite: Boolean = false): Flow<List<MemberMovementCsv>>
     fun extractRoles(): Flow<List<RoleCsv>>
-    fun extractMemberRoles(): Flow<List<MemberRoleCsv>>
+    fun extractMemberRoles(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<MemberRoleCsv>>
+
     fun extractTransferObjects(): Flow<List<TransferObjectCsv>>
     fun extractRoleTransferObjects(): Flow<List<RoleTransferObjectCsv>>
 

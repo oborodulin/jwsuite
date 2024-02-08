@@ -10,18 +10,13 @@ import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_GROUP_CONGREGATION
-import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
-import com.oborodulin.jwsuite.domain.util.Constants.MR_TERRITORIES_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -132,6 +127,8 @@ interface GroupDao {
     @Query("UPDATE ${GroupEntity.TABLE_NAME} SET groupNum = groupNum + 1 WHERE groupNum >= :groupNum AND gCongregationsId = :congregationId")
     suspend fun updateGroupNum(congregationId: UUID, groupNum: Int)
 
+    // UPDATES TOTALS:
+    // totalGroups:
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalGroups = totalGroups + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
     suspend fun incTotalGroupsByCongregationId(congregationId: UUID, diff: Int = 1)
 

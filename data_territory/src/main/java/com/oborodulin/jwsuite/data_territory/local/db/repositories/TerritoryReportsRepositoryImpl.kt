@@ -143,8 +143,8 @@ class TerritoryReportsRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = TerritoryMemberReportEntity.TABLE_NAME)
-    override fun extractTerritoryReports() =
-        localTerritoryReportDataSource.getTerritoryReportEntities()
+    override fun extractTerritoryReports(username: String?, byFavorite: Boolean) =
+        localTerritoryReportDataSource.getTerritoryReportEntities(username, byFavorite)
             .map(csvMappers.territoryMemberReportEntityListToTerritoryMemberReportCsvListMapper::map)
 
     @CsvLoad<TerritoryMemberReportCsv>(

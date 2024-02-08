@@ -108,6 +108,9 @@ class TerritoriesRepositoryImpl @Inject constructor(
         localTerritoryDataSource.getTerritory(territoryId)
             .map(domainMappers.territoryViewToTerritoryMapper::map)
 
+    override fun getFavoriteTotals() = localTerritoryDataSource.getFavoriteTerritoryTotals()
+        .map(domainMappers.territoryTotalViewToTerritoryTotalsMapper::nullableMap)
+
     override fun save(territory: Territory) = flow {
         if (territory.id == null) {
             localTerritoryDataSource.insertTerritory(
@@ -158,17 +161,19 @@ class TerritoriesRepositoryImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     @CsvExtract(fileNamePrefix = TerritoryEntity.TABLE_NAME)
-    override fun extractTerritories() = localTerritoryDataSource.getTerritoryEntities()
-        .map(csvMappers.territoryEntityListToTerritoryCsvListMapper::map)
+    override fun extractTerritories(username: String?, byFavorite: Boolean) =
+        localTerritoryDataSource.getTerritoryEntities(username, byFavorite)
+            .map(csvMappers.territoryEntityListToTerritoryCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = CongregationTerritoryCrossRefEntity.TABLE_NAME)
-    override fun extractCongregationTerritories() =
-        localTerritoryDataSource.getCongregationTerritoryEntities()
+    override fun extractCongregationTerritories(username: String?, byFavorite: Boolean) =
+        localTerritoryDataSource.getCongregationTerritoryEntities(username, byFavorite)
             .map(csvMappers.congregationTerritoryCrossRefEntityListToCongregationTerritoryCrossRefCsvListMapper::map)
 
     @CsvExtract(fileNamePrefix = TerritoryMemberCrossRefEntity.TABLE_NAME)
-    override fun extractTerritoryMembers() = localTerritoryDataSource.getTerritoryMemberEntities()
-        .map(csvMappers.territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper::map)
+    override fun extractTerritoryMembers(username: String?, byFavorite: Boolean) =
+        localTerritoryDataSource.getTerritoryMemberEntities(username, byFavorite)
+            .map(csvMappers.territoryMemberCrossRefEntityListToTerritoryMemberCrossRefCsvListMapper::map)
 
     @CsvLoad<TerritoryCsv>(
         fileNamePrefix = TerritoryEntity.TABLE_NAME,

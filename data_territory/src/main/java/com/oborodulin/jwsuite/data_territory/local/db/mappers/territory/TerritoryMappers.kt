@@ -27,5 +27,7 @@ data class TerritoryMappers(
     val territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
     val territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
 
+    val territoryTotalViewToTerritoryTotalsMapper: TerritoryTotalViewToTerritoryTotalsMapper,
+
     val memberToMemberEntityMapper: MemberToMemberEntityMapper
 )

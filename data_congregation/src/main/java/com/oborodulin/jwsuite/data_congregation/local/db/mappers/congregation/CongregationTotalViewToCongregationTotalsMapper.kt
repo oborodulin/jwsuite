@@ -14,15 +14,9 @@ class CongregationTotalViewToCongregationTotalsMapper(
         totalGroups = input.totalGroups,
         totalMembers = input.totalMembers,
         totalFulltimeMembers = input.totalFulltimeMembers,
-        totalTerritories = input.totalTerritories,
-        totalTerritoryIssued = input.totalTerritoryIssued,
-        totalTerritoryProcessed = input.totalTerritoryProcessed,
         diffGroups = input.diffGroups,
         diffMembers = input.diffMembers,
-        diffFulltimeMembers = input.diffFulltimeMembers,
-        diffTerritories = input.diffTerritories,
-        diffTerritoryIssued = input.diffTerritoryIssued,
-        diffTerritoryProcessed = input.diffTerritoryProcessed
+        diffFulltimeMembers = input.diffFulltimeMembers
     )
 
     override fun nullableMap(input: CongregationTotalView?) = input?.let { map(it) }

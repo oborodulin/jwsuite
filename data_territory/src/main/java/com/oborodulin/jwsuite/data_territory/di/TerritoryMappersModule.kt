@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_territory.di
 
 import android.content.Context
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.FavoriteCongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
@@ -98,6 +99,7 @@ import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.Territor
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryToTerritoryEntityMapper
+import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryTotalViewToTerritoryTotalsMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryViewListToTerritoriesListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryViewToTerritoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.location.TerritoryLocationViewListToTerritoryLocationsListMapper
@@ -737,6 +739,12 @@ object TerritoryMappersModule {
     ): TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper =
         TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper(mapper = mapper)
 
+    // TerritoryTotalView:
+    @Singleton
+    @Provides
+    fun provideTerritoryTotalViewToTerritoryTotalsMapper(mapper: FavoriteCongregationViewToCongregationMapper): TerritoryTotalViewToTerritoryTotalsMapper =
+        TerritoryTotalViewToTerritoryTotalsMapper(mapper = mapper)
+
     @Singleton
     @Provides
     fun provideTerritoryMappers(
@@ -754,6 +762,7 @@ object TerritoryMappersModule {
         territoriesAtWorkViewListToTerritoriesListMapper: TerritoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper: TerritoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper: TerritoriesIdleViewListToTerritoriesListMapper,
+        territoryTotalViewToTerritoryTotalsMapper: TerritoryTotalViewToTerritoryTotalsMapper,
         memberToMemberEntityMapper: MemberToMemberEntityMapper
     ): TerritoryMappers = TerritoryMappers(
         territoryViewListToTerritoriesListMapper,
@@ -770,6 +779,7 @@ object TerritoryMappersModule {
         territoriesAtWorkViewListToTerritoriesListMapper,
         territoriesHandOutViewListToTerritoriesListMapper,
         territoriesIdleViewListToTerritoriesListMapper,
+        territoryTotalViewToTerritoryTotalsMapper,
         memberToMemberEntityMapper
     )
 

@@ -49,6 +49,7 @@ import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.SaveTerritoryRoomsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.DeleteTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.territory.GetFavoriteTerritoryTotalsUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetProcessAndLocationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryDetailsUseCase
@@ -153,6 +154,13 @@ object TerritoryUseCasesModule {
     fun provideProcessTerritoriesUseCase(
         configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
     ): ProcessTerritoriesUseCase = ProcessTerritoriesUseCase(configuration, territoriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetFavoriteTerritoryTotalsUseCase(
+        configuration: UseCase.Configuration, territoriesRepository: TerritoriesRepository
+    ): GetFavoriteTerritoryTotalsUseCase =
+        GetFavoriteTerritoryTotalsUseCase(configuration, territoriesRepository)
 
     // Territory Category:
     @Singleton

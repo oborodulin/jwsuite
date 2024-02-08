@@ -61,6 +61,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation_dashboard.R
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.CongregationTotalsUi
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.TerritoryTotalsUi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.time.OffsetDateTime
@@ -155,7 +156,7 @@ fun DashboardingScreen(
                                         TerritorySection(
                                             navController = appState.mainNavController,
                                             congregation = favoriteCongregation,
-                                            congregationTotals = dashboardingUi.congregationTotals
+                                            territoryTotals = dashboardingUi.territoryTotals
                                         )
 
                                     else -> {}
@@ -360,7 +361,7 @@ fun CongregationSection(
 fun TerritorySection(
     navController: NavHostController,
     congregation: CongregationUi,
-    congregationTotals: CongregationTotalsUi?
+    territoryTotals: TerritoryTotalsUi?
 ) {
     Card(
         modifier = Modifier
@@ -374,7 +375,7 @@ fun TerritorySection(
             title = stringResource(R.string.territories_title),
             sinceDate = congregation.lastVisitDate
         )
-        congregationTotals?.let { totals ->
+        territoryTotals?.let { totals ->
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 16.dp)
@@ -382,8 +383,8 @@ fun TerritorySection(
                 TotalsRow(
                     painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_territory_map_24,
                     subheadResId = R.string.total_territories_hint,
-                    totalValue = totals.totalGroups,
-                    diffTotal = totals.diffGroups
+                    totalValue = totals.totalTerritories,
+                    diffTotal = totals.diffTerritories
                 )
                 TotalsRow(
                     painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_hand_map_24,
@@ -419,9 +420,7 @@ fun PreviewCongregationSection() {
             TerritorySection(
                 navController = rememberNavController(),
                 congregation = CongregationViewModelImpl.previewUiModel(ctx),
-                congregationTotals = DashboardingViewModelImpl.previewCongregationTotalsModel(
-                    ctx
-                )
+                territoryTotals = DashboardingViewModelImpl.previewTerritoryTotalsModel(ctx)
             )
         }
     }

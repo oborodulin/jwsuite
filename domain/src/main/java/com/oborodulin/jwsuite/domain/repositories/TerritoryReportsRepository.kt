@@ -35,6 +35,9 @@ interface TerritoryReportsRepository : CsvTransferableRepo {
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    fun extractTerritoryReports(): Flow<List<TerritoryMemberReportCsv>>
+    fun extractTerritoryReports(
+        username: String? = null, byFavorite: Boolean = false
+    ): Flow<List<TerritoryMemberReportCsv>>
+
     fun loadTerritoryReports(territoryReports: List<TerritoryMemberReportCsv>): Flow<Int>
 }

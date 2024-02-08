@@ -134,11 +134,19 @@ class LocalMemberDataSourceImpl @Inject constructor(
         }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getMemberEntities() = memberDao.selectEntities()
-    override fun getMemberCongregationEntities() = memberDao.selectMemberCongregationEntities()
-    override fun getMemberMovementEntities() = memberDao.selectMemberMovementEntities()
+    override fun getMemberEntities(username: String?, byFavorite: Boolean) =
+        memberDao.selectEntities(username, byFavorite)
+
+    override fun getMemberCongregationEntities(username: String?, byFavorite: Boolean) =
+        memberDao.selectMemberCongregationEntities(username, byFavorite)
+
+    override fun getMemberMovementEntities(byFavorite: Boolean) =
+        memberDao.selectMemberMovementEntities(byFavorite)
+
     override fun getRoleEntities() = memberDao.selectRoleEntities()
-    override fun getMemberRoleEntities() = memberDao.selectMemberRoleEntities()
+    override fun getMemberRoleEntities(username: String?, byFavorite: Boolean) =
+        memberDao.selectMemberRoleEntities(username, byFavorite)
+
     override fun getTransferObjectEntities() = transferDao.selectEntities()
     override fun getRoleTransferObjectEntities() = transferDao.selectRoleTransferObjectEntities()
     override suspend fun loadMemberEntities(members: List<MemberEntity>) =
