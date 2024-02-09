@@ -73,6 +73,6 @@ class LocalGeoLocalityDistrictDataSourceImpl @Inject constructor(
 
     override suspend fun loadLocalityDistrictTlEntities(localityDistrictTls: List<GeoLocalityDistrictTlEntity>) =
         withContext(dispatcher) {
-            localityDistrictDao.insert(localityDistrictTls)
+            localityDistrictDao.insertTls(localityDistrictTls)
         }
 }

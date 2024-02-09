@@ -63,7 +63,7 @@ interface GeoRegionDistrictDao {
     suspend fun insert(regionDistricts: List<GeoRegionDistrictEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(regionDistrictTls: List<GeoRegionDistrictTlEntity>)
+    suspend fun insertTls(regionDistrictTls: List<GeoRegionDistrictTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg textContent: GeoRegionDistrictTlEntity)

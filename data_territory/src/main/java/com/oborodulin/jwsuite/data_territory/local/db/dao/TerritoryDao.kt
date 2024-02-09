@@ -327,7 +327,7 @@ interface TerritoryDao {
     suspend fun insert(vararg congregationTerritory: CongregationTerritoryCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(congregationTerritories: List<CongregationTerritoryCrossRefEntity>)
+    suspend fun insertCongregationTerritories(congregationTerritories: List<CongregationTerritoryCrossRefEntity>)
 
     suspend fun insert(
         congregation: CongregationEntity,
@@ -345,7 +345,7 @@ interface TerritoryDao {
     suspend fun insert(vararg territoryMember: TerritoryMemberCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(territoryMembers: List<TerritoryMemberCrossRefEntity>)
+    suspend fun insertMembers(territoryMembers: List<TerritoryMemberCrossRefEntity>)
 
     suspend fun insert(
         territory: TerritoryEntity,

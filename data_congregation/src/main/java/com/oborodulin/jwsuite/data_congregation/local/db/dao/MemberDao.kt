@@ -321,27 +321,27 @@ interface MemberDao {
     suspend fun insert(vararg memberCongregations: MemberCongregationCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(memberCongregations: List<MemberCongregationCrossRefEntity>)
+    suspend fun insertCongregations(memberCongregations: List<MemberCongregationCrossRefEntity>)
 
     //----------------------------- Roles:
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg roles: RoleEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(roles: List<RoleEntity>)
+    suspend fun insertRoles(roles: List<RoleEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberRoles: MemberRoleEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(memberRoles: List<MemberRoleEntity>)
+    suspend fun insertMemberRoles(memberRoles: List<MemberRoleEntity>)
 
     //----------------------------- Movements:
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberMovements: MemberMovementEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(memberMovements: List<MemberMovementEntity>)
+    suspend fun insertMovements(memberMovements: List<MemberMovementEntity>)
 
     //----------------------------- Member:
     suspend fun insert(

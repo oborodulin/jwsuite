@@ -65,6 +65,6 @@ class LocalGeoRegionDistrictDataSourceImpl @Inject constructor(
 
     override suspend fun loadRegionDistrictTlEntities(regionDistrictTls: List<GeoRegionDistrictTlEntity>) =
         withContext(dispatcher) {
-            regionDistrictDao.insert(regionDistrictTls)
+            regionDistrictDao.insertTls(regionDistrictTls)
         }
 }

@@ -35,11 +35,13 @@ import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
+import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
@@ -76,6 +78,7 @@ fun GeoScreen(
 ) {
     Timber.tag(TAG).d("GeoScreen(...) called")
     val appState = LocalAppState.current
+    val session = LocalSession.current
     // Action Bar:
     var actionBar: @Composable (() -> Unit)? by remember { mutableStateOf(null) }
     val onActionBarChange: (@Composable (() -> Unit)?) -> Unit = { actionBar = it }
@@ -279,6 +282,7 @@ fun GeoScreen(
                     },
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_locality_districts),
+                        userRoles = listOf(MemberRoleType.TERRITORIES.name),
                         onClick = { onTabChange(GeoTabType.LOCALITY_DISTRICTS) }
                     ) {
                         LocalitiesDistrictsWithMicrodistrictsAndStreetsView(
@@ -288,6 +292,7 @@ fun GeoScreen(
                     },
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_microdistricts),
+                        userRoles = listOf(MemberRoleType.TERRITORIES.name),
                         onClick = { onTabChange(GeoTabType.MICRODISTRICTS) }
                     ) {
                         MicrodistrictsWithStreetsView(
@@ -297,6 +302,7 @@ fun GeoScreen(
                     },
                     TabRowItem(
                         title = stringResource(R.string.geo_tab_streets),
+                        userRoles = listOf(MemberRoleType.TERRITORIES.name),
                         onClick = { onTabChange(GeoTabType.STREETS) }
                     ) {
                         StreetsWithLocalityDistrictsAndMicrodistrictsView(
@@ -305,7 +311,8 @@ fun GeoScreen(
                             streetsListViewModel = streetsListViewModel
                         )
                     }
-                )
+                ),
+                userRoles = session.userRoles.map { it.name }
             )
         }
     }

@@ -522,7 +522,7 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
-    fun provideTransferObjectMappers(
+    fun provideTransferObjectCsvMappers(
         transferObjectEntityListToTransferObjectCsvListMapper: TransferObjectEntityListToTransferObjectCsvListMapper,
         transferObjectCsvListToTransferObjectEntityListMapper: TransferObjectCsvListToTransferObjectEntityListMapper
     ): TransferObjectCsvMappers = TransferObjectCsvMappers(

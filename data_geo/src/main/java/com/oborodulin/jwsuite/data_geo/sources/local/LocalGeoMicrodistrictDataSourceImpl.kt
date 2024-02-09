@@ -73,6 +73,6 @@ class LocalGeoMicrodistrictDataSourceImpl @Inject constructor(
 
     override suspend fun loadMicrodistrictTlEntities(microdistrictTls: List<GeoMicrodistrictTlEntity>) =
         withContext(dispatcher) {
-            microdistrictDao.insert(microdistrictTls)
+            microdistrictDao.insertTls(microdistrictTls)
         }
 }

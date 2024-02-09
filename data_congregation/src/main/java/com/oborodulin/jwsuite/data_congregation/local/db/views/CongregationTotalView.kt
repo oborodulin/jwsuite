@@ -8,7 +8,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTo
     viewName = CongregationTotalView.VIEW_NAME,
     value = """
     SELECT c.*, ct.sumTotalGroups AS totalGroups, ct.sumTotalMembers AS totalMembers, ct.sumTotalFulltimeMembers AS totalFulltimeMembers,
-        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffTerritoryIssued, ctd.totalFulltimeMembers AS diffFulltimeMembers  
+        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffMembers, ctd.totalFulltimeMembers AS diffFulltimeMembers  
     FROM ${FavoriteCongregationView.VIEW_NAME} c 
         JOIN (SELECT ctlCongregationsId, SUM(totalGroups) AS sumTotalGroups, SUM(totalMembers) AS sumTotalMembers, SUM(totalFulltimeMembers) AS sumTotalFulltimeMembers
                 FROM ${CongregationTotalEntity.TABLE_NAME}

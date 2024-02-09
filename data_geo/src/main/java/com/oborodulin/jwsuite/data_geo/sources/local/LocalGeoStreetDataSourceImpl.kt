@@ -121,6 +121,6 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
 
     override suspend fun loadStreetTlEntities(streetTls: List<GeoStreetTlEntity>) =
         withContext(dispatcher) {
-            streetDao.insert(streetTls)
+            streetDao.insertTls(streetTls)
         }
 }

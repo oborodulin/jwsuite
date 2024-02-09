@@ -120,7 +120,7 @@ interface GeoMicrodistrictDao {
     suspend fun insert(microdistricts: List<GeoMicrodistrictEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(microdistrictTls: List<GeoMicrodistrictTlEntity>)
+    suspend fun insertTls(microdistrictTls: List<GeoMicrodistrictTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoMicrodistrictTlEntity)

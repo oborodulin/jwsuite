@@ -93,7 +93,7 @@ fun DashboardingScreen(
             BarActionItem(
                 iconPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_geo_24,
                 cntDescResId = NavRoutes.Geo.titleResId,
-                userRoles = listOf(MemberRoleType.TERRITORIES.name)
+                userRoles = listOf(MemberRoleType.ADMIN.name, MemberRoleType.TERRITORIES.name)
             ) { appState.mainNavigate(NavRoutes.Geo.route) },
             BarActionItem(
                 iconImageVector = Icons.Outlined.Settings,

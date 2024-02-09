@@ -12,11 +12,3 @@ fun Date.dateToString(format: String): String {
     //return the formatted date string
     return dateFormatter.format(this)
 }
-
-fun Double.is5PercentUp(): Boolean {
-    return this >= 5
-}
-
-fun Double.is5PercentDown(): Boolean {
-    return this <= -5
-}

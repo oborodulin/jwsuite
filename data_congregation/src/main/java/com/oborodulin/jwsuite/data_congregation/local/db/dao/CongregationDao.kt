@@ -120,7 +120,7 @@ interface CongregationDao {
     suspend fun insert(congregationTotal: CongregationTotalEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(congregationTotals: List<CongregationTotalEntity>)
+    suspend fun insertTotals(congregationTotals: List<CongregationTotalEntity>)
 
     // UPDATES:
     @Update

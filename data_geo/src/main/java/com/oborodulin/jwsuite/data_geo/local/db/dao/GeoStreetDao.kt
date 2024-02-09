@@ -154,7 +154,7 @@ interface GeoStreetDao {
     suspend fun insert(streets: List<GeoStreetEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(streetTls: List<GeoStreetTlEntity>)
+    suspend fun insertTls(streetTls: List<GeoStreetTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoStreetTlEntity)

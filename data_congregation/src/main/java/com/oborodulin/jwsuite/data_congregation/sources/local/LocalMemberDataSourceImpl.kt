@@ -156,21 +156,21 @@ class LocalMemberDataSourceImpl @Inject constructor(
 
     override suspend fun loadMemberCongregationEntities(memberCongregations: List<MemberCongregationCrossRefEntity>) =
         withContext(dispatcher) {
-            memberDao.insert(memberCongregations)
+            memberDao.insertCongregations(memberCongregations)
         }
 
     override suspend fun loadMemberMovementEntities(memberMovements: List<MemberMovementEntity>) =
         withContext(dispatcher) {
-            memberDao.insert(memberMovements)
+            memberDao.insertMovements(memberMovements)
         }
 
     override suspend fun loadRoleEntities(roles: List<RoleEntity>) = withContext(dispatcher) {
-        memberDao.insert(roles)
+        memberDao.insertRoles(roles)
     }
 
     override suspend fun loadMemberRoleEntities(memberRoles: List<MemberRoleEntity>) =
         withContext(dispatcher) {
-            memberDao.insert(memberRoles)
+            memberDao.insertMemberRoles(memberRoles)
         }
 
     override suspend fun loadTransferObjectEntities(transferObjects: List<TransferObjectEntity>) =
@@ -180,6 +180,6 @@ class LocalMemberDataSourceImpl @Inject constructor(
 
     override suspend fun loadRoleTransferObjectEntities(roleTransferObjects: List<RoleTransferObjectEntity>) =
         withContext(dispatcher) {
-            transferDao.insert(roleTransferObjects)
+            transferDao.insertRoleTransferObjects(roleTransferObjects)
         }
 }

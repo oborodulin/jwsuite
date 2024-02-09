@@ -83,7 +83,7 @@ interface GeoLocalityDao {
     suspend fun insert(localities: List<GeoLocalityEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(localityTls: List<GeoLocalityTlEntity>)
+    suspend fun insertTls(localityTls: List<GeoLocalityTlEntity>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(vararg textContent: GeoLocalityTlEntity)

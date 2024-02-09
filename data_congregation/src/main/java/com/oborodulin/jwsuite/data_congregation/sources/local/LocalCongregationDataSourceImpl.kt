@@ -73,6 +73,6 @@ class LocalCongregationDataSourceImpl @Inject constructor(
 
     override suspend fun loadCongregationTotalEntities(congregationTotals: List<CongregationTotalEntity>) =
         withContext(dispatcher) {
-            congregationDao.insert(congregationTotals)
+            congregationDao.insertTotals(congregationTotals)
         }
 }

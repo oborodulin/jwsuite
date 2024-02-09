@@ -175,11 +175,11 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
 
     override suspend fun loadCongregationTerritoryEntities(congregationTerritories: List<CongregationTerritoryCrossRefEntity>) =
         withContext(dispatcher) {
-            territoryDao.insert(congregationTerritories)
+            territoryDao.insertCongregationTerritories(congregationTerritories)
         }
 
     override suspend fun loadTerritoryMemberEntities(territoryMembers: List<TerritoryMemberCrossRefEntity>) =
         withContext(dispatcher) {
-            territoryDao.insert(territoryMembers)
+            territoryDao.insertMembers(territoryMembers)
         }
 }

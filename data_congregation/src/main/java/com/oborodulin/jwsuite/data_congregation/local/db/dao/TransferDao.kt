@@ -113,7 +113,7 @@ interface TransferDao {
     suspend fun insert(vararg roleTransferObjects: RoleTransferObjectEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(roleTransferObjects: List<RoleTransferObjectEntity>)
+    suspend fun insertRoleTransferObjects(roleTransferObjects: List<RoleTransferObjectEntity>)
 
     // UPDATES:
     @Update
