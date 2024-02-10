@@ -1,5 +1,6 @@
 <resources>
     <!--Строковые выражения -->
+    <string name="since_expr">с</string>
     <string name="including_expr">в т.ч.</string>
     <string name="private_sector_expr">ч/с</string>
     <string name="even_expr">чётн</string>
@@ -29,6 +30,45 @@
     <string name="param_name_territory_idle_period">Период отстоя участка, мес.</string>
     <string name="param_name_territory_rooms_limit">Макс. кол-во квартир участка, кв.</string>
     <string name="param_name_territory_max_rooms">Макс. кол-во квартир в доме, кв.</string>
+
+    <!--СУЩНОСТИ ПРИЛОЖЕНИЯ-->
+    <string name="app_setting_entity_desc">Настройки</string>
+    <!--География-->
+    <string name="geo_region_entity_desc">Области</string>
+    <string name="geo_region_tl_entity_desc">Области</string>
+    <string name="geo_region_district_entity_desc">Районы областей</string>
+    <string name="geo_region_district_tl_entity_desc">Районы областей</string>
+    <string name="geo_locality_entity_desc">Населённые пункты</string>
+    <string name="geo_locality_tl_entity_desc">Населённые пункты</string>
+    <string name="geo_locality_district_entity_desc">Районы населённых пунктов</string>
+    <string name="geo_locality_district_tl_entity_desc">Районы населённых пунктов</string>
+    <string name="geo_microdistrict_entity_desc">Микрорайоны</string>
+    <string name="geo_microdistrict_tl_entity_desc">Микрорайоны</string>
+    <string name="geo_street_entity_desc">Улицы</string>
+    <string name="geo_street_tl_entity_desc">Улицы</string>
+    <string name="geo_street_district_entity_desc">Районы улиц</string>
+    <!--Собрания-->
+    <string name="congregation_entity_desc">Собрания</string>
+    <string name="congregation_total_entity_desc">Итоги по собраниям</string>
+    <string name="group_entity_desc">Группы</string>
+    <string name="member_congregation_cross_ref_entity_desc">Возвещатели собраний</string>
+    <string name="member_entity_desc">Возвещатели</string>
+    <string name="member_movement_entity_desc">Назначения возвещателей</string>
+    <string name="member_role_entity_desc">Роли возвещателей</string>
+    <string name="role_entity_desc">Роли</string>
+    <string name="role_transfer_object_entity_desc">Объекты передачи ролей</string>
+    <string name="transfer_object_entity_desc">Объекты передачи</string>
+    <!--Участки-->
+    <string name="congregation_territory_cross_ref_entity_desc">Участки собраний</string>
+    <string name="entrance_entity_desc">Подъезды</string>
+    <string name="floor_entity_desc">Этажи</string>
+    <string name="house_entity_desc">Дома</string>
+    <string name="room_entity_desc">Квартиры</string>
+    <string name="territory_category_entity_desc">Категории участков</string>
+    <string name="territory_entity_desc">Участки</string>
+    <string name="territory_member_cross_ref_entity_desc">Назначения участков</string>
+    <string name="territory_member_report_entity_desc">Отчёты по участкам</string>
+    <string name="territory_street_entity_desc">Улицы участков</string>
 
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>

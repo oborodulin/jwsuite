@@ -155,7 +155,7 @@ class AppSettingViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: AppSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(AppSettingsUiModel) called: uiModel = %s", uiModel)
         initStateValue(
             AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
             uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue

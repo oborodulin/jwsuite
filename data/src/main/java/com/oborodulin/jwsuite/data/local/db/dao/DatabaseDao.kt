@@ -10,12 +10,13 @@ import kotlinx.coroutines.flow.flowOf
 @Dao
 interface DatabaseDao {
     // READS:
+    // https://commonsware.com/AndroidArch/pages/chap-rxroom-006
     @RawQuery
     fun dataTables(supportSQLiteQuery: SupportSQLiteQuery): List<String>
     fun findDataTables(): Flow<List<String>> {
         val query = """
     SELECT name AS tableName FROM sqlite_schema 
-    WHERE type ='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'android_%'  AND name NOT LIKE '%master%'
+    WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'android_%' AND name NOT LIKE '%master%'
     ORDER BY rootpage
     """
         return flowOf(dataTables(SimpleSQLiteQuery(query, arrayOf<String>())))

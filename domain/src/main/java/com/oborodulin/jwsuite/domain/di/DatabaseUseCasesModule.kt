@@ -26,8 +26,9 @@ object DatabaseUseCasesModule {
     fun provideCsvExportUseCase(
         @ApplicationContext ctx: Context,
         configuration: UseCase.Configuration,
-        exportService: ExportService
-    ): CsvExportUseCase = CsvExportUseCase(ctx, configuration, exportService)
+        exportService: ExportService,
+        databaseRepository: DatabaseRepository
+    ): CsvExportUseCase = CsvExportUseCase(ctx, configuration, exportService, databaseRepository)
 
     @Singleton
     @Provides

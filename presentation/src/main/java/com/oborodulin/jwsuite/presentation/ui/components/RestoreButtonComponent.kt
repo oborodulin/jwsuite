@@ -11,10 +11,10 @@ import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
 import com.oborodulin.jwsuite.presentation.R
 
-private const val TAG = "Presentation.ReceiveButtonComponent"
+private const val TAG = "Presentation.RestoreButtonComponent"
 
 @Composable
-fun ReceiveButtonComponent(
+fun RestoreButtonComponent(
     modifier: Modifier = Modifier, enabled: Boolean = false, onClick: () -> Unit = {}
 ) {
     ButtonComponent(
@@ -22,9 +22,9 @@ fun ReceiveButtonComponent(
             .padding(end = 8.dp)
             .then(modifier),
         enabled = enabled,
-        painterResId = R.drawable.ic_receive_24,
-        textResId = R.string.btn_receive_lbl,
-        contentDescriptionResId = R.string.btn_receive_cnt_desc,
+        painterResId = R.drawable.ic_restore_24,
+        textResId = R.string.btn_restore_lbl,
+        contentDescriptionResId = R.string.btn_restore_cnt_desc,
         onClick = onClick
     )
 }
@@ -32,10 +32,10 @@ fun ReceiveButtonComponent(
 @Preview(name = "Night Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewReceiveButtonComponentEnabled() {
+fun PreviewRestoreButtonComponentEnabled() {
     HomeComposableTheme {
         Surface {
-            ReceiveButtonComponent(enabled = true, onClick = {})
+            RestoreButtonComponent(enabled = true, onClick = {})
         }
     }
 }
@@ -43,10 +43,10 @@ fun PreviewReceiveButtonComponentEnabled() {
 @Preview(name = "Night Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewReceiveButtonComponentDisabled() {
+fun PreviewRestoreButtonComponentDisabled() {
     HomeComposableTheme {
         Surface {
-            ReceiveButtonComponent(enabled = false, onClick = {})
+            RestoreButtonComponent(enabled = false, onClick = {})
         }
     }
 }

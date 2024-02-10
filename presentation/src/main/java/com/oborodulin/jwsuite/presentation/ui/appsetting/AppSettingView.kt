@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,10 +38,12 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -48,14 +51,20 @@ import com.oborodulin.home.common.ui.components.datatable.SimpleDataTableCompone
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation.ui.components.BackupButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.ReceiveButtonComponent
+import com.oborodulin.jwsuite.presentation.ui.components.RestoreButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SendButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutConfirmDialogComponent
+import com.oborodulin.jwsuite.presentation.ui.database.DatabaseUiAction
+import com.oborodulin.jwsuite.presentation.ui.database.DatabaseViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
@@ -76,7 +85,8 @@ fun AppSettingView(
     modifier: Modifier = Modifier,
     appSettingsUiModel: AppSettingsUiModel,
     appSettingViewModel: AppSettingViewModel,//Impl = hiltViewModel()
-    sessionViewModel: SessionViewModel//Impl = hiltViewModel()
+    sessionViewModel: SessionViewModel,//Impl = hiltViewModel()
+    databaseViewModel: DatabaseViewModelImpl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("AppSettingView(...) called")
     val session = LocalSession.current
@@ -244,7 +254,11 @@ fun AppSettingView(
             horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
         ) {
             if (isSendButtonShow) {
-                SendButtonComponent(modifier = Modifier.weight(1f).alignByBaseline())
+                SendButtonComponent(
+                    modifier = Modifier
+                        .weight(1f)
+                        .alignByBaseline()
+                )
             }
             ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
         }
@@ -254,38 +268,55 @@ fun AppSettingView(
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.app_version_hint))
-                withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                    append("\n${appSettingsUiModel.appVersionName}")
+        Row {
+            Column {
+                Text(
+                    buildAnnotatedString {
+                        append(stringResource(R.string.app_version_hint))
+                        withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                            append("\n${appSettingsUiModel.appVersionName} (${stringResource(R.string.famework_api_version_hint)}${appSettingsUiModel.frameworkVersion})")
+                        }
+                    }, modifier = Modifier.padding(8.dp)
+                )
+                Text(
+                    buildAnnotatedString {
+                        append(stringResource(R.string.database_version_hint))
+                        withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                            append("\n${appSettingsUiModel.dbVersion} (${stringResource(R.string.sqlite_version_hint)}${appSettingsUiModel.sqliteVersion})")
+                        }
+                    }, modifier = Modifier.padding(8.dp)
+                )
+            }
+            Column {
+                BackupButtonComponent(
+                    enabled = true,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    Timber.tag(TAG).d("AppSettingView: Backup Button click...")
+                    databaseViewModel.submitAction(DatabaseUiAction.Backup)
                 }
-            }, modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.famework_api_hint))
-                withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                    append("\n${appSettingsUiModel.frameworkVersion}")
+                RestoreButtonComponent(
+                    enabled = true,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    Timber.tag(TAG).d("AppSettingView: Restore Button click...")
+                    databaseViewModel.submitAction(DatabaseUiAction.Restore)
                 }
-            }, modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.sqlite_hint))
-                withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                    append("\n${appSettingsUiModel.sqliteVersion}")
+                databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+                    if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                    CommonScreen(state = state) { databaseUi ->
+                        if (databaseUi.isDone.not()) {
+                            Text(
+                                text = databaseUi.entityDesc,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                    }
                 }
-            }, modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.database_hint))
-                withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                    append("\n${appSettingsUiModel.dbVersion}")
-                }
-            }, modifier = Modifier.padding(8.dp)
-        )
+            }
+        }
         Divider(Modifier.fillMaxWidth())
         if (session.containsRole(MemberRoleType.TERRITORIES)) {
             Text(

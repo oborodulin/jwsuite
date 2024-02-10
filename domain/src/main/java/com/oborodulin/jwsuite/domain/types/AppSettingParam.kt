@@ -8,6 +8,7 @@ enum class AppSettingParam {
     MONTH_MU,
     YEAR_MU,
     PERSON_NUM_MU,
+    DATABASE_BACKUP_PERIOD,             // DAY, WEEK, MONTH
     TERRITORY_BUSINESS_MARK,
     TERRITORY_PROCESSING_PERIOD,        // 12 months
     TERRITORY_AT_HAND_PERIOD,           // 4 months

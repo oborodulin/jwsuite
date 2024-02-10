@@ -51,11 +51,11 @@ class DataTransmissionUseCase(
                     )
                     if (extractMethod.returnType is Flow<*>) {
                         // get and transformation data to exportable type
-                        val paramUsername = when (tableName.value) {
+                        val paramUsername = when (tableName.value.second) {
                             true -> username
                             false -> null
                         }
-                        val paramByFavorite = tableName.value.not()
+                        val paramByFavorite = tableName.value.second.not()
                         val extractData = extractMethod.parameters.getOrNull(0)?.let { param1 ->
                             Timber.tag(TAG).d(
                                 "CSV Data Transmission -> %s: param1.type = %s",
@@ -114,16 +114,28 @@ class DataTransmissionUseCase(
                                 // handle error here
                                 throw UseCaseException.DataTransmissionException(it)
                             }.map {
-                                emit(Response(csvFilePrefix = csvFilePrefix, isSuccess = it))
+                                emit(
+                                    Response(
+                                        csvFilePrefix = csvFilePrefix,
+                                        entityDesc = tableName.value.first,
+                                        isSuccess = it
+                                    )
+                                )
                             }
                         }
                     }
                 }
             }
+        Response(isDone = true)
     }
 
     data class Request(val memberId: UUID? = null, val memberRoleType: MemberRoleType? = null) :
         UseCase.Request
 
-    data class Response(val csvFilePrefix: String, val isSuccess: Boolean) : UseCase.Response
+    data class Response(
+        val csvFilePrefix: String = "",
+        val entityDesc: String = "",
+        val isSuccess: Boolean = false,
+        val isDone: Boolean = false
+    ) : UseCase.Response
 }

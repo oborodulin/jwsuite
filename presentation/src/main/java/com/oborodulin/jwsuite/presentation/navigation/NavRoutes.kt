@@ -134,6 +134,14 @@ import java.util.UUID
 //                  <a href="https://www.flaticon.com/free-icons/wc" title="wc icons">Wc icons created by Icon Mela - Flaticon</a>
 // ic_add_house.png - https://www.flaticon.com/authors/edi-prast
 //                  <a href="https://www.flaticon.com/free-icons/real-estate" title="real estate icons">Real estate icons created by Edi Prast - Flaticon</a>
+// ic_receive.png - https://www.flaticon.com/authors/heisenberg-jr
+//                  <a href="https://www.flaticon.com/free-icons/ui" title="ui icons">Ui icons created by heisenberg_jr - Flaticon</a>
+// ic_backup.png - https://www.flaticon.com/authors/aquariid
+//                  <a href="https://www.flaticon.com/free-icons/mysql" title="mysql icons">Mysql icons created by AquariiD - Flaticon</a>
+// ic_restore.png - https://www.flaticon.com/authors/aquariid
+//                  <a href="https://www.flaticon.com/free-icons/servers" title="servers icons">Servers icons created by AquariiD - Flaticon</a>
+// ic_synchronizing.png - https://www.flaticon.com/authors/ayub-irawan
+//                    <a href="https://www.flaticon.com/free-icons/sync" title="sync icons">Sync icons created by Ayub Irawan - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 

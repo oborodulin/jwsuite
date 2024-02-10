@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.usecases.db
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
+import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
 import com.oborodulin.jwsuite.domain.services.ExportService
 import com.oborodulin.jwsuite.domain.services.Exportable
 import com.oborodulin.jwsuite.domain.services.Exports
@@ -25,15 +26,18 @@ private const val TAG = "Domain.CsvExportUseCase"
 class CsvExportUseCase(
     private val ctx: Context,
     configuration: Configuration,
-    private val exportService: ExportService
+    private val exportService: ExportService,
+    private val databaseRepository: DatabaseRepository
 ) : UseCase<CsvExportUseCase.Request, CsvExportUseCase.Response>(configuration) {
     override fun process(request: Request) = flow {
+        val dataTables = databaseRepository.orderedDataTableNames().first()
         exportService.csvRepositoryExtracts().forEach { callables ->
             val csvFilePrefix = callables.key.fileNamePrefix
             val extractMethod = callables.value
+            val entityDesc = dataTables[csvFilePrefix]
             Timber.tag(TAG).d(
-                "CSV Exporting -> %s: csvFilePrefix = %s",
-                extractMethod.name, csvFilePrefix
+                "CSV Exporting -> %s: csvFilePrefix = %s, entityDesc = %s",
+                extractMethod.name, csvFilePrefix, entityDesc
             )
             if (extractMethod.returnType is Flow<*>) {
                 // get and transformation data to exportable type
@@ -58,7 +62,13 @@ class CsvExportUseCase(
                         // handle error here
                         throw UseCaseException.ExportException(it)
                     }.map {
-                        emit(Response(csvFilePrefix = csvFilePrefix, isSuccess = it))
+                        emit(
+                            Response(
+                                csvFilePrefix = csvFilePrefix,
+                                entityDesc = entityDesc.orEmpty(),
+                                isSuccess = it
+                            )
+                        )
                     }/*.collect { _ ->
             // do anything on success
             //_exportCsvState.value = ViewState.Success(emptyList())
@@ -67,8 +77,14 @@ class CsvExportUseCase(
                 }
             }
         }
+        emit(Response(isDone = true))
     }
 
     data object Request : UseCase.Request
-    data class Response(val csvFilePrefix: String, val isSuccess: Boolean) : UseCase.Response
+    data class Response(
+        val csvFilePrefix: String = "",
+        val entityDesc: String = "",
+        val isSuccess: Boolean = false,
+        val isDone: Boolean = false
+    ) : UseCase.Response
 }

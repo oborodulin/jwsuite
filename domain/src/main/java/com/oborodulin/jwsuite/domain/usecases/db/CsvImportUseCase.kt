@@ -27,7 +27,8 @@ class CsvImportUseCase(
     override fun process(request: Request) = flow {
         var importResult = false
         databaseRepository.orderedDataTableNames().first().forEach { tableName ->
-            importService.csvRepositoryLoads(tableName).forEach { callables ->
+            Timber.tag(TAG).d("CSV Importing: tableName = %s", tableName)
+            importService.csvRepositoryLoads(tableName.key).forEach { callables ->
                 val csvFilePrefix = callables.key.fileNamePrefix
                 val contentType = callables.key.contentType
                 val loadMethod = callables.value
@@ -46,30 +47,41 @@ class CsvImportUseCase(
                     throw UseCaseException.ImportException(it)
                 }.first()
                 if (importList.isNotEmpty() && loadMethod.returnType is Flow<*>) {
-                    // transformation data to importable type and load
-                    val loadListSize = (loadMethod.call(importList) as Flow<*>).first()
-                    if (loadListSize is Int) {
-                        importResult = loadListSize > 0
+                    loadMethod.parameters.getOrNull(0)?.let { param1 ->
                         Timber.tag(TAG).d(
-                            "CSV Importing -> %s: loadListSize = %s",
-                            loadMethod.name, loadListSize
+                            "CSV Importing -> %s: param1.type = %s",
+                            loadMethod.name, param1.type.toString()
                         )
-                        emit(
-                            Response(csvFilePrefix = csvFilePrefix, loadListSize = loadListSize)
-                        )
+                        // transformation data to importable type and load
+                        val loadListSize = (loadMethod.call(importList) as Flow<*>).first()
+                        if (loadListSize is Int) {
+                            importResult = loadListSize > 0
+                            Timber.tag(TAG).d(
+                                "CSV Importing -> %s: loadListSize = %s",
+                                loadMethod.name, loadListSize
+                            )
+                            emit(
+                                Response(
+                                    csvFilePrefix = csvFilePrefix,
+                                    entityDesc = tableName.value,
+                                    loadListSize = loadListSize,
+                                    isSuccess = importResult
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
-        if (importResult.not()) {
-            emit(Response(isSuccess = importResult))
-        }
+        emit(Response(isSuccess = importResult, isDone = true))
     }
 
     data object Request : UseCase.Request
     data class Response(
         val csvFilePrefix: String = "",
         val loadListSize: Int = 0,
-        val isSuccess: Boolean = true
+        val entityDesc: String = "",
+        val isSuccess: Boolean = false,
+        val isDone: Boolean = false
     ) : UseCase.Response
 }

@@ -49,6 +49,8 @@
     <string name="btn_login_lbl">Войти</string>
     <string name="btn_send_lbl">Передать</string>
     <string name="btn_receive_lbl">Принять</string>
+    <string name="btn_backup_lbl">Выгрузить</string>
+    <string name="btn_restore_lbl">Восстановить</string>
     <!--диалог-->
     <string name="dlg_confirm_signout_title">Выйти?</string>
 
@@ -88,9 +90,9 @@
     <string name="is_personal_header_hint">Персонально?</string>
     <string name="about_subheader">О ПРОГРАММЕ</string>
     <string name="app_version_hint">Версия ПО</string>
-    <string name="famework_api_hint">Версия Framework API</string>
-    <string name="sqlite_hint">Версия SQLite</string>
-    <string name="database_hint">Версия БД</string>
+    <string name="famework_api_version_hint">Framework API v.</string>
+    <string name="sqlite_version_hint">SQLite v.</string>
+    <string name="database_version_hint">Версия БД</string>
     <string name="territory_subheader">УЧАСТКИ</string>
     <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
     <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
@@ -129,7 +131,9 @@
     <string name="territory_max_rooms_empty_error">Укажите, пожалуйста, макс. кол-во квартир в доме</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
-    <string name="btn_signout_cnt_desc">Выйти</string>
-    <string name="btn_send_cnt_desc">Передать</string>
-    <string name="btn_receive_cnt_desc">Принять</string>
+    <string name="btn_signout_cnt_desc">Выйти из учётной записи</string>
+    <string name="btn_send_cnt_desc">Передать данные</string>
+    <string name="btn_receive_cnt_desc">Принять данные</string>
+    <string name="btn_backup_cnt_desc">Создать резервную копию данных</string>
+    <string name="btn_restore_cnt_desc">Восстановить данные из резервной копии</string>
 </resources>
