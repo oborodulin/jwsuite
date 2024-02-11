@@ -61,7 +61,7 @@ class FloorsRepositoryImpl @Inject constructor(
         this.emit(floor)
     }
 
-    override fun deleteById(floorId: UUID) = flow {
+    override fun delete(floorId: UUID) = flow {
         localFloorDataSource.deleteFloorById(floorId)
         this.emit(floorId)
     }

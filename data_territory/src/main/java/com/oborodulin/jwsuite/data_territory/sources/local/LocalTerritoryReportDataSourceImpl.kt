@@ -88,7 +88,7 @@ class LocalTerritoryReportDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getTerritoryReportEntities(username: String?, byFavorite: Boolean) =
-        territoryReportDao.selectEntities(username, byFavorite)
+        territoryReportDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadTerritoryReportEntities(territoryReports: List<TerritoryMemberReportEntity>) =
         withContext(dispatcher) {

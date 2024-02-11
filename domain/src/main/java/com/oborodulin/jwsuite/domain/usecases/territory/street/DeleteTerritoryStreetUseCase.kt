@@ -13,7 +13,7 @@ class DeleteTerritoryStreetUseCase(
     configuration
 ) {
     override fun process(request: Request): Flow<Response> {
-        return territoryStreetsRepository.deleteById(request.territoryStreetId)
+        return territoryStreetsRepository.delete(request.territoryStreetId)
             .map {
                 Response
             }

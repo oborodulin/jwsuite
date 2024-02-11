@@ -62,7 +62,7 @@ class LocalTerritoryStreetDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getTerritoryStreetEntities(username: String?, byFavorite: Boolean) =
-        territoryStreetDao.selectEntities(username, byFavorite)
+        territoryStreetDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadTerritoryStreetEntities(territoryStreets: List<TerritoryStreetEntity>) =
         withContext(dispatcher) {

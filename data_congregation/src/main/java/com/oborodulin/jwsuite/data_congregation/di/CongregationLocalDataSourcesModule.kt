@@ -4,13 +4,18 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.RoleDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalCongregationDataSource
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalGroupDataSource
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalRoleDataSource
+import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalTransferDataSource
 import com.oborodulin.jwsuite.data_congregation.sources.local.LocalCongregationDataSourceImpl
 import com.oborodulin.jwsuite.data_congregation.sources.local.LocalGroupDataSourceImpl
 import com.oborodulin.jwsuite.data_congregation.sources.local.LocalMemberDataSourceImpl
+import com.oborodulin.jwsuite.data_congregation.sources.local.LocalRoleDataSourceImpl
+import com.oborodulin.jwsuite.data_congregation.sources.local.LocalTransferDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -38,7 +43,20 @@ object CongregationLocalDataSourcesModule {
     @Provides
     fun provideLocalMemberDataSource(
         memberDao: MemberDao,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalMemberDataSource = LocalMemberDataSourceImpl(memberDao, dispatcher)
+
+    @Singleton
+    @Provides
+    fun provideLocalRoleDataSource(
+        roleDao: RoleDao,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalRoleDataSource = LocalRoleDataSourceImpl(roleDao, dispatcher)
+
+    @Singleton
+    @Provides
+    fun provideLocalTransferDataSource(
         transferDao: TransferDao,
         @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalMemberDataSource = LocalMemberDataSourceImpl(memberDao, transferDao, dispatcher)
+    ): LocalTransferDataSource = LocalTransferDataSourceImpl(transferDao, dispatcher)
 }

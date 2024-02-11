@@ -16,7 +16,7 @@ interface GeoMicrodistrictsRepository : CsvTransferableRepo {
     fun get(microdistrictId: UUID): Flow<GeoMicrodistrict>
     fun save(microdistrict: GeoMicrodistrict): Flow<GeoMicrodistrict>
     fun delete(microdistrict: GeoMicrodistrict): Flow<GeoMicrodistrict>
-    fun deleteById(microdistrictId: UUID): Flow<UUID>
+    fun delete(microdistrictId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------

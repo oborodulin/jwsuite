@@ -72,7 +72,7 @@ class LocalHouseDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getHouseEntities(username: String?, byFavorite: Boolean) =
-        houseDao.selectEntities(username, byFavorite)
+        houseDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadHouseEntities(houses: List<HouseEntity>) =
         withContext(dispatcher) {

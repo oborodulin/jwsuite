@@ -1,0 +1,10 @@
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.role
+
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.transfer.RoleTransferObjectViewListToRoleTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectEntityListToTransferObjectsListMapper
+
+data class RoleMappers(
+    val roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
+    val transferObjectEntityListToTransferObjectsListMapper: TransferObjectEntityListToTransferObjectsListMapper,
+    val roleTransferObjectViewListToRoleTransferObjectsListMapper: RoleTransferObjectViewListToRoleTransferObjectsListMapper
+)

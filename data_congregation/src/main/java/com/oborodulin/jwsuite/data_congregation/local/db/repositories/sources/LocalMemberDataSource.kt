@@ -4,9 +4,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongrega
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
@@ -32,14 +30,12 @@ interface LocalMemberDataSource {
     fun getMemberRoles(pseudonym: String): Flow<List<MemberRoleView>>
 
     // Roles:
-    fun getAllRoles(): Flow<List<RoleEntity>>
     fun getRoles(pseudonym: String): Flow<List<RoleEntity>>
     fun getRolesForMember(memberId: UUID): Flow<List<RoleEntity>>
 
     // Transfer Objects:
-    fun getMemberTransferObjects(pseudonym: String): Flow<List<RoleTransferObjectView>>
-    fun getRoleTransferObjects(roleId: UUID): Flow<List<MemberRoleTransferObjectView>>
-    fun getTransferObjectsForRole(roleId: UUID): Flow<List<TransferObjectEntity>>
+    fun getRoleTransferObjects(pseudonym: String): Flow<List<RoleTransferObjectView>>
+    fun getMemberRoleTransferObjects(roleId: UUID): Flow<List<MemberRoleTransferObjectView>>
 
     // Member:
     fun getMember(memberId: UUID): Flow<MemberView>
@@ -61,7 +57,7 @@ interface LocalMemberDataSource {
     suspend fun deleteAllMembers()
 
     // Congregations:
-    // Roles:
+    // Member Roles:
     fun getMemberRole(memberRoleId: UUID): Flow<MemberRoleView>
     suspend fun insertMemberRole(memberRole: MemberRoleEntity)
     suspend fun updateMemberRole(memberRole: MemberRoleEntity)
@@ -69,11 +65,6 @@ interface LocalMemberDataSource {
 
     // Movements:
     suspend fun deleteMovementById(memberMovementId: UUID)
-
-    // Transfer Objects:
-    suspend fun insertRoleTransferObject(roleTransferObject: RoleTransferObjectEntity)
-    suspend fun updateRoleTransferObject(roleTransferObject: RoleTransferObjectEntity)
-    suspend fun deleteRoleTransferObjectById(roleTransferObjectId: UUID)
 
     // -------------------------------------- CSV Transfer --------------------------------------
     fun getMemberEntities(
@@ -85,18 +76,12 @@ interface LocalMemberDataSource {
     ): Flow<List<MemberCongregationCrossRefEntity>>
 
     fun getMemberMovementEntities(byFavorite: Boolean = false): Flow<List<MemberMovementEntity>>
-    fun getRoleEntities(): Flow<List<RoleEntity>>
     fun getMemberRoleEntities(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberRoleEntity>>
 
-    fun getTransferObjectEntities(): Flow<List<TransferObjectEntity>>
-    fun getRoleTransferObjectEntities(): Flow<List<RoleTransferObjectEntity>>
     suspend fun loadMemberEntities(members: List<MemberEntity>)
     suspend fun loadMemberCongregationEntities(memberCongregations: List<MemberCongregationCrossRefEntity>)
     suspend fun loadMemberMovementEntities(memberMovements: List<MemberMovementEntity>)
-    suspend fun loadRoleEntities(roles: List<RoleEntity>)
     suspend fun loadMemberRoleEntities(memberRoles: List<MemberRoleEntity>)
-    suspend fun loadTransferObjectEntities(transferObjects: List<TransferObjectEntity>)
-    suspend fun loadRoleTransferObjectEntities(roleTransferObjects: List<RoleTransferObjectEntity>)
 }

@@ -71,7 +71,7 @@ class LocalEntranceDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getEntranceEntities(username: String?, byFavorite: Boolean) =
-        entranceDao.selectEntities(username, byFavorite)
+        entranceDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadEntranceEntities(entrances: List<EntranceEntity>) =
         withContext(dispatcher) {

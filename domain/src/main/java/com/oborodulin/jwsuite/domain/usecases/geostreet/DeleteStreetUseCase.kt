@@ -10,7 +10,7 @@ class DeleteStreetUseCase(
     configuration: Configuration, private val streetsRepository: GeoStreetsRepository
 ) : UseCase<DeleteStreetUseCase.Request, DeleteStreetUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return streetsRepository.deleteById(request.streetId)
+        return streetsRepository.delete(request.streetId)
             .map {
                 Response
             }

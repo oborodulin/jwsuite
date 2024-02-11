@@ -16,7 +16,7 @@ interface EntrancesRepository : CsvTransferableRepo {
     fun isExistsInHouse(houseId: UUID): Flow<Boolean>
     fun save(entrance: Entrance): Flow<Entrance>
     fun delete(entrance: Entrance): Flow<Entrance>
-    fun deleteById(entranceId: UUID): Flow<UUID>
+    fun delete(entranceId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     fun getNextNum(houseId: UUID): Flow<Int>

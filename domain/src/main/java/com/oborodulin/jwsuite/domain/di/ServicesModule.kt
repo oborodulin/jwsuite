@@ -13,11 +13,13 @@ import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import com.oborodulin.jwsuite.domain.repositories.HousesRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
+import com.oborodulin.jwsuite.domain.repositories.RolesRepository
 import com.oborodulin.jwsuite.domain.repositories.RoomsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryCategoriesRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryReportsRepository
 import com.oborodulin.jwsuite.domain.repositories.TerritoryStreetsRepository
+import com.oborodulin.jwsuite.domain.repositories.TransferRepository
 import com.oborodulin.jwsuite.domain.services.ExportService
 import com.oborodulin.jwsuite.domain.services.ImportService
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
@@ -39,6 +41,8 @@ object ServicesModule {
         congregationsRepository: CongregationsRepository,
         groupsRepository: GroupsRepository,
         membersRepository: MembersRepository,
+        rolesRepository: RolesRepository,
+        transferRepository: TransferRepository,
         // Geo
         geoRegionsRepository: GeoRegionsRepository,
         geoRegionDistrictsRepository: GeoRegionDistrictsRepository,
@@ -64,6 +68,8 @@ object ServicesModule {
             congregationsRepository,
             groupsRepository,
             membersRepository,
+            rolesRepository,
+            transferRepository,
             // Geo
             geoRegionsRepository,
             geoRegionDistrictsRepository,

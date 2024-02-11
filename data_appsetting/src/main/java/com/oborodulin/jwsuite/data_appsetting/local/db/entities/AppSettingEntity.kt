@@ -65,6 +65,12 @@ data class AppSettingEntity(
             paramValue = ctx.resources.getString(R.string.person_unit)
         )
 
+        fun databaseBackupPeriodParam(ctx: Context) = defaultParam(
+            paramName = AppSettingParam.DATABASE_BACKUP_PERIOD,
+            paramValue = ctx.resources.getInteger(com.oborodulin.jwsuite.domain.R.integer.database_backup_period)
+                .toString()
+        )
+
         fun territoryBusinessMarkParam(ctx: Context) = defaultParam(
             paramName = AppSettingParam.TERRITORY_BUSINESS_MARK,
             paramValue = ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.territory_business_mark)

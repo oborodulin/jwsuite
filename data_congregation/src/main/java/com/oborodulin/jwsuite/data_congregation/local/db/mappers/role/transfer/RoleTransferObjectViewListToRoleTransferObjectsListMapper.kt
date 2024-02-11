@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.transfer
 
 import com.oborodulin.home.common.mapping.ListMapperImpl
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView

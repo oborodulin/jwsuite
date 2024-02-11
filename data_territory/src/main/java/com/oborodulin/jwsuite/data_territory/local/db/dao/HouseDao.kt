@@ -39,7 +39,7 @@ interface HouseDao {
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) AND (:byFavorite = $DB_FALSE OR ctv.ctTerritoriesId IS NOT NULL) 
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<HouseEntity>>
 

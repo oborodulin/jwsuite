@@ -12,7 +12,7 @@ class DeleteMicrodistrictUseCase(
 ) : UseCase<DeleteMicrodistrictUseCase.Request, DeleteMicrodistrictUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return microdistrictsRepository.deleteById(request.microdistrictId)
+        return microdistrictsRepository.delete(request.microdistrictId)
             .map {
                 Response
             }

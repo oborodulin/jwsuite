@@ -18,7 +18,7 @@ interface FloorsRepository : CsvTransferableRepo {
     fun isExistsInEntrance(entranceId: UUID): Flow<Boolean>
     fun save(floor: Floor): Flow<Floor>
     fun delete(floor: Floor): Flow<Floor>
-    fun deleteById(floorId: UUID): Flow<UUID>
+    fun delete(floorId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     fun getNextNum(houseId: UUID): Flow<Int>

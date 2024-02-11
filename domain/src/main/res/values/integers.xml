@@ -1,5 +1,7 @@
 <resources>
     <!--Параметры приложения -->
+    <!--д -->
+    <integer name="database_backup_period">7</integer>
     <!--год -->
     <integer name="territory_processing_period">12</integer>
     <!--мес -->

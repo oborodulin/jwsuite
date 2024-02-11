@@ -36,7 +36,7 @@ interface TerritoryStreetDao {
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) 
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryStreetEntity>>
 

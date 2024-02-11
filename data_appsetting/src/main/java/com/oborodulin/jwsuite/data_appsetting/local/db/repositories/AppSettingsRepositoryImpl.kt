@@ -54,7 +54,7 @@ class AppSettingsRepositoryImpl @Inject constructor(
         this.emit(setting)
     }
 
-    override fun deleteById(settingId: UUID) = flow {
+    override fun delete(settingId: UUID) = flow {
         localAppSettingDataSource.deleteAppSettingById(settingId)
         this.emit(settingId)
     }

@@ -22,6 +22,7 @@ import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.RoleDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTotalEntity
@@ -30,9 +31,9 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongrega
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationTotalView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
@@ -191,6 +192,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     abstract fun congregationDao(): CongregationDao
     abstract fun groupDao(): GroupDao
     abstract fun memberDao(): MemberDao
+    abstract fun roleDao(): RoleDao
     abstract fun transferDao(): TransferDao
 
     // Territory:
@@ -702,6 +704,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             // Person Num MU
             val personNumMu = AppSettingEntity.personNumMuParam(ctx)
             appSettingDao.insert(personNumMu)
+            // Database Backup Period
+            val databaseBackupPeriod = AppSettingEntity.databaseBackupPeriodParam(ctx)
+            appSettingDao.insert(databaseBackupPeriod)
             // Territory Business Mark
             val territoryBusinessMark = AppSettingEntity.territoryBusinessMarkParam(ctx)
             appSettingDao.insert(territoryBusinessMark)
@@ -724,7 +729,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             jsonLogger?.let {
                 Timber.tag(TAG)
                     .i(
-                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"territoryBusinessMark\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
+                        ": {\"params\": {\"lang\": {%s}, \"currencyCode\": {%s}, \"allItems\": {%s}, \"dayMu\": {%s}, \"monthMu\": {%s}, \"yearMu\": {%s}, \"personNumMu\": {%s}, \"databaseBackupPeriod\": {%s}, \"territoryBusinessMark\": {%s}, \"territoryProcessingPeriod\": {%s}, \"territoryAtHandPeriod\": {%s}, \"territoryRoomsLimit\": {%s}, \"territoryMaxRoomsParam\": {%s}, \"territoryIdlePeriod\": {%s}}",
                         it.encodeToString(lang),
                         it.encodeToString(currencyCode),
                         it.encodeToString(allItems),
@@ -732,6 +737,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                         it.encodeToString(monthMu),
                         it.encodeToString(yearMu),
                         it.encodeToString(personNumMu),
+                        it.encodeToString(databaseBackupPeriod),
                         it.encodeToString(territoryBusinessMark),
                         it.encodeToString(territoryProcessingPeriod),
                         it.encodeToString(territoryAtHandPeriod),
@@ -879,7 +885,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
         // CONGREGATION:
         private suspend fun insertDefMemberRole(db: JwSuiteDatabase, roleType: MemberRoleType):
                 RoleEntity {
-            val memberDao = db.memberDao()
+            val roleDao = db.roleDao()
             val role = when (roleType) {
                 MemberRoleType.ADMIN -> RoleEntity.adminRole(ctx)
                 MemberRoleType.USER -> RoleEntity.userRole(ctx)
@@ -887,7 +893,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 MemberRoleType.BILLS -> RoleEntity.billsRole(ctx)
                 MemberRoleType.REPORTS -> RoleEntity.reportsRole(ctx)
             }
-            memberDao.insert(role)
+            roleDao.insert(role)
             Timber.tag(TAG).i("Default role imported")
             jsonLogger?.let {
                 Timber.tag(TAG).i(": {\"role\": {%s}}", it.encodeToString(role))
@@ -1170,12 +1176,12 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             db: JwSuiteDatabase, role: RoleEntity, transferObject: TransferObjectEntity,
             isPersonalData: Boolean
         ): RoleTransferObjectEntity {
-            val transferDao = db.transferDao()
+            val roleDao = db.roleDao()
             val roleTransferObject = RoleTransferObjectEntity.defaultRoleTransferObject(
                 roleId = role.roleId, transferObjectId = transferObject.transferObjectId,
                 isPersonalData = isPersonalData
             )
-            transferDao.insert(roleTransferObject)
+            roleDao.insert(roleTransferObject)
             Timber.tag(TAG).i("TRANSFERS: Default Role Transfer Object imported")
             jsonLogger?.let { logger ->
                 Timber.tag(TAG).i(

@@ -12,7 +12,7 @@ class DeleteRegionUseCase(
 ) : UseCase<DeleteRegionUseCase.Request, DeleteRegionUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return regionsRepository.deleteById(request.regionId)
+        return regionsRepository.delete(request.regionId)
             .map {
                 Response
             }

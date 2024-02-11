@@ -15,7 +15,7 @@ interface CongregationsRepository : CsvTransferableRepo {
     fun getFavoriteTotals(): Flow<CongregationTotals?>
     fun save(congregation: Congregation): Flow<Congregation>
     fun delete(congregation: Congregation): Flow<Congregation>
-    fun deleteById(congregationId: UUID): Flow<UUID>
+    fun delete(congregationId: UUID): Flow<UUID>
     fun makeFavoriteById(congregationId: UUID): Flow<UUID>
     suspend fun deleteAll()
 

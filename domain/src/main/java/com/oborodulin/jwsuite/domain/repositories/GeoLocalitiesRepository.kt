@@ -14,7 +14,7 @@ interface GeoLocalitiesRepository : CsvTransferableRepo {
     fun get(localityId: UUID): Flow<GeoLocality>
     fun save(locality: GeoLocality): Flow<GeoLocality>
     fun delete(locality: GeoLocality): Flow<GeoLocality>
-    fun deleteById(localityId: UUID): Flow<UUID>
+    fun delete(localityId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------

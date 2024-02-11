@@ -12,7 +12,7 @@ class DeleteRegionDistrictUseCase(
 ) : UseCase<DeleteRegionDistrictUseCase.Request, DeleteRegionDistrictUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return regionDistrictsRepository.deleteById(request.regionDistrictId)
+        return regionDistrictsRepository.delete(request.regionDistrictId)
             .map {
                 Response
             }

@@ -6,16 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.RoomEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
 import com.oborodulin.jwsuite.data_territory.local.db.views.RoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
@@ -39,7 +35,7 @@ interface RoomDao {
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL) AND (:byFavorite = $DB_FALSE OR ctv.ctTerritoriesId IS NOT NULL) 
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<RoomEntity>>
 

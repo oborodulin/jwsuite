@@ -31,7 +31,7 @@ interface TerritoryReportsRepository : CsvTransferableRepo {
     fun save(territoryReportHouse: TerritoryReportHouse): Flow<TerritoryReportHouse>
     fun save(territoryReportRoom: TerritoryReportRoom): Flow<TerritoryReportRoom>
     fun delete(territoryMemberReport: TerritoryMemberReport): Flow<TerritoryMemberReport>
-    fun deleteById(territoryReportId: UUID): Flow<UUID>
+    fun delete(territoryReportId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------

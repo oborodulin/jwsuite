@@ -13,7 +13,7 @@ interface GroupsRepository : CsvTransferableRepo {
     fun get(groupId: UUID): Flow<Group>
     fun save(group: Group): Flow<Group>
     fun delete(group: Group): Flow<Group>
-    fun deleteById(groupId: UUID): Flow<UUID>
+    fun delete(groupId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------

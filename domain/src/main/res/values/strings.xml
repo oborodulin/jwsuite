@@ -30,6 +30,8 @@
     <string name="param_name_territory_idle_period">Период отстоя участка, мес.</string>
     <string name="param_name_territory_rooms_limit">Макс. кол-во квартир участка, кв.</string>
     <string name="param_name_territory_max_rooms">Макс. кол-во квартир в доме, кв.</string>
+    <!--Данные-->
+    <string name="param_name_database_backup_period">Период создания резервной копии данных, д</string>
 
     <!--СУЩНОСТИ ПРИЛОЖЕНИЯ-->
     <string name="app_setting_entity_desc">Настройки</string>

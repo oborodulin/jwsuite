@@ -38,7 +38,7 @@ interface GroupDao {
     GROUP BY groupId, groupNum, gCongregationsId
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<GroupEntity>>
 

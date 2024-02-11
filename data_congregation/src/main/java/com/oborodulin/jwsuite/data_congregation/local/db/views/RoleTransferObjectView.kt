@@ -2,8 +2,8 @@ package com.oborodulin.jwsuite.data_congregation.local.db.views
 
 import androidx.room.DatabaseView
 import androidx.room.Embedded
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
 
 @DatabaseView(
     viewName = RoleTransferObjectView.VIEW_NAME,

@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.entities
+package com.oborodulin.jwsuite.data_congregation.local.db.entities.role
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

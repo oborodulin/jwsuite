@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.OffsetDateTimeSerializer
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.util.UUID

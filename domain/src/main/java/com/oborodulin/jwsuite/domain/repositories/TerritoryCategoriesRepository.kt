@@ -11,7 +11,7 @@ interface TerritoryCategoriesRepository : CsvTransferableRepo {
     fun get(territoryCategoryId: UUID): Flow<TerritoryCategory>
     fun save(territoryCategory: TerritoryCategory): Flow<TerritoryCategory>
     fun delete(territoryCategory: TerritoryCategory): Flow<TerritoryCategory>
-    fun deleteById(territoryCategoryId: UUID): Flow<UUID>
+    fun delete(territoryCategoryId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------

@@ -24,7 +24,7 @@ interface GeoStreetsRepository : CsvTransferableRepo {
     fun get(streetId: UUID): Flow<GeoStreet>
     fun save(street: GeoStreet): Flow<GeoStreet>
     fun delete(street: GeoStreet): Flow<GeoStreet>
-    fun deleteById(streetId: UUID): Flow<UUID>
+    fun delete(streetId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // Districts:

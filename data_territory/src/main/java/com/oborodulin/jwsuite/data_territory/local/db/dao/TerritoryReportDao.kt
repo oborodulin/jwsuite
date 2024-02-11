@@ -15,7 +15,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportHouseView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportRoomView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryReportStreetView
-import com.oborodulin.jwsuite.domain.util.Constants
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +35,7 @@ interface TerritoryReportDao {
                                                         AND tmv.pseudonym = :username AND tmv.deliveryDate IS NULL
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL)
     """)
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryMemberReportEntity>>
 

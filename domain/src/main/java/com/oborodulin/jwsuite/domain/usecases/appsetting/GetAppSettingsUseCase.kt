@@ -19,7 +19,6 @@ class GetAppSettingsUseCase(
     private val sessionManagerRepository: SessionManagerRepository,
     private val membersRepository: MembersRepository
 ) : UseCase<GetAppSettingsUseCase.Request, GetAppSettingsUseCase.Response>(configuration) {
-
     override fun process(request: Request) = combine(
         appSettingsRepository.getAll(),
         sessionManagerRepository.username(),
@@ -27,7 +26,8 @@ class GetAppSettingsUseCase(
         databaseRepository.dbVersion()
     ) { settings, username, sqliteVersion, dbVersion ->
         val roles = membersRepository.getMemberRoles(username.orEmpty()).first()
-        val roleTransferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()
+        val roleTransferObjects =
+            membersRepository.getMemberTransferObjects(username.orEmpty()).first()
         val version = ctx.getAppVersion()
         Response(
             AppSettingsWithSession(

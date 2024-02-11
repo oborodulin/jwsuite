@@ -12,7 +12,7 @@ class DeleteLocalityUseCase(
 ) : UseCase<DeleteLocalityUseCase.Request, DeleteLocalityUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return localitiesRepository.deleteById(request.localityId)
+        return localitiesRepository.delete(request.localityId)
             .map {
                 Response
             }

@@ -10,7 +10,7 @@ class DeleteTerritoryUseCase(
     configuration: Configuration, private val territoriesRepository: TerritoriesRepository
 ) : UseCase<DeleteTerritoryUseCase.Request, DeleteTerritoryUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return territoriesRepository.deleteById(request.territoryId)
+        return territoriesRepository.delete(request.territoryId)
             .map {
                 Response
             }

@@ -12,7 +12,7 @@ class DeleteGroupUseCase(
 ) : UseCase<DeleteGroupUseCase.Request, DeleteGroupUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return groupsRepository.deleteById(request.groupId)
+        return groupsRepository.delete(request.groupId)
             .map {
                 Response
             }

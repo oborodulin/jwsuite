@@ -11,9 +11,9 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongrega
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleTransferObjectEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.TransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity

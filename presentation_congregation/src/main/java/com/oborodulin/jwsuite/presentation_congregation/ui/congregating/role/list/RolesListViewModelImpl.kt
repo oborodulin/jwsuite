@@ -10,8 +10,8 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
-import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.role.GetRolesUseCase
+import com.oborodulin.jwsuite.domain.usecases.role.RoleUseCases
 import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.RolesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ private const val TAG = "Congregating.RolesListViewModelImpl"
 
 @HiltViewModel
 class RolesListViewModelImpl @Inject constructor(
-    private val useCases: MemberUseCases,
+    private val useCases: RoleUseCases,
     private val converter: RolesListConverter
 ) : RolesListViewModel,
     ListViewModel<List<RolesListItem>, UiState<List<RolesListItem>>, RolesListUiAction, UiSingleEvent>() {

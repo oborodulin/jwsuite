@@ -35,7 +35,7 @@ interface CongregationDao {
     WHERE (:username IS NULL OR mcv.mcCongregationsId IS NOT NULL) AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<CongregationEntity>>
 
@@ -47,7 +47,7 @@ interface CongregationDao {
     WHERE (:username IS NULL OR mcv.mcCongregationsId IS NOT NULL)
     """
     )
-    fun selectTotalEntities(
+    fun findTotalEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<CongregationTotalEntity>>
 

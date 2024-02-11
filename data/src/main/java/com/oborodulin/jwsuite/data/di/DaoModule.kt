@@ -6,6 +6,7 @@ import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
+import com.oborodulin.jwsuite.data_congregation.local.db.dao.RoleDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
@@ -81,6 +82,10 @@ object DaoModule {
     @Singleton
     @Provides
     fun provideMemberDao(db: JwSuiteDatabase): MemberDao = db.memberDao()
+
+    @Singleton
+    @Provides
+    fun provideRoleDao(db: JwSuiteDatabase): RoleDao = db.roleDao()
 
     @Singleton
     @Provides

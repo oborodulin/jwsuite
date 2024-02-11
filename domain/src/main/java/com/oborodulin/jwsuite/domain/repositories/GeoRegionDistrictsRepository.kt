@@ -13,7 +13,7 @@ interface GeoRegionDistrictsRepository : CsvTransferableRepo {
     fun get(regionDistrictId: UUID): Flow<GeoRegionDistrict>
     fun save(regionDistrict: GeoRegionDistrict): Flow<GeoRegionDistrict>
     fun delete(regionDistrict: GeoRegionDistrict): Flow<GeoRegionDistrict>
-    fun deleteById(regionDistrictId: UUID): Flow<UUID>
+    fun delete(regionDistrictId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // -------------------------------------- CSV Transfer --------------------------------------

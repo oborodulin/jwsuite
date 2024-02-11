@@ -12,7 +12,7 @@ interface AppSettingsRepository : CsvTransferableRepo {
     fun save(setting: AppSetting): Flow<AppSetting>
     fun save(settings: List<AppSetting>): Flow<List<AppSetting>>
     fun delete(setting: AppSetting): Flow<AppSetting>
-    fun deleteById(settingId: UUID): Flow<UUID>
+    fun delete(settingId: UUID): Flow<UUID>
     fun delete(settings: List<AppSetting>): Flow<List<AppSetting>>
     suspend fun deleteAll()
 

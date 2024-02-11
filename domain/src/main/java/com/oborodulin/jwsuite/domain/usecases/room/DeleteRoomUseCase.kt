@@ -11,7 +11,7 @@ class DeleteRoomUseCase(
     private val roomsRepository: RoomsRepository
 ) : UseCase<DeleteRoomUseCase.Request, DeleteRoomUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return roomsRepository.deleteById(request.roomId).map { Response }
+        return roomsRepository.delete(request.roomId).map { Response }
     }
 
     data class Request(val roomId: UUID) : UseCase.Request

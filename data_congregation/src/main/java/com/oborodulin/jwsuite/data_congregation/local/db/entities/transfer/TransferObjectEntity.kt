@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.entities
+package com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer
 
 import android.content.Context
 import androidx.room.Entity

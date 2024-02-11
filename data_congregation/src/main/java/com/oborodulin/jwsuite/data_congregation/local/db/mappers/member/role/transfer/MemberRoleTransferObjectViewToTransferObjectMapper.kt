@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer
+package com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.transfer
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper

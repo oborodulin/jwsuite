@@ -12,7 +12,7 @@ class DeleteMemberRoleUseCase(
     configuration
 ) {
     override fun process(request: Request): Flow<Response> {
-        return membersRepository.deleteMemberRoleById(request.memberRoleId)
+        return membersRepository.deleteMemberRole(request.memberRoleId)
             .map { Response }
     }
 

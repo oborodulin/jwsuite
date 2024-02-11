@@ -20,7 +20,7 @@ interface RoomsRepository: CsvTransferableRepo {
     fun isExistsInFloor(floorId: UUID): Flow<Boolean>
     fun save(room: Room): Flow<Room>
     fun delete(room: Room): Flow<Room>
-    fun deleteById(roomId: UUID): Flow<UUID>
+    fun delete(roomId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     fun getNextNum(houseId: UUID): Flow<Int>

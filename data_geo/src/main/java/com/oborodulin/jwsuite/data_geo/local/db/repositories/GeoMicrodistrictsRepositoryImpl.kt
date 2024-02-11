@@ -66,7 +66,7 @@ class GeoMicrodistrictsRepositoryImpl @Inject constructor(
         this.emit(microdistrict)
     }
 
-    override fun deleteById(microdistrictId: UUID) = flow {
+    override fun delete(microdistrictId: UUID) = flow {
         localMicrodistrictDataSource.deleteMicrodistrictById(microdistrictId)
         this.emit(microdistrictId)
     }

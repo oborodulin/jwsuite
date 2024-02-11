@@ -12,7 +12,7 @@ class DeleteCongregationUseCase(
 ) : UseCase<DeleteCongregationUseCase.Request, DeleteCongregationUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return congregationsRepository.deleteById(request.congregationId)
+        return congregationsRepository.delete(request.congregationId)
             .map {
                 Response
             }

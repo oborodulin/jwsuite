@@ -10,7 +10,7 @@ class DeleteFloorUseCase(
     configuration: Configuration, private val floorsRepository: FloorsRepository
 ) : UseCase<DeleteFloorUseCase.Request, DeleteFloorUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return floorsRepository.deleteById(request.floorId).map { Response }
+        return floorsRepository.delete(request.floorId).map { Response }
     }
 
     data class Request(val floorId: UUID) : UseCase.Request

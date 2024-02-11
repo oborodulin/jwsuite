@@ -60,7 +60,7 @@ class CongregationsRepositoryImpl @Inject constructor(
         this.emit(congregation)
     }
 
-    override fun deleteById(congregationId: UUID) = flow {
+    override fun delete(congregationId: UUID) = flow {
         localCongregationDataSource.deleteCongregationById(congregationId)
         this.emit(congregationId)
     }

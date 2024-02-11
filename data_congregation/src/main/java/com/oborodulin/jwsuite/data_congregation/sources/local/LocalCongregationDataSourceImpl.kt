@@ -61,10 +61,10 @@ class LocalCongregationDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getCongregationEntities(username: String?, byFavorite: Boolean) =
-        congregationDao.selectEntities(username, byFavorite)
+        congregationDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override fun getCongregationTotalEntities(username: String?, byFavorite: Boolean) =
-        congregationDao.selectTotalEntities(username, byFavorite)
+        congregationDao.findTotalEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadCongregationEntities(congregations: List<CongregationEntity>) =
         withContext(dispatcher) {

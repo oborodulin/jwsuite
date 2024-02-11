@@ -54,7 +54,7 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
     }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getAppSettingEntities() = appSettingDao.selectEntities()
+    override fun getAppSettingEntities() = appSettingDao.findAllEntities()
     override suspend fun loadAppSettingEntities(settings: List<AppSettingEntity>) =
         withContext(dispatcher) {
             appSettingDao.insert(settings)

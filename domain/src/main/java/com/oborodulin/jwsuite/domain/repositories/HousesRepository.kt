@@ -16,7 +16,7 @@ interface HousesRepository : CsvTransferableRepo {
     fun isExistsInTerritoryStreet(territoryStreetId: UUID): Flow<Boolean>
     fun save(house: House): Flow<House>
     fun delete(house: House): Flow<House>
-    fun deleteById(houseId: UUID): Flow<UUID>
+    fun delete(houseId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     fun getNextNum(streetId: UUID): Flow<Int>

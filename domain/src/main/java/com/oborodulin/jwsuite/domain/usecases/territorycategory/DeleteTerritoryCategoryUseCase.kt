@@ -14,7 +14,7 @@ class DeleteTerritoryCategoryUseCase(
 ) {
 
     override fun process(request: Request): Flow<Response> {
-        return territoryCategoriesRepository.deleteById(request.territoryCategoryId)
+        return territoryCategoriesRepository.delete(request.territoryCategoryId)
             .map {
                 Response
             }

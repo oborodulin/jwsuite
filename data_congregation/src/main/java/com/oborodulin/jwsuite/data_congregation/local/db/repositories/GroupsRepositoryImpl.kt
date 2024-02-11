@@ -48,7 +48,7 @@ class GroupsRepositoryImpl @Inject constructor(
         this.emit(group)
     }
 
-    override fun deleteById(groupId: UUID) = flow {
+    override fun delete(groupId: UUID) = flow {
         localGroupDataSource.deleteGroupById(groupId)
         this.emit(groupId)
     }

@@ -24,6 +24,7 @@ import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.role.GetRolesUseCase
+import com.oborodulin.jwsuite.domain.usecases.role.RoleUseCases
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRolesListToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.RolesListToRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationConverter
@@ -276,8 +277,7 @@ object CongregatingModule {
         getMemberRolesUseCase: GetMemberRolesUseCase,
         getMemberRoleUseCase: GetMemberRoleUseCase,
         deleteMemberRoleUseCase: DeleteMemberRoleUseCase,
-        saveMemberRoleUseCase: SaveMemberRoleUseCase,
-        getRolesUseCase: GetRolesUseCase
+        saveMemberRoleUseCase: SaveMemberRoleUseCase
     ): MemberUseCases = MemberUseCases(
         getMembersUseCase,
         getMemberUseCase,
@@ -286,7 +286,14 @@ object CongregatingModule {
         getMemberRolesUseCase,
         getMemberRoleUseCase,
         deleteMemberRoleUseCase,
-        saveMemberRoleUseCase,
+        saveMemberRoleUseCase
+    )
+
+    @Singleton
+    @Provides
+    fun provideRoleUseCases(
+        getRolesUseCase: GetRolesUseCase
+    ): RoleUseCases = RoleUseCases(
         getRolesUseCase
     )
 }

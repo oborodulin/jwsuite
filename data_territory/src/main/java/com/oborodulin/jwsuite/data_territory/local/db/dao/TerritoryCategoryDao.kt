@@ -16,7 +16,7 @@ import java.util.UUID
 interface TerritoryCategoryDao {
     // EXTRACTS:
     @Query("SELECT * FROM ${TerritoryCategoryEntity.TABLE_NAME}")
-    fun selectEntities(): Flow<List<TerritoryCategoryEntity>>
+    fun findAllEntities(): Flow<List<TerritoryCategoryEntity>>
 
     // READS:
     @Query("SELECT * FROM ${TerritoryCategoryEntity.TABLE_NAME} ORDER BY territoryCategoryName")

@@ -11,7 +11,7 @@ class DeleteMemberUseCase(
 ) : UseCase<DeleteMemberUseCase.Request, DeleteMemberUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return membersRepository.deleteById(request.memberId).map { Response }
+        return membersRepository.delete(request.memberId).map { Response }
     }
 
     data class Request(val memberId: UUID) : UseCase.Request

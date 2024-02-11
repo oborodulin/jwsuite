@@ -12,7 +12,7 @@ class DeleteAppSettingUseCase(
 ) : UseCase<DeleteAppSettingUseCase.Request, DeleteAppSettingUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return appSettingsRepository.deleteById(request.settingId)
+        return appSettingsRepository.delete(request.settingId)
             .map {
                 Response
             }

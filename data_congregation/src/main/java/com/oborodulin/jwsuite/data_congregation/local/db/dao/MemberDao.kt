@@ -14,14 +14,18 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongrega
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberActualRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
 import com.oborodulin.jwsuite.domain.types.MemberType
+import com.oborodulin.jwsuite.domain.util.Constants
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
@@ -50,7 +54,7 @@ interface MemberDao {
         JOIN ${MemberCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberEntity>>
 
@@ -62,20 +66,19 @@ interface MemberDao {
     WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
      """
     )
-    fun selectMemberCongregationEntities(
+    fun findMemberCongregationEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberCongregationCrossRefEntity>>
 
-    @Query("""
+    @Query(
+        """
     SELECT mm.* FROM ${MemberMovementEntity.TABLE_NAME} mm JOIN ${MemberEntity.TABLE_NAME} m ON mm.mMembersId = m.memberId
         JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON m.memberId = mc.mcMembersId 
         JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mc.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-    """)
-    fun selectMemberMovementEntities(byFavorite: Boolean = false): Flow<List<MemberMovementEntity>>
-
-    @Query("SELECT * FROM ${RoleEntity.TABLE_NAME}")
-    fun selectRoleEntities(): Flow<List<RoleEntity>>
+    """
+    )
+    fun findMemberMovementEntitiesByFavoriteMark(byFavorite: Boolean = false): Flow<List<MemberMovementEntity>>
 
     @Query(
         """
@@ -94,7 +97,7 @@ interface MemberDao {
         JOIN ${MemberCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
     """
     )
-    fun selectMemberRoleEntities(
+    fun findMemberRoleEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<MemberRoleEntity>>
 
@@ -111,6 +114,13 @@ interface MemberDao {
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
+    fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberView>>
+
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND pseudonym LIKE '%' || :pseudonym || '%'")
+    fun findByPseudonym(groupId: UUID, pseudonym: String): Flow<List<MemberView>>
 
     //----------------------------- Members by Congregation:
     @Query(
@@ -138,11 +148,11 @@ interface MemberDao {
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByFavoriteCongregation(isService: Boolean = false): Flow<List<MemberView>>
+    fun findByFavoriteCongregationAndIsServiceMark(isService: Boolean = false): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByFavoriteCongregation(isService: Boolean = false) =
-        findByFavoriteCongregation(isService).distinctUntilChanged()
+    fun findDistinctByFavoriteCongregationAndIsServiceMark(isService: Boolean = false) =
+        findByFavoriteCongregationAndIsServiceMark(isService).distinctUntilChanged()
 
     //----------------------------- Members by Groups:
     @Query(
@@ -155,11 +165,11 @@ interface MemberDao {
     ORDER BY surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByFavoriteCongregationGroup(isService: Boolean = false): Flow<List<MemberView>>
+    fun findByFavoriteCongregationGroupAndIsServiceMark(isService: Boolean = false): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByFavoriteCongregationGroup(isService: Boolean = false) =
-        findByFavoriteCongregationGroup(isService).distinctUntilChanged()
+    fun findDistinctByFavoriteCongregationGroupAndIsServiceMark(isService: Boolean = false) =
+        findByFavoriteCongregationGroupAndIsServiceMark(isService).distinctUntilChanged()
 
     //-----------------------------
     @Query(
@@ -170,11 +180,14 @@ interface MemberDao {
     ORDER BY surname, memberName, patronymic, pseudonym 
     """
     )
-    fun findByGroupId(groupId: UUID, isService: Boolean = false): Flow<List<MemberView>>
+    fun findByGroupIdAndIsServiceMark(
+        groupId: UUID,
+        isService: Boolean = false
+    ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByGroupId(groupId: UUID, isService: Boolean = false) =
-        findByGroupId(groupId, isService).distinctUntilChanged()
+    fun findDistinctByGroupIdAndIsServiceMark(groupId: UUID, isService: Boolean = false) =
+        findByGroupIdAndIsServiceMark(groupId, isService).distinctUntilChanged()
 
     //-----------------------------
     @Query(
@@ -186,14 +199,17 @@ interface MemberDao {
     ORDER BY surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByCongregationIdAndGroupIdIsNull(
+    fun findByCongregationIdAndGroupIdIsNullAndIsServiceMark(
         congregationId: UUID? = null, isService: Boolean = false
     ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctByCongregationIdAndGroupIdIsNull(
+    fun findDistinctByCongregationIdAndGroupIdIsNullAndIsServiceMark(
         congregationId: UUID? = null, isService: Boolean = false
-    ) = findByCongregationIdAndGroupIdIsNull(congregationId, isService).distinctUntilChanged()
+    ) = findByCongregationIdAndGroupIdIsNullAndIsServiceMark(
+        congregationId,
+        isService
+    ).distinctUntilChanged()
 
     //----------------------------- Member Roles:
     @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE memberRoleId = :memberRoleId")
@@ -219,14 +235,7 @@ interface MemberDao {
     fun findDistinctMemberRolesByPseudonym(pseudonym: String) =
         findMemberRolesByPseudonym(pseudonym).distinctUntilChanged()
 
-    //-----------------------------
-    @Query("SELECT r.* FROM ${RoleEntity.TABLE_NAME} r ORDER BY roleName")
-    fun findAllRoles(): Flow<List<RoleEntity>>
-
-    @ExperimentalCoroutinesApi
-    fun findDistinctAllRoles() = findAllRoles().distinctUntilChanged()
-
-    //-----------------------------
+    //----------------------------- Roles:
     @Query("SELECT mrv.roleId, mrv.roleType, mrv.roleName FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym")
     fun findRolesByPseudonym(pseudonym: String): Flow<List<RoleEntity>>
 
@@ -242,14 +251,7 @@ interface MemberDao {
     fun findDistinctRolesForMemberByMemberId(memberId: UUID) =
         findRolesForMemberByMemberId(memberId).distinctUntilChanged()
 
-    //-----------------------------
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
-    fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberView>>
-
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND pseudonym LIKE '%' || :pseudonym || '%'")
-    fun findByPseudonym(groupId: UUID, pseudonym: String): Flow<List<MemberView>>
-
-    //-----------------------------
+    //----------------------------- Movements:
     @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME} WHERE mMembersId = :memberId ORDER BY strftime($DB_FRACT_SEC_TIME, movementDate)")
     fun findMovementsByMemberId(memberId: UUID): Flow<List<MemberMovementEntity>>
 
@@ -265,11 +267,77 @@ interface MemberDao {
             ON gmm.mMembersId = :memberId AND mm.mMembersId = :memberId AND strftime($DB_FRACT_SEC_TIME, mm.movementDate) = gmm.maxMovementDate
     """
     )
-    fun findMovementByMemberId(memberId: UUID): Flow<MemberMovementEntity>
+    fun findLastMovementByMemberId(memberId: UUID): Flow<MemberMovementEntity>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctMovementByMemberId(memberId: UUID) =
-        findMovementByMemberId(memberId).distinctUntilChanged()
+    fun findDistinctLastMovementByMemberId(memberId: UUID) =
+        findLastMovementByMemberId(memberId).distinctUntilChanged()
+
+    //----------------------------- Role Transfer Objects:
+    @Query(
+        """
+    SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
+    WHERE mrv.pseudonym = :pseudonym AND rtov.transferObjectType = ${Constants.TOT_ALL_VAL}
+    GROUP BY mrv.memberId, rtov.transferObjectId
+    UNION ALL
+    SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
+    WHERE mrv.pseudonym = :pseudonym
+        AND rtov.isPersonalData = ${Constants.DB_FALSE}
+        AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
+                        WHERE pseudonym = :pseudonym AND transferObjectType = ${Constants.TOT_ALL_VAL})
+    GROUP BY mrv.memberId, rtov.transferObjectId
+    UNION ALL
+    SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
+    WHERE mrv.pseudonym = :pseudonym
+        AND rtov.isPersonalData = ${Constants.DB_TRUE}
+        AND NOT EXISTS (SELECT rto.roleTransferObjectId FROM ${RoleTransferObjectEntity.TABLE_NAME} rto 
+                            JOIN ${MemberRoleEntity.TABLE_NAME} mr ON mr.mrRolesId = rto.rtoRolesId
+                                AND mr.mrMembersId = mrv.memberId
+                                AND rto.rtoTransferObjectsId = rtov.transferObjectId
+                                AND rto.isPersonalData = ${Constants.DB_FALSE})
+        AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
+                        WHERE pseudonym = :pseudonym AND transferObjectType = ${Constants.TOT_ALL_VAL})
+    GROUP BY mrv.memberId, rtov.transferObjectId
+    ORDER BY transferObjectName
+    """
+    )
+    fun findRoleTransferObjectByPseudonym(pseudonym: String): Flow<List<RoleTransferObjectView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctRoleTransferObjectByPseudonym(pseudonym: String) =
+        findRoleTransferObjectByPseudonym(pseudonym).distinctUntilChanged()
+
+    //----------------------------- Member Role Transfer Objects:
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} ORDER BY transferObjectName")
+    fun findAllMemberRoleTransferObjects(): Flow<List<MemberRoleTransferObjectView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctAllMemberRoleTransferObjects() =
+        findAllMemberRoleTransferObjects().distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE transferObjectId = :transferObjectId")
+    fun findMemberRoleTransferObjectById(transferObjectId: UUID): Flow<MemberRoleTransferObjectView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctMemberRoleTransferObjectById(id: UUID) =
+        findMemberRoleTransferObjectById(id).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE memberId = :memberId ORDER BY transferObjectName")
+    fun findMemberRoleTransferObjectsByMemberId(memberId: UUID): Flow<List<MemberRoleTransferObjectView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctMemberRoleTransferObjectsByMemberId(memberId: UUID) =
+        findMemberRoleTransferObjectsByMemberId(memberId).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE rtoRolesId = :roleId ORDER BY transferObjectName")
+    fun findMemberRoleTransferObjectsByRoleId(roleId: UUID): Flow<List<MemberRoleTransferObjectView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctMemberRoleTransferObjectsByRoleId(roleId: UUID) =
+        findMemberRoleTransferObjectsByRoleId(roleId).distinctUntilChanged()
 
     // UPDATES TOTALS:
     // totalMembers:
@@ -324,12 +392,6 @@ interface MemberDao {
     suspend fun insertCongregations(memberCongregations: List<MemberCongregationCrossRefEntity>)
 
     //----------------------------- Roles:
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg roles: RoleEntity)
-
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertRoles(roles: List<RoleEntity>)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg memberRoles: MemberRoleEntity)
 
@@ -395,7 +457,7 @@ interface MemberDao {
     ) {
         update(member)
         insert(memberCongregation) // OnConflictStrategy.REPLACE
-        val lastMovement = findMovementByMemberId(member.memberId).first()
+        val lastMovement = findLastMovementByMemberId(member.memberId).first()
         if (lastMovement.memberType != memberMovement.memberType) {
             insert(memberMovement)  // OnConflictStrategy.REPLACE
             if (memberMovement.memberType == MemberType.FULL_TIME) {
@@ -435,15 +497,15 @@ interface MemberDao {
     @Query("DELETE FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} WHERE mcMembersId = :memberId")
     suspend fun deleteCongregationsByMemberId(memberId: UUID)
 
-    // Roles:
+    // Member Roles:
     @Delete
-    suspend fun deleteRole(vararg memberRoles: MemberRoleEntity)
+    suspend fun deleteMemberRole(vararg memberRoles: MemberRoleEntity)
 
     @Query("DELETE FROM ${MemberRoleEntity.TABLE_NAME} WHERE memberRoleId = :memberRoleId")
-    suspend fun deleteRoleById(memberRoleId: UUID)
+    suspend fun deleteMemberRoleById(memberRoleId: UUID)
 
     @Query("DELETE FROM ${MemberRoleEntity.TABLE_NAME} WHERE mrMembersId = :memberId")
-    suspend fun deleteRolesByMemberId(memberId: UUID)
+    suspend fun deleteMemberRolesByMemberId(memberId: UUID)
 
     @Delete
     suspend fun deleteMovement(vararg memberMovements: MemberMovementEntity)
@@ -458,7 +520,7 @@ interface MemberDao {
     @Transaction
     suspend fun deleteByIdWithTotals(memberId: UUID) {
         decTotalMembersByMemberId(memberId)
-        val lastMovement = findMovementByMemberId(memberId).first()
+        val lastMovement = findLastMovementByMemberId(memberId).first()
         if (lastMovement.memberType == MemberType.FULL_TIME) {
             decTotalFulltimeMembersByMemberId(memberId)
         }

@@ -160,13 +160,13 @@ class LocalTerritoryDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getTerritoryEntities(username: String?, byFavorite: Boolean) =
-        territoryDao.selectEntities(username, byFavorite)
+        territoryDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override fun getCongregationTerritoryEntities(username: String?, byFavorite: Boolean) =
-        territoryDao.selectCongregationTerritoryEntities(username, byFavorite)
+        territoryDao.findCongregationTerritoryEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override fun getTerritoryMemberEntities(username: String?, byFavorite: Boolean) =
-        territoryDao.selectTerritoryMemberEntities(username, byFavorite)
+        territoryDao.findTerritoryMemberEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadTerritoryEntities(territories: List<TerritoryEntity>) =
         withContext(dispatcher) {

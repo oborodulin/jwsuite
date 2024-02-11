@@ -48,7 +48,7 @@ class GeoRegionsRepositoryImpl @Inject constructor(
         this.emit(region)
     }
 
-    override fun deleteById(regionId: UUID) = flow {
+    override fun delete(regionId: UUID) = flow {
         localRegionDataSource.deleteRegionById(regionId)
         this.emit(regionId)
     }

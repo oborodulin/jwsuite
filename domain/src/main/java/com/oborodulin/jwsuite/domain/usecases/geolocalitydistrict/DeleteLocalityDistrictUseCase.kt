@@ -14,7 +14,7 @@ class DeleteLocalityDistrictUseCase(
 ) {
 
     override fun process(request: Request): Flow<Response> {
-        return localityDistrictsRepository.deleteById(request.localityDistrictId)
+        return localityDistrictsRepository.delete(request.localityDistrictId)
             .map {
                 Response
             }

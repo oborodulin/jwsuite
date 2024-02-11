@@ -1,6 +1,11 @@
 package com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role
 
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.transfer.RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.transfer.RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper
+
 data class RoleCsvMappers(
     val roleEntityListToRoleCsvListMapper: RoleEntityListToRoleCsvListMapper,
-    val roleCsvListToRoleEntityListMapper: RoleCsvListToRoleEntityListMapper
+    val roleTransferObjectEntityListToRoleTransferObjectCsvListMapper: RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
+    val roleCsvListToRoleEntityListMapper: RoleCsvListToRoleEntityListMapper,
+    val roleTransferObjectCsvListToRoleTransferObjectEntityListMapper: RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
 )

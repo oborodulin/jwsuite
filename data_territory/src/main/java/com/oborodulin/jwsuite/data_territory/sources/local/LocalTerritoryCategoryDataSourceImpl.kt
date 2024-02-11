@@ -52,7 +52,7 @@ class LocalTerritoryCategoryDataSourceImpl @Inject constructor(
     }
 
     // -------------------------------------- CSV Transfer --------------------------------------
-    override fun getTerritoryCategoryEntities() = territoryCategoryDao.selectEntities()
+    override fun getTerritoryCategoryEntities() = territoryCategoryDao.findAllEntities()
     override suspend fun loadTerritoryCategoryEntities(territoryCategories: List<TerritoryCategoryEntity>) =
         withContext(dispatcher) {
             territoryCategoryDao.insert(territoryCategories)

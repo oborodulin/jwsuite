@@ -131,7 +131,7 @@ class TerritoriesRepositoryImpl @Inject constructor(
         this.emit(territory)
     }
 
-    override fun deleteById(territoryId: UUID) = flow {
+    override fun delete(territoryId: UUID) = flow {
         localTerritoryDataSource.deleteTerritoryById(territoryId)
         this.emit(territoryId)
     }

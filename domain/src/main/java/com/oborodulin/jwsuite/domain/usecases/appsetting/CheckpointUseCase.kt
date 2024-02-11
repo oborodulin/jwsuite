@@ -12,7 +12,7 @@ class CheckpointUseCase(
 ) : UseCase<CheckpointUseCase.Request, CheckpointUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
-        return appSettingsRepository.deleteById(request.settingId)
+        return appSettingsRepository.delete(request.settingId)
             .map {
                 Response
             }

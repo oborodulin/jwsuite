@@ -57,7 +57,7 @@ class GeoLocalitiesRepositoryImpl @Inject constructor(
         this.emit(locality)
     }
 
-    override fun deleteById(localityId: UUID) = flow {
+    override fun delete(localityId: UUID) = flow {
         localLocalityDataSource.deleteLocalityById(localityId)
         this.emit(localityId)
     }

@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.views
 import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.RoleEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 
 @DatabaseView(

@@ -10,7 +10,7 @@ class DeleteEntranceUseCase(
     configuration: Configuration, private val entrancesRepository: EntrancesRepository
 ) : UseCase<DeleteEntranceUseCase.Request, DeleteEntranceUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return entrancesRepository.deleteById(request.entranceId).map { Response }
+        return entrancesRepository.delete(request.entranceId).map { Response }
     }
 
     data class Request(val entranceId: UUID) : UseCase.Request

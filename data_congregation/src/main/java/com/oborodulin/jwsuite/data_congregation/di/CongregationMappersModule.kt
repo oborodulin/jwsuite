@@ -31,15 +31,15 @@ import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.Me
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleCsvToMemberRoleEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleEntityListToMemberRoleCsvListMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.role.MemberRoleEntityToMemberRoleCsvMapper
-import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
-import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectCsvToRoleTransferObjectEntityMapper
-import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper
-import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.member.transfer.RoleTransferObjectEntityToRoleTransferObjectCsvMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvListToRoleEntityListMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvMappers
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleCsvToRoleEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleEntityListToRoleCsvListMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.RoleEntityToRoleCsvMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.transfer.RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.transfer.RoleTransferObjectCsvToRoleTransferObjectEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.transfer.RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper
+import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.role.transfer.RoleTransferObjectEntityToRoleTransferObjectCsvMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvListToTransferObjectEntityListMapper
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvMappers
 import com.oborodulin.jwsuite.data_congregation.local.csv.mappers.transfer.TransferObjectCsvToTransferObjectEntityMapper
@@ -71,15 +71,16 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.Mem
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewListToRolesListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewToMemberRoleMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleViewToRoleMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectToRoleTransferObjectEntityMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewListToTransferObjectsListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewToMemberRoleTransferObjectMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.MemberRoleTransferObjectViewToTransferObjectMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.RoleTransferObjectViewListToRoleTransferObjectsListMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.transfer.RoleTransferObjectViewToRoleTransferObjectMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.transfer.MemberRoleTransferObjectToRoleTransferObjectEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.transfer.MemberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.transfer.MemberRoleTransferObjectViewListToTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.transfer.MemberRoleTransferObjectViewToMemberRoleTransferObjectMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.transfer.MemberRoleTransferObjectViewToTransferObjectMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.RoleEntityListToRolesListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.RoleEntityToRoleMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.RoleMappers
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.transfer.RoleTransferObjectViewListToRoleTransferObjectsListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.role.transfer.RoleTransferObjectViewToRoleTransferObjectMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectEntityListToTransferObjectsListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectEntityToTransferObjectMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectMappers
@@ -196,43 +197,6 @@ object CongregationMappersModule {
 
     // Members:
     // Member Congregation:
-    // Member Role:
-    @Singleton
-    @Provides
-    fun provideRoleEntityToRoleMapper(): RoleEntityToRoleMapper = RoleEntityToRoleMapper()
-
-    @Singleton
-    @Provides
-    fun provideRoleEntityListToRolesListMapper(mapper: RoleEntityToRoleMapper): RoleEntityListToRolesListMapper =
-        RoleEntityListToRolesListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberRoleViewToRoleMapper(mapper: RoleEntityToRoleMapper): MemberRoleViewToRoleMapper =
-        MemberRoleViewToRoleMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberRoleViewListToRolesListMapper(mapper: MemberRoleViewToRoleMapper): MemberRoleViewListToRolesListMapper =
-        MemberRoleViewListToRolesListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberRoleViewToMemberRoleMapper(
-        memberMapper: MemberViewToMemberMapper, roleMapper: RoleEntityToRoleMapper
-    ): MemberRoleViewToMemberRoleMapper =
-        MemberRoleViewToMemberRoleMapper(memberMapper = memberMapper, roleMapper = roleMapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberRoleViewListToMemberRolesListMapper(mapper: MemberRoleViewToMemberRoleMapper): MemberRoleViewListToMemberRolesListMapper =
-        MemberRoleViewListToMemberRolesListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideMemberRoleToMemberRoleEntityMapper(): MemberRoleToMemberRoleEntityMapper =
-        MemberRoleToMemberRoleEntityMapper()
-
     // Member Movement:
     @Singleton
     @Provides
@@ -291,25 +255,73 @@ object CongregationMappersModule {
         membersListToMemberEntityListMapper: MembersListToMemberEntityListMapper,
         memberToMemberEntityMapper: MemberToMemberEntityMapper,
         memberToMemberCongregationCrossRefEntityMapper: MemberToMemberCongregationCrossRefEntityMapper,
+        memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper,
         roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
         memberRoleViewToMemberRoleMapper: MemberRoleViewToMemberRoleMapper,
         memberRoleViewListToMemberRolesListMapper: MemberRoleViewListToMemberRolesListMapper,
         memberRoleViewListToRolesListMapper: MemberRoleViewListToRolesListMapper,
         memberRoleToMemberRoleEntityMapper: MemberRoleToMemberRoleEntityMapper,
-        memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper
+        memberRoleTransferObjectToRoleTransferObjectEntityMapper: MemberRoleTransferObjectToRoleTransferObjectEntityMapper,
+        memberRoleTransferObjectViewToTransferObjectMapper: MemberRoleTransferObjectViewToTransferObjectMapper,
+        memberRoleTransferObjectViewListToTransferObjectsListMapper: MemberRoleTransferObjectViewListToTransferObjectsListMapper,
+        memberRoleTransferObjectViewToMemberRoleTransferObjectMapper: MemberRoleTransferObjectViewToMemberRoleTransferObjectMapper,
+        memberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper: MemberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
     ): MemberMappers = MemberMappers(
         memberViewListToMembersListMapper,
         memberViewToMemberMapper,
         membersListToMemberEntityListMapper,
         memberToMemberEntityMapper,
         memberToMemberCongregationCrossRefEntityMapper,
+        memberToMemberMovementEntityMapper,
         roleEntityListToRolesListMapper,
         memberRoleViewToMemberRoleMapper,
         memberRoleViewListToMemberRolesListMapper,
         memberRoleViewListToRolesListMapper,
         memberRoleToMemberRoleEntityMapper,
-        memberToMemberMovementEntityMapper
+        memberRoleTransferObjectToRoleTransferObjectEntityMapper,
+        memberRoleTransferObjectViewToTransferObjectMapper,
+        memberRoleTransferObjectViewListToTransferObjectsListMapper,
+        memberRoleTransferObjectViewToMemberRoleTransferObjectMapper,
+        memberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
     )
+
+    // Role:
+    @Singleton
+    @Provides
+    fun provideRoleEntityToRoleMapper(): RoleEntityToRoleMapper = RoleEntityToRoleMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleEntityListToRolesListMapper(mapper: RoleEntityToRoleMapper): RoleEntityListToRolesListMapper =
+        RoleEntityListToRolesListMapper(mapper = mapper)
+
+    // Member Role:
+    @Singleton
+    @Provides
+    fun provideMemberRoleViewToRoleMapper(mapper: RoleEntityToRoleMapper): MemberRoleViewToRoleMapper =
+        MemberRoleViewToRoleMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleViewListToRolesListMapper(mapper: MemberRoleViewToRoleMapper): MemberRoleViewListToRolesListMapper =
+        MemberRoleViewListToRolesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleViewToMemberRoleMapper(
+        memberMapper: MemberViewToMemberMapper, roleMapper: RoleEntityToRoleMapper
+    ): MemberRoleViewToMemberRoleMapper =
+        MemberRoleViewToMemberRoleMapper(memberMapper = memberMapper, roleMapper = roleMapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleViewListToMemberRolesListMapper(mapper: MemberRoleViewToMemberRoleMapper): MemberRoleViewListToMemberRolesListMapper =
+        MemberRoleViewListToMemberRolesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleToMemberRoleEntityMapper(): MemberRoleToMemberRoleEntityMapper =
+        MemberRoleToMemberRoleEntityMapper()
 
     // Transfer Object:
     @Singleton
@@ -364,22 +376,23 @@ object CongregationMappersModule {
     @Provides
     fun provideTransferObjectMappers(
         transferObjectEntityToTransferObjectMapper: TransferObjectEntityToTransferObjectMapper,
-        transferObjectEntityListToTransferObjectsListMapper: TransferObjectEntityListToTransferObjectsListMapper,
-        roleTransferObjectViewListToRoleTransferObjectsListMapper: RoleTransferObjectViewListToRoleTransferObjectsListMapper,
-        memberRoleTransferObjectToRoleTransferObjectEntityMapper: MemberRoleTransferObjectToRoleTransferObjectEntityMapper,
-        memberRoleTransferObjectViewToTransferObjectMapper: MemberRoleTransferObjectViewToTransferObjectMapper,
-        memberRoleTransferObjectViewListToTransferObjectsListMapper: MemberRoleTransferObjectViewListToTransferObjectsListMapper,
-        memberRoleTransferObjectViewToMemberRoleTransferObjectMapper: MemberRoleTransferObjectViewToMemberRoleTransferObjectMapper,
-        memberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper: MemberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
+        transferObjectEntityListToTransferObjectsListMapper: TransferObjectEntityListToTransferObjectsListMapper
     ): TransferObjectMappers = TransferObjectMappers(
         transferObjectEntityToTransferObjectMapper,
+        transferObjectEntityListToTransferObjectsListMapper
+    )
+
+    // Role:
+    @Singleton
+    @Provides
+    fun provideRoleMappers(
+        roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
+        transferObjectEntityListToTransferObjectsListMapper: TransferObjectEntityListToTransferObjectsListMapper,
+        roleTransferObjectViewListToRoleTransferObjectsListMapper: RoleTransferObjectViewListToRoleTransferObjectsListMapper
+    ): RoleMappers = RoleMappers(
+        roleEntityListToRolesListMapper,
         transferObjectEntityListToTransferObjectsListMapper,
-        roleTransferObjectViewListToRoleTransferObjectsListMapper,
-        memberRoleTransferObjectToRoleTransferObjectEntityMapper,
-        memberRoleTransferObjectViewToTransferObjectMapper,
-        memberRoleTransferObjectViewListToTransferObjectsListMapper,
-        memberRoleTransferObjectViewToMemberRoleTransferObjectMapper,
-        memberRoleTransferObjectViewListToMemberRoleTransferObjectsListMapper
+        roleTransferObjectViewListToRoleTransferObjectsListMapper
     )
 
     // ------------------------------------------- CSV: -------------------------------------------
@@ -470,35 +483,6 @@ object CongregationMappersModule {
         groupCsvListToGroupEntityListMapper
     )
 
-    // RoleCsv
-    @Singleton
-    @Provides
-    fun provideRoleEntityToRoleCsvMapper(): RoleEntityToRoleCsvMapper = RoleEntityToRoleCsvMapper()
-
-    @Singleton
-    @Provides
-    fun provideRoleEntityListToRoleCsvListMapper(mapper: RoleEntityToRoleCsvMapper): RoleEntityListToRoleCsvListMapper =
-        RoleEntityListToRoleCsvListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideRoleCsvToRoleEntityMapper(): RoleCsvToRoleEntityMapper = RoleCsvToRoleEntityMapper()
-
-    @Singleton
-    @Provides
-    fun provideRoleCsvListToRoleEntityListMapper(mapper: RoleCsvToRoleEntityMapper): RoleCsvListToRoleEntityListMapper =
-        RoleCsvListToRoleEntityListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideRoleCsvMappers(
-        roleEntityListToRoleCsvListMapper: RoleEntityListToRoleCsvListMapper,
-        roleCsvListToRoleEntityListMapper: RoleCsvListToRoleEntityListMapper
-    ): RoleCsvMappers = RoleCsvMappers(
-        roleEntityListToRoleCsvListMapper,
-        roleCsvListToRoleEntityListMapper
-    )
-
     // TransferObjectCsv
     @Singleton
     @Provides
@@ -528,6 +512,39 @@ object CongregationMappersModule {
     ): TransferObjectCsvMappers = TransferObjectCsvMappers(
         transferObjectEntityListToTransferObjectCsvListMapper,
         transferObjectCsvListToTransferObjectEntityListMapper
+    )
+
+    // RoleCsv
+    @Singleton
+    @Provides
+    fun provideRoleEntityToRoleCsvMapper(): RoleEntityToRoleCsvMapper = RoleEntityToRoleCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleEntityListToRoleCsvListMapper(mapper: RoleEntityToRoleCsvMapper): RoleEntityListToRoleCsvListMapper =
+        RoleEntityListToRoleCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoleCsvToRoleEntityMapper(): RoleCsvToRoleEntityMapper = RoleCsvToRoleEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideRoleCsvListToRoleEntityListMapper(mapper: RoleCsvToRoleEntityMapper): RoleCsvListToRoleEntityListMapper =
+        RoleCsvListToRoleEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoleCsvMappers(
+        roleEntityListToRoleCsvListMapper: RoleEntityListToRoleCsvListMapper,
+        roleTransferObjectEntityListToRoleTransferObjectCsvListMapper: RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
+        roleCsvListToRoleEntityListMapper: RoleCsvListToRoleEntityListMapper,
+        roleTransferObjectCsvListToRoleTransferObjectEntityListMapper: RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+    ): RoleCsvMappers = RoleCsvMappers(
+        roleEntityListToRoleCsvListMapper,
+        roleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
+        roleCsvListToRoleEntityListMapper,
+        roleTransferObjectCsvListToRoleTransferObjectEntityListMapper
     )
 
     // MemberCongregationCrossRefCsv
@@ -642,22 +659,18 @@ object CongregationMappersModule {
         memberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper: MemberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper,
         memberMovementEntityListToMemberMovementCsvListMapper: MemberMovementEntityListToMemberMovementCsvListMapper,
         memberRoleEntityListToMemberRoleCsvListMapper: MemberRoleEntityListToMemberRoleCsvListMapper,
-        roleTransferObjectEntityListToRoleTransferObjectCsvListMapper: RoleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
         memberCsvListToMemberEntityListMapper: MemberCsvListToMemberEntityListMapper,
         memberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper: MemberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper,
         memberMovementCsvListToMemberMovementEntityListMapper: MemberMovementCsvListToMemberMovementEntityListMapper,
-        memberRoleCsvListToMemberRoleEntityListMapper: MemberRoleCsvListToMemberRoleEntityListMapper,
-        roleTransferObjectCsvListToRoleTransferObjectEntityListMapper: RoleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+        memberRoleCsvListToMemberRoleEntityListMapper: MemberRoleCsvListToMemberRoleEntityListMapper
     ): MemberCsvMappers = MemberCsvMappers(
         memberEntityListToMemberCsvListMapper,
         memberCongregationCrossRefEntityListToMemberCongregationCrossRefCsvListMapper,
         memberMovementEntityListToMemberMovementCsvListMapper,
         memberRoleEntityListToMemberRoleCsvListMapper,
-        roleTransferObjectEntityListToRoleTransferObjectCsvListMapper,
         memberCsvListToMemberEntityListMapper,
         memberCongregationCrossRefCsvListToMemberCongregationCrossRefEntityListMapper,
         memberMovementCsvListToMemberMovementEntityListMapper,
-        memberRoleCsvListToMemberRoleEntityListMapper,
-        roleTransferObjectCsvListToRoleTransferObjectEntityListMapper
+        memberRoleCsvListToMemberRoleEntityListMapper
     )
 }

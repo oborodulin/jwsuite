@@ -11,7 +11,7 @@ class DeleteMemberReportUseCase(
     private val territoryReportsRepository: TerritoryReportsRepository
 ) : UseCase<DeleteMemberReportUseCase.Request, DeleteMemberReportUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
-        return territoryReportsRepository.deleteById(request.territoryMemberReportId)
+        return territoryReportsRepository.delete(request.territoryMemberReportId)
             .map { Response }
     }
 

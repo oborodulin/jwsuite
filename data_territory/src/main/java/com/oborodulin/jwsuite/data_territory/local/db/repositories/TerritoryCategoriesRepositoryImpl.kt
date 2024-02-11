@@ -46,7 +46,7 @@ class TerritoryCategoriesRepositoryImpl @Inject constructor(
         this.emit(territoryCategory)
     }
 
-    override fun deleteById(territoryCategoryId: UUID) = flow {
+    override fun delete(territoryCategoryId: UUID) = flow {
         localTerritoryCategoryDataSource.deleteTerritoryCategoryById(territoryCategoryId)
         this.emit(territoryCategoryId)
     }

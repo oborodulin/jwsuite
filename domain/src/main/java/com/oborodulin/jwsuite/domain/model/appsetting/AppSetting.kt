@@ -11,6 +11,9 @@ data class AppSetting(
     val paramValue: String = ""
 ) : DomainModel() {
     val paramFullName = when (paramName) {
+        AppSettingParam.DATABASE_BACKUP_PERIOD -> ctx?.resources?.getString(R.string.param_name_database_backup_period)
+            .orEmpty()
+
         AppSettingParam.TERRITORY_PROCESSING_PERIOD -> ctx?.resources?.getString(R.string.param_name_territory_processing_period)
             .orEmpty()
 

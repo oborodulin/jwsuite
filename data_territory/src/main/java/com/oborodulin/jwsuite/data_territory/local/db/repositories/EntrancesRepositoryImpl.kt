@@ -64,7 +64,7 @@ class EntrancesRepositoryImpl @Inject constructor(
         this.emit(entrance)
     }
 
-    override fun deleteById(entranceId: UUID) = flow {
+    override fun delete(entranceId: UUID) = flow {
         localEntranceDataSource.deleteEntranceById(entranceId)
         this.emit(entranceId)
     }

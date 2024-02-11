@@ -52,7 +52,7 @@ interface TerritoryDao {
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL)
     """
     )
-    fun selectEntities(
+    fun findEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryEntity>>
 
@@ -64,7 +64,7 @@ interface TerritoryDao {
     WHERE (:username IS NULL OR tmv.tmcTerritoriesId IS NOT NULL)
     """
     )
-    fun selectCongregationTerritoryEntities(
+    fun findCongregationTerritoryEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<CongregationTerritoryCrossRefEntity>>
 
@@ -77,7 +77,7 @@ interface TerritoryDao {
     WHERE (:username IS NULL OR m.memberId IS NOT NULL)
     """
     )
-    fun selectTerritoryMemberEntities(
+    fun findTerritoryMemberEntitiesByUsernameAndFavoriteMark(
         username: String? = null, byFavorite: Boolean = false
     ): Flow<List<TerritoryMemberCrossRefEntity>>
 

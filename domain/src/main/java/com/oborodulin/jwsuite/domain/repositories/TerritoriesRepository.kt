@@ -48,7 +48,7 @@ interface TerritoriesRepository : CsvTransferableRepo {
     fun getFavoriteTotals(): Flow<TerritoryTotals?>
     fun save(territory: Territory): Flow<Territory>
     fun delete(territory: Territory): Flow<Territory>
-    fun deleteById(territoryId: UUID): Flow<UUID>
+    fun delete(territoryId: UUID): Flow<UUID>
     suspend fun deleteAll()
 
     // API:

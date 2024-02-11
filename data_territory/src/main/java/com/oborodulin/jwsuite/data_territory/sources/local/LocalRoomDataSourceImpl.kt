@@ -71,7 +71,7 @@ class LocalRoomDataSourceImpl @Inject constructor(
 
     // -------------------------------------- CSV Transfer --------------------------------------
     override fun getRoomEntities(username: String?, byFavorite: Boolean) =
-        roomDao.selectEntities(username, byFavorite)
+        roomDao.findEntitiesByUsernameAndFavoriteMark(username, byFavorite)
 
     override suspend fun loadRoomEntities(rooms: List<RoomEntity>) = withContext(dispatcher) {
         roomDao.insert(rooms)
