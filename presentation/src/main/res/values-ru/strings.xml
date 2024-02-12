@@ -48,7 +48,7 @@
     <string name="btn_signout_lbl">Выйти</string>
     <string name="btn_login_lbl">Войти</string>
     <string name="btn_send_lbl">Передать</string>
-    <string name="btn_receive_lbl">Принять</string>
+    <string name="btn_reception_lbl">Принять</string>
     <string name="btn_backup_lbl">Выгрузить</string>
     <string name="btn_restore_lbl">Восстановить</string>
     <!--диалог-->
@@ -93,6 +93,7 @@
     <string name="famework_api_version_hint">Framework API v.</string>
     <string name="sqlite_version_hint">SQLite v.</string>
     <string name="database_version_hint">Версия БД</string>
+    <string name="database_backup_period_hint">Период резервирования данных, д.</string>
     <string name="territory_subheader">УЧАСТКИ</string>
     <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
     <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
@@ -124,6 +125,7 @@
     <!--формы логина-->
     <string name="login_pin_error">Неверный ПИН-код! Пожалуйста, введите ПИН-код ещё раз</string>
     <!--формы настроек-->
+    <string name="database_backup_period_empty_error">Укажите, пожалуйста, период резервирования данных</string>
     <string name="territory_processing_period_empty_error">Укажите, пожалуйста, период обработки всех участков</string>
     <string name="territory_at_hand_period_empty_error">Укажите, пожалуйста, период обработки одного участка</string>
     <string name="territory_idle_period_empty_error">Укажите, пожалуйста, период ериод отстоя участка</string>
@@ -133,7 +135,7 @@
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <string name="btn_signout_cnt_desc">Выйти из учётной записи</string>
     <string name="btn_send_cnt_desc">Передать данные</string>
-    <string name="btn_receive_cnt_desc">Принять данные</string>
+    <string name="btn_reception_cnt_desc">Принять данные</string>
     <string name="btn_backup_cnt_desc">Создать резервную копию данных</string>
     <string name="btn_restore_cnt_desc">Восстановить данные из резервной копии</string>
 </resources>

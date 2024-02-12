@@ -5,6 +5,11 @@ import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
+import com.oborodulin.home.common.extensions.toOffsetDateTime
+import com.oborodulin.home.common.extensions.toShortFormatString
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -18,11 +23,6 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
-import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
-import com.oborodulin.home.common.extensions.toOffsetDateTime
-import com.oborodulin.home.common.extensions.toShortFormatString
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.types.MemberType
@@ -85,11 +85,9 @@ class MemberViewModelImpl @Inject constructor(
     override val congregation: StateFlow<InputListItemWrapper<CongregationsListItem>> by lazy {
         state.getStateFlow(MemberFields.MEMBER_CONGREGATION.name, InputListItemWrapper())
     }
-
     override val group: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(MemberFields.MEMBER_GROUP.name, InputListItemWrapper())
     }
-
     override val memberNum: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_NUM.name, InputWrapper())
     }
@@ -114,6 +112,15 @@ class MemberViewModelImpl @Inject constructor(
     override val dateOfBaptism: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_DATE_OF_BAPTISM.name, InputWrapper())
     }
+    override val memberCongregationId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_CONGREGATION_ID.name, InputWrapper())
+    }
+    override val activityDate: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_ACTIVITY_DATE.name, InputWrapper())
+    }
+    override val memberMovementId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(MemberFields.MEMBER_MOVEMENT_ID.name, InputWrapper())
+    }
     override val memberType: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(MemberFields.MEMBER_TYPE.name, InputWrapper())
     }
@@ -127,15 +134,16 @@ class MemberViewModelImpl @Inject constructor(
     override val areInputsValid =
         combine(
             //group, memberNum, memberName,
+            activityDate,
             surname,
             patronymic,
             pseudonym,
             phoneNumber,
             memberType,
+            movementDate,
             dateOfBirth,
             dateOfBaptism,
-            loginExpiredDate,
-            movementDate
+            loginExpiredDate
         )
         { stateFlowsArray ->
             var errorIdResult = true
@@ -211,10 +219,14 @@ class MemberViewModelImpl @Inject constructor(
             patronymic = patronymic.value.value.ifEmpty { null },
             pseudonym = pseudonym.value.value,
             phoneNumber = phoneNumber.value.value,
-            memberType = MemberType.valueOf(memberType.value.value),
-            movementDate = movementDate.value.value.toFullFormatOffsetDateTime(),
             dateOfBirth = dateOfBirthOffsetDateTime,
             dateOfBaptism = dateOfBaptism.value.value.toFullFormatOffsetDateTimeOrNull(),
+            memberCongregationId = memberCongregationId.value.value.toUUIDOrNull(),
+            congregationId = congregationUi.id,
+            activityDate = activityDate.value.value.toFullFormatOffsetDateTime(),
+            memberMovementId = memberMovementId.value.value.toUUIDOrNull(),
+            memberType = MemberType.valueOf(memberType.value.value),
+            movementDate = movementDate.value.value.toFullFormatOffsetDateTime(),
             loginExpiredDate = loginExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
         )
         memberUi.id = id.value.value.toUUIDOrNull()
@@ -240,7 +252,7 @@ class MemberViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: MemberUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(MemberModel) called: memberUi = %s", uiModel)
+            .d("initFieldStatesByUiModel(MemberUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(MemberFields.MEMBER_ID, id, it.toString()) }
         initStateValue(
             MemberFields.MEMBER_CONGREGATION, congregation,
@@ -257,7 +269,7 @@ class MemberViewModelImpl @Inject constructor(
         initStateValue(
             MemberFields.MEMBER_PSEUDONYM, pseudonym,
             uiModel.pseudonym.ifEmpty {
-                Member.getPseudonym(
+                Member.pseudonym(
                     surname = uiModel.surname,
                     memberName = uiModel.memberName,
                     groupNum = uiModel.group?.groupNum,
@@ -277,6 +289,18 @@ class MemberViewModelImpl @Inject constructor(
             MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism,
             uiModel.dateOfBaptism.toShortFormatString().orEmpty()
         )
+        uiModel.memberCongregationId?.let {
+            initStateValue(
+                MemberFields.MEMBER_CONGREGATION_ID, memberCongregationId, it.toString()
+            )
+        }
+        initStateValue(
+            MemberFields.MEMBER_ACTIVITY_DATE, activityDate,
+            uiModel.activityDate.toShortFormatString().orEmpty()
+        )
+        uiModel.memberMovementId?.let {
+            initStateValue(MemberFields.MEMBER_MOVEMENT_ID, memberMovementId, it.toString())
+        }
         initStateValue(MemberFields.MEMBER_TYPE, memberType, uiModel.memberType.name)
         initStateValue(
             MemberFields.MEMBER_MOVEMENT_DATE, movementDate,
@@ -335,6 +359,20 @@ class MemberViewModelImpl @Inject constructor(
                     is MemberInputEvent.DateOfBaptism -> setStateValue(
                         MemberFields.MEMBER_DATE_OF_BAPTISM, dateOfBaptism, event.input,
                         MemberInputValidator.DateOfBaptism.isValid(event.input)
+                    )
+
+                    is MemberInputEvent.MemberCongregationId -> setStateValue(
+                        MemberFields.MEMBER_CONGREGATION_ID, memberCongregationId, event.input,
+                        true
+                    )
+
+                    is MemberInputEvent.ActivityDate -> setStateValue(
+                        MemberFields.MEMBER_ACTIVITY_DATE, activityDate, event.input,
+                        MemberInputValidator.ActivityDate.isValid(event.input)
+                    )
+
+                    is MemberInputEvent.MemberMovementId -> setStateValue(
+                        MemberFields.MEMBER_MOVEMENT_ID, memberMovementId, event.input, true
                     )
 
                     is MemberInputEvent.MemberType -> setStateValue(
@@ -400,6 +438,19 @@ class MemberViewModelImpl @Inject constructor(
                         MemberInputValidator.DateOfBaptism.errorIdOrNull(event.input)
                     )
 
+                    is MemberInputEvent.MemberCongregationId -> setStateValue(
+                        MemberFields.MEMBER_CONGREGATION_ID, memberCongregationId, null
+                    )
+
+                    is MemberInputEvent.ActivityDate -> setStateValue(
+                        MemberFields.MEMBER_ACTIVITY_DATE, activityDate,
+                        MemberInputValidator.ActivityDate.errorIdOrNull(event.input)
+                    )
+
+                    is MemberInputEvent.MemberMovementId -> setStateValue(
+                        MemberFields.MEMBER_MOVEMENT_ID, memberMovementId, null
+                    )
+
                     is MemberInputEvent.MemberType -> setStateValue(
                         MemberFields.MEMBER_TYPE, memberType,
                         MemberInputValidator.MemberType.errorIdOrNull(event.input)
@@ -454,6 +505,11 @@ class MemberViewModelImpl @Inject constructor(
                 InputError(fieldName = MemberFields.MEMBER_DATE_OF_BAPTISM.name, errorId = it)
             )
         }
+        MemberInputValidator.ActivityDate.errorIdOrNull(activityDate.value.value)?.let {
+            inputErrors.add(
+                InputError(fieldName = MemberFields.MEMBER_ACTIVITY_DATE.name, errorId = it)
+            )
+        }
         MemberInputValidator.MovementDate.errorIdOrNull(movementDate.value.value)?.let {
             inputErrors.add(
                 InputError(fieldName = MemberFields.MEMBER_MOVEMENT_DATE.name, errorId = it)
@@ -474,6 +530,7 @@ class MemberViewModelImpl @Inject constructor(
                 MemberFields.MEMBER_TYPE -> memberType.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_DATE_OF_BIRTH -> dateOfBirth.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_DATE_OF_BAPTISM -> dateOfBaptism.value.copy(errorId = error.errorId)
+                MemberFields.MEMBER_ACTIVITY_DATE -> activityDate.value.copy(errorId = error.errorId)
                 MemberFields.MEMBER_MOVEMENT_DATE -> movementDate.value.copy(errorId = error.errorId)
                 else -> null
             }
@@ -515,6 +572,9 @@ class MemberViewModelImpl @Inject constructor(
                 override val phoneNumber = MutableStateFlow(InputWrapper())
                 override val dateOfBirth = MutableStateFlow(InputWrapper())
                 override val dateOfBaptism = MutableStateFlow(InputWrapper())
+                override val memberCongregationId = MutableStateFlow(InputWrapper())
+                override val activityDate = MutableStateFlow(InputWrapper())
+                override val memberMovementId = MutableStateFlow(InputWrapper())
                 override val memberType = MutableStateFlow(InputWrapper())
                 override val movementDate = MutableStateFlow(InputWrapper())
                 override val loginExpiredDate = MutableStateFlow(InputWrapper())

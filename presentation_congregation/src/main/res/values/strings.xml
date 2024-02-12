@@ -50,6 +50,7 @@
     <!--Возвещатель-->
     <string name="member_subheader">Возвещатель</string>
     <string name="member_new_subheader">Новый возвещатель</string>
+    <string name="member_activity_date_hint">Дата приёма</string>
     <string name="member_num_hint">№ в группе</string>
     <string name="member_name_hint">Имя</string>
     <string name="member_surname_hint">Фамилия</string>
@@ -96,6 +97,7 @@
     <string name="group_unique_constraint_error">Группа с таким номером уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы возвещателя-->
     <string name="member_congregation_empty_error">Укажите, пожалуйста, собрание!</string>
+    <string name="member_activity_date_empty_error">Укажите, пожалуйста, дату приёма!</string>
     <string name="member_group_empty_error">Укажите, пожалуйста, группу!</string>
     <string name="member_num_empty_error">Укажите, пожалуйста, номер в группе!</string>
     <string name="member_pseudonym_empty_error">Укажите, пожалуйста, псевдоним!</string>

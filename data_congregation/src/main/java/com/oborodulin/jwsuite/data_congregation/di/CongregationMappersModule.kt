@@ -63,7 +63,10 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberTo
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewListToMembersListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MembersListToMemberEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.congregation.MemberCongregationCrossRefEntityToMemberCongregationMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.congregation.MemberLastCongregationViewToMemberCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.congregation.MemberToMemberCongregationCrossRefEntityMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberLastMovementViewToMemberMovementMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberMovementEntityToMemberMovementMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberToMemberMovementEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.role.MemberRoleToMemberRoleEntityMapper
@@ -197,16 +200,36 @@ object CongregationMappersModule {
 
     // Members:
     // Member Congregation:
-    // Member Movement:
     @Singleton
     @Provides
-    fun provideMemberToMemberMovementEntityMapper(): MemberToMemberMovementEntityMapper =
-        MemberToMemberMovementEntityMapper()
+    fun provideMemberToMemberCongregationCrossRefEntityMapper(): MemberToMemberCongregationCrossRefEntityMapper =
+        MemberToMemberCongregationCrossRefEntityMapper()
 
+    @Singleton
+    @Provides
+    fun provideMemberCongregationCrossRefEntityToMemberCongregationMapper(): MemberCongregationCrossRefEntityToMemberCongregationMapper =
+        MemberCongregationCrossRefEntityToMemberCongregationMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberLastCongregationViewToMemberCongregationMapper(mapper: MemberCongregationCrossRefEntityToMemberCongregationMapper): MemberLastCongregationViewToMemberCongregationMapper =
+        MemberLastCongregationViewToMemberCongregationMapper(mapper = mapper)
+
+    // Member Movement:
     @Singleton
     @Provides
     fun provideMemberMovementEntityToMemberMovementMapper(): MemberMovementEntityToMemberMovementMapper =
         MemberMovementEntityToMemberMovementMapper()
+
+    @Singleton
+    @Provides
+    fun provideMemberLastMovementViewToMemberMovementMapper(mapper: MemberMovementEntityToMemberMovementMapper): MemberLastMovementViewToMemberMovementMapper =
+        MemberLastMovementViewToMemberMovementMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberToMemberMovementEntityMapper(): MemberToMemberMovementEntityMapper =
+        MemberToMemberMovementEntityMapper()
 
     // Member:
     @Singleton
@@ -217,13 +240,15 @@ object CongregationMappersModule {
         localityMapper: LocalityViewToGeoLocalityMapper,
         congregationMapper: CongregationEntityToCongregationMapper,
         groupMapper: GroupViewToGroupMapper,
-        movementMapper: MemberMovementEntityToMemberMovementMapper
+        lastCongregationMapper: MemberLastCongregationViewToMemberCongregationMapper,
+        movementMapper: MemberLastMovementViewToMemberMovementMapper
     ): MemberViewToMemberMapper = MemberViewToMemberMapper(
         regionMapper = regionMapper,
         regionDistrictMapper = regionDistrictMapper,
         localityMapper = localityMapper,
         congregationMapper = congregationMapper,
         groupMapper = groupMapper,
+        lastCongregationMapper = lastCongregationMapper,
         movementMapper = movementMapper
     )
 
@@ -239,11 +264,6 @@ object CongregationMappersModule {
 
     @Singleton
     @Provides
-    fun provideMemberToMemberCongregationCrossRefEntityMapper(): MemberToMemberCongregationCrossRefEntityMapper =
-        MemberToMemberCongregationCrossRefEntityMapper()
-
-    @Singleton
-    @Provides
     fun provideMembersListToMemberEntityListMapper(mapper: MemberToMemberEntityMapper): MembersListToMemberEntityListMapper =
         MembersListToMemberEntityListMapper(mapper = mapper)
 
@@ -256,6 +276,7 @@ object CongregationMappersModule {
         memberToMemberEntityMapper: MemberToMemberEntityMapper,
         memberToMemberCongregationCrossRefEntityMapper: MemberToMemberCongregationCrossRefEntityMapper,
         memberToMemberMovementEntityMapper: MemberToMemberMovementEntityMapper,
+        memberLastMovementViewToMemberMovementMapper: MemberLastMovementViewToMemberMovementMapper,
         roleEntityListToRolesListMapper: RoleEntityListToRolesListMapper,
         memberRoleViewToMemberRoleMapper: MemberRoleViewToMemberRoleMapper,
         memberRoleViewListToMemberRolesListMapper: MemberRoleViewListToMemberRolesListMapper,
@@ -273,6 +294,7 @@ object CongregationMappersModule {
         memberToMemberEntityMapper,
         memberToMemberCongregationCrossRefEntityMapper,
         memberToMemberMovementEntityMapper,
+        memberLastMovementViewToMemberMovementMapper,
         roleEntityListToRolesListMapper,
         memberRoleViewToMemberRoleMapper,
         memberRoleViewListToMemberRolesListMapper,

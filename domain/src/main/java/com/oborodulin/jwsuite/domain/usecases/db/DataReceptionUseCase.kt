@@ -33,12 +33,12 @@ class DataReceptionUseCase(
         csvFiles?.let {
             Timber.tag(TAG).d("CSV Data Reception: Files size = %s", csvFiles.size)
             databaseRepository.orderedDataTableNames().first().forEach { tableName ->
-                csvFiles.find { it.name.substringBefore('.') == tableName }?.let { file ->
+                csvFiles.find { it.name.substringBefore('.') == tableName.key }?.let { file ->
                     Timber.tag(TAG).d(
                         "CSV Data Reception: tableName = %s -> FileName = %s",
                         tableName, file.name
                     )
-                    importService.csvRepositoryLoads(tableName).forEach { callables ->
+                    importService.csvRepositoryLoads(tableName.key).forEach { callables ->
                         val csvFilePrefix = callables.key.fileNamePrefix
                         val contentType = callables.key.contentType
                         val loadMethod = callables.value
@@ -72,7 +72,9 @@ class DataReceptionUseCase(
                                 emit(
                                     Response(
                                         csvFilePrefix = csvFilePrefix,
-                                        loadListSize = loadListSize
+                                        loadListSize = loadListSize,
+                                        entityDesc = tableName.value,
+                                        isSuccess = importResult
                                     )
                                 )
                             }
@@ -82,16 +84,16 @@ class DataReceptionUseCase(
                 //for (i in csvFiles.indices) {}
             }
         }
-        if (importResult.not()) {
-            emit(Response(isSuccess = importResult))
-        }
+        emit(Response(isSuccess = importResult, isDone = true))
     }
 
     data object Request : UseCase.Request
     data class Response(
         val csvFilePrefix: String = "",
         val loadListSize: Int = 0,
-        val isSuccess: Boolean = true
+        val entityDesc: String = "",
+        val isSuccess: Boolean = false,
+        val isDone: Boolean = false
     ) : UseCase.Response
 
 }

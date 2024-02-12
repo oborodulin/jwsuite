@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
@@ -15,7 +16,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -65,35 +64,12 @@ class AppSettingViewModelImpl @Inject constructor(
     DialogViewModel<AppSettingsUiModel, UiState<AppSettingsUiModel>, AppSettingUiAction, UiSingleEvent, AppSettingFields, InputWrapper>(
         state, //AppSettingFields.MEMBER_ID.name, AppSettingFields.TERRITORY_PROCESSING_PERIOD
     ) {
-    override val territoryProcessingPeriod: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(AppSettingFields.TERRITORY_PROCESSING_PERIOD.name, InputWrapper())
-    }
-    override val territoryAtHandPeriod: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(AppSettingFields.TERRITORY_AT_HAND_PERIOD.name, InputWrapper())
-    }
-    override val territoryIdlePeriod: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(AppSettingFields.TERRITORY_IDLE_PERIOD.name, InputWrapper())
-    }
-    override val territoryRoomsLimit: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(AppSettingFields.TERRITORY_ROOMS_LIMIT.name, InputWrapper())
-    }
-    override val territoryMaxRooms: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(AppSettingFields.TERRITORY_MAX_ROOMS.name, InputWrapper())
+    override val databaseBackupPeriod: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(AppSettingFields.DATABASE_BACKUP_PERIOD.name, InputWrapper())
     }
 
-    override val areInputsValid =
-        combine(
-            territoryProcessingPeriod,
-            territoryAtHandPeriod,
-            territoryIdlePeriod,
-            territoryRoomsLimit,
-            territoryMaxRooms,
-        )
-        { stateFlowsArray ->
-            var errorIdResult = true
-            for (state in stateFlowsArray) errorIdResult = errorIdResult && state.errorId == null
-            errorIdResult
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    override val areInputsValid = databaseBackupPeriod.map { it.errorId == null }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState() = UiState.Loading
 
@@ -120,23 +96,7 @@ class AppSettingViewModelImpl @Inject constructor(
         val appSettings = listOf(
             AppSettingsListItem(
                 paramName = AppSettingParam.TERRITORY_PROCESSING_PERIOD,
-                paramValue = territoryProcessingPeriod.value.value
-            ),
-            AppSettingsListItem(
-                paramName = AppSettingParam.TERRITORY_AT_HAND_PERIOD,
-                paramValue = territoryAtHandPeriod.value.value
-            ),
-            AppSettingsListItem(
-                paramName = AppSettingParam.TERRITORY_IDLE_PERIOD,
-                paramValue = territoryIdlePeriod.value.value
-            ),
-            AppSettingsListItem(
-                paramName = AppSettingParam.TERRITORY_ROOMS_LIMIT,
-                paramValue = territoryRoomsLimit.value.value
-            ),
-            AppSettingsListItem(
-                paramName = AppSettingParam.TERRITORY_MAX_ROOMS,
-                paramValue = territoryMaxRooms.value.value
+                paramValue = databaseBackupPeriod.value.value
             )
         )
         Timber.tag(TAG).d("saveAppSettings() called: UI model %s", appSettings)
@@ -157,24 +117,8 @@ class AppSettingViewModelImpl @Inject constructor(
         if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(AppSettingsUiModel) called: uiModel = %s", uiModel)
         initStateValue(
-            AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
+            AppSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
             uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
-        )
-        initStateValue(
-            AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_AT_HAND_PERIOD }.paramValue
-        )
-        initStateValue(
-            AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_IDLE_PERIOD }.paramValue
-        )
-        initStateValue(
-            AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_ROOMS_LIMIT }.paramValue
-        )
-        initStateValue(
-            AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_MAX_ROOMS }.paramValue
         )
         return null
     }
@@ -184,67 +128,20 @@ class AppSettingViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is AppSettingInputEvent.TerritoryProcessingPeriod -> setStateValue(
-                        AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
+                    is AppSettingInputEvent.DatabaseBackupPeriod -> setStateValue(
+                        AppSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
                         event.input,
-                        AppSettingInputValidator.TerritoryProcessingPeriod.isValid(event.input)
-                    )
-
-                    is AppSettingInputEvent.TerritoryAtHandPeriod -> setStateValue(
-                        AppSettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
-                        event.input,
-                        AppSettingInputValidator.TerritoryAtHandPeriod.isValid(event.input)
-                    )
-
-                    is AppSettingInputEvent.TerritoryIdlePeriod -> setStateValue(
-                        AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod, event.input,
-                        AppSettingInputValidator.TerritoryIdlePeriod.isValid(event.input)
-                    )
-
-                    is AppSettingInputEvent.TerritoryRoomsLimit -> setStateValue(
-                        AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit, event.input,
-                        AppSettingInputValidator.TerritoryRoomsLimit.isValid(event.input)
-                    )
-
-                    is AppSettingInputEvent.TerritoryMaxRooms -> setStateValue(
-                        AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms, event.input,
-                        AppSettingInputValidator.TerritoryMaxRooms.isValid(event.input)
+                        AppSettingInputValidator.DatabaseBackupPeriod.isValid(event.input)
                     )
                 }
             }.debounce(350)
             .collect { event ->
                 when (event) {
-                    is AppSettingInputEvent.TerritoryProcessingPeriod ->
+                    is AppSettingInputEvent.DatabaseBackupPeriod ->
                         setStateValue(
-                            AppSettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
-                            AppSettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(event.input)
+                            AppSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
+                            AppSettingInputValidator.DatabaseBackupPeriod.errorIdOrNull(event.input)
                         )
-
-                    is AppSettingInputEvent.TerritoryAtHandPeriod ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_AT_HAND_PERIOD,
-                            territoryAtHandPeriod,
-                            AppSettingInputValidator.TerritoryAtHandPeriod.errorIdOrNull(event.input)
-                        )
-
-                    is AppSettingInputEvent.TerritoryIdlePeriod ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
-                            AppSettingInputValidator.TerritoryIdlePeriod.errorIdOrNull(event.input)
-                        )
-
-                    is AppSettingInputEvent.TerritoryRoomsLimit ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
-                            AppSettingInputValidator.TerritoryRoomsLimit.errorIdOrNull(event.input)
-                        )
-
-                    is AppSettingInputEvent.TerritoryMaxRooms ->
-                        setStateValue(
-                            AppSettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms,
-                            AppSettingInputValidator.TerritoryMaxRooms.errorIdOrNull(event.input)
-                        )
-
                 }
             }
     }
@@ -255,42 +152,12 @@ class AppSettingViewModelImpl @Inject constructor(
         if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
 
-        AppSettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(territoryProcessingPeriod.value.value)
+        AppSettingInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseBackupPeriod.value.value)
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = AppSettingFields.TERRITORY_PROCESSING_PERIOD.name, errorId = it
+                        fieldName = AppSettingFields.DATABASE_BACKUP_PERIOD.name, errorId = it
                     )
-                )
-            }
-        AppSettingInputValidator.TerritoryAtHandPeriod.errorIdOrNull(territoryAtHandPeriod.value.value)
-            ?.let {
-                inputErrors.add(
-                    InputError(
-                        fieldName = AppSettingFields.TERRITORY_AT_HAND_PERIOD.name, errorId = it
-                    )
-                )
-            }
-        AppSettingInputValidator.TerritoryIdlePeriod.errorIdOrNull(territoryIdlePeriod.value.value)
-            ?.let {
-                inputErrors.add(
-                    InputError(
-                        fieldName = AppSettingFields.TERRITORY_IDLE_PERIOD.name, errorId = it
-                    )
-                )
-            }
-        AppSettingInputValidator.TerritoryRoomsLimit.errorIdOrNull(territoryRoomsLimit.value.value)
-            ?.let {
-                inputErrors.add(
-                    InputError(
-                        fieldName = AppSettingFields.TERRITORY_ROOMS_LIMIT.name, errorId = it
-                    )
-                )
-            }
-        AppSettingInputValidator.TerritoryMaxRooms.errorIdOrNull(territoryMaxRooms.value.value)
-            ?.let {
-                inputErrors.add(
-                    InputError(fieldName = AppSettingFields.TERRITORY_MAX_ROOMS.name, errorId = it)
                 )
             }
         return inputErrors.ifEmpty { null }
@@ -301,17 +168,10 @@ class AppSettingViewModelImpl @Inject constructor(
             .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (AppSettingFields.valueOf(error.fieldName)) {
-                AppSettingFields.TERRITORY_PROCESSING_PERIOD -> territoryProcessingPeriod.value.copy(
+                AppSettingFields.DATABASE_BACKUP_PERIOD -> databaseBackupPeriod.value.copy(
                     errorId = error.errorId
                 )
 
-                AppSettingFields.TERRITORY_AT_HAND_PERIOD -> territoryAtHandPeriod.value.copy(
-                    errorId = error.errorId
-                )
-
-                AppSettingFields.TERRITORY_IDLE_PERIOD -> territoryIdlePeriod.value.copy(errorId = error.errorId)
-                AppSettingFields.TERRITORY_ROOMS_LIMIT -> territoryRoomsLimit.value.copy(errorId = error.errorId)
-                AppSettingFields.TERRITORY_MAX_ROOMS -> territoryMaxRooms.value.copy(errorId = error.errorId)
                 else -> null
             }
         }
@@ -339,11 +199,7 @@ class AppSettingViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
-                override val territoryProcessingPeriod = MutableStateFlow(InputWrapper())
-                override val territoryAtHandPeriod = MutableStateFlow(InputWrapper())
-                override val territoryIdlePeriod = MutableStateFlow(InputWrapper())
-                override val territoryRoomsLimit = MutableStateFlow(InputWrapper())
-                override val territoryMaxRooms = MutableStateFlow(InputWrapper())
+                override val databaseBackupPeriod = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 

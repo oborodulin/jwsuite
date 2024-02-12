@@ -2,7 +2,6 @@ package com.oborodulin.jwsuite.domain.model.congregation
 
 import com.oborodulin.home.common.domain.model.DomainModel
 import java.time.OffsetDateTime
-import java.util.UUID
 
 data class Member(
     val congregation: Congregation,
@@ -16,9 +15,7 @@ data class Member(
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
     val loginExpiredDate: OffsetDateTime? = null,
-    var memberCongregationId: UUID? = null,
-    val congregationId: UUID,
-    val activityDate: OffsetDateTime,
+    val lastCongregation: MemberCongregation,
     val lastMovement: MemberMovement
 ) : DomainModel() {
     val fullName =
@@ -29,7 +26,7 @@ data class Member(
         .plus(" [$pseudonym]")).trim()
 
     companion object {
-        fun getPseudonym(
+        fun pseudonym(
             surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
         ) =
             "${surname?.firstOrNull() ?: ""}${memberName?.firstOrNull() ?: ""}${groupNum?.toString() ?: "0"}${

@@ -59,6 +59,7 @@ private const val TAG = "Common.ui.DatePickerComponent"
 @Composable
 fun DatePickerComponent(
     modifier: Modifier,
+    enabled: Boolean = true,
     inputWrapper: InputWrapper,
     @StringRes labelResId: Int? = null,
     @StringRes datePickerTitleResId: Int? = null,
@@ -133,7 +134,7 @@ fun DatePickerComponent(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp, horizontal = 8.dp),//.weight(1f),
-            //enabled = false,
+            enabled = enabled,
             readOnly = true,
             value = fieldValue,
             onValueChange = { fieldValue = it },
@@ -146,7 +147,7 @@ fun DatePickerComponent(
                         Timber
                             .tag(TAG)
                             .d("DatePickerComponent: OutlinedTextField() clickable")
-                        onShowDialog()
+                        if (enabled) onShowDialog()
                     }
                 )
             },

@@ -80,6 +80,7 @@ fun MemberView(
 
     Timber.tag(TAG).d("Member: CollectAsStateWithLifecycle for all fields")
     val congregation by viewModel.congregation.collectAsStateWithLifecycle()
+    val activityDate by viewModel.activityDate.collectAsStateWithLifecycle()
     val group by viewModel.group.collectAsStateWithLifecycle()
     val memberNum by viewModel.memberNum.collectAsStateWithLifecycle()
     val memberName by viewModel.memberName.collectAsStateWithLifecycle()
@@ -138,6 +139,24 @@ fun MemberView(
             onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.Congregation(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
+        DatePickerComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[MemberFields.MEMBER_ACTIVITY_DATE]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = MemberFields.MEMBER_ACTIVITY_DATE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            enabled = false,
+            labelResId = R.string.member_activity_date_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+            },
+            inputWrapper = activityDate,
+            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.ActivityDate(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
         GroupComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[MemberFields.MEMBER_GROUP]!!.focusRequester)
@@ -151,7 +170,7 @@ fun MemberView(
             onValueChange = { groupNum ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Group(groupNum))
                 viewModel.onInsert {
-                    val pseudonymVal = Member.getPseudonym(
+                    val pseudonymVal = Member.pseudonym(
                         surname.value, memberName.value, groupNum.headline.toIntOrNull(),
                         memberNum.value
                     )
@@ -177,7 +196,7 @@ fun MemberView(
             onValueChange = { numInGroup ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberNum(numInGroup))
                 viewModel.onInsert {
-                    val pseudonymVal = Member.getPseudonym(
+                    val pseudonymVal = Member.pseudonym(
                         surname.value, memberName.value, group.item?.headline?.toIntOrNull(),
                         numInGroup
                     )
@@ -206,7 +225,7 @@ fun MemberView(
             onValueChange = { value ->
                 viewModel.onTextFieldEntered(MemberInputEvent.Surname(value))
                 viewModel.onInsert {
-                    val pseudonymVal = Member.getPseudonym(
+                    val pseudonymVal = Member.pseudonym(
                         value, memberName.value, group.item?.headline?.toIntOrNull(),
                         memberNum.value
                     )
@@ -235,7 +254,7 @@ fun MemberView(
             onValueChange = { name ->
                 viewModel.onTextFieldEntered(MemberInputEvent.MemberName(name))
                 viewModel.onInsert {
-                    val pseudonymVal = Member.getPseudonym(
+                    val pseudonymVal = Member.pseudonym(
                         surname.value, name, group.item?.headline?.toIntOrNull(), memberNum.value
                     )
                     viewModel.onTextFieldEntered(MemberInputEvent.Pseudonym(pseudonymVal))
@@ -352,7 +371,10 @@ fun MemberView(
             inputWrapper = memberType,
             values = memberTypes.values.toList(), // resolve Enums to Resource
             keys = memberTypes.keys.map { it.name }, // Enums
-            onValueChange = { viewModel.onTextFieldEntered(MemberInputEvent.MemberType(it)) },
+            onValueChange = {
+                viewModel.onTextFieldEntered(MemberInputEvent.MemberType(it))
+                viewModel.onTextFieldEntered(MemberInputEvent.MemberMovementId())
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         DatePickerComponent(

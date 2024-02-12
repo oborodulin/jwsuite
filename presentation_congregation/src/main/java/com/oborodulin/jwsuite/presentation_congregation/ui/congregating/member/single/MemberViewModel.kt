@@ -24,6 +24,9 @@ interface MemberViewModel :
     val phoneNumber: StateFlow<InputWrapper>
     val dateOfBirth: StateFlow<InputWrapper>
     val dateOfBaptism: StateFlow<InputWrapper>
+    val memberCongregationId: StateFlow<InputWrapper>
+    val activityDate: StateFlow<InputWrapper>
+    val memberMovementId: StateFlow<InputWrapper>
     val memberType: StateFlow<InputWrapper>
     val movementDate: StateFlow<InputWrapper>
     val loginExpiredDate: StateFlow<InputWrapper>

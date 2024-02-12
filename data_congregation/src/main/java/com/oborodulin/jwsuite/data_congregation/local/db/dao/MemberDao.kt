@@ -18,18 +18,19 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntit
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberActualRoleView
-import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberLastCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberLastMovementView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
 import com.oborodulin.jwsuite.domain.types.MemberType
-import com.oborodulin.jwsuite.domain.util.Constants
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.Constants.MT_SERVICE_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TOT_ALL_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -45,13 +46,13 @@ interface MemberDao {
     SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON m.memberId = mc.mcMembersId 
         JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mc.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
+        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
                                                             AND mcv.pseudonym = :username AND m.pseudonym = mcv.pseudonym
     WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
     UNION ALL            
     SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON m.memberId = msrv.mrMembersId 
-        JOIN ${MemberCongregationView.VIEW_NAME} mcm ON m.memberId = mcm.mcMembersId
-        JOIN ${MemberCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcm ON m.memberId = mcm.mcMembersId
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
     """
     )
     fun findEntitiesByUsernameAndFavoriteMark(
@@ -62,7 +63,7 @@ interface MemberDao {
         """
     SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mccr.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON mccr.memberCongregationId = mcv.memberCongregationId AND mcv.pseudonym = :username 
+        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mccr.memberCongregationId = mcv.memberCongregationId AND mcv.pseudonym = :username 
     WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
      """
     )
@@ -86,15 +87,15 @@ interface MemberDao {
         JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON mc.mcMembersId = m.memberId 
         JOIN ${CongregationEntity.TABLE_NAME} c ON mc.mcCongregationsId = c.congregationId
                                                     AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN ${MemberCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
+        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
                                                             AND mcv.pseudonym = :username AND m.pseudonym = mcv.pseudonym
         LEFT JOIN ${MemberActualRoleView.VIEW_NAME} marv ON mr.memberRoleId = marv.memberRoleId
     WHERE (:username IS NULL OR (mcv.memberCongregationId IS NOT NULL AND marv.memberRoleId IS NOT NULL))
         AND (:byFavorite = $DB_FALSE OR marv.memberRoleId IS NOT NULL)
     UNION ALL            
     SELECT mr.* FROM ${MemberRoleEntity.TABLE_NAME} mr JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON mr.mrMembersId = msrv.mrMembersId 
-        JOIN ${MemberCongregationView.VIEW_NAME} mcm ON msrv.mrMembersId = mcm.mcMembersId
-        JOIN ${MemberCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcm ON msrv.mrMembersId = mcm.mcMembersId
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
     """
     )
     fun findMemberRoleEntitiesByUsernameAndFavoriteMark(
@@ -251,6 +252,14 @@ interface MemberDao {
     fun findDistinctRolesForMemberByMemberId(memberId: UUID) =
         findRolesForMemberByMemberId(memberId).distinctUntilChanged()
 
+    //----------------------------- Congregation:
+    @Query("SELECT * FROM ${MemberLastCongregationView.VIEW_NAME} WHERE mcMembersId = :memberId")
+    fun findLastCongregationByMemberId(memberId: UUID): Flow<MemberLastCongregationView>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctLastCongregationByMemberId(memberId: UUID) =
+        findLastCongregationByMemberId(memberId).distinctUntilChanged()
+
     //----------------------------- Movements:
     @Query("SELECT * FROM ${MemberMovementEntity.TABLE_NAME} WHERE mMembersId = :memberId ORDER BY strftime($DB_FRACT_SEC_TIME, movementDate)")
     fun findMovementsByMemberId(memberId: UUID): Flow<List<MemberMovementEntity>>
@@ -260,14 +269,8 @@ interface MemberDao {
         findMovementsByMemberId(memberId).distinctUntilChanged()
 
     //-----------------------------
-    @Query(
-        """
-    SELECT mm.* FROM ${MemberMovementEntity.TABLE_NAME} mm  
-        JOIN (SELECT mMembersId, MAX(strftime($DB_FRACT_SEC_TIME, movementDate)) AS maxMovementDate FROM ${MemberMovementEntity.TABLE_NAME} GROUP BY mMembersId) gmm 
-            ON gmm.mMembersId = :memberId AND mm.mMembersId = :memberId AND strftime($DB_FRACT_SEC_TIME, mm.movementDate) = gmm.maxMovementDate
-    """
-    )
-    fun findLastMovementByMemberId(memberId: UUID): Flow<MemberMovementEntity>
+    @Query("SELECT * FROM ${MemberLastMovementView.VIEW_NAME} WHERE mMembersId = :memberId")
+    fun findLastMovementByMemberId(memberId: UUID): Flow<MemberLastMovementView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctLastMovementByMemberId(memberId: UUID) =
@@ -277,26 +280,26 @@ interface MemberDao {
     @Query(
         """
     SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
-    WHERE mrv.pseudonym = :pseudonym AND rtov.transferObjectType = ${Constants.TOT_ALL_VAL}
+    WHERE mrv.pseudonym = :pseudonym AND rtov.transferObjectType = $TOT_ALL_VAL
     GROUP BY mrv.memberId, rtov.transferObjectId
     UNION ALL
     SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
     WHERE mrv.pseudonym = :pseudonym
-        AND rtov.isPersonalData = ${Constants.DB_FALSE}
+        AND rtov.isPersonalData = $DB_FALSE
         AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
-                        WHERE pseudonym = :pseudonym AND transferObjectType = ${Constants.TOT_ALL_VAL})
+                        WHERE pseudonym = :pseudonym AND transferObjectType = $TOT_ALL_VAL)
     GROUP BY mrv.memberId, rtov.transferObjectId
     UNION ALL
     SELECT rtov.* FROM ${RoleTransferObjectView.VIEW_NAME} rtov JOIN ${MemberRoleView.VIEW_NAME} mrv ON rtov.rtoRolesId = mrv.roleId 
     WHERE mrv.pseudonym = :pseudonym
-        AND rtov.isPersonalData = ${Constants.DB_TRUE}
+        AND rtov.isPersonalData = $DB_TRUE
         AND NOT EXISTS (SELECT rto.roleTransferObjectId FROM ${RoleTransferObjectEntity.TABLE_NAME} rto 
                             JOIN ${MemberRoleEntity.TABLE_NAME} mr ON mr.mrRolesId = rto.rtoRolesId
                                 AND mr.mrMembersId = mrv.memberId
                                 AND rto.rtoTransferObjectsId = rtov.transferObjectId
-                                AND rto.isPersonalData = ${Constants.DB_FALSE})
+                                AND rto.isPersonalData = $DB_FALSE)
         AND NOT EXISTS (SELECT transferObjectId FROM ${MemberRoleTransferObjectView.VIEW_NAME} 
-                        WHERE pseudonym = :pseudonym AND transferObjectType = ${Constants.TOT_ALL_VAL})
+                        WHERE pseudonym = :pseudonym AND transferObjectType = $TOT_ALL_VAL)
     GROUP BY mrv.memberId, rtov.transferObjectId
     ORDER BY transferObjectName
     """
@@ -342,17 +345,13 @@ interface MemberDao {
     // UPDATES TOTALS:
     // totalMembers:
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalMembers = totalMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
-    suspend fun incTotalMembersByCongregationId(congregationId: UUID, diff: Int = 1)
+    suspend fun updateTotalMembersByCongregationId(congregationId: UUID, diff: Int)
 
     @Query(
         """
     UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalMembers = totalMembers + :diff
     WHERE lastVisitDate IS NULL
-        AND ctlCongregationsId = (SELECT mc.mcCongregationsId FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mc
-                                        JOIN (SELECT mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, activityDate)) AS maxActivityDate 
-                                                FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} GROUP BY mcMembersId ) gmc
-                                            ON gmc.mcMembersId = :memberId AND mc.mcMembersId = :memberId
-                                                AND strftime($DB_FRACT_SEC_TIME, mc.activityDate) = gmc.maxActivityDate)
+        AND ctlCongregationsId = (SELECT mcCongregationsId FROM ${MemberLastCongregationView.VIEW_NAME} WHERE mcMembersId = :memberId)
     """
     )
     suspend fun decTotalMembersByMemberId(memberId: UUID, diff: Int = -1)
@@ -365,11 +364,7 @@ interface MemberDao {
         """
     UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff
     WHERE lastVisitDate IS NULL
-        AND ctlCongregationsId = (SELECT mc.mcCongregationsId FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mc
-                                        JOIN (SELECT mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, activityDate)) AS maxActivityDate 
-                                                FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} GROUP BY mcMembersId ) gmc
-                                            ON gmc.mcMembersId = :memberId AND mc.mcMembersId = :memberId
-                                                AND strftime($DB_FRACT_SEC_TIME, mc.activityDate) = gmc.maxActivityDate)
+        AND ctlCongregationsId = (SELECT mcCongregationsId FROM ${MemberLastCongregationView.VIEW_NAME} WHERE mcMembersId = :memberId) 
     """
     )
     suspend fun decTotalFulltimeMembersByMemberId(memberId: UUID, diff: Int = -1)
@@ -423,7 +418,7 @@ interface MemberDao {
     ) {
         insert(member)
         insert(memberCongregation)
-        incTotalMembersByCongregationId(memberCongregation.mcCongregationsId)
+        updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
         insert(memberMovement)
         if (memberMovement.memberType == MemberType.FULL_TIME) {
             updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
@@ -456,14 +451,23 @@ interface MemberDao {
         memberMovement: MemberMovementEntity
     ) {
         update(member)
-        insert(memberCongregation) // OnConflictStrategy.REPLACE
+        val lastCongregation = findLastCongregationByMemberId(member.memberId).first()
+        if (lastCongregation.lastMemberCongregation.mcCongregationsId != memberCongregation.mcCongregationsId) {
+            insert(memberCongregation) // OnConflictStrategy.REPLACE
+            updateTotalMembersByCongregationId(
+                lastCongregation.lastMemberCongregation.mcCongregationsId, -1
+            )
+            updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+        } else {
+            update(memberCongregation)
+        }
         val lastMovement = findLastMovementByMemberId(member.memberId).first()
-        if (lastMovement.memberType != memberMovement.memberType) {
+        if (lastMovement.lastMemberMovement.memberType != memberMovement.memberType) {
             insert(memberMovement)  // OnConflictStrategy.REPLACE
             if (memberMovement.memberType == MemberType.FULL_TIME) {
                 updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
             }
-            if (lastMovement.memberType == MemberType.FULL_TIME) {
+            if (lastMovement.lastMemberMovement.memberType == MemberType.FULL_TIME) {
                 updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, -1)
             }
         } else {
@@ -521,7 +525,7 @@ interface MemberDao {
     suspend fun deleteByIdWithTotals(memberId: UUID) {
         decTotalMembersByMemberId(memberId)
         val lastMovement = findLastMovementByMemberId(memberId).first()
-        if (lastMovement.memberType == MemberType.FULL_TIME) {
+        if (lastMovement.lastMemberMovement.memberType == MemberType.FULL_TIME) {
             decTotalFulltimeMembersByMemberId(memberId)
         }
         deleteById(memberId)

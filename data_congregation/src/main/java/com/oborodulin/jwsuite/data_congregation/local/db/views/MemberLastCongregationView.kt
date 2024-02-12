@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 
 @DatabaseView(
-    viewName = MemberCongregationView.VIEW_NAME,
+    viewName = MemberLastCongregationView.VIEW_NAME,
     value = """
 SELECT mcr.*, mcm.pseudonym FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mcr
     JOIN (SELECT mc.mcMembersId, m.pseudonym, MAX(strftime($DB_FRACT_SEC_TIME, mc.activityDate)) AS maxActivityDate 
@@ -16,11 +16,11 @@ SELECT mcr.*, mcm.pseudonym FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} 
         ON mcr.mcMembersId = mcm.mcMembersId AND strftime($DB_FRACT_SEC_TIME, mcr.activityDate) = mcm.maxActivityDate
 """
 )
-class MemberCongregationView(
-    @Embedded val memberCongregation: MemberCongregationCrossRefEntity,
+class MemberLastCongregationView(
+    @Embedded val lastMemberCongregation: MemberCongregationCrossRefEntity,
     @Embedded val pseudonym: String
 ) {
     companion object {
-        const val VIEW_NAME = "member_congregations_view"
+        const val VIEW_NAME = "member_last_congregations_view"
     }
 }

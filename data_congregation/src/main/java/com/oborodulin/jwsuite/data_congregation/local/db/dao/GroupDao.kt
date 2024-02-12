@@ -13,7 +13,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
-import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberLastCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_GROUP_CONGREGATION
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
@@ -34,7 +34,7 @@ interface GroupDao {
     UNION ALL            
     SELECT g.groupId, g.groupNum, g.gCongregationsId FROM ${GroupEntity.TABLE_NAME} g
         JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON g.groupId = msrv.mGroupsId
-        JOIN ${MemberCongregationView.VIEW_NAME} mcv ON g.gCongregationsId = mcv.mcCongregationsId AND mcv.pseudonym = :username
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON g.gCongregationsId = mcv.mcCongregationsId AND mcv.pseudonym = :username
     GROUP BY groupId, groupNum, gCongregationsId
     """
     )

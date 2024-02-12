@@ -8,9 +8,5 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface AppSettingViewModel :
     DialogViewModeled<AppSettingsUiModel, AppSettingUiAction, UiSingleEvent, AppSettingFields> {
-    val territoryProcessingPeriod: StateFlow<InputWrapper>
-    val territoryAtHandPeriod: StateFlow<InputWrapper>
-    val territoryIdlePeriod: StateFlow<InputWrapper>
-    val territoryRoomsLimit: StateFlow<InputWrapper>
-    val territoryMaxRooms: StateFlow<InputWrapper>
+    val databaseBackupPeriod: StateFlow<InputWrapper>
 }

@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface DatabaseViewModel :
     DialogViewModeled<DatabaseUiModel, DatabaseUiAction, UiSingleEvent, DatabaseFields> {
-    val databaseBackupPeriod: StateFlow<InputWrapper>
+    val databaseTransferMember: StateFlow<InputWrapper>
 }

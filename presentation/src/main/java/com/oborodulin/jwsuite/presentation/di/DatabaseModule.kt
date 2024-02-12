@@ -7,6 +7,8 @@ import com.oborodulin.jwsuite.domain.usecases.db.DataTransmissionUseCase
 import com.oborodulin.jwsuite.domain.usecases.db.DatabaseUseCases
 import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelCsvExpConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelCsvImpConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelReceiptConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelTransConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +30,16 @@ object DatabaseModule {
     @Provides
     fun provideDatabaseUiModelCsvImpConverter(): DatabaseUiModelCsvImpConverter =
         DatabaseUiModelCsvImpConverter()
+
+    @Singleton
+    @Provides
+    fun provideDatabaseUiModelTransConverter(): DatabaseUiModelTransConverter =
+        DatabaseUiModelTransConverter()
+
+    @Singleton
+    @Provides
+    fun provideDatabaseUiModelReceiptConverter(): DatabaseUiModelReceiptConverter =
+        DatabaseUiModelReceiptConverter()
 
     // USE CASES:
     @Singleton

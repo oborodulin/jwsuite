@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.ui.navigation
+package com.oborodulin.jwsuite.presentation.extensions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

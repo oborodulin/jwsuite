@@ -15,17 +15,16 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.jwsuite.domain.types.AppSettingParam
-import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
-import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.db.CsvExportUseCase
 import com.oborodulin.jwsuite.domain.usecases.db.CsvImportUseCase
+import com.oborodulin.jwsuite.domain.usecases.db.DataReceptionUseCase
+import com.oborodulin.jwsuite.domain.usecases.db.DataTransmissionUseCase
 import com.oborodulin.jwsuite.domain.usecases.db.DatabaseUseCases
-import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
 import com.oborodulin.jwsuite.presentation.ui.model.DatabaseUiModel
 import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelCsvExpConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelCsvImpConverter
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
+import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelReceiptConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.DatabaseUiModelTransConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -53,30 +52,31 @@ private const val TAG = "Presentation.AppSettingViewModelImpl"
 class DatabaseViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val databaseUseCases: DatabaseUseCases,
-    private val appSettingUseCases: AppSettingUseCases,
     private val csvImpConverter: DatabaseUiModelCsvImpConverter,
     private val csvExpConverter: DatabaseUiModelCsvExpConverter,
-    private val appSettingsUiMapper: AppSettingsListItemToAppSettingsListMapper
+    private val transConverter: DatabaseUiModelTransConverter,
+    private val receiptConverter: DatabaseUiModelReceiptConverter
 ) : DatabaseViewModel,
     DialogViewModel<DatabaseUiModel, UiState<DatabaseUiModel>, DatabaseUiAction, UiSingleEvent, DatabaseFields, InputWrapper>(
         state, //AppSettingFields.MEMBER_ID.name, AppSettingFields.TERRITORY_PROCESSING_PERIOD
     ) {
-    override val databaseBackupPeriod: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(DatabaseFields.DATABASE_BACKUP_PERIOD.name, InputWrapper())
+    override val databaseTransferMember: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(DatabaseFields.DATABASE_TRANSFER_MEMBER.name, InputWrapper())
     }
 
-    override val areInputsValid = databaseBackupPeriod.map { it.errorId == null }
+    override val areInputsValid = databaseTransferMember.map { it.errorId == null }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: DatabaseUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(DatabaseUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
             is DatabaseUiAction.Backup -> backup()
             is DatabaseUiAction.Restore -> restore()
-            is DatabaseUiAction.Save -> saveDatabaseSettings()
+            is DatabaseUiAction.Transmission -> transmission()
+            is DatabaseUiAction.Reception -> reception()
         }
         return job
     }
@@ -99,20 +99,20 @@ class DatabaseViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveDatabaseSettings(): Job {
-        val appSettings = listOf(
-            AppSettingsListItem(
-                paramName = AppSettingParam.DATABASE_BACKUP_PERIOD,
-                paramValue = databaseBackupPeriod.value.value
-            )
-        )
-        Timber.tag(TAG).d("saveDatabaseSettings() called: UI model %s", appSettings)
+    private fun transmission(): Job {
+        Timber.tag(TAG).d("transmission() called")
         val job = viewModelScope.launch(errorHandler) {
-            appSettingUseCases.saveAppSettingsUseCase.execute(
-                SaveAppSettingsUseCase.Request(appSettingsUiMapper.map(appSettings))
-            ).collect {
-                Timber.tag(TAG).d("saveDatabaseSettings() collect: %s", it)
-            }
+            databaseUseCases.dataTransmissionUseCase.execute(DataTransmissionUseCase.Request())
+                .map { transConverter.convert(it) }.collect { submitState(it) }
+        }
+        return job
+    }
+
+    private fun reception(): Job {
+        Timber.tag(TAG).d("reception() called")
+        val job = viewModelScope.launch(errorHandler) {
+            databaseUseCases.dataReceptionUseCase.execute(DataReceptionUseCase.Request)
+                .map { receiptConverter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
@@ -136,7 +136,7 @@ class DatabaseViewModelImpl @Inject constructor(
             .onEach { event ->
                 when (event) {
                     is DatabaseInputEvent.TerritoryProcessingPeriod -> setStateValue(
-                        DatabaseFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
+                        DatabaseFields.DATABASE_TRANSFER_MEMBER, databaseTransferMember,
                         event.input,
                         DatabaseInputValidator.DatabaseBackupPeriod.isValid(event.input)
                     )
@@ -146,7 +146,7 @@ class DatabaseViewModelImpl @Inject constructor(
                 when (event) {
                     is DatabaseInputEvent.TerritoryProcessingPeriod ->
                         setStateValue(
-                            DatabaseFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
+                            DatabaseFields.DATABASE_TRANSFER_MEMBER, databaseTransferMember,
                             DatabaseInputValidator.DatabaseBackupPeriod.errorIdOrNull(event.input)
                         )
                 }
@@ -159,10 +159,13 @@ class DatabaseViewModelImpl @Inject constructor(
         if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
 
-        DatabaseInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseBackupPeriod.value.value)
+        DatabaseInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseTransferMember.value.value)
             ?.let {
                 inputErrors.add(
-                    InputError(fieldName = DatabaseFields.DATABASE_BACKUP_PERIOD.name, errorId = it)
+                    InputError(
+                        fieldName = DatabaseFields.DATABASE_TRANSFER_MEMBER.name,
+                        errorId = it
+                    )
                 )
             }
         return inputErrors.ifEmpty { null }
@@ -173,7 +176,7 @@ class DatabaseViewModelImpl @Inject constructor(
             .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (DatabaseFields.valueOf(error.fieldName)) {
-                DatabaseFields.DATABASE_BACKUP_PERIOD -> databaseBackupPeriod.value.copy(
+                DatabaseFields.DATABASE_TRANSFER_MEMBER -> databaseTransferMember.value.copy(
                     errorId = error.errorId
                 )
             }
@@ -202,7 +205,7 @@ class DatabaseViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
-                override val databaseBackupPeriod = MutableStateFlow(InputWrapper())
+                override val databaseTransferMember = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 

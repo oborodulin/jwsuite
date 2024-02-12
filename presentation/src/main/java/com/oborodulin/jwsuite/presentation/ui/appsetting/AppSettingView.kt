@@ -58,7 +58,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.components.BackupButtonComponent
-import com.oborodulin.jwsuite.presentation.ui.components.ReceiveButtonComponent
+import com.oborodulin.jwsuite.presentation.ui.components.ReceptionButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.RestoreButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SendButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
@@ -102,11 +102,7 @@ fun AppSettingView(
     }
 
     Timber.tag(TAG).d("AppSetting: CollectAsStateWithLifecycle for all fields")
-    val territoryProcessingPeriod by appSettingViewModel.territoryProcessingPeriod.collectAsStateWithLifecycle()
-    val territoryAtHandPeriod by appSettingViewModel.territoryAtHandPeriod.collectAsStateWithLifecycle()
-    val territoryIdlePeriod by appSettingViewModel.territoryIdlePeriod.collectAsStateWithLifecycle()
-    val territoryRoomsLimit by appSettingViewModel.territoryRoomsLimit.collectAsStateWithLifecycle()
-    val territoryMaxRooms by appSettingViewModel.territoryMaxRooms.collectAsStateWithLifecycle()
+    val databaseBackupPeriod by appSettingViewModel.databaseBackupPeriod.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("AppSetting: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -260,7 +256,7 @@ fun AppSettingView(
                         .alignByBaseline()
                 )
             }
-            ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
+            ReceptionButtonComponent(modifier = Modifier.alignByBaseline())
         }
         Divider(Modifier.fillMaxWidth())
         Text(
@@ -288,6 +284,30 @@ fun AppSettingView(
                 )
             }
             Column {
+                TextFieldComponent(
+                    modifier = Modifier
+                        .focusRequester(focusRequesters[AppSettingFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
+                        .onFocusChanged { focusState ->
+                            appSettingViewModel.onTextFieldFocusChanged(
+                                focusedField = AppSettingFields.DATABASE_BACKUP_PERIOD,
+                                isFocused = focusState.isFocused
+                            )
+                        },
+                    labelResId = R.string.database_backup_period_hint,
+                    keyboardOptions = remember {
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        )
+                    },
+                    inputWrapper = databaseBackupPeriod,
+                    onValueChange = {
+                        appSettingViewModel.onTextFieldEntered(
+                            AppSettingInputEvent.DatabaseBackupPeriod(it)
+                        )
+                    },
+                    onImeKeyAction = appSettingViewModel::moveFocusImeAction
+                )
                 BackupButtonComponent(
                     enabled = true,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -316,117 +336,6 @@ fun AppSettingView(
                     }
                 }
             }
-        }
-        Divider(Modifier.fillMaxWidth())
-        if (session.containsRole(MemberRoleType.TERRITORIES)) {
-            Text(
-                text = stringResource(R.string.territory_subheader),
-                style = Typography.titleMedium,
-                modifier = Modifier.padding(8.dp)
-            )
-            TextFieldComponent(
-                modifier = Modifier
-                    .focusRequester(focusRequesters[AppSettingFields.TERRITORY_PROCESSING_PERIOD]!!.focusRequester)
-                    .onFocusChanged { focusState ->
-                        appSettingViewModel.onTextFieldFocusChanged(
-                            focusedField = AppSettingFields.TERRITORY_PROCESSING_PERIOD,
-                            isFocused = focusState.isFocused
-                        )
-                    },
-                labelResId = R.string.territory_processing_period_hint,
-                keyboardOptions = remember {
-                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-                },
-                inputWrapper = territoryProcessingPeriod,
-                onValueChange = {
-                    appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryProcessingPeriod(it)
-                    )
-                },
-                onImeKeyAction = appSettingViewModel::moveFocusImeAction
-            )
-            TextFieldComponent(
-                modifier = Modifier
-                    .focusRequester(focusRequesters[AppSettingFields.TERRITORY_AT_HAND_PERIOD]!!.focusRequester)
-                    .onFocusChanged { focusState ->
-                        appSettingViewModel.onTextFieldFocusChanged(
-                            focusedField = AppSettingFields.TERRITORY_AT_HAND_PERIOD,
-                            isFocused = focusState.isFocused
-                        )
-                    },
-                labelResId = R.string.territory_at_hand_period_hint,
-                keyboardOptions = remember {
-                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-                },
-                inputWrapper = territoryAtHandPeriod,
-                onValueChange = {
-                    appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryAtHandPeriod(it)
-                    )
-                },
-                onImeKeyAction = appSettingViewModel::moveFocusImeAction
-            )
-            TextFieldComponent(
-                modifier = Modifier
-                    .focusRequester(focusRequesters[AppSettingFields.TERRITORY_IDLE_PERIOD]!!.focusRequester)
-                    .onFocusChanged { focusState ->
-                        appSettingViewModel.onTextFieldFocusChanged(
-                            focusedField = AppSettingFields.TERRITORY_IDLE_PERIOD,
-                            isFocused = focusState.isFocused
-                        )
-                    },
-                labelResId = R.string.territory_idle_period_hint,
-                keyboardOptions = remember {
-                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-                },
-                inputWrapper = territoryIdlePeriod,
-                onValueChange = {
-                    appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryIdlePeriod(it)
-                    )
-                },
-                onImeKeyAction = appSettingViewModel::moveFocusImeAction
-            )
-            TextFieldComponent(
-                modifier = Modifier
-                    .focusRequester(focusRequesters[AppSettingFields.TERRITORY_ROOMS_LIMIT]!!.focusRequester)
-                    .onFocusChanged { focusState ->
-                        appSettingViewModel.onTextFieldFocusChanged(
-                            focusedField = AppSettingFields.TERRITORY_ROOMS_LIMIT,
-                            isFocused = focusState.isFocused
-                        )
-                    },
-                labelResId = R.string.territory_rooms_limit_hint,
-                keyboardOptions = remember {
-                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-                },
-                inputWrapper = territoryRoomsLimit,
-                onValueChange = {
-                    appSettingViewModel.onTextFieldEntered(
-                        AppSettingInputEvent.TerritoryRoomsLimit(it)
-                    )
-                },
-                onImeKeyAction = appSettingViewModel::moveFocusImeAction
-            )
-            TextFieldComponent(
-                modifier = Modifier
-                    .focusRequester(focusRequesters[AppSettingFields.TERRITORY_MAX_ROOMS]!!.focusRequester)
-                    .onFocusChanged { focusState ->
-                        appSettingViewModel.onTextFieldFocusChanged(
-                            focusedField = AppSettingFields.TERRITORY_MAX_ROOMS,
-                            isFocused = focusState.isFocused
-                        )
-                    }, labelResId = R.string.territory_max_rooms_hint,
-                keyboardOptions = remember {
-                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
-                },
-                inputWrapper = territoryMaxRooms,
-                onValueChange = {
-                    appSettingViewModel.onTextFieldEntered(AppSettingInputEvent.TerritoryMaxRooms(it))
-                },
-                onImeKeyAction = appSettingViewModel::moveFocusImeAction
-            )
-            Divider(Modifier.fillMaxWidth())
         }
     }
 }

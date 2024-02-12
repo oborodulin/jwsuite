@@ -58,7 +58,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.components.BackupButtonComponent
-import com.oborodulin.jwsuite.presentation.ui.components.ReceiveButtonComponent
+import com.oborodulin.jwsuite.presentation.ui.components.ReceptionButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.RestoreButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SendButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
@@ -260,7 +260,7 @@ fun AppSettingView(
                         .alignByBaseline()
                 )
             }
-            ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
+            ReceptionButtonComponent(modifier = Modifier.alignByBaseline())
         }
         Divider(Modifier.fillMaxWidth())
         Text(

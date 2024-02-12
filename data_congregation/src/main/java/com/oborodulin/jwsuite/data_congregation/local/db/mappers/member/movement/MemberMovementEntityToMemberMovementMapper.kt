@@ -9,13 +9,13 @@ class MemberMovementEntityToMemberMovementMapper :
     NullableMapper<MemberMovementEntity, MemberMovement>,
     Mapper<MemberMovementEntity, MemberMovement> {
     override fun map(input: MemberMovementEntity): MemberMovement {
-        val member = MemberMovement(
+        val memberMovement = MemberMovement(
             memberType = input.memberType,
             movementDate = input.movementDate,
             memberId = input.mMembersId,
         )
-        member.id = input.memberMovementId
-        return member
+        memberMovement.id = input.memberMovementId
+        return memberMovement
     }
 
     override fun nullableMap(input: MemberMovementEntity?) = input?.let { map(it) }

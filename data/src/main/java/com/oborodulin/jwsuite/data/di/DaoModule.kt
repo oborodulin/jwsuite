@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.data.local.db.dao.DatabaseDao
+import com.oborodulin.jwsuite.data.local.db.dao.EventDao
 import com.oborodulin.jwsuite.data_appsetting.local.db.dao.AppSettingDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.CongregationDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
@@ -41,6 +42,10 @@ object DaoModule {
     @Singleton
     @Provides
     fun provideAppSettingDao(db: JwSuiteDatabase): AppSettingDao = db.appSettingDao()
+
+    @Singleton
+    @Provides
+    fun provideEventDao(db: JwSuiteDatabase): EventDao = db.eventDao()
 
     // Geo:
     @Singleton

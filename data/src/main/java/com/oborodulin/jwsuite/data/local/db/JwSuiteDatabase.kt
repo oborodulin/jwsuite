@@ -14,6 +14,8 @@ import com.oborodulin.home.common.util.Mapper
 import com.oborodulin.jwsuite.data.local.datastore.repositories.sources.LocalSessionManagerDataSource
 import com.oborodulin.jwsuite.data.local.db.converters.JwSuiteTypeConverters
 import com.oborodulin.jwsuite.data.local.db.dao.DatabaseDao
+import com.oborodulin.jwsuite.data.local.db.dao.EventDao
+import com.oborodulin.jwsuite.data.local.db.entities.EventEntity
 import com.oborodulin.jwsuite.data.local.db.entities.MemberMinistryEntity
 import com.oborodulin.jwsuite.data.util.Constants
 import com.oborodulin.jwsuite.data.util.Constants.DATABASE_PASSPHRASE
@@ -39,7 +41,8 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberActualRoleView
-import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberLastCongregationView
+import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberLastMovementView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberMovementView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransferObjectView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
@@ -95,7 +98,6 @@ import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberCr
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryMemberReportEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
-//import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryTotalEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.EntranceView
 import com.oborodulin.jwsuite.data_territory.local.db.views.FloorView
 import com.oborodulin.jwsuite.data_territory.local.db.views.HouseView
@@ -152,14 +154,17 @@ private const val TAG = "JwSuiteDatabase"
         TerritoryMemberCrossRefEntity::class, //TerritoryTotalEntity::class,
         HouseEntity::class, EntranceEntity::class, FloorEntity::class, RoomEntity::class,
         TerritoryMemberReportEntity::class,
-        CongregationTerritoryCrossRefEntity::class],
+        CongregationTerritoryCrossRefEntity::class,
+        EventEntity::class],
     views = [
         GeoRegionView::class, RegionDistrictView::class, LocalityView::class, LocalityDistrictView::class,
         MicrodistrictView::class, StreetView::class,
         GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
-        CongregationView::class, FavoriteCongregationView::class, GroupView::class, MemberView::class,
-        MemberCongregationView::class, MemberActualRoleView::class, MemberRoleView::class, MemberServiceRoleView::class,
+        CongregationView::class, FavoriteCongregationView::class, GroupView::class,
+        MemberLastCongregationView::class, MemberLastMovementView::class,
+        MemberView::class,
+        MemberActualRoleView::class, MemberRoleView::class, MemberServiceRoleView::class,
         MemberMovementView::class, CongregationTotalView::class,
         CongregationTerritoryView::class, TerritoryMemberView::class,
         TerritoryMemberLastReceivingDateView::class, TerritoryPrivateSectorView::class,
@@ -179,6 +184,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     // DAOs:
     abstract fun databaseDao(): DatabaseDao
     abstract fun appSettingDao(): AppSettingDao
+    abstract fun eventDao(): EventDao
 
     // Geo:
     abstract fun geoRegionDao(): GeoRegionDao

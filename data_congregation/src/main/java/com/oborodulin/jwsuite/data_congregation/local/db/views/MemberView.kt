@@ -3,9 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.views
 import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberCongregationCrossRefEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
-import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_MEMBER_CONGREGATION
 import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_MEMBER_LOCALITY
 import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_MEMBER_REGION
@@ -13,7 +11,6 @@ import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_MEMBER_REGION_
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
-import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 
 @DatabaseView(
     viewName = MemberView.VIEW_NAME,
@@ -34,21 +31,14 @@ SELECT c.congregationId AS ${PX_MEMBER_CONGREGATION}congregationId, c.congregati
             lv.lRegionDistrictsId AS ${PX_MEMBER_LOCALITY}lRegionDistrictsId, lv.lRegionsId AS ${PX_MEMBER_LOCALITY}lRegionsId,
             lv.localityTlId AS ${PX_MEMBER_LOCALITY}localityTlId, lv.localityLocCode AS ${PX_MEMBER_LOCALITY}localityLocCode, lv.localityShortName AS ${PX_MEMBER_LOCALITY}localityShortName, 
             lv.localityName AS ${PX_MEMBER_LOCALITY}localityName, lv.localitiesId AS ${PX_MEMBER_LOCALITY}localitiesId,
-        gv.*, m.*, mc.*, mm.* FROM ${MemberEntity.TABLE_NAME} m 
+        gv.*, m.*, mlcv.*, mlmv.* FROM ${MemberEntity.TABLE_NAME} m 
     LEFT JOIN ${GroupView.VIEW_NAME} gv ON gv.groupId = m.mGroupsId
-    JOIN (SELECT mcMembersId, MAX(strftime($DB_FRACT_SEC_TIME, activityDate)) AS maxActivityDate 
-            FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} GROUP BY mcMembersId ) gmc
-        ON gmc.mcMembersId = m.memberId 
-    JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} mc ON mc.mcMembersId = m.memberId AND strftime($DB_FRACT_SEC_TIME, mc.activityDate) = gmc.maxActivityDate 
-                                                                AND mc.mcCongregationsId = ifnull(gv.gCongregationsId, mc.mcCongregationsId)  
-    JOIN ${CongregationEntity.TABLE_NAME} c ON c.congregationId = mc.mcCongregationsId
+    JOIN ${MemberLastCongregationView.VIEW_NAME} mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  
+    JOIN ${CongregationEntity.TABLE_NAME} c ON c.congregationId = mlcv.mcCongregationsId
         JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = c.cLocalitiesId 
         JOIN ${GeoRegionView.VIEW_NAME} rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode
         LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rv.regionLocCode = lv.localityLocCode
-    JOIN (SELECT mMembersId, MAX(strftime($DB_FRACT_SEC_TIME, movementDate)) AS maxMovementDate 
-            FROM ${MemberMovementEntity.TABLE_NAME} GROUP BY mMembersId) gmm 
-        ON gmm.mMembersId = m.memberId
-    JOIN ${MemberMovementEntity.TABLE_NAME} mm ON mm.mMembersId = m.memberId AND strftime($DB_FRACT_SEC_TIME, mm.movementDate) = gmm.maxMovementDate
+    JOIN ${MemberLastMovementView.VIEW_NAME} mlmv ON mlmv.mMembersId = m.memberId
 """
 )
 class MemberView(
@@ -58,8 +48,8 @@ class MemberView(
     @Embedded(prefix = PX_MEMBER_LOCALITY) val locality: LocalityView,
     @Embedded val group: GroupView? = null,
     @Embedded val member: MemberEntity,
-    @Embedded val lastCongregation: MemberCongregationCrossRefEntity,
-    @Embedded val lastMovement: MemberMovementEntity
+    @Embedded val lastCongregation: MemberLastCongregationView,
+    @Embedded val lastMovement: MemberLastMovementView
 ) {
     companion object {
         const val VIEW_NAME = "members_view"

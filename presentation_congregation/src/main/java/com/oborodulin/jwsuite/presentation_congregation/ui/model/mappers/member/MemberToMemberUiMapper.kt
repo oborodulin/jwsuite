@@ -26,9 +26,9 @@ class MemberToMemberUiMapper(
             dateOfBirth = input.dateOfBirth,
             dateOfBaptism = input.dateOfBaptism,
             loginExpiredDate = input.loginExpiredDate,
-            memberCongregationId = input.memberCongregationId,
-            congregationId = input.congregationId,
-            activityDate = input.activityDate,
+            memberCongregationId = input.lastCongregation.id,
+            congregationId = input.lastCongregation.congregationId,
+            activityDate = input.lastCongregation.activityDate,
             memberMovementId = input.lastMovement.id,
             memberType = input.lastMovement.memberType,
             movementDate = input.lastMovement.movementDate
