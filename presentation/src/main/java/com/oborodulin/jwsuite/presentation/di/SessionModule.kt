@@ -13,9 +13,9 @@ import com.oborodulin.jwsuite.presentation.ui.model.converters.PasswordValidConv
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignoutSessionConverter
 import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConverter
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.RoleToRolesListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.RolesListToRolesListItemMapper
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.SessionToSessionUiMapper
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.role.RoleToRolesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.role.RolesListToRolesListItemMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,12 +28,15 @@ object SessionModule {
     // MAPPERS:
     @Singleton
     @Provides
-    fun provideRoleToRolesListItemMapper(): RoleToRolesListItemMapper = RoleToRolesListItemMapper()
+    fun provideRoleToRolesListItemMapper(): RoleToRolesListItemMapper =
+        RoleToRolesListItemMapper()
 
     @Singleton
     @Provides
     fun provideRolesListToRolesListItemMapper(mapper: RoleToRolesListItemMapper): RolesListToRolesListItemMapper =
-        RolesListToRolesListItemMapper(mapper = mapper)
+        RolesListToRolesListItemMapper(
+            mapper = mapper
+        )
 
     @Singleton
     @Provides

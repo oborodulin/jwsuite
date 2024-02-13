@@ -60,7 +60,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
     if (isShow) {
         LaunchedEffect(Unit) {
             if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
+                .d("SearchSingleSelectDialog -> LaunchedEffect()")
             viewModel.submitAction(loadUiAction)
         }
         val handleConfirmAction = {

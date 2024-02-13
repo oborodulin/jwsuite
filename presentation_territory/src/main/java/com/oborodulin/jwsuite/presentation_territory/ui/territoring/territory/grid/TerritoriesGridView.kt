@@ -78,7 +78,7 @@ fun TerritoriesGridView(
         locationId,
         isPrivateSector
     ) {
-        Timber.tag(TAG).d("TerritoriesGridView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoriesGridView -> LaunchedEffect()")
         territoriesGridViewModel.submitAction(
             TerritoriesGridUiAction.Load(
                 congregationId = congregationId,

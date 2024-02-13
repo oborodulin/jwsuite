@@ -42,7 +42,7 @@ fun LocalityDistrictsListView(
     )
     LaunchedEffect(localityInput?.localityId, streetInput?.streetId) {
         Timber.tag(TAG)
-            .d("LocalityDistrictsListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("LocalityDistrictsListView -> LaunchedEffect()")
         localityDistrictsListViewModel.submitAction(
             LocalityDistrictsListUiAction.Load(localityInput?.localityId, streetInput?.streetId)
         )

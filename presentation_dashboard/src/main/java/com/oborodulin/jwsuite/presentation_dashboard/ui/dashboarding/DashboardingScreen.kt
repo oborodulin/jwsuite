@@ -85,7 +85,7 @@ fun DashboardingScreen(
     val appState = LocalAppState.current
     val session = LocalSession.current
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("DashboardingScreen -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("DashboardingScreen -> LaunchedEffect()")
         viewModel.submitAction(DashboardingUiAction.Init)
     }
     ScaffoldComponent(
@@ -101,8 +101,8 @@ fun DashboardingScreen(
             ) { appState.mainNavigate(NavRoutes.Geo.route) },
             BarActionItem(
                 iconImageVector = Icons.Outlined.Settings,
-                cntDescResId = NavRoutes.Settings.titleResId
-            ) { appState.mainNavigate(NavRoutes.Settings.route) }
+                cntDescResId = NavRoutes.DashboardSettings.titleResId
+            ) { appState.mainNavigate(NavRoutes.DashboardSettings.route) }
         ),
         bottomBar = bottomBar,
         userRoles = session.userRoles

@@ -320,7 +320,7 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         when (sessionMode.value) {
             SessionModeType.SIGNUP -> {
@@ -359,7 +359,7 @@ class SessionViewModelImpl @Inject constructor(
     // https://stackoverflow.com/questions/3656371/is-it-possible-to-have-placeholders-in-strings-xml-for-runtime-values
     override fun displayInputErrors(inputErrors: List<InputError>) {
         Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             when (sessionMode.value) {
                 SessionModeType.SIGNUP -> {

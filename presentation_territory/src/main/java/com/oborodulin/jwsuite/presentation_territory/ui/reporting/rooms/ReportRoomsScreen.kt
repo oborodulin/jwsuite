@@ -96,7 +96,7 @@ fun ReportRoomsScreen(
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("ReportRoomsScreen -> LaunchedEffect() BEFORE collect ui state flow: events.collect")
+            .d("ReportRoomsScreen -> LaunchedEffect(): events.collect")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
         events.collect { event ->
             if (LOG_FLOW_INPUT) Timber.tag(TAG)

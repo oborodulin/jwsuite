@@ -70,7 +70,7 @@
     <string name="territory_category_new_subheader">Новая категория участка</string>
     <string name="territory_category_mark_hint">Признак категории</string>
     <!--Участок-->
-    <string name="territory_subheader">Участок</string>
+    <string name="territory_subhead">Участок</string>
     <string name="territory_new_subheader">Новый участок</string>
     <string name="territory_category_hint">Категория участка</string>
     <string name="territory_num_hint">№ участка</string>

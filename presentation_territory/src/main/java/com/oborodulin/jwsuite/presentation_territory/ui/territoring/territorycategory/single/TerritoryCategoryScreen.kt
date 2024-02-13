@@ -21,12 +21,7 @@ private const val TAG = "Territoring.TerritoryCategoryScreen"
 fun TerritoryCategoryScreen(
     viewModel: TerritoryCategoryViewModelImpl = hiltViewModel(),
     territoryCategoryInput: TerritoryCategoryInput? = null,
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
     Timber.tag(TAG)
         .d(
@@ -53,11 +48,8 @@ fun TerritoryCategoryScreen(
             handleTopBarNavClick = appState.handleTopBarNavClick,
             cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_category,
             uniqueConstraintFailedResId = R.string.territory_category_unique_constraint_error,
-            /*onActionBarChange = onActionBarChange,
-    onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
         ) { _, _, _, handleSaveAction ->
             TerritoryCategoryView(

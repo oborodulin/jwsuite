@@ -44,7 +44,7 @@ fun MicrodistrictsListView(
         localityDistrictInput?.localityDistrictId,
         streetInput?.streetId
     ) {
-        Timber.tag(TAG).d("MicrodistrictsListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MicrodistrictsListView -> LaunchedEffect()")
         microdistrictsListViewModel.submitAction(
             MicrodistrictsListUiAction.Load(
                 localityId = localityInput?.localityId,

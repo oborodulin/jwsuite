@@ -24,7 +24,7 @@ import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRoleToMemberRolesListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
@@ -32,7 +32,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRoleUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.RoleUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRoleConverter
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberRoleUiToMemberRoleMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleUiToMemberRoleMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMembersListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -242,7 +242,7 @@ class MemberRoleViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         MemberRoleInputValidator.Role.errorIdOrNull(role.value.item?.headline)?.let {
             inputErrors.add(
@@ -259,7 +259,7 @@ class MemberRoleViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (MemberRoleFields.valueOf(error.fieldName)) {
                 MemberRoleFields.MEMBER_ROLE_ROLE -> role.value.copy(errorId = error.errorId)

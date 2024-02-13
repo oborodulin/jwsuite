@@ -7,7 +7,7 @@ object Constants {
     // Internal Storage constants:
     const val BACKUP_PATH = "/backup"
     const val TRANSFER_PATH = "/transfer"
-    const val RECEPTION_PATH = "$TRANSFER_PATH/reception"
+    const val RECEIVE_PATH = "$TRANSFER_PATH/receive"
 
     // Database constants:
     const val DB_TRUE = 1

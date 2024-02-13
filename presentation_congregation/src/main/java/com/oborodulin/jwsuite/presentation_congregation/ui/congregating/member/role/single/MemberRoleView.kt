@@ -93,7 +93,7 @@ fun MemberRoleView(
     var currentMember = member.item
     Timber.tag(TAG)
         .d(
-            "currentCongregation = %s; selectedMember = %s; currentMember = %s; member",
+            "currentCongregation = %s; selectedMember = %s; currentMember = %s",
             currentCongregation, selectedMember, currentMember
         )
     LaunchedEffect(Unit) {

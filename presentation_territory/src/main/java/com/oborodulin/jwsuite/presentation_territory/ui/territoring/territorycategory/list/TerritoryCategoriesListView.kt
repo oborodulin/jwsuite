@@ -32,7 +32,7 @@ fun TerritoryCategoriesListView(
     )
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryCategoriesListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("TerritoryCategoriesListView -> LaunchedEffect()")
         viewModel.submitAction(TerritoryCategoriesListUiAction.Load)
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()

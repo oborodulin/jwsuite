@@ -59,7 +59,7 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
         .d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
     LaunchedEffect(Unit) {
         if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-            .d("BarViewModelExposedDropdownMenuBoxComponent -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("BarViewModelExposedDropdownMenuBoxComponent -> LaunchedEffect()")
         listViewModel.submitAction(loadListUiAction)
     }
     // set the correct cursor position when this composable is first initialized

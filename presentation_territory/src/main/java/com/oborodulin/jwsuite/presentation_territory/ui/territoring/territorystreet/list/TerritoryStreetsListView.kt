@@ -33,7 +33,7 @@ fun TerritoryStreetsListView(
     )
     LaunchedEffect(territoryInput.territoryId) {
         Timber.tag(TAG)
-            .d("TerritoryStreetsListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("TerritoryStreetsListView -> LaunchedEffect()")
         viewModel.submitAction(TerritoryStreetsListUiAction.Load(territoryInput.territoryId))
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()

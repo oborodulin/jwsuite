@@ -37,7 +37,7 @@ fun HousesListView(
     )
     LaunchedEffect(streetInput?.streetId, territoryInput?.territoryId) {
         Timber.tag(TAG)
-            .d("HousesListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("HousesListView -> LaunchedEffect()")
         housesListViewModel.submitAction(
             HousesListUiAction.Load(
                 streetId = streetInput?.streetId, territoryId = territoryInput?.territoryId

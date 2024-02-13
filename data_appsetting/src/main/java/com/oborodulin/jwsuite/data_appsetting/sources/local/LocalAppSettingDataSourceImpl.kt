@@ -20,6 +20,8 @@ class LocalAppSettingDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalAppSettingDataSource {
     override fun getAppSettings() = appSettingDao.findDistinctAll()
+    override fun getAppSettingsByNames(paramNames: List<AppSettingParam>) =
+        appSettingDao.findByParamNames(paramNames)
 
     override fun getAppSetting(settingId: UUID) = appSettingDao.findDistinctById(settingId)
 

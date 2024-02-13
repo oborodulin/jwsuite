@@ -49,7 +49,7 @@ fun EditableListViewComponent(
         val firstVisibleItem = filteredItems.filter { it.selected }.getOrNull(0)
         LaunchedEffect(firstVisibleItem) {
             if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("EditableListViewComponent -> LaunchedEffect() BEFORE collect ui state flow")
+                .d("EditableListViewComponent -> LaunchedEffect()")
             firstVisibleItem?.let { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(it) }
         }
         val listState = rememberLazyListState(initialFirstVisibleItemIndex = firstVisibleItem?.let {

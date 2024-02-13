@@ -151,7 +151,7 @@ fun TerritoringScreen(
 
     LaunchedEffect(isPrivateSector.value, currentCongregation?.itemId) {
         Timber.tag(TAG)
-            .d("TerritoringScreen -> LaunchedEffect() BEFORE collect ui state flow: submitAction")
+            .d("TerritoringScreen -> LaunchedEffect(): submitAction")
         territoringViewModel.submitAction(
             TerritoringUiAction.LoadLocations(
                 congregationId = currentCongregation?.itemId,
@@ -162,7 +162,7 @@ fun TerritoringScreen(
 
     /*LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoringScreen -> LaunchedEffect() BEFORE collect ui state flow: events.collect")
+            .d("TerritoringScreen -> LaunchedEffect(): events.collect")
         events.collect { event ->
             Timber.tag(TAG).d("Collect input events flow: %s", event.javaClass.name)
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)

@@ -13,7 +13,7 @@ import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCas
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberRoleInput
-import com.oborodulin.jwsuite.presentation.ui.model.MemberRolesListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRolesListItem
 import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRolesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel

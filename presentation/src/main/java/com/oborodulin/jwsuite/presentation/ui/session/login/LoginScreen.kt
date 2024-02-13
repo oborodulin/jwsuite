@@ -26,7 +26,7 @@ fun LoginScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     Timber.tag(TAG).d("LoginScreen(...) called")
     val appState = LocalAppState.current
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("LoginScreen -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("LoginScreen -> LaunchedEffect()")
         viewModel.onTextFieldEntered(SessionInputEvent.Pin(""))
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)

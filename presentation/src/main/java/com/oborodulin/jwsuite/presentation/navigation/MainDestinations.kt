@@ -13,8 +13,11 @@ object MainDestinations {
     const val ROUTE_SIGNUP = "signup"
     const val ROUTE_LOGIN = "login"
     const val ROUTE_GEO = "geo"
-    const val ROUTE_SETTINGS = "settings"
     const val ROUTE_HOUSING = "housing"
+
+    //Settings:
+    const val ROUTE_DASHBOARD_SETTINGS = "dashboardSettings"
+    const val ROUTE_TERRITORY_SETTINGS = "territorySettings"
 
     //GEO:
     const val ROUTE_REGION = "region/?%s"

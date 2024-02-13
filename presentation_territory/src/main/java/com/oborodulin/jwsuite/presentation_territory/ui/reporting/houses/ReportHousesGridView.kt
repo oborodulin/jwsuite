@@ -50,7 +50,7 @@ fun ReportHousesGridView(
     val appState = LocalAppState.current
     LaunchedEffect(territoryStreetInput.territoryId, territoryStreetInput.territoryStreetId) {
         Timber.tag(TAG)
-            .d("ReportHousesGridView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("ReportHousesGridView -> LaunchedEffect()")
         reportHousesViewModel.submitAction(
             ReportHousesUiAction.Load(
                 territoryId = territoryStreetInput.territoryId,

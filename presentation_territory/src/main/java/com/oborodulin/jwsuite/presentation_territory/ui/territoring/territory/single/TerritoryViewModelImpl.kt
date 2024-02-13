@@ -133,7 +133,7 @@ class TerritoryViewModelImpl @Inject constructor(
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_subheader)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_subhead)
                     loadTerritory(action.territoryId)
                 }
             }
@@ -387,7 +387,7 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         TerritoryInputValidator.Category.errorIdOrNull(category.value.item?.headline)?.let {
             inputErrors.add(
@@ -409,7 +409,7 @@ class TerritoryViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoryFields.valueOf(error.fieldName)) {
                 TerritoryFields.TERRITORY_CATEGORY -> category.value.copy(errorId = error.errorId)

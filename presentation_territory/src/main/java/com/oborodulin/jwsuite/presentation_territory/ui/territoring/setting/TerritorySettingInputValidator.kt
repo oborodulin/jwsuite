@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.setting
 import com.oborodulin.home.common.ui.components.field.util.Validatable
 import com.oborodulin.jwsuite.presentation.R
 
-private const val TAG = "Presentation.TerritorySettingInputValidator"
+private const val TAG = "Territoring.TerritorySettingInputValidator"
 
 sealed class TerritorySettingInputValidator : Validatable {
     data object TerritoryProcessingPeriod : TerritorySettingInputValidator() {

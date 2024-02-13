@@ -48,7 +48,7 @@ fun CongregationsListView(
     Timber.tag(TAG).d("CongregationsListView(...) called")
     val appState = LocalAppState.current
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("CongregationsListView -> LaunchedEffect()")
         congregationsListViewModel.submitAction(CongregationsListUiAction.Load)
     }
     val searchText by congregationsListViewModel.searchText.collectAsStateWithLifecycle()

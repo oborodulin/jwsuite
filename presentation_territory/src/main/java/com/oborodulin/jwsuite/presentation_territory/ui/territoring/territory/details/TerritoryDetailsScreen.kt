@@ -58,7 +58,7 @@ fun TerritoryDetailsScreen(
     Timber.tag(TAG).d("TerritoryDetailsScreen(...) called: territoryInput = %s", territoryInput)
     val appState = LocalAppState.current
     LaunchedEffect(territoryInput.territoryId) {
-        Timber.tag(TAG).d("TerritoryDetailsScreen -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryDetailsScreen -> LaunchedEffect()")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
     }
     //val detailsTabType

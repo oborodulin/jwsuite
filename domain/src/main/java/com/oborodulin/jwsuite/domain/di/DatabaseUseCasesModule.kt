@@ -10,7 +10,8 @@ import com.oborodulin.jwsuite.domain.services.ImportService
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.db.CsvExportUseCase
 import com.oborodulin.jwsuite.domain.usecases.db.CsvImportUseCase
-import com.oborodulin.jwsuite.domain.usecases.db.DataTransmissionUseCase
+import com.oborodulin.jwsuite.domain.usecases.db.ReceiveDataUseCase
+import com.oborodulin.jwsuite.domain.usecases.db.SendDataUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,20 +42,30 @@ object DatabaseUseCasesModule {
 
     @Singleton
     @Provides
-    fun provideDataTransmissionUseCase(
+    fun provideSendDataUseCase(
         @ApplicationContext ctx: Context,
         configuration: UseCase.Configuration,
         exportService: ExportService,
         sessionManagerRepository: SessionManagerRepository,
         membersRepository: MembersRepository,
         databaseRepository: DatabaseRepository
-    ): DataTransmissionUseCase =
-        DataTransmissionUseCase(
-            ctx,
-            configuration,
-            exportService,
-            sessionManagerRepository,
-            membersRepository,
-            databaseRepository
-        )
+    ): SendDataUseCase = SendDataUseCase(
+        ctx,
+        configuration,
+        exportService,
+        sessionManagerRepository,
+        membersRepository,
+        databaseRepository
+    )
+
+    @Singleton
+    @Provides
+    fun provideReceiveDataUseCase(
+        @ApplicationContext ctx: Context,
+        configuration: UseCase.Configuration,
+        importService: ImportService,
+        databaseRepository: DatabaseRepository
+    ): ReceiveDataUseCase = ReceiveDataUseCase(
+        ctx, configuration, importService, databaseRepository
+    )
 }

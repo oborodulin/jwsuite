@@ -52,7 +52,7 @@ fun StreetsListView(
         microdistrictInput?.microdistrictId,
         isPrivateSector
     ) {
-        Timber.tag(TAG).d("StreetsListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("StreetsListView -> LaunchedEffect()")
         streetsListViewModel.submitAction(
             StreetsListUiAction.Load(
                 localityInput?.localityId,

@@ -199,7 +199,7 @@ fun GeoScreen(
     }
     /*
         LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("GeoScreen -> LaunchedEffect() BEFORE collect ui state flow")
+            Timber.tag(TAG).d("GeoScreen -> LaunchedEffect()")
             viewModel.submitAction(GeoUiAction.Init)
         }
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

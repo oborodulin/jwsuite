@@ -21,6 +21,7 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARD_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ENTRANCE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_FLOOR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GEO
@@ -44,7 +45,6 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REPORT_ROOMS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_REPORT_STREETS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ROOM
-import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_SIGNUP
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_STREET_LOCALITY_DISTRICT
@@ -57,6 +57,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_FLOOR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_HOUSE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_ROOM
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_STREET
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.EntranceInput
@@ -237,16 +238,23 @@ sealed class NavRoutes(
         titleResId = R.string.nav_item_geo
     )
 
-    data object Settings : NavRoutes(
-        route = ROUTE_SETTINGS,
-        iconImageVector = Icons.Outlined.Settings,
-        titleResId = R.string.nav_item_settings
-    )
-
     data object Housing : NavRoutes(
         route = ROUTE_HOUSING,
         iconPainterResId = R.drawable.ic_housing_24,
         titleResId = R.string.nav_item_housing
+    )
+
+    // Settings:
+    data object DashboardSettings : NavRoutes(
+        route = ROUTE_DASHBOARD_SETTINGS,
+        iconImageVector = Icons.Outlined.Settings,
+        titleResId = R.string.nav_item_settings
+    )
+
+    data object TerritorySettings : NavRoutes(
+        route = ROUTE_TERRITORY_SETTINGS,
+        iconImageVector = Icons.Outlined.Settings,
+        titleResId = R.string.nav_item_settings
     )
 
     // Main Navigation:
@@ -612,7 +620,8 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MemberRoleInput? {
             val memberRoleInput =
-                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)?.let { MemberRoleInput(UUID.fromString(it)) }
+                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)
+                    ?.let { MemberRoleInput(UUID.fromString(it)) }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberRole -> fromEntry: '%s'", memberRoleInput)
             return memberRoleInput
         }

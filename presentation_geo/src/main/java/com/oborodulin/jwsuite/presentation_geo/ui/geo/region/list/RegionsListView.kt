@@ -34,7 +34,7 @@ fun RegionsListView(
 ) {
     Timber.tag(TAG).d("RegionsListView(...) called: regionInput = %s", regionInput)
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("RegionsListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("RegionsListView -> LaunchedEffect()")
         regionsListViewModel.submitAction(RegionsListUiAction.Load)
     }
     val searchText by regionsListViewModel.searchText.collectAsStateWithLifecycle()

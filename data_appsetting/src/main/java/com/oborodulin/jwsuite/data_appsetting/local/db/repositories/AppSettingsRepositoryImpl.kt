@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
 import com.oborodulin.jwsuite.domain.services.csv.CsvLoad
 import com.oborodulin.jwsuite.domain.services.csv.model.appsetting.AppSettingCsv
+import com.oborodulin.jwsuite.domain.types.AppSettingParam
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -19,8 +20,11 @@ class AppSettingsRepositoryImpl @Inject constructor(
     private val domainMappers: AppSettingMappers,
     private val csvMappers: AppSettingCsvMappers
 ) : AppSettingsRepository {
-    override fun getAll() =
-        localAppSettingDataSource.getAppSettings()
+    override fun getAll() = localAppSettingDataSource.getAppSettings()
+        .map(domainMappers.appSettingEntityListToAppSettingListMapper::map)
+
+    override fun getAllByNames(paramNames: List<AppSettingParam>) =
+        localAppSettingDataSource.getAppSettingsByNames(paramNames)
             .map(domainMappers.appSettingEntityListToAppSettingListMapper::map)
 
     override fun get(settingId: UUID) =

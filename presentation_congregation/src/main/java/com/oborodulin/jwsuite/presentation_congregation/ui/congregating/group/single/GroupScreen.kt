@@ -38,7 +38,7 @@ fun GroupScreen(
     val currentCongregation =
         appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
     LaunchedEffect(groupInput?.groupId) {
-        Timber.tag(TAG).d("GroupScreen -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("GroupScreen -> LaunchedEffect()")
         currentCongregation?.itemId?.let { congregationId ->
             viewModel.onInsert {
                 viewModel.submitAction(GroupUiAction.GetNextGroupNum(congregationId))

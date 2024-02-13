@@ -28,7 +28,7 @@ fun MemberRolesListView(
 ) {
     Timber.tag(TAG).d("MemberRolesListView(...) called: memberInput = %s", memberInput)
     LaunchedEffect(memberInput?.memberId) {
-        Timber.tag(TAG).d("MemberRolesListView -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("MemberRolesListView -> LaunchedEffect()")
         memberInput?.let { viewModel.submitAction(MemberRolesListUiAction.Load(it.memberId)) }
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()

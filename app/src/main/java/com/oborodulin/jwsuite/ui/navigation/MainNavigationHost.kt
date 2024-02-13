@@ -9,7 +9,6 @@ import com.oborodulin.home.common.util.rememberParentEntry
 import com.oborodulin.jwsuite.presentation.navigation.Graph
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation.ui.appsetting.AppSettingScreen
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.login.LoginScreen
@@ -19,9 +18,10 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationV
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
+import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
+import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictScreen
@@ -40,6 +40,7 @@ import com.oborodulin.jwsuite.presentation_territory.ui.reporting.single.MemberR
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.TerritoringScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.house.TerritoryHouseScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.room.TerritoryRoomScreen
+import com.oborodulin.jwsuite.presentation_territory.ui.territoring.setting.TerritorySettingScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.details.TerritoryDetailsScreen
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.TerritoriesGridViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.grid.atwork.ProcessConfirmationScreen
@@ -621,23 +622,30 @@ fun MainNavigationHost(
 
         // APP SETTINGS Nav Graph:
         composable(
-            route = NavRoutes.Settings.route, arguments = NavRoutes.Settings.arguments
+            route = NavRoutes.DashboardSettings.route,
+            arguments = NavRoutes.DashboardSettings.arguments
         ) {
             Timber.tag(TAG).d(
-                "Navigation Graph: to AppSettingScreen [route = '%s', arguments = '%s']",
+                "Navigation Graph: to DashboardSettingScreen [route = '%s', arguments = '%s']",
                 it.destination.route,
-                NavRoutes.Settings.arguments.firstOrNull()
+                NavRoutes.DashboardSettings.arguments.firstOrNull()
             )
-            AppSettingScreen(
+            DashboardSettingScreen(
                 sessionViewModel = sessionViewModel,
-                defTopBarActions = defTopBarActions/*,
-                onActionBarChange = onActionBarChange,
-                onActionBarTitleChange = onActionBarTitleChange,
-                onActionBarSubtitleChange = onActionBarSubtitleChange,
-                onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,
-                onTopBarActionsChange = onTopBarActionsChange,
-                onFabChange = onFabChange*/
+                defTopBarActions = defTopBarActions
             )
+        }
+
+        composable(
+            route = NavRoutes.TerritorySettings.route,
+            arguments = NavRoutes.TerritorySettings.arguments
+        ) {
+            Timber.tag(TAG).d(
+                "Navigation Graph: to TerritorySettingScreen [route = '%s', arguments = '%s']",
+                it.destination.route,
+                NavRoutes.TerritorySettings.arguments.firstOrNull()
+            )
+            TerritorySettingScreen(defTopBarActions = defTopBarActions)
         }
 
         /*congregationNavGraph(

@@ -25,8 +25,8 @@ import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.role.GetRolesUseCase
 import com.oborodulin.jwsuite.domain.usecases.role.RoleUseCases
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.MemberRolesListToMemberRolesListItemMapper
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.RolesListToRolesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.role.RoleToRolesListItemMapper
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.role.RolesListToRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.CongregationsListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupConverter
@@ -39,10 +39,6 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.Role
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveGroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveMemberConverter
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberRoleToMemberRoleUiMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberRoleUiToMemberRoleMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.RoleToRoleUiMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.RoleUiToRoleMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationToCongregationUiMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationToCongregationsListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationUiToCongregationMapper
@@ -55,6 +51,16 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberUiToMemberMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MembersListToMembersListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRoleUiMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRolesListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleUiToMemberRoleMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRolesListToMemberRolesListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.role.RoleToRoleUiMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.role.RoleUiToRoleMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.role.transfer.RoleTransferObjectToRoleTransferObjectsListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.role.transfer.RoleTransferObjectsListToRoleTransferObjectsListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.transfer.TransferObjectToTransferObjectsListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.transfer.TransferObjectsListToTransferObjectsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
 import dagger.Module
@@ -146,6 +152,17 @@ object CongregatingModule {
     @Provides
     fun provideRoleUiToRoleMapper(): RoleUiToRoleMapper = RoleUiToRoleMapper()
 
+    // Role Transfer Objects:
+    @Singleton
+    @Provides
+    fun provideRoleTransferObjectToRoleTransferObjectsListItemMapper(mapper: TransferObjectToTransferObjectsListItemMapper): RoleTransferObjectToRoleTransferObjectsListItemMapper =
+        RoleTransferObjectToRoleTransferObjectsListItemMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideRoleTransferObjectsListToRoleTransferObjectsListItemMapper(mapper: RoleTransferObjectToRoleTransferObjectsListItemMapper): RoleTransferObjectsListToRoleTransferObjectsListItemMapper =
+        RoleTransferObjectsListToRoleTransferObjectsListItemMapper(mapper = mapper)
+
     // Member Roles:
     @Singleton
     @Provides
@@ -162,6 +179,27 @@ object CongregatingModule {
     ): MemberRoleUiToMemberRoleMapper = MemberRoleUiToMemberRoleMapper(
         memberUiMapper = memberUiMapper, roleUiMapper = roleUiMapper
     )
+
+    @Singleton
+    @Provides
+    fun provideMemberRoleToMemberRolesListItemMapper(mapper: RoleToRolesListItemMapper): MemberRoleToMemberRolesListItemMapper =
+        MemberRoleToMemberRolesListItemMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMemberRolesListToMemberRolesListItemMapper(mapper: MemberRoleToMemberRolesListItemMapper): MemberRolesListToMemberRolesListItemMapper =
+        MemberRolesListToMemberRolesListItemMapper(mapper = mapper)
+
+    // Transfer Objects:
+    @Singleton
+    @Provides
+    fun provideTransferObjectToTransferObjectsListItemMapper(): TransferObjectToTransferObjectsListItemMapper =
+        TransferObjectToTransferObjectsListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideTransferObjectsListToTransferObjectsListItemMapper(mapper: TransferObjectToTransferObjectsListItemMapper): TransferObjectsListToTransferObjectsListItemMapper =
+        TransferObjectsListToTransferObjectsListItemMapper(mapper = mapper)
 
     // CONVERTERS:
     // Congregation:

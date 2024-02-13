@@ -474,7 +474,7 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         MemberInputValidator.Group.errorIdOrNull(group.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = MemberFields.MEMBER_GROUP.name, errorId = it))
@@ -520,7 +520,7 @@ class MemberViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (MemberFields.valueOf(error.fieldName)) {
                 MemberFields.MEMBER_GROUP -> group.value.copy(errorId = error.errorId)

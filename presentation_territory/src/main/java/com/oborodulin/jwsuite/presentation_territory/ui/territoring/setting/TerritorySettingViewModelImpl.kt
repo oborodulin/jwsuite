@@ -15,21 +15,12 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.extensions.toOffsetDateTime
-import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
-import com.oborodulin.jwsuite.domain.types.MemberRoleType
-import com.oborodulin.jwsuite.domain.types.TransferObjectType
 import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsUiModel
-import com.oborodulin.jwsuite.presentation.ui.model.MemberRolesListItem
-import com.oborodulin.jwsuite.presentation.ui.model.RoleTransferObjectsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
-import com.oborodulin.jwsuite.presentation.ui.model.TransferObjectsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.converters.AppSettingUiModelConverter
+import com.oborodulin.jwsuite.presentation.ui.model.converters.AppSettingListConverter
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -52,18 +43,19 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Presentation.AppSettingViewModelImpl"
+private const val TAG = "Territoring.TerritorySettingViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class TerritorySettingViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: AppSettingUseCases,
-    private val converter: AppSettingUiModelConverter,
+    private val converter: AppSettingListConverter,
     private val appSettingsUiMapper: AppSettingsListItemToAppSettingsListMapper
 ) : TerritorySettingViewModel,
-    DialogViewModel<AppSettingsUiModel, UiState<AppSettingsUiModel>, TerritorySettingUiAction, UiSingleEvent, TerritorySettingFields, InputWrapper>(
-        state, //AppSettingFields.MEMBER_ID.name, AppSettingFields.TERRITORY_PROCESSING_PERIOD
+    DialogViewModel<List<AppSettingsListItem>, UiState<List<AppSettingsListItem>>, TerritorySettingUiAction, UiSingleEvent, TerritorySettingFields, InputWrapper>(
+        state, //AppSettingFields.MEMBER_ID.name,
+        initFocusedTextField = TerritorySettingFields.TERRITORY_PROCESSING_PERIOD
     ) {
     override val territoryProcessingPeriod: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(TerritorySettingFields.TERRITORY_PROCESSING_PERIOD.name, InputWrapper())
@@ -101,22 +93,31 @@ class TerritorySettingViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is TerritorySettingUiAction.Load -> loadAppSettings()
-            is TerritorySettingUiAction.Save -> saveAppSettings()
+            is TerritorySettingUiAction.Load -> loadTerritorySettings()
+            is TerritorySettingUiAction.Save -> saveTerritorySettings()
         }
         return job
     }
 
-    private fun loadAppSettings(): Job {
-        Timber.tag(TAG).d("loadAppSettings() called")
+    private fun loadTerritorySettings(): Job {
+        Timber.tag(TAG).d("loadTerritorySettings() called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getAppSettingsUseCase.execute(GetAppSettingsUseCase.Request)
-                .map { converter.convert(it) }.collect { submitState(it) }
+            useCases.getAppSettingsUseCase.execute(
+                GetAppSettingsUseCase.Request(
+                    listOf(
+                        AppSettingParam.TERRITORY_PROCESSING_PERIOD,
+                        AppSettingParam.TERRITORY_AT_HAND_PERIOD,
+                        AppSettingParam.TERRITORY_IDLE_PERIOD,
+                        AppSettingParam.TERRITORY_ROOMS_LIMIT,
+                        AppSettingParam.TERRITORY_MAX_ROOMS
+                    )
+                )
+            ).map { converter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
 
-    private fun saveAppSettings(): Job {
+    private fun saveTerritorySettings(): Job {
         val appSettings = listOf(
             AppSettingsListItem(
                 paramName = AppSettingParam.TERRITORY_PROCESSING_PERIOD,
@@ -152,29 +153,29 @@ class TerritorySettingViewModelImpl @Inject constructor(
 
     override fun stateInputFields() = enumValues<TerritorySettingFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: AppSettingsUiModel): Job? {
+    override fun initFieldStatesByUiModel(uiModel: List<AppSettingsListItem>): Job? {
         super.initFieldStatesByUiModel(uiModel)
         if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(AppSettingsUiModel) called: uiModel = %s", uiModel)
+            .d("initFieldStatesByUiModel(List<AppSettingsListItem>) called: uiModel = %s", uiModel)
         initStateValue(
             TerritorySettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
+            uiModel.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
         )
         initStateValue(
             TerritorySettingFields.TERRITORY_AT_HAND_PERIOD, territoryAtHandPeriod,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_AT_HAND_PERIOD }.paramValue
+            uiModel.first { it.paramName == AppSettingParam.TERRITORY_AT_HAND_PERIOD }.paramValue
         )
         initStateValue(
             TerritorySettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_IDLE_PERIOD }.paramValue
+            uiModel.first { it.paramName == AppSettingParam.TERRITORY_IDLE_PERIOD }.paramValue
         )
         initStateValue(
             TerritorySettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_ROOMS_LIMIT }.paramValue
+            uiModel.first { it.paramName == AppSettingParam.TERRITORY_ROOMS_LIMIT }.paramValue
         )
         initStateValue(
             TerritorySettingFields.TERRITORY_MAX_ROOMS, territoryMaxRooms,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_MAX_ROOMS }.paramValue
+            uiModel.first { it.paramName == AppSettingParam.TERRITORY_MAX_ROOMS }.paramValue
         )
         return null
     }
@@ -185,7 +186,8 @@ class TerritorySettingViewModelImpl @Inject constructor(
             .onEach { event ->
                 when (event) {
                     is TerritorySettingInputEvent.TerritoryProcessingPeriod -> setStateValue(
-                        TerritorySettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
+                        TerritorySettingFields.TERRITORY_PROCESSING_PERIOD,
+                        territoryProcessingPeriod,
                         event.input,
                         TerritorySettingInputValidator.TerritoryProcessingPeriod.isValid(event.input)
                     )
@@ -197,12 +199,16 @@ class TerritorySettingViewModelImpl @Inject constructor(
                     )
 
                     is TerritorySettingInputEvent.TerritoryIdlePeriod -> setStateValue(
-                        TerritorySettingFields.TERRITORY_IDLE_PERIOD, territoryIdlePeriod, event.input,
+                        TerritorySettingFields.TERRITORY_IDLE_PERIOD,
+                        territoryIdlePeriod,
+                        event.input,
                         TerritorySettingInputValidator.TerritoryIdlePeriod.isValid(event.input)
                     )
 
                     is TerritorySettingInputEvent.TerritoryRoomsLimit -> setStateValue(
-                        TerritorySettingFields.TERRITORY_ROOMS_LIMIT, territoryRoomsLimit, event.input,
+                        TerritorySettingFields.TERRITORY_ROOMS_LIMIT,
+                        territoryRoomsLimit,
+                        event.input,
                         TerritorySettingInputValidator.TerritoryRoomsLimit.isValid(event.input)
                     )
 
@@ -216,8 +222,11 @@ class TerritorySettingViewModelImpl @Inject constructor(
                 when (event) {
                     is TerritorySettingInputEvent.TerritoryProcessingPeriod ->
                         setStateValue(
-                            TerritorySettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
-                            TerritorySettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(event.input)
+                            TerritorySettingFields.TERRITORY_PROCESSING_PERIOD,
+                            territoryProcessingPeriod,
+                            TerritorySettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(
+                                event.input
+                            )
                         )
 
                     is TerritorySettingInputEvent.TerritoryAtHandPeriod ->
@@ -252,14 +261,17 @@ class TerritorySettingViewModelImpl @Inject constructor(
     override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
 
-        TerritorySettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(territoryProcessingPeriod.value.value)
+        TerritorySettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(
+            territoryProcessingPeriod.value.value
+        )
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = TerritorySettingFields.TERRITORY_PROCESSING_PERIOD.name, errorId = it
+                        fieldName = TerritorySettingFields.TERRITORY_PROCESSING_PERIOD.name,
+                        errorId = it
                     )
                 )
             }
@@ -267,7 +279,8 @@ class TerritorySettingViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = TerritorySettingFields.TERRITORY_AT_HAND_PERIOD.name, errorId = it
+                        fieldName = TerritorySettingFields.TERRITORY_AT_HAND_PERIOD.name,
+                        errorId = it
                     )
                 )
             }
@@ -290,7 +303,10 @@ class TerritorySettingViewModelImpl @Inject constructor(
         TerritorySettingInputValidator.TerritoryMaxRooms.errorIdOrNull(territoryMaxRooms.value.value)
             ?.let {
                 inputErrors.add(
-                    InputError(fieldName = TerritorySettingFields.TERRITORY_MAX_ROOMS.name, errorId = it)
+                    InputError(
+                        fieldName = TerritorySettingFields.TERRITORY_MAX_ROOMS.name,
+                        errorId = it
+                    )
                 )
             }
         return inputErrors.ifEmpty { null }
@@ -298,7 +314,7 @@ class TerritorySettingViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritorySettingFields.valueOf(error.fieldName)) {
                 TerritorySettingFields.TERRITORY_PROCESSING_PERIOD -> territoryProcessingPeriod.value.copy(
@@ -309,8 +325,14 @@ class TerritorySettingViewModelImpl @Inject constructor(
                     errorId = error.errorId
                 )
 
-                TerritorySettingFields.TERRITORY_IDLE_PERIOD -> territoryIdlePeriod.value.copy(errorId = error.errorId)
-                TerritorySettingFields.TERRITORY_ROOMS_LIMIT -> territoryRoomsLimit.value.copy(errorId = error.errorId)
+                TerritorySettingFields.TERRITORY_IDLE_PERIOD -> territoryIdlePeriod.value.copy(
+                    errorId = error.errorId
+                )
+
+                TerritorySettingFields.TERRITORY_ROOMS_LIMIT -> territoryRoomsLimit.value.copy(
+                    errorId = error.errorId
+                )
+
                 TerritorySettingFields.TERRITORY_MAX_ROOMS -> territoryMaxRooms.value.copy(errorId = error.errorId)
                 else -> null
             }
@@ -374,72 +396,18 @@ class TerritorySettingViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): AppSettingsUiModel {
-            val appSettingsUiModel = AppSettingsUiModel(
-                settings = emptyList(),
-                username = ctx.resources.getString(R.string.def_admin_member_pseudonym),
-                roles = rolesList(ctx),
-                transferObjects = transferObjectsList(ctx),
-                appVersionName = "1.1",
-                frameworkVersion = "28",
-                sqliteVersion = "3.22",
-                dbVersion = "1"
-            )
-            appSettingsUiModel.id = UUID.randomUUID()
-            return appSettingsUiModel
-        }
-
-        private fun rolesList(ctx: Context) = listOf(
-            MemberRolesListItem(
+        fun previewUiModel(ctx: Context) = listOf(
+            AppSettingsListItem(
                 id = UUID.randomUUID(),
-                role = RolesListItem(
-                    id = UUID.randomUUID(),
-                    roleType = MemberRoleType.ADMIN,
-                    roleName = ctx.resources.getString(R.string.def_role_name_admin)
-                )
-            ), MemberRolesListItem(
+                paramName = AppSettingParam.TERRITORY_PROCESSING_PERIOD,
+                paramValue = "12",
+                paramFullName = ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.param_name_territory_processing_period)
+            ),
+            AppSettingsListItem(
                 id = UUID.randomUUID(),
-                role = RolesListItem(
-                    id = UUID.randomUUID(),
-                    roleType = MemberRoleType.USER,
-                    roleName = ctx.resources.getString(R.string.def_role_name_user)
-                )
-            ), MemberRolesListItem(
-                id = UUID.randomUUID(),
-                role = RolesListItem(
-                    id = UUID.randomUUID(),
-                    roleType = MemberRoleType.TERRITORIES,
-                    roleName = ctx.resources.getString(R.string.def_role_name_territories)
-                ),
-                roleExpiredDate = "2023-12-01T14:29:10.212+03:00".toOffsetDateTime()
-            )
-        )
-
-        private fun transferObjectsList(ctx: Context) = listOf(
-            RoleTransferObjectsListItem(
-                id = UUID.randomUUID(),
-                isPersonalData = false,
-                transferObject = TransferObjectsListItem(
-                    id = UUID.randomUUID(),
-                    transferObjectType = TransferObjectType.ALL,
-                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_all)
-                )
-            ), RoleTransferObjectsListItem(
-                id = UUID.randomUUID(),
-                isPersonalData = false,
-                transferObject = TransferObjectsListItem(
-                    id = UUID.randomUUID(),
-                    transferObjectType = TransferObjectType.TERRITORIES,
-                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_territories)
-                )
-            ), RoleTransferObjectsListItem(
-                id = UUID.randomUUID(),
-                isPersonalData = true,
-                transferObject = TransferObjectsListItem(
-                    id = UUID.randomUUID(),
-                    transferObjectType = TransferObjectType.BILLS,
-                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_bills)
-                )
+                paramName = AppSettingParam.TERRITORY_AT_HAND_PERIOD,
+                paramValue = "4",
+                paramFullName = ctx.resources.getString(com.oborodulin.jwsuite.domain.R.string.param_name_territory_at_hand_period)
             )
         )
     }

@@ -17,34 +17,22 @@ import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
-import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
-import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
-private const val TAG = "Presentation.AppSettingScreen"
+private const val TAG = "Territoring.TerritorySettingScreen"
 
 @Composable
-fun AppSettingScreen(
-    appSettingViewModel: TerritorySettingViewModelImpl = hiltViewModel(),
-    sessionViewModel: SessionViewModel, //Impl = hiltViewModel(),
-    defTopBarActions: @Composable RowScope.() -> Unit = {}/*,
-    onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onActionBarTitleChange: (String) -> Unit,
-    onActionBarSubtitleChange: (String) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,
-    onFabChange: (@Composable () -> Unit) -> Unit*/
+fun TerritorySettingScreen(
+    viewModel: TerritorySettingViewModelImpl = hiltViewModel(),
+    defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
-    Timber.tag(TAG).d("AppSettingScreen(...) called")
+    Timber.tag(TAG).d("TerritorySettingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
-    //onActionBarTitleChange(stringResource(R.string.nav_item_settings))
-    //onActionBarSubtitleChange("")
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect(Unit)")
-        appSettingViewModel.submitAction(TerritorySettingUiAction.Load)
+        Timber.tag(TAG).d("TerritorySettingScreen -> LaunchedEffect(Unit)")
+        viewModel.submitAction(TerritorySettingUiAction.Load)
     }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
@@ -57,7 +45,7 @@ fun AppSettingScreen(
         topBarActions = topBarActions
     ) { innerPadding ->
         DialogScreenComponent(
-            viewModel = appSettingViewModel,
+            viewModel = viewModel,
             loadUiAction = TerritorySettingUiAction.Load,
             saveUiAction = TerritorySettingUiAction.Save,
             upNavigation = upNavigation,
@@ -67,36 +55,14 @@ fun AppSettingScreen(
             confirmButton = { areValid, handleSaveButtonClick ->
                 SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
             },
-            /*onActionBarChange = onActionBarChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
-        ) { uiModel, _, _, _ ->
-            AppSettingView(
-                //modifier = Modifier.verticalScroll(rememberScrollState()),
-                appSettingsUiModel = uiModel,
-                territorySettingViewModel = appSettingViewModel,
-                sessionViewModel = sessionViewModel
+        ) { _, _, _, handleSaveAction ->
+            TerritorySettingView(
+                viewModel = viewModel,
+                handleSaveAction = handleSaveAction
             )
-        }
-    }
-    LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("AppSettingScreen -> LaunchedEffect() BEFORE collect ui state flow")
-        sessionViewModel.singleEventFlow.collectLatest {
-            Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
-            when (it) {
-                is SessionUiSingleEvent.OpenSignupScreen -> {
-                    appState.rootNavController.navigate(it.navRoute) {
-                        popUpTo(it.navRoute) {
-                            inclusive = true
-                        }
-                    }
-                }
-
-                else -> {}
-            }
         }
     }
 }

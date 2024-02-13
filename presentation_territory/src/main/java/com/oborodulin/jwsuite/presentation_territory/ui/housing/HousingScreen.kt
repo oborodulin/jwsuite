@@ -123,7 +123,7 @@ fun HousingScreen(
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("HousingScreen -> LaunchedEffect() BEFORE collect ui state flow: events.collect")
+            .d("HousingScreen -> LaunchedEffect(): events.collect")
         events.collect { event ->
             if (LOG_FLOW_INPUT) Timber.tag(TAG)
                 .d("IF# Collect input events flow: %s", event.javaClass.name)

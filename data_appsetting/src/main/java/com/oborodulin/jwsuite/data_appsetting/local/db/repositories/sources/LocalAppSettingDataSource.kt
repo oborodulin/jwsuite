@@ -7,6 +7,7 @@ import java.util.UUID
 
 interface LocalAppSettingDataSource {
     fun getAppSettings(): Flow<List<AppSettingEntity>>
+    fun getAppSettingsByNames(paramNames: List<AppSettingParam> = emptyList()): Flow<List<AppSettingEntity>>
     fun getAppSetting(settingId: UUID): Flow<AppSettingEntity>
     suspend fun insertAppSetting(setting: AppSettingEntity)
     suspend fun updateAppSetting(setting: AppSettingEntity)

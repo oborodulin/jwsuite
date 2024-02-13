@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.model.converters
 import com.oborodulin.home.common.ui.state.CommonResultConverter
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRoleUi
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.MemberRoleToMemberRoleUiMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRoleUiMapper
 
 class MemberRoleConverter(private val mapper: MemberRoleToMemberRoleUiMapper) :
     CommonResultConverter<GetMemberRoleUseCase.Response, MemberRoleUi>() {

@@ -19,24 +19,35 @@ interface AppSettingDao {
     @Query("SELECT * FROM ${AppSettingEntity.TABLE_NAME}")
     fun findAllEntities(): Flow<List<AppSettingEntity>>
 
+    //-----------------------------
     @Query("SELECT * FROM ${AppSettingEntity.TABLE_NAME}")
     fun findAll(): Flow<List<AppSettingEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${AppSettingEntity.TABLE_NAME} WHERE settingId = :id")
     fun findById(id: UUID): Flow<AppSettingEntity>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT paramValue FROM ${AppSettingEntity.TABLE_NAME} WHERE paramName LIKE '%' || :paramName || '%'")
     fun findByParamName(paramName: String): Flow<List<String>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByParamName(paramName: String) =
         findByParamName(paramName).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${AppSettingEntity.TABLE_NAME} WHERE paramName IN (:paramNames)")
+    fun findByParamNames(paramNames: List<AppSettingParam> = emptyList()): Flow<List<AppSettingEntity>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByParamNames(paramNames: List<AppSettingParam>) =
+        findByParamNames(paramNames).distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

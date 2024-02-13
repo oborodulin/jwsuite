@@ -35,7 +35,7 @@ fun TerritoryStreetScreen(
     val upNavigation = { appState.mainNavigateUp() }
 
     LaunchedEffect(territoryStreetInput?.territoryId) {
-        Timber.tag(TAG).d("TerritoryStreetScreen -> LaunchedEffect() BEFORE collect ui state flow")
+        Timber.tag(TAG).d("TerritoryStreetScreen -> LaunchedEffect()")
         territoryStreetInput?.territoryId?.let {
             territoryStreetsListViewModel.submitAction(TerritoryStreetsListUiAction.Load(it))
         }

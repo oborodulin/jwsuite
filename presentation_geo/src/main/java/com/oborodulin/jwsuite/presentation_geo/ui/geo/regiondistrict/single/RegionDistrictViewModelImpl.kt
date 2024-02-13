@@ -213,7 +213,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         RegionDistrictInputValidator.Region.errorIdOrNull(region.value.item?.headline)?.let {
             inputErrors.add(
@@ -245,7 +245,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (RegionDistrictFields.valueOf(error.fieldName)) {
                 RegionDistrictFields.REGION_DISTRICT_REGION -> region.value.copy(errorId = error.errorId)

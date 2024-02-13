@@ -36,7 +36,7 @@ fun MemberReportsListView(
     )
     LaunchedEffect(territoryStreetId, houseId, roomId) {
         Timber.tag(TAG)
-            .d("MemberReportsListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("MemberReportsListView -> LaunchedEffect()")
         viewModel.submitAction(
             MemberReportsListUiAction.Load(
                 territoryStreetId = territoryStreetId,

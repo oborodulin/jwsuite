@@ -39,7 +39,7 @@ fun TerritoryDetailsListView(
     Timber.tag(TAG).d("TerritoryDetailsListView(...) called: territoryInput = %s", territoryInput)
     LaunchedEffect(territoryInput?.territoryId) {
         Timber.tag(TAG)
-            .d("TerritoryDetailsListView -> LaunchedEffect() BEFORE collect ui state flow")
+            .d("TerritoryDetailsListView -> LaunchedEffect()")
         territoryInput?.let { viewModel.submitAction(TerritoryDetailsListUiAction.Load(it.territoryId)) }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

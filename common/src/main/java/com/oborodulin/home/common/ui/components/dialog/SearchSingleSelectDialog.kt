@@ -55,7 +55,7 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
     if (isShow) {
         LaunchedEffect(Unit) {
             if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("SearchSingleSelectDialog -> LaunchedEffect() BEFORE collect ui state flow")
+                .d("SearchSingleSelectDialog -> LaunchedEffect()")
             viewModel.submitAction(loadUiAction)
         }
         Dialog(onDismissRequest = onDismissRequest) {

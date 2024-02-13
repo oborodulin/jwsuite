@@ -29,7 +29,7 @@ fun SignupScreen(viewModel: SessionViewModel) {//Impl = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
     /*if (session == null) {
         LaunchedEffect(Unit) {
-            Timber.tag(TAG).d("SignupScreen -> LaunchedEffect() BEFORE collect ui state flow")
+            Timber.tag(TAG).d("SignupScreen -> LaunchedEffect()")
             viewModel.submitAction(SessionUiAction.Load)
         }
     }*/

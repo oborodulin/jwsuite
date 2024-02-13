@@ -348,7 +348,7 @@ class MemberReportViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         MemberReportInputValidator.TerritoryStreet.errorIdOrNull(territoryStreet.value.item?.headline)
             ?.let {
@@ -389,7 +389,7 @@ class MemberReportViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (MemberReportFields.valueOf(error.fieldName)) {
                 MemberReportFields.MEMBER_REPORT_TERRITORY_STREET -> territoryStreet.value.copy(

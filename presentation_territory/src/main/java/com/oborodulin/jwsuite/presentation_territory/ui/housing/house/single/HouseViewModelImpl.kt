@@ -498,7 +498,7 @@ class HouseViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("#IF getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
         HouseInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = HouseFields.HOUSE_LOCALITY.name, errorId = it))
@@ -519,7 +519,7 @@ class HouseViewModelImpl @Inject constructor(
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("#IF displayInputErrors() called: inputErrors.count = %d", inputErrors.size)
+            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (HouseFields.valueOf(error.fieldName)) {
                 HouseFields.HOUSE_LOCALITY -> locality.value.copy(errorId = error.errorId)
