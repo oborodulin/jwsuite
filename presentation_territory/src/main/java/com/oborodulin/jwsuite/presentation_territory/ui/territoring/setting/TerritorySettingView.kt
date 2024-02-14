@@ -44,10 +44,10 @@ import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.OnImeKeyAction
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.model.SessionUi
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_territory.R
 import timber.log.Timber
 import java.util.EnumMap
 
@@ -107,7 +107,7 @@ fun TerritorySettingView(
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = stringResource(R.string.territory_subhead),
+            text = stringResource(R.string.territories_subhead),
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )

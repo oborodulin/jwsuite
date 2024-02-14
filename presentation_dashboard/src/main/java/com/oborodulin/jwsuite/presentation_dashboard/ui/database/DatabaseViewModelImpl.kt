@@ -74,6 +74,7 @@ class DatabaseViewModelImpl @Inject constructor(
         if (LogLevel.LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(DatabaseUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
+            is DatabaseUiAction.Init -> submitState(UiState.Success(DatabaseUiModel()))
             is DatabaseUiAction.Backup -> backup()
             is DatabaseUiAction.Restore -> restore()
             is DatabaseUiAction.Send -> send(action.memberRoleType)

@@ -13,10 +13,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
+import com.oborodulin.jwsuite.presentation_territory.R
 import timber.log.Timber
 
 private const val TAG = "Territoring.TerritorySettingScreen"
@@ -39,7 +39,7 @@ fun TerritorySettingScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
-        topBarTitle = stringResource(R.string.nav_item_settings),
+        topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_territory_settings),
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
@@ -47,11 +47,11 @@ fun TerritorySettingScreen(
         DialogScreenComponent(
             viewModel = viewModel,
             loadUiAction = TerritorySettingUiAction.Load,
-            saveUiAction = TerritorySettingUiAction.Save,
+            confirmUiAction = TerritorySettingUiAction.Save,
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
             isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
-            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_settings,
+            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_territory_settings,
             confirmButton = { areValid, handleSaveButtonClick ->
                 SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
             },
@@ -59,10 +59,7 @@ fun TerritorySettingScreen(
             onTopBarActionsChange = onTopBarActionsChange,
             innerPadding = innerPadding
         ) { _, _, _, handleSaveAction ->
-            TerritorySettingView(
-                viewModel = viewModel,
-                handleSaveAction = handleSaveAction
-            )
+            TerritorySettingView(viewModel = viewModel, handleSaveAction = handleSaveAction)
         }
     }
 }

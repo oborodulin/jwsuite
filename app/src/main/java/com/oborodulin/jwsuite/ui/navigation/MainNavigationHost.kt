@@ -21,7 +21,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.si
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
-import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.MemberRoleScreen
+import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.DatabaseSendScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictScreen
@@ -164,7 +164,7 @@ fun MainNavigationHost(
             )
             //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val membersListViewModel = hiltViewModel<MembersListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
-            MemberRoleScreen(
+            DatabaseSendScreen(
                 //sharedViewModel = sharedViewModel,
                 memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
                 defTopBarActions = defTopBarActions/*,

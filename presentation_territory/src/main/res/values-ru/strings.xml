@@ -70,7 +70,7 @@
     <string name="territory_category_new_subheader">Новая категория участка</string>
     <string name="territory_category_mark_hint">Признак категории</string>
     <!--Участок-->
-    <string name="territory_subhead">Участок</string>
+    <string name="territory_subheader">Участок</string>
     <string name="territory_new_subheader">Новый участок</string>
     <string name="territory_category_hint">Категория участка</string>
     <string name="territory_num_hint">№ участка</string>
@@ -107,6 +107,13 @@
     <!--Квартира участка-->
     <string name="territory_room_subheader">Квартира участка</string>
     <string name="territory_room_new_subheader">Новая квартира участка</string>
+    <!--Настройка участков-->
+    <string name="territories_subhead">УЧАСТКИ</string>
+    <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
+    <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
+    <string name="territory_idle_period_hint">Период отстоя участка, мес.</string>
+    <string name="territory_rooms_limit_hint">Макс. кол-во квартир участка, кв.</string>
+    <string name="territory_max_rooms_hint">Макс. кол-во квартир в доме, кв.</string>
     <!--Дом-->
     <string name="house_subheader">Дом</string>
     <string name="house_new_subheader">Новый дом</string>
@@ -193,6 +200,7 @@
     <string name="dlg_confirm_cancel_changes_house">Изменённые данные дома не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_room">Изменённые данные квартиры не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_territory_report">Изменённые данные отчёта не сохранятся</string>
+    <string name="dlg_confirm_cancel_changes_territory_settings">Изменённые настройки участков не сохранятся</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--формы категории участка-->

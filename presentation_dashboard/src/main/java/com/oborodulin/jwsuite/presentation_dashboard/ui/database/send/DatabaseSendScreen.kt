@@ -8,22 +8,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.oborodulin.home.common.ui.components.screen.SaveDialogScreenComponent
+import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
-import com.oborodulin.jwsuite.presentation_congregation.R
+import com.oborodulin.jwsuite.presentation_dashboard.R
+import com.oborodulin.jwsuite.presentation_dashboard.ui.components.SendButtonComponent
+import com.oborodulin.jwsuite.presentation_dashboard.ui.database.DatabaseUiAction
+import com.oborodulin.jwsuite.presentation_dashboard.ui.database.DatabaseViewModelImpl
 import timber.log.Timber
 
-private const val TAG = "Presentation_Dashboard.MemberRoleScreen"
+private const val TAG = "Presentation_Dashboard.DatabaseSendScreen"
 
 @Composable
-fun MemberRoleScreen(
-    viewModel: DatabaseSendViewModelImpl = hiltViewModel(),
+fun DatabaseSendScreen(
+    viewModel: DatabaseViewModelImpl = hiltViewModel(),
     memberRoleInput: NavigationInput.MemberRoleInput? = null,
     defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
-    Timber.tag(TAG).d("MemberRoleScreen(...) called: memberRoleInput = %s", memberRoleInput)
+    Timber.tag(TAG).d("DatabaseSendScreen(...) called: memberRoleInput = %s", memberRoleInput)
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
@@ -35,17 +38,22 @@ fun MemberRoleScreen(
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
     ) { innerPadding ->
-        SaveDialogScreenComponent(
+        DialogScreenComponent(
             viewModel = viewModel,
-            inputId = memberRoleInput?.memberRoleId,
-            loadUiAction = MemberRoleUiAction.Load(memberRoleInput?.memberRoleId),
-            saveUiAction = MemberRoleUiAction.Save,
+            loadUiAction = DatabaseUiAction.Init,
+            confirmUiAction = DatabaseUiAction.Send(),
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
-            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_changes_member_role,
+            cancelChangesConfirmResId = R.string.dlg_confirm_cancel_database_send,
+            confirmButton = @Composable { areInputsValid, handleSendButtonClick ->
+                SendButtonComponent(
+                    enabled = areInputsValid,
+                    onClick = handleSendButtonClick
+                )
+            },
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
             innerPadding = innerPadding
-        ) { _, _, _, handleSaveAction -> DatabaseSendView(handleSaveAction = handleSaveAction) }
+        ) { _, _, _, handleSendAction -> DatabaseSendView(handleSendAction = handleSendAction) }
     }
 }

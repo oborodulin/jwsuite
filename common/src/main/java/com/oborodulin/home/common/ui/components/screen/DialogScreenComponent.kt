@@ -50,7 +50,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     viewModel: DialogViewModeled<T, A, E, F>,
     inputId: UUID? = null,
     loadUiAction: A,
-    saveUiAction: A,
+    confirmUiAction: A,
     nextUiAction: A? = null,
     nextAction: (() -> Unit)? = null,
     upNavigation: () -> Unit,
@@ -82,7 +82,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
             .d("DialogScreenComponent: Top Bar Action Button click...")
         viewModel.onContinueClick {
             // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
-            viewModel.handleActionJob({ viewModel.submitAction(saveUiAction) }) { scope ->
+            viewModel.handleActionJob({ viewModel.submitAction(confirmUiAction) }) { scope ->
                 errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
                     if (LOG_FLOW_JOB) Timber.tag(TAG)

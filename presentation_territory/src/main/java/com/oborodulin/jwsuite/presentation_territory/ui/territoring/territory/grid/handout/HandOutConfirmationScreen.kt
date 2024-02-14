@@ -39,7 +39,7 @@ fun HandOutConfirmationScreen(
         DialogScreenComponent(
             viewModel = viewModel,
             loadUiAction = TerritoriesGridUiAction.HandOutInitConfirmation,
-            saveUiAction = TerritoriesGridUiAction.HandOut,
+            confirmUiAction = TerritoriesGridUiAction.HandOut,
             upNavigation = {
                 appState.barNavController.navigateUp()
                 appState.navigateToBarRoute(NavRoutes.Territoring.route)

@@ -28,7 +28,9 @@ class CsvImportUseCase(
         var importResult = false
         databaseRepository.orderedDataTableNames().first().forEach { tableName ->
             Timber.tag(TAG).d("CSV Importing: tableName = %s", tableName)
-            importService.csvRepositoryLoads(tableName.key).forEach { callables ->
+            val repositoryLoads = importService.csvRepositoryLoads(tableName.key)
+            Timber.tag(TAG).d("CSV Importing: repositoryLoads = %s", repositoryLoads)
+            repositoryLoads.onEachIndexed { callableIdx, callables ->
                 val csvFilePrefix = callables.key.fileNamePrefix
                 val contentType = callables.key.contentType
                 val loadMethod = callables.value
@@ -65,6 +67,8 @@ class CsvImportUseCase(
                                     csvFilePrefix = csvFilePrefix,
                                     entityDesc = tableName.value,
                                     loadListSize = loadListSize,
+                                    totalMethods = repositoryLoads.size,
+                                    methodIndex = callableIdx,
                                     isSuccess = importResult
                                 )
                             )
@@ -81,6 +85,8 @@ class CsvImportUseCase(
         val csvFilePrefix: String = "",
         val loadListSize: Int = 0,
         val entityDesc: String = "",
+        val totalMethods: Int = 0,
+        val methodIndex: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response

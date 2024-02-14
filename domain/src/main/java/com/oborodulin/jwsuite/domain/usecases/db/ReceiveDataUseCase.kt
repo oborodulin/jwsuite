@@ -8,7 +8,6 @@ import com.oborodulin.jwsuite.domain.services.ImportService
 import com.oborodulin.jwsuite.domain.services.Imports
 import com.oborodulin.jwsuite.domain.services.csv.CsvConfig
 import com.oborodulin.jwsuite.domain.util.Constants.RECEIVE_PATH
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -24,8 +23,6 @@ class ReceiveDataUseCase(
     private val importService: ImportService,
     private val databaseRepository: DatabaseRepository
 ) : UseCase<ReceiveDataUseCase.Request, ReceiveDataUseCase.Response>(configuration) {
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun process(request: Request) = flow {
         var importResult = false
         val dir = File(ctx.filesDir.path.plus(RECEIVE_PATH))
@@ -38,7 +35,9 @@ class ReceiveDataUseCase(
                         "CSV Data Receive: tableName = %s -> FileName = %s",
                         tableName, file.name
                     )
-                    importService.csvRepositoryLoads(tableName.key).forEach { callables ->
+                    val repositoryLoads = importService.csvRepositoryLoads(tableName.key)
+                    Timber.tag(TAG).d("CSV Data Receive: repositoryLoads = %s", repositoryLoads)
+                    repositoryLoads.onEachIndexed { callableIdx, callables ->
                         val csvFilePrefix = callables.key.fileNamePrefix
                         val contentType = callables.key.contentType
                         val loadMethod = callables.value
@@ -74,6 +73,8 @@ class ReceiveDataUseCase(
                                         csvFilePrefix = csvFilePrefix,
                                         loadListSize = loadListSize,
                                         entityDesc = tableName.value,
+                                        totalMethods = repositoryLoads.size,
+                                        methodIndex = callableIdx,
                                         isSuccess = importResult
                                     )
                                 )
@@ -92,8 +93,9 @@ class ReceiveDataUseCase(
         val csvFilePrefix: String = "",
         val loadListSize: Int = 0,
         val entityDesc: String = "",
+        val totalMethods: Int = 0,
+        val methodIndex: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response
-
 }

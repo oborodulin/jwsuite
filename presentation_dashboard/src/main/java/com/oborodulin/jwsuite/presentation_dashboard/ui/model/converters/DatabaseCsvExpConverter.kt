@@ -8,6 +8,8 @@ class DatabaseCsvExpConverter :
     CommonResultConverter<CsvExportUseCase.Response, DatabaseUiModel>() {
     override fun convertSuccess(data: CsvExportUseCase.Response) = DatabaseUiModel(
         entityDesc = data.entityDesc,
+        progress = data.methodIndex.toFloat() / (data.totalMethods / 100),
+        isSuccess = data.isSuccess,
         isDone = data.isDone
     )
 }

@@ -133,7 +133,7 @@ class TerritoryViewModelImpl @Inject constructor(
                 }
 
                 else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_subhead)
+                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_subheader)
                     loadTerritory(action.territoryId)
                 }
             }

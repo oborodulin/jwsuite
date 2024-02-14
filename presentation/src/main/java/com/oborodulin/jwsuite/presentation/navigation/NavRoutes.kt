@@ -248,13 +248,13 @@ sealed class NavRoutes(
     data object DashboardSettings : NavRoutes(
         route = ROUTE_DASHBOARD_SETTINGS,
         iconImageVector = Icons.Outlined.Settings,
-        titleResId = R.string.nav_item_settings
+        titleResId = R.string.nav_item_dashboard_settings
     )
 
     data object TerritorySettings : NavRoutes(
         route = ROUTE_TERRITORY_SETTINGS,
         iconImageVector = Icons.Outlined.Settings,
-        titleResId = R.string.nav_item_settings
+        titleResId = R.string.nav_item_territory_settings
     )
 
     // Main Navigation:

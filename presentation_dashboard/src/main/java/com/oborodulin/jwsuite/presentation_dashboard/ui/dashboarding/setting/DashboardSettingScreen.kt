@@ -13,12 +13,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.buttons.SaveButtonComponent
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation.ui.session.SessionUiSingleEvent
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
+import com.oborodulin.jwsuite.presentation_dashboard.R
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -33,9 +33,7 @@ fun DashboardSettingScreen(
     Timber.tag(TAG).d("DashboardSettingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
-    val upNavigation: () -> Unit = { appState.mainNavigateUp() } //backToBottomBarScreen() }
-    //onActionBarTitleChange(stringResource(R.string.nav_item_settings))
-    //onActionBarSubtitleChange("")
+    val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardSettingScreen -> LaunchedEffect(Unit)")
         appSettingViewModel.submitAction(DashboardSettingUiAction.Load)
@@ -45,7 +43,7 @@ fun DashboardSettingScreen(
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }
     val onActionBarSubtitleChange: (String) -> Unit = { actionBarSubtitle = it }
     ScaffoldComponent(
-        topBarTitle = stringResource(R.string.nav_item_settings),
+        topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_dashboard_settings),
         topBarSubtitle = actionBarSubtitle,
         defTopBarActions = defTopBarActions,
         topBarActions = topBarActions
@@ -53,7 +51,7 @@ fun DashboardSettingScreen(
         DialogScreenComponent(
             viewModel = appSettingViewModel,
             loadUiAction = DashboardSettingUiAction.Load,
-            saveUiAction = DashboardSettingUiAction.Save,
+            confirmUiAction = DashboardSettingUiAction.Save,
             upNavigation = upNavigation,
             handleTopBarNavClick = appState.handleTopBarNavClick,
             isControlsShow = session.containsRole(MemberRoleType.TERRITORIES),
@@ -61,11 +59,8 @@ fun DashboardSettingScreen(
             confirmButton = { areValid, handleSaveButtonClick ->
                 SaveButtonComponent(enabled = areValid, onClick = handleSaveButtonClick)
             },
-            /*onActionBarChange = onActionBarChange,
-        onTopBarNavImageVectorChange = onTopBarNavImageVectorChange,*/
             onActionBarSubtitleChange = onActionBarSubtitleChange,
             onTopBarActionsChange = onTopBarActionsChange,
-            //onFabChange = onFabChange
             innerPadding = innerPadding
         ) { uiModel, _, _, _ ->
             DashboardSettingView(

@@ -9,7 +9,8 @@
     <string name="nav_item_signup">Регистрация</string>
     <string name="nav_item_login">Вход</string>
     <string name="nav_item_geo">География</string>
-    <string name="nav_item_settings">Настройки</string>
+    <string name="nav_item_dashboard_settings">Настройки</string>
+    <string name="nav_item_territory_settings">Настройки участков</string>
     <string name="nav_item_housing">Дома</string>
     <!--дополнительная-->
     <string name="nav_item_congregation">Собрание</string>
@@ -47,10 +48,6 @@
     <string name="btn_signup_lbl">Зарегистрировать</string>
     <string name="btn_signout_lbl">Выйти</string>
     <string name="btn_login_lbl">Войти</string>
-    <string name="btn_send_lbl">Отправить</string>
-    <string name="btn_receive_lbl">Принять</string>
-    <string name="btn_backup_lbl">Выгрузить</string>
-    <string name="btn_restore_lbl">Восстановить</string>
     <!--диалог-->
     <string name="dlg_confirm_signout_title">Выйти?</string>
 
@@ -80,26 +77,6 @@
     <string name="session_confirm_pin_hint">Подтвердите PIN</string>
     <!--вход-->
     <string name="import_data_hint">Инициализация данных:</string>
-    <!--настройки-->
-    <string name="authorization_subhead">АВТОРИЗАЦИЯ</string>
-    <string name="username_hint">Логин</string>
-    <string name="role_header_hint">Роли</string>
-    <string name="expired_header_hint">Истекает</string>
-    <string name="transfer_subhead">ПОЛУЧЕНИЕ ДАННЫХ</string>
-    <string name="transfer_objects_header_hint">Получаемые объекты</string>
-    <string name="is_personal_header_hint">Персонально?</string>
-    <string name="about_subhead">О ПРОГРАММЕ</string>
-    <string name="app_version_hint">Версия ПО</string>
-    <string name="framework_api_version_hint">Framework API v.</string>
-    <string name="sqlite_version_hint">SQLite v.</string>
-    <string name="database_version_hint">Версия БД</string>
-    <string name="database_backup_period_hint">Период резервирования данных, д.</string>
-    <string name="territory_subhead">УЧАСТКИ</string>
-    <string name="territory_processing_period_hint">Период обработки всех участков, мес.</string>
-    <string name="territory_at_hand_period_hint">Период обработки одного участка, мес.</string>
-    <string name="territory_idle_period_hint">Период отстоя участка, мес.</string>
-    <string name="territory_rooms_limit_hint">Макс. кол-во квартир участка, кв.</string>
-    <string name="territory_max_rooms_hint">Макс. кол-во квартир в доме, кв.</string>
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->
@@ -107,7 +84,6 @@
     <string name="dlg_title_login">Вход</string>
     <!--Подтверждения-->
     <!--отмена изменений-->
-    <string name="dlg_confirm_cancel_changes_settings">Изменённые настройки не сохранятся</string>
     <string name="dlg_confirm_signout">Выход позволяет сменить ПИН или зарегистрироваться под другим пользователем. Продолжить выход?</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
@@ -124,20 +100,7 @@
     <string name="signup_confirm_pin_error">ПИН-коды не совпадают!\nПодтвердите, пожалуйста, ПИН-код ещё раз</string>
     <!--формы логина-->
     <string name="login_pin_error">Неверный ПИН-код! Пожалуйста, введите ПИН-код ещё раз</string>
-    <!--формы настроек-->
-    <string name="database_backup_period_empty_error">Укажите, пожалуйста, период резервирования данных</string>
-    <string name="territory_processing_period_empty_error">Укажите, пожалуйста, период обработки всех участков</string>
-    <string name="territory_at_hand_period_empty_error">Укажите, пожалуйста, период обработки одного участка</string>
-    <string name="territory_idle_period_empty_error">Укажите, пожалуйста, период ериод отстоя участка</string>
-    <string name="territory_rooms_limit_empty_error">Укажите, пожалуйста, макс. кол-во квартир участка</string>
-    <string name="territory_max_rooms_empty_error">Укажите, пожалуйста, макс. кол-во квартир в доме</string>
-    <!--формы передачи данных-->
-    <string name="receiver_member_empty_error">Укажите, пожалуйста, получателя данных</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
     <string name="btn_signout_cnt_desc">Выйти из учётной записи</string>
-    <string name="btn_send_cnt_desc">Отправить данные</string>
-    <string name="btn_receive_cnt_desc">Принять данные</string>
-    <string name="btn_backup_cnt_desc">Создать резервную копию данных</string>
-    <string name="btn_restore_cnt_desc">Восстановить данные из резервной копии</string>
 </resources>

@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_dashboard.R
 
 private const val TAG = "Presentation_Dashboard.SendButtonComponent"
 

@@ -56,7 +56,6 @@ import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
-import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutConfirmDialogComponent
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
@@ -65,6 +64,7 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionUiAction
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_dashboard.R
 import com.oborodulin.jwsuite.presentation_dashboard.ui.components.BackupButtonComponent
 import com.oborodulin.jwsuite.presentation_dashboard.ui.components.ReceiveButtonComponent
 import com.oborodulin.jwsuite.presentation_dashboard.ui.components.RestoreButtonComponent
@@ -148,7 +148,7 @@ fun DashboardSettingView(
         val isSignoutShowAlert = rememberSaveable { mutableStateOf(false) }
         SignoutConfirmDialogComponent(
             isShow = isSignoutShowAlert,
-            text = stringResource(R.string.dlg_confirm_signout),
+            text = stringResource(com.oborodulin.jwsuite.presentation.R.string.dlg_confirm_signout),
             onConfirm = handleSignoutButtonClick
         )
         // https://stackoverflow.com/questions/71476719/android-compose-text-can-we-have-two-different-texts-set-to-the-start-and-to-the
@@ -331,7 +331,12 @@ fun DashboardSettingView(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
-                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                            databaseUi.progress?.let {
+                                LinearProgressIndicator(
+                                    progress = it,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                     }
                 }

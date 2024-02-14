@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_dashboard.R
 
 private const val TAG = "Presentation_Dashboard.BackupButtonComponent"
 
@@ -22,7 +22,7 @@ fun BackupButtonComponent(
             .padding(end = 8.dp)
             .then(modifier),
         enabled = enabled,
-        painterResId = R.drawable.ic_backup_24,
+        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_backup_24,
         textResId = R.string.btn_backup_lbl,
         contentDescriptionResId = R.string.btn_backup_cnt_desc,
         onClick = onClick

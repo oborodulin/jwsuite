@@ -65,7 +65,7 @@ fun TerritoryScreen(
             viewModel = viewModel,
             inputId = territoryInput?.territoryId,
             loadUiAction = TerritoryUiAction.Load(territoryInput?.territoryId),
-            saveUiAction = TerritoryUiAction.Save,
+            confirmUiAction = TerritoryUiAction.Save,
             nextAction = {
                 viewModel.submitAction(TerritoryUiAction.EditTerritoryDetails(viewModel.id()))
             },

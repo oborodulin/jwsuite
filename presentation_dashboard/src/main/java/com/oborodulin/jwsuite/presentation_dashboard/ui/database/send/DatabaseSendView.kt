@@ -53,7 +53,7 @@ private const val TAG = "Presentation_Dashboard.DatabaseSendView"
 @Composable
 fun DatabaseSendView(
     viewModel: DatabaseViewModelImpl = hiltViewModel(),
-    handleSaveAction: OnImeKeyAction
+    handleSendAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("DatabaseSendView(...) called")
     val appState = LocalAppState.current

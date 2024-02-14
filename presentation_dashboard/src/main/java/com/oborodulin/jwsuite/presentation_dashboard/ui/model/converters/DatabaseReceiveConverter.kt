@@ -8,6 +8,8 @@ class DatabaseReceiveConverter :
     CommonResultConverter<ReceiveDataUseCase.Response, DatabaseUiModel>() {
     override fun convertSuccess(data: ReceiveDataUseCase.Response) = DatabaseUiModel(
         entityDesc = data.entityDesc,
+        progress = data.methodIndex.toFloat() / (data.totalMethods / 100),
+        isSuccess = data.isSuccess,
         isDone = data.isDone
     )
 }

@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.ui.components.buttons.ButtonComponent
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_dashboard.R
 
 private const val TAG = "Presentation_Dashboard.ReceiveButtonComponent"
 
@@ -22,7 +22,7 @@ fun ReceiveButtonComponent(
             .padding(end = 8.dp)
             .then(modifier),
         enabled = enabled,
-        painterResId = R.drawable.ic_receive_24,
+        painterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_receive_24,
         textResId = R.string.btn_receive_lbl,
         contentDescriptionResId = R.string.btn_receive_cnt_desc,
         onClick = onClick

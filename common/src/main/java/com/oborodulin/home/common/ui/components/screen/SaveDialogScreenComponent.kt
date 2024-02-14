@@ -37,7 +37,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
         viewModel = viewModel,
         inputId = inputId,
         loadUiAction = loadUiAction,
-        saveUiAction = saveUiAction,
+        confirmUiAction = saveUiAction,
         upNavigation = upNavigation,
         handleTopBarNavClick = handleTopBarNavClick,
         cancelChangesConfirmResId = cancelChangesConfirmResId,

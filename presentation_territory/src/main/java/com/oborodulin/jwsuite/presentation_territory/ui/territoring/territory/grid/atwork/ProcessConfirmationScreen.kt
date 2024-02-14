@@ -39,7 +39,7 @@ fun ProcessConfirmationScreen(
         DialogScreenComponent(
             viewModel = viewModel,
             loadUiAction = TerritoriesGridUiAction.ProcessInitConfirmation,
-            saveUiAction = TerritoriesGridUiAction.Process,
+            confirmUiAction = TerritoriesGridUiAction.Process,
             upNavigation = {
                 appState.barNavController.navigateUp()
                 appState.navigateToBarRoute(NavRoutes.Territoring.route)

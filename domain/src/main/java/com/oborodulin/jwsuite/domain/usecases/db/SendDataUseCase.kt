@@ -42,7 +42,8 @@ class SendDataUseCase(
         databaseRepository.transferObjectTableNames(transferObjects).first()
             .forEach { tableName ->
                 Timber.tag(TAG).d("CSV Data Transmission: tableName = %s", tableName)
-                exportService.csvRepositoryExtracts(tableName.key).forEach { callable ->
+                val repositoryExtracts = exportService.csvRepositoryExtracts(tableName.key)
+                repositoryExtracts.onEachIndexed { callableIdx, callable ->
                     val csvFilePrefix = callable.key.fileNamePrefix
                     val extractMethod = callable.value
                     Timber.tag(TAG).d(
@@ -118,6 +119,8 @@ class SendDataUseCase(
                                     Response(
                                         csvFilePrefix = csvFilePrefix,
                                         entityDesc = tableName.value.first,
+                                        totalMethods = repositoryExtracts.size,
+                                        methodIndex = callableIdx,
                                         isSuccess = it
                                     )
                                 )
@@ -135,6 +138,8 @@ class SendDataUseCase(
     data class Response(
         val csvFilePrefix: String = "",
         val entityDesc: String = "",
+        val totalMethods: Int = 0,
+        val methodIndex: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response

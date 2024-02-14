@@ -31,7 +31,10 @@ class CsvExportUseCase(
 ) : UseCase<CsvExportUseCase.Request, CsvExportUseCase.Response>(configuration) {
     override fun process(request: Request) = flow {
         val dataTables = databaseRepository.orderedDataTableNames().first()
-        exportService.csvRepositoryExtracts().forEach { callables ->
+        Timber.tag(TAG).d("CSV Exporting: dataTables = %s", dataTables)
+        val repositoryExtracts = exportService.csvRepositoryExtracts()
+        Timber.tag(TAG).d("CSV Exporting: repositoryExtracts = %s", repositoryExtracts)
+        repositoryExtracts.onEachIndexed { callableIdx, callables ->
             val csvFilePrefix = callables.key.fileNamePrefix
             val extractMethod = callables.value
             val entityDesc = dataTables[csvFilePrefix]
@@ -66,6 +69,8 @@ class CsvExportUseCase(
                             Response(
                                 csvFilePrefix = csvFilePrefix,
                                 entityDesc = entityDesc.orEmpty(),
+                                totalMethods = repositoryExtracts.size,
+                                methodIndex = callableIdx,
                                 isSuccess = it
                             )
                         )
@@ -84,6 +89,8 @@ class CsvExportUseCase(
     data class Response(
         val csvFilePrefix: String = "",
         val entityDesc: String = "",
+        val totalMethods: Int = 0,
+        val methodIndex: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response
