@@ -5,6 +5,6 @@ enum class EventType {
     BACKUP,
     RESTORE,
     SYNC,
-    TRANSFER,
+    SEND,
     RECEIVE
 }

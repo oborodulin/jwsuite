@@ -254,6 +254,9 @@ fun TerritoringScreen(
                         DropdownMenuItem(
                             text = { Text(text = stringResource(R.string.mi_housing_lbl)) },
                             onClick = { appState.mainNavigate(NavRoutes.Housing.route) })
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(R.string.mi_territory_settings_lbl)) },
+                            onClick = { appState.mainNavigate(NavRoutes.TerritorySettings.route) })
                     }
                 }
             }

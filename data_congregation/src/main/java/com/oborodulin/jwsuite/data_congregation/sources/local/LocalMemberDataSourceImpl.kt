@@ -7,6 +7,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberMovementEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.repositories.sources.LocalMemberDataSource
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -40,6 +41,10 @@ class LocalMemberDataSourceImpl @Inject constructor(
             congregationId,
             isService
         )
+
+    // Member by Roles:
+    override fun getMembersByRoles(roleTypes: List<MemberRoleType>) =
+        memberDao.findByFavoriteCongregationAndRoleTypes(roleTypes)
 
     // Member Roles:
     override fun getMemberRoles(memberId: UUID) = memberDao.findMemberRolesByMemberId(memberId)

@@ -47,7 +47,7 @@
     <!--Подтверждения-->
     <!--отмена изменений-->
     <string name="dlg_confirm_cancel_changes_settings">Изменённые настройки не сохранятся</string>
-    <string name="dlg_confirm_cancel_database_send">Передача данных будет прервана</string>
+    <string name="dlg_confirm_cancel_database_send">Передача данных будет отменена</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->

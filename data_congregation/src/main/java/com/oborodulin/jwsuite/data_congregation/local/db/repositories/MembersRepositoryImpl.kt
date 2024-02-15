@@ -17,6 +17,7 @@ import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCongr
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberMovementCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberRoleCsv
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -44,6 +45,11 @@ class MembersRepositoryImpl @Inject constructor(
 
     override fun getAllByGroup(groupId: UUID, isService: Boolean) =
         localMemberDataSource.getGroupMembers(groupId, isService)
+            .map(memberMappers.memberViewListToMembersListMapper::map)
+
+    // Member by Roles:
+    override fun getAllByRoles(roleTypes: List<MemberRoleType>) =
+        localMemberDataSource.getMembersByRoles(roleTypes)
             .map(memberMappers.memberViewListToMembersListMapper::map)
 
     // Member Roles:

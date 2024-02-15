@@ -14,7 +14,7 @@ import java.util.UUID
 
 @Entity(
     tableName = EventEntity.TABLE_NAME,
-    indices = [Index(value = ["eventType", "eventTime", "isWorker"], unique = true)]
+    indices = [Index(value = ["eventType", "eventTime", "isManual"], unique = true)]
 )
 @Serializable
 data class EventEntity(
@@ -23,9 +23,9 @@ data class EventEntity(
     val eventType: EventType,
     @Serializable(with = OffsetDateTimeSerializer::class)
     val eventTime: OffsetDateTime = OffsetDateTime.now(),
-    val isWorker: Boolean
+    val isManual: Boolean,
+    val isSuccess: Boolean
 ) : BaseEntity() {
-
     companion object {
         const val TABLE_NAME = "events"
 
@@ -33,11 +33,11 @@ data class EventEntity(
             eventId: UUID = UUID.randomUUID(),
             eventType: EventType,
             eventTime: OffsetDateTime = OffsetDateTime.now(),
-            isWorker: Boolean
+            isManual: Boolean, isSuccess: Boolean
         ) = EventEntity(
-            eventId = eventId, eventType = eventType, eventTime = eventTime, isWorker = isWorker
+            eventId = eventId, eventType = eventType, eventTime = eventTime, isManual = isManual,
+            isSuccess = isSuccess
         )
-
     }
 
     override fun id() = this.eventId
@@ -45,7 +45,7 @@ data class EventEntity(
     override fun key(): Int {
         var result = eventType.hashCode()
         result = result * 31 + eventTime.hashCode()
-        result = result * 31 + isWorker.hashCode()
+        result = result * 31 + isManual.hashCode()
         return result
     }
 
@@ -54,7 +54,7 @@ data class EventEntity(
         str.append("Event Entity: ")
             .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(eventTime)).append(" '")
             .append(eventType).append("' ")
-            .append(" [isWorker = ").append(isWorker)
+            .append(" [isWorker = ").append(isManual)
             .append("] eventId = ").append(eventId)
         return str.toString()
     }

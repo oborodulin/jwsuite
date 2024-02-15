@@ -19,6 +19,9 @@ object MainDestinations {
     const val ROUTE_DASHBOARD_SETTINGS = "dashboardSettings"
     const val ROUTE_TERRITORY_SETTINGS = "territorySettings"
 
+    //Database:
+    const val ROUTE_DATABASE_SEND = "databaseSend"
+
     //GEO:
     const val ROUTE_REGION = "region/?%s"
     const val ROUTE_REGION_DISTRICT = "regionDistrict/?%s"

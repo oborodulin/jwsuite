@@ -2,8 +2,11 @@ package com.oborodulin.jwsuite.data.di
 
 import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data.local.db.dao.DatabaseDao
+import com.oborodulin.jwsuite.data.local.db.dao.EventDao
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalDatabaseDataSource
+import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalEventDataSource
 import com.oborodulin.jwsuite.data.sources.local.LocalDatabaseDataSourceImpl
+import com.oborodulin.jwsuite.data.sources.local.LocalEventDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -20,4 +23,10 @@ object DatabaseLocalDataSourcesModule {
     fun provideDatabaseDataSource(
         databaseDao: DatabaseDao, @IoDispatcher dispatcher: CoroutineDispatcher
     ): LocalDatabaseDataSource = LocalDatabaseDataSourceImpl(databaseDao, dispatcher)
+
+    @Singleton
+    @Provides
+    fun provideLocalEventDataSource(
+        eventDao: EventDao, @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalEventDataSource = LocalEventDataSourceImpl(eventDao, dispatcher)
 }

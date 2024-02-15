@@ -10,7 +10,6 @@ import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oborodulin.home.common.ui.components.screen.DialogScreenComponent
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation_dashboard.R
 import com.oborodulin.jwsuite.presentation_dashboard.ui.components.SendButtonComponent
@@ -23,10 +22,9 @@ private const val TAG = "Presentation_Dashboard.DatabaseSendScreen"
 @Composable
 fun DatabaseSendScreen(
     viewModel: DatabaseViewModelImpl = hiltViewModel(),
-    memberRoleInput: NavigationInput.MemberRoleInput? = null,
     defTopBarActions: @Composable RowScope.() -> Unit = {}
 ) {
-    Timber.tag(TAG).d("DatabaseSendScreen(...) called: memberRoleInput = %s", memberRoleInput)
+    Timber.tag(TAG).d("DatabaseSendScreen(...) called")
     val appState = LocalAppState.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() }
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }

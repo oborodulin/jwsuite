@@ -31,9 +31,19 @@ class SendDataUseCase(
     private val databaseRepository: DatabaseRepository
 ) : UseCase<SendDataUseCase.Request, SendDataUseCase.Response>(configuration) {
     override fun process(request: Request) = flow {
+        Timber.tag(TAG).d(
+            "CSV Data Transmission -> process(...) called: request.memberId = %s; request.memberRoleType = %s",
+            request.memberId, request.memberRoleType
+        )
         // data assigned to member
-        val username = request.memberId?.let {
-            membersRepository.get(it).first().pseudonym
+        val username = when (request.memberId) {
+            null -> when (request.memberRoleType) {
+                null -> null
+                else -> membersRepository.getAllByRoles(listOf(request.memberRoleType)).first()
+                    .firstOrNull()?.pseudonym
+            }
+
+            else -> membersRepository.get(request.memberId).first().pseudonym
         } ?: sessionManagerRepository.username().first() // data from owner to roled member
         Timber.tag(TAG).d("CSV Data Transmission: username = %s", username)
         val transferObjects = membersRepository.getMemberTransferObjects(username.orEmpty()).first()

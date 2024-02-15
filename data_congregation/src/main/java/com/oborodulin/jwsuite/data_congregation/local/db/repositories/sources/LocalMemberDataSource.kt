@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleTransfe
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -24,6 +25,9 @@ interface LocalMemberDataSource {
         congregationId: UUID? = null,
         isService: Boolean
     ): Flow<List<MemberView>>
+
+    // Member by Roles:
+    fun getMembersByRoles(roleTypes: List<MemberRoleType> = emptyList()): Flow<List<MemberView>>
 
     // Member Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRoleView>>

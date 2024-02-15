@@ -12,6 +12,7 @@
     <string name="nav_item_dashboard_settings">Настройки</string>
     <string name="nav_item_territory_settings">Настройки участков</string>
     <string name="nav_item_housing">Дома</string>
+    <string name="nav_item_database_send">Отправка данных</string>
     <!--дополнительная-->
     <string name="nav_item_congregation">Собрание</string>
     <string name="nav_item_group">Группа</string>

@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data.local.db.repositories
 
 import android.content.Context
 import com.oborodulin.jwsuite.data.local.db.DatabaseVersion
+import com.oborodulin.jwsuite.data.local.db.entities.EventEntity
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalDatabaseDataSource
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
@@ -160,6 +161,7 @@ class DatabaseRepositoryImpl @Inject constructor(
 
         fun dataTableDescriptions(ctx: Context) = mapOf(
             AppSettingEntity.TABLE_NAME to ctx.resources.getString(R.string.app_setting_entity_desc),
+            EventEntity.TABLE_NAME to ctx.resources.getString(R.string.event_entity_desc),
             // География
             GeoRegionEntity.TABLE_NAME to ctx.resources.getString(R.string.geo_region_entity_desc),
             GeoRegionTlEntity.TABLE_NAME to ctx.resources.getString(R.string.geo_region_tl_entity_desc),

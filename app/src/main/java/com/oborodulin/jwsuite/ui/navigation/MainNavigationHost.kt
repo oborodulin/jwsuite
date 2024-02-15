@@ -18,6 +18,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.FavoriteCongregationV
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.CongregatingScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupScreen
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
@@ -164,7 +165,7 @@ fun MainNavigationHost(
             )
             //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
             //val membersListViewModel = hiltViewModel<MembersListViewModelImpl>(it.rememberParentEntry(appState.barNavController))
-            DatabaseSendScreen(
+            MemberRoleScreen(
                 //sharedViewModel = sharedViewModel,
                 memberRoleInput = NavRoutes.MemberRole.fromEntry(it),
                 defTopBarActions = defTopBarActions/*,
@@ -646,6 +647,17 @@ fun MainNavigationHost(
                 NavRoutes.TerritorySettings.arguments.firstOrNull()
             )
             TerritorySettingScreen(defTopBarActions = defTopBarActions)
+        }
+
+        // DATABASE Nav Graph:
+        composable(
+            route = NavRoutes.DatabaseSend.route, arguments = NavRoutes.DatabaseSend.arguments
+        ) {
+            Timber.tag(TAG).d(
+                "Navigation Graph: to DatabaseSendScreen [route = '%s', arguments = '%s']",
+                it.destination.route, NavRoutes.DatabaseSend.arguments.firstOrNull()
+            )
+            DatabaseSendScreen(defTopBarActions = defTopBarActions)
         }
 
         /*congregationNavGraph(

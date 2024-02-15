@@ -25,6 +25,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.domain.types.MemberType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
@@ -182,8 +183,7 @@ interface MemberDao {
     """
     )
     fun findByGroupIdAndIsServiceMark(
-        groupId: UUID,
-        isService: Boolean = false
+        groupId: UUID, isService: Boolean = false
     ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
@@ -208,9 +208,25 @@ interface MemberDao {
     fun findDistinctByCongregationIdAndGroupIdIsNullAndIsServiceMark(
         congregationId: UUID? = null, isService: Boolean = false
     ) = findByCongregationIdAndGroupIdIsNullAndIsServiceMark(
-        congregationId,
-        isService
+        congregationId, isService
     ).distinctUntilChanged()
+
+    //----------------------------- Members by Roles:
+    // https://stackoverflow.com/questions/12503120/how-to-do-nulls-last-in-sqlite
+    @Query(
+        """
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv JOIN ${MemberActualRoleView.VIEW_NAME} marv 
+            ON mv.memberId = marv.mrMembersId AND marv.roleType IN (:roleTypes)
+        JOIN ${MemberCongregationCrossRefEntity.TABLE_NAME} cm ON cm.mcMembersId = mv.memberId 
+        JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = cm.mcCongregationsId
+    ORDER BY CASE marv.roleExpiredDate WHEN NULL THEN 0 ELSE 1 END, strftime($DB_FRACT_SEC_TIME, marv.roleExpiredDate)        
+        """
+    )
+    fun findByFavoriteCongregationAndRoleTypes(roleTypes: List<MemberRoleType> = emptyList()): Flow<List<MemberView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByFavoriteCongregationAndRoleTypes(roleTypes: List<MemberRoleType>) =
+        findByFavoriteCongregationAndRoleTypes(roleTypes).distinctUntilChanged()
 
     //----------------------------- Member Roles:
     @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE memberRoleId = :memberRoleId")

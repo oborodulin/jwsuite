@@ -35,6 +35,7 @@
 
     <!--СУЩНОСТИ ПРИЛОЖЕНИЯ-->
     <string name="app_setting_entity_desc">Настройки</string>
+    <string name="event_entity_desc">События</string>
     <!--География-->
     <string name="geo_region_entity_desc">Области</string>
     <string name="geo_region_tl_entity_desc">Области</string>
@@ -71,6 +72,13 @@
     <string name="territory_member_cross_ref_entity_desc">Назначения участков</string>
     <string name="territory_member_report_entity_desc">Отчёты по участкам</string>
     <string name="territory_street_entity_desc">Улицы участков</string>
+
+    <!--СОБЫТИЯ ПРИЛОЖЕНИЯ-->
+    <string name="backup_event_name">Резервирование данных</string>
+    <string name="restore_event_name">Восстановление данных</string>
+    <string name="sync_data_event_name">Синхронизация данных</string>
+    <string name="send_data_event_name">Отправка данных</string>
+    <string name="receive_data_event_name">Получение данных</string>
 
     <!--Локализация -->
     <string name="lang_name_ru">Русский</string>

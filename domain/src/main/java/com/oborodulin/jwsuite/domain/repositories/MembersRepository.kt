@@ -10,6 +10,7 @@ import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCongr
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberMovementCsv
 import com.oborodulin.jwsuite.domain.services.csv.model.congregation.MemberRoleCsv
+import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -23,6 +24,9 @@ interface MembersRepository : CsvTransferableRepo {
     // Members by Groups:
     fun getAllByFavoriteCongregationGroup(isService: Boolean = false): Flow<List<Member>>
     fun getAllByGroup(groupId: UUID, isService: Boolean = false): Flow<List<Member>>
+
+    // Member by Roles:
+    fun getAllByRoles(roleTypes: List<MemberRoleType>): Flow<List<Member>>
 
     // Member Roles:
     fun getMemberRoles(memberId: UUID): Flow<List<MemberRole>>

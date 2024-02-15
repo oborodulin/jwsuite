@@ -3,11 +3,14 @@ package com.oborodulin.jwsuite.domain.usecases.db
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
+import com.oborodulin.jwsuite.domain.model.Event
 import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
+import com.oborodulin.jwsuite.domain.repositories.EventsRepository
 import com.oborodulin.jwsuite.domain.services.ExportService
 import com.oborodulin.jwsuite.domain.services.Exportable
 import com.oborodulin.jwsuite.domain.services.Exports
 import com.oborodulin.jwsuite.domain.services.csv.CsvConfig
+import com.oborodulin.jwsuite.domain.types.EventType
 import com.oborodulin.jwsuite.domain.util.Constants.BACKUP_PATH
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -27,7 +30,8 @@ class CsvExportUseCase(
     private val ctx: Context,
     configuration: Configuration,
     private val exportService: ExportService,
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val eventsRepository: EventsRepository
 ) : UseCase<CsvExportUseCase.Request, CsvExportUseCase.Response>(configuration) {
     override fun process(request: Request) = flow {
         val dataTables = databaseRepository.orderedDataTableNames().first()
@@ -82,6 +86,10 @@ class CsvExportUseCase(
                 }
             }
         }
+        val backupEvent = eventsRepository.save(
+            Event(eventType = EventType.BACKUP, isManual = true, isSuccess = true)
+        ).first()
+        Timber.tag(TAG).d("CSV Exporting: backupEvent = %s", backupEvent)
         emit(Response(isDone = true))
     }
 

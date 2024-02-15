@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,6 +23,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CON
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARD_SETTINGS
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DATABASE_SEND
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ENTRANCE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_FLOOR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GEO
@@ -231,7 +233,7 @@ sealed class NavRoutes(
         titleResId = R.string.nav_item_login
     )
 
-    // Service Navigation:
+    // SERVICES:
     data object Geo : NavRoutes(
         route = ROUTE_GEO,
         iconPainterResId = R.drawable.ic_geo_24,
@@ -255,6 +257,13 @@ sealed class NavRoutes(
         route = ROUTE_TERRITORY_SETTINGS,
         iconImageVector = Icons.Outlined.Settings,
         titleResId = R.string.nav_item_territory_settings
+    )
+
+    // Database Navigation:
+    data object DatabaseSend : NavRoutes(
+        route = ROUTE_DATABASE_SEND,
+        iconImageVector = Icons.Outlined.Send,
+        titleResId = R.string.nav_item_database_send
     )
 
     // Main Navigation:
