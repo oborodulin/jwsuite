@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.territoring.setting
 
 import com.oborodulin.home.common.ui.components.field.util.Validatable
-import com.oborodulin.jwsuite.presentation.R
+import com.oborodulin.jwsuite.presentation_territory.R
 
 private const val TAG = "Territoring.TerritorySettingInputValidator"
 

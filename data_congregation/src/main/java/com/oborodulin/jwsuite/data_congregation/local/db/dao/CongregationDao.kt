@@ -31,7 +31,7 @@ interface CongregationDao {
     @Query(
         """
     SELECT c.* FROM ${CongregationEntity.TABLE_NAME} c LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv
-        ON c.congregationId = mcv.mcCongregationsId AND mcv.pseudonym = :username
+        ON c.congregationId = mcv.mcCongregationsId AND mcv.memberPseudonym = :username
     WHERE (:username IS NULL OR mcv.mcCongregationsId IS NOT NULL) AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
     """
     )
@@ -43,8 +43,8 @@ interface CongregationDao {
         """
     SELECT ct.* FROM ${CongregationTotalEntity.TABLE_NAME} ct JOIN ${CongregationEntity.TABLE_NAME} c
             ON ct.ctlCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON ct.ctlCongregationsId = mcv.mcCongregationsId AND mcv.pseudonym = :username
-    WHERE (:username IS NULL OR mcv.mcCongregationsId IS NOT NULL)
+        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mlcv ON ct.ctlCongregationsId = mlcv.mcCongregationsId AND mlcv.memberPseudonym = :username
+    WHERE (:username IS NULL OR mlcv.mcCongregationsId IS NOT NULL)
     """
     )
     fun findTotalEntitiesByUsernameAndFavoriteMark(

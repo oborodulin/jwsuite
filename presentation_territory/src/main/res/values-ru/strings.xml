@@ -219,6 +219,12 @@
     <string name="territory_delivery_date_empty_error">Укажите, пожалуйста, дату обработки участка!</string>
     <!--формы улицы участка-->
     <string name="territory_street_est_houses_empty_error">Укажите, пожалуйста, кол-во добавляемых домов!</string>
+    <!--формы настроек участков-->
+    <string name="territory_processing_period_empty_error">Укажите, пожалуйста, период обработки всех участков</string>
+    <string name="territory_at_hand_period_empty_error">Укажите, пожалуйста, период обработки одного участка</string>
+    <string name="territory_idle_period_empty_error">Укажите, пожалуйста, период отстоя участка</string>
+    <string name="territory_rooms_limit_empty_error">Укажите, пожалуйста, макс. кол-во квартир участка</string>
+    <string name="territory_max_rooms_empty_error">Укажите, пожалуйста, макс. кол-во квартир в доме</string>
     <!--формы дома-->
     <string name="house_num_empty_error">Укажите, пожалуйста, № дома!</string>
     <string name="building_type_empty_error">Укажите, пожалуйста, тип строения!</string>

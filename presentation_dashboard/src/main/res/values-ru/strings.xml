@@ -53,11 +53,6 @@
     <!--общие-->
     <!--формы настроек-->
     <string name="database_backup_period_empty_error">Укажите, пожалуйста, период резервирования данных</string>
-    <string name="territory_processing_period_empty_error">Укажите, пожалуйста, период обработки всех участков</string>
-    <string name="territory_at_hand_period_empty_error">Укажите, пожалуйста, период обработки одного участка</string>
-    <string name="territory_idle_period_empty_error">Укажите, пожалуйста, период ериод отстоя участка</string>
-    <string name="territory_rooms_limit_empty_error">Укажите, пожалуйста, макс. кол-во квартир участка</string>
-    <string name="territory_max_rooms_empty_error">Укажите, пожалуйста, макс. кол-во квартир в доме</string>
     <!--формы передачи данных-->
     <string name="receiver_member_empty_error">Укажите, пожалуйста, получателя данных</string>
 

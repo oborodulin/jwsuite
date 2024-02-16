@@ -48,12 +48,12 @@ interface MemberDao {
         JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mc.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
         LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
-                                                            AND mcv.pseudonym = :username AND m.pseudonym = mcv.pseudonym
+                                                            AND mcv.memberPseudonym = :username AND m.pseudonym = mcv.memberPseudonym
     WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
     UNION ALL            
     SELECT m.* FROM ${MemberEntity.TABLE_NAME} m JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON m.memberId = msrv.mrMembersId 
         JOIN ${MemberLastCongregationView.VIEW_NAME} mcm ON m.memberId = mcm.mcMembersId
-        JOIN ${MemberLastCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.memberPseudonym = :username
     """
     )
     fun findEntitiesByUsernameAndFavoriteMark(
@@ -64,7 +64,7 @@ interface MemberDao {
         """
     SELECT mccr.* FROM ${MemberCongregationCrossRefEntity.TABLE_NAME} mccr JOIN ${CongregationEntity.TABLE_NAME} c 
             ON mccr.mcCongregationsId = c.congregationId AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
-        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mccr.memberCongregationId = mcv.memberCongregationId AND mcv.pseudonym = :username 
+        LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mccr.memberCongregationId = mcv.memberCongregationId AND mcv.memberPseudonym = :username 
     WHERE (:username IS NULL OR mcv.memberCongregationId IS NOT NULL)
      """
     )
@@ -89,14 +89,14 @@ interface MemberDao {
         JOIN ${CongregationEntity.TABLE_NAME} c ON mc.mcCongregationsId = c.congregationId
                                                     AND c.isFavorite = (CASE WHEN :byFavorite = $DB_TRUE THEN $DB_TRUE ELSE c.isFavorite END)
         LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON mc.memberCongregationId = mcv.memberCongregationId 
-                                                            AND mcv.pseudonym = :username AND m.pseudonym = mcv.pseudonym
+                                                            AND mcv.memberPseudonym = :username AND m.pseudonym = mcv.memberPseudonym
         LEFT JOIN ${MemberActualRoleView.VIEW_NAME} marv ON mr.memberRoleId = marv.memberRoleId
     WHERE (:username IS NULL OR (mcv.memberCongregationId IS NOT NULL AND marv.memberRoleId IS NOT NULL))
         AND (:byFavorite = $DB_FALSE OR marv.memberRoleId IS NOT NULL)
     UNION ALL            
     SELECT mr.* FROM ${MemberRoleEntity.TABLE_NAME} mr JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON mr.mrMembersId = msrv.mrMembersId 
         JOIN ${MemberLastCongregationView.VIEW_NAME} mcm ON msrv.mrMembersId = mcm.mcMembersId
-        JOIN ${MemberLastCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.pseudonym = :username
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mcg ON mcm.mcCongregationsId = mcg.mcCongregationsId AND mcg.memberPseudonym = :username
     """
     )
     fun findMemberRoleEntitiesByUsernameAndFavoriteMark(

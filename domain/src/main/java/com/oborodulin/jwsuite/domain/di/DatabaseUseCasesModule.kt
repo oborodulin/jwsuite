@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.di
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
+import com.oborodulin.jwsuite.domain.repositories.EventsRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.services.ExportService
@@ -28,8 +29,10 @@ object DatabaseUseCasesModule {
         @ApplicationContext ctx: Context,
         configuration: UseCase.Configuration,
         exportService: ExportService,
-        databaseRepository: DatabaseRepository
-    ): CsvExportUseCase = CsvExportUseCase(ctx, configuration, exportService, databaseRepository)
+        databaseRepository: DatabaseRepository,
+        eventsRepository: EventsRepository
+    ): CsvExportUseCase =
+        CsvExportUseCase(ctx, configuration, exportService, databaseRepository, eventsRepository)
 
     @Singleton
     @Provides

@@ -34,7 +34,7 @@ interface GroupDao {
     UNION ALL            
     SELECT g.groupId, g.groupNum, g.gCongregationsId FROM ${GroupEntity.TABLE_NAME} g
         JOIN ${MemberServiceRoleView.VIEW_NAME} msrv ON g.groupId = msrv.mGroupsId
-        JOIN ${MemberLastCongregationView.VIEW_NAME} mcv ON g.gCongregationsId = mcv.mcCongregationsId AND mcv.pseudonym = :username
+        JOIN ${MemberLastCongregationView.VIEW_NAME} mlcv ON g.gCongregationsId = mlcv.mcCongregationsId AND mlcv.memberPseudonym = :username
     GROUP BY groupId, groupNum, gCongregationsId
     """
     )

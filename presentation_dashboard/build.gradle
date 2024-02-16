@@ -50,7 +50,9 @@ android {
 
 dependencies {
     implementation project(':common')
+    // data modules: for resources
     implementation project(':data_geo')
+    implementation project(':data_congregation')
     implementation project(':domain')
     implementation project(':presentation')
     implementation project(':presentation_geo')
