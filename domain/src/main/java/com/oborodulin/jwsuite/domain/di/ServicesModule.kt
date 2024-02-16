@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.di
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
+import com.oborodulin.jwsuite.domain.repositories.EventsRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalitiesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalityDistrictsRepository
@@ -37,6 +38,7 @@ object ServicesModule {
     @Provides
     fun providesCsvTransferableRepos(
         appSettingsRepository: AppSettingsRepository,
+        eventsRepository: EventsRepository,
         // Congregations
         congregationsRepository: CongregationsRepository,
         groupsRepository: GroupsRepository,
@@ -64,6 +66,7 @@ object ServicesModule {
     ): List<CsvTransferableRepo> {
         return listOf(
             appSettingsRepository,
+            eventsRepository,
             // Congregations
             congregationsRepository,
             groupsRepository,
@@ -91,15 +94,18 @@ object ServicesModule {
         )
     }
 
+    // https://github.com/google/dagger/issues/1631
+    // https://github.com/google/dagger/issues/900
+    // https://stackoverflow.com/questions/43141740/dagger-2-multibindings-with-kotlin/43149382#43149382
     // Export:
     @Singleton
     @Provides
-    fun provideExportService(csvRepositories: List<CsvTransferableRepo>): ExportService =
+    fun provideExportService(csvRepositories: List<@JvmSuppressWildcards CsvTransferableRepo>): ExportService =
         ExportService(csvRepositories)
 
     // Import:
     @Singleton
     @Provides
-    fun provideImportService(csvRepositories: List<CsvTransferableRepo>): ImportService =
+    fun provideImportService(csvRepositories: List<@JvmSuppressWildcards CsvTransferableRepo>): ImportService =
         ImportService(csvRepositories)
 }

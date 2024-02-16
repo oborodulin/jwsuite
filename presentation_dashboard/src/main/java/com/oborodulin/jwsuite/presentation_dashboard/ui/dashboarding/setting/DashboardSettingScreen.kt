@@ -34,10 +34,10 @@ fun DashboardSettingScreen(
     val appState = LocalAppState.current
     val session = LocalSession.current
     val upNavigation: () -> Unit = { appState.mainNavigateUp() }
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardSettingScreen -> LaunchedEffect(Unit)")
         appSettingViewModel.submitAction(DashboardSettingUiAction.Load)
-    }
+    }*/
     var topBarActions: @Composable RowScope.() -> Unit by remember { mutableStateOf(@Composable {}) }
     val onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit = { topBarActions = it }
     var actionBarSubtitle by rememberSaveable { mutableStateOf("") }

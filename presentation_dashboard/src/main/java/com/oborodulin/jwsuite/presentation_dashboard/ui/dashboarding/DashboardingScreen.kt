@@ -84,6 +84,7 @@ fun DashboardingScreen(
     Timber.tag(TAG).d("DashboardingScreen(...) called")
     val appState = LocalAppState.current
     val session = LocalSession.current
+    //Timber.tag(TAG).d("DashboardingScreen: session = %s", session)
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardingScreen -> LaunchedEffect()")
         viewModel.submitAction(DashboardingUiAction.Init)
@@ -143,28 +144,24 @@ fun DashboardingScreen(
                                 )
                             }
                             dashboardingUi.favoriteCongregation?.let { favoriteCongregation ->
-                                when {
-                                    session.containsRole(MemberRoleType.REPORTS) ->
-                                        CongregationSection(
-                                            navController = appState.mainNavController,
-                                            congregation = favoriteCongregation,
-                                            congregationTotals = dashboardingUi.congregationTotals
-                                        )
-
-                                    session.containsRoles(
-                                        listOf(
-                                            MemberRoleType.REPORTS,
-                                            MemberRoleType.TERRITORIES
-                                        )
-                                    ) ->
-                                        TerritorySection(
-                                            navController = appState.mainNavController,
-                                            congregation = favoriteCongregation,
-                                            territoryTotals = dashboardingUi.territoryTotals
-                                        )
-
-                                    else -> {}
+                                if (session.containsRole(MemberRoleType.REPORTS)) {
+                                    CongregationSection(
+                                        navController = appState.mainNavController,
+                                        congregation = favoriteCongregation,
+                                        congregationTotals = dashboardingUi.congregationTotals
+                                    )
                                 }
+                                if (session.containsRoles(
+                                        listOf(MemberRoleType.REPORTS, MemberRoleType.TERRITORIES)
+                                    )
+                                ) {
+                                    TerritorySection(
+                                        navController = appState.mainNavController,
+                                        congregation = favoriteCongregation,
+                                        territoryTotals = dashboardingUi.territoryTotals
+                                    )
+                                }
+
                             }
                         }
                     }
@@ -317,7 +314,7 @@ fun CongregationSection(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .padding(horizontal = 4.dp, vertical = 4.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column {
@@ -381,7 +378,7 @@ fun TerritorySection(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .padding(horizontal = 4.dp, vertical = 4.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         TotalTitle(
