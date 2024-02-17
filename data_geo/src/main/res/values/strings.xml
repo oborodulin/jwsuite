@@ -1,16 +1,27 @@
 <resources>
     <!--Значения полей данных по-умолчанию -->
     <!--Области -->
+    <!--по-умолчанию-->
+    <string name="def_reg_code">999</string>
+    <string name="def_reg_name">Область #1</string>
+    <!--тестовые-->
     <string name="def_reg_donetsk_code">80</string>
     <string name="def_reg_donetsk_name">Донецкая</string>
     <string name="def_reg_luhansk_code">81</string>
     <string name="def_reg_luhansk_name">Луганская</string>
+
     <!--Районы областей -->
     <string name="def_reg_maryinsky_short_name">МРН</string>
     <string name="def_reg_maryinsky_name">Марьинский</string>
     <string name="def_reg_donetsky_short_name">ДОН</string>
     <string name="def_reg_donetsky_name">Донецкий</string>
+
     <!--Населённые пункты (города, пгт, посёлки и пр.) -->
+    <!--по-умолчанию-->
+    <string name="def_locality_code">9999</string>
+    <string name="def_locality_short_name">ГРД</string>
+    <string name="def_locality_name">Город #1</string>
+    <!--тестовые-->
     <string name="def_donetsk_code">7856</string>
     <string name="def_donetsk_short_name">ДОН</string>
     <string name="def_donetsk_name">Донецк</string>

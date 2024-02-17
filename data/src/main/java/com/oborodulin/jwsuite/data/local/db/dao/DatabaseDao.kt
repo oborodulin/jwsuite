@@ -14,8 +14,9 @@ interface DatabaseDao {
     @RawQuery
     fun dataTables(supportSQLiteQuery: SupportSQLiteQuery): List<String>
     fun findDataTables(): Flow<List<String>> {
+        // SQLiteException: no such table: sqlite_schema: https://github.com/mattn/go-sqlite3/issues/1003
         val query = """
-    SELECT name AS tableName FROM sqlite_schema 
+    SELECT name AS tableName FROM sqlite_master 
     WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'android_%' AND name NOT LIKE '%master%'
     ORDER BY rootpage
     """

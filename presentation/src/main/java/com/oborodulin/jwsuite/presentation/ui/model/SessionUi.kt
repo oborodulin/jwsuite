@@ -42,7 +42,11 @@ data class SessionUi(
     val userRoles: List<MemberRoleType> get() = roles.map { it.roleType }
     fun containsRole(roleType: MemberRoleType) = userRoles.contains(roleType)
 
-    fun containsRoles(roleTypes: List<MemberRoleType>) = userRoles.containsAll(roleTypes)
+    fun containsAllRoles(roleTypes: List<MemberRoleType> = emptyList()) =
+        userRoles.containsAll(roleTypes)
+
+    fun containsAnyRoles(roleTypes: List<MemberRoleType> = emptyList()) =
+        userRoles.any { roleTypes.contains(it) }
 
     fun existsAnyRoleExcept(roleType: MemberRoleType) = userRoles.any { it != roleType }
 

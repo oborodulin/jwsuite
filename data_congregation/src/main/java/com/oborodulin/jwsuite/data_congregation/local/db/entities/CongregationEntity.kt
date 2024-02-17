@@ -54,6 +54,14 @@ data class CongregationEntity(
             territoryMark = territoryMark, isFavorite = isFavorite
         )
 
+        fun defCongregation(ctx: Context, localityId: UUID) = defaultCongregation(
+            localityId = localityId,
+            congregationNum = ctx.resources.getString(R.string.def_congregation_num),
+            congregationName = ctx.resources.getString(R.string.def_congregation_name),
+            territoryMark = ctx.resources.getString(R.string.def_congregation_card_mark),
+            isFavorite = true
+        )
+
         fun favoriteCongregation(ctx: Context, localityId: UUID) = defaultCongregation(
             localityId = localityId,
             congregationNum = ctx.resources.getString(R.string.def_congregation1_num),

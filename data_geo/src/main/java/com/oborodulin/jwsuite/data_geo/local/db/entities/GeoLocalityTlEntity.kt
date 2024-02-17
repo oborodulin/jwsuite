@@ -47,31 +47,37 @@ data class GeoLocalityTlEntity(
             localityShortName = localityShortName, localityName = localityName
         )
 
-        fun donetskLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
+        private fun defLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
+            localityShortName = ctx.resources.getString(R.string.def_locality_short_name),
+            localityName = ctx.resources.getString(R.string.def_locality_name),
+            localityId = localityId
+        )
+
+        private fun donetskLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
             localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
             localityName = ctx.resources.getString(R.string.def_donetsk_name),
             localityId = localityId
         )
 
-        fun makeevkaLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
+        private fun makeevkaLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
             localityShortName = ctx.resources.getString(R.string.def_makeevka_short_name),
             localityName = ctx.resources.getString(R.string.def_makeevka_name),
             localityId = localityId
         )
 
-        fun luganskLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
+        private fun luganskLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
             localityShortName = ctx.resources.getString(R.string.def_luhansk_short_name),
             localityName = ctx.resources.getString(R.string.def_luhansk_name),
             localityId = localityId
         )
 
-        fun marinkaLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
+        private fun marinkaLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
             localityShortName = ctx.resources.getString(R.string.def_marinka_short_name),
             localityName = ctx.resources.getString(R.string.def_marinka_name),
             localityId = localityId
         )
 
-        fun mospinoLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
+        private fun mospinoLocalityTl(ctx: Context, localityId: UUID) = defaultLocalityTl(
             localityShortName = ctx.resources.getString(R.string.def_mospino_short_name),
             localityName = ctx.resources.getString(R.string.def_mospino_name),
             localityId = localityId
@@ -79,6 +85,10 @@ data class GeoLocalityTlEntity(
 
         fun localityTl(ctx: Context, localityCode: String, localityId: UUID) =
             when (localityCode) {
+                ctx.resources.getString(R.string.def_locality_code) -> defLocalityTl(
+                    ctx, localityId
+                )
+
                 ctx.resources.getString(R.string.def_donetsk_code) -> donetskLocalityTl(
                     ctx, localityId
                 )

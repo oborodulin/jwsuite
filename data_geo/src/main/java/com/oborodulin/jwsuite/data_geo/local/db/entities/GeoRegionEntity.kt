@@ -28,6 +28,10 @@ data class GeoRegionEntity(
             regionId: UUID = UUID.randomUUID(), regionCode: String
         ) = GeoRegionEntity(regionId = regionId, regionCode = regionCode)
 
+        fun defRegion(ctx: Context) = defaultRegion(
+            regionCode = ctx.resources.getString(R.string.def_reg_code)
+        )
+
         fun donetskRegion(ctx: Context) = defaultRegion(
             regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code)
         )

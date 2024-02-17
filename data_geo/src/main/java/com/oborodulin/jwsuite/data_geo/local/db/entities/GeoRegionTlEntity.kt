@@ -46,16 +46,25 @@ data class GeoRegionTlEntity(
             regionsId = regionId
         )
 
-        fun donetskRegionTl(ctx: Context, regionId: UUID) = defaultRegionTl(
+        private fun defRegionTl(ctx: Context, regionId: UUID) = defaultRegionTl(
+            regionName = ctx.resources.getString(R.string.def_reg_name), regionId = regionId
+        )
+
+        private fun donetskRegionTl(ctx: Context, regionId: UUID) = defaultRegionTl(
             regionName = ctx.resources.getString(R.string.def_reg_donetsk_name), regionId = regionId
         )
 
-        fun luganskRegionTl(ctx: Context, regionId: UUID) = defaultRegionTl(
+        private fun luganskRegionTl(ctx: Context, regionId: UUID) = defaultRegionTl(
             regionName = ctx.resources.getString(R.string.def_reg_luhansk_name), regionId = regionId
         )
 
         fun regionTl(ctx: Context, regionCode: String, regionId: UUID) =
             when (regionCode) {
+                ctx.resources.getString(R.string.def_reg_code) -> defRegionTl(
+                    ctx,
+                    regionId
+                )
+
                 ctx.resources.getString(R.string.def_reg_donetsk_code) -> donetskRegionTl(
                     ctx,
                     regionId

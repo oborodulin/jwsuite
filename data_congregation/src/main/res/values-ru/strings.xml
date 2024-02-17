@@ -1,5 +1,9 @@
 <resources>
     <!--Значения полей данных по-умолчанию -->
+    <!--Собрание по-умолчанию-->
+    <string name="def_congregation_num">1</string>
+    <string name="def_congregation_name">Собрание #1</string>
+    <string name="def_congregation_card_mark">C</string>
     <!--Собрание 1-->
     <string name="def_congregation1_num">1</string>
     <string name="def_congregation1_name">Хорошее настроение</string>

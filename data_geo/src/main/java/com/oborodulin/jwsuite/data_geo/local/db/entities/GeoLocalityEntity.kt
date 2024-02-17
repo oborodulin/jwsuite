@@ -54,6 +54,11 @@ data class GeoLocalityEntity(
             localityCode = localityCode, localityType = localityType
         )
 
+        fun defLocality(ctx: Context, regionId: UUID) = defaultLocality(
+            regionId = regionId,
+            localityCode = ctx.resources.getString(R.string.def_locality_code),
+            localityType = LocalityType.CITY
+        )
         fun donetskLocality(ctx: Context, regionId: UUID) = defaultLocality(
             regionId = regionId,
             localityCode = ctx.resources.getString(R.string.def_donetsk_code),

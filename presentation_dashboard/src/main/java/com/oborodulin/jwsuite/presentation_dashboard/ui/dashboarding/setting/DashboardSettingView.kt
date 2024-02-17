@@ -113,6 +113,7 @@ fun DashboardSettingView(
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardSettingView -> LaunchedEffect()")
+        databaseViewModel.submitAction(DatabaseUiAction.Init)
         events.collect { event ->
             if (LOG_FLOW_INPUT) Timber.tag(TAG)
                 .d("IF# Collect input events flow: %s", event.javaClass.name)
@@ -239,7 +240,7 @@ fun DashboardSettingView(
                 ), rows = transferObjects
             )
         }
-        val isSendButtonShow = session.containsRoles(
+        val isSendButtonShow = session.containsAnyRoles(
             listOf(
                 MemberRoleType.TERRITORIES,
                 MemberRoleType.BILLS
@@ -284,30 +285,6 @@ fun DashboardSettingView(
                 )
             }
             Column {
-                TextFieldComponent(
-                    modifier = Modifier
-                        .focusRequester(focusRequesters[DashboardSettingFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
-                        .onFocusChanged { focusState ->
-                            dashboardSettingViewModel.onTextFieldFocusChanged(
-                                focusedField = DashboardSettingFields.DATABASE_BACKUP_PERIOD,
-                                isFocused = focusState.isFocused
-                            )
-                        },
-                    labelResId = R.string.database_backup_period_hint,
-                    keyboardOptions = remember {
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        )
-                    },
-                    inputWrapper = databaseBackupPeriod,
-                    onValueChange = {
-                        dashboardSettingViewModel.onTextFieldEntered(
-                            DashboardSettingInputEvent.DatabaseBackupPeriod(it)
-                        )
-                    },
-                    onImeKeyAction = dashboardSettingViewModel::moveFocusImeAction
-                )
                 BackupButtonComponent(
                     enabled = true,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -328,6 +305,7 @@ fun DashboardSettingView(
                         if (databaseUi.isDone.not()) {
                             Text(
                                 text = databaseUi.entityDesc,
+                                fontSize = 14.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -342,6 +320,30 @@ fun DashboardSettingView(
                 }
             }
         }
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[DashboardSettingFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    dashboardSettingViewModel.onTextFieldFocusChanged(
+                        focusedField = DashboardSettingFields.DATABASE_BACKUP_PERIOD,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.database_backup_period_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                )
+            },
+            inputWrapper = databaseBackupPeriod,
+            onValueChange = {
+                dashboardSettingViewModel.onTextFieldEntered(
+                    DashboardSettingInputEvent.DatabaseBackupPeriod(it)
+                )
+            },
+            onImeKeyAction = dashboardSettingViewModel::moveFocusImeAction
+        )
     }
 }
 

@@ -151,7 +151,7 @@ fun DashboardingScreen(
                                         congregationTotals = dashboardingUi.congregationTotals
                                     )
                                 }
-                                if (session.containsRoles(
+                                if (session.containsAnyRoles(
                                         listOf(MemberRoleType.REPORTS, MemberRoleType.TERRITORIES)
                                     )
                                 ) {
