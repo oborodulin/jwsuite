@@ -434,7 +434,9 @@ interface MemberDao {
     ) {
         insert(member)
         insert(memberCongregation)
-        updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+        if (memberMovement.memberType != MemberType.SERVICE) {
+            updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+        }
         insert(memberMovement)
         if (memberMovement.memberType == MemberType.FULL_TIME) {
             updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
@@ -468,16 +470,20 @@ interface MemberDao {
     ) {
         update(member)
         val lastCongregation = findLastCongregationByMemberId(member.memberId).first()
+        val lastMovement = findLastMovementByMemberId(member.memberId).first()
         if (lastCongregation.lastMemberCongregation.mcCongregationsId != memberCongregation.mcCongregationsId) {
             insert(memberCongregation) // OnConflictStrategy.REPLACE
-            updateTotalMembersByCongregationId(
-                lastCongregation.lastMemberCongregation.mcCongregationsId, -1
-            )
-            updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+            if (lastMovement.lastMemberMovement.memberType != MemberType.SERVICE) {
+                updateTotalMembersByCongregationId(
+                    lastCongregation.lastMemberCongregation.mcCongregationsId, -1
+                )
+            }
+            if (memberMovement.memberType != MemberType.SERVICE) {
+                updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+            }
         } else {
             update(memberCongregation)
         }
-        val lastMovement = findLastMovementByMemberId(member.memberId).first()
         if (lastMovement.lastMemberMovement.memberType != memberMovement.memberType) {
             insert(memberMovement)  // OnConflictStrategy.REPLACE
             if (memberMovement.memberType == MemberType.FULL_TIME) {
@@ -539,8 +545,10 @@ interface MemberDao {
     // API:
     @Transaction
     suspend fun deleteByIdWithTotals(memberId: UUID) {
-        decTotalMembersByMemberId(memberId)
         val lastMovement = findLastMovementByMemberId(memberId).first()
+        if (lastMovement.lastMemberMovement.memberType != MemberType.SERVICE) {
+            decTotalMembersByMemberId(memberId)
+        }
         if (lastMovement.lastMemberMovement.memberType == MemberType.FULL_TIME) {
             decTotalFulltimeMembersByMemberId(memberId)
         }

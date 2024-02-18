@@ -4,6 +4,8 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.devtools.ksp'
+    // https://github.com/androiddevnotesyoutube/android-dokka-documentation-kdoc/blob/main/app/build.gradle
+    id 'org.jetbrains.dokka'
 }
 
 android {
@@ -63,6 +65,31 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+// https://github.com/androiddevnotesyoutube/android-dokka-documentation-kdoc/blob/main/app/build.gradle
+tasks.dokkaHtml.configure {
+    outputDirectory.set(file("../documentation/html"))
+}
+
+tasks.dokkaJavadoc.configure {
+    outputDirectory.set(file("../documentation/javadoc"))
+}
+
+tasks.dokkaGfm.configure {
+    outputDirectory.set(file("../documentation/gfm"))
+}
+tasks.withType(dokkaHtml.getClass()).configureEach {
+    pluginsMapConfiguration.set(
+            ["org.jetbrains.dokka.base.DokkaBase": """{ "separateInheritedMembers": true}"""]
+    )
+}
+
+dokkaHtml.configure {
+    dokkaSourceSets {
+        named("main") {
+            skipDeprecated.set(true)
         }
     }
 }
@@ -133,6 +160,9 @@ dependencies {
     implementation deps.compose.uiGraphicsBom
     // Compose lifecycle
     implementation deps.lifecycle.runtimeCompose
+
+    // Tools
+    dokkaPlugin deps.tools.mermaid
 
 /*
     testImplementation 'junit:junit:4.13.2'

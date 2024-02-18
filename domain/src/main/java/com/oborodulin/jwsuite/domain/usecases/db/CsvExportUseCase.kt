@@ -50,6 +50,7 @@ class CsvExportUseCase(
                 // get and transformation data to exportable type
                 val extractData = (extractMethod.call() as Flow<*>).first()
                 if (extractData is List<*> && extractData.isNotEmpty()) {
+                    @Suppress("UNCHECKED_CAST")
                     val exportableList = extractData as List<Exportable>
                     Timber.tag(TAG).d(
                         "CSV Exporting -> %s: list.size = %d",

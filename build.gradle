@@ -21,6 +21,7 @@ buildscript {
                 dagger                 : '2.44.2',
                 datastore              : '1.1.0-alpha05',
                 desugar                : '1.2.2', // для 2.0.0 нужен AGP 7.4.0-alpha10
+                dokka                  : '1.9.10',
                 espresso               : '3.5.1',
                 fragment               : '1.5.7',
                 glide                  : '4.15.1',
@@ -48,6 +49,7 @@ buildscript {
                 logger                 : '2.2.0',
                 lottie                 : '6.0.0',
                 material               : '1.9.0',
+                mermaid                : '0.6.0',
                 mockito                : '4.1.0',
                 navigation             : '2.5.3',
                 nvi18n                 : '1.29',
@@ -233,7 +235,9 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
                                        uiautomator    : "androidx.test.uiautomator:uiautomator:$versions.uiAutomator"],
                 spotlessPluginGradle: "com.diffplug.spotless:spotless-plugin-gradle:$versions.spotless",
                 tools               : [buildGradle: "com.android.tools.build:gradle:$versions.gradle",
-                                       desugar    : "com.android.tools:desugar_jdk_libs:$versions.desugar"],
+                                       desugar    : "com.android.tools:desugar_jdk_libs:$versions.desugar",
+                                       dokka      : "org.jetbrains.dokka:dokka-gradle-plugin:$versions.dokka",
+                                       mermaid    : "com.glureau:html-mermaid-dokka-plugin:$versions.mermaid"],
                 viewpager2          : "androidx.viewpager2:viewpager2:$versions.viewPager",
                 work                : [runtimeKtx: "androidx.work:work-runtime-ktx:$versions.work",
                                        testing   : "androidx.work:work-testing:$versions.work"],
@@ -252,6 +256,8 @@ implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
         classpath deps.dagger.hiltGradlePlugin  //Hilt Gradle plugin
         classpath deps.ktlint.gradle
         classpath deps.spotlessPluginGradle
+        // https://github.com/androiddevnotesyoutube/android-dokka-documentation-kdoc/blob/main/build.gradle
+        classpath deps.tools.dokka
     }
 }
 plugins {

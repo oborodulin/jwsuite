@@ -335,15 +335,13 @@ class DaoPopulator(
             else -> null
         }
         member?.let { member ->
-            memberDao.insert(member)
             val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
                 congregationId = congregation.congregationId, memberId = member.memberId
             )
-            memberDao.insert(memberCongregation)
             val memberMovement = MemberMovementEntity.defaultMemberMovement(
                 memberId = member.memberId, memberType = MemberType.PREACHER
             )
-            memberDao.insert(memberMovement)
+            memberDao.insert(member, memberCongregation, memberMovement)
             Timber.tag(TAG).i("CONGREGATION: Default member imported")
             jsonLogger?.let { logger ->
                 Timber.tag(TAG).i(
@@ -372,15 +370,13 @@ class DaoPopulator(
     ): MemberEntity {
         val memberDao = db.memberDao()
         val member = MemberEntity.adminMember(ctx)
-        memberDao.insert(member)
         val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
             congregationId = congregation.congregationId, memberId = member.memberId
         )
-        memberDao.insert(memberCongregation)
         val memberMovement = MemberMovementEntity.defaultMemberMovement(
             memberId = member.memberId, memberType = MemberType.SERVICE
         )
-        memberDao.insert(memberMovement)
+        memberDao.insert(member, memberCongregation, memberMovement)
         Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
         jsonLogger?.let { logger ->
             Timber.tag(TAG).i(
@@ -443,13 +439,7 @@ class DaoPopulator(
                 isGroupMinistry = num % 20 == 0,
                 territoryNum = num
             )
-            territoryDao.insert(territory)
-            val congregationTerritory =
-                CongregationTerritoryCrossRefEntity.defaultCongregationTerritory(
-                    congregationId = congregation.congregationId,
-                    territoryId = territory.territoryId
-                )
-            territoryDao.insert(congregationTerritory)
+            territoryDao.insertWithTerritoryNumAndTotals(territory)
             territories.add(territory)
         }
         Timber.tag(TAG).i("TERRITORIES: Default territories imported")
@@ -710,7 +700,7 @@ class DaoPopulator(
         val congregationDao = db.congregationDao()
         // 1
         val congregation1 = CongregationEntity.favoriteCongregation(ctx, donetsk.localityId)
-        congregationDao.insert(congregation1)
+        congregationDao.insertWithFavoriteAndTotals(congregation1)
         Timber.tag(TAG).i("CONGREGATION: Default 1 Congregation imported")
         jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
 
@@ -719,7 +709,7 @@ class DaoPopulator(
 
         // 2
         val congregation2 = CongregationEntity.secondCongregation(ctx, donetsk.localityId)
-        congregationDao.insert(congregation2)
+        congregationDao.insertWithFavoriteAndTotals(congregation2)
         Timber.tag(TAG).i("CONGREGATION: Default 2 Congregation imported")
         jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation2)) }
 
@@ -826,7 +816,7 @@ class DaoPopulator(
         val congregationDao = db.congregationDao()
         // 1
         val defCongregation = CongregationEntity.defCongregation(ctx, defLocality.localityId)
-        congregationDao.insert(defCongregation)
+        congregationDao.insertWithFavoriteAndTotals(defCongregation)
         Timber.tag(TAG).i("CONGREGATION: Default Congregation imported")
         jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(defCongregation)) }
 

@@ -97,6 +97,7 @@ object ServicesModule {
     // https://github.com/google/dagger/issues/1631
     // https://github.com/google/dagger/issues/900
     // https://stackoverflow.com/questions/43141740/dagger-2-multibindings-with-kotlin/43149382#43149382
+    // https://github.com/google/dagger/issues/1607
     // Export:
     @Singleton
     @Provides

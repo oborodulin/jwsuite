@@ -80,18 +80,16 @@ interface HouseDao {
             AND hv.streetLocCode = :locale
     """
     )
-    fun findNextById(
-        houseId: UUID, locale: String? = Locale.getDefault().language
-    ): Flow<HouseView?>
+    fun findNextById(houseId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<HouseView?>
 
     @ExperimentalCoroutinesApi
-    fun findDistinctNextById(id: UUID) = findNextById(id).distinctUntilChanged()
+    fun findDistinctNextById(houseId: UUID) = findNextById(houseId).distinctUntilChanged()
 
     //-----------------------------
     @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hStreetsId = :streetId AND streetLocCode = :locale ORDER BY houseNum, houseLetter, buildingNum")
     fun findByStreetId(
-        streetId: UUID,
-        locale: String? = Locale.getDefault().language
+        streetId: UUID, locale: String? = Locale.getDefault().language
     ): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi
@@ -100,8 +98,7 @@ interface HouseDao {
     //-----------------------------
     @Query("SELECT * FROM ${HouseView.VIEW_NAME} WHERE hTerritoriesId = :territoryId AND streetLocCode = :locale ORDER BY streetName, houseNum, houseLetter, buildingNum")
     fun findByTerritoryId(
-        territoryId: UUID,
-        locale: String? = Locale.getDefault().language
+        territoryId: UUID, locale: String? = Locale.getDefault().language
     ): Flow<List<HouseView>>
 
     @ExperimentalCoroutinesApi

@@ -100,7 +100,6 @@ fun DashboardSettingView(
             lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
-
     Timber.tag(TAG).d("DashboardSetting: CollectAsStateWithLifecycle for all fields")
     val databaseBackupPeriod by dashboardSettingViewModel.databaseBackupPeriod.collectAsStateWithLifecycle()
 

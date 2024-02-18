@@ -478,7 +478,7 @@ interface TerritoryDao {
 
     // C[R]UD:
     @Transaction
-    suspend fun insertWithTerritoryNum(territory: TerritoryEntity) {
+    suspend fun insertWithTerritoryNumAndTotals(territory: TerritoryEntity) {
         changeWithTerritoryNum(territory)
         insert(territory)
         insert(
@@ -493,7 +493,7 @@ interface TerritoryDao {
     }
 
     @Transaction
-    suspend fun updateWithTerritoryNum(territory: TerritoryEntity) {
+    suspend fun updateWithTerritoryNumAndTotals(territory: TerritoryEntity) {
         changeWithTerritoryNum(territory)
         if (isActiveById(territory.territoryId) != territory.isActive) {
             if (territory.isActive) {

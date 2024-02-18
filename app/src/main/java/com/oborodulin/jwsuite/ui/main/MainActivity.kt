@@ -35,6 +35,11 @@ import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "App.MainActivity"
 
+/**
+ * Класс главной активности приложения.
+ *
+ *
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
