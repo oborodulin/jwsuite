@@ -20,7 +20,7 @@ class TerritoryStreetHouseViewListToTerritoryStreetsListMapper(
                 val territory = territoryMapper.map(key.territory)
                 territoryStreet.houses = houseEntities.mapNotNull { territoryHouse ->
                     territoryHouse?.let {
-                        val house = House(
+                        House(
                             street = territoryStreet.street,
                             localityDistrict = territory.localityDistrict,
                             microdistrict = territory.microdistrict,
@@ -41,9 +41,7 @@ class TerritoryStreetHouseViewListToTerritoryStreetsListMapper(
                             isPrivateSector = it.isHousePrivateSector,
                             buildingType = it.buildingType,
                             houseDesc = it.houseDesc
-                        )
-                        house.id = it.houseId
-                        house
+                        ).also { house -> house.id = it.houseId }
                     }
                 }
                 territoryStreets.add(territoryStreet)

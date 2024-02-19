@@ -23,7 +23,6 @@ class TerritoriesAtWorkViewToTerritoryMapper(
     private val memberMapper: MemberViewToMemberMapper
 ) : Mapper<TerritoriesAtWorkView, Territory> {
     override fun map(input: TerritoriesAtWorkView): Territory {
-        var territory: Territory
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
@@ -39,7 +38,7 @@ class TerritoriesAtWorkViewToTerritoryMapper(
             val mLocalityDistrict = localityDistrictMapper.nullableMap(
                 this.tmLocalityDistrict, mLocality
             )
-            territory = Territory(
+            return Territory(
                 congregation = congregationMapper.map(this.congregation),
                 territoryCategory = territoryCategoryMapper.map(this.territoryCategory),
                 locality = localityMapper.map(this.tLocality, region, regionDistrict),
@@ -61,9 +60,7 @@ class TerritoriesAtWorkViewToTerritoryMapper(
                 isPrivateSector = input.isPrivateSector,
                 expiredTotalDays = input.expiredTotalDays,
                 territoryBusinessMark = input.atWorkTerritoryBusinessMark
-            )
-            territory.id = this.territory.territoryId
+            ).also { it.id = this.territory.territoryId }
         }
-        return territory
     }
 }

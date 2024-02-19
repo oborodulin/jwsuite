@@ -8,18 +8,14 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 
 class TerritoryStreetToTerritoryStreetUiMapper(private val mapper: StreetToStreetUiMapper) :
     Mapper<TerritoryStreet, TerritoryStreetUi>, NullableMapper<TerritoryStreet, TerritoryStreetUi> {
-    override fun map(input: TerritoryStreet): TerritoryStreetUi {
-        val territoryStreetUi = TerritoryStreetUi(
-            territoryId = input.territoryId,
-            street = mapper.map(input.street),
-            isEvenSide = input.isEvenSide,
-            isPrivateSector = input.isPrivateSector,
-            estimatedHouses = input.estimatedHouses,
-            isExistsHouses = input.isExistsHouses
-        )
-        territoryStreetUi.id = input.id
-        return territoryStreetUi
-    }
+    override fun map(input: TerritoryStreet) = TerritoryStreetUi(
+        territoryId = input.territoryId,
+        street = mapper.map(input.street),
+        isEvenSide = input.isEvenSide,
+        isPrivateSector = input.isPrivateSector,
+        estimatedHouses = input.estimatedHouses,
+        isExistsHouses = input.isExistsHouses
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: TerritoryStreet?) = input?.let { map(it) }
 }

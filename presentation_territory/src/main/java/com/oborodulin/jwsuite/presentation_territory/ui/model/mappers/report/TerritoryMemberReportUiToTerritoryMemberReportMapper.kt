@@ -14,22 +14,18 @@ class TerritoryMemberReportUiToTerritoryMemberReportMapper(
     private val roomUiMapper: RoomUiToRoomMapper
 ) : Mapper<TerritoryMemberReportUi, TerritoryMemberReport>,
     NullableMapper<TerritoryMemberReportUi, TerritoryMemberReport> {
-    override fun map(input: TerritoryMemberReportUi): TerritoryMemberReport {
-        val territoryMemberReport = TerritoryMemberReport(
-            territoryStreet = territoryStreetUiMapper.nullableMap(input.territoryStreet),
-            house = houseUiMapper.nullableMap(input.house),
-            room = roomUiMapper.nullableMap(input.room),
-            territoryMemberId = input.territoryMemberId,
-            territoryReportMark = input.territoryReportMark,
-            languageCode = input.languageCode,
-            gender = input.gender,
-            age = input.age,
-            isProcessed = input.isProcessed,
-            territoryReportDesc = input.territoryReportDesc
-        )
-        territoryMemberReport.id = input.id
-        return territoryMemberReport
-    }
+    override fun map(input: TerritoryMemberReportUi) = TerritoryMemberReport(
+        territoryStreet = territoryStreetUiMapper.nullableMap(input.territoryStreet),
+        house = houseUiMapper.nullableMap(input.house),
+        room = roomUiMapper.nullableMap(input.room),
+        territoryMemberId = input.territoryMemberId,
+        territoryReportMark = input.territoryReportMark,
+        languageCode = input.languageCode,
+        gender = input.gender,
+        age = input.age,
+        isProcessed = input.isProcessed,
+        territoryReportDesc = input.territoryReportDesc
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: TerritoryMemberReportUi?) = input?.let { map(it) }
 }

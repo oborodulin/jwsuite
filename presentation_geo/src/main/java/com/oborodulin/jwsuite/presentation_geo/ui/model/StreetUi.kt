@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.RoadType
 import java.util.UUID
@@ -23,3 +24,6 @@ fun StreetUi.toStreetsListItem() = StreetsListItem(
     isPrivateSectorInfo = null,
     estHousesInfo = null
 )
+
+fun ListItemModel?.toStreetUi() =
+    StreetUi(streetName = this?.headline.orEmpty()).also { it.id = this?.itemId }

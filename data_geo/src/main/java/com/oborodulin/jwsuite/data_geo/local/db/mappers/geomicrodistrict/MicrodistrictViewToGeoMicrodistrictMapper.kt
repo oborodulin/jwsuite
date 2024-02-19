@@ -17,17 +17,17 @@ class MicrodistrictViewToGeoMicrodistrictMapper(private val ctx: Context) :
                 properties.size, input.data.microdistrictId
             )
         )
-        val microdistrict = GeoMicrodistrict(
+        return GeoMicrodistrict(
             ctx = ctx,
             locality = properties[0] as GeoLocality,
             localityDistrict = properties[1] as GeoLocalityDistrict,
             microdistrictType = input.data.microdistrictType,
             microdistrictShortName = input.data.microdistrictShortName,
             microdistrictName = input.tl.microdistrictName
-        )
-        microdistrict.id = input.data.microdistrictId
-        microdistrict.tlId = input.tl.microdistrictTlId
-        return microdistrict
+        ).also {
+            it.id = input.data.microdistrictId
+            it.tlId = input.tl.microdistrictTlId
+        }
     }
 
     override fun nullableMap(input: MicrodistrictView?, vararg properties: Any?) =

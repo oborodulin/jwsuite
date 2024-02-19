@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
@@ -15,7 +16,6 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.domain.usecases.territorycategory.GetTerritoryCategoryUseCase
@@ -124,8 +124,7 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
             territoryCategoryCode = TerritoryCategoryType.valueOf(territoryCategoryCode.value.value),
             territoryCategoryMark = territoryCategoryMark.value.value,
             territoryCategoryName = territoryCategoryName.value.value
-        )
-        territoryCategoryUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveTerritoryCategory() called: UI model %s", territoryCategoryUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryCategoryUseCase.execute(
@@ -361,14 +360,10 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): TerritoryCategoryUi {
-            val territoryCategoryUi = TerritoryCategoryUi(
-                territoryCategoryCode = TerritoryCategoryType.HOUSES,
-                territoryCategoryMark = ctx.resources.getString(R.string.def_house_territory_category_mark),
-                territoryCategoryName = ctx.resources.getString(R.string.def_house_territory_category_name)
-            )
-            territoryCategoryUi.id = UUID.randomUUID()
-            return territoryCategoryUi
-        }
+        fun previewUiModel(ctx: Context) = TerritoryCategoryUi(
+            territoryCategoryCode = TerritoryCategoryType.HOUSES,
+            territoryCategoryMark = ctx.resources.getString(R.string.def_house_territory_category_mark),
+            territoryCategoryName = ctx.resources.getString(R.string.def_house_territory_category_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

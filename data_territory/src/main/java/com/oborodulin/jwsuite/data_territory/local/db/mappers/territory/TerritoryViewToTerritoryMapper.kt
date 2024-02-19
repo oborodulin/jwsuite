@@ -37,8 +37,7 @@ class TerritoryViewToTerritoryMapper(
         val mLocalityDistrict = localityDistrictMapper.nullableMap(
             input.tmLocalityDistrict, mLocality
         )
-
-        val territory = Territory(
+        return Territory(
             ctx = ctx,
             congregation = congregationMapper.map(input.congregation),
             territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
@@ -57,9 +56,7 @@ class TerritoryViewToTerritoryMapper(
             isActive = input.territory.isActive,
             territoryDesc = input.territory.territoryDesc,
             territoryBusinessMark = input.territoryBusinessMark
-        )
-        territory.id = input.territory.territoryId
-        return territory
+        ).also { it.id = input.territory.territoryId }
     }
 
     override fun nullableMap(input: TerritoryView?) = input?.let { map(it) }

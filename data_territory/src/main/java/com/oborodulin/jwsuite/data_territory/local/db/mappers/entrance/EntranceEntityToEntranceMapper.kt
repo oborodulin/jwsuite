@@ -17,7 +17,7 @@ class EntranceEntityToEntranceMapper(private val ctx: Context) :
                 properties.size, input.entranceId
             )
         )
-        val entrance = Entrance(
+        return Entrance(
             ctx = ctx,
             house = properties[0] as House,
             territory = properties[1] as? Territory,
@@ -29,9 +29,7 @@ class EntranceEntityToEntranceMapper(private val ctx: Context) :
             roomsByFloor = input.roomsByEntranceFloor,
             estimatedRooms = input.estEntranceRooms,
             entranceDesc = input.entranceDesc,
-        )
-        entrance.id = input.entranceId
-        return entrance
+        ).also { it.id = input.entranceId }
     }
 
     override fun nullableMap(input: EntranceEntity?, vararg properties: Any?) =

@@ -1,5 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
+import com.oborodulin.home.common.extensions.toIntRoomNum
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
@@ -21,6 +23,9 @@ data class RoomUi(
     val isForeignLanguage: Boolean = false,
     val roomDesc: String? = null
 ) : ModelUi()
+
+fun ListItemModel?.toRoomUi() =
+    RoomUi(roomNum = this?.headline?.toIntRoomNum()).also { it.id = this?.itemId }
 /*
 fun EntranceUi.toHousesListItem() = HousesListItem(
     id = this.id!!,

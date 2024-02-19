@@ -21,14 +21,14 @@ class TerritoriesIdleViewToTerritoryMapper(
     private val microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
 ) : Mapper<TerritoriesIdleView, Territory> {
     override fun map(input: TerritoriesIdleView): Territory {
-        var territory: Territory
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
 
             val ldRegion = regionMapper.nullableMap(this.tldRegion)
             val ldRegionDistrict = regionDistrictMapper.nullableMap(this.tldDistrict, ldRegion)
-            val ldLocality = localityMapper.nullableMap(this.tldLocality, ldRegion, ldRegionDistrict)
+            val ldLocality =
+                localityMapper.nullableMap(this.tldLocality, ldRegion, ldRegionDistrict)
 
             val mRegion = regionMapper.nullableMap(this.tmRegion)
             val mRegionDistrict = regionDistrictMapper.nullableMap(this.tmDistrict, mRegion)
@@ -36,7 +36,7 @@ class TerritoriesIdleViewToTerritoryMapper(
             val mLocalityDistrict = localityDistrictMapper.nullableMap(
                 this.tmLocalityDistrict, mLocality
             )
-            territory = Territory(
+            return Territory(
                 congregation = congregationMapper.map(this.congregation),
                 territoryCategory = territoryCategoryMapper.map(this.territoryCategory),
                 locality = localityMapper.map(this.tLocality, region, regionDistrict),
@@ -56,9 +56,7 @@ class TerritoriesIdleViewToTerritoryMapper(
                 congregationId = input.ctCongregationsId,
                 isPrivateSector = input.isPrivateSector,
                 territoryBusinessMark = input.idleTerritoryBusinessMark
-            )
-            territory.id = this.territory.territoryId
+            ).also { it.id = this.territory.territoryId }
         }
-        return territory
     }
 }

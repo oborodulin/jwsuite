@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -16,7 +17,6 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.room.GetRoomUseCase
 import com.oborodulin.jwsuite.domain.usecases.room.RoomUseCases
 import com.oborodulin.jwsuite.domain.usecases.room.SaveRoomUseCase
@@ -29,14 +29,14 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
 import com.oborodulin.jwsuite.presentation_territory.ui.model.EntranceUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.FloorUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.RoomConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomToRoomsListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.room.RoomUiToRoomMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toHouseUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toHousesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -154,30 +154,22 @@ class RoomViewModelImpl @Inject constructor(
     }
 
     private fun saveRoom(): Job {
-        val houseUi = HouseUi(houseNum = house.value.item?.houseNum)
-        houseUi.id = house.value.item?.itemId
-        val entranceUi = EntranceUi()
-        entranceUi.id = entrance.value.item?.itemId
-        val floorUi = FloorUi()
-        floorUi.id = floor.value.item?.itemId
-        val territoryUi = TerritoryUi()
-        territoryUi.id = territory.value.item?.itemId
-
+        val entranceUi = EntranceUi().also { it.id = entrance.value.item?.itemId }
+        val floorUi = FloorUi().also { it.id = floor.value.item?.itemId }
         val roomUi = RoomUi(
-            house = houseUi,
+            house = house.value.item.toHouseUi(),
             entrance = entranceUi,
             floor = floorUi,
-            territory = territoryUi,
+            territory = territory.value.item.toTerritoryUi(),
             roomNum = roomNum.value.value.toInt(),
             isIntercom = isIntercom.value.value.toBooleanStrictOrNull(),
             isResidential = isResidential.value.value.toBoolean(),
             isForeignLanguage = isForeignLanguage.value.value.toBoolean(),
             roomDesc = roomDesc.value.value.ifEmpty { null }
-        )
-        roomUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d(
-            "saveRoom() called: UI model %s; houseUi.id = %s; entranceUi.id = %s; floorUi.id = %s",
-            roomUi, houseUi.id, entranceUi.id, floorUi.id
+            "saveRoom() called: UI model %s; entranceUi.id = %s; floorUi.id = %s",
+            roomUi, entranceUi.id, floorUi.id
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRoomUseCase.execute(SaveRoomUseCase.Request(roomUiMapper.map(roomUi)))
@@ -462,24 +454,20 @@ class RoomViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): RoomUi {
-            val roomUi = RoomUi(
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
-                microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
-                street = StreetViewModelImpl.previewUiModel(ctx),
-                house = HouseViewModelImpl.previewUiModel(ctx),
-                entrance = null,
-                floor = null,
-                territory = TerritoryViewModelImpl.previewUiModel(ctx),
-                roomNum = 1,
-                isIntercom = null,
-                isResidential = true,
-                isForeignLanguage = false,
-                roomDesc = ""
-            )
-            roomUi.id = UUID.randomUUID()
-            return roomUi
-        }
+        fun previewUiModel(ctx: Context) = RoomUi(
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
+            microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
+            street = StreetViewModelImpl.previewUiModel(ctx),
+            house = HouseViewModelImpl.previewUiModel(ctx),
+            entrance = null,
+            floor = null,
+            territory = TerritoryViewModelImpl.previewUiModel(ctx),
+            roomNum = 1,
+            isIntercom = null,
+            isResidential = true,
+            isForeignLanguage = false,
+            roomDesc = ""
+        ).also { it.id = UUID.randomUUID() }
     }
 }

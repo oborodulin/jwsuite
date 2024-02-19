@@ -26,7 +26,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.Cong
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congregation.CongregationUiToCongregationMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -124,21 +124,14 @@ class CongregationViewModelImpl @Inject constructor(
     }
 
     private fun saveCongregation(): Job {
-        val localityUi = LocalityUi(localityName = locality.value.item?.headline.orEmpty())
-        localityUi.id = locality.value.item?.itemId
         val congregationUi = CongregationUi(
             congregationNum = congregationNum.value.value,
             congregationName = congregationName.value.value,
             territoryMark = territoryMark.value.value,
             isFavorite = isFavorite.value.value.toBoolean(),
-            locality = localityUi
-        )
-        congregationUi.id = id.value.value.toUUIDOrNull()
-        Timber.tag(TAG).d(
-            "saveCongregation() called: UI model %s; localityUi.id = %s",
-            congregationUi,
-            localityUi.id
-        )
+            locality = locality.value.item.toLocalityUi()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
+        Timber.tag(TAG).d("saveCongregation() called: UI model %s", congregationUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveCongregationUseCase.execute(
                 SaveCongregationUseCase.Request(mapper.map(congregationUi))
@@ -351,17 +344,13 @@ class CongregationViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): CongregationUi {
-            val congregationUi = CongregationUi(
-                congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
-                congregationName = ctx.resources.getString(R.string.def_congregation1_name),
-                territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
-                lastVisitDate = "2024-01-29T14:29:10.212+03:00".toOffsetDateTime(),
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                isFavorite = true
-            )
-            congregationUi.id = UUID.randomUUID()
-            return congregationUi
-        }
+        fun previewUiModel(ctx: Context) = CongregationUi(
+            congregationNum = ctx.resources.getString(R.string.def_congregation1_num),
+            congregationName = ctx.resources.getString(R.string.def_congregation1_name),
+            territoryMark = ctx.resources.getString(R.string.def_congregation1_card_mark),
+            lastVisitDate = "2024-01-29T14:29:10.212+03:00".toOffsetDateTime(),
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            isFavorite = true
+        ).also { it.id = UUID.randomUUID() }
     }
 }

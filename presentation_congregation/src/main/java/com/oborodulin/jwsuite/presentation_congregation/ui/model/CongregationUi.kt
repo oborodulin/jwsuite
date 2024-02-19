@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.model
 
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import java.time.OffsetDateTime
@@ -22,3 +23,6 @@ fun CongregationUi.toCongregationsListItem() = CongregationsListItem(
     isFavorite = this.isFavorite,
     locality = this.locality
 )
+
+fun ListItemModel?.toCongregationUi() =
+    CongregationUi(congregationName = this?.headline.orEmpty()).also { it.id = this?.itemId }

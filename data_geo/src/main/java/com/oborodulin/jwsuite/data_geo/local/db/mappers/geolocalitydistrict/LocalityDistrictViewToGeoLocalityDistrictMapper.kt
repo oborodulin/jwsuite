@@ -15,14 +15,14 @@ class LocalityDistrictViewToGeoLocalityDistrictMapper :
                 properties.size, input.data.localityDistrictId
             )
         )
-        val localityDistrict = GeoLocalityDistrict(
+        return GeoLocalityDistrict(
             locality = properties[0] as GeoLocality,
             districtShortName = input.data.locDistrictShortName,
             districtName = input.tl.locDistrictName
-        )
-        localityDistrict.id = input.data.localityDistrictId
-        localityDistrict.tlId = input.tl.localityDistrictTlId
-        return localityDistrict
+        ).also {
+            it.id = input.data.localityDistrictId
+            it.tlId = input.tl.localityDistrictTlId
+        }
     }
 
     override fun nullableMap(input: LocalityDistrictView?, vararg properties: Any?) =

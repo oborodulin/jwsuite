@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -18,7 +19,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalityUseCase
@@ -26,11 +26,11 @@ import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocality.SaveLocalityUseCase
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalitiesListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityUiToLocalityMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toRegionDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toRegionUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -144,26 +144,15 @@ class LocalityViewModelImpl @Inject constructor(
     }
 
     private fun saveLocality(): Job {
-        val regionUi = RegionUi()
-        regionUi.id = region.value.item?.itemId
-        val regionDistrictUi = RegionDistrictUi()
-        regionDistrictUi.id = regionDistrict.value.item?.itemId
-
         val localityUi = LocalityUi(
-            region = regionUi,
-            regionDistrict = regionDistrictUi,
+            region = region.value.item.toRegionUi(),
+            regionDistrict = regionDistrict.value.item.toRegionDistrictUi(),
             localityCode = localityCode.value.value,
             localityType = LocalityType.valueOf(localityType.value.value),
             localityShortName = localityShortName.value.value,
             localityName = localityName.value.value
-        )
-        localityUi.id = id.value.value.toUUIDOrNull()
-        Timber.tag(TAG).d(
-            "saveLocality() called: UI model %s; regionUi.id = %s; regionDistrictUi.id = %s",
-            localityUi,
-            regionUi.id,
-            regionDistrictUi.id
-        )
+        ).also { it.id = id.value.value.toUUIDOrNull() }
+        Timber.tag(TAG).d("saveLocality() called: UI model %s", localityUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityUseCase.execute(
                 SaveLocalityUseCase.Request(localityUiMapper.map(localityUi))
@@ -371,16 +360,12 @@ class LocalityViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): LocalityUi {
-            val localityUi = LocalityUi(
-                region = RegionViewModelImpl.previewUiModel(ctx),
-                //regionDistrict = ,
-                localityCode = ctx.resources.getString(R.string.def_donetsk_code),
-                localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
-                localityName = ctx.resources.getString(R.string.def_donetsk_name)
-            )
-            localityUi.id = UUID.randomUUID()
-            return localityUi
-        }
+        fun previewUiModel(ctx: Context) = LocalityUi(
+            region = RegionViewModelImpl.previewUiModel(ctx),
+            //regionDistrict = ,
+            localityCode = ctx.resources.getString(R.string.def_donetsk_code),
+            localityShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
+            localityName = ctx.resources.getString(R.string.def_donetsk_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

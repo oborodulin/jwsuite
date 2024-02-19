@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -25,12 +26,12 @@ import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.MicrodistrictUseC
 import com.oborodulin.jwsuite.domain.usecases.geomicrodistrict.SaveMicrodistrictUseCase
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.MicrodistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictToMicrodistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityDistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -144,26 +145,15 @@ class MicrodistrictViewModelImpl @Inject constructor(
     }
 
     private fun saveMicrodistrict(): Job {
-        val localityUi = LocalityUi()
-        localityUi.id = locality.value.item?.itemId
-        val localityDistrictUi = LocalityDistrictUi()
-        localityDistrictUi.id = localityDistrict.value.item?.itemId
-
         val microdistrictUi = MicrodistrictUi(
-            locality = localityUi,
-            localityDistrict = localityDistrictUi,
+            locality = locality.value.item.toLocalityUi(),
+            localityDistrict = localityDistrict.value.item.toLocalityDistrictUi(),
             microdistrictType = VillageType.valueOf(microdistrictType.value.value),
             microdistrictShortName = microdistrictShortName.value.value,
             microdistrictName = microdistrictName.value.value
         )
-        microdistrictUi.id =
-            if (id.value.value.isNotEmpty()) UUID.fromString(id.value.value) else null
-        Timber.tag(TAG).d(
-            "saveMicrodistrict() called: UI model %s; localityUi.id = %s; localityDistrictUi.id = %s",
-            microdistrictUi,
-            localityUi.id,
-            localityDistrictUi.id
-        )
+        microdistrictUi.id = id.value.value.toUUIDOrNull()
+        Timber.tag(TAG).d("saveMicrodistrict() called: UI model %s", microdistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMicrodistrictUseCase.execute(
                 SaveMicrodistrictUseCase.Request(microdistrictUiMapper.map(microdistrictUi))
@@ -404,16 +394,12 @@ class MicrodistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): MicrodistrictUi {
-            val microdistrictUi = MicrodistrictUi(
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
-                microdistrictType = VillageType.MICRO_DISTRICT,
-                microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
-                microdistrictName = ctx.resources.getString(R.string.def_don_name)
-            )
-            microdistrictUi.id = UUID.randomUUID()
-            return microdistrictUi
-        }
+        fun previewUiModel(ctx: Context) = MicrodistrictUi(
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
+            microdistrictType = VillageType.MICRO_DISTRICT,
+            microdistrictShortName = ctx.resources.getString(R.string.def_don_short_name),
+            microdistrictName = ctx.resources.getString(R.string.def_don_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

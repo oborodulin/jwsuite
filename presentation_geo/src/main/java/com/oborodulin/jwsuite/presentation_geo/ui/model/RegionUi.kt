@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
+import com.oborodulin.home.common.extensions.toRegionName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import java.util.UUID
@@ -14,3 +15,6 @@ fun RegionUi.toListItemModel() = ListItemModel(
     headline = this.regionName,
     supportingText = this.regionCode
 )
+
+fun ListItemModel?.toRegionUi() =
+    RegionUi(regionName = this?.headline.toRegionName()).also { it.id = this?.itemId }

@@ -83,44 +83,32 @@ class DashboardingViewModelImpl @Inject constructor(
                 }
             }
 
-        fun previewCongregationModel(ctx: Context): CongregationUi {
-            val congregationUi = CongregationUi(
-                congregationNum = "12",// ctx.resources.getString(R.string.def_congregation1_num),
-                congregationName = "",//ctx.resources.getString(R.string.def_congregation1_name),
-                territoryMark = "К",//ctx.resources.getString(R.string.def_congregation1_card_mark),
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                isFavorite = true
-            )
-            congregationUi.id = UUID.randomUUID()
-            return congregationUi
-        }
+        fun previewCongregationModel(ctx: Context) = CongregationUi(
+            congregationNum = "12",// ctx.resources.getString(R.string.def_congregation1_num),
+            congregationName = "",//ctx.resources.getString(R.string.def_congregation1_name),
+            territoryMark = "К",//ctx.resources.getString(R.string.def_congregation1_card_mark),
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            isFavorite = true
+        ).also { it.id = UUID.randomUUID() }
 
-        fun previewCongregationTotalsModel(ctx: Context): CongregationTotalsUi {
-            val congregationTotalsUi = CongregationTotalsUi(
-                congregation = previewCongregationModel(ctx),
-                totalGroups = 7,
-                totalMembers = 124,
-                totalFulltimeMembers = 28,
-                diffGroups = 1,
-                diffMembers = 0,
-                diffFulltimeMembers = 3
-            )
-            congregationTotalsUi.id = UUID.randomUUID()
-            return congregationTotalsUi
-        }
+        fun previewCongregationTotalsModel(ctx: Context) = CongregationTotalsUi(
+            congregation = previewCongregationModel(ctx),
+            totalGroups = 7,
+            totalMembers = 124,
+            totalFulltimeMembers = 28,
+            diffGroups = 1,
+            diffMembers = 0,
+            diffFulltimeMembers = 3
+        ).also { it.id = UUID.randomUUID() }
 
-        fun previewTerritoryTotalsModel(ctx: Context): TerritoryTotalsUi {
-            val territoryTotalsUi = TerritoryTotalsUi(
-                congregation = previewCongregationModel(ctx),
-                totalTerritories = 175,
-                totalTerritoryIssued = 59,
-                totalTerritoryProcessed = 99,
-                diffTerritories = 9,
-                diffTerritoryIssued = 16,
-                diffTerritoryProcessed = 11
-            )
-            territoryTotalsUi.id = UUID.randomUUID()
-            return territoryTotalsUi
-        }
+        fun previewTerritoryTotalsModel(ctx: Context) = TerritoryTotalsUi(
+            congregation = previewCongregationModel(ctx),
+            totalTerritories = 175,
+            totalTerritoryIssued = 59,
+            totalTerritoryProcessed = 99,
+            diffTerritories = 9,
+            diffTerritoryIssued = 16,
+            diffTerritoryProcessed = 11
+        ).also { it.id = UUID.randomUUID() }
     }
 }

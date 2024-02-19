@@ -20,7 +20,7 @@ class FloorEntityToFloorMapper(private val ctx: Context) : ConstructedMapper<Flo
                         properties.size, input.floorId
                     )
         )
-        val floor = Floor(
+        return Floor(
             ctx = ctx,
             house = properties[0] as House,
             entrance = properties[1] as? Entrance,
@@ -32,9 +32,7 @@ class FloorEntityToFloorMapper(private val ctx: Context) : ConstructedMapper<Flo
             roomsByFloor = input.roomsByFloor,
             estimatedRooms = input.estFloorRooms,
             floorDesc = input.floorDesc
-        )
-        floor.id = input.floorId
-        return floor
+        ).also { it.id = input.floorId }
     }
 
     override fun nullableMap(input: FloorEntity?, vararg properties: Any?) =

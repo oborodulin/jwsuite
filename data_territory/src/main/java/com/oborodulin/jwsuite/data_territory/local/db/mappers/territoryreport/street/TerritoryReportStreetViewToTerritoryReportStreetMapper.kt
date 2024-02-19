@@ -21,12 +21,10 @@ class TerritoryReportStreetViewToTerritoryReportStreetMapper(
                 territoryId = input.territoryMember.tmcTerritoriesId,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
-        val territoryReportStreet = TerritoryReportStreet(
+        return TerritoryReportStreet(
             territoryStreet = territoryStreet,
             territoryMemberReport = territoryMemberReport
-        )
-        territoryReportStreet.id = input.territoryStreet.territoryStreet.territoryStreetId
-        return territoryReportStreet
+        ).also { it.id = input.territoryStreet.territoryStreet.territoryStreetId }
     }
 
     override fun nullableMap(input: TerritoryReportStreetView?) = input?.let { map(it) }

@@ -31,12 +31,13 @@ class TerritoriesHandOutViewToTerritoryMapper(
             "TerritoriesHandOutViewToTerritoryMapper(...) called: territoryId = %s",
             input.territory.territory.territoryId
         )
-        var territory: Territory
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
-            if (LOG_DB_MAPPER) Timber.tag(TAG).d("TerritoriesHandOutViewToTerritoryMapper: region = %s", region)
+            if (LOG_DB_MAPPER) Timber.tag(TAG)
+                .d("TerritoriesHandOutViewToTerritoryMapper: region = %s", region)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
-            if (LOG_DB_MAPPER) Timber.tag(TAG).d("Territory: Locality -> RegionDistrict -> Region mapped")
+            if (LOG_DB_MAPPER) Timber.tag(TAG)
+                .d("Territory: Locality -> RegionDistrict -> Region mapped")
 
             val ldRegion = regionMapper.nullableMap(this.tldRegion)
             val ldRegionDistrict = regionDistrictMapper.nullableMap(this.tldDistrict, ldRegion)
@@ -53,7 +54,7 @@ class TerritoriesHandOutViewToTerritoryMapper(
             )
             if (LOG_DB_MAPPER) Timber.tag(TAG)
                 .d("Territory: Microdistrict -> LocalityDistrict -> Locality -> RegionDistrict -> Region mapped")
-            territory = Territory(
+            return Territory(
                 congregation = congregationMapper.map(this.congregation),
                 territoryCategory = territoryCategoryMapper.map(this.territoryCategory),
                 locality = localityMapper.map(this.tLocality, region, regionDistrict),
@@ -75,9 +76,7 @@ class TerritoriesHandOutViewToTerritoryMapper(
                 isPrivateSector = input.isPrivateSector,
                 handOutTotalDays = input.handOutTotalDays,
                 territoryBusinessMark = input.handOutTerritoryBusinessMark
-            )
-            territory.id = this.territory.territoryId
+            ).also { it.id = this.territory.territoryId }
         }
-        return territory
     }
 }

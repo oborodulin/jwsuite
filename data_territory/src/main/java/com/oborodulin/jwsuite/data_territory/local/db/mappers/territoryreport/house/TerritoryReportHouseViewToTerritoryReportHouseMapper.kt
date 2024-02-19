@@ -21,12 +21,10 @@ class TerritoryReportHouseViewToTerritoryReportHouseMapper(
                 territoryId = input.territoryMember.tmcTerritoriesId,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
-        val territoryReportHouse = TerritoryReportHouse(
+        return TerritoryReportHouse(
             house = house,
             territoryMemberReport = territoryMemberReport
-        )
-        territoryReportHouse.id = input.house.house.houseId
-        return territoryReportHouse
+        ).also { it.id = input.house.house.houseId }
     }
 
     override fun nullableMap(input: TerritoryReportHouseView?) = input?.let { map(it) }

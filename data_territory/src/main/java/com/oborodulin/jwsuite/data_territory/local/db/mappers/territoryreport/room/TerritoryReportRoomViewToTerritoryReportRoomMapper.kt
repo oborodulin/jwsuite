@@ -21,12 +21,10 @@ class TerritoryReportRoomViewToTerritoryReportRoomMapper(
                 territoryId = input.territoryMember.tmcTerritoriesId,
                 territoryMemberId = input.territoryMember.territoryMemberId
             )
-        val territoryReportRoom = TerritoryReportRoom(
+        return TerritoryReportRoom(
             room = room,
             territoryMemberReport = territoryMemberReport
-        )
-        territoryReportRoom.id = input.room.room.roomId
-        return territoryReportRoom
+        ).also { it.id = input.room.room.roomId }
     }
 
     override fun nullableMap(input: TerritoryReportRoomView?) = input?.let { map(it) }

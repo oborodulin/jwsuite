@@ -20,7 +20,7 @@ class HouseEntityToHouseMapper(private val ctx: Context) : ConstructedMapper<Hou
                         properties.size, input.houseId
                     )
         )
-        val house = House(
+        return House(
             ctx = ctx,
             street = properties[0] as GeoStreet,
             localityDistrict = properties[1] as? GeoLocalityDistrict,
@@ -42,8 +42,6 @@ class HouseEntityToHouseMapper(private val ctx: Context) : ConstructedMapper<Hou
             isPrivateSector = input.isHousePrivateSector,
             buildingType = input.buildingType,
             houseDesc = input.houseDesc
-        )
-        house.id = input.houseId
-        return house
+        ).also { it.id = input.houseId }
     }
 }

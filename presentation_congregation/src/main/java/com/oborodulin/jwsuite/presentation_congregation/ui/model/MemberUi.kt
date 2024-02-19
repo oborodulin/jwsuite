@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_congregation.ui.model
 
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.MemberType
 import java.time.OffsetDateTime
@@ -40,3 +41,8 @@ fun MemberUi.toMembersListItem() = MembersListItem(
     loginExpiredDate = this.loginExpiredDate,
     movementDate = this.movementDate
 )
+
+fun ListItemModel?.toMemberUi(congregation: CongregationUi) = MemberUi(
+    congregation = congregation, congregationId = congregation.id,
+    memberFullName = this?.headline.orEmpty()
+).also { it.id = this?.itemId }

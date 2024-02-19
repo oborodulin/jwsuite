@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -19,18 +20,17 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.usecases.geostreet.GetStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetUiToStreetMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -147,27 +147,21 @@ class StreetViewModelImpl @Inject constructor(
     }
 
     private fun saveStreet(): Job {
-        val localityUi = LocalityUi()
-        localityUi.id = locality.value.item?.itemId
         //val localityDistrictUi = LocalityDistrictUi()
         //localityDistrictUi.id = localityDistrict.value.item?.itemId
         //val microdistrictUi = MicrodistrictUi()
         //microdistrictUi.id = microdistrict.value.item?.itemId
 
         val streetUi = StreetUi(
-            locality = localityUi,
+            locality = locality.value.item.toLocalityUi(),
             //localityDistrict = localityDistrictUi,
             //microdistrict = microdistrictUi,
             roadType = RoadType.valueOf(roadType.value.value),
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             estimatedHouses = estimatedHouses.value.value.toIntOrNull(),
             streetName = streetName.value.value
-        )
-        streetUi.id = id.value.value.toUUIDOrNull()
-        Timber.tag(TAG).d(
-            "saveStreet() called: UI model %s; localityUi.id = %s",
-            streetUi, localityUi.id//, localityDistrictUi.id
-        )
+        ).also { it.id = id.value.value.toUUIDOrNull() }
+        Timber.tag(TAG).d("saveStreet() called: UI model %s", streetUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveStreetUseCase.execute(
                 SaveStreetUseCase.Request(streetUiMapper.map(streetUi))
@@ -376,16 +370,12 @@ class StreetViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): StreetUi {
-            val streetUi = StreetUi(
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                roadType = RoadType.STREET,
-                isPrivateSector = true,
-                estimatedHouses = 56,
-                streetName = ctx.resources.getString(R.string.def_baratynskogo_name)
-            )
-            streetUi.id = UUID.randomUUID()
-            return streetUi
-        }
+        fun previewUiModel(ctx: Context) = StreetUi(
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            roadType = RoadType.STREET,
+            isPrivateSector = true,
+            estimatedHouses = 56,
+            streetName = ctx.resources.getString(R.string.def_baratynskogo_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

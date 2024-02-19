@@ -17,27 +17,23 @@ class TerritoryToTerritoryUiMapper(
     private val localityDistrictMapper: LocalityDistrictToLocalityDistrictUiMapper,
     private val microdistrictMapper: MicrodistrictToMicrodistrictUiMapper
 ) : Mapper<Territory, TerritoryUi>, NullableMapper<Territory, TerritoryUi> {
-    override fun map(input: Territory): TerritoryUi {
-        val territoryUi = TerritoryUi(
-            congregation = congregationMapper.map(input.congregation),
-            territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
-            locality = localityMapper.map(input.locality),
-            localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
-            microdistrict = microdistrictMapper.nullableMap(input.microdistrict),
-            territoryNum = input.territoryNum,
-            isBusiness = input.isBusiness,
-            isGroupMinistry = input.isGroupMinistry,
-            isInPerimeter = input.isInPerimeter,
-            isProcessed = input.isProcessed,
-            isActive = input.isActive,
-            territoryDesc = input.territoryDesc,
-            cardNum = input.cardNum,
-            cardLocation = input.cardLocation,
-            fullCardNum = input.fullCardNum
-        )
-        territoryUi.id = input.id
-        return territoryUi
-    }
+    override fun map(input: Territory) = TerritoryUi(
+        congregation = congregationMapper.map(input.congregation),
+        territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
+        locality = localityMapper.map(input.locality),
+        localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
+        microdistrict = microdistrictMapper.nullableMap(input.microdistrict),
+        territoryNum = input.territoryNum,
+        isBusiness = input.isBusiness,
+        isGroupMinistry = input.isGroupMinistry,
+        isInPerimeter = input.isInPerimeter,
+        isProcessed = input.isProcessed,
+        isActive = input.isActive,
+        territoryDesc = input.territoryDesc,
+        cardNum = input.cardNum,
+        cardLocation = input.cardLocation,
+        fullCardNum = input.fullCardNum
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: Territory?) = input?.let { map(it) }
 }

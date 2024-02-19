@@ -6,13 +6,10 @@ import com.oborodulin.jwsuite.domain.model.territory.TerritoryStreetNamesAndHous
 
 class TerritoryStreetNamesAndHouseNumsViewToTerritoryStreetNamesAndHouseNumsMapper :
     Mapper<TerritoryStreetNamesAndHouseNumsView, TerritoryStreetNamesAndHouseNums> {
-    override fun map(input: TerritoryStreetNamesAndHouseNumsView): TerritoryStreetNamesAndHouseNums {
-        val streetNamesAndHouseNums = TerritoryStreetNamesAndHouseNums(
+    override fun map(input: TerritoryStreetNamesAndHouseNumsView) =
+        TerritoryStreetNamesAndHouseNums(
             territoryId = input.territoryId,
             streetNames = input.streetNames,
             houseFullNums = input.houseFullNums
-        )
-        streetNamesAndHouseNums.id = input.territoryId
-        return streetNamesAndHouseNums
-    }
+        ).also { it.id = input.territoryId }
 }

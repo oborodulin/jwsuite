@@ -13,22 +13,18 @@ class FloorToFloorUiMapper(
     private val entranceMapper: EntranceToEntranceUiMapper,
     private val territoryMapper: TerritoryToTerritoryUiMapper
 ) : Mapper<Floor, FloorUi>, NullableMapper<Floor, FloorUi> {
-    override fun map(input: Floor): FloorUi {
-        val houseUi = FloorUi(
-            house = houseMapper.map(input.house),
-            entrance = entranceMapper.nullableMap(input.entrance),
-            territory = territoryMapper.nullableMap(input.territory),
-            floorNum = input.floorNum,
-            isSecurity = input.isSecurity,
-            isIntercom = input.isIntercom,
-            isResidential = input.isResidential,
-            roomsByFloor = input.roomsByFloor,
-            estimatedRooms = input.estimatedRooms,
-            floorDesc = input.floorDesc
-        )
-        houseUi.id = input.id
-        return houseUi
-    }
+    override fun map(input: Floor) = FloorUi(
+        house = houseMapper.map(input.house),
+        entrance = entranceMapper.nullableMap(input.entrance),
+        territory = territoryMapper.nullableMap(input.territory),
+        floorNum = input.floorNum,
+        isSecurity = input.isSecurity,
+        isIntercom = input.isIntercom,
+        isResidential = input.isResidential,
+        roomsByFloor = input.roomsByFloor,
+        estimatedRooms = input.estimatedRooms,
+        floorDesc = input.floorDesc
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: Floor?) = input?.let { map(it) }
 }

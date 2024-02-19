@@ -17,15 +17,13 @@ class MemberUiToMemberMapper(
             memberId = input.id!!,
             congregationId = input.congregationId!!,
             activityDate = input.activityDate
-        )
-        congregation.id = input.memberCongregationId
+        ).also { it.id = input.memberCongregationId }
         val movement = MemberMovement(
             memberId = input.id!!,
             memberType = input.memberType,
             movementDate = input.movementDate
-        )
-        movement.id = input.memberMovementId
-        val member = Member(
+        ).also { it.id = input.memberMovementId }
+        return Member(
             congregation = congregationUiMapper.map(input.congregation),
             group = groupUiMapper.nullableMap(input.group),
             memberNum = input.memberNum,
@@ -38,8 +36,6 @@ class MemberUiToMemberMapper(
             dateOfBaptism = input.dateOfBaptism,
             lastCongregation = congregation,
             lastMovement = movement
-        )
-        member.id = input.id
-        return member
+        ).also { it.id = input.id }
     }
 }

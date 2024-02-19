@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
@@ -15,7 +16,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
@@ -112,8 +112,7 @@ class RegionViewModelImpl @Inject constructor(
         val regionUi = RegionUi(
             regionCode = regionCode.value.value,
             regionName = regionName.value.value
-        )
-        regionUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionUseCase.execute(SaveRegionUseCase.Request(regionUiMapper.map(regionUi)))
@@ -252,13 +251,9 @@ class RegionViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): RegionUi {
-            val regionUi = RegionUi(
-                regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
-                regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
-            )
-            regionUi.id = UUID.randomUUID()
-            return regionUi
-        }
+        fun previewUiModel(ctx: Context) = RegionUi(
+            regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
+            regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

@@ -24,13 +24,13 @@ import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDashboardSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
-import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardSettingsUiModel
+import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
+import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.RoleTransferObjectsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.TransferObjectsListItem
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardSettingsUiModel
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DashboardSettingUiModelConverter
-import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -75,16 +75,16 @@ class DashboardSettingViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: DashboardSettingUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(DashboardSettingUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is DashboardSettingUiAction.Load -> loadAppSettings()
-            is DashboardSettingUiAction.Save -> saveAppSettings()
+            is DashboardSettingUiAction.Load -> loadDashboardSettings()
+            is DashboardSettingUiAction.Save -> saveDashboardSettings()
         }
         return job
     }
 
-    private fun loadAppSettings(): Job {
-        Timber.tag(TAG).d("loadAppSettings() called")
+    private fun loadDashboardSettings(): Job {
+        Timber.tag(TAG).d("loadDashboardSettings() called")
         val job = viewModelScope.launch(errorHandler) {
             useCases.getDashboardSettingsUseCase.execute(GetDashboardSettingsUseCase.Request)
                 .map { converter.convert(it) }.collect { submitState(it) }
@@ -92,14 +92,14 @@ class DashboardSettingViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun saveAppSettings(): Job {
+    private fun saveDashboardSettings(): Job {
         val appSettings = listOf(
             AppSettingsListItem(
                 paramName = AppSettingParam.TERRITORY_PROCESSING_PERIOD,
                 paramValue = databaseBackupPeriod.value.value
             )
         )
-        Timber.tag(TAG).d("saveAppSettings() called: UI model %s", appSettings)
+        Timber.tag(TAG).d("saveDashboardSettings() called: UI model %s", appSettings)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveAppSettingsUseCase.execute(
                 SaveAppSettingsUseCase.Request(appSettingsUiMapper.map(appSettings))
@@ -115,7 +115,7 @@ class DashboardSettingViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: DashboardSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(AppSettingsUiModel) called: uiModel = %s", uiModel)
+            .d("initFieldStatesByUiModel(DashboardSettingsUiModel) called: uiModel = %s", uiModel)
         initStateValue(
             DashboardSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
             uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
@@ -230,20 +230,16 @@ class DashboardSettingViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): DashboardSettingsUiModel {
-            val dashboardSettingsUiModel = DashboardSettingsUiModel(
-                settings = emptyList(),
-                username = ctx.resources.getString(R.string.def_admin_member_pseudonym),
-                roles = rolesList(ctx),
-                transferObjects = transferObjectsList(ctx),
-                appVersionName = "1.1",
-                frameworkVersion = "28",
-                sqliteVersion = "3.22",
-                dbVersion = "1"
-            )
-            dashboardSettingsUiModel.id = UUID.randomUUID()
-            return dashboardSettingsUiModel
-        }
+        fun previewUiModel(ctx: Context) = DashboardSettingsUiModel(
+            settings = emptyList(),
+            username = ctx.resources.getString(R.string.def_admin_member_pseudonym),
+            roles = rolesList(ctx),
+            transferObjects = transferObjectsList(ctx),
+            appVersionName = "1.1",
+            frameworkVersion = "28",
+            sqliteVersion = "3.22",
+            dbVersion = "1"
+        ).also { it.id = UUID.randomUUID() }
 
         private fun rolesList(ctx: Context) = listOf(
             MemberRolesListItem(

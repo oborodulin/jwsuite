@@ -5,6 +5,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
+import com.oborodulin.home.common.extensions.toOffsetDateTime
+import com.oborodulin.home.common.extensions.toShortFormatString
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -17,23 +21,20 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
-import com.oborodulin.home.common.extensions.toOffsetDateTime
-import com.oborodulin.home.common.extensions.toShortFormatString
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRoleUi
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.RoleUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRoleConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleUiToMemberRoleMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationUi
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMembersListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toRoleUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -130,21 +131,12 @@ class MemberRoleViewModelImpl @Inject constructor(
 
     private fun saveMemberRole(): Job {
         //val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
-        val congregationUi = CongregationUi()
-        congregationUi.id = congregation.value.item?.itemId
-        val memberUi = MemberUi(
-            congregation = congregationUi,
-            congregationId = congregation.value.item?.itemId
-        )
-        memberUi.id = member.value.item?.itemId
-        val roleUi = RoleUi()
-        roleUi.id = role.value.item?.itemId
+        val congregationUi = congregation.value.item.toCongregationUi()
         val memberRoleUi = MemberRoleUi(
-            member = memberUi,
-            role = roleUi,
+            member = member.value.item.toMemberUi(congregationUi),
+            role = role.value.item.toRoleUi(),
             roleExpiredDate = roleExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
-        )
-        memberRoleUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveMemberRole() called: UI model %s", memberRoleUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberRoleUseCase.execute(
@@ -326,14 +318,10 @@ class MemberRoleViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): MemberRoleUi {
-            val memberRoleUi = MemberRoleUi(
-                member = MemberViewModelImpl.previewUiModel(ctx),
-                role = RoleUi(),
-                roleExpiredDate = "2024-08-01T14:29:10.212+03:00".toOffsetDateTime()
-            )
-            memberRoleUi.id = UUID.randomUUID()
-            return memberRoleUi
-        }
+        fun previewUiModel(ctx: Context) = MemberRoleUi(
+            member = MemberViewModelImpl.previewUiModel(ctx),
+            role = RoleUi(),
+            roleExpiredDate = "2024-08-01T14:29:10.212+03:00".toOffsetDateTime()
+        ).also { it.id = UUID.randomUUID() }
     }
 }

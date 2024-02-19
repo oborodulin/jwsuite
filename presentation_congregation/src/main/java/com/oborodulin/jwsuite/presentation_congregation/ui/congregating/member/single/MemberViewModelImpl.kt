@@ -30,15 +30,15 @@ import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.single.GroupViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveMemberConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberUiToMemberMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toGroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toMembersListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -199,11 +199,7 @@ class MemberViewModelImpl @Inject constructor(
 
     private fun saveMember(): Job {
         //val offsetFormatter = DateTimeFormatter.ofPattern(Constants.APP_OFFSET_DATE_TIME)
-        val congregationUi = CongregationUi()
-        congregationUi.id = congregation.value.item?.itemId
-        val groupUi =
-            GroupUi(congregation = congregationUi, groupNum = group.value.item?.headline?.toInt())
-        groupUi.id = group.value.item?.itemId
+        val congregationUi = congregation.value.item.toCongregationUi()
         val dateOfBirthOffsetDateTime = dateOfBirth.value.value.toFullFormatOffsetDateTimeOrNull()
         Timber.tag(TAG).d(
             "saveMember(): dateOfBirth.value.value: %s; dateOfBirthOffsetDateTime = %s",
@@ -212,7 +208,7 @@ class MemberViewModelImpl @Inject constructor(
         )
         val memberUi = MemberUi(
             congregation = congregationUi,
-            group = groupUi,
+            group = group.value.item.toGroupUi(congregationUi),
             memberNum = memberNum.value.value.ifEmpty { null },
             memberName = memberName.value.value.ifEmpty { null },
             surname = surname.value.value.ifEmpty { null },
@@ -228,8 +224,7 @@ class MemberViewModelImpl @Inject constructor(
             memberType = MemberType.valueOf(memberType.value.value),
             movementDate = movementDate.value.value.toFullFormatOffsetDateTime(),
             loginExpiredDate = loginExpiredDate.value.value.toFullFormatOffsetDateTimeOrNull()
-        )
-        memberUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveMember() called: UI model %s", memberUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberUseCase.execute(SaveMemberUseCase.Request(memberUiMapper.map(memberUi)))
@@ -608,21 +603,17 @@ class MemberViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): MemberUi {
-            val memberUi = MemberUi(
-                group = GroupViewModelImpl.previewUiModel(ctx),
-                memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
-                memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
-                surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
-                patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
-                pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
-                phoneNumber = "+79493851487",
-                memberType = MemberType.PREACHER,
-                dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime(),
-                dateOfBaptism = "1994-06-14T14:29:10.212+03:00".toOffsetDateTime()
-            )
-            memberUi.id = UUID.randomUUID()
-            return memberUi
-        }
+        fun previewUiModel(ctx: Context) = MemberUi(
+            group = GroupViewModelImpl.previewUiModel(ctx),
+            memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
+            memberName = ctx.resources.getString(R.string.def_ivanov_member_name),
+            surname = ctx.resources.getString(R.string.def_ivanov_member_surname),
+            patronymic = ctx.resources.getString(R.string.def_ivanov_member_patronymic),
+            pseudonym = ctx.resources.getString(R.string.def_ivanov_member_pseudonym),
+            phoneNumber = "+79493851487",
+            memberType = MemberType.PREACHER,
+            dateOfBirth = "1981-08-01T14:29:10.212+03:00".toOffsetDateTime(),
+            dateOfBaptism = "1994-06-14T14:29:10.212+03:00".toOffsetDateTime()
+        ).also { it.id = UUID.randomUUID() }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -17,7 +18,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.territory.GetNextTerritoryNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.GetTerritoryUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.SaveTerritoryUseCase
@@ -32,8 +32,8 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityVi
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoriesListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
@@ -189,20 +189,15 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     private fun saveTerritory(): Job {
-        val congregationUi = CongregationUi()
-        congregationUi.id = congregation.value.item?.itemId
-        val territoryCategoryUi = TerritoryCategoryUi()
-        territoryCategoryUi.id = category.value.item?.itemId
-        val localityUi = LocalityUi()
-        localityUi.id = locality.value.item?.itemId
-        val localityDistrictUi = LocalityDistrictUi()
-        localityDistrictUi.id = localityDistrict.value.item?.itemId
-        val microdistrictUi = MicrodistrictUi()
-        microdistrictUi.id = microdistrict.value.item?.itemId
+        val congregationUi = CongregationUi().also { it.id = congregation.value.item?.itemId }
+        val territoryCategoryUi = TerritoryCategoryUi().also { it.id = category.value.item?.itemId }
+        val localityDistrictUi =
+            LocalityDistrictUi().also { it.id = localityDistrict.value.item?.itemId }
+        val microdistrictUi = MicrodistrictUi().also { it.id = microdistrict.value.item?.itemId }
         val territoryUi = TerritoryUi(
             congregation = congregationUi,
             territoryCategory = territoryCategoryUi,
-            locality = localityUi,
+            locality = locality.value.item.toLocalityUi(),
             localityDistrict = localityDistrictUi,
             microdistrict = microdistrictUi,
             territoryNum = territoryNum.value.value.toInt(),
@@ -210,8 +205,7 @@ class TerritoryViewModelImpl @Inject constructor(
             isGroupMinistry = isGroupMinistry.value.value.toBoolean(),
             isActive = isActive.value.value.toBoolean(),
             territoryDesc = territoryDesc.value.value.ifEmpty { null }
-        )
-        territoryUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveTerritory() called: UI model %s", territoryUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryUseCase.execute(
@@ -486,22 +480,18 @@ class TerritoryViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): TerritoryUi {
-            val territoryUi = TerritoryUi(
-                congregation = CongregationViewModelImpl.previewUiModel(ctx),
-                territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
-                microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
-                territoryNum = 1,
-                isBusiness = true,
-                isGroupMinistry = true,
-                isProcessed = false,
-                isActive = true,
-                territoryDesc = "Territory Desc"
-            )
-            territoryUi.id = UUID.randomUUID()
-            return territoryUi
-        }
+        fun previewUiModel(ctx: Context) = TerritoryUi(
+            congregation = CongregationViewModelImpl.previewUiModel(ctx),
+            territoryCategory = TerritoryCategoryViewModelImpl.previewUiModel(ctx),
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
+            microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
+            territoryNum = 1,
+            isBusiness = true,
+            isGroupMinistry = true,
+            isProcessed = false,
+            isActive = true,
+            territoryDesc = "Territory Desc"
+        ).also { it.id = UUID.randomUUID() }
     }
 }

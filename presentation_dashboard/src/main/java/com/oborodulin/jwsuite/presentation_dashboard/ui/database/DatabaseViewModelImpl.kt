@@ -241,13 +241,9 @@ class DatabaseViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): DatabaseUiModel {
-            val databaseUiModel = DatabaseUiModel(
-                entityDesc = "",
-                isDone = true
-            )
-            databaseUiModel.id = UUID.randomUUID()
-            return databaseUiModel
-        }
+        fun previewUiModel(ctx: Context) = DatabaseUiModel(
+            entityDesc = "",
+            isDone = true
+        ).also { it.id = UUID.randomUUID() }
     }
 }

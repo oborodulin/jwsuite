@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
@@ -40,3 +41,7 @@ fun TerritoryUi.toTerritoriesListItem() = TerritoriesListItem(
     cardLocation = this.cardLocation,
     fullCardNum = this.fullCardNum
 )
+
+fun ListItemModel?.toTerritoryUi() =
+    TerritoryUi(territoryNum = this?.let { headline.filter { it.isDigit() }.toInt() }
+        ?: 0).also { it.id = this?.itemId }

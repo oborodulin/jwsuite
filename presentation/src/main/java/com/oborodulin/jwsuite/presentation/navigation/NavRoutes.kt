@@ -16,6 +16,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.oborodulin.home.common.extensions.toUUID
 import com.oborodulin.home.common.util.LogLevel.LOG_NAVIGATION
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
@@ -288,7 +289,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): RegionInput? {
             val regionInput =
-                entry.arguments?.getString(ARG_REGION_ID)?.let { RegionInput(UUID.fromString(it)) }
+                entry.arguments?.getString(ARG_REGION_ID)?.let { RegionInput(it.toUUID()) }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("Region -> fromEntry: '%s'", regionInput)
             return regionInput
         }
@@ -319,7 +320,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): RegionDistrictInput? {
             val regionDistrictInput =
                 entry.arguments?.getString(ARG_REGION_DISTRICT_ID)?.let {
-                    RegionDistrictInput(UUID.fromString(it))
+                    RegionDistrictInput(it.toUUID())
                 }
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("RegionDistrict -> fromEntry: '%s'", regionDistrictInput)
@@ -347,7 +348,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): LocalityInput? {
             val localityInput = entry.arguments?.getString(ARG_LOCALITY_ID)?.let {
-                LocalityInput(UUID.fromString(it))
+                LocalityInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("Locality -> fromEntry: '%s'", localityInput)
             return localityInput
@@ -379,7 +380,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): LocalityDistrictInput? {
             val localityDistrictInput = entry.arguments?.getString(ARG_LOCALITY_DISTRICT_ID)?.let {
-                LocalityDistrictInput(UUID.fromString(it))
+                LocalityDistrictInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("LocalityDistrict -> fromEntry: '%s'", localityDistrictInput)
@@ -409,7 +410,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MicrodistrictInput? {
             val microdistrictInput = entry.arguments?.getString(ARG_MICRODISTRICT_ID)?.let {
-                MicrodistrictInput(UUID.fromString(it))
+                MicrodistrictInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("Microdistrict -> fromEntry: '%s'", microdistrictInput)
@@ -437,7 +438,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): StreetInput? {
             val streetInput = entry.arguments?.getString(ARG_STREET_ID)?.let {
-                StreetInput(UUID.fromString(it))
+                StreetInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("Street -> fromEntry: '%s'", streetInput)
             return streetInput
@@ -477,7 +478,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): StreetLocalityDistrictInput {
             val streetLocalityDistrictInput = StreetLocalityDistrictInput(
                 UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty()),
-                entry.arguments?.getString(ARG_STREET_DISTRICT_ID)?.let { UUID.fromString(it) }
+                entry.arguments?.getString(ARG_STREET_DISTRICT_ID)?.toUUID()
             )
             Timber.tag(TAG)
                 .d("StreetLocalityDistrict -> fromEntry: '%s'", streetLocalityDistrictInput)
@@ -518,7 +519,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): StreetMicrodistrictInput {
             val streetMicrodistrictInput = StreetMicrodistrictInput(
                 UUID.fromString(entry.arguments?.getString(ARG_STREET_ID).orEmpty()),
-                entry.arguments?.getString(ARG_STREET_DISTRICT_ID)?.let { UUID.fromString(it) }
+                entry.arguments?.getString(ARG_STREET_DISTRICT_ID)?.toUUID()
             )
             Timber.tag(TAG)
                 .d("StreetMicrodistrict -> fromEntry: '%s'", streetMicrodistrictInput)
@@ -549,7 +550,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): CongregationInput? {
             val congregationInput = entry.arguments?.getString(ARG_CONGREGATION_ID)
-                ?.let { CongregationInput(UUID.fromString(it)) }
+                ?.let { CongregationInput(it.toUUID()) }
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("Congregation -> fromEntry: '%s'", congregationInput)
             return congregationInput
@@ -576,7 +577,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): GroupInput? {
             val groupInput =
-                entry.arguments?.getString(ARG_GROUP_ID)?.let { GroupInput(UUID.fromString(it)) }
+                entry.arguments?.getString(ARG_GROUP_ID)?.let { GroupInput(it.toUUID()) }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("Group -> fromEntry: '%s'", groupInput)
             return groupInput
         }
@@ -602,7 +603,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MemberInput? {
             val memberInput =
-                entry.arguments?.getString(ARG_MEMBER_ID)?.let { MemberInput(UUID.fromString(it)) }
+                entry.arguments?.getString(ARG_MEMBER_ID)?.let { MemberInput(it.toUUID()) }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("Member -> fromEntry: '%s'", memberInput)
             return memberInput
         }
@@ -629,8 +630,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MemberRoleInput? {
             val memberRoleInput =
-                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)
-                    ?.let { MemberRoleInput(UUID.fromString(it)) }
+                entry.arguments?.getString(ARG_MEMBER_ROLE_ID)?.let { MemberRoleInput(it.toUUID()) }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("MemberRole -> fromEntry: '%s'", memberRoleInput)
             return memberRoleInput
         }
@@ -663,7 +663,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): TerritoryCategoryInput? {
             val territoryCategoryInput =
                 entry.arguments?.getString(ARG_TERRITORY_CATEGORY_ID)?.let {
-                    TerritoryCategoryInput(UUID.fromString(it))
+                    TerritoryCategoryInput(it.toUUID())
                 }
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("TerritoryCategory -> fromEntry: '%s'", territoryCategoryInput)
@@ -692,7 +692,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): TerritoryInput? {
             val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
-                TerritoryInput(UUID.fromString(it))
+                TerritoryInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("Territory -> fromEntry: '%s'", territoryInput)
             return territoryInput
@@ -761,7 +761,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): TerritoryStreetInput {
             val territoryStreetInput = TerritoryStreetInput(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
-                entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.let { UUID.fromString(it) }
+                entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.toUUID()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("TerritoryStreet -> fromEntry: '%s'", territoryStreetInput)
@@ -799,7 +799,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): TerritoryHouseInput {
             val territoryHouseInput = TerritoryHouseInput(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
-                entry.arguments?.getString(ARG_HOUSE_ID)?.let { UUID.fromString(it) }
+                entry.arguments?.getString(ARG_HOUSE_ID)?.toUUID()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("TerritoryHouse -> fromEntry: '%s'", territoryHouseInput)
@@ -838,7 +838,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): TerritoryEntranceInput {
             val territoryEntranceInput = TerritoryEntranceInput(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
-                entry.arguments?.getString(ARG_ENTRANCE_ID)?.let { UUID.fromString(it) }
+                entry.arguments?.getString(ARG_ENTRANCE_ID)?.toUUID()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("TerritoryEntrance -> fromEntry: '%s'", territoryEntranceInput)
@@ -877,7 +877,7 @@ sealed class NavRoutes(
         fun fromEntry(entry: NavBackStackEntry): TerritoryFloorInput {
             val territoryFloorInput = TerritoryFloorInput(
                 UUID.fromString(entry.arguments?.getString(ARG_TERRITORY_ID).orEmpty()),
-                entry.arguments?.getString(ARG_FLOOR_ID)?.let { UUID.fromString(it) }
+                entry.arguments?.getString(ARG_FLOOR_ID)?.toUUID()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("TerritoryFloor -> fromEntry: '%s'", territoryFloorInput)
@@ -922,7 +922,7 @@ sealed class NavRoutes(
                     ARG_TERRITORY_ID, territoryId, ARG_ROOM_ID, roomId
                 )
             val territoryRoomInput = TerritoryRoomInput(
-                UUID.fromString(territoryId), roomId?.let { UUID.fromString(it) }
+                UUID.fromString(territoryId), roomId?.toUUID()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("TerritoryRoom -> fromEntry: '%s'", territoryRoomInput)
@@ -951,7 +951,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): HouseInput? {
             val houseInput = entry.arguments?.getString(ARG_HOUSE_ID)?.let {
-                HouseInput(UUID.fromString(it))
+                HouseInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG).d("House -> fromEntry: '%s'", houseInput)
             return houseInput
@@ -1113,12 +1113,10 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MemberReportInput {
             val memberReportInput = MemberReportInput(
-                territoryMemberReportId = entry.arguments?.getString(ARG_MEMBER_REPORT_ID)
-                    ?.let { UUID.fromString(it) },
-                territoryStreetId = entry.arguments?.getString(ARG_TERRITORY_STREET_ID)
-                    ?.let { UUID.fromString(it) },
-                houseId = entry.arguments?.getString(ARG_HOUSE_ID)?.let { UUID.fromString(it) },
-                roomId = entry.arguments?.getString(ARG_ROOM_ID)?.let { UUID.fromString(it) }
+                territoryMemberReportId = entry.arguments?.getString(ARG_MEMBER_REPORT_ID)?.toUUID(),
+                territoryStreetId = entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.toUUID(),
+                houseId = entry.arguments?.getString(ARG_HOUSE_ID)?.toUUID(),
+                roomId = entry.arguments?.getString(ARG_ROOM_ID)?.toUUID()
             )
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("MemberReport -> fromEntry: '%s'", memberReportInput)
@@ -1148,7 +1146,7 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): TerritoryInput? {
             val territoryInput = entry.arguments?.getString(ARG_TERRITORY_ID)?.let {
-                TerritoryInput(UUID.fromString(it))
+                TerritoryInput(it.toUUID())
             }
             if (LOG_NAVIGATION) Timber.tag(TAG)
                 .d("ReportStreets -> fromEntry: '%s'", territoryInput)

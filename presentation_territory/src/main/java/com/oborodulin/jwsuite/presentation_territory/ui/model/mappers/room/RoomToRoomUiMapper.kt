@@ -23,25 +23,21 @@ class RoomToRoomUiMapper(
     private val floorMapper: FloorToFloorUiMapper,
     private val territoryMapper: TerritoryToTerritoryUiMapper
 ) : Mapper<Room, RoomUi>, NullableMapper<Room, RoomUi> {
-    override fun map(input: Room): RoomUi {
-        val houseUi = RoomUi(
-            locality = localityMapper.map(input.locality),
-            localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
-            microdistrict = microistrictMapper.nullableMap(input.microdistrict),
-            street = streetMapper.map(input.street),
-            house = houseMapper.map(input.house),
-            entrance = entranceMapper.nullableMap(input.entrance),
-            floor = floorMapper.nullableMap(input.floor),
-            territory = territoryMapper.nullableMap(input.territory),
-            roomNum = input.roomNum,
-            isIntercom = input.isIntercom,
-            isResidential = input.isResidential,
-            isForeignLanguage = input.isForeignLanguage,
-            roomDesc = input.roomDesc
-        )
-        houseUi.id = input.id
-        return houseUi
-    }
+    override fun map(input: Room) = RoomUi(
+        locality = localityMapper.map(input.locality),
+        localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
+        microdistrict = microistrictMapper.nullableMap(input.microdistrict),
+        street = streetMapper.map(input.street),
+        house = houseMapper.map(input.house),
+        entrance = entranceMapper.nullableMap(input.entrance),
+        floor = floorMapper.nullableMap(input.floor),
+        territory = territoryMapper.nullableMap(input.territory),
+        roomNum = input.roomNum,
+        isIntercom = input.isIntercom,
+        isResidential = input.isResidential,
+        isForeignLanguage = input.isForeignLanguage,
+        roomDesc = input.roomDesc
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: Room?) = input?.let { map(it) }
 }

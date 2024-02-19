@@ -9,18 +9,16 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 class GeoStreetViewToGeoStreetMapper(
     private val ctx: Context, private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
 ) : Mapper<GeoStreetView, GeoStreet> {
-    override fun map(input: GeoStreetView): GeoStreet {
-        val street = GeoStreet(
-            ctx = ctx,
-            locality = localityMapper.map(input.locality),
-            streetHashCode = input.street.data.streetHashCode,
-            roadType = input.street.data.roadType,
-            isPrivateSector = input.street.data.isStreetPrivateSector,
-            estimatedHouses = input.street.data.estStreetHouses,
-            streetName = input.street.tl.streetName
-        )
-        street.id = input.street.data.streetId
-        street.tlId = input.street.tl.streetTlId
-        return street
+    override fun map(input: GeoStreetView) = GeoStreet(
+        ctx = ctx,
+        locality = localityMapper.map(input.locality),
+        streetHashCode = input.street.data.streetHashCode,
+        roadType = input.street.data.roadType,
+        isPrivateSector = input.street.data.isStreetPrivateSector,
+        estimatedHouses = input.street.data.estStreetHouses,
+        streetName = input.street.tl.streetName
+    ).also {
+        it.id = input.street.data.streetId
+        it.tlId = input.street.tl.streetTlId
     }
 }

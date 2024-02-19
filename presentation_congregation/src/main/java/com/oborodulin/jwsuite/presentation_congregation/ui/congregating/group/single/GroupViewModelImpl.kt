@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -17,19 +18,18 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.group.GetGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GetNextGroupNumUseCase
 import com.oborodulin.jwsuite.domain.usecases.group.GroupUseCases
 import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congregation.single.CongregationViewModelImpl
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.GroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveGroupConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.group.GroupUiToGroupMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toCongregationsListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.toListItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -134,13 +134,10 @@ class GroupViewModelImpl @Inject constructor(
     }
 
     private fun saveGroup(): Job {
-        val congregationUi = CongregationUi()
-        congregationUi.id = congregation.value.item?.itemId
         val groupUi = GroupUi(
-            congregation = congregationUi,
+            congregation = congregation.value.item.toCongregationUi(),
             groupNum = groupNum.value.value.toInt(),
-        )
-        groupUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveGroup() called: UI model %s", groupUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveGroupUseCase.execute(SaveGroupUseCase.Request(groupUiMapper.map(groupUi)))
@@ -274,13 +271,9 @@ class GroupViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): GroupUi {
-            val groupUi = GroupUi(
-                congregation = CongregationViewModelImpl.previewUiModel(ctx),
-                groupNum = ctx.resources.getInteger(R.integer.def_group1)
-            )
-            groupUi.id = UUID.randomUUID()
-            return groupUi
-        }
+        fun previewUiModel(ctx: Context) = GroupUi(
+            congregation = CongregationViewModelImpl.previewUiModel(ctx),
+            groupNum = ctx.resources.getInteger(R.integer.def_group1)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

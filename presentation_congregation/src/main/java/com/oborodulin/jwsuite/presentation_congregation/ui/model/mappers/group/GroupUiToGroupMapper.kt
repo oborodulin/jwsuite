@@ -8,14 +8,10 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.congreg
 
 class GroupUiToGroupMapper(private val congregationUiMapper: CongregationUiToCongregationMapper) :
     Mapper<GroupUi, Group>, NullableMapper<GroupUi, Group> {
-    override fun map(input: GroupUi): Group {
-        val group = Group(
-            congregation = congregationUiMapper.map(input.congregation),
-            groupNum = input.groupNum!!
-        )
-        group.id = input.id
-        return group
-    }
+    override fun map(input: GroupUi) = Group(
+        congregation = congregationUiMapper.map(input.congregation),
+        groupNum = input.groupNum!!
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: GroupUi?) = input?.let { map(it) }
 }

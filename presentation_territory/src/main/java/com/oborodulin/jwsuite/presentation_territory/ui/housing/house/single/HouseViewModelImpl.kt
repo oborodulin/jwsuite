@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -18,7 +19,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.domain.usecases.house.GetHouseUseCase
 import com.oborodulin.jwsuite.domain.usecases.house.HouseUseCases
@@ -28,15 +28,15 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.Micro
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.HouseConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseToHousesListItemMapper
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.house.HouseUiToHouseMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoryUi
 import com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.single.TerritoryViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -193,20 +193,14 @@ class HouseViewModelImpl @Inject constructor(
     }
 
     private fun saveHouse(): Job {
-        val streetUi = StreetUi()
-        streetUi.id = street.value.item?.itemId
-        val localityDistrictUi = LocalityDistrictUi()
-        localityDistrictUi.id = localityDistrict.value.item?.itemId
-        val microdistrictUi = MicrodistrictUi()
-        microdistrictUi.id = microdistrict.value.item?.itemId
-        val territoryUi = TerritoryUi()
-        territoryUi.id = territory.value.item?.itemId
-
+        val localityDistrictUi =
+            LocalityDistrictUi().also { it.id = localityDistrict.value.item?.itemId }
+        val microdistrictUi = MicrodistrictUi().also { it.id = microdistrict.value.item?.itemId }
         val houseUi = HouseUi(
-            street = streetUi,
+            street = street.value.item.toStreetUi(),
             localityDistrict = localityDistrictUi,
             microdistrict = microdistrictUi,
-            territory = territoryUi,
+            territory = territory.value.item.toTerritoryUi(),
             zipCode = zipCode.value.value.ifEmpty { null },
             houseNum = houseNum.value.value.toInt(),
             houseLetter = houseLetter.value.value.ifEmpty { null },
@@ -223,13 +217,8 @@ class HouseViewModelImpl @Inject constructor(
             isForeignLanguage = isForeignLanguage.value.value.toBoolean(),
             isPrivateSector = isPrivateSector.value.value.toBoolean(),
             houseDesc = houseDesc.value.value.ifEmpty { null }
-        )
-        houseUi.id = id.value.value.toUUIDOrNull()
-        Timber.tag(TAG).d(
-            "saveHouse() called: UI model %s; streetUi.id = %s",
-            houseUi,
-            streetUi.id
-        )
+        ).also { it.id = id.value.value.toUUIDOrNull() }
+        Timber.tag(TAG).d("saveHouse() called: UI model %s", houseUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveHouseUseCase.execute(SaveHouseUseCase.Request(houseUiMapper.map(houseUi)))
                 .collect {
@@ -610,31 +599,27 @@ class HouseViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): HouseUi {
-            val houseUi = HouseUi(
-                street = StreetViewModelImpl.previewUiModel(ctx),
-                localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
-                microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
-                territory = TerritoryViewModelImpl.previewUiModel(ctx),
-                zipCode = "830004",
-                houseNum = 1,
-                houseLetter = "Б",
-                buildingNum = null,
-                buildingType = BuildingType.HOUSE,
-                isBusiness = false,
-                isSecurity = false,
-                isIntercom = null,
-                isResidential = true,
-                houseEntrancesQty = null,
-                floorsByEntrance = null,
-                roomsByHouseFloor = null,
-                estimatedRooms = null,
-                isForeignLanguage = false,
-                isPrivateSector = false,
-                houseDesc = ""
-            )
-            houseUi.id = UUID.randomUUID()
-            return houseUi
-        }
+        fun previewUiModel(ctx: Context) = HouseUi(
+            street = StreetViewModelImpl.previewUiModel(ctx),
+            localityDistrict = LocalityDistrictViewModelImpl.previewUiModel(ctx),
+            microdistrict = MicrodistrictViewModelImpl.previewUiModel(ctx),
+            territory = TerritoryViewModelImpl.previewUiModel(ctx),
+            zipCode = "830004",
+            houseNum = 1,
+            houseLetter = "Б",
+            buildingNum = null,
+            buildingType = BuildingType.HOUSE,
+            isBusiness = false,
+            isSecurity = false,
+            isIntercom = null,
+            isResidential = true,
+            houseEntrancesQty = null,
+            floorsByEntrance = null,
+            roomsByHouseFloor = null,
+            estimatedRooms = null,
+            isForeignLanguage = false,
+            isPrivateSector = false,
+            houseDesc = ""
+        ).also { it.id = UUID.randomUUID() }
     }
 }

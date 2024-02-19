@@ -17,7 +17,7 @@ class LocalityViewToGeoLocalityMapper(private val ctx: Context) :
                 properties.size, input.data.localityId
             )
         )
-        val locality = GeoLocality(
+        return GeoLocality(
             ctx = ctx,
             region = properties[0] as GeoRegion,
             regionDistrict = properties[1] as? GeoRegionDistrict,
@@ -25,10 +25,10 @@ class LocalityViewToGeoLocalityMapper(private val ctx: Context) :
             localityType = input.data.localityType,
             localityShortName = input.tl.localityShortName,
             localityName = input.tl.localityName
-        )
-        locality.id = input.data.localityId
-        locality.tlId = input.tl.localityTlId
-        return locality
+        ).also {
+            it.id = input.data.localityId
+            it.tlId = input.tl.localityTlId
+        }
     }
 
     override fun nullableMap(input: LocalityView?, vararg properties: Any?) =

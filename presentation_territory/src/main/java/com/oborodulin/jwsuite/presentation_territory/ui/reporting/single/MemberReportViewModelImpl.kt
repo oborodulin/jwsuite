@@ -5,6 +5,8 @@ import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toUUID
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -18,21 +20,20 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.ResourcesHelper
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.oborodulin.jwsuite.domain.usecases.territory.report.GetMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.SaveMemberReportUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.report.TerritoryReportUseCases
 import com.oborodulin.jwsuite.presentation_territory.R
 import com.oborodulin.jwsuite.presentation_territory.ui.housing.house.single.HouseViewModelImpl
-import com.oborodulin.jwsuite.presentation_territory.ui.model.HouseUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.HousesListItem
-import com.oborodulin.jwsuite.presentation_territory.ui.model.RoomUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryMemberReportUi
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.converters.TerritoryMemberReportConverter
 import com.oborodulin.jwsuite.presentation_territory.ui.model.mappers.report.TerritoryMemberReportUiToTerritoryMemberReportMapper
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toHouseUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.toHousesListItem
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toRoomUi
+import com.oborodulin.jwsuite.presentation_territory.ui.model.toTerritoryStreetUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -180,25 +181,18 @@ class MemberReportViewModelImpl @Inject constructor(
     }
 
     private fun saveMemberReport(): Job {
-        val territoryStreetUi = TerritoryStreetUi()
-        territoryStreetUi.id = territoryStreet.value.item?.itemId
-        val houseUi = HouseUi()
-        houseUi.id = house.value.item?.itemId
-        val roomUi = RoomUi()
-        roomUi.id = room.value.item?.itemId
         val territoryMemberReportUi = TerritoryMemberReportUi(
-            territoryStreet = territoryStreetUi,
-            house = houseUi,
-            room = roomUi,
-            territoryMemberId = UUID.fromString(territoryMemberId.value.value),
+            territoryStreet = territoryStreet.value.item.toTerritoryStreetUi(),
+            house = house.value.item.toHouseUi(),
+            room = room.value.item.toRoomUi(),
+            territoryMemberId = territoryMemberId.value.value.toUUID(),
             territoryReportMark = TerritoryReportMark.valueOf(reportMark.value.value),
             languageCode = null,
             gender = gender.value.value.toBooleanStrictOrNull(),
             age = age.value.value.toIntOrNull(),
             isProcessed = isProcessed.value.value.toBoolean(),
             territoryReportDesc = reportDesc.value.value.ifEmpty { null }
-        )
-        territoryMemberReportUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveMemberReport() called: UI model %s", territoryMemberReportUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMemberReportUseCase.execute(
@@ -473,19 +467,15 @@ class MemberReportViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): TerritoryMemberReportUi {
-            val memberUi = TerritoryMemberReportUi(
-                house = HouseViewModelImpl.previewUiModel(ctx),
-                territoryMemberId = UUID.randomUUID(),
-                territoryReportMark = TerritoryReportMark.PP,
-                languageCode = null,
-                gender = true,
-                age = 45,
-                isProcessed = false,
-                territoryReportDesc = "Александр"
-            )
-            memberUi.id = UUID.randomUUID()
-            return memberUi
-        }
+        fun previewUiModel(ctx: Context) = TerritoryMemberReportUi(
+            house = HouseViewModelImpl.previewUiModel(ctx),
+            territoryMemberId = UUID.randomUUID(),
+            territoryReportMark = TerritoryReportMark.PP,
+            languageCode = null,
+            gender = true,
+            age = 45,
+            isProcessed = false,
+            territoryReportDesc = "Александр"
+        ).also { it.id = UUID.randomUUID() }
     }
 }

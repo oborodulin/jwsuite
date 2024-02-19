@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
+import com.oborodulin.home.common.extensions.toLocalityName
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.LocalityType
@@ -21,3 +22,6 @@ fun LocalityUi.toListItemModel() = ListItemModel(
     headline = this.localityFullName,
     supportingText = "${this.localityCode}: ${this.localityShortName}"
 )
+
+fun ListItemModel?.toLocalityUi() =
+    LocalityUi(localityName = this?.headline.toLocalityName()).also { it.id = this?.itemId }

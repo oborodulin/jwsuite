@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -16,17 +17,16 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.GetRegionDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.RegionDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegiondistrict.SaveRegionDistrictUseCase
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictToRegionDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toRegionUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -118,14 +118,11 @@ class RegionDistrictViewModelImpl @Inject constructor(
     }
 
     private fun saveRegionDistrict(): Job {
-        val regionUi = RegionUi()
-        regionUi.id = region.value.item?.itemId
         val regionDistrictUi = RegionDistrictUi(
-            region = regionUi,
+            region = region.value.item.toRegionUi(),
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
-        )
-        regionDistrictUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveRegionDistrict() called: UI model %s", regionDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveRegionDistrictUseCase.execute(
@@ -311,14 +308,10 @@ class RegionDistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): RegionDistrictUi {
-            val regionDistrictUi = RegionDistrictUi(
-                region = RegionViewModelImpl.previewUiModel(ctx),
-                districtShortName = ctx.resources.getString(R.string.def_reg_donetsky_short_name),
-                districtName = ctx.resources.getString(R.string.def_reg_donetsky_name)
-            )
-            regionDistrictUi.id = UUID.randomUUID()
-            return regionDistrictUi
-        }
+        fun previewUiModel(ctx: Context) = RegionDistrictUi(
+            region = RegionViewModelImpl.previewUiModel(ctx),
+            districtShortName = ctx.resources.getString(R.string.def_reg_donetsky_short_name),
+            districtName = ctx.resources.getString(R.string.def_reg_donetsky_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

@@ -6,11 +6,8 @@ import com.oborodulin.jwsuite.domain.model.congregation.Role
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.RoleUi
 
 class RoleUiToRoleMapper : Mapper<RoleUi, Role>, NullableMapper<RoleUi, Role> {
-    override fun map(input: RoleUi): Role {
-        val role = Role(roleType = input.roleType, roleName = input.roleName)
-        role.id = input.id
-        return role
-    }
+    override fun map(input: RoleUi) =
+        Role(roleType = input.roleType, roleName = input.roleName).also { it.id = input.id }
 
     override fun nullableMap(input: RoleUi?) = input?.let { map(it) }
 }

@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
 import android.os.Parcelable
+import com.oborodulin.home.common.extensions.toIntHouseNum
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import java.util.UUID
@@ -39,14 +40,7 @@ data class HousesListItem(
 
 fun ListItemModel.toHousesListItem() = HousesListItem(
     id = this.itemId ?: UUID.randomUUID(),
-    houseNum = this.headline.let { s ->
-        val cs = s.substringAfter(' ')
-        try {
-            cs.substringBefore(cs.first { it.isLetter() || it == '-' })
-        } catch (e: NoSuchElementException) {
-            cs
-        }
-    }.toInt(),
+    houseNum = this.headline.toIntHouseNum(),
     houseFullNum = this.headline,
     streetFullName = this.supportingText?.let { s ->
         try {

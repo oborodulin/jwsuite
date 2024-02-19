@@ -19,25 +19,21 @@ class TerritoryUiToTerritoryMapper(
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
     private val microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper
 ) : Mapper<TerritoryUi, Territory>, NullableMapper<TerritoryUi, Territory> {
-    override fun map(input: TerritoryUi): Territory {
-        val territory = Territory(
-            ctx = ctx,
-            congregation = congregationUiMapper.map(input.congregation),
-            territoryCategory = territoryCategoryUiMapper.map(input.territoryCategory),
-            locality = localityUiMapper.map(input.locality),
-            localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
-            microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
-            territoryNum = input.territoryNum,
-            isBusiness = input.isBusiness,
-            isGroupMinistry = input.isGroupMinistry,
-            isInPerimeter = input.isInPerimeter,
-            isProcessed = input.isProcessed,
-            isActive = input.isActive,
-            territoryDesc = input.territoryDesc
-        )
-        territory.id = input.id
-        return territory
-    }
+    override fun map(input: TerritoryUi) = Territory(
+        ctx = ctx,
+        congregation = congregationUiMapper.map(input.congregation),
+        territoryCategory = territoryCategoryUiMapper.map(input.territoryCategory),
+        locality = localityUiMapper.map(input.locality),
+        localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
+        microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
+        territoryNum = input.territoryNum,
+        isBusiness = input.isBusiness,
+        isGroupMinistry = input.isGroupMinistry,
+        isInPerimeter = input.isInPerimeter,
+        isProcessed = input.isProcessed,
+        isActive = input.isActive,
+        territoryDesc = input.territoryDesc
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: TerritoryUi?) = input?.let { map(it) }
 }

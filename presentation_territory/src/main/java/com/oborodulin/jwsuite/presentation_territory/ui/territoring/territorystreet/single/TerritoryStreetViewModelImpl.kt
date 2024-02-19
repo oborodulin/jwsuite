@@ -6,6 +6,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -17,7 +18,6 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.domain.usecases.territory.street.GetTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.street.TerritoryStreetUseCases
@@ -25,6 +25,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListVie
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUi
 import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryStreetUiModel
@@ -155,20 +156,16 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
 
     private fun saveTerritoryStreet(): Job {
-        val streetUi = StreetUi()
-        streetUi.id = street.value.item?.itemId
-
         val territoryStreetUi = TerritoryStreetUi(
             territoryId = territory.value.item?.itemId!!,
-            street = streetUi,
+            street = street.value.item.toStreetUi(),
             isPrivateSector = isPrivateSector.value.value.toBooleanStrictOrNull(),
             isEvenSide = isEvenSide.value.value.toBooleanStrictOrNull(),
             estimatedHouses = estimatedHouses.value.value.toIntOrNull()
-        )
-        territoryStreetUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d(
-            "saveTerritoryStreet() called: UI territoryStreetUi.id = %s; territoryStreetUi = %s; streetUi.id = %s",
-            territoryStreetUi.id, territoryStreetUi, streetUi.id
+            "saveTerritoryStreet() called: UI territoryStreetUi.id = %s; territoryStreetUi = %s",
+            territoryStreetUi.id, territoryStreetUi
         )
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveTerritoryStreetUseCase.execute(
@@ -332,65 +329,64 @@ class TerritoryStreetViewModelImpl @Inject constructor(
     }
 
     companion object {
-        fun previewModel(ctx: Context) =
-            object : TerritoryStreetViewModel {
-                override val uiStateErrorMsg = MutableStateFlow("")
-                override val isUiStateChanged = MutableStateFlow(true)
-                override val dialogTitleResId =
-                    MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
-                override val savedListItem = MutableStateFlow(ListItemModel())
-                override val showDialog = MutableStateFlow(true)
+        fun previewModel(ctx: Context) = object : TerritoryStreetViewModel {
+            override val uiStateErrorMsg = MutableStateFlow("")
+            override val isUiStateChanged = MutableStateFlow(true)
+            override val dialogTitleResId =
+                MutableStateFlow(com.oborodulin.home.common.R.string.preview_blank_title)
+            override val savedListItem = MutableStateFlow(ListItemModel())
+            override val showDialog = MutableStateFlow(true)
 
-                override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
-                override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
-                override val events = Channel<ScreenEvent>().receiveAsFlow()
-                override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
+            override val uiStateFlow = MutableStateFlow(UiState.Success(previewUiModel(ctx)))
+            override val singleEventFlow = Channel<UiSingleEvent>().receiveAsFlow()
+            override val events = Channel<ScreenEvent>().receiveAsFlow()
+            override val actionsJobFlow: SharedFlow<Job?> = MutableSharedFlow()
 
-                override fun redirectedErrorMessage() = null
-                override val searchText = MutableStateFlow(TextFieldValue(""))
-                override val isSearching = MutableStateFlow(false)
-                override fun onSearchTextChange(text: TextFieldValue) {}
-                override fun clearSearchText() {}
+            override fun redirectedErrorMessage() = null
+            override val searchText = MutableStateFlow(TextFieldValue(""))
+            override val isSearching = MutableStateFlow(false)
+            override fun onSearchTextChange(text: TextFieldValue) {}
+            override fun clearSearchText() {}
 
-                override val id = MutableStateFlow(InputWrapper())
-                override fun id() = null
-                override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
-                override val street =
-                    MutableStateFlow(InputListItemWrapper<StreetsListItem>())
-                override val isPrivateSector = MutableStateFlow(InputWrapper())
-                override val isEvenSide = MutableStateFlow(InputWrapper())
-                override val estimatedHouses = MutableStateFlow(InputWrapper())
-                override val isNeedAddEstHouses = MutableStateFlow(InputWrapper())
-                override val isExistsHouses = MutableStateFlow(InputWrapper())
+            override val id = MutableStateFlow(InputWrapper())
+            override fun id() = null
+            override val territory = MutableStateFlow(InputListItemWrapper<ListItemModel>())
+            override val street =
+                MutableStateFlow(InputListItemWrapper<StreetsListItem>())
+            override val isPrivateSector = MutableStateFlow(InputWrapper())
+            override val isEvenSide = MutableStateFlow(InputWrapper())
+            override val estimatedHouses = MutableStateFlow(InputWrapper())
+            override val isNeedAddEstHouses = MutableStateFlow(InputWrapper())
+            override val isExistsHouses = MutableStateFlow(InputWrapper())
 
-                override val areNeedAddEstHousesValid = MutableStateFlow(true)
-                override val areInputsValid = MutableStateFlow(true)
+            override val areNeedAddEstHousesValid = MutableStateFlow(true)
+            override val areInputsValid = MutableStateFlow(true)
 
-                override fun submitAction(action: TerritoryStreetUiAction): Job? = null
-                override fun handleActionJob(
-                    action: () -> Unit,
-                    afterAction: (CoroutineScope) -> Unit
-                ) {
-                }
-
-                override fun onTextFieldEntered(inputEvent: Inputable) {}
-                override fun onTextFieldFocusChanged(
-                    focusedField: TerritoryStreetFields, isFocused: Boolean
-                ) {
-                }
-
-                override fun moveFocusImeAction() {}
-                override fun onContinueClick(
-                    isPartialInputsValid: Boolean, onSuccess: () -> Unit
-                ) {
-                }
-
-                override fun setDialogTitleResId(dialogTitleResId: Int) {}
-                override fun setSavedListItem(savedListItem: ListItemModel) {}
-                override fun onOpenDialogClicked() {}
-                override fun onDialogConfirm(onConfirm: () -> Unit) {}
-                override fun onDialogDismiss(onDismiss: () -> Unit) {}
+            override fun submitAction(action: TerritoryStreetUiAction): Job? = null
+            override fun handleActionJob(
+                action: () -> Unit,
+                afterAction: (CoroutineScope) -> Unit
+            ) {
             }
+
+            override fun onTextFieldEntered(inputEvent: Inputable) {}
+            override fun onTextFieldFocusChanged(
+                focusedField: TerritoryStreetFields, isFocused: Boolean
+            ) {
+            }
+
+            override fun moveFocusImeAction() {}
+            override fun onContinueClick(
+                isPartialInputsValid: Boolean, onSuccess: () -> Unit
+            ) {
+            }
+
+            override fun setDialogTitleResId(dialogTitleResId: Int) {}
+            override fun setSavedListItem(savedListItem: ListItemModel) {}
+            override fun onOpenDialogClicked() {}
+            override fun onDialogConfirm(onConfirm: () -> Unit) {}
+            override fun onDialogDismiss(onDismiss: () -> Unit) {}
+        }
 
         fun previewUiModel(ctx: Context): TerritoryStreetUiModel {
             val territoryStreetUi = TerritoryStreetUi(
@@ -399,15 +395,12 @@ class TerritoryStreetViewModelImpl @Inject constructor(
                 isEvenSide = true,
                 isPrivateSector = true,
                 estimatedHouses = 38
-            )
-            territoryStreetUi.id = UUID.randomUUID()
-            val territoryStreetUiModel = TerritoryStreetUiModel(
+            ).also { it.id = UUID.randomUUID() }
+            return TerritoryStreetUiModel(
                 territoryStreet = territoryStreetUi,
                 territory = TerritoryViewModelImpl.previewUiModel(ctx),
                 streets = StreetsListViewModelImpl.previewList(ctx)
-            )
-            territoryStreetUiModel.id = UUID.randomUUID()
-            return territoryStreetUiModel
+            ).also { it.id = UUID.randomUUID() }
         }
     }
 }

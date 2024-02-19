@@ -6,13 +6,9 @@ import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoryCategoryU
 
 class TerritoryCategoryUiToTerritoryCategoryMapper :
     Mapper<TerritoryCategoryUi, TerritoryCategory> {
-    override fun map(input: TerritoryCategoryUi): TerritoryCategory {
-        val territoryCategory = TerritoryCategory(
-            territoryCategoryCode = input.territoryCategoryCode,
-            territoryCategoryMark = input.territoryCategoryMark,
-            territoryCategoryName = input.territoryCategoryName
-        )
-        territoryCategory.id = input.id
-        return territoryCategory
-    }
+    override fun map(input: TerritoryCategoryUi) = TerritoryCategory(
+        territoryCategoryCode = input.territoryCategoryCode,
+        territoryCategoryMark = input.territoryCategoryMark,
+        territoryCategoryName = input.territoryCategoryName
+    ).also { it.id = input.id }
 }

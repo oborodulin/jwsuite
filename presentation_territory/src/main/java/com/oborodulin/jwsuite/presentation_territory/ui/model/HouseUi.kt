@@ -1,5 +1,7 @@
 package com.oborodulin.jwsuite.presentation_territory.ui.model
 
+import com.oborodulin.home.common.extensions.toIntHouseNum
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
@@ -45,3 +47,6 @@ fun HouseUi.toHousesListItem() = HousesListItem(
     isPrivateSector = this.isPrivateSector,
     streetFullName = this.street.streetFullName
 )
+
+fun ListItemModel?.toHouseUi() =
+    HouseUi(houseNum = this?.headline?.toIntHouseNum()).also { it.id = this?.itemId }

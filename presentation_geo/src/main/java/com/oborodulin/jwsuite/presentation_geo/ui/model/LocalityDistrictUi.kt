@@ -1,5 +1,7 @@
 package com.oborodulin.jwsuite.presentation_geo.ui.model
 
+import com.oborodulin.home.common.extensions.toLocalityDistrictName
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 
 data class LocalityDistrictUi(
@@ -13,3 +15,8 @@ fun LocalityDistrictUi.toLocalityDistrictsListItem() = LocalityDistrictsListItem
     districtShortName = this.districtShortName,
     districtName = this.districtName
 )
+
+fun ListItemModel?.toLocalityDistrictUi() =
+    LocalityDistrictUi(districtName = this?.headline.toLocalityDistrictName()).also {
+        it.id = this?.itemId
+    }

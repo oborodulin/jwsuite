@@ -9,20 +9,16 @@ import com.oborodulin.jwsuite.domain.model.territory.TerritoryMemberReport
 class TerritoryMemberReportEntityToTerritoryMemberReportMapper(private val ctx: Context) :
     Mapper<TerritoryMemberReportEntity, TerritoryMemberReport>,
     NullableMapper<TerritoryMemberReportEntity, TerritoryMemberReport> {
-    override fun map(input: TerritoryMemberReportEntity): TerritoryMemberReport {
-        val territoryMemberReport = TerritoryMemberReport(
-            ctx = ctx,
-            territoryMemberId = input.tmrTerritoryMembersId,
-            territoryReportMark = input.territoryReportMark,
-            languageCode = input.languageCode,
-            gender = input.gender,
-            age = input.age,
-            isProcessed = input.isReportProcessed,
-            territoryReportDesc = input.territoryReportDesc
-        )
-        territoryMemberReport.id = input.territoryMemberReportId
-        return territoryMemberReport
-    }
+    override fun map(input: TerritoryMemberReportEntity) = TerritoryMemberReport(
+        ctx = ctx,
+        territoryMemberId = input.tmrTerritoryMembersId,
+        territoryReportMark = input.territoryReportMark,
+        languageCode = input.languageCode,
+        gender = input.gender,
+        age = input.age,
+        isProcessed = input.isReportProcessed,
+        territoryReportDesc = input.territoryReportDesc
+    ).also { it.id = input.territoryMemberReportId }
 
     override fun nullableMap(input: TerritoryMemberReportEntity?) = input?.let { map(it) }
 }

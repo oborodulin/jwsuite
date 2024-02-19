@@ -435,12 +435,8 @@ class SessionViewModelImpl @Inject constructor(
             override fun onDialogDismiss(onDismiss: () -> Unit) {}
         }
 
-        fun previewUiModel(ctx: Context): SessionUi {
-            val sessionUi = SessionUi(
-                isSigned = true, isLogged = true, roles = emptyList(), lastDestination = null
-            )
-            sessionUi.id = UUID.randomUUID()
-            return sessionUi
-        }
+        fun previewUiModel(ctx: Context) = SessionUi(
+            isSigned = true, isLogged = true, roles = emptyList(), lastDestination = null
+        ).also { it.id = UUID.randomUUID() }
     }
 }

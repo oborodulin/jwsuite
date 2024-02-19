@@ -22,14 +22,14 @@ class RegionDistrictViewToGeoRegionDistrictMapper :
                 properties.isEmpty(), input.data.regionDistrictId
             )
         )
-        val regionDistrict = GeoRegionDistrict(
+        return GeoRegionDistrict(
             region = properties[0] as GeoRegion,
             districtShortName = input.data.regDistrictShortName,
             districtName = input.tl.regDistrictName
-        )
-        regionDistrict.id = input.data.regionDistrictId
-        regionDistrict.tlId = input.tl.regionDistrictTlId
-        return regionDistrict
+        ).also {
+            it.id = input.data.regionDistrictId
+            it.tlId = input.tl.regionDistrictTlId
+        }
     }
 
     override fun nullableMap(input: RegionDistrictView?, vararg properties: Any?) =

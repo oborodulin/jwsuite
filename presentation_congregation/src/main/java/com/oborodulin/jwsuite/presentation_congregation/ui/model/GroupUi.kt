@@ -13,3 +13,8 @@ fun GroupUi.toListItemModel() = ListItemModel(
     itemId = this.id ?: UUID.randomUUID(),
     headline = this.groupNum?.toString().orEmpty()
 )
+
+fun ListItemModel?.toGroupUi(congregation: CongregationUi) =
+    GroupUi(congregation = congregation, groupNum = this?.headline?.toInt()).also {
+        it.id = this?.itemId
+    }

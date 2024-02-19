@@ -15,12 +15,10 @@ class TerritoryStreetWithTerritoryAndStreetsToTerritoryStreetUiModelMapper(
     override fun map(input: TerritoryStreetWithTerritoryAndStreets): TerritoryStreetUiModel {
         val territoryStreet = territoryStreetMapper.nullableMap(input.territoryStreet)
             ?: TerritoryStreetUi()
-        val uiModel = TerritoryStreetUiModel(
+        return TerritoryStreetUiModel(
             territoryStreet = territoryStreet,
             territory = territoryMapper.map(input.territory),
             streets = streetListItemMapper.map(input.streets)
-        )
-        uiModel.id = territoryStreet.id
-        return uiModel
+        ).also { it.id = territoryStreet.id }
     }
 }

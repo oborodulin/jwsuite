@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -16,17 +17,16 @@ import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.GetLocalityDistrictUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.LocalityDistrictUseCases
 import com.oborodulin.jwsuite.domain.usecases.geolocalitydistrict.SaveLocalityDistrictUseCase
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
-import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -121,14 +121,11 @@ class LocalityDistrictViewModelImpl @Inject constructor(
     }
 
     private fun saveLocalityDistrict(): Job {
-        val localityUi = LocalityUi()
-        localityUi.id = locality.value.item?.itemId
         val localityDistrictUi = LocalityDistrictUi(
-            locality = localityUi,
+            locality = locality.value.item.toLocalityUi(),
             districtShortName = districtShortName.value.value,
             districtName = districtName.value.value
-        )
-        localityDistrictUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveLocalityDistrict() called: UI model %s", localityDistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveLocalityDistrictUseCase.execute(
@@ -325,14 +322,10 @@ class LocalityDistrictViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context): LocalityDistrictUi {
-            val localityDistrictUi = LocalityDistrictUi(
-                locality = LocalityViewModelImpl.previewUiModel(ctx),
-                districtShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
-                districtName = ctx.resources.getString(R.string.def_donetsk_name)
-            )
-            localityDistrictUi.id = UUID.randomUUID()
-            return localityDistrictUi
-        }
+        fun previewUiModel(ctx: Context) = LocalityDistrictUi(
+            locality = LocalityViewModelImpl.previewUiModel(ctx),
+            districtShortName = ctx.resources.getString(R.string.def_donetsk_short_name),
+            districtName = ctx.resources.getString(R.string.def_donetsk_name)
+        ).also { it.id = UUID.randomUUID() }
     }
 }

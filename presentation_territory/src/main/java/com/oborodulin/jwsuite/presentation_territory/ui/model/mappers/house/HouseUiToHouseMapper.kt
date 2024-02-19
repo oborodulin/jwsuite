@@ -15,32 +15,28 @@ class HouseUiToHouseMapper(
     private val microistrictUiMapper: MicrodistrictUiToMicrodistrictMapper,
     private val territoryUiMapper: TerritoryUiToTerritoryMapper
 ) : Mapper<HouseUi, House>, NullableMapper<HouseUi, House> {
-    override fun map(input: HouseUi): House {
-        val house = House(
-            street = streetUiMapper.map(input.street),
-            localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
-            microdistrict = microistrictUiMapper.nullableMap(input.microdistrict),
-            territory = territoryUiMapper.nullableMap(input.territory),
-            zipCode = input.zipCode,
-            houseNum = input.houseNum!!,
-            houseLetter = input.houseLetter,
-            buildingNum = input.buildingNum,
-            buildingType = input.buildingType,
-            isBusiness = input.isBusiness,
-            isSecurity = input.isSecurity,
-            isIntercom = input.isIntercom,
-            isResidential = input.isResidential,
-            houseEntrancesQty = input.houseEntrancesQty,
-            floorsByEntrance = input.floorsByEntrance,
-            roomsByHouseFloor = input.roomsByHouseFloor,
-            estimatedRooms = input.estimatedRooms,
-            isForeignLanguage = input.isForeignLanguage,
-            isPrivateSector = input.isPrivateSector,
-            houseDesc = input.houseDesc
-        )
-        house.id = input.id
-        return house
-    }
+    override fun map(input: HouseUi) = House(
+        street = streetUiMapper.map(input.street),
+        localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
+        microdistrict = microistrictUiMapper.nullableMap(input.microdistrict),
+        territory = territoryUiMapper.nullableMap(input.territory),
+        zipCode = input.zipCode,
+        houseNum = input.houseNum!!,
+        houseLetter = input.houseLetter,
+        buildingNum = input.buildingNum,
+        buildingType = input.buildingType,
+        isBusiness = input.isBusiness,
+        isSecurity = input.isSecurity,
+        isIntercom = input.isIntercom,
+        isResidential = input.isResidential,
+        houseEntrancesQty = input.houseEntrancesQty,
+        floorsByEntrance = input.floorsByEntrance,
+        roomsByHouseFloor = input.roomsByHouseFloor,
+        estimatedRooms = input.estimatedRooms,
+        isForeignLanguage = input.isForeignLanguage,
+        isPrivateSector = input.isPrivateSector,
+        houseDesc = input.houseDesc
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: HouseUi?) = input?.let { map(it) }
 }
