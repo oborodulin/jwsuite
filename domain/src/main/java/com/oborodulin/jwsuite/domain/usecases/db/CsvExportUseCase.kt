@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 private const val TAG = "Domain.CsvExportUseCase"
@@ -38,17 +37,17 @@ class CsvExportUseCase(
         Timber.tag(TAG).d("CSV Exporting: dataTables = %s", dataTables)
         val repositoryExtracts = exportService.csvRepositoryExtracts()
         Timber.tag(TAG).d("CSV Exporting: repositoryExtracts = %s", repositoryExtracts)
-        repositoryExtracts.onEachIndexed { callableIdx, callables ->
-            val csvFilePrefix = callables.key.fileNamePrefix
-            val extractMethod = callables.value
+        repositoryExtracts.onEachIndexed { callableIdx, callable ->
+            val csvFilePrefix = callable.key.fileNamePrefix
+            val extractMethod = callable.value.first
             val entityDesc = dataTables[csvFilePrefix]
             Timber.tag(TAG).d(
                 "CSV Exporting -> %s: csvFilePrefix = %s, entityDesc = %s",
                 extractMethod.name, csvFilePrefix, entityDesc
             )
-            if (extractMethod.returnType is Flow<*>) {
+            if (extractMethod.returnType.classifier == Flow::class) {
                 // get and transformation data to exportable type
-                val extractData = (extractMethod.call() as Flow<*>).first()
+                val extractData = (extractMethod.call(callable.value.second) as Flow<*>).first()
                 if (extractData is List<*> && extractData.isNotEmpty()) {
                     @Suppress("UNCHECKED_CAST")
                     val exportableList = extractData as List<Exportable>
@@ -69,21 +68,19 @@ class CsvExportUseCase(
                     ).catch {
                         // handle error here
                         throw UseCaseException.ExportException(it)
-                    }.map {
+                    }.collect {
+                        // do anything on success
+                        //_exportCsvState.value = ViewState.Success(emptyList())
                         emit(
                             Response(
                                 csvFilePrefix = csvFilePrefix,
                                 entityDesc = entityDesc.orEmpty(),
                                 totalMethods = repositoryExtracts.size,
-                                methodIndex = callableIdx,
+                                methodNum = callableIdx + 1,
                                 isSuccess = it
                             )
                         )
-                    }/*.collect { _ ->
-            // do anything on success
-            //_exportCsvState.value = ViewState.Success(emptyList())
-        }*/
-
+                    }
                 }
             }
         }
@@ -99,7 +96,7 @@ class CsvExportUseCase(
         val csvFilePrefix: String = "",
         val entityDesc: String = "",
         val totalMethods: Int = 0,
-        val methodIndex: Int = 0,
+        val methodNum: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response

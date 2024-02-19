@@ -18,21 +18,21 @@ private const val TAG = "Domain.ExportService"
 // https://chetangupta.net/db-to-csv/
 class ExportService(private val csvRepositories: List<CsvTransferableRepo> = emptyList()) {
     fun <T : Exportable> export(type: Exports, content: List<T>): Flow<Boolean> {
-        Timber.tag(TAG)
-            .d("export(...) called: type = %s; content.size = %d", type, content.size)
+        Timber.tag(TAG).d("export(...) called: type = %s; content.size = %d", type, content.size)
         return when (type) {
             is Exports.CSV -> writeToCSV(type.csvConfig, content)
         }
     }
 
-    fun csvRepositoryExtracts(fileNamePrefix: String? = null): Map<CsvExtract, KCallable<*>> {
-        val callables: MutableMap<CsvExtract, KCallable<*>> = mutableMapOf()
+    fun csvRepositoryExtracts(fileNamePrefix: String? = null): Map<CsvExtract, Pair<KCallable<*>, CsvTransferableRepo>> {
+        val callables: MutableMap<CsvExtract, Pair<KCallable<*>, CsvTransferableRepo>> =
+            mutableMapOf()
         csvRepositories.forEach { repo ->
             repo.javaClass.kotlin.members.forEach { method ->
                 method.annotations.find { anno -> anno is CsvExtract && fileNamePrefix?.let { it == anno.fileNamePrefix } ?: true }
                     ?.let { anno ->
                         anno as CsvExtract
-                        callables[anno] = method
+                        callables[anno] = method to repo
                     }
             }
         }
@@ -43,18 +43,20 @@ class ExportService(private val csvRepositories: List<CsvTransferableRepo> = emp
     @WorkerThread
     private fun <T : Exportable> writeToCSV(csvConfig: CsvConfig, content: List<T>) =
         flow {
+            Timber.tag(TAG).d("writeToCSV(...) called")
             with(csvConfig) {
-                hostPath.ifEmpty { throw IllegalStateException("Wrong Path") }
-                val hostDirectory = File(hostPath)
+                // https://yatmanwong.medium.com/know-how-to-use-your-android-file-system-cfcc5e463e02
+                parent.path.ifEmpty { throw IllegalStateException("Wrong Path") }
+                val hostDirectory = File(parent, childPath)
                 if (!hostDirectory.exists()) {
-                    hostDirectory.mkdir() // create directory
+                    Timber.tag(TAG).d("writeToCSV: hostDirectory not exist!")
+                    hostDirectory.mkdirs() // create directory
                 }
 
                 // create csv file
-                val csvFile = File("${hostDirectory.path}/$fileName")
+                val csvFile = File(hostDirectory, fileName)
                 val csvWriter = CSVWriter(FileWriter(csvFile))
-                Timber.tag(TAG)
-                    .d("writeToCSV: hostPath = %s; csvFile.path = %s", hostPath, csvFile.path)
+                Timber.tag(TAG).d("writeToCSV: csvFile.path = %s", csvFile.path)
 
                 // write csv file
                 StatefulBeanToCsvBuilder<T>(csvWriter)

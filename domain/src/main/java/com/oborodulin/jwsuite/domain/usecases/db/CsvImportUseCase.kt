@@ -30,10 +30,10 @@ class CsvImportUseCase(
             Timber.tag(TAG).d("CSV Importing: tableName = %s", tableName)
             val repositoryLoads = importService.csvRepositoryLoads(tableName.key)
             Timber.tag(TAG).d("CSV Importing: repositoryLoads = %s", repositoryLoads)
-            repositoryLoads.onEachIndexed { callableIdx, callables ->
-                val csvFilePrefix = callables.key.fileNamePrefix
-                val contentType = callables.key.contentType
-                val loadMethod = callables.value
+            repositoryLoads.onEachIndexed { callableIdx, callable ->
+                val csvFilePrefix = callable.key.fileNamePrefix
+                val contentType = callable.key.contentType
+                val loadMethod = callable.value.first
                 Timber.tag(TAG).d(
                     "CSV Importing -> %s: csvFilePrefix = %s; contentType = %s",
                     loadMethod.name, csvFilePrefix, contentType
@@ -48,14 +48,15 @@ class CsvImportUseCase(
                     // handle error here
                     throw UseCaseException.ImportException(it)
                 }.first()
-                if (importList.isNotEmpty() && loadMethod.returnType is Flow<*>) {
+                if (importList.isNotEmpty() && loadMethod.returnType.classifier == Flow::class) {
                     loadMethod.parameters.getOrNull(0)?.let { param1 ->
                         Timber.tag(TAG).d(
                             "CSV Importing -> %s: param1.type = %s",
                             loadMethod.name, param1.type.toString()
                         )
                         // transformation data to importable type and load
-                        val loadListSize = (loadMethod.call(importList) as Flow<*>).first()
+                        val loadListSize =
+                            (loadMethod.call(callable.value.second, importList) as Flow<*>).first()
                         if (loadListSize is Int) {
                             importResult = loadListSize > 0
                             Timber.tag(TAG).d(
@@ -68,7 +69,7 @@ class CsvImportUseCase(
                                     entityDesc = tableName.value,
                                     loadListSize = loadListSize,
                                     totalMethods = repositoryLoads.size,
-                                    methodIndex = callableIdx,
+                                    methodNum = callableIdx + 1,
                                     isSuccess = importResult
                                 )
                             )
@@ -86,7 +87,7 @@ class CsvImportUseCase(
         val loadListSize: Int = 0,
         val entityDesc: String = "",
         val totalMethods: Int = 0,
-        val methodIndex: Int = 0,
+        val methodNum: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response

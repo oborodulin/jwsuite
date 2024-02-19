@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.services.csv
 
 import android.content.Context
+import java.io.File
 import java.text.DateFormat
 
 data class CsvConfig(
@@ -13,9 +14,9 @@ data class CsvConfig(
         .format(System.currentTimeMillis())
         .replace(",", "")
         .replace(" ", "_"),
-
-    val fileName: String = prefix.plus("-$suffix".takeIf { isUseSuffix }.orEmpty()).plus(".csv"),
     //@Suppress("DEPRECATION")
-    val hostPath: String = ctx.filesDir.path.plus("/csv${subDir.orEmpty()}")
+    val parent: File = ctx.applicationContext.filesDir,
+    val childPath: String = "csv${subDir.orEmpty()}",
+    val fileName: String = prefix.plus("-$suffix".takeIf { isUseSuffix }.orEmpty()).plus(".csv"),
     //Environment.getExternalStorageDirectory()?.absolutePath?.plus("/Documents/Expenso") ?: ""
 )

@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.util.UUID
 
@@ -55,12 +54,12 @@ class SendDataUseCase(
                 val repositoryExtracts = exportService.csvRepositoryExtracts(tableName.key)
                 repositoryExtracts.onEachIndexed { callableIdx, callable ->
                     val csvFilePrefix = callable.key.fileNamePrefix
-                    val extractMethod = callable.value
+                    val extractMethod = callable.value.first
                     Timber.tag(TAG).d(
                         "CSV Data Transmission -> %s: csvFilePrefix = %s",
                         extractMethod.name, csvFilePrefix
                     )
-                    if (extractMethod.returnType is Flow<*>) {
+                    if (extractMethod.returnType.classifier == Flow::class) {
                         // get and transformation data to exportable type
                         val paramUsername = when (tableName.value.second) {
                             true -> username
@@ -82,8 +81,9 @@ class SendDataUseCase(
                                         "CSV Data Transmission -> %s(%s, %s)",
                                         extractMethod.name, paramUsername, paramByFavorite
                                     )
-                                    (extractMethod.call(paramUsername, paramByFavorite) as Flow<*>)
-                                        .first()
+                                    (extractMethod.call(
+                                        callable.value.second, paramUsername, paramByFavorite
+                                    ) as Flow<*>).first()
                                 }
                             } ?: when (param1.type.toString()) {
                                 "kotlin.Boolean?" -> {
@@ -91,7 +91,9 @@ class SendDataUseCase(
                                         "CSV Data Transmission -> %s(%s)",
                                         extractMethod.name, paramByFavorite
                                     )
-                                    (extractMethod.call(paramByFavorite) as Flow<*>).first()
+                                    (extractMethod.call(
+                                        callable.value.second, paramByFavorite
+                                    ) as Flow<*>).first()
                                 }
 
                                 else -> {
@@ -99,10 +101,12 @@ class SendDataUseCase(
                                         "CSV Data Transmission -> %s(%s)",
                                         extractMethod.name, paramUsername
                                     )
-                                    (extractMethod.call(paramUsername) as Flow<*>).first()
+                                    (extractMethod.call(
+                                        callable.value.second, paramUsername
+                                    ) as Flow<*>).first()
                                 }
                             }
-                        } ?: (extractMethod.call() as Flow<*>).first()
+                        } ?: (extractMethod.call(callable.value.second) as Flow<*>).first()
                         if (extractData is List<*> && extractData.isNotEmpty()) {
                             val exportableList = extractData as List<Exportable>
                             Timber.tag(TAG).d(
@@ -124,13 +128,13 @@ class SendDataUseCase(
                             ).catch {
                                 // handle error here
                                 throw UseCaseException.DataSendException(it)
-                            }.map {
+                            }.collect {
                                 emit(
                                     Response(
                                         csvFilePrefix = csvFilePrefix,
                                         entityDesc = tableName.value.first,
                                         totalMethods = repositoryExtracts.size,
-                                        methodIndex = callableIdx,
+                                        methodNum = callableIdx + 1,
                                         isSuccess = it
                                     )
                                 )
@@ -149,7 +153,7 @@ class SendDataUseCase(
         val csvFilePrefix: String = "",
         val entityDesc: String = "",
         val totalMethods: Int = 0,
-        val methodIndex: Int = 0,
+        val methodNum: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response

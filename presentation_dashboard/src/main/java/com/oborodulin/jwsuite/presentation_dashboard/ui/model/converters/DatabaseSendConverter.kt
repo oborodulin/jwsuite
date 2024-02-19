@@ -8,7 +8,7 @@ class DatabaseSendConverter :
     CommonResultConverter<SendDataUseCase.Response, DatabaseUiModel>() {
     override fun convertSuccess(data: SendDataUseCase.Response) = DatabaseUiModel(
         entityDesc = data.entityDesc,
-        progress = data.methodIndex.toFloat() / (data.totalMethods / 100),
+        progress = data.methodNum.toFloat() / (data.totalMethods / 100),
         isSuccess = data.isSuccess,
         isDone = data.isDone
     )

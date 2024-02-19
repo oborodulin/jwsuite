@@ -37,10 +37,10 @@ class ReceiveDataUseCase(
                     )
                     val repositoryLoads = importService.csvRepositoryLoads(tableName.key)
                     Timber.tag(TAG).d("CSV Data Receive: repositoryLoads = %s", repositoryLoads)
-                    repositoryLoads.onEachIndexed { callableIdx, callables ->
-                        val csvFilePrefix = callables.key.fileNamePrefix
-                        val contentType = callables.key.contentType
-                        val loadMethod = callables.value
+                    repositoryLoads.onEachIndexed { callableIdx, callable ->
+                        val csvFilePrefix = callable.key.fileNamePrefix
+                        val contentType = callable.key.contentType
+                        val loadMethod = callable.value.first
                         Timber.tag(TAG).d(
                             "CSV Data Receive -> %s: csvFilePrefix = %s; contentType = %s",
                             loadMethod.name, csvFilePrefix, contentType
@@ -59,9 +59,11 @@ class ReceiveDataUseCase(
                             // handle error here
                             throw UseCaseException.DataReceiveException(it)
                         }.first()
-                        if (importList.isNotEmpty() && loadMethod.returnType is Flow<*>) {
+                        if (importList.isNotEmpty() && loadMethod.returnType.classifier == Flow::class) {
                             // transformation data to importable type and load
-                            val loadListSize = (loadMethod.call(importList) as Flow<*>).first()
+                            val loadListSize = (loadMethod.call(
+                                callable.value.second, importList
+                            ) as Flow<*>).first()
                             if (loadListSize is Int) {
                                 importResult = loadListSize > 0
                                 Timber.tag(TAG).d(
@@ -74,7 +76,7 @@ class ReceiveDataUseCase(
                                         loadListSize = loadListSize,
                                         entityDesc = tableName.value,
                                         totalMethods = repositoryLoads.size,
-                                        methodIndex = callableIdx,
+                                        methodNum = callableIdx + 1,
                                         isSuccess = importResult
                                     )
                                 )
@@ -94,7 +96,7 @@ class ReceiveDataUseCase(
         val loadListSize: Int = 0,
         val entityDesc: String = "",
         val totalMethods: Int = 0,
-        val methodIndex: Int = 0,
+        val methodNum: Int = 0,
         val isSuccess: Boolean = false,
         val isDone: Boolean = false
     ) : UseCase.Response
