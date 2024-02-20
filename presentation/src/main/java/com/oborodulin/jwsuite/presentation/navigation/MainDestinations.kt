@@ -19,6 +19,9 @@ object MainDestinations {
     const val ROUTE_DASHBOARD_SETTINGS = "dashboardSettings"
     const val ROUTE_TERRITORY_SETTINGS = "territorySettings"
 
+    //Data Management:
+    const val ROUTE_DATA_MANAGEMENT = "dataManagement"
+
     //Database:
     const val ROUTE_DATABASE_SEND = "databaseSend"
 

@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.domain.usecases.appsetting.DeleteAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDashboardSettingsUseCase
+import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDataManagementSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.converters.AppSettingListConverter
@@ -54,6 +55,7 @@ object AppSettingModule {
     fun provideAppSettingUseCases(
         getAppSettingsUseCase: GetAppSettingsUseCase,
         getDashboardSettingsUseCase: GetDashboardSettingsUseCase,
+        getDataManagementSettingsUseCase: GetDataManagementSettingsUseCase,
         getAppSettingUseCase: GetAppSettingUseCase,
         saveAppSettingUseCase: SaveAppSettingUseCase,
         saveAppSettingsUseCase: SaveAppSettingsUseCase,
@@ -61,6 +63,7 @@ object AppSettingModule {
     ): AppSettingUseCases = AppSettingUseCases(
         getAppSettingsUseCase,
         getDashboardSettingsUseCase,
+        getDataManagementSettingsUseCase,
         getAppSettingUseCase,
         saveAppSettingUseCase,
         saveAppSettingsUseCase,

@@ -9,16 +9,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,8 +24,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -36,26 +31,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.oborodulin.home.common.ui.components.datatable.SimpleDataTableComponent
-import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
-import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutConfirmDialogComponent
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
@@ -65,12 +51,6 @@ import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModel
 import com.oborodulin.jwsuite.presentation.ui.session.SessionViewModelImpl
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_dashboard.R
-import com.oborodulin.jwsuite.presentation_dashboard.ui.components.BackupButtonComponent
-import com.oborodulin.jwsuite.presentation_dashboard.ui.components.ReceiveButtonComponent
-import com.oborodulin.jwsuite.presentation_dashboard.ui.components.RestoreButtonComponent
-import com.oborodulin.jwsuite.presentation_dashboard.ui.components.SendButtonComponent
-import com.oborodulin.jwsuite.presentation_dashboard.ui.database.DatabaseUiAction
-import com.oborodulin.jwsuite.presentation_dashboard.ui.database.DatabaseViewModelImpl
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardSettingsUiModel
 import timber.log.Timber
 import java.time.format.DateTimeFormatter
@@ -85,11 +65,9 @@ fun DashboardSettingView(
     modifier: Modifier = Modifier,
     dashboardSettingsUiModel: DashboardSettingsUiModel,
     dashboardSettingViewModel: DashboardSettingViewModel,//Impl = hiltViewModel()
-    sessionViewModel: SessionViewModel,//Impl = hiltViewModel()
-    databaseViewModel: DatabaseViewModelImpl = hiltViewModel()
+    sessionViewModel: SessionViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("DashboardSettingView(...) called")
-    val session = LocalSession.current
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -100,8 +78,6 @@ fun DashboardSettingView(
             lifecycleOwner.lifecycle, Lifecycle.State.STARTED
         )
     }
-    Timber.tag(TAG).d("DashboardSetting: CollectAsStateWithLifecycle for all fields")
-    val databaseBackupPeriod by dashboardSettingViewModel.databaseBackupPeriod.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("DashboardSetting: Init Focus Requesters for all fields")
     val focusRequesters =
@@ -112,7 +88,6 @@ fun DashboardSettingView(
 
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DashboardSettingView -> LaunchedEffect()")
-        databaseViewModel.submitAction(DatabaseUiAction.Init)
         events.collect { event ->
             if (LOG_FLOW_INPUT) Timber.tag(TAG)
                 .d("IF# Collect input events flow: %s", event.javaClass.name)
@@ -212,136 +187,25 @@ fun DashboardSettingView(
         }
         Divider(Modifier.fillMaxWidth())
         Text(
-            text = stringResource(R.string.transfer_subhead),
-            style = Typography.titleMedium,
-            modifier = Modifier.padding(8.dp)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            val transferObjects =
-                MutableList(dashboardSettingsUiModel.transferObjects.size) { emptyList<String>() }
-            dashboardSettingsUiModel.transferObjects.forEach {
-                transferObjects.add(
-                    listOf(
-                        it.transferObject.transferObjectName,
-                        if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
-                        else stringResource(com.oborodulin.home.common.R.string.no_expr)
-                    )
-                )
-            }
-            SimpleDataTableComponent(
-                columnHeaders = listOf(
-                    stringResource(R.string.transfer_objects_header_hint),
-                    stringResource(R.string.is_personal_header_hint)
-                ), rows = transferObjects
-            )
-        }
-        val isSendButtonShow = session.containsAnyRoles(
-            listOf(
-                MemberRoleType.TERRITORIES,
-                MemberRoleType.BILLS
-            )
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
-        ) {
-            if (isSendButtonShow) {
-                SendButtonComponent(
-                    modifier = Modifier
-                        .weight(1f)
-                        .alignByBaseline()
-                )
-            }
-            ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
-        }
-        Divider(Modifier.fillMaxWidth())
-        Text(
             text = stringResource(R.string.about_subhead),
             style = Typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )
-        Row {
-            Column {
-                Text(
-                    buildAnnotatedString {
-                        append(stringResource(R.string.app_version_hint))
-                        withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                            append("\n${dashboardSettingsUiModel.appVersionName} (${stringResource(R.string.framework_api_version_hint)}${dashboardSettingsUiModel.frameworkVersion})")
-                        }
-                    }, modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    buildAnnotatedString {
-                        append(stringResource(R.string.database_version_hint))
-                        withStyle(style = SpanStyle(fontSize = 14.sp)) {
-                            append("\n${dashboardSettingsUiModel.dbVersion} (${stringResource(R.string.sqlite_version_hint)}${dashboardSettingsUiModel.sqliteVersion})")
-                        }
-                    }, modifier = Modifier.padding(8.dp)
-                )
-            }
-            Column {
-                BackupButtonComponent(
-                    enabled = true,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Timber.tag(TAG).d("DashboardSettingView: Backup Button click...")
-                    databaseViewModel.submitAction(DatabaseUiAction.Backup)
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.app_version_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${dashboardSettingsUiModel.appVersionName} (${stringResource(R.string.framework_api_version_hint)}${dashboardSettingsUiModel.frameworkVersion})")
                 }
-                RestoreButtonComponent(
-                    enabled = true,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Timber.tag(TAG).d("DashboardSettingView: Restore Button click...")
-                    databaseViewModel.submitAction(DatabaseUiAction.Restore)
+            }, modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.database_version_hint))
+                withStyle(style = SpanStyle(fontSize = 14.sp)) {
+                    append("\n${dashboardSettingsUiModel.dbVersion} (${stringResource(R.string.sqlite_version_hint)}${dashboardSettingsUiModel.sqliteVersion})")
                 }
-                databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                    if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
-                    CommonScreen(state = state) { databaseUi ->
-                        if (databaseUi.isDone.not()) {
-                            Text(
-                                text = databaseUi.entityDesc,
-                                fontSize = 14.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            databaseUi.progress?.let {
-                                LinearProgressIndicator(
-                                    progress = it,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[DashboardSettingFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    dashboardSettingViewModel.onTextFieldFocusChanged(
-                        focusedField = DashboardSettingFields.DATABASE_BACKUP_PERIOD,
-                        isFocused = focusState.isFocused
-                    )
-                },
-            labelResId = R.string.database_backup_period_hint,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = databaseBackupPeriod,
-            onValueChange = {
-                dashboardSettingViewModel.onTextFieldEntered(
-                    DashboardSettingInputEvent.DatabaseBackupPeriod(it)
-                )
-            },
-            onImeKeyAction = dashboardSettingViewModel::moveFocusImeAction
+            }, modifier = Modifier.padding(8.dp)
         )
     }
 }

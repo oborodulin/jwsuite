@@ -8,6 +8,7 @@ import com.opencsv.CSVWriter
 import com.opencsv.bean.StatefulBeanToCsvBuilder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
 import java.io.File
 import java.io.FileWriter
@@ -38,6 +39,30 @@ class ExportService(private val csvRepositories: List<CsvTransferableRepo> = emp
         }
         Timber.tag(TAG).d("ExportService: callables = %s", callables)
         return callables
+    }
+
+    fun <T : List<Exportable>> extract(
+        callable: Pair<KCallable<*>, CsvTransferableRepo>, vararg params: Any?
+    ): Flow<T> {
+        Timber.tag(TAG).d("extract(...) called")
+        if (params.size < 2 || params.getOrNull(1) !is Boolean) {
+            throw IllegalArgumentException("Invalid argument 'params': size less then 2 or params[1] not Boolean type")
+        }
+        val extractMethod = callable.first
+        @Suppress("UNCHECKED_CAST")
+        return when (extractMethod.returnType.classifier) {
+            Flow::class ->
+                when (extractMethod.parameters.size) {
+                    2 -> extractMethod.call(
+                        callable.second,
+                        if (extractMethod.parameters[1].type.classifier == Boolean::class) params[1] else params[0]
+                    )
+
+                    3 -> extractMethod.call(callable.second, params[0], params[1])
+                    else -> extractMethod.call(callable.second)
+                }
+            else -> flowOf(emptyList<Exportable>())
+        } as Flow<T>
     }
 
     @WorkerThread

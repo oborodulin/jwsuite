@@ -25,6 +25,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CON
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARD_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DATABASE_SEND
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DATA_MANAGEMENT
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_ENTRANCE
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_FLOOR
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_GEO
@@ -146,6 +147,8 @@ import java.util.UUID
 //                  <a href="https://www.flaticon.com/free-icons/servers" title="servers icons">Servers icons created by AquariiD - Flaticon</a>
 // ic_synchronizing.png - https://www.flaticon.com/authors/ayub-irawan
 //                    <a href="https://www.flaticon.com/free-icons/sync" title="sync icons">Sync icons created by Ayub Irawan - Flaticon</a>
+// ic_data_management.png - https://www.freepik.com/
+//                      <a href="https://www.flaticon.com/free-icons/data-management" title="data management icons">Data management icons created by Freepik - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 
@@ -258,6 +261,13 @@ sealed class NavRoutes(
         route = ROUTE_TERRITORY_SETTINGS,
         iconImageVector = Icons.Outlined.Settings,
         titleResId = R.string.nav_item_territory_settings
+    )
+
+    // Data Management:
+    data object DataManagement : NavRoutes(
+        route = ROUTE_DATA_MANAGEMENT,
+        iconPainterResId = R.drawable.ic_data_management_24,
+        titleResId = R.string.nav_item_data_management
     )
 
     // Database Navigation:

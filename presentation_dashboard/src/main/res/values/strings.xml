@@ -32,15 +32,17 @@
     <string name="username_hint">Логин</string>
     <string name="role_header_hint">Роли</string>
     <string name="expired_header_hint">Истекает</string>
-    <string name="transfer_subhead">ПОЛУЧЕНИЕ ДАННЫХ</string>
-    <string name="transfer_objects_header_hint">Получаемые объекты</string>
-    <string name="is_personal_header_hint">Персонально?</string>
     <string name="about_subhead">О ПРОГРАММЕ</string>
     <string name="app_version_hint">Версия ПО</string>
     <string name="framework_api_version_hint">Framework API v.</string>
     <string name="sqlite_version_hint">SQLite v.</string>
     <string name="database_version_hint">Версия БД</string>
     <string name="database_backup_period_hint">Период резервирования данных, д.</string>
+    <!--Управление данными-->
+    <string name="transfer_subhead">ПОЛУЧЕНИЕ ДАННЫХ</string>
+    <string name="transfer_subhead_tooltip">Следующие данные можно получать только при наличие соответствующих ролей:</string>
+    <string name="transfer_objects_header_hint">Получаемые объекты</string>
+    <string name="is_personal_header_hint">Персонально?</string>
 
     <!--ДИАЛОГИ-->
     <!--Заголовки-->
@@ -48,6 +50,8 @@
     <!--отмена изменений-->
     <string name="dlg_confirm_cancel_changes_settings">Изменённые настройки не сохранятся</string>
     <string name="dlg_confirm_cancel_database_send">Передача данных будет отменена</string>
+    <!--Уведомления-->
+    <string name="dlg_confirm_data_management">Настройки сохранены</string>
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->

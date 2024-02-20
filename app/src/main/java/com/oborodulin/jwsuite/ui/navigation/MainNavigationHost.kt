@@ -21,6 +21,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.si
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.single.MemberRoleScreen
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.DashboardingScreen
+import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.datamanagement.DataManagementScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.DatabaseSendScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
@@ -647,6 +648,17 @@ fun MainNavigationHost(
                 NavRoutes.TerritorySettings.arguments.firstOrNull()
             )
             TerritorySettingScreen(defTopBarActions = defTopBarActions)
+        }
+
+        // Data Management Nav Graph:
+        composable(
+            route = NavRoutes.DataManagement.route, arguments = NavRoutes.DataManagement.arguments
+        ) {
+            Timber.tag(TAG).d(
+                "Navigation Graph: to DataManagementScreen [route = '%s', arguments = '%s']",
+                it.destination.route, NavRoutes.DataManagement.arguments.firstOrNull()
+            )
+            DataManagementScreen(defTopBarActions = defTopBarActions)
         }
 
         // DATABASE Nav Graph:

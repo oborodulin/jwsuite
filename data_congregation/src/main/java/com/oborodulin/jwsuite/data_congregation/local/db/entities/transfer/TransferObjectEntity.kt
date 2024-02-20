@@ -62,7 +62,7 @@ data class TransferObjectEntity(
 
         fun reportsTransferObject(ctx: Context) = defaultTransferObject(
             transferObjectType = TransferObjectType.REPORTS,
-            transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_bills)
+            transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_reports)
         )
     }
 

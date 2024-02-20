@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -96,14 +95,18 @@ fun DashboardingScreen(
         // context.toast("Settings button clicked...")
         barActionItems = listOf(
             BarActionItem(
-                iconPainterResId = com.oborodulin.jwsuite.presentation.R.drawable.ic_geo_24,
+                iconPainterResId = NavRoutes.Geo.iconPainterResId,
                 cntDescResId = NavRoutes.Geo.titleResId,
                 userRoles = listOf(MemberRoleType.ADMIN.name, MemberRoleType.TERRITORIES.name)
             ) { appState.mainNavigate(NavRoutes.Geo.route) },
             BarActionItem(
-                iconImageVector = Icons.Outlined.Settings,
+                iconImageVector = NavRoutes.DashboardSettings.iconImageVector,
                 cntDescResId = NavRoutes.DashboardSettings.titleResId
-            ) { appState.mainNavigate(NavRoutes.DashboardSettings.route) }
+            ) { appState.mainNavigate(NavRoutes.DashboardSettings.route) },
+            BarActionItem(
+                iconPainterResId = NavRoutes.DataManagement.iconPainterResId,
+                cntDescResId = NavRoutes.DataManagement.titleResId
+            ) { appState.mainNavigate(NavRoutes.DataManagement.route) }
         ),
         bottomBar = bottomBar,
         userRoles = session.userRoles

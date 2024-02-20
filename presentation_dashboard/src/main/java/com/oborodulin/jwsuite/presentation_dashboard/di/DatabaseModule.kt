@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.Databas
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DatabaseCsvImpConverter
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DatabaseReceiveConverter
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DatabaseSendConverter
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.mappers.ObjectsTransferStateToDatabaseUiModelMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,23 +20,31 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
     // MAPPERS:
+    @Singleton
+    @Provides
+    fun provideObjectsTransferStateToDatabaseUiModelMapper(): ObjectsTransferStateToDatabaseUiModelMapper =
+        ObjectsTransferStateToDatabaseUiModelMapper()
 
     // CONVERTERS:
     @Singleton
     @Provides
-    fun provideDatabaseCsvExpConverter(): DatabaseCsvExpConverter = DatabaseCsvExpConverter()
+    fun provideDatabaseCsvExpConverter(mapper: ObjectsTransferStateToDatabaseUiModelMapper): DatabaseCsvExpConverter =
+        DatabaseCsvExpConverter(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideDatabaseCsvImpConverter(): DatabaseCsvImpConverter = DatabaseCsvImpConverter()
+    fun provideDatabaseCsvImpConverter(mapper: ObjectsTransferStateToDatabaseUiModelMapper): DatabaseCsvImpConverter =
+        DatabaseCsvImpConverter(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideDatabaseSendConverter(): DatabaseSendConverter = DatabaseSendConverter()
+    fun provideDatabaseSendConverter(mapper: ObjectsTransferStateToDatabaseUiModelMapper): DatabaseSendConverter =
+        DatabaseSendConverter(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideDatabaseReceiveConverter(): DatabaseReceiveConverter = DatabaseReceiveConverter()
+    fun provideDatabaseReceiveConverter(mapper: ObjectsTransferStateToDatabaseUiModelMapper): DatabaseReceiveConverter =
+        DatabaseReceiveConverter(mapper = mapper)
 
     // USE CASES:
     @Singleton

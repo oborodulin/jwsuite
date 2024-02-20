@@ -39,6 +39,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_JOB
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
+import com.oborodulin.home.common.util.toast
 import kotlinx.coroutines.cancel
 import timber.log.Timber
 import java.util.UUID
@@ -54,11 +55,13 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     nextUiAction: A? = null,
     nextAction: (() -> Unit)? = null,
     upNavigation: () -> Unit,
+    isNextActionPerform: Boolean = true,
     handleTopBarNavClick: MutableState<() -> Unit>,
     topBarActionImageVector: ImageVector = Icons.Outlined.Done,
     @StringRes topBarActionCntDescResId: Int = R.string.dlg_done_cnt_desc,
     isControlsShow: Boolean = true,
     areInputsValid: Boolean = viewModel.areInputsValid.collectAsStateWithLifecycle().value,
+    @StringRes confirmResId: Int? = null,
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     confirmButton: @Composable (Boolean, () -> Unit) -> Unit,
@@ -90,8 +93,12 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
                             "DialogScreenComponent -> viewModel.onContinueClick -> After action: (no errors) nextUiAction = %s",
                             nextUiAction
                         )
-                    nextUiAction?.let { viewModel.submitAction(it) }
-                        ?: nextAction?.invoke() ?: upNavigation()
+                    if (isNextActionPerform) {
+                        nextUiAction?.let { viewModel.submitAction(it) }
+                            ?: nextAction?.invoke() ?: upNavigation()
+                    } else {
+                        confirmResId?.let { ctx.toast(it) }
+                    }
                 } else {
                     isErrorShowAlert.value = true
                     errorMessage = when {

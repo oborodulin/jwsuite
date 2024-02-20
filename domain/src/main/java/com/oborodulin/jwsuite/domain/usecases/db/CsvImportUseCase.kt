@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.usecases.db
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.domain.usecases.UseCaseException
+import com.oborodulin.jwsuite.domain.model.state.ObjectsTransferState
 import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
 import com.oborodulin.jwsuite.domain.services.ImportService
 import com.oborodulin.jwsuite.domain.services.Imports
@@ -65,12 +66,14 @@ class CsvImportUseCase(
                             )
                             emit(
                                 Response(
-                                    csvFilePrefix = csvFilePrefix,
-                                    entityDesc = tableName.value,
-                                    loadListSize = loadListSize,
-                                    totalMethods = repositoryLoads.size,
-                                    methodNum = callableIdx + 1,
-                                    isSuccess = importResult
+                                    ObjectsTransferState(
+                                        objectName = csvFilePrefix,
+                                        objectDesc = tableName.value,
+                                        totalObjectItems = loadListSize,
+                                        totalObjects = repositoryLoads.size,
+                                        currentObjectNum = callableIdx + 1,
+                                        isSuccess = importResult
+                                    )
                                 )
                             )
                         }
@@ -78,17 +81,9 @@ class CsvImportUseCase(
                 }
             }
         }
-        emit(Response(isSuccess = importResult, isDone = true))
+        emit(Response(ObjectsTransferState(isSuccess = importResult)))
     }
 
     data object Request : UseCase.Request
-    data class Response(
-        val csvFilePrefix: String = "",
-        val loadListSize: Int = 0,
-        val entityDesc: String = "",
-        val totalMethods: Int = 0,
-        val methodNum: Int = 0,
-        val isSuccess: Boolean = false,
-        val isDone: Boolean = false
-    ) : UseCase.Response
+    data class Response(val transferState: ObjectsTransferState) : UseCase.Response
 }

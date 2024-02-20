@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettin
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRolesListToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.role.transfer.RoleTransferObjectsListToRoleTransferObjectsListItemMapper
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DashboardSettingUiModelConverter
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DataManagementSettingUiModelConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +21,21 @@ object DashboardSettingModule {
     @Provides
     fun provideDashboardSettingUiModelConverter(
         settingsMapper: AppSettingsListToAppSettingsListItemMapper,
-        rolesMapper: MemberRolesListToMemberRolesListItemMapper,
-        transferObjectsMapper: RoleTransferObjectsListToRoleTransferObjectsListItemMapper
+        rolesMapper: MemberRolesListToMemberRolesListItemMapper
     ): DashboardSettingUiModelConverter = DashboardSettingUiModelConverter(
         settingsMapper = settingsMapper,
-        rolesMapper = rolesMapper,
-        transferObjectsMapper = transferObjectsMapper
+        rolesMapper = rolesMapper
     )
 
+    @Singleton
+    @Provides
+    fun provideDataManagementSettingUiModelConverter(
+        settingsMapper: AppSettingsListToAppSettingsListItemMapper,
+        transferObjectsMapper: RoleTransferObjectsListToRoleTransferObjectsListItemMapper
+    ): DataManagementSettingUiModelConverter = DataManagementSettingUiModelConverter(
+        settingsMapper = settingsMapper,
+        transferObjectsMapper = transferObjectsMapper
+    )
 
     // USE CASES:
 }

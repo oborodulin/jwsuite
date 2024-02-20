@@ -12,6 +12,7 @@ import com.oborodulin.jwsuite.domain.usecases.appsetting.DeleteAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetAppSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDashboardSettingsUseCase
+import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDataManagementSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import dagger.Module
@@ -50,6 +51,20 @@ object AppUseCasesModule {
         ctx,
         configuration,
         databaseRepository,
+        appSettingsRepository,
+        sessionManagerRepository,
+        membersRepository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetDataManagementSettingsUseCase(
+        configuration: UseCase.Configuration,
+        appSettingsRepository: AppSettingsRepository,
+        sessionManagerRepository: SessionManagerRepository,
+        membersRepository: MembersRepository
+    ): GetDataManagementSettingsUseCase = GetDataManagementSettingsUseCase(
+        configuration,
         appSettingsRepository,
         sessionManagerRepository,
         membersRepository

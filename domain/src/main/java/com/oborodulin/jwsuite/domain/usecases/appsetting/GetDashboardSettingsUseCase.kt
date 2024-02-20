@@ -3,7 +3,7 @@ package com.oborodulin.jwsuite.domain.usecases.appsetting
 import android.content.Context
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.home.common.util.getAppVersion
-import com.oborodulin.jwsuite.domain.model.appsetting.AppSettingsWithSession
+import com.oborodulin.jwsuite.domain.model.appsetting.DashboardSettingsWithSession
 import com.oborodulin.jwsuite.domain.repositories.AppSettingsRepository
 import com.oborodulin.jwsuite.domain.repositories.DatabaseRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
@@ -26,15 +26,12 @@ class GetDashboardSettingsUseCase(
         databaseRepository.dbVersion()
     ) { settings, username, sqliteVersion, dbVersion ->
         val roles = membersRepository.getMemberRoles(username.orEmpty()).first()
-        val roleTransferObjects =
-            membersRepository.getMemberTransferObjects(username.orEmpty()).first()
         val version = ctx.getAppVersion()
         Response(
-            AppSettingsWithSession(
+            DashboardSettingsWithSession(
                 settings = settings,
                 username = username.orEmpty(),
                 roles = roles,
-                roleTransferObjects = roleTransferObjects,
                 appVersionName = version?.versionName.orEmpty(),
                 frameworkVersion = "${android.os.Build.VERSION.SDK_INT}",
                 sqliteVersion = sqliteVersion,
@@ -44,5 +41,6 @@ class GetDashboardSettingsUseCase(
     }
 
     data object Request : UseCase.Request
-    data class Response(val appSettingsWithSession: AppSettingsWithSession) : UseCase.Response
+    data class Response(val dashboardSettingsWithSession: DashboardSettingsWithSession) :
+        UseCase.Response
 }

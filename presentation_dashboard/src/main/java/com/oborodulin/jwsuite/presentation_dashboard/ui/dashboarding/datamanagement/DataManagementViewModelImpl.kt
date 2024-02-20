@@ -1,10 +1,9 @@
-package com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting
+package com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.datamanagement
 
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
@@ -18,16 +17,16 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.types.AppSettingParam
-import com.oborodulin.jwsuite.domain.types.MemberRoleType
+import com.oborodulin.jwsuite.domain.types.TransferObjectType
 import com.oborodulin.jwsuite.domain.usecases.appsetting.AppSettingUseCases
-import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDashboardSettingsUseCase
+import com.oborodulin.jwsuite.domain.usecases.appsetting.GetDataManagementSettingsUseCase
 import com.oborodulin.jwsuite.domain.usecases.appsetting.SaveAppSettingsUseCase
 import com.oborodulin.jwsuite.presentation.ui.model.AppSettingsListItem
-import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
 import com.oborodulin.jwsuite.presentation.ui.model.mappers.appsetting.AppSettingsListItemToAppSettingsListMapper
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRolesListItem
-import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardSettingsUiModel
-import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DashboardSettingUiModelConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.RoleTransferObjectsListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.TransferObjectsListItem
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DataManagementSettingsUiModel
+import com.oborodulin.jwsuite.presentation_dashboard.ui.model.converters.DataManagementSettingUiModelConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -48,21 +47,21 @@ import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
-private const val TAG = "Dashboarding.DashboardSettingViewModelImpl"
+private const val TAG = "Dashboarding.DataManagementViewModelImpl"
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class DashboardSettingViewModelImpl @Inject constructor(
+class DataManagementViewModelImpl @Inject constructor(
     private val state: SavedStateHandle,
     private val useCases: AppSettingUseCases,
-    private val converter: DashboardSettingUiModelConverter,
+    private val converter: DataManagementSettingUiModelConverter,
     private val appSettingsUiMapper: AppSettingsListItemToAppSettingsListMapper
-) : DashboardSettingViewModel,
-    DialogViewModel<DashboardSettingsUiModel, UiState<DashboardSettingsUiModel>, DashboardSettingUiAction, UiSingleEvent, DashboardSettingFields, InputWrapper>(
+) : DataManagementViewModel,
+    DialogViewModel<DataManagementSettingsUiModel, UiState<DataManagementSettingsUiModel>, DataManagementUiAction, UiSingleEvent, DataManagementFields, InputWrapper>(
         state, //AppSettingFields.MEMBER_ID.name, AppSettingFields.TERRITORY_PROCESSING_PERIOD
     ) {
     override val databaseBackupPeriod: StateFlow<InputWrapper> by lazy {
-        state.getStateFlow(DashboardSettingFields.DATABASE_BACKUP_PERIOD.name, InputWrapper())
+        state.getStateFlow(DataManagementFields.DATABASE_BACKUP_PERIOD.name, InputWrapper())
     }
 
     override val areInputsValid = databaseBackupPeriod.map { it.errorId == null }
@@ -70,52 +69,55 @@ class DashboardSettingViewModelImpl @Inject constructor(
 
     override fun initState() = UiState.Loading
 
-    override suspend fun handleAction(action: DashboardSettingUiAction): Job {
+    override suspend fun handleAction(action: DataManagementUiAction): Job {
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(DashboardSettingUiAction) called: %s", action.javaClass.name)
+            .d("handleAction(DataManagementUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is DashboardSettingUiAction.Load -> loadDashboardSettings()
-            is DashboardSettingUiAction.Save -> saveDashboardSettings()
+            is DataManagementUiAction.Load -> loadDataManagementSettings()
+            is DataManagementUiAction.Save -> saveDataManagementSettings()
         }
         return job
     }
 
-    private fun loadDashboardSettings(): Job {
-        Timber.tag(TAG).d("loadDashboardSettings() called")
+    private fun loadDataManagementSettings(): Job {
+        Timber.tag(TAG).d("loadDataManagementSettings() called")
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getDashboardSettingsUseCase.execute(GetDashboardSettingsUseCase.Request)
+            useCases.getDataManagementSettingsUseCase.execute(GetDataManagementSettingsUseCase.Request)
                 .map { converter.convert(it) }.collect { submitState(it) }
         }
         return job
     }
 
-    private fun saveDashboardSettings(): Job {
+    private fun saveDataManagementSettings(): Job {
         val appSettings = listOf(
             AppSettingsListItem(
-                paramName = AppSettingParam.TERRITORY_PROCESSING_PERIOD,
+                paramName = AppSettingParam.DATABASE_BACKUP_PERIOD,
                 paramValue = databaseBackupPeriod.value.value
             )
         )
-        Timber.tag(TAG).d("saveDashboardSettings() called: UI model %s", appSettings)
+        Timber.tag(TAG).d("saveDataManagementSettings() called: UI model %s", appSettings)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveAppSettingsUseCase.execute(
                 SaveAppSettingsUseCase.Request(appSettingsUiMapper.map(appSettings))
             ).collect {
-                Timber.tag(TAG).d("saveDashboardSettings() collect: %s", it)
+                Timber.tag(TAG).d("saveDataManagementSettings() collect: %s", it)
             }
         }
         return job
     }
 
-    override fun stateInputFields() = enumValues<DashboardSettingFields>().map { it.name }
+    override fun stateInputFields() = enumValues<DataManagementFields>().map { it.name }
 
-    override fun initFieldStatesByUiModel(uiModel: DashboardSettingsUiModel): Job? {
+    override fun initFieldStatesByUiModel(uiModel: DataManagementSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
         if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(DashboardSettingsUiModel) called: uiModel = %s", uiModel)
+            .d(
+                "initFieldStatesByUiModel(DataManagementSettingsUiModel) called: uiModel = %s",
+                uiModel
+            )
         initStateValue(
-            DashboardSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
-            uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
+            DataManagementFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
+            uiModel.settings.first { it.paramName == AppSettingParam.DATABASE_BACKUP_PERIOD }.paramValue
         )
         return null
     }
@@ -125,19 +127,19 @@ class DashboardSettingViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
-                    is DashboardSettingInputEvent.DatabaseBackupPeriod -> setStateValue(
-                        DashboardSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
+                    is DataManagementInputEvent.DatabaseBackupPeriod -> setStateValue(
+                        DataManagementFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
                         event.input,
-                        DashboardSettingInputValidator.DatabaseBackupPeriod.isValid(event.input)
+                        DataManagementInputValidator.DatabaseBackupPeriod.isValid(event.input)
                     )
                 }
             }.debounce(350)
             .collect { event ->
                 when (event) {
-                    is DashboardSettingInputEvent.DatabaseBackupPeriod ->
+                    is DataManagementInputEvent.DatabaseBackupPeriod ->
                         setStateValue(
-                            DashboardSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
-                            DashboardSettingInputValidator.DatabaseBackupPeriod.errorIdOrNull(event.input)
+                            DataManagementFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
+                            DataManagementInputValidator.DatabaseBackupPeriod.errorIdOrNull(event.input)
                         )
                 }
             }
@@ -149,11 +151,11 @@ class DashboardSettingViewModelImpl @Inject constructor(
         if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
 
-        DashboardSettingInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseBackupPeriod.value.value)
+        DataManagementInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseBackupPeriod.value.value)
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = DashboardSettingFields.DATABASE_BACKUP_PERIOD.name, errorId = it
+                        fieldName = DataManagementFields.DATABASE_BACKUP_PERIOD.name, errorId = it
                     )
                 )
             }
@@ -164,19 +166,17 @@ class DashboardSettingViewModelImpl @Inject constructor(
         if (LOG_FLOW_INPUT) Timber.tag(TAG)
             .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
-            state[error.fieldName] = when (DashboardSettingFields.valueOf(error.fieldName)) {
-                DashboardSettingFields.DATABASE_BACKUP_PERIOD -> databaseBackupPeriod.value.copy(
+            state[error.fieldName] = when (DataManagementFields.valueOf(error.fieldName)) {
+                DataManagementFields.DATABASE_BACKUP_PERIOD -> databaseBackupPeriod.value.copy(
                     errorId = error.errorId
                 )
-
-                else -> null
             }
         }
     }
 
     companion object {
         fun previewModel(ctx: Context) =
-            object : DashboardSettingViewModel {
+            object : DataManagementViewModel {
                 override val uiStateErrorMsg = MutableStateFlow("")
                 override val isUiStateChanged = MutableStateFlow(true)
                 override val dialogTitleResId =
@@ -200,7 +200,7 @@ class DashboardSettingViewModelImpl @Inject constructor(
 
                 override val areInputsValid = MutableStateFlow(true)
 
-                override fun submitAction(action: DashboardSettingUiAction): Job? = null
+                override fun submitAction(action: DataManagementUiAction): Job? = null
                 override fun handleActionJob(
                     action: () -> Unit,
                     afterAction: (CoroutineScope) -> Unit
@@ -209,7 +209,7 @@ class DashboardSettingViewModelImpl @Inject constructor(
 
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
-                    focusedField: DashboardSettingFields, isFocused: Boolean
+                    focusedField: DataManagementFields, isFocused: Boolean
                 ) {
                 }
 
@@ -227,39 +227,36 @@ class DashboardSettingViewModelImpl @Inject constructor(
                 override fun onDialogDismiss(onDismiss: () -> Unit) {}
             }
 
-        fun previewUiModel(ctx: Context) = DashboardSettingsUiModel(
+        fun previewUiModel(ctx: Context) = DataManagementSettingsUiModel(
             settings = emptyList(),
-            username = ctx.resources.getString(R.string.def_admin_member_pseudonym),
-            roles = rolesList(ctx),
-            appVersionName = "1.1",
-            frameworkVersion = "28",
-            sqliteVersion = "3.22",
-            dbVersion = "1"
+            transferObjects = transferObjectsList(ctx)
         ).also { it.id = UUID.randomUUID() }
 
-        private fun rolesList(ctx: Context) = listOf(
-            MemberRolesListItem(
+        private fun transferObjectsList(ctx: Context) = listOf(
+            RoleTransferObjectsListItem(
                 id = UUID.randomUUID(),
-                role = RolesListItem(
+                isPersonalData = false,
+                transferObject = TransferObjectsListItem(
                     id = UUID.randomUUID(),
-                    roleType = MemberRoleType.ADMIN,
-                    roleName = ctx.resources.getString(R.string.def_role_name_admin)
+                    transferObjectType = TransferObjectType.ALL,
+                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_all)
                 )
-            ), MemberRolesListItem(
+            ), RoleTransferObjectsListItem(
                 id = UUID.randomUUID(),
-                role = RolesListItem(
+                isPersonalData = false,
+                transferObject = TransferObjectsListItem(
                     id = UUID.randomUUID(),
-                    roleType = MemberRoleType.USER,
-                    roleName = ctx.resources.getString(R.string.def_role_name_user)
+                    transferObjectType = TransferObjectType.TERRITORIES,
+                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_territories)
                 )
-            ), MemberRolesListItem(
+            ), RoleTransferObjectsListItem(
                 id = UUID.randomUUID(),
-                role = RolesListItem(
+                isPersonalData = true,
+                transferObject = TransferObjectsListItem(
                     id = UUID.randomUUID(),
-                    roleType = MemberRoleType.TERRITORIES,
-                    roleName = ctx.resources.getString(R.string.def_role_name_territories)
-                ),
-                roleExpiredDate = "2023-12-01T14:29:10.212+03:00".toOffsetDateTime()
+                    transferObjectType = TransferObjectType.BILLS,
+                    transferObjectName = ctx.resources.getString(R.string.def_trans_obj_name_bills)
+                )
             )
         )
     }
