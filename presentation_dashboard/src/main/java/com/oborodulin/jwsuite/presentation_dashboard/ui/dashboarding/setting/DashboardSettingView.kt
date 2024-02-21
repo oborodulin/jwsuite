@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.extensions.toShortFormatString
 import com.oborodulin.home.common.ui.components.datatable.SimpleDataTableComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
@@ -53,8 +54,6 @@ import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_dashboard.R
 import com.oborodulin.jwsuite.presentation_dashboard.ui.model.DashboardSettingsUiModel
 import timber.log.Timber
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.EnumMap
 
 private const val TAG = "Dashboarding.DashboardSettingView"
@@ -155,11 +154,7 @@ fun DashboardSettingView(
             val roles = MutableList(dashboardSettingsUiModel.roles.size) { emptyList<String>() }
             dashboardSettingsUiModel.roles.forEach {
                 roles.add(
-                    listOf(
-                        it.role.roleName, it.roleExpiredDate?.format(
-                            DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                        ).orEmpty()
-                    )
+                    listOf(it.role.roleName, it.roleExpiredDate.toShortFormatString().orEmpty())
                 )
             }
             SimpleDataTableComponent(
@@ -213,7 +208,7 @@ fun DashboardSettingView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewGroupView() {
+fun PreviewDashboardSettingView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {

@@ -101,11 +101,18 @@ dependencies {
 
     // JSON
     implementation deps.json.kotlinx
+    implementation deps.json.moshi
+    implementation deps.json.moshiKotlin
     //implementation deps.google.gson
 
     // Coroutines
     implementation deps.coroutines.android
     implementation deps.coroutines.core
+
+    // Networking
+    implementation deps.okhttp3.okHttp
+    implementation deps.retrofit2.retrofit
+    implementation deps.retrofit2.converterMoshi
 
     // Work
     implementation deps.work.runtimeKtx

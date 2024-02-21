@@ -81,8 +81,8 @@ private const val TAG = "Dashboarding.DataManagementView"
 /**
  * Отображает представление управления данными приложения.
  *
- * @author by o.borodulin
- *
+ * @author Oleg Borodulin (o.a.borodulin@yandex.ru)
+ * @since 1.0
  */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -286,7 +286,7 @@ fun DataManagementView(
 @Preview(name = "Night Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Day Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewGroupView() {
+fun PreviewDataManagementView() {
     val ctx = LocalContext.current
     JWSuiteTheme {
         Surface {

@@ -65,12 +65,8 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     @StringRes cancelChangesConfirmResId: Int,
     @StringRes uniqueConstraintFailedResId: Int? = null,
     confirmButton: @Composable (Boolean, () -> Unit) -> Unit,
-    /*onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
-    onTopBarNavImageVectorChange: (ImageVector?) -> Unit,
-    onTopBarActionsChange: (Boolean, (@Composable RowScope.() -> Unit)) -> Unit,*/
     onActionBarSubtitleChange: (String) -> Unit,
     onTopBarActionsChange: (@Composable RowScope.() -> Unit) -> Unit,
-    //onFabChange: (@Composable () -> Unit) -> Unit,
     innerPadding: PaddingValues,
     dialogView: @Composable (T, (Boolean) -> Unit, (String) -> Unit, () -> Unit) -> Unit
 ) {
@@ -78,7 +74,6 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         .d("DialogScreenComponent(...) called: inputId = %s", inputId)
     val ctx = LocalContext.current
     var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
-    //val errorMessage by viewModel.uiStateErrorMsg.collectAsStateWithLifecycle()
     val isErrorShowAlert = rememberSaveable { mutableStateOf(false) }
     val handleDialogConfirmAction = {
         if (LOG_UI_COMPONENTS) Timber.tag(TAG)
@@ -141,17 +136,13 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         ErrorAlertDialogComponent(isShow = isErrorShowAlert, text = errorMessage) {
             isErrorShowAlert.value = false; upNavigation()
         }
-        //onActionBarChange(null)
-        //onTopBarNavImageVectorChange(Icons.Outlined.ArrowBack)
         if (isControlsShow) {
-            //onTopBarActionsChange(true) {
             onTopBarActionsChange {
                 IconButton(enabled = areInputsValid, onClick = handleDialogConfirmAction) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }
         } else {
-            //onTopBarActionsChange(true) {}
             onTopBarActionsChange {}
         }
         // Confirmation
@@ -178,7 +169,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
             }) {
             if (LOG_UI_COMPONENTS) Timber.tag(TAG)
                 .d("DoneConfirmDialogComponent -> onConfirm()")
-            isDoneConfirmShowAlert.value = false//; handleDialogConfirmAction()
+            isDoneConfirmShowAlert.value = false
             isConfirmAction = true
         }
         if (isConfirmAction) {
