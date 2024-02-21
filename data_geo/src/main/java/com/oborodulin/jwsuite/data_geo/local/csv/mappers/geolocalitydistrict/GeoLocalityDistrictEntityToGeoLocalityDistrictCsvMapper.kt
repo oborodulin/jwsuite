@@ -9,6 +9,9 @@ class GeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper :
     override fun map(input: GeoLocalityDistrictEntity) = GeoLocalityDistrictCsv(
         localityDistrictId = input.localityDistrictId,
         locDistrictShortName = input.locDistrictShortName,
+        locDistrictOsmId = input.locDistrictOsmId,
+        latitude = input.coordinates?.latitude,
+        longitude = input.coordinates?.longitude,
         ldLocalitiesId = input.ldLocalitiesId
     )
 }

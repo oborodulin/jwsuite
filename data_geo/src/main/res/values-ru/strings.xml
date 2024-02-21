@@ -2,7 +2,7 @@
     <!--Значения полей данных по-умолчанию -->
     <!--Области -->
     <!--по-умолчанию-->
-    <string name="def_reg_code">999</string>
+    <string name="def_reg_code">99</string>
     <string name="def_reg_name">Область #1</string>
     <!--тестовые-->
     <string name="def_reg_donetsk_code">80</string>

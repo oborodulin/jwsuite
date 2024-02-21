@@ -4,6 +4,7 @@ import com.oborodulin.jwsuite.domain.services.Exportable
 import com.oborodulin.jwsuite.domain.services.Importable
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.opencsv.bean.CsvBindByName
+import java.math.BigDecimal
 import java.util.UUID
 
 data class HouseCsv(
@@ -24,6 +25,9 @@ data class HouseCsv(
     @CsvBindByName val isForeignLangHouse: Boolean = false,
     @CsvBindByName val isHousePrivateSector: Boolean = false,
     @CsvBindByName val houseDesc: String? = null,
+    @CsvBindByName val houseOsmId: Long? = null,
+    @CsvBindByName val latitude: BigDecimal? = null,
+    @CsvBindByName val longitude: BigDecimal? = null,
     @CsvBindByName val hTerritoriesId: UUID? = null,
     @CsvBindByName val hMicrodistrictsId: UUID? = null,
     @CsvBindByName val hLocalityDistrictsId: UUID? = null,

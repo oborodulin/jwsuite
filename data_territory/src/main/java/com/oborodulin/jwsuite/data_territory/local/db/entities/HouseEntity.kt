@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -10,6 +11,7 @@ import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
 import com.oborodulin.jwsuite.domain.types.BuildingType
 import kotlinx.serialization.Serializable
 import java.util.UUID
@@ -17,7 +19,7 @@ import java.util.UUID
 @Entity(
     tableName = HouseEntity.TABLE_NAME,
     indices = [Index(
-        value = ["hStreetsId", "zipCode", "houseNum", "houseLetter", "buildingNum"],
+        value = ["hStreetsId", "houseOsmId", "zipCode", "houseNum", "houseLetter", "buildingNum"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
@@ -63,6 +65,8 @@ data class HouseEntity(
     val isForeignLangHouse: Boolean = false,
     val isHousePrivateSector: Boolean = false,
     val houseDesc: String? = null,
+    @ColumnInfo(index = true) val houseOsmId: Long? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val hTerritoriesId: UUID? = null,
     @Serializable(with = UUIDSerializer::class)
@@ -75,6 +79,7 @@ data class HouseEntity(
 
     companion object {
         const val TABLE_NAME = "houses"
+        const val PREFIX = "house_"
 
         fun defaultHouse(
             streetId: UUID = UUID.randomUUID(), microdistrictId: UUID? = null,
@@ -84,7 +89,8 @@ data class HouseEntity(
             entrancesQty: Int? = null, floorsByEntrance: Int? = null, roomsByFloor: Int? = null,
             estimatedRooms: Int? = null, isForeignLanguage: Boolean = false,
             isPrivateSector: Boolean = false, buildingType: BuildingType = BuildingType.HOUSE,
-            territoryDesc: String? = null
+            territoryDesc: String? = null,
+            houseOsmId: Long? = null, coordinates: Coordinates? = null
         ) = HouseEntity(
             hStreetsId = streetId, hLocalityDistrictsId = localityDistrictId,
             hMicrodistrictsId = microdistrictId,
@@ -95,7 +101,8 @@ data class HouseEntity(
             floorsByEntrance = floorsByEntrance, roomsByHouseFloor = roomsByFloor,
             estHouseRooms = estimatedRooms,
             isForeignLangHouse = isForeignLanguage, isHousePrivateSector = isPrivateSector,
-            buildingType = buildingType, houseDesc = territoryDesc
+            buildingType = buildingType, houseDesc = territoryDesc,
+            houseOsmId = houseOsmId, coordinates = coordinates
         )
 
     }
@@ -104,6 +111,7 @@ data class HouseEntity(
 
     override fun key(): Int {
         var result = hStreetsId.hashCode()
+        result = result * 31 + houseOsmId.hashCode()
         result = result * 31 + houseNum.hashCode()
         result = result * 31 + zipCode.hashCode()
         result = result * 31 + houseLetter.hashCode()
@@ -117,7 +125,9 @@ data class HouseEntity(
         houseLetter?.let { str.append(it) }
         buildingNum?.let { str.append("-").append(it) }
         zipCode?.let { str.append(". ZIP Code: ").append(it) }
-        str.append(" [hStreetsId = ").append(hStreetsId)
+        str.append("'. OSM: houseOsmId = ").append(houseOsmId)
+            .append("; coordinates = ").append(coordinates)
+            .append(" [hStreetsId = ").append(hStreetsId)
             .append("] houseId = ").append(houseId)
         return str.toString()
     }

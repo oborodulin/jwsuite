@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.entities
 
 import android.content.Context
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -9,6 +10,7 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
 import com.oborodulin.jwsuite.domain.types.RoadType
 import kotlinx.serialization.Serializable
 import java.util.UUID
@@ -16,7 +18,7 @@ import java.util.UUID
 @Entity(
     tableName = GeoStreetEntity.TABLE_NAME,
     indices = [Index(
-        value = ["sLocalitiesId", "streetHashCode", "roadType", "isStreetPrivateSector"],
+        value = ["sLocalitiesId", "streetOsmId", "streetHashCode", "roadType", "isStreetPrivateSector"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
@@ -35,19 +37,24 @@ data class GeoStreetEntity(
     val roadType: RoadType = RoadType.STREET,
     val isStreetPrivateSector: Boolean = false,     // all street is private sector
     val estStreetHouses: Int? = null,               // estimated houses of the street
+    @ColumnInfo(index = true) val streetOsmId: Long? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val sLocalitiesId: UUID
 ) : BaseEntity() {
 
     companion object {
         const val TABLE_NAME = "geo_streets"
+        const val PREFIX = "street_"
 
         fun defaultStreet(
             localityId: UUID = UUID.randomUUID(), streetHashCode: Int,
             roadType: RoadType = RoadType.STREET, isPrivateSector: Boolean = false,
+            streetOsmId: Long? = null, coordinates: Coordinates? = null
         ) = GeoStreetEntity(
             sLocalitiesId = localityId, streetHashCode = streetHashCode, roadType = roadType,
-            isStreetPrivateSector = isPrivateSector
+            isStreetPrivateSector = isPrivateSector,
+            streetOsmId = streetOsmId, coordinates = coordinates
         )
 
         fun strelkovojDiviziiStreet(ctx: Context, localityId: UUID = UUID.randomUUID()) =
@@ -97,6 +104,7 @@ data class GeoStreetEntity(
 
     override fun key(): Int {
         var result = sLocalitiesId.hashCode()
+        result = result * 31 + streetOsmId.hashCode()
         result = result * 31 + streetHashCode.hashCode()
         result = result * 31 + roadType.hashCode()
         result = result * 31 + isStreetPrivateSector.hashCode()
@@ -105,7 +113,9 @@ data class GeoStreetEntity(
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Street Entity '").append(roadType).append("'")
+        str.append("Street Entity '").append(roadType)
+            .append("'. OSM: streetOsmId = ").append(streetOsmId)
+            .append("; coordinates = ").append(coordinates)
             .append(" [sLocalitiesId = ").append(sLocalitiesId)
             .append("; streetHashCode = ").append(streetHashCode)
             .append("] streetId = ").append(streetId)

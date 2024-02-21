@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.entities
 
 import android.content.Context
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -9,13 +10,17 @@ import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
 import com.oborodulin.jwsuite.domain.types.LocalityType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityEntity.TABLE_NAME,
-    indices = [Index(value = ["lRegionsId", "lRegionDistrictsId", "localityCode"], unique = true)],
+    indices = [Index(
+        value = ["lRegionsId", "lRegionDistrictsId", "localityOsmId", "localityCode"],
+        unique = true
+    )],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
@@ -36,6 +41,8 @@ data class GeoLocalityEntity(
     @PrimaryKey val localityId: UUID = UUID.randomUUID(),
     val localityCode: String,
     val localityType: LocalityType,
+    @ColumnInfo(index = true) val localityOsmId: Long? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val lRegionDistrictsId: UUID? = null,
     @Serializable(with = UUIDSerializer::class)
@@ -44,14 +51,17 @@ data class GeoLocalityEntity(
 
     companion object {
         const val TABLE_NAME = "geo_localities"
+        const val PREFIX = "locality_"
 
         fun defaultLocality(
             localityId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),
             districtId: UUID? = null,
-            localityCode: String, localityType: LocalityType
+            localityCode: String, localityType: LocalityType,
+            localityOsmId: Long? = null, coordinates: Coordinates? = null
         ) = GeoLocalityEntity(
             localityId = localityId, lRegionsId = regionId, lRegionDistrictsId = districtId,
-            localityCode = localityCode, localityType = localityType
+            localityCode = localityCode, localityType = localityType,
+            localityOsmId = localityOsmId, coordinates = coordinates
         )
 
         fun defLocality(ctx: Context, regionId: UUID) = defaultLocality(
@@ -59,6 +69,7 @@ data class GeoLocalityEntity(
             localityCode = ctx.resources.getString(R.string.def_locality_code),
             localityType = LocalityType.CITY
         )
+
         fun donetskLocality(ctx: Context, regionId: UUID) = defaultLocality(
             regionId = regionId,
             localityCode = ctx.resources.getString(R.string.def_donetsk_code),
@@ -94,6 +105,7 @@ data class GeoLocalityEntity(
 
     override fun key(): Int {
         var result = lRegionsId.hashCode()
+        result = result * 31 + localityOsmId.hashCode()
         result = result * 31 + localityCode.hashCode()
         result = result * 31 + lRegionDistrictsId.hashCode()
         return result
@@ -102,7 +114,9 @@ data class GeoLocalityEntity(
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Locality Entity ").append(localityType)
-            .append(" '").append(localityCode).append("'")
+            .append(" '").append(localityCode)
+            .append("'. OSM: localityOsmId = ").append(localityOsmId)
+            .append("; coordinates = ").append(coordinates)
         lRegionDistrictsId?.let { str.append(" [lRegionDistrictsId = ").append(it).append("]") }
         str.append(" localityId = ").append(localityId)
         return str.toString()

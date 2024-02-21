@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoMicrodistrictCsv
 
 class GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper :
@@ -10,6 +11,12 @@ class GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper :
         microdistrictId = input.microdistrictId,
         microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
+        microdistrictOsmId = input.microdistrictOsmId,
+        coordinates = input.latitude?.let { latitude ->
+            input.longitude?.let { longitude ->
+                Coordinates(latitude = latitude, longitude = longitude)
+            }
+        },
         mLocalityDistrictsId = input.mLocalityDistrictsId,
         mLocalitiesId = input.mLocalitiesId
     )

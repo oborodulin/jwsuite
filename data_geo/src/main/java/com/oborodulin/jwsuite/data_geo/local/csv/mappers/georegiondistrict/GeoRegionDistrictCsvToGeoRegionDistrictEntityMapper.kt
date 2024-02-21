@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict
 
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionDistrictCsv
 
 class GeoRegionDistrictCsvToGeoRegionDistrictEntityMapper :
@@ -9,6 +10,12 @@ class GeoRegionDistrictCsvToGeoRegionDistrictEntityMapper :
     override fun map(input: GeoRegionDistrictCsv) = GeoRegionDistrictEntity(
         regionDistrictId = input.regionDistrictId,
         regDistrictShortName = input.regDistrictShortName,
+        regDistrictOsmId = input.regDistrictOsmId,
+        coordinates = input.latitude?.let { latitude ->
+            input.longitude?.let { longitude ->
+                Coordinates(latitude = latitude, longitude = longitude)
+            }
+        },
         rRegionsId = input.rRegionsId
     )
 }

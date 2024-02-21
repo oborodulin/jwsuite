@@ -7,6 +7,9 @@ import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoRegionCsv
 class GeoRegionEntityToGeoRegionCsvMapper : Mapper<GeoRegionEntity, GeoRegionCsv> {
     override fun map(input: GeoRegionEntity) = GeoRegionCsv(
         regionId = input.regionId,
-        regionCode = input.regionCode
+        regionCode = input.regionCode,
+        regionOsmId = input.regionOsmId,
+        latitude = input.coordinates?.latitude,
+        longitude = input.coordinates?.longitude
     )
 }

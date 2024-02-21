@@ -9,6 +9,9 @@ class GeoLocalityEntityToGeoLocalityCsvMapper : Mapper<GeoLocalityEntity, GeoLoc
         localityId = input.localityId,
         localityCode = input.localityCode,
         localityType = input.localityType,
+        localityOsmId = input.localityOsmId,
+        latitude = input.coordinates?.latitude,
+        longitude = input.coordinates?.longitude,
         lRegionDistrictsId = input.lRegionDistrictsId,
         lRegionsId = input.lRegionsId
     )
