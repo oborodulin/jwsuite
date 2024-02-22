@@ -35,7 +35,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
         // https://github.com/westnordost/osmapi-overpass
-        .baseUrl("https://overpass-api.de/api/")
+        .baseUrl("https://overpass-api.de/api/interpreter")
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()

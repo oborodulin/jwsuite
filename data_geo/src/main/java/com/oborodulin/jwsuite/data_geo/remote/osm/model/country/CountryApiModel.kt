@@ -1,0 +1,42 @@
+package com.oborodulin.jwsuite.data_geo.remote.osm.model.country
+
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.Geometry
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.Osm3s
+import com.squareup.moshi.Json
+
+data class CountryApiModel(
+    @Json(name = "version") val version: String,
+    @Json(name = "generator") val generator: String,
+    @Json(name = "osm3s") val osm3s: Osm3s,
+    @Json(name = "elements") val elements: List<CountryElement>
+) {
+    companion object {
+        val data = """
+    [out:json][timeout:600];
+    (rel[admin_level="2"][boundary="administrative"][type!="multilinestring"];)->.rc;
+    (node(r.rc)[place="country"];) ->.nc;
+    foreach.nc(
+        convert CountryType 
+            osmType = type(), ::id = id(), ::geom = geom(), countryCode = t["country_code_iso3166_1_alpha_2"], isoCode = t["ISO3166-1:alpha2"], geocodeArea = t["name:en"], locale = "ru", name = t["name:ru"], flag = t["flag"];
+	    out geom;
+    );
+        """.trimIndent()
+    }
+}
+
+data class CountryElement(
+    @Json(name = "type") val type: String,
+    @Json(name = "id") val id: Long,
+    @Json(name = "geometry") val geometry: Geometry,
+    @Json(name = "tags") val tags: CountryTags
+)
+
+data class CountryTags(
+    @Json(name = "osmType") val osmType: String,
+    @Json(name = "countryCode") val countryCode: String,
+    @Json(name = "isoCode") val isoCode: String,
+    @Json(name = "geocodeArea") val geocodeArea: String,
+    @Json(name = "locale") val locale: String,
+    @Json(name = "name") val name: String,
+    @Json(name = "flag") val flag: String
+)
