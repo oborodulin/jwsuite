@@ -4,7 +4,6 @@ import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data_appsetting.local.db.entities.AppSettingEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.views.CongregationView
-import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_CONGREGATION_LOCALITY
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
@@ -85,20 +84,20 @@ SELECT t.*, cv.*, tc.*,
 FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${CongregationView.VIEW_NAME} cv ON cv.congregationId = t.tCongregationsId
     JOIN ${TerritoryCategoryEntity.TABLE_NAME} tc ON tc.territoryCategoryId = t.tTerritoryCategoriesId
 
-    JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = t.tLocalitiesId AND lv.localityLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
+    JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = t.tLocalitiesId AND lv.localityLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
         JOIN ${GeoRegionView.VIEW_NAME} rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode
         LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = lv.localityLocCode
         
-    LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvl ON ldvl.localityDistrictId = t.tLocalityDistrictsId AND ldvl.locDistrictLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${LocalityView.VIEW_NAME} lvl ON lvl.localityId = ldvl.ldLocalitiesId AND lvl.localityLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${GeoRegionView.VIEW_NAME} rvl ON rvl.regionId = lvl.lRegionsId AND rvl.regionLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvl ON rdvl.regionDistrictId = lvl.lRegionDistrictsId AND rdvl.regDistrictLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
+    LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvl ON ldvl.localityDistrictId = t.tLocalityDistrictsId AND ldvl.locDistrictLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${LocalityView.VIEW_NAME} lvl ON lvl.localityId = ldvl.ldLocalitiesId AND lvl.localityLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${GeoRegionView.VIEW_NAME} rvl ON rvl.regionId = lvl.lRegionsId AND rvl.regionLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvl ON rdvl.regionDistrictId = lvl.lRegionDistrictsId AND rdvl.regDistrictLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
     
-    LEFT JOIN ${MicrodistrictView.VIEW_NAME} mdv ON mdv.microdistrictId = t.tMicrodistrictsId AND mdv.microdistrictLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvm ON ldvm.localityDistrictId = mdv.mLocalityDistrictsId AND ldvm.locDistrictLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${LocalityView.VIEW_NAME} lvm ON lvm.localityId = ldvm.ldLocalitiesId AND lvm.localityLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${GeoRegionView.VIEW_NAME} rvm ON rvm.regionId = lvm.lRegionsId AND rvm.regionLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
-        LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvm ON rdvm.regionDistrictId = lvm.lRegionDistrictsId AND rdvm.regDistrictLocCode = cv.${PX_CONGREGATION_LOCALITY}localityLocCode
+    LEFT JOIN ${MicrodistrictView.VIEW_NAME} mdv ON mdv.microdistrictId = t.tMicrodistrictsId AND mdv.microdistrictLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${LocalityDistrictView.VIEW_NAME} ldvm ON ldvm.localityDistrictId = mdv.mLocalityDistrictsId AND ldvm.locDistrictLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${LocalityView.VIEW_NAME} lvm ON lvm.localityId = ldvm.ldLocalitiesId AND lvm.localityLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${GeoRegionView.VIEW_NAME} rvm ON rvm.regionId = lvm.lRegionsId AND rvm.regionLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
+        LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdvm ON rdvm.regionDistrictId = lvm.lRegionDistrictsId AND rdvm.regDistrictLocCode = cv.${CongregationEntity.PX_LOCALITY}localityLocCode
 
     JOIN ${AppSettingEntity.TABLE_NAME} s ON s.paramName = $PRM_TERRITORY_BUSINESS_MARK_VAL
 """

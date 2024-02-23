@@ -18,25 +18,35 @@ import java.util.UUID
 
 @Dao
 interface GeoRegionDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${GeoRegionEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<GeoRegionEntity>>
 
     @Query("SELECT * FROM ${GeoRegionTlEntity.TABLE_NAME}")
     fun selectTlEntities(): Flow<List<GeoRegionTlEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionLocCode = :locale ORDER BY regionName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionId = :regionId AND regionLocCode = :locale")
     fun findById(regionId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoRegionView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE rCountriesId = :countryId AND regionLocCode = :locale ORDER BY regionName")
+    fun findByCountryId(countryId: UUID, locale: String? = Locale.getDefault().language):
+            Flow<List<GeoRegionView>>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByCountryId(countryId: UUID) = findByCountryId(countryId).distinctUntilChanged()
 
     /*
         @Query(

@@ -50,12 +50,15 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.RoleTransferObjectView
+import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoCountryDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoStreetDao
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
@@ -69,6 +72,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
+import com.oborodulin.jwsuite.data_geo.local.db.views.GeoCountryView
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoMicrodistrictView
@@ -79,6 +83,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionView
 import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import com.oborodulin.jwsuite.data_territory.local.db.dao.EntranceDao
 import com.oborodulin.jwsuite.data_territory.local.db.dao.FloorDao
@@ -138,7 +143,7 @@ private const val TAG = "JwSuiteDatabase"
 
 @Database(
     entities = [AppSettingEntity::class, RoleEntity::class,
-        GeoRegionEntity::class, GeoRegionTlEntity::class,
+        GeoCountryEntity::class, GeoCountryTlEntity::class, GeoRegionEntity::class, GeoRegionTlEntity::class,
         GeoRegionDistrictEntity::class, GeoRegionDistrictTlEntity::class,
         GeoLocalityEntity::class, GeoLocalityTlEntity::class,
         GeoLocalityDistrictEntity::class, GeoLocalityDistrictTlEntity::class,
@@ -154,9 +159,9 @@ private const val TAG = "JwSuiteDatabase"
         CongregationTerritoryCrossRefEntity::class,
         EventEntity::class],
     views = [
-        GeoRegionView::class, RegionDistrictView::class, LocalityView::class, LocalityDistrictView::class,
-        MicrodistrictView::class, StreetView::class,
-        GeoRegionDistrictView::class, GeoLocalityView::class,
+        GeoCountryView::class, RegionView::class, RegionDistrictView::class, LocalityView::class,
+        LocalityDistrictView::class, MicrodistrictView::class, StreetView::class,
+        GeoRegionView::class, GeoRegionDistrictView::class, GeoLocalityView::class,
         GeoLocalityDistrictView::class, GeoMicrodistrictView::class, GeoStreetView::class,
         CongregationView::class, FavoriteCongregationView::class, GroupView::class,
         MemberLastCongregationView::class, MemberLastMovementView::class,
@@ -184,6 +189,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
 
     // Geo:
+    abstract fun geoCountryDao(): GeoCountryDao
     abstract fun geoRegionDao(): GeoRegionDao
     abstract fun geoRegionDistrictDao(): GeoRegionDistrictDao
     abstract fun geoLocalityDao(): GeoLocalityDao

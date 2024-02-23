@@ -1,0 +1,11 @@
+package com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry
+
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.tl.GeoCountryTlCsvListToGeoCountryTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.tl.GeoCountryTlEntityListToGeoCountryTlCsvListMapper
+
+data class GeoCountryCsvMappers(
+    val geoCountryEntityListToGeoCountryCsvListMapper: GeoCountryEntityListToGeoCountryCsvListMapper,
+    val geoCountryCsvListToGeoCountryEntityListMapper: GeoCountryCsvListToGeoCountryEntityListMapper,
+    val geoCountryTlEntityListToGeoCountryTlCsvListMapper: GeoCountryTlEntityListToGeoCountryTlCsvListMapper,
+    val geoCountryTlCsvListToGeoCountryTlEntityListMapper: GeoCountryTlCsvListToGeoCountryTlEntityListMapper
+)

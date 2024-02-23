@@ -13,7 +13,6 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.LocalityDistrictWithStreets
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityDistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_DISTRICT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -29,14 +28,14 @@ interface GeoLocalityDistrictDao {
     @Query("SELECT * FROM ${GeoLocalityDistrictTlEntity.TABLE_NAME}")
     fun selectTlEntities(): Flow<List<GeoLocalityDistrictTlEntity>>
 
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${GeoLocalityDistrictEntity.PX}locDistrictLocCode = :locale ORDER BY ${GeoLocalityDistrictEntity.PX}locDistrictName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoLocalityDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale AND ${PX_LOCALITY_DISTRICT}localityDistrictId = :localityDistrictId")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${GeoLocalityDistrictEntity.PX}locDistrictLocCode = :locale AND ${GeoLocalityDistrictEntity.PX}localityDistrictId = :localityDistrictId")
     fun findById(localityDistrictId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoLocalityDistrictView>
 
@@ -45,7 +44,7 @@ interface GeoLocalityDistrictDao {
         findById(localityDistrictId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale AND ${PX_LOCALITY_DISTRICT}ldLocalitiesId = :localityId ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${GeoLocalityDistrictEntity.PX}locDistrictLocCode = :locale AND ${GeoLocalityDistrictEntity.PX}ldLocalitiesId = :localityId ORDER BY ${GeoLocalityDistrictEntity.PX}locDistrictName")
     fun findByLocalityId(localityId: UUID, locale: String? = Locale.getDefault().language):
             Flow<List<GeoLocalityDistrictView>>
 
@@ -57,9 +56,9 @@ interface GeoLocalityDistrictDao {
     @Query(
         """
     SELECT ldv.* FROM ${GeoLocalityDistrictView.VIEW_NAME} ldv JOIN (SELECT dsStreetsId, dsLocalityDistrictsId FROM ${GeoStreetDistrictEntity.TABLE_NAME} GROUP BY dsLocalityDistrictsId, dsStreetsId) sd 
-        ON sd.dsStreetsId = :streetId AND ldv.${PX_LOCALITY_DISTRICT}localityDistrictId = sd.dsLocalityDistrictsId 
-            AND ldv.${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale 
-    ORDER BY ldv.${PX_LOCALITY_DISTRICT}locDistrictName
+        ON sd.dsStreetsId = :streetId AND ldv.${GeoLocalityDistrictEntity.PX}localityDistrictId = sd.dsLocalityDistrictsId 
+            AND ldv.${GeoLocalityDistrictEntity.PX}locDistrictLocCode = :locale 
+    ORDER BY ldv.${GeoLocalityDistrictEntity.PX}locDistrictName
         """
     )
     fun findByStreetId(streetId: UUID, locale: String? = Locale.getDefault().language):
@@ -72,10 +71,10 @@ interface GeoLocalityDistrictDao {
     @Query(
         """
     SELECT ldv.* FROM ${GeoLocalityDistrictView.VIEW_NAME} ldv JOIN ${StreetView.VIEW_NAME} sv 
-        ON sv.streetId = :streetId AND ldv.${PX_LOCALITY_DISTRICT}ldLocalitiesId = sv.sLocalitiesId 
-            AND ldv.${PX_LOCALITY_DISTRICT}locDistrictLocCode = sv.streetLocCode AND sv.streetLocCode = :locale
-    WHERE NOT EXISTS (SELECT streetDistrictId FROM ${GeoStreetDistrictEntity.TABLE_NAME} WHERE dsStreetsId = :streetId AND dsLocalityDistrictsId = ldv.${PX_LOCALITY_DISTRICT}localityDistrictId) 
-    ORDER BY ldv.${PX_LOCALITY_DISTRICT}locDistrictName
+        ON sv.streetId = :streetId AND ldv.${GeoLocalityDistrictEntity.PX}ldLocalitiesId = sv.sLocalitiesId 
+            AND ldv.${GeoLocalityDistrictEntity.PX}locDistrictLocCode = sv.streetLocCode AND sv.streetLocCode = :locale
+    WHERE NOT EXISTS (SELECT streetDistrictId FROM ${GeoStreetDistrictEntity.TABLE_NAME} WHERE dsStreetsId = :streetId AND dsLocalityDistrictsId = ldv.${GeoLocalityDistrictEntity.PX}localityDistrictId) 
+    ORDER BY ldv.${GeoLocalityDistrictEntity.PX}locDistrictName
         """
     )
     fun findForStreetByStreetId(streetId: UUID, locale: String? = Locale.getDefault().language):
@@ -86,7 +85,7 @@ interface GeoLocalityDistrictDao {
         findForStreetByStreetId(streetId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${PX_LOCALITY_DISTRICT}locDistrictLocCode = :locale AND ${PX_LOCALITY_DISTRICT}ldLocalitiesId = :localityId AND ${PX_LOCALITY_DISTRICT}locDistrictName LIKE '%' || :districtName || '%' ORDER BY ${PX_LOCALITY_DISTRICT}locDistrictName")
+    @Query("SELECT * FROM ${GeoLocalityDistrictView.VIEW_NAME} WHERE ${GeoLocalityDistrictEntity.PX}locDistrictLocCode = :locale AND ${GeoLocalityDistrictEntity.PX}ldLocalitiesId = :localityId AND ${GeoLocalityDistrictEntity.PX}locDistrictName LIKE '%' || :districtName || '%' ORDER BY ${GeoLocalityDistrictEntity.PX}locDistrictName")
     fun findByDistrictName(
         localityId: UUID, districtName: String, locale: String? = Locale.getDefault().language
     ): Flow<List<GeoLocalityDistrictView>>

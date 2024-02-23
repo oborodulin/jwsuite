@@ -52,6 +52,7 @@ data class GeoMicrodistrictEntity(
     companion object {
         const val TABLE_NAME = "geo_microdistricts"
         const val PREFIX = "microdistrict_"
+        const val PX = "md_"
 
         fun defaultMicrodistrict(
             localityId: UUID = UUID.randomUUID(), localityDistrictId: UUID = UUID.randomUUID(),

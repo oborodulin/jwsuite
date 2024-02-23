@@ -11,6 +11,13 @@ data class Coordinates(
     @Serializable(with = BigDecimalSerializer::class)
     val longitude: BigDecimal
 ) {
+    companion object {
+        fun fromLatAndLon(lat: BigDecimal?, lon: BigDecimal?) =
+            lat?.let { latitude ->
+                lon?.let { longitude -> Coordinates(latitude = latitude, longitude = longitude) }
+            }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

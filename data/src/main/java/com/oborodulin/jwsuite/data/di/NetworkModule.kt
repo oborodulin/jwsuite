@@ -1,12 +1,18 @@
 package com.oborodulin.jwsuite.data.di
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.oborodulin.jwsuite.data.BuildConfig
+import com.oborodulin.jwsuite.data.util.Constants.BASE_URL_OVERPASS_API
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
@@ -21,11 +27,33 @@ import javax.inject.Singleton
 object NetworkModule {
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient
-        .Builder()
-        .readTimeout(15, TimeUnit.SECONDS)
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .build()
+    fun provideOkHttpClient(context: Context): OkHttpClient {
+        val chainInterceptor = { chain: Interceptor.Chain ->
+            chain.proceed(
+                chain.request().newBuilder()
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .build()
+            )
+        }
+
+        return if (BuildConfig.DEBUG) {
+            OkHttpClient.Builder()
+                .addInterceptor(chainInterceptor)
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(ChuckerInterceptor(context))
+                .readTimeout(120, TimeUnit.SECONDS)
+                .connectTimeout(120, TimeUnit.SECONDS)
+                .build()
+        } else {
+            OkHttpClient.Builder()
+                .addInterceptor(chainInterceptor)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .build()
+        }
+    }
+
 
     @Singleton
     @Provides
@@ -35,7 +63,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
         // https://github.com/westnordost/osmapi-overpass
-        .baseUrl("https://overpass-api.de/api/interpreter")
+        .baseUrl(BASE_URL_OVERPASS_API)
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()

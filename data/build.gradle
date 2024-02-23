@@ -64,6 +64,9 @@ android {
             includeAndroidResources = true
         }
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -110,9 +113,12 @@ dependencies {
     implementation deps.coroutines.core
 
     // Networking
-    implementation deps.okhttp3.okHttp
     implementation deps.retrofit2.retrofit
     implementation deps.retrofit2.converterMoshi
+    implementation deps.okhttp3.okHttp
+    implementation deps.okhttp3.loggingInterceptor
+    debugImplementation deps.network.chuckerDebug
+    releaseImplementation deps.network.chuckerRelease
 
     // Work
     implementation deps.work.runtimeKtx

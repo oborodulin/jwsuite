@@ -16,9 +16,7 @@ open class DomainModel(
         if (other !is DomainModel) return false
 
         if (id != other.id) return false
-        if (tlId != other.tlId) return false
-
-        return true
+        return tlId == other.tlId
     }
 
     override fun hashCode(): Int {

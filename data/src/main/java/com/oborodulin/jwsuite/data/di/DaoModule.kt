@@ -9,6 +9,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.dao.GroupDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.MemberDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.RoleDao
 import com.oborodulin.jwsuite.data_congregation.local.db.dao.TransferDao
+import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoCountryDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
@@ -48,6 +49,10 @@ object DaoModule {
     fun provideEventDao(db: JwSuiteDatabase): EventDao = db.eventDao()
 
     // Geo:
+    @Singleton
+    @Provides
+    fun provideGeoCountryDao(db: JwSuiteDatabase): GeoCountryDao = db.geoCountryDao()
+
     @Singleton
     @Provides
     fun provideGeoRegionDao(db: JwSuiteDatabase): GeoRegionDao = db.geoRegionDao()

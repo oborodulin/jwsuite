@@ -9,6 +9,7 @@ import java.util.UUID
 
 interface GeoRegionsRepository : CsvTransferableRepo {
     fun getAll(): Flow<List<GeoRegion>>
+    fun getAllByCountry(countryId: UUID): Flow<List<GeoRegion>>
     fun get(regionId: UUID): Flow<GeoRegion>
     fun save(region: GeoRegion): Flow<GeoRegion>
     fun delete(region: GeoRegion): Flow<GeoRegion>

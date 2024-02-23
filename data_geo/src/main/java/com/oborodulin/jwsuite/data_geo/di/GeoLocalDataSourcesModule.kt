@@ -1,18 +1,21 @@
 package com.oborodulin.jwsuite.data_geo.di
 
 import com.oborodulin.home.common.di.IoDispatcher
+import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoCountryDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoStreetDao
+import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoCountryDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLocalityDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLocalityDistrictDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoMicrodistrictDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDistrictDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoStreetDataSource
+import com.oborodulin.jwsuite.data_geo.sources.local.LocalGeoCountryDataSourceImpl
 import com.oborodulin.jwsuite.data_geo.sources.local.LocalGeoLocalityDataSourceImpl
 import com.oborodulin.jwsuite.data_geo.sources.local.LocalGeoLocalityDistrictDataSourceImpl
 import com.oborodulin.jwsuite.data_geo.sources.local.LocalGeoMicrodistrictDataSourceImpl
@@ -30,6 +33,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object GeoLocalDataSourcesModule {
+    @Singleton
+    @Provides
+    fun provideLocalGeoCountryDataSource(
+        countryDao: GeoCountryDao, @IoDispatcher dispatcher: CoroutineDispatcher
+    ): LocalGeoCountryDataSource = LocalGeoCountryDataSourceImpl(countryDao, dispatcher)
+
     @Singleton
     @Provides
     fun provideLocalGeoRegionDataSource(

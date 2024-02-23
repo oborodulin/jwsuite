@@ -8,12 +8,12 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -100,7 +100,7 @@ interface GeoStreetDao {
         .distinctUntilChanged()
 
     //-----------------------------
-    //LEFT JOIN ${GeoLocalityDistrictView.VIEW_NAME} ldv ON ldv.${PX_LOCALITY_DISTRICT}localityDistrictId = ds.dsLocalityDistrictsId AND ldv.${PX_LOCALITY_DISTRICT}locDistrictLocCode = sv.streetLocCode
+    //LEFT JOIN ${GeoLocalityDistrictView.VIEW_NAME} ldv ON ldv.${GeoLocalityDistrictEntity.PX}localityDistrictId = ds.dsLocalityDistrictsId AND ldv.${GeoLocalityDistrictEntity.PX}locDistrictLocCode = sv.streetLocCode
     //LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} mdv ON mdv.microdistrictId = ds.dsMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode
     @Query(
         """
@@ -108,7 +108,7 @@ interface GeoStreetDao {
         WHERE sv.streetLocCode = :locale
             AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(ds.dsMicrodistrictsId, '')) 
             AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId , ''))
-            AND sv.${PX_LOCALITY}localityId = :localityId
+            AND sv.${GeoLocalityEntity.PX}localityId = :localityId
             AND sv.isStreetPrivateSector = $DB_TRUE
             AND sv.streetId NOT IN (:excludes)
         ORDER BY sv.streetName

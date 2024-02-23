@@ -10,7 +10,6 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregat
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView

@@ -13,11 +13,7 @@ class GeoStreetCsvToGeoStreetEntityMapper : Mapper<GeoStreetCsv, GeoStreetEntity
         isStreetPrivateSector = input.isStreetPrivateSector,
         estStreetHouses = input.estStreetHouses,
         streetOsmId = input.streetOsmId,
-        coordinates = input.latitude?.let { latitude ->
-            input.longitude?.let { longitude ->
-                Coordinates(latitude = latitude, longitude = longitude)
-            }
-        },
+        coordinates = Coordinates.fromLatAndLon(lat = input.latitude, lon = input.longitude),
         sLocalitiesId = input.sLocalitiesId
     )
 }

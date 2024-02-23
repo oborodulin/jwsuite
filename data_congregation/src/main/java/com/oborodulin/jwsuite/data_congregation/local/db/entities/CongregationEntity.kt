@@ -43,6 +43,9 @@ data class CongregationEntity(
 
     companion object {
         const val TABLE_NAME = "congregations"
+        const val PX_REGION = "cr_"
+        const val PX_REGION_DISTRICT = "crd_"
+        const val PX_LOCALITY = "cl_"
 
         fun defaultCongregation(
             congregationId: UUID = UUID.randomUUID(), localityId: UUID = UUID.randomUUID(),

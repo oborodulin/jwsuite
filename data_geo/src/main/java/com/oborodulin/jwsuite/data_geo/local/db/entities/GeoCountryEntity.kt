@@ -15,14 +15,14 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoCountryEntity.TABLE_NAME,
-    indices = [Index(value = ["countryOsmId", "countryCode", "geocodeArea"], unique = true)],
+    indices = [Index(value = ["countryOsmId", "countryCode", "countryGeocode"], unique = true)],
 )
 @Serializable
 data class GeoCountryEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val countryId: UUID = UUID.randomUUID(),
     val countryCode: String,
-    val geocodeArea: String? = null,
+    val countryGeocode: String? = null,
     @ColumnInfo(index = true) val countryOsmId: Long? = null,
     @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null
 ) : BaseEntity() {
@@ -36,10 +36,10 @@ data class GeoCountryEntity(
             countryCode: String,
             countryOsmId: Long? = null,
             coordinates: Coordinates? = null,
-            geocodeArea: String? = null
+            countryGeocode: String? = null
         ) = GeoCountryEntity(
             countryId = countryId, countryCode = countryCode,
-            geocodeArea = geocodeArea, countryOsmId = countryOsmId, coordinates = coordinates
+            countryGeocode = countryGeocode, countryOsmId = countryOsmId, coordinates = coordinates
         )
 
         fun defCountry(ctx: Context) = defaultCountry(
@@ -60,15 +60,16 @@ data class GeoCountryEntity(
     override fun key(): Int {
         var result = countryCode.hashCode()
         result = result * 31 + countryOsmId.hashCode()
-        result = result * 31 + geocodeArea.hashCode()
+        result = result * 31 + countryCode.hashCode()
+        result = result * 31 + countryGeocode.hashCode()
         return result
     }
 
     override fun toString(): String {
         val str = StringBuffer()
-        str.append("Country Entity №").append(countryCode)
-            .append(". OSM: countryOsmId = ").append(countryOsmId)
-            .append("; geocodeArea = ").append(geocodeArea)
+        str.append("Country Entity countryCode = '").append(countryCode)
+            .append("'. OSM: countryOsmId = ").append(countryOsmId)
+            .append("; countryGeocode = ").append(countryGeocode)
             .append("; coordinates = ").append(coordinates)
             .append(" countryId = ").append(countryId)
         return str.toString()

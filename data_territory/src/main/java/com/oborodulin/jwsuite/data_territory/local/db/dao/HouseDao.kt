@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity

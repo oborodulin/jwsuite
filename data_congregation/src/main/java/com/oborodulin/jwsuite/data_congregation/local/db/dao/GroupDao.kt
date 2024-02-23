@@ -15,7 +15,6 @@ import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregat
 import com.oborodulin.jwsuite.data_congregation.local.db.views.GroupView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberLastCongregationView
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberServiceRoleView
-import com.oborodulin.jwsuite.data_congregation.util.Constants.PX_GROUP_CONGREGATION
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +42,7 @@ interface GroupDao {
     ): Flow<List<GroupEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY ${PX_GROUP_CONGREGATION}congregationName, groupNum")
+    @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY ${GroupEntity.PX_CONGREGATION}congregationName, groupNum")
     fun findAll(): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi

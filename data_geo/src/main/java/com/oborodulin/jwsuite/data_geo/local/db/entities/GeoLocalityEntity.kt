@@ -52,6 +52,9 @@ data class GeoLocalityEntity(
     companion object {
         const val TABLE_NAME = "geo_localities"
         const val PREFIX = "locality_"
+        const val PX = "l_"
+        const val PX_LOCALITY_DISTRICT = "ldl_"
+        const val PX_MICRODISTRICT = "ml_"
 
         fun defaultLocality(
             localityId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),

@@ -24,6 +24,10 @@ class GeoRegionsRepositoryImpl @Inject constructor(
     override fun getAll() = localRegionDataSource.getRegions()
         .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
 
+    override fun getAllByCountry(countryId: UUID) =
+        localRegionDataSource.getCountryRegions(countryId)
+            .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+
     override fun get(regionId: UUID) =
         localRegionDataSource.getRegion(regionId)
             .map(domainMappers.geoRegionViewToGeoRegionMapper::map)

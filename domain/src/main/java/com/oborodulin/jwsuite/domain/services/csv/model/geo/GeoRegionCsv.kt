@@ -9,7 +9,9 @@ import java.util.UUID
 data class GeoRegionCsv(
     @CsvBindByName val regionId: UUID,
     @CsvBindByName val regionCode: String,
+    @CsvBindByName val regionGeocode: String? = null,
     @CsvBindByName val regionOsmId: Long? = null,
     @CsvBindByName val latitude: BigDecimal? = null,
-    @CsvBindByName val longitude: BigDecimal? = null
+    @CsvBindByName val longitude: BigDecimal? = null,
+    @CsvBindByName val rCountriesId: UUID
 ) : Exportable, Importable

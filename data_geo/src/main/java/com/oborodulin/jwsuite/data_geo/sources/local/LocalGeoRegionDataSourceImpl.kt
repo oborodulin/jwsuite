@@ -20,6 +20,7 @@ class LocalGeoRegionDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoRegionDataSource {
     override fun getRegions() = regionDao.findDistinctAll()
+    override fun getCountryRegions(countryId: UUID) = regionDao.findDistinctByCountryId(countryId)
     override fun getRegion(regionId: UUID) = regionDao.findDistinctById(regionId)
     //override fun getFavoriteCongregationRegion() = regionDao.findByFavoriteCongregation()
 

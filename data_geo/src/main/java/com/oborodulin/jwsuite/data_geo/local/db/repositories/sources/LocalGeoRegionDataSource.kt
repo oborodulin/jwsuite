@@ -8,6 +8,7 @@ import java.util.UUID
 
 interface LocalGeoRegionDataSource {
     fun getRegions(): Flow<List<GeoRegionView>>
+    fun getCountryRegions(countryId: UUID): Flow<List<GeoRegionView>>
     fun getRegion(regionId: UUID): Flow<GeoRegionView>
 
     //fun getFavoriteCongregationRegion(): Flow<GeoRegionView>

@@ -1,6 +1,15 @@
 package com.oborodulin.jwsuite.data_geo.di
 
 import android.content.Context
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryCsvListToGeoCountryEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryCsvToGeoCountryEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryEntityListToGeoCountryCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryEntityToGeoCountryCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.tl.GeoCountryTlCsvListToGeoCountryTlEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.tl.GeoCountryTlCsvToGeoCountryTlEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.tl.GeoCountryTlEntityListToGeoCountryTlCsvListMapper
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.tl.GeoCountryTlEntityToGeoCountryTlCsvMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvListToGeoLocalityEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvToGeoLocalityEntityMapper
@@ -55,6 +64,12 @@ import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetT
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlCsvToGeoStreetTlEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityListToGeoStreetTlCsvListMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityToGeoStreetTlCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountriesListToGeoCountryEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryMappers
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryToGeoCountryEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryToGeoCountryTlEntityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryViewListToGeoCountriesListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryViewToGeoCountryMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalitiesListToGeoLocalityEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper
@@ -95,6 +110,9 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetToGeo
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetsListToGeoStreetEntityListMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToCoordinatesMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementToGeoRegionMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementsListToGeoRegionsListMapper
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -107,6 +125,48 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GeoMappersModule {
     // MAPPERS:
+    // Countries:
+    @Singleton
+    @Provides
+    fun provideGeoCountryViewToGeoCountryMapper(): GeoCountryViewToGeoCountryMapper =
+        GeoCountryViewToGeoCountryMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryViewListToGeoCountriesListMapper(mapper: GeoCountryViewToGeoCountryMapper): GeoCountryViewListToGeoCountriesListMapper =
+        GeoCountryViewListToGeoCountriesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryToGeoCountryEntityMapper(): GeoCountryToGeoCountryEntityMapper =
+        GeoCountryToGeoCountryEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryToGeoCountryTlEntityMapper(): GeoCountryToGeoCountryTlEntityMapper =
+        GeoCountryToGeoCountryTlEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountriesListToGeoCountryEntityListMapper(mapper: GeoCountryToGeoCountryEntityMapper): GeoCountriesListToGeoCountryEntityListMapper =
+        GeoCountriesListToGeoCountryEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryMappers(
+        geoCountryViewListToGeoCountriesListMapper: GeoCountryViewListToGeoCountriesListMapper,
+        geoCountryViewToGeoCountryMapper: GeoCountryViewToGeoCountryMapper,
+        geoCountriesListToGeoCountryEntityListMapper: GeoCountriesListToGeoCountryEntityListMapper,
+        geoCountryToGeoCountryEntityMapper: GeoCountryToGeoCountryEntityMapper,
+        geoCountryToGeoCountryTlEntityMapper: GeoCountryToGeoCountryTlEntityMapper
+    ): GeoCountryMappers = GeoCountryMappers(
+        geoCountryViewListToGeoCountriesListMapper,
+        geoCountryViewToGeoCountryMapper,
+        geoCountriesListToGeoCountryEntityListMapper,
+        geoCountryToGeoCountryEntityMapper,
+        geoCountryToGeoCountryTlEntityMapper
+    )
+
     // Regions:
     @Singleton
     @Provides
@@ -408,6 +468,62 @@ object GeoMappersModule {
     )
 
     // ------------------------------------------- CSV: -------------------------------------------
+    // CountryCsv
+    @Singleton
+    @Provides
+    fun provideGeoCountryEntityToGeoCountryCsvMapper(): GeoCountryEntityToGeoCountryCsvMapper =
+        GeoCountryEntityToGeoCountryCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryEntityListToGeoCountryCsvListMapper(mapper: GeoCountryEntityToGeoCountryCsvMapper): GeoCountryEntityListToGeoCountryCsvListMapper =
+        GeoCountryEntityListToGeoCountryCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryCsvToGeoCountryEntityMapper(): GeoCountryCsvToGeoCountryEntityMapper =
+        GeoCountryCsvToGeoCountryEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryCsvListToGeoCountryEntityListMapper(mapper: GeoCountryCsvToGeoCountryEntityMapper): GeoCountryCsvListToGeoCountryEntityListMapper =
+        GeoCountryCsvListToGeoCountryEntityListMapper(mapper = mapper)
+
+    // CountryTlCsv
+    @Singleton
+    @Provides
+    fun provideGeoCountryTlEntityToGeoCountryTlCsvMapper(): GeoCountryTlEntityToGeoCountryTlCsvMapper =
+        GeoCountryTlEntityToGeoCountryTlCsvMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryTlEntityListToGeoCountryTlCsvListMapper(mapper: GeoCountryTlEntityToGeoCountryTlCsvMapper): GeoCountryTlEntityListToGeoCountryTlCsvListMapper =
+        GeoCountryTlEntityListToGeoCountryTlCsvListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryTlCsvToGeoCountryTlEntityMapper(): GeoCountryTlCsvToGeoCountryTlEntityMapper =
+        GeoCountryTlCsvToGeoCountryTlEntityMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryTlCsvListToGeoCountryTlEntityListMapper(mapper: GeoCountryTlCsvToGeoCountryTlEntityMapper): GeoCountryTlCsvListToGeoCountryTlEntityListMapper =
+        GeoCountryTlCsvListToGeoCountryTlEntityListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryCsvMappers(
+        geoCountryEntityListToGeoCountryCsvListMapper: GeoCountryEntityListToGeoCountryCsvListMapper,
+        geoCountryCsvListToGeoCountryEntityListMapper: GeoCountryCsvListToGeoCountryEntityListMapper,
+        geoCountryTlEntityListToGeoCountryTlCsvListMapper: GeoCountryTlEntityListToGeoCountryTlCsvListMapper,
+        geoCountryTlCsvListToGeoCountryTlEntityListMapper: GeoCountryTlCsvListToGeoCountryTlEntityListMapper
+    ): GeoCountryCsvMappers = GeoCountryCsvMappers(
+        geoCountryEntityListToGeoCountryCsvListMapper,
+        geoCountryCsvListToGeoCountryEntityListMapper,
+        geoCountryTlEntityListToGeoCountryTlCsvListMapper,
+        geoCountryTlCsvListToGeoCountryTlEntityListMapper
+    )
+
     // RegionCsv
     @Singleton
     @Provides
@@ -743,4 +859,21 @@ object GeoMappersModule {
         geoStreetTlEntityListToGeoStreetTlCsvListMapper,
         geoStreetTlCsvListToGeoStreetTlEntityListMapper
     )
+
+    // ------------------------------------------- API: -------------------------------------------
+    @Singleton
+    @Provides
+    fun provideGeometryToCoordinatesMapper(): GeometryToCoordinatesMapper =
+        GeometryToCoordinatesMapper()
+
+    // RegionElement
+    @Singleton
+    @Provides
+    fun provideRegionElementToGeoRegionMapper(): RegionElementToGeoRegionMapper =
+        RegionElementToGeoRegionMapper()
+
+    @Singleton
+    @Provides
+    fun provideRegionElementsListToGeoRegionsListMapper(mapper: RegionElementToGeoRegionMapper): RegionElementsListToGeoRegionsListMapper =
+        RegionElementsListToGeoRegionsListMapper(mapper = mapper)
 }

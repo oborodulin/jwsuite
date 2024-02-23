@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.oborodulin.jwsuite.data_geo.util.Constants
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.EntranceEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.FloorEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
@@ -105,7 +105,7 @@ interface FloorDao {
         """
         SELECT fv.* FROM ${FloorView.VIEW_NAME} fv JOIN ${TerritoryEntity.TABLE_NAME} t 
                 ON t.territoryId = :territoryId AND fv.hTerritoriesId IS NULL 
-                    AND fv.${Constants.PX_LOCALITY}localityId = t.tLocalitiesId 
+                    AND fv.${GeoLocalityEntity.PX}localityId = t.tLocalitiesId 
                     AND ifnull(fv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(fv.hMicrodistrictsId, '')) 
                     AND ifnull(fv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(fv.hLocalityDistrictsId , ''))
                     AND fv.streetLocCode = :locale

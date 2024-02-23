@@ -9,11 +9,9 @@ class GeoRegionCsvToGeoRegionEntityMapper : Mapper<GeoRegionCsv, GeoRegionEntity
     override fun map(input: GeoRegionCsv) = GeoRegionEntity(
         regionId = input.regionId,
         regionCode = input.regionCode,
+        regionGeocode = input.regionGeocode,
         regionOsmId = input.regionOsmId,
-        coordinates = input.latitude?.let { latitude ->
-            input.longitude?.let { longitude ->
-                Coordinates(latitude = latitude, longitude = longitude)
-            }
-        }
+        coordinates = Coordinates.fromLatAndLon(lat = input.latitude, lon = input.longitude),
+        rCountriesId = input.rCountriesId
     )
 }

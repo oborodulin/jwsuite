@@ -2,33 +2,33 @@ package com.oborodulin.jwsuite.data_geo.local.db.views
 
 import androidx.room.DatabaseView
 import androidx.room.Embedded
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_REGION
-import com.oborodulin.jwsuite.data_geo.util.Constants.PX_LOCALITY_REGION_DISTRICT
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 
 @DatabaseView(
     viewName = GeoLocalityView.VIEW_NAME,
     value = """
-SELECT rv.regionId AS ${PX_LOCALITY_REGION}regionId, rv.regionCode AS ${PX_LOCALITY_REGION}regionCode, 
-            rv.regionTlId AS ${PX_LOCALITY_REGION}regionTlId, rv.regionLocCode AS ${PX_LOCALITY_REGION}regionLocCode, rv.regionTlCode AS ${PX_LOCALITY_REGION}regionTlCode, 
-            rv.regionName AS ${PX_LOCALITY_REGION}regionName, rv.regionsId AS ${PX_LOCALITY_REGION}regionsId, 
-        rdv.regionDistrictId AS ${PX_LOCALITY_REGION_DISTRICT}regionDistrictId, rdv.regDistrictShortName  AS ${PX_LOCALITY_REGION_DISTRICT}regDistrictShortName, 
-            rdv.rRegionsId  AS ${PX_LOCALITY_REGION_DISTRICT}rRegionsId,
-            rdv.regionDistrictTlId  AS ${PX_LOCALITY_REGION_DISTRICT}regionDistrictTlId, rdv.regDistrictLocCode  AS ${PX_LOCALITY_REGION_DISTRICT}regDistrictLocCode,
-            rdv.regDistrictTlShortName AS ${PX_LOCALITY_REGION_DISTRICT}regDistrictTlShortName, 
-            rdv.regDistrictName  AS ${PX_LOCALITY_REGION_DISTRICT}regDistrictName, rdv.regionDistrictsId  AS ${PX_LOCALITY_REGION_DISTRICT}regionDistrictsId, 
-        lv.localityId AS ${PX_LOCALITY}localityId, lv.localityCode AS ${PX_LOCALITY}localityCode, lv.localityType AS ${PX_LOCALITY}localityType, 
-            lv.lRegionDistrictsId AS ${PX_LOCALITY}lRegionDistrictsId, lv.lRegionsId AS ${PX_LOCALITY}lRegionsId,
-            lv.localityTlId AS ${PX_LOCALITY}localityTlId, lv.localityLocCode AS ${PX_LOCALITY}localityLocCode, lv.localityShortName AS ${PX_LOCALITY}localityShortName, 
-            lv.localityName AS ${PX_LOCALITY}localityName, lv.localitiesId AS ${PX_LOCALITY}localitiesId
+SELECT rv.regionId AS ${GeoRegionEntity.PX}regionId, rv.regionCode AS ${GeoRegionEntity.PX}regionCode, 
+            rv.regionTlId AS ${GeoRegionEntity.PX}regionTlId, rv.regionLocCode AS ${GeoRegionEntity.PX}regionLocCode, rv.regionTlCode AS ${GeoRegionEntity.PX}regionTlCode, 
+            rv.regionName AS ${GeoRegionEntity.PX}regionName, rv.regionsId AS ${GeoRegionEntity.PX}regionsId, 
+        rdv.regionDistrictId AS ${GeoRegionDistrictEntity.PX}regionDistrictId, rdv.regDistrictShortName  AS ${GeoRegionDistrictEntity.PX}regDistrictShortName, 
+            rdv.rRegionsId  AS ${GeoRegionDistrictEntity.PX}rRegionsId,
+            rdv.regionDistrictTlId  AS ${GeoRegionDistrictEntity.PX}regionDistrictTlId, rdv.regDistrictLocCode  AS ${GeoRegionDistrictEntity.PX}regDistrictLocCode,
+            rdv.regDistrictTlShortName AS ${GeoRegionDistrictEntity.PX}regDistrictTlShortName, 
+            rdv.regDistrictName  AS ${GeoRegionDistrictEntity.PX}regDistrictName, rdv.regionDistrictsId  AS ${GeoRegionDistrictEntity.PX}regionDistrictsId, 
+        lv.localityId AS ${GeoLocalityEntity.PX}localityId, lv.localityCode AS ${GeoLocalityEntity.PX}localityCode, lv.localityType AS ${GeoLocalityEntity.PX}localityType, 
+            lv.lRegionDistrictsId AS ${GeoLocalityEntity.PX}lRegionDistrictsId, lv.lRegionsId AS ${GeoLocalityEntity.PX}lRegionsId,
+            lv.localityTlId AS ${GeoLocalityEntity.PX}localityTlId, lv.localityLocCode AS ${GeoLocalityEntity.PX}localityLocCode, lv.localityShortName AS ${GeoLocalityEntity.PX}localityShortName, 
+            lv.localityName AS ${GeoLocalityEntity.PX}localityName, lv.localitiesId AS ${GeoLocalityEntity.PX}localitiesId
     FROM ${LocalityView.VIEW_NAME} lv JOIN ${GeoRegionView.VIEW_NAME} rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode
         LEFT JOIN ${RegionDistrictView.VIEW_NAME} rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = lv.localityLocCode
 """
 )
 class GeoLocalityView(
-    @Embedded(prefix = PX_LOCALITY_REGION) val region: GeoRegionView,
-    @Embedded(prefix = PX_LOCALITY_REGION_DISTRICT) val district: RegionDistrictView?,
-    @Embedded(prefix = PX_LOCALITY) val locality: LocalityView
+    @Embedded(prefix = GeoRegionEntity.PX) val region: GeoRegionView,
+    @Embedded(prefix = GeoRegionDistrictEntity.PX) val district: RegionDistrictView?,
+    @Embedded(prefix = GeoLocalityEntity.PX) val locality: LocalityView
 ) {
     companion object {
         const val VIEW_NAME = "geo_localities_view"

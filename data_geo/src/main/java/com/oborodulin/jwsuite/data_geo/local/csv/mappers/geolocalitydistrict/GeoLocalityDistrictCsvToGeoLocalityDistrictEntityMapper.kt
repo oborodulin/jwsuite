@@ -11,11 +11,7 @@ class GeoLocalityDistrictCsvToGeoLocalityDistrictEntityMapper :
         localityDistrictId = input.localityDistrictId,
         locDistrictShortName = input.locDistrictShortName,
         locDistrictOsmId = input.locDistrictOsmId,
-        coordinates = input.latitude?.let { latitude ->
-            input.longitude?.let { longitude ->
-                Coordinates(latitude = latitude, longitude = longitude)
-            }
-        },
+        coordinates = Coordinates.fromLatAndLon(lat = input.latitude, lon = input.longitude),
         ldLocalitiesId = input.ldLocalitiesId
     )
 }

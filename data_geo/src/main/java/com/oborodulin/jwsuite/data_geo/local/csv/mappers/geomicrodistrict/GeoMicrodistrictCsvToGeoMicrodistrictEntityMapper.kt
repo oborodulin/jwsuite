@@ -12,11 +12,7 @@ class GeoMicrodistrictCsvToGeoMicrodistrictEntityMapper :
         microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
         microdistrictOsmId = input.microdistrictOsmId,
-        coordinates = input.latitude?.let { latitude ->
-            input.longitude?.let { longitude ->
-                Coordinates(latitude = latitude, longitude = longitude)
-            }
-        },
+        coordinates = Coordinates.fromLatAndLon(lat = input.latitude, lon = input.longitude),
         mLocalityDistrictsId = input.mLocalityDistrictsId,
         mLocalitiesId = input.mLocalitiesId
     )

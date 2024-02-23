@@ -42,6 +42,10 @@ data class GeoRegionDistrictEntity(
     companion object {
         const val TABLE_NAME = "geo_region_districts"
         const val PREFIX = "regDistrict_"
+        const val PX = "rd_"
+        const val PX_LOCALITY = "lrd_"
+        const val PX_LOCALITY_DISTRICT = "ldrd_"
+        const val PX_MICRODISTRICT = "mrd_"
 
         fun defaultRegionDistrict(
             regionDistrictId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),

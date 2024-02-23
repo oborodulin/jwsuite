@@ -34,6 +34,10 @@ data class GroupEntity(
 
     companion object {
         const val TABLE_NAME = "groups"
+        const val PX_CONGREGATION = "gc_"
+        const val PX_REGION = PX_CONGREGATION + CongregationEntity.PX_REGION
+        const val PX_REGION_DISTRICT = PX_CONGREGATION + CongregationEntity.PX_REGION_DISTRICT
+        const val PX_LOCALITY = PX_CONGREGATION + CongregationEntity.PX_LOCALITY
 
         fun defaultGroup(
             groupId: UUID = UUID.randomUUID(), congregationId: UUID = UUID.randomUUID(),

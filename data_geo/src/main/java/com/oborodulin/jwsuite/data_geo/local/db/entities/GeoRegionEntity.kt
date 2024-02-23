@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.oborodulin.home.common.data.UUIDSerializer
@@ -15,27 +16,48 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoRegionEntity.TABLE_NAME,
-    indices = [Index(value = ["regionOsmId", "regionCode"], unique = true)],
+    indices = [Index(
+        value = ["rCountriesId", "regionOsmId", "regionCode", "regionGeocode"],
+        unique = true
+    )],
+    foreignKeys = [ForeignKey(
+        entity = GeoCountryEntity::class,
+        parentColumns = arrayOf("countryId"),
+        childColumns = arrayOf("rCountriesId"),
+        onDelete = ForeignKey.CASCADE,
+        deferred = true
+    )]
 )
 @Serializable
 data class GeoRegionEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val regionId: UUID = UUID.randomUUID(),
     val regionCode: String,
+    val regionGeocode: String? = null,
     @ColumnInfo(index = true) val regionOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Serializable(with = UUIDSerializer::class)
+    @ColumnInfo(index = true) val rCountriesId: UUID
 ) : BaseEntity() {
 
     companion object {
         const val TABLE_NAME = "geo_regions"
         const val PREFIX = "region_"
+        const val PX = "r_"
+        const val PX_DISTRICT = "dr_"
+        const val PX_LOCALITY = "lr_"
+        const val PX_LOCALITY_DISTRICT = "ldr_"
+        const val PX_MICRODISTRICT = "mr_"
 
         fun defaultRegion(
-            regionId: UUID = UUID.randomUUID(), regionCode: String,
-            regionOsmId: Long? = null, coordinates: Coordinates? = null
+            countryId: UUID = UUID.randomUUID(),
+            regionId: UUID = UUID.randomUUID(),
+            regionCode: String,
+            regionGeocode: String? = null, regionOsmId: Long? = null,
+            coordinates: Coordinates? = null
         ) = GeoRegionEntity(
-            regionId = regionId, regionCode = regionCode,
-            regionOsmId = regionOsmId, coordinates = coordinates
+            rCountriesId = countryId, regionId = regionId, regionCode = regionCode,
+            regionGeocode = regionGeocode, regionOsmId = regionOsmId, coordinates = coordinates
         )
 
         fun defRegion(ctx: Context) = defaultRegion(
@@ -53,14 +75,22 @@ data class GeoRegionEntity(
 
     override fun id() = this.regionId
 
-    override fun key() = this.regionCode.hashCode()
+    override fun key(): Int {
+        var result = rCountriesId.hashCode()
+        result = result * 31 + regionOsmId.hashCode()
+        result = result * 31 + regionCode.hashCode()
+        result = result * 31 + regionGeocode.hashCode()
+        return result
+    }
 
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Region Entity №").append(regionCode)
             .append(". OSM: regionOsmId = ").append(regionOsmId)
+            .append("; countryGeocode = ").append(regionGeocode)
             .append("; coordinates = ").append(coordinates)
-            .append(" regionId = ").append(regionId)
+            .append(" [rCountriesId = ").append(rCountriesId)
+            .append("] regionId = ").append(regionId)
         return str.toString()
     }
 }
