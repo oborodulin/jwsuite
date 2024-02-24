@@ -24,18 +24,24 @@ data class GeoCountryEntity(
     val countryCode: String,
     val countryGeocode: String? = null,
     @ColumnInfo(index = true) val countryOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates
 ) : BaseEntity() {
 
     companion object {
         const val TABLE_NAME = "geo_countries"
         const val PREFIX = "country_"
+        const val PX = "n_"
+        const val PX_REGION = "nr_"
+        const val PX_DISTRICT = "ndr_"
+        const val PX_LOCALITY = "nl_"
+        const val PX_LOCALITY_DISTRICT = "nld_"
+        const val PX_MICRODISTRICT = "nm_"
 
         fun defaultCountry(
             countryId: UUID = UUID.randomUUID(),
             countryCode: String,
             countryOsmId: Long? = null,
-            coordinates: Coordinates? = null,
+            coordinates: Coordinates = Coordinates(),
             countryGeocode: String? = null
         ) = GeoCountryEntity(
             countryId = countryId, countryCode = countryCode,
@@ -46,11 +52,11 @@ data class GeoCountryEntity(
             countryCode = ctx.resources.getString(R.string.def_reg_code)
         )
 
-        fun donetskCountry(ctx: Context) = defaultCountry(
+        fun ukraineCountry(ctx: Context) = defaultCountry(
             countryCode = ctx.resources.getString(R.string.def_reg_donetsk_code)
         )
 
-        fun luganskCountry(ctx: Context) = defaultCountry(
+        fun russiaCountry(ctx: Context) = defaultCountry(
             countryCode = ctx.resources.getString(R.string.def_reg_luhansk_code)
         )
     }

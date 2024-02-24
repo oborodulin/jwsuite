@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.repositories.EntrancesRepository
 import com.oborodulin.jwsuite.domain.repositories.EventsRepository
 import com.oborodulin.jwsuite.domain.repositories.FloorsRepository
+import com.oborodulin.jwsuite.domain.repositories.GeoCountriesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalitiesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalityDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoMicrodistrictsRepository
@@ -46,6 +47,7 @@ object ServicesModule {
         rolesRepository: RolesRepository,
         transferRepository: TransferRepository,
         // Geo
+        geoCountriesRepository: GeoCountriesRepository,
         geoRegionsRepository: GeoRegionsRepository,
         geoRegionDistrictsRepository: GeoRegionDistrictsRepository,
         geoLocalitiesRepository: GeoLocalitiesRepository,
@@ -74,6 +76,7 @@ object ServicesModule {
             rolesRepository,
             transferRepository,
             // Geo
+            geoCountriesRepository,
             geoRegionsRepository,
             geoRegionDistrictsRepository,
             geoLocalitiesRepository,

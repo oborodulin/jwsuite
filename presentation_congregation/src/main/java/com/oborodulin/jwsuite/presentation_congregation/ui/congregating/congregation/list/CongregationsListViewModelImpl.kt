@@ -85,7 +85,7 @@ class CongregationsListViewModelImpl @Inject constructor(
 
     private fun deleteCongregation(congregationId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteCongregation() called: congregationId = %s", congregationId.toString())
+            .d("deleteCongregation() called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
             congregationUseCases.deleteCongregationUseCase.execute(
                 DeleteCongregationUseCase.Request(congregationId)
@@ -96,7 +96,7 @@ class CongregationsListViewModelImpl @Inject constructor(
 
     private fun makeFavoriteCongregation(congregationId: UUID): Job {
         Timber.tag(TAG)
-            .d("makeFavoriteCongregation() called: congregationId = %s", congregationId.toString())
+            .d("makeFavoriteCongregation() called: congregationId = %s", congregationId)
         val job = viewModelScope.launch(errorHandler) {
             congregationUseCases.makeFavoriteCongregationUseCase.execute(
                 MakeFavoriteCongregationUseCase.Request(congregationId)

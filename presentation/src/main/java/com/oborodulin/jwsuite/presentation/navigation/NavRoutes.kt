@@ -22,6 +22,7 @@ import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_CONGREGATION
+import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_COUNTRY
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARDING
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DASHBOARD_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_DATABASE_SEND
@@ -64,6 +65,7 @@ import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TER
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_SETTINGS
 import com.oborodulin.jwsuite.presentation.navigation.MainDestinations.ROUTE_TERRITORY_STREET
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CongregationInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.CountryInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.EntranceInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.FloorInput
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
@@ -155,6 +157,7 @@ private const val TAG = "Presentation.NavRoutes"
 // https://betterprogramming.pub/jetpack-compose-clean-navigation-94b386f7a076
 
 // Geo:
+private const val ARG_COUNTRY_ID = "countryId"
 private const val ARG_REGION_ID = "regionId"
 private const val ARG_REGION_DISTRICT_ID = "regionDistrictId"
 private const val ARG_LOCALITY_ID = "localityId"
@@ -279,6 +282,32 @@ sealed class NavRoutes(
 
     // Main Navigation:
     // Geo:
+    data object Country : NavRoutes(
+        route = String.format(ROUTE_COUNTRY, "$ARG_COUNTRY_ID={$ARG_COUNTRY_ID}"),
+        iconPainterResId = R.drawable.ic_geo_24,
+        titleResId = R.string.nav_item_country,
+        arguments = listOf(navArgument(ARG_COUNTRY_ID) {
+            type = NavType.StringType
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        fun routeForCountry(countryInput: CountryInput? = null): String {
+            val route = String.format(
+                ROUTE_COUNTRY, countryInput?.let { "$ARG_COUNTRY_ID=${it.countryId}" }.orEmpty()
+            )
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Country -> routeForCountry: '%s'", route)
+            return route
+        }
+
+        fun fromEntry(entry: NavBackStackEntry): CountryInput? {
+            val countryInput =
+                entry.arguments?.getString(ARG_COUNTRY_ID)?.let { CountryInput(it.toUUID()) }
+            if (LOG_NAVIGATION) Timber.tag(TAG).d("Country -> fromEntry: '%s'", countryInput)
+            return countryInput
+        }
+    }
+
     data object Region : NavRoutes(
         route = String.format(ROUTE_REGION, "$ARG_REGION_ID={$ARG_REGION_ID}"),
         iconPainterResId = R.drawable.ic_region_24,
@@ -1123,7 +1152,8 @@ sealed class NavRoutes(
 
         fun fromEntry(entry: NavBackStackEntry): MemberReportInput {
             val memberReportInput = MemberReportInput(
-                territoryMemberReportId = entry.arguments?.getString(ARG_MEMBER_REPORT_ID)?.toUUID(),
+                territoryMemberReportId = entry.arguments?.getString(ARG_MEMBER_REPORT_ID)
+                    ?.toUUID(),
                 territoryStreetId = entry.arguments?.getString(ARG_TERRITORY_STREET_ID)?.toUUID(),
                 houseId = entry.arguments?.getString(ARG_HOUSE_ID)?.toUUID(),
                 roomId = entry.arguments?.getString(ARG_ROOM_ID)?.toUUID()

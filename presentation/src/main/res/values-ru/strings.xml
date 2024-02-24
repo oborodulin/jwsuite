@@ -29,6 +29,7 @@
     <string name="nav_item_territory_category">Категория участка</string>
     <string name="nav_item_territory_hand_out_confirmation">Подтверждение выдачи участка</string>
     <string name="nav_item_territory_at_work_confirmation">Подтверждение обработки участка</string>
+    <string name="nav_item_country">Страна</string>
     <string name="nav_item_region">Область</string>
     <string name="nav_item_region_district">Район области</string>
     <string name="nav_item_locality">Населённый пункт</string>

@@ -118,7 +118,7 @@ class StreetsListViewModelImpl @Inject constructor(
     }
 
     private fun deleteStreet(streetId: UUID): Job {
-        Timber.tag(TAG).d("deleteStreet() called: localityId = %s", streetId.toString())
+        Timber.tag(TAG).d("deleteStreet(...) called: streetId = %s", streetId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteStreetUseCase.execute(DeleteStreetUseCase.Request(streetId)).collect {}
         }

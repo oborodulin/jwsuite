@@ -80,7 +80,7 @@ class GroupsListViewModelImpl @Inject constructor(
 
     private fun deleteGroup(groupId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteGroup() called: congregationId = %s", groupId.toString())
+            .d("deleteGroup() called: groupId = %s", groupId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteGroupUseCase.execute(DeleteGroupUseCase.Request(groupId)).collect {}
         }

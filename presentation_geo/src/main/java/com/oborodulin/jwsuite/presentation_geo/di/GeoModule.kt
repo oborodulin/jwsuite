@@ -1,6 +1,11 @@
 package com.oborodulin.jwsuite.presentation_geo.di
 
 import android.content.Context
+import com.oborodulin.jwsuite.domain.usecases.geocountry.CountryUseCases
+import com.oborodulin.jwsuite.domain.usecases.geocountry.DeleteCountryUseCase
+import com.oborodulin.jwsuite.domain.usecases.geocountry.GetCountriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.geocountry.GetCountryUseCase
+import com.oborodulin.jwsuite.domain.usecases.geocountry.SaveCountryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetAllLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
@@ -39,6 +44,8 @@ import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetLocalityDistri
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetMicrodistrictsUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.SaveStreetUseCase
 import com.oborodulin.jwsuite.domain.usecases.geostreet.StreetUseCases
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.CountriesListConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.CountryConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalitiesListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityDistrictConverter
@@ -49,12 +56,19 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionConvert
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictsListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionsListConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.SaveCountryConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.SaveRegionConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetLocalityDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetMicrodistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetsForTerritoryListConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetsListConverter
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.CoordinatesUiToGeoCoordinatesMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.GeoCoordinatesToCoordinatesUiMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.country.CountriesListToCountriesListItemMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.country.CountryToCountriesListItemMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.country.CountryToCountryUiMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.country.CountryUiToCountryMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalitiesListToLocalityListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalitiesListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.LocalityToLocalityUiMapper
@@ -90,14 +104,56 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GeoModule {
     // MAPPERS:
-    // Regions:
+    // Coordinates:
     @Singleton
     @Provides
-    fun provideRegionToRegionUiMapper(): RegionToRegionUiMapper = RegionToRegionUiMapper()
+    fun provideGeoCoordinatesToCoordinatesUiMapper(): GeoCoordinatesToCoordinatesUiMapper =
+        GeoCoordinatesToCoordinatesUiMapper()
 
     @Singleton
     @Provides
-    fun provideRegionUiToRegionMapper(): RegionUiToRegionMapper = RegionUiToRegionMapper()
+    fun provideCoordinatesUiToGeoCoordinatesMapper(): CoordinatesUiToGeoCoordinatesMapper =
+        CoordinatesUiToGeoCoordinatesMapper()
+
+    // Countries:
+    @Singleton
+    @Provides
+    fun provideCountryToCountryUiMapper(mapper: GeoCoordinatesToCoordinatesUiMapper): CountryToCountryUiMapper =
+        CountryToCountryUiMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCountryUiToCountryMapper(mapper: CoordinatesUiToGeoCoordinatesMapper): CountryUiToCountryMapper =
+        CountryUiToCountryMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCountryToCountriesListItemMapper(): CountryToCountriesListItemMapper =
+        CountryToCountriesListItemMapper()
+
+    @Singleton
+    @Provides
+    fun provideCountriesListToCountriesListItemMapper(mapper: CountryToCountriesListItemMapper): CountriesListToCountriesListItemMapper =
+        CountriesListToCountriesListItemMapper(mapper = mapper)
+
+    // Regions:
+    @Singleton
+    @Provides
+    fun provideRegionToRegionUiMapper(
+        countryMapper: CountryToCountryUiMapper,
+        coordinatesMapper: GeoCoordinatesToCoordinatesUiMapper
+    ): RegionToRegionUiMapper = RegionToRegionUiMapper(
+        countryMapper = countryMapper, coordinatesMapper = coordinatesMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideRegionUiToRegionMapper(
+        countryUiMapper: CountryUiToCountryMapper,
+        coordinatesUiMapper: CoordinatesUiToGeoCoordinatesMapper
+    ): RegionUiToRegionMapper = RegionUiToRegionMapper(
+        countryUiMapper = countryUiMapper, coordinatesUiMapper = coordinatesUiMapper
+    )
 
     @Singleton
     @Provides
@@ -251,6 +307,22 @@ object GeoModule {
     // Regions:
     @Singleton
     @Provides
+    fun provideCountriesListConverter(mapper: CountriesListToCountriesListItemMapper): CountriesListConverter =
+        CountriesListConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCountryConverter(mapper: CountryToCountryUiMapper): CountryConverter =
+        CountryConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideSaveCountryConverter(mapper: CountryToCountryUiMapper): SaveCountryConverter =
+        SaveCountryConverter(mapper = mapper)
+
+    // Regions:
+    @Singleton
+    @Provides
     fun provideRegionsListConverter(mapper: RegionsListToRegionsListItemMapper): RegionsListConverter =
         RegionsListConverter(mapper = mapper)
 
@@ -343,6 +415,20 @@ object GeoModule {
         StreetConverter(mapper = mapper)
 
     // USE CASES:
+    @Singleton
+    @Provides
+    fun provideCountryUseCases(
+        getCountriesUseCase: GetCountriesUseCase,
+        getCountryUseCase: GetCountryUseCase,
+        saveCountryUseCase: SaveCountryUseCase,
+        deleteCountryUseCase: DeleteCountryUseCase
+    ): CountryUseCases = CountryUseCases(
+        getCountriesUseCase,
+        getCountryUseCase,
+        saveCountryUseCase,
+        deleteCountryUseCase
+    )
+
     @Singleton
     @Provides
     fun provideRegionUseCases(

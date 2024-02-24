@@ -37,7 +37,6 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
     private val converter: RegionDistrictsListConverter
 ) : RegionDistrictsListViewModel,
     ListViewModel<List<RegionDistrictsListItem>, UiState<List<RegionDistrictsListItem>>, RegionDistrictsListUiAction, RegionDistrictsListUiSingleEvent>() {
-
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RegionDistrictsListUiAction): Job {
@@ -64,7 +63,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
     }
 
     private fun loadRegionDistricts(regionId: UUID? = null): Job {
-        Timber.tag(TAG).d("loadRegionDistricts() called: regionId = %s", regionId)
+        Timber.tag(TAG).d("loadRegionDistricts(...) called: regionId = %s", regionId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionDistrictsUseCase.execute(GetRegionDistrictsUseCase.Request(regionId))
                 .map {
@@ -79,7 +78,7 @@ class RegionDistrictsListViewModelImpl @Inject constructor(
 
     private fun deleteRegionDistrict(regionDistrictId: UUID): Job {
         Timber.tag(TAG)
-            .d("deleteRegionDistrict() called: regionDistrictId = %s", regionDistrictId.toString())
+            .d("deleteRegionDistrict(...) called: regionDistrictId = %s", regionDistrictId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteRegionDistrictUseCase.execute(
                 DeleteRegionDistrictUseCase.Request(regionDistrictId)

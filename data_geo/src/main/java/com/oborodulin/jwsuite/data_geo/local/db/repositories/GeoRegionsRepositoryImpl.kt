@@ -22,15 +22,14 @@ class GeoRegionsRepositoryImpl @Inject constructor(
     private val csvMappers: GeoRegionCsvMappers
 ) : GeoRegionsRepository {
     override fun getAll() = localRegionDataSource.getRegions()
-        .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+        .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
 
     override fun getAllByCountry(countryId: UUID) =
         localRegionDataSource.getCountryRegions(countryId)
-            .map(domainMappers.geoRegionViewListToGeoRegionsListMapper::map)
+            .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
 
-    override fun get(regionId: UUID) =
-        localRegionDataSource.getRegion(regionId)
-            .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
+    override fun get(regionId: UUID) = localRegionDataSource.getRegion(regionId)
+        .map(domainMappers.geoRegionViewToGeoRegionMapper::map)
 
     override fun save(region: GeoRegion) = flow {
         if (region.id == null) {

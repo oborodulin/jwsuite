@@ -3,14 +3,19 @@ package com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.GeoCoordinatesToCoordinatesUiMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.country.CountryToCountryUiMapper
 
-class RegionToRegionUiMapper : Mapper<GeoRegion, RegionUi> {
-    override fun map(input: GeoRegion): RegionUi {
-        val regionUi = RegionUi(
-            regionCode = input.regionCode,
-            regionName = input.regionName
-        )
-        regionUi.id = input.id
-        return regionUi
-    }
+class RegionToRegionUiMapper(
+    private val countryMapper: CountryToCountryUiMapper,
+    private val coordinatesMapper: GeoCoordinatesToCoordinatesUiMapper
+) : Mapper<GeoRegion, RegionUi> {
+    override fun map(input: GeoRegion) = RegionUi(
+        country = countryMapper.map(input.country!!),
+        regionCode = input.regionCode,
+        regionGeocode = input.regionGeocode,
+        regionOsmId = input.regionOsmId,
+        coordinates = coordinatesMapper.map(input.coordinates),
+        regionName = input.regionName
+    ).also { it.id = input.id }
 }

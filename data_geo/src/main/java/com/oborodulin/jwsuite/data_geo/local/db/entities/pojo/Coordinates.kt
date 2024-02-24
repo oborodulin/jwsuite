@@ -7,15 +7,13 @@ import java.math.BigDecimal
 @Serializable
 data class Coordinates(
     @Serializable(with = BigDecimalSerializer::class)
-    val latitude: BigDecimal,
+    val latitude: BigDecimal? = null,
     @Serializable(with = BigDecimalSerializer::class)
-    val longitude: BigDecimal
+    val longitude: BigDecimal? = null
 ) {
     companion object {
         fun fromLatAndLon(lat: BigDecimal?, lon: BigDecimal?) =
-            lat?.let { latitude ->
-                lon?.let { longitude -> Coordinates(latitude = latitude, longitude = longitude) }
-            }
+            Coordinates(latitude = lat, longitude = lon)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -23,7 +21,8 @@ data class Coordinates(
         if (javaClass != other?.javaClass) return false
 
         other as Coordinates
-        return !(latitude.compareTo(other.latitude) != 0 || longitude.compareTo(other.longitude) != 0)
+        val result = other.latitude?.let { latitude?.compareTo(it) == 0 } ?: false
+        return result && other.longitude?.let { longitude?.compareTo(other.longitude) == 0 } ?: false
     }
 
     override fun hashCode(): Int {

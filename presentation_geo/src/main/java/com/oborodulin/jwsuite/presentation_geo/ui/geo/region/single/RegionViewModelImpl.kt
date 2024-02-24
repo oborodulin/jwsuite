@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.components.field.util.Inputable
 import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
@@ -20,10 +21,12 @@ import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.domain.usecases.georegion.GetRegionUseCase
 import com.oborodulin.jwsuite.domain.usecases.georegion.RegionUseCases
 import com.oborodulin.jwsuite.domain.usecases.georegion.SaveRegionUseCase
+import com.oborodulin.jwsuite.presentation_geo.ui.model.CoordinatesUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.SaveRegionConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionUiToRegionMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toCountryUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -60,11 +63,26 @@ class RegionViewModelImpl @Inject constructor(
     DialogViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
         state, RegionFields.REGION_ID.name, RegionFields.REGION_CODE
     ) {
+    override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(RegionFields.REGION_COUNTRY.name, InputListItemWrapper())
+    }
     override val regionCode: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(RegionFields.REGION_CODE.name, InputWrapper())
     }
     override val regionName: StateFlow<InputWrapper> by lazy {
         state.getStateFlow(RegionFields.REGION_NAME.name, InputWrapper())
+    }
+    override val regionGeocode: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_GEOCODE.name, InputWrapper())
+    }
+    override val regionOsmId: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_OSM_ID.name, InputWrapper())
+    }
+    override val latitude: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_LATITUDE.name, InputWrapper())
+    }
+    override val longitude: StateFlow<InputWrapper> by lazy {
+        state.getStateFlow(RegionFields.REGION_LONGITUDE.name, InputWrapper())
     }
 
     override val areInputsValid = combine(regionCode, regionName) { regionCode, regionName ->
@@ -95,7 +113,7 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     private fun loadRegion(regionId: UUID): Job {
-        Timber.tag(TAG).d("loadRegion(UUID) called: %s", regionId)
+        Timber.tag(TAG).d("loadRegion(UUID) called: regionId = %s", regionId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getRegionUseCase.execute(GetRegionUseCase.Request(regionId))
                 .map {
@@ -110,7 +128,14 @@ class RegionViewModelImpl @Inject constructor(
 
     private fun saveRegion(): Job {
         val regionUi = RegionUi(
+            country = country.value.item.toCountryUi(),
             regionCode = regionCode.value.value,
+            regionGeocode = regionGeocode.value.value.ifEmpty { null },
+            regionOsmId = regionOsmId.value.value.toLongOrNull(),
+            coordinates = CoordinatesUi(
+                latitude.value.value.toBigDecimalOrNull(),
+                longitude.value.value.toBigDecimalOrNull()
+            ),
             regionName = regionName.value.value
         ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveRegion() called: UI model %s", regionUi)
@@ -135,8 +160,23 @@ class RegionViewModelImpl @Inject constructor(
         if (LOG_UI_STATE) Timber.tag(TAG)
             .d("initFieldStatesByUiModel(RegionUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
+        initStateValue(RegionFields.REGION_COUNTRY, country, uiModel.country.toListItemModel())
         initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
         initStateValue(RegionFields.REGION_NAME, regionName, uiModel.regionName)
+        initStateValue(
+            RegionFields.REGION_GEOCODE, regionGeocode, uiModel.regionGeocode.orEmpty()
+        )
+        initStateValue(
+            RegionFields.REGION_OSM_ID, regionOsmId, uiModel.regionOsmId?.toString().orEmpty()
+        )
+        initStateValue(
+            RegionFields.REGION_LATITUDE, latitude,
+            uiModel.coordinates.latitude?.toString().orEmpty()
+        )
+        initStateValue(
+            RegionFields.REGION_LONGITUDE, longitude,
+            uiModel.coordinates.longitude?.toString().orEmpty()
+        )
         return null
     }
 
@@ -145,6 +185,11 @@ class RegionViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is RegionInputEvent.Country -> setStateValue(
+                        RegionFields.REGION_COUNTRY, country, event.input,
+                        RegionInputValidator.Country.isValid(event.input.headline)
+                    )
+
                     is RegionInputEvent.RegionCode -> setStateValue(
                         RegionFields.REGION_CODE, regionCode, event.input,
                         RegionInputValidator.RegionCode.isValid(event.input)
@@ -159,17 +204,20 @@ class RegionViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is RegionInputEvent.RegionCode ->
-                        setStateValue(
-                            RegionFields.REGION_CODE, regionCode,
-                            RegionInputValidator.RegionCode.errorIdOrNull(event.input)
-                        )
+                    is RegionInputEvent.Country -> setStateValue(
+                        RegionFields.REGION_COUNTRY, country,
+                        RegionInputValidator.Country.errorIdOrNull(event.input.headline)
+                    )
 
-                    is RegionInputEvent.RegionName ->
-                        setStateValue(
-                            RegionFields.REGION_NAME, regionName,
-                            RegionInputValidator.RegionName.errorIdOrNull(event.input)
-                        )
+                    is RegionInputEvent.RegionCode -> setStateValue(
+                        RegionFields.REGION_CODE, regionCode,
+                        RegionInputValidator.RegionCode.errorIdOrNull(event.input)
+                    )
+
+                    is RegionInputEvent.RegionName -> setStateValue(
+                        RegionFields.REGION_NAME, regionName,
+                        RegionInputValidator.RegionName.errorIdOrNull(event.input)
+                    )
 
                 }
             }
@@ -179,6 +227,9 @@ class RegionViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
+        RegionInputValidator.Country.errorIdOrNull(country.value.item?.headline)?.let {
+            inputErrors.add(InputError(fieldName = RegionFields.REGION_COUNTRY.name, errorId = it))
+        }
         RegionInputValidator.RegionCode.errorIdOrNull(regionCode.value.value)?.let {
             inputErrors.add(InputError(fieldName = RegionFields.REGION_CODE.name, errorId = it))
         }
@@ -193,6 +244,7 @@ class RegionViewModelImpl @Inject constructor(
             .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (RegionFields.valueOf(error.fieldName)) {
+                RegionFields.REGION_COUNTRY -> country.value.copy(errorId = error.errorId)
                 RegionFields.REGION_CODE -> regionCode.value.copy(errorId = error.errorId)
                 RegionFields.REGION_NAME -> regionName.value.copy(errorId = error.errorId)
                 else -> null
@@ -222,8 +274,13 @@ class RegionViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val country = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val regionCode = MutableStateFlow(InputWrapper())
                 override val regionName = MutableStateFlow(InputWrapper())
+                override val regionGeocode = MutableStateFlow(InputWrapper())
+                override val regionOsmId = MutableStateFlow(InputWrapper())
+                override val latitude = MutableStateFlow(InputWrapper())
+                override val longitude = MutableStateFlow(InputWrapper())
 
                 override val areInputsValid = MutableStateFlow(true)
 

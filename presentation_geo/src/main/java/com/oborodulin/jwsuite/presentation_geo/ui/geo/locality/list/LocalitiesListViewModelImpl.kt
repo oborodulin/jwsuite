@@ -98,7 +98,7 @@ class LocalitiesListViewModelImpl @Inject constructor(
         }
     */
     private fun deleteLocality(localityId: UUID): Job {
-        Timber.tag(TAG).d("deleteLocality() called: localityId = %s", localityId.toString())
+        Timber.tag(TAG).d("deleteLocality() called: localityId = %s", localityId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteLocalityUseCase.execute(
                 DeleteLocalityUseCase.Request(localityId)

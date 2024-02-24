@@ -9,7 +9,7 @@ class GeoCountryEntityToGeoCountryCsvMapper : Mapper<GeoCountryEntity, GeoCountr
         countryId = input.countryId,
         countryCode = input.countryCode,
         countryOsmId = input.countryOsmId,
-        latitude = input.coordinates?.latitude,
-        longitude = input.coordinates?.longitude
+        latitude = input.coordinates.latitude,
+        longitude = input.coordinates.longitude
     )
 }

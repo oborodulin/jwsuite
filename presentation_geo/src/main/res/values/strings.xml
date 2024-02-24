@@ -7,6 +7,7 @@
     <!--МЕНЮ географии-->
 
     <!--СПИСОК:-->
+    <string name="countries_list_empty_text">Стран пока нет. Добавьте, пожалуйста, хотя бы одну</string>
     <string name="regions_list_empty_text">Областей пока нет. Добавьте, пожалуйста, хотя бы одну</string>
     <string name="region_districts_list_empty_text">Районов областей пока нет. Добавьте, пожалуйста, хотя бы один</string>
     <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавьте, пожалуйста, хотя бы один</string>
@@ -35,6 +36,13 @@
 
     <!--ФОРМЫ:-->
     <!--география-->
+    <string name="geocode_hint">Географический код</string>
+    <string name="geocode_helper">Географический код области в системе OpenStreetMap</string>
+    <string name="osm_id_hint">ИД OSM</string>
+    <string name="osm_id_helper">Уникальный идентификатор узла в системе OpenStreetMap</string>
+    <string name="latitude_hint">Широта, \u00B0</string>
+    <string name="longitude_hint">Долгота, \u00B0</string>
+    <string name="country_hint">Страна</string>
     <string name="region_hint">Область</string>
     <string name="region_district_hint">Район области</string>
     <string name="locality_hint">Населённый пункт</string>
@@ -42,6 +50,11 @@
     <string name="microdistrict_hint">Микрорайон</string>
     <string name="street_hint">Улица</string>
     <string name="house_hint">Дом</string>
+    <!--Страна-->
+    <string name="country_subheader">Страна</string>
+    <string name="country_new_subheader">Новая страна</string>
+    <string name="country_code_helper">Уникальный код страны, например, AB, AU, …, JP</string>
+    <string name="country_name_helper">Наименование страны</string>
     <!--Область-->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
@@ -76,6 +89,7 @@
 
     <!--ДИАЛОГИ-->
     <!--заголовки-->
+    <string name="dlg_title_select_country">Выберите страну</string>
     <string name="dlg_title_select_region">Выберите область</string>
     <string name="dlg_title_select_region_district">Выберите район области</string>
     <string name="dlg_title_select_locality">Выберите населённый пункт</string>
@@ -84,6 +98,7 @@
     <string name="dlg_title_select_street">Выберите улицу</string>
     <!--Подтверждения-->
     <!--удаления-->
+    <string name="dlg_confirm_del_country">Удалить страну %1$s?</string>
     <string name="dlg_confirm_del_region">Удалить область %1$s?</string>
     <string name="dlg_confirm_del_region_district">Удалить район %1$s?</string>
     <string name="dlg_confirm_del_locality">Удалить населённый пункт %1$s?</string>
@@ -93,6 +108,7 @@
     <string name="dlg_confirm_del_street_locality_district">Удалить район улицы %1$s?</string>
     <string name="dlg_confirm_del_street_microdistrict">Удалить микрорайон улицы %1$s?</string>
     <!--отмена изменений-->
+    <string name="dlg_confirm_cancel_changes_country">Изменённые данные страны не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_region">Изменённые данные области не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_region_district">Изменённые данные района области не сохранятся</string>
     <string name="dlg_confirm_cancel_changes_locality">Изменённые данные населённого пункта не сохранятся</string>
@@ -104,12 +120,17 @@
 
     <!--СООБЩЕНИЯ ОБ ОШИБКАХ-->
     <!--общие-->
+    <string name="country_empty_error">Укажите, пожалуйста, страну!</string>
     <string name="region_empty_error">Укажите, пожалуйста, область!</string>
     <string name="locality_empty_error">Укажите, пожалуйста, населённый пункт!</string>
     <string name="locality_district_empty_error">Укажите, пожалуйста, район населённого пункта!</string>
     <string name="street_empty_error">Укажите, пожалуйста, улицу!</string>
     <string name="house_empty_error">Укажите, пожалуйста, дом!</string>
     <string name="room_empty_error">Укажите, пожалуйста, квартиру!</string>
+    <!--формы страны-->
+    <string name="country_code_empty_error">Укажите, пожалуйста, код страны!</string>
+    <string name="country_name_empty_error">Укажите, пожалуйста, наименование страны!</string>
+    <string name="country_unique_constraint_error">Страна с таким кодом уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
     <!--формы области-->
     <string name="region_code_empty_error">Укажите, пожалуйста, код области!</string>
     <string name="region_name_empty_error">Укажите, пожалуйста, наименование области!</string>

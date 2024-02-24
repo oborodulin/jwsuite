@@ -64,6 +64,8 @@ import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetT
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlCsvToGeoStreetTlEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityListToGeoStreetTlCsvListMapper
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.tl.GeoStreetTlEntityToGeoStreetTlCsvMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.CoordinatesToGeoCoordinatesMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.GeoCoordinatesToCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountriesListToGeoCountryEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryToGeoCountryEntityMapper
@@ -94,9 +96,10 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.Microdi
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionToGeoRegionEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionToGeoRegionTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewListToGeoRegionsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionsListToGeoRegionEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewListToGeoRegionsListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictTlEntityMapper
@@ -125,11 +128,22 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GeoMappersModule {
     // MAPPERS:
+    // Coordinates:
+    @Singleton
+    @Provides
+    fun provideCoordinatesToGeoCoordinatesMapper(): CoordinatesToGeoCoordinatesMapper =
+        CoordinatesToGeoCoordinatesMapper()
+
+    @Singleton
+    @Provides
+    fun provideGeoCoordinatesToCoordinatesMapper(): GeoCoordinatesToCoordinatesMapper =
+        GeoCoordinatesToCoordinatesMapper()
+
     // Countries:
     @Singleton
     @Provides
-    fun provideGeoCountryViewToGeoCountryMapper(): GeoCountryViewToGeoCountryMapper =
-        GeoCountryViewToGeoCountryMapper()
+    fun provideGeoCountryViewToGeoCountryMapper(mapper: CoordinatesToGeoCoordinatesMapper): GeoCountryViewToGeoCountryMapper =
+        GeoCountryViewToGeoCountryMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -138,8 +152,8 @@ object GeoMappersModule {
 
     @Singleton
     @Provides
-    fun provideGeoCountryToGeoCountryEntityMapper(): GeoCountryToGeoCountryEntityMapper =
-        GeoCountryToGeoCountryEntityMapper()
+    fun provideGeoCountryToGeoCountryEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoCountryToGeoCountryEntityMapper =
+        GeoCountryToGeoCountryEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -170,18 +184,27 @@ object GeoMappersModule {
     // Regions:
     @Singleton
     @Provides
-    fun provideGeoRegionViewToGeoRegionMapper(): GeoRegionViewToGeoRegionMapper =
-        GeoRegionViewToGeoRegionMapper()
+    fun provideRegionViewToGeoRegionMapper(): RegionViewToGeoRegionMapper =
+        RegionViewToGeoRegionMapper()
 
     @Singleton
     @Provides
-    fun provideGeoRegionViewListToGeoRegionsListMapper(mapper: GeoRegionViewToGeoRegionMapper): GeoRegionViewListToGeoRegionsListMapper =
-        GeoRegionViewListToGeoRegionsListMapper(mapper = mapper)
+    fun provideRegionViewListToGeoRegionsListMapper(mapper: RegionViewToGeoRegionMapper): RegionViewListToGeoRegionsListMapper =
+        RegionViewListToGeoRegionsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideGeoRegionToGeoRegionEntityMapper(): GeoRegionToGeoRegionEntityMapper =
-        GeoRegionToGeoRegionEntityMapper()
+    fun provideGeoRegionViewToGeoRegionMapper(
+        countryMapper: GeoCountryViewToGeoCountryMapper,
+        coordinatesMapper: CoordinatesToGeoCoordinatesMapper
+    ): GeoRegionViewToGeoRegionMapper = GeoRegionViewToGeoRegionMapper(
+        countryMapper = countryMapper, coordinatesMapper = coordinatesMapper
+    )
+
+    @Singleton
+    @Provides
+    fun provideGeoRegionToGeoRegionEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoRegionToGeoRegionEntityMapper =
+        GeoRegionToGeoRegionEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -196,13 +219,15 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoRegionMappers(
-        geoRegionViewListToGeoRegionsListMapper: GeoRegionViewListToGeoRegionsListMapper,
+        regionViewListToGeoRegionsListMapper: RegionViewListToGeoRegionsListMapper,
+        regionViewToGeoRegionMapper: RegionViewToGeoRegionMapper,
         geoRegionViewToGeoRegionMapper: GeoRegionViewToGeoRegionMapper,
         geoRegionsListToGeoRegionEntityListMapper: GeoRegionsListToGeoRegionEntityListMapper,
         geoRegionToGeoRegionEntityMapper: GeoRegionToGeoRegionEntityMapper,
         geoRegionToGeoRegionTlEntityMapper: GeoRegionToGeoRegionTlEntityMapper
     ): GeoRegionMappers = GeoRegionMappers(
-        geoRegionViewListToGeoRegionsListMapper,
+        regionViewListToGeoRegionsListMapper,
+        regionViewToGeoRegionMapper,
         geoRegionViewToGeoRegionMapper,
         geoRegionsListToGeoRegionEntityListMapper,
         geoRegionToGeoRegionEntityMapper,
@@ -217,7 +242,7 @@ object GeoMappersModule {
 
     @Singleton
     @Provides
-    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(mapper: GeoRegionViewToGeoRegionMapper): GeoRegionDistrictViewToGeoRegionDistrictMapper =
+    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(mapper: RegionViewToGeoRegionMapper): GeoRegionDistrictViewToGeoRegionDistrictMapper =
         GeoRegionDistrictViewToGeoRegionDistrictMapper(mapper = mapper)
 
     @Singleton
@@ -265,7 +290,7 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoLocalityViewToGeoLocalityMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper
     ): GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
@@ -318,7 +343,7 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoLocalityDistrictViewToGeoLocalityDistrictMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper
@@ -373,7 +398,7 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoMicrodistrictViewToGeoMicrodistrictMapper(
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,

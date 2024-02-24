@@ -9,7 +9,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityV
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
@@ -184,7 +184,7 @@ object TerritoryMappersModule {
     @Provides
     fun provideHouseViewToHouseMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -241,7 +241,7 @@ object TerritoryMappersModule {
     @Provides
     fun provideEntranceViewToEntranceMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -300,7 +300,7 @@ object TerritoryMappersModule {
     @Provides
     fun provideFloorViewToFloorMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -362,7 +362,7 @@ object TerritoryMappersModule {
     @Provides
     fun provideRoomViewToRoomMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -605,7 +605,7 @@ object TerritoryMappersModule {
         @ApplicationContext ctx: Context,
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -641,7 +641,7 @@ object TerritoryMappersModule {
     fun provideTerritoriesAtWorkViewToTerritoryMapper(
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -668,7 +668,7 @@ object TerritoryMappersModule {
     fun provideTerritoriesHandOutViewToTerritoryMapper(
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
@@ -695,7 +695,7 @@ object TerritoryMappersModule {
     fun provideTerritoriesIdleViewToTerritoryMapper(
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: GeoRegionViewToGeoRegionMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,

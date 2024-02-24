@@ -9,7 +9,7 @@ graph LR
     A{Entity} --> B(Dao)
     A --> C{View}
     A --> D(JwSuiteDatabase)
-    A --> mapper
+    A --> mapper --> di.MappersModule
     C --> B(Dao)
     C --> D(JwSuiteDatabase)
     B --> D(JwSuiteDatabase)
@@ -18,7 +18,7 @@ graph LR
     C --> G(LocalDataSource Impl)
     F --> I[di.LocalDataSourcesModule]
     G --> I[di.LocalDataSourcesModule]
-    F --> H(Repository Impl)
+    F --> H(Repository Impl) --> di.RepositoriesModule
     H --> I[Domain: Use Cases]
 ```
 ## Remote

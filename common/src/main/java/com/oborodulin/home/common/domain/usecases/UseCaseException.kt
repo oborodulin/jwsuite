@@ -5,6 +5,7 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class AppSettingsSaveException(cause: Throwable) : UseCaseException(cause)
 
     // GEO:
+    class GeoCountrySaveException(cause: Throwable) : UseCaseException(cause)
     class GeoRegionSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoRegionDistrictSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoLocalitySaveException(cause: Throwable) : UseCaseException(cause)

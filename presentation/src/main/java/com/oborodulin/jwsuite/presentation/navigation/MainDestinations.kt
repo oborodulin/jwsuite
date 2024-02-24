@@ -26,6 +26,7 @@ object MainDestinations {
     const val ROUTE_DATABASE_SEND = "databaseSend"
 
     //GEO:
+    const val ROUTE_COUNTRY = "country/?%s"
     const val ROUTE_REGION = "region/?%s"
     const val ROUTE_REGION_DISTRICT = "regionDistrict/?%s"
     const val ROUTE_LOCALITY = "locality/?%s"

@@ -6,6 +6,15 @@ import com.oborodulin.jwsuite.presentation_geo.R
 private const val TAG = "Geo.RegionInputValidator"
 
 sealed class RegionInputValidator : Validatable {
+    data object Country : RegionInputValidator() {
+        override fun errorIdOrNull(vararg inputs: String?): Int? =
+            when {
+                inputs[0].isNullOrEmpty() -> R.string.country_empty_error
+                //etc..
+                else -> null
+            }
+    }
+
     data object RegionCode : RegionInputValidator() {
         override fun errorIdOrNull(vararg inputs: String?): Int? =
             when {

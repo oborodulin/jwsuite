@@ -5,7 +5,7 @@ import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.entrance.EntranceEntityToEntranceMapper
@@ -16,7 +16,7 @@ import com.oborodulin.jwsuite.domain.model.territory.Floor
 
 class FloorViewToFloorMapper(
     private val streetMapper: GeoStreetViewToGeoStreetMapper,
-    private val regionMapper: GeoRegionViewToGeoRegionMapper,
+    private val regionMapper: RegionViewToGeoRegionMapper,
     private val regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
     private val localityMapper: LocalityViewToGeoLocalityMapper,
     private val localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,

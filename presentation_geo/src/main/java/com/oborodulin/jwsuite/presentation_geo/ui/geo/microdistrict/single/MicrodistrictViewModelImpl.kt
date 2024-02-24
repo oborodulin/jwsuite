@@ -131,7 +131,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
     }
 
     private fun loadMicrodistrict(microdistrictId: UUID): Job {
-        Timber.tag(TAG).d("loadMicrodistrict(UUID) called: %s", microdistrictId.toString())
+        Timber.tag(TAG).d("loadMicrodistrict(UUID) called: %s", microdistrictId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMicrodistrictUseCase.execute(GetMicrodistrictUseCase.Request(microdistrictId))
                 .map {

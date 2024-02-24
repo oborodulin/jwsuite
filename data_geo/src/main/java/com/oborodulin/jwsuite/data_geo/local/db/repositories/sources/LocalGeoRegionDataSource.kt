@@ -3,12 +3,13 @@ package com.oborodulin.jwsuite.data_geo.local.db.repositories.sources
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoRegionDataSource {
-    fun getRegions(): Flow<List<GeoRegionView>>
-    fun getCountryRegions(countryId: UUID): Flow<List<GeoRegionView>>
+    fun getRegions(): Flow<List<RegionView>>
+    fun getCountryRegions(countryId: UUID): Flow<List<RegionView>>
     fun getRegion(regionId: UUID): Flow<GeoRegionView>
 
     //fun getFavoriteCongregationRegion(): Flow<GeoRegionView>

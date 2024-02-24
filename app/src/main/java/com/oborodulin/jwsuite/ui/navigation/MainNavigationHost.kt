@@ -25,6 +25,7 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.datamanagem
 import com.oborodulin.jwsuite.presentation_dashboard.ui.dashboarding.setting.DashboardSettingScreen
 import com.oborodulin.jwsuite.presentation_dashboard.ui.database.send.DatabaseSendScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.GeoScreen
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.country.single.CountryScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.single.LocalityScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.single.LocalityDistrictScreen
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.microdistrict.single.MicrodistrictScreen
@@ -373,6 +374,17 @@ fun MainNavigationHost(
                 onTopBarNavClickChange = onTopBarNavClickChange,
                 onTopBarActionsChange = onTopBarActionsChange,
                 onFabChange = onFabChange*/
+            )
+        }
+        // CountryScreen:
+        composable(route = NavRoutes.Country.route, arguments = NavRoutes.Country.arguments) {
+            Timber.tag(TAG).d(
+                "Navigation Graph: to CountryScreen [route = '%s', arguments = '%s']",
+                it.destination.route, NavRoutes.Country.arguments
+            )
+            CountryScreen(
+                countryInput = NavRoutes.Country.fromEntry(it),
+                defTopBarActions = defTopBarActions
             )
         }
         // RegionScreen:

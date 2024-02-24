@@ -18,19 +18,21 @@ import java.util.UUID
 
 @Dao
 interface GeoCountryDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${GeoCountryEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<GeoCountryEntity>>
 
     @Query("SELECT * FROM ${GeoCountryTlEntity.TABLE_NAME}")
     fun selectTlEntities(): Flow<List<GeoCountryTlEntity>>
 
+    // READS:
     @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE countryLocCode = :locale ORDER BY countryName")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoCountryView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE countryId = :countryId AND countryLocCode = :locale")
     fun findById(countryId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoCountryView>

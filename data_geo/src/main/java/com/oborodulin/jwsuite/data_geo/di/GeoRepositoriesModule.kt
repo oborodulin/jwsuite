@@ -1,29 +1,34 @@
 package com.oborodulin.jwsuite.data_geo.di
 
+import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocality.GeoLocalityCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geolocalitydistrict.GeoLocalityDistrictCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geomicrodistrict.GeoMicrodistrictCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.GeoRegionDistrictCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvMappers
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetMappers
+import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoCountriesRepositoryImpl
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoLocalitiesRepositoryImpl
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoLocalityDistrictsRepositoryImpl
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoMicrodistrictsRepositoryImpl
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoRegionDistrictsRepositoryImpl
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoRegionsRepositoryImpl
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.GeoStreetsRepositoryImpl
+import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoCountryDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLocalityDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLocalityDistrictDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoMicrodistrictDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDistrictDataSource
 import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoStreetDataSource
+import com.oborodulin.jwsuite.domain.repositories.GeoCountriesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalitiesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalityDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoMicrodistrictsRepository
@@ -41,6 +46,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object GeoRepositoriesModule {
     @Singleton //@ViewModelScoped
+    @Provides
+    fun provideGeoCountriesRepository(
+        localCountryDataSource: LocalGeoCountryDataSource,
+        domainMappers: GeoCountryMappers, csvMappers: GeoCountryCsvMappers
+    ): GeoCountriesRepository =
+        GeoCountriesRepositoryImpl(localCountryDataSource, domainMappers, csvMappers)
+
+    @Singleton
     @Provides
     fun provideGeoRegionsRepository(
         localRegionDataSource: LocalGeoRegionDataSource,

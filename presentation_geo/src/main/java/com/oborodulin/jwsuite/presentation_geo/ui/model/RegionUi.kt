@@ -6,7 +6,11 @@ import com.oborodulin.home.common.ui.model.ModelUi
 import java.util.UUID
 
 data class RegionUi(
+    val country: CountryUi = CountryUi(),
     val regionCode: String = "",
+    val regionGeocode: String? = null,
+    val regionOsmId: Long? = null,
+    val coordinates: CoordinatesUi = CoordinatesUi(),
     val regionName: String = ""
 ) : ModelUi()
 

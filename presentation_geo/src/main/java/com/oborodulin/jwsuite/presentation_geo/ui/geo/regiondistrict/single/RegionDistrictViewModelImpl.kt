@@ -26,6 +26,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.RegionDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.RegionDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictToRegionDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.regiondistrict.RegionDistrictUiToRegionDistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toRegionUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -142,16 +143,12 @@ class RegionDistrictViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: RegionDistrictUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
         Timber.tag(TAG)
-            .d(
-                "initFieldStatesByUiModel(RegionDistrictModel) called: regionDistrictUi = %s",
-                uiModel
-            )
+            .d("initFieldStatesByUiModel(RegionDistrictUi) called: uiModel = %s", uiModel)
         uiModel.id?.let {
             initStateValue(RegionDistrictFields.REGION_DISTRICT_ID, id, it.toString())
         }
         initStateValue(
-            RegionDistrictFields.REGION_DISTRICT_REGION, region,
-            ListItemModel(uiModel.region.id, uiModel.region.regionName)
+            RegionDistrictFields.REGION_DISTRICT_REGION, region, uiModel.region.toListItemModel()
         )
         initStateValue(
             RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
@@ -186,23 +183,20 @@ class RegionDistrictViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
-                    is RegionDistrictInputEvent.Region ->
-                        setStateValue(
-                            RegionDistrictFields.REGION_DISTRICT_REGION, region,
-                            RegionDistrictInputValidator.Region.errorIdOrNull(event.input.headline)
-                        )
+                    is RegionDistrictInputEvent.Region -> setStateValue(
+                        RegionDistrictFields.REGION_DISTRICT_REGION, region,
+                        RegionDistrictInputValidator.Region.errorIdOrNull(event.input.headline)
+                    )
 
-                    is RegionDistrictInputEvent.DistrictShortName ->
-                        setStateValue(
-                            RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
-                            RegionDistrictInputValidator.DistrictShortName.errorIdOrNull(event.input)
-                        )
+                    is RegionDistrictInputEvent.DistrictShortName -> setStateValue(
+                        RegionDistrictFields.DISTRICT_SHORT_NAME, districtShortName,
+                        RegionDistrictInputValidator.DistrictShortName.errorIdOrNull(event.input)
+                    )
 
-                    is RegionDistrictInputEvent.DistrictName ->
-                        setStateValue(
-                            RegionDistrictFields.DISTRICT_NAME, districtName,
-                            RegionDistrictInputValidator.DistrictName.errorIdOrNull(event.input)
-                        )
+                    is RegionDistrictInputEvent.DistrictName -> setStateValue(
+                        RegionDistrictFields.DISTRICT_NAME, districtName,
+                        RegionDistrictInputValidator.DistrictName.errorIdOrNull(event.input)
+                    )
 
                 }
             }
@@ -215,8 +209,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
         RegionDistrictInputValidator.Region.errorIdOrNull(region.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
-                    fieldName = RegionDistrictFields.REGION_DISTRICT_REGION.name,
-                    errorId = it
+                    fieldName = RegionDistrictFields.REGION_DISTRICT_REGION.name, errorId = it
                 )
             )
         }
@@ -224,17 +217,13 @@ class RegionDistrictViewModelImpl @Inject constructor(
             ?.let {
                 inputErrors.add(
                     InputError(
-                        fieldName = RegionDistrictFields.DISTRICT_SHORT_NAME.name,
-                        errorId = it
+                        fieldName = RegionDistrictFields.DISTRICT_SHORT_NAME.name, errorId = it
                     )
                 )
             }
         RegionDistrictInputValidator.DistrictName.errorIdOrNull(districtName.value.value)?.let {
             inputErrors.add(
-                InputError(
-                    fieldName = RegionDistrictFields.DISTRICT_NAME.name,
-                    errorId = it
-                )
+                InputError(fieldName = RegionDistrictFields.DISTRICT_NAME.name, errorId = it)
             )
         }
         return inputErrors.ifEmpty { null }

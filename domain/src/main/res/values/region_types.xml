@@ -1,21 +1,13 @@
 <resources>
-    <string-array name="locality_types">
-        <item>г.</item>
-        <item>пгт.</item>
-        <!--Село -->
-        <item>с.</item>
-        <!--Дачный поселок -->
-        <item>дп.</item>
-        <item>массив</item>
-        <!--Почтовое отделение -->
-        <item>п/о</item>
-        <!--Рабочий посёлок -->
-        <item>р/п</item>
-        <!--Сельская администрация -->
-        <item>с/а</item>
-        <!--Сельское поселение -->
-        <item>с/п</item>
-        <!--Сельсовет -->
-        <item>с/с</item>
+    <string-array name="region_types">
+        <item>респ.</item>
+        <item>край</item>
+        <item>обл.</item>
+        <!--Город федерального значения -->
+        <item>г.ф.з.</item>
+        <!--Автономная область -->
+        <item>а.обл.</item>
+        <!--Автономный округ -->
+        <item>а.окр.</item>
     </string-array>
 </resources>

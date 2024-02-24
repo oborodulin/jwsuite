@@ -44,7 +44,7 @@ class RegionsListViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionsListUiAction.Load -> loadRegions()
+            is RegionsListUiAction.Load -> loadRegions(action.countryId)
 
             is RegionsListUiAction.EditRegion -> {
                 submitSingleEvent(
@@ -59,10 +59,10 @@ class RegionsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadRegions(): Job {
-        Timber.tag(TAG).d("loadRegions() called")
+    private fun loadRegions(countryId: UUID? = null): Job {
+        Timber.tag(TAG).d("loadRegions(...) called: countryId = %s", countryId)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getRegionsUseCase.execute(GetRegionsUseCase.Request).map {
+            useCases.getRegionsUseCase.execute(GetRegionsUseCase.Request(countryId)).map {
                 converter.convert(it)
             }.collect {
                 submitState(it)
@@ -72,7 +72,7 @@ class RegionsListViewModelImpl @Inject constructor(
     }
 
     private fun deleteRegion(regionId: UUID): Job {
-        Timber.tag(TAG).d("deleteRegion() called: regionId = %s", regionId.toString())
+        Timber.tag(TAG).d("deleteRegion(...) called: regionId = %s", regionId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteRegionUseCase.execute(
                 DeleteRegionUseCase.Request(regionId)

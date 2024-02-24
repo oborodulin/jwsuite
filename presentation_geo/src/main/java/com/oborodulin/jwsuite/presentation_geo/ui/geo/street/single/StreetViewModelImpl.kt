@@ -133,7 +133,7 @@ class StreetViewModelImpl @Inject constructor(
     }
 
     private fun loadStreet(streetId: UUID): Job {
-        Timber.tag(TAG).d("loadStreet(UUID) called: %s", streetId.toString())
+        Timber.tag(TAG).d("loadStreet(UUID) called: streetId = %s", streetId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getStreetUseCase.execute(GetStreetUseCase.Request(streetId))
                 .map {
@@ -204,7 +204,8 @@ class StreetViewModelImpl @Inject constructor(
             uiModel.isPrivateSector.toString()
         )
         initStateValue(
-            StreetFields.STREET_EST_HOUSES, estimatedHouses, uiModel.estimatedHouses.toString()
+            StreetFields.STREET_EST_HOUSES, estimatedHouses,
+            uiModel.estimatedHouses?.toString().orEmpty()
         )
         initStateValue(StreetFields.STREET_NAME, streetName, uiModel.streetName)
         return null

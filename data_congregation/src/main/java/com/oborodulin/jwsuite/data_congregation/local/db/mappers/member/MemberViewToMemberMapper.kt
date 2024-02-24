@@ -8,12 +8,12 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.congrega
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.movement.MemberLastMovementViewToMemberMovementMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.views.MemberView
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionViewToGeoRegionMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 
 class MemberViewToMemberMapper(
-    private val regionMapper: GeoRegionViewToGeoRegionMapper,
+    private val regionMapper: RegionViewToGeoRegionMapper,
     private val regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
     private val localityMapper: LocalityViewToGeoLocalityMapper,
     private val congregationMapper: CongregationEntityToCongregationMapper,

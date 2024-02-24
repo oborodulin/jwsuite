@@ -1,15 +1,13 @@
 package com.oborodulin.jwsuite.domain.model.geo
 
 import com.oborodulin.home.common.domain.model.DomainModel
-import java.math.BigDecimal
 
 data class GeoRegion(
-    val country: GeoCountry,
+    val country: GeoCountry? = null,
     val regionCode: String,
     val regionGeocode: String? = null,
     val regionOsmId: Long? = null,
-    val latitude: BigDecimal? = null,
-    val longitude: BigDecimal? = null,
+    val coordinates: GeoCoordinates = GeoCoordinates(),
     val regionName: String,
     val districts: List<GeoRegionDistrict> = emptyList(),
     val localities: List<GeoLocality> = emptyList()

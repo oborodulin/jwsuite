@@ -1,5 +1,15 @@
 <resources>
     <!--Значения полей данных по-умолчанию -->
+    <!--Страны -->
+    <!--по-умолчанию-->
+    <string name="def_country_code">СТ</string>
+    <string name="def_country_name">Страна #1</string>
+    <!--тестовые-->
+    <string name="def_country_ukraine_code">UA</string>
+    <string name="def_country_ukraine_name">Украина</string>
+    <string name="def_country_russia_code">RU</string>
+    <string name="def_country_russia_name">Россия</string>
+
     <!--Области -->
     <!--по-умолчанию-->
     <string name="def_reg_code">99</string>

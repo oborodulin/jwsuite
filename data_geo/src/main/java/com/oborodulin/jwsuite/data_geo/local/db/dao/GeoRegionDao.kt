@@ -10,6 +10,7 @@ import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -26,14 +27,14 @@ interface GeoRegionDao {
     fun selectTlEntities(): Flow<List<GeoRegionTlEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionLocCode = :locale ORDER BY regionName")
-    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionView>>
+    @Query("SELECT * FROM ${RegionView.VIEW_NAME} WHERE regionLocCode = :locale ORDER BY regionName")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<RegionView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE regionId = :regionId AND regionLocCode = :locale")
+    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE ${GeoRegionEntity.PX}regionId = :regionId AND ${GeoRegionEntity.PX}regionLocCode = :locale")
     fun findById(regionId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoRegionView>
 
@@ -41,9 +42,9 @@ interface GeoRegionDao {
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoRegionView.VIEW_NAME} WHERE rCountriesId = :countryId AND regionLocCode = :locale ORDER BY regionName")
+    @Query("SELECT * FROM ${RegionView.VIEW_NAME} WHERE rCountriesId = :countryId AND regionLocCode = :locale ORDER BY regionName")
     fun findByCountryId(countryId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<GeoRegionView>>
+            Flow<List<RegionView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByCountryId(countryId: UUID) = findByCountryId(countryId).distinctUntilChanged()

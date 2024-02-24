@@ -7,5 +7,5 @@ import retrofit2.http.POST
 interface RegionService {
     @FormUrlEncoded
     @POST
-    suspend fun getRegions(@Body data: String): List<RegionApiModel>
+    suspend fun getRegions(@Body data: String): RegionApiModel
 }

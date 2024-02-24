@@ -104,7 +104,8 @@ class TerritoryCategoryViewModelImpl @Inject constructor(
     }
 
     private fun loadTerritoryCategory(territoryCategoryId: UUID): Job {
-        Timber.tag(TAG).d("loadTerritoryCategory(UUID) called: %s", territoryCategoryId.toString())
+        Timber.tag(TAG)
+            .d("loadTerritoryCategory(UUID) called: territoryCategoryId = %s", territoryCategoryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getTerritoryCategoryUseCase.execute(
                 GetTerritoryCategoryUseCase.Request(territoryCategoryId)

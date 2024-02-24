@@ -1,6 +1,7 @@
 package com.oborodulin.jwsuite.domain.di
 
 import com.oborodulin.home.common.domain.usecases.UseCase
+import com.oborodulin.jwsuite.domain.repositories.GeoCountriesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalitiesRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoLocalityDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoMicrodistrictsRepository
@@ -8,6 +9,10 @@ import com.oborodulin.jwsuite.domain.repositories.GeoRegionDistrictsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import com.oborodulin.jwsuite.domain.usecases.*
+import com.oborodulin.jwsuite.domain.usecases.geocountry.DeleteCountryUseCase
+import com.oborodulin.jwsuite.domain.usecases.geocountry.GetCountriesUseCase
+import com.oborodulin.jwsuite.domain.usecases.geocountry.GetCountryUseCase
+import com.oborodulin.jwsuite.domain.usecases.geocountry.SaveCountryUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetAllLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
@@ -49,6 +54,31 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object GeoUseCasesModule {
+    // Country:
+    @Singleton
+    @Provides
+    fun provideGetCountryUseCase(
+        configuration: UseCase.Configuration, countriesRepository: GeoCountriesRepository
+    ): GetCountryUseCase = GetCountryUseCase(configuration, countriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetCountriesUseCase(
+        configuration: UseCase.Configuration, countriesRepository: GeoCountriesRepository
+    ): GetCountriesUseCase = GetCountriesUseCase(configuration, countriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideDeleteCountryUseCase(
+        configuration: UseCase.Configuration, countriesRepository: GeoCountriesRepository
+    ): DeleteCountryUseCase = DeleteCountryUseCase(configuration, countriesRepository)
+
+    @Singleton
+    @Provides
+    fun provideSaveCountryUseCase(
+        configuration: UseCase.Configuration, countriesRepository: GeoCountriesRepository
+    ): SaveCountryUseCase = SaveCountryUseCase(configuration, countriesRepository)
+
     // Region:
     @Singleton
     @Provides

@@ -184,7 +184,7 @@ class MemberViewModelImpl @Inject constructor(
     }
 
     private fun loadMember(memberId: UUID): Job {
-        Timber.tag(TAG).d("loadMember(UUID) called: %s", memberId.toString())
+        Timber.tag(TAG).d("loadMember(UUID) called: memberId = %s", memberId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMemberUseCase.execute(GetMemberUseCase.Request(memberId))
                 .map {

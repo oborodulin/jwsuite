@@ -10,15 +10,21 @@ import com.oborodulin.jwsuite.domain.types.BuildingType
 import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.domain.types.MemberType
+import com.oborodulin.jwsuite.domain.types.RegionType
 import com.oborodulin.jwsuite.domain.types.RoadType
 import com.oborodulin.jwsuite.domain.types.TerritoryCategoryType
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryReportMark
 import com.oborodulin.jwsuite.domain.types.VillageType
 import java.math.BigDecimal
-import java.time.*
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 object JwSuiteTypeConverters {
     private val formatter =
@@ -84,6 +90,13 @@ object JwSuiteTypeConverters {
     @TypeConverter
     fun fromBigDecimal(bigDecimal: BigDecimal?): Long? =
         bigDecimal?.multiply(BigDecimal(CONV_COEFF_BIGDECIMAL))?.toLong()
+
+    //-----------------------------
+    @TypeConverter
+    fun toRegionType(value: String) = enumValueOf<RegionType>(value)
+
+    @TypeConverter
+    fun fromRegionType(value: RegionType) = value.name
 
     //-----------------------------
     @TypeConverter

@@ -35,7 +35,7 @@ data class GeoRegionEntity(
     val regionCode: String,
     val regionGeocode: String? = null,
     @ColumnInfo(index = true) val regionOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val rCountriesId: UUID
 ) : BaseEntity() {
@@ -54,7 +54,7 @@ data class GeoRegionEntity(
             regionId: UUID = UUID.randomUUID(),
             regionCode: String,
             regionGeocode: String? = null, regionOsmId: Long? = null,
-            coordinates: Coordinates? = null
+            coordinates: Coordinates = Coordinates()
         ) = GeoRegionEntity(
             rCountriesId = countryId, regionId = regionId, regionCode = regionCode,
             regionGeocode = regionGeocode, regionOsmId = regionOsmId, coordinates = coordinates
