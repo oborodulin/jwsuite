@@ -16,6 +16,7 @@ class RegionToRegionUiMapper(
         regionGeocode = input.regionGeocode,
         regionOsmId = input.regionOsmId,
         coordinates = coordinatesMapper.map(input.coordinates),
-        regionName = input.regionName
+        regionName = input.regionName,
+        regionFullName = input.regionFullName
     ).also { it.id = input.id }
 }

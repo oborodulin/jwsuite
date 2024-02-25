@@ -114,12 +114,12 @@ class RegionsListViewModelImpl @Inject constructor(
             RegionsListItem(
                 id = UUID.randomUUID(),
                 regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
-                regionName = ctx.resources.getString(R.string.def_reg_donetsk_name)
+                regionFullName = ctx.resources.getString(R.string.def_reg_donetsk_name)
             ),
             RegionsListItem(
                 id = UUID.randomUUID(),
                 regionCode = ctx.resources.getString(R.string.def_reg_luhansk_code),
-                regionName = ctx.resources.getString(R.string.def_reg_luhansk_name)
+                regionFullName = ctx.resources.getString(R.string.def_reg_luhansk_name)
             )
         )
     }

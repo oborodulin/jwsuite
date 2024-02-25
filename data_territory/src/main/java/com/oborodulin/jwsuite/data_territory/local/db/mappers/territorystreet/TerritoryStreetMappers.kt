@@ -1,10 +1,10 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territorystreet
 
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territory.TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper
 
 data class TerritoryStreetMappers(
-    val geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
+    val streetViewListToGeoStreetsListMapper: StreetViewListToGeoStreetsListMapper,
     val territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
     val territoryStreetViewToTerritoryStreetMapper: TerritoryStreetViewToTerritoryStreetMapper,
     val territoryStreetsListToTerritoryStreetEntityListMapper: TerritoryStreetsListToTerritoryStreetEntityListMapper,

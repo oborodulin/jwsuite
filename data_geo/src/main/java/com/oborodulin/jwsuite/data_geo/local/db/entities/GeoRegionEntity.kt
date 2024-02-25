@@ -11,15 +11,13 @@ import com.oborodulin.home.common.data.UUIDSerializer
 import com.oborodulin.home.common.data.entities.BaseEntity
 import com.oborodulin.jwsuite.data_geo.R
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.Coordinates
+import com.oborodulin.jwsuite.domain.types.RegionType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Entity(
     tableName = GeoRegionEntity.TABLE_NAME,
-    indices = [Index(
-        value = ["rCountriesId", "regionOsmId", "regionCode", "regionGeocode"],
-        unique = true
-    )],
+    indices = [Index(value = ["rCountriesId", "regionCode"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoCountryEntity::class,
         parentColumns = arrayOf("countryId"),
@@ -33,6 +31,7 @@ data class GeoRegionEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val regionId: UUID = UUID.randomUUID(),
     val regionCode: String,
+    val regionType: RegionType = RegionType.REGION,
     val regionGeocode: String? = null,
     @ColumnInfo(index = true) val regionOsmId: Long? = null,
     @Embedded(prefix = PREFIX) val coordinates: Coordinates,
@@ -52,11 +51,12 @@ data class GeoRegionEntity(
         fun defaultRegion(
             countryId: UUID = UUID.randomUUID(),
             regionId: UUID = UUID.randomUUID(),
-            regionCode: String,
+            regionCode: String, regionType: RegionType = RegionType.REGION,
             regionGeocode: String? = null, regionOsmId: Long? = null,
             coordinates: Coordinates = Coordinates()
         ) = GeoRegionEntity(
             rCountriesId = countryId, regionId = regionId, regionCode = regionCode,
+            regionType = regionType,
             regionGeocode = regionGeocode, regionOsmId = regionOsmId, coordinates = coordinates
         )
 
@@ -77,9 +77,7 @@ data class GeoRegionEntity(
 
     override fun key(): Int {
         var result = rCountriesId.hashCode()
-        result = result * 31 + regionOsmId.hashCode()
         result = result * 31 + regionCode.hashCode()
-        result = result * 31 + regionGeocode.hashCode()
         return result
     }
 
@@ -87,7 +85,7 @@ data class GeoRegionEntity(
         val str = StringBuffer()
         str.append("Region Entity №").append(regionCode)
             .append(". OSM: regionOsmId = ").append(regionOsmId)
-            .append("; countryGeocode = ").append(regionGeocode)
+            .append("; regionGeocode = ").append(regionGeocode)
             .append("; coordinates = ").append(coordinates)
             .append(" [rCountriesId = ").append(rCountriesId)
             .append("] regionId = ").append(regionId)

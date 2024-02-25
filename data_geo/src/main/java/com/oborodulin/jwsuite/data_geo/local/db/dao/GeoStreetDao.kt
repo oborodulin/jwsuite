@@ -8,12 +8,12 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
-import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
+import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,15 +23,16 @@ import java.util.UUID
 
 @Dao
 interface GeoStreetDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${GeoStreetEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<GeoStreetEntity>>
 
     @Query("SELECT * FROM ${GeoStreetTlEntity.TABLE_NAME}")
     fun selectTlEntities(): Flow<List<GeoStreetTlEntity>>
 
-    @Query("SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE streetLocCode = :locale ORDER BY streetName")
-    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoStreetView>>
+    // READS:
+    @Query("SELECT * FROM ${StreetView.VIEW_NAME} WHERE streetLocCode = :locale ORDER BY streetName")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<StreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
@@ -46,12 +47,12 @@ interface GeoStreetDao {
 
     //-----------------------------
     @Query(
-        "SELECT * FROM ${GeoStreetView.VIEW_NAME} WHERE sLocalitiesId = :localityId AND isStreetPrivateSector = ifnull(:isPrivateSector, isStreetPrivateSector) AND streetLocCode = :locale ORDER BY streetName"
+        "SELECT * FROM ${StreetView.VIEW_NAME} WHERE sLocalitiesId = :localityId AND isStreetPrivateSector = ifnull(:isPrivateSector, isStreetPrivateSector) AND streetLocCode = :locale ORDER BY streetName"
     )
     fun findByLocalityIdAndPrivateSectorMark(
         localityId: UUID, isPrivateSector: Boolean? = null,
         locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityIdAndPrivateSectorMark(
@@ -61,7 +62,7 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN (SELECT dsStreetsId, dsLocalityDistrictsId FROM ${GeoStreetDistrictEntity.TABLE_NAME} GROUP BY dsLocalityDistrictsId, dsStreetsId) sd 
+        SELECT sv.* FROM ${StreetView.VIEW_NAME} sv JOIN (SELECT dsStreetsId, dsLocalityDistrictsId FROM ${GeoStreetDistrictEntity.TABLE_NAME} GROUP BY dsLocalityDistrictsId, dsStreetsId) sd 
             ON sd.dsStreetsId = sv.streetId AND sd.dsLocalityDistrictsId = :localityDistrictId 
                 AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
         ORDER BY sv.streetName                
@@ -70,7 +71,7 @@ interface GeoStreetDao {
     fun findByLocalityDistrictIdAndPrivateSectorMark(
         localityDistrictId: UUID, isPrivateSector: Boolean? = null,
         locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityDistrictIdAndPrivateSectorMark(
@@ -82,7 +83,7 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds 
+        SELECT sv.* FROM ${StreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds 
             ON ds.dsStreetsId = sv.streetId AND ds.dsMicrodistrictsId = :microdistrictId 
                 AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) AND sv.streetLocCode = :locale
         ORDER BY sv.streetName                
@@ -91,7 +92,7 @@ interface GeoStreetDao {
     fun findByMicrodistrictIdAndPrivateSectorMark(
         microdistrictId: UUID, isPrivateSector: Boolean? = null,
         locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByMicrodistrictIdAndPrivateSectorMark(
@@ -104,11 +105,11 @@ interface GeoStreetDao {
     //LEFT JOIN ${GeoMicrodistrictView.VIEW_NAME} mdv ON mdv.microdistrictId = ds.dsMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode
     @Query(
         """
-        SELECT DISTINCT sv.* FROM ${GeoStreetView.VIEW_NAME} sv LEFT JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId
+        SELECT DISTINCT sv.* FROM ${StreetView.VIEW_NAME} sv LEFT JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId
         WHERE sv.streetLocCode = :locale
             AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(ds.dsMicrodistrictsId, '')) 
             AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId , ''))
-            AND sv.${GeoLocalityEntity.PX}localityId = :localityId
+            AND sv.localityId = :localityId
             AND sv.isStreetPrivateSector = $DB_TRUE
             AND sv.streetId NOT IN (:excludes)
         ORDER BY sv.streetName
@@ -117,7 +118,7 @@ interface GeoStreetDao {
     fun findByLocalityIdAndLocalityDistrictIdAndMicrodistrictIdWithExcludes(
         localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
         excludes: List<UUID> = emptyList(), locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityIdAndLocalityDistrictIdAndMicrodistrictIdWithExcludes(
@@ -130,7 +131,7 @@ interface GeoStreetDao {
     //-----------------------------
     @Query(
         """
-        SELECT sv.* FROM ${GeoStreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
+        SELECT sv.* FROM ${StreetView.VIEW_NAME} sv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
         WHERE sv.sLocalitiesId = :localityId
             AND sv.isStreetPrivateSector = ifnull(:isPrivateSector, sv.isStreetPrivateSector) 
             AND ifnull(ds.dsLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId, '')) 
@@ -141,7 +142,7 @@ interface GeoStreetDao {
     fun findByStreetName(
         localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
         isPrivateSector: Boolean? = null, streetName: String
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

@@ -29,7 +29,7 @@ class TerritoryStreetsRepositoryImpl @Inject constructor(
 
     override fun getGeoStreetsForTerritory(territoryId: UUID) =
         localTerritoryDataSource.getStreetsForTerritory(territoryId)
-            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.streetViewListToGeoStreetsListMapper::map)
 
     override fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID?) =
         localTerritoryDataSource.getTerritoryStreetNamesAndHouseNums(congregationId)

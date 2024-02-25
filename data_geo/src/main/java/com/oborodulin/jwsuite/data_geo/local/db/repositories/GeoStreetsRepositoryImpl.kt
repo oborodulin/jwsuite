@@ -22,25 +22,25 @@ class GeoStreetsRepositoryImpl @Inject constructor(
     private val csvMappers: GeoStreetCsvMappers
 ) : GeoStreetsRepository {
     override fun getAll() = localStreetDataSource.getAllStreets()
-        .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
+        .map(domainMappers.streetViewListToGeoStreetsListMapper::map)
 
     override fun getAllByLocality(localityId: UUID, isPrivateSector: Boolean?) =
         localStreetDataSource.getLocalityStreets(localityId, isPrivateSector)
-            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.streetViewListToGeoStreetsListMapper::map)
 
     override fun getAllByLocalityDistrict(localityDistrictId: UUID, isPrivateSector: Boolean?) =
         localStreetDataSource.getLocalityDistrictStreets(localityDistrictId, isPrivateSector)
-            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.streetViewListToGeoStreetsListMapper::map)
 
     override fun getAllByMicrodistrict(microdistrictId: UUID, isPrivateSector: Boolean?) =
         localStreetDataSource.getMicrodistrictStreets(microdistrictId, isPrivateSector)
-            .map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
+            .map(domainMappers.streetViewListToGeoStreetsListMapper::map)
 
     override fun getAllForTerritory(
         localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?, excludes: List<UUID>
     ) = localStreetDataSource.getStreetsForTerritory(
         localityId, localityDistrictId, microdistrictId, excludes
-    ).map(domainMappers.geoStreetViewListToGeoStreetsListMapper::map)
+    ).map(domainMappers.streetViewListToGeoStreetsListMapper::map)
 
     override fun get(streetId: UUID) = localStreetDataSource.getStreet(streetId)
         .map(domainMappers.geoStreetViewToGeoStreetMapper::map)

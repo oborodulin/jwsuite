@@ -9,6 +9,6 @@ class RegionToRegionsListItemMapper : Mapper<GeoRegion, RegionsListItem> {
     override fun map(input: GeoRegion) = RegionsListItem(
         id = input.id ?: UUID.randomUUID(),
         regionCode = input.regionCode,
-        regionName = input.regionName
+        regionFullName = input.regionFullName
     )
 }

@@ -3,15 +3,16 @@ package com.oborodulin.jwsuite.data_geo.local.db.repositories.sources
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoMicrodistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoMicrodistrictDataSource {
-    fun getAllMicrodistricts(): Flow<List<GeoMicrodistrictView>>
-    fun getLocalityMicrodistricts(localityId: UUID): Flow<List<GeoMicrodistrictView>>
-    fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID): Flow<List<GeoMicrodistrictView>>
-    fun getStreetMicrodistricts(streetId: UUID): Flow<List<GeoMicrodistrictView>>
-    fun getMicrodistrictsForStreet(streetId: UUID): Flow<List<GeoMicrodistrictView>>
+    fun getAllMicrodistricts(): Flow<List<MicrodistrictView>>
+    fun getLocalityMicrodistricts(localityId: UUID): Flow<List<MicrodistrictView>>
+    fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID): Flow<List<MicrodistrictView>>
+    fun getStreetMicrodistricts(streetId: UUID): Flow<List<MicrodistrictView>>
+    fun getMicrodistrictsForStreet(streetId: UUID): Flow<List<MicrodistrictView>>
     fun getMicrodistrict(microdistrictId: UUID): Flow<GeoMicrodistrictView>
     suspend fun insertMicrodistrict(
         microdistrict: GeoMicrodistrictEntity, textContent: GeoMicrodistrictTlEntity

@@ -18,7 +18,7 @@ import java.util.UUID
 @Entity(
     tableName = GeoStreetEntity.TABLE_NAME,
     indices = [Index(
-        value = ["sLocalitiesId", "streetOsmId", "streetHashCode", "roadType", "isStreetPrivateSector"],
+        value = ["sLocalitiesId", "streetHashCode", "roadType", "isStreetPrivateSector"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
@@ -37,8 +37,9 @@ data class GeoStreetEntity(
     val roadType: RoadType = RoadType.STREET,
     val isStreetPrivateSector: Boolean = false,     // all street is private sector
     val estStreetHouses: Int? = null,               // estimated houses of the street
+    val streetGeocode: String? = null,
     @ColumnInfo(index = true) val streetOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val sLocalitiesId: UUID
 ) : BaseEntity() {
@@ -50,11 +51,12 @@ data class GeoStreetEntity(
         fun defaultStreet(
             localityId: UUID = UUID.randomUUID(), streetHashCode: Int,
             roadType: RoadType = RoadType.STREET, isPrivateSector: Boolean = false,
-            streetOsmId: Long? = null, coordinates: Coordinates? = null
+            streetGeocode: String? = null,
+            streetOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoStreetEntity(
             sLocalitiesId = localityId, streetHashCode = streetHashCode, roadType = roadType,
             isStreetPrivateSector = isPrivateSector,
-            streetOsmId = streetOsmId, coordinates = coordinates
+            streetGeocode = streetGeocode, streetOsmId = streetOsmId, coordinates = coordinates
         )
 
         fun strelkovojDiviziiStreet(ctx: Context, localityId: UUID = UUID.randomUUID()) =
@@ -104,7 +106,6 @@ data class GeoStreetEntity(
 
     override fun key(): Int {
         var result = sLocalitiesId.hashCode()
-        result = result * 31 + streetOsmId.hashCode()
         result = result * 31 + streetHashCode.hashCode()
         result = result * 31 + roadType.hashCode()
         result = result * 31 + isStreetPrivateSector.hashCode()
@@ -115,6 +116,7 @@ data class GeoStreetEntity(
         val str = StringBuffer()
         str.append("Street Entity '").append(roadType)
             .append("'. OSM: streetOsmId = ").append(streetOsmId)
+            .append("; streetGeocode = ").append(streetGeocode)
             .append("; coordinates = ").append(coordinates)
             .append(" [sLocalitiesId = ").append(sLocalitiesId)
             .append("; streetHashCode = ").append(streetHashCode)

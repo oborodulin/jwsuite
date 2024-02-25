@@ -7,9 +7,9 @@ import java.util.UUID
 data class RegionsListItem(
     val id: UUID,
     val regionCode: String,
-    val regionName: String
+    val regionFullName: String
 ) : Parcelable, ListItemModel(
     itemId = id,
-    headline = regionName,
+    headline = regionFullName,
     supportingText = regionCode
 )

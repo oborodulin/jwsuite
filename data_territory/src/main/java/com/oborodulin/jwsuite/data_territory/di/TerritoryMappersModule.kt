@@ -5,13 +5,13 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.Co
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.FavoriteCongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvListToEntranceEntityListMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvMappers
@@ -185,10 +185,10 @@ object TerritoryMappersModule {
     fun provideHouseViewToHouseMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
         territoryMapper: TerritoryViewToTerritoryMapper,
         houseMapper: HouseEntityToHouseMapper
     ): HouseViewToHouseMapper =
@@ -242,10 +242,10 @@ object TerritoryMappersModule {
     fun provideEntranceViewToEntranceMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
         houseMapper: HouseEntityToHouseMapper,
         territoryMapper: TerritoryViewToTerritoryMapper,
         entranceEntityMapper: EntranceEntityToEntranceMapper
@@ -301,10 +301,10 @@ object TerritoryMappersModule {
     fun provideFloorViewToFloorMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
         houseMapper: HouseEntityToHouseMapper,
         territoryMapper: TerritoryViewToTerritoryMapper,
         entranceEntityMapper: EntranceEntityToEntranceMapper,
@@ -363,11 +363,11 @@ object TerritoryMappersModule {
     fun provideRoomViewToRoomMapper(
         streetMapper: GeoStreetViewToGeoStreetMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
-        geoLocalityMapper: GeoLocalityViewToGeoLocalityMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
+        geoLocalityMapper: LocalityViewToGeoLocalityMapper,
         houseMapper: HouseEntityToHouseMapper,
         territoryMapper: TerritoryViewToTerritoryMapper,
         entranceEntityMapper: EntranceEntityToEntranceMapper,
@@ -444,14 +444,14 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideTerritoryStreetMappers(
-        geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
+        streetViewListToGeoStreetsListMapper: StreetViewListToGeoStreetsListMapper,
         territoryStreetViewListToTerritoryStreetsListMapper: TerritoryStreetViewListToTerritoryStreetsListMapper,
         territoryStreetViewToTerritoryStreetMapper: TerritoryStreetViewToTerritoryStreetMapper,
         territoryStreetsListToTerritoryStreetEntityListMapper: TerritoryStreetsListToTerritoryStreetEntityListMapper,
         territoryStreetToTerritoryStreetEntityMapper: TerritoryStreetToTerritoryStreetEntityMapper,
         territoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper: TerritoryStreetNamesAndHouseNumsViewListToTerritoryStreetNamesAndHouseNumsListMapper,
     ): TerritoryStreetMappers = TerritoryStreetMappers(
-        geoStreetViewListToGeoStreetsListMapper,
+        streetViewListToGeoStreetsListMapper,
         territoryStreetViewListToTerritoryStreetsListMapper,
         territoryStreetViewToTerritoryStreetMapper,
         territoryStreetsListToTerritoryStreetEntityListMapper,
@@ -606,10 +606,10 @@ object TerritoryMappersModule {
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
     ): TerritoryViewToTerritoryMapper = TerritoryViewToTerritoryMapper(
         ctx = ctx,
         congregationMapper = congregationMapper,
@@ -642,10 +642,10 @@ object TerritoryMappersModule {
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
         memberMapper: MemberViewToMemberMapper
     ): TerritoriesAtWorkViewToTerritoryMapper = TerritoriesAtWorkViewToTerritoryMapper(
         congregationMapper = congregationMapper,
@@ -669,10 +669,10 @@ object TerritoryMappersModule {
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
         memberMapper: MemberViewToMemberMapper
     ): TerritoriesHandOutViewToTerritoryMapper = TerritoriesHandOutViewToTerritoryMapper(
         congregationMapper = congregationMapper,
@@ -696,10 +696,10 @@ object TerritoryMappersModule {
         congregationMapper: CongregationViewToCongregationMapper,
         territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: LocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
+        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
     ): TerritoriesIdleViewToTerritoryMapper = TerritoriesIdleViewToTerritoryMapper(
         congregationMapper = congregationMapper,
         territoryCategoryMapper = territoryCategoryMapper,

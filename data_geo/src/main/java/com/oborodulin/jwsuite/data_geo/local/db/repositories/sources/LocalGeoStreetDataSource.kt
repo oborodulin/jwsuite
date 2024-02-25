@@ -6,24 +6,25 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
+import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoStreetDataSource {
-    fun getAllStreets(): Flow<List<GeoStreetView>>
+    fun getAllStreets(): Flow<List<StreetView>>
     fun getLocalityStreets(localityId: UUID, isPrivateSector: Boolean? = null):
-            Flow<List<GeoStreetView>>
+            Flow<List<StreetView>>
 
     fun getLocalityDistrictStreets(localityDistrictId: UUID, isPrivateSector: Boolean? = null):
-            Flow<List<GeoStreetView>>
+            Flow<List<StreetView>>
 
     fun getMicrodistrictStreets(microdistrictId: UUID, isPrivateSector: Boolean? = null):
-            Flow<List<GeoStreetView>>
+            Flow<List<StreetView>>
 
     fun getStreetsForTerritory(
         localityId: UUID, localityDistrictId: UUID? = null, microdistrictId: UUID? = null,
         excludes: List<UUID> = emptyList()
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     fun getStreet(streetId: UUID): Flow<GeoStreetView>
     suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity)

@@ -11,12 +11,13 @@ data class RegionUi(
     val regionGeocode: String? = null,
     val regionOsmId: Long? = null,
     val coordinates: CoordinatesUi = CoordinatesUi(),
-    val regionName: String = ""
+    val regionName: String = "",
+    val regionFullName: String = ""
 ) : ModelUi()
 
 fun RegionUi.toListItemModel() = ListItemModel(
     itemId = this.id ?: UUID.randomUUID(),
-    headline = this.regionName,
+    headline = this.regionFullName,
     supportingText = this.regionCode
 )
 

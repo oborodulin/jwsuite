@@ -15,7 +15,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoCountryEntity.TABLE_NAME,
-    indices = [Index(value = ["countryOsmId", "countryCode", "countryGeocode"], unique = true)],
+    indices = [Index(value = ["countryCode"], unique = true)],
 )
 @Serializable
 data class GeoCountryEntity(
@@ -62,15 +62,7 @@ data class GeoCountryEntity(
     }
 
     override fun id() = this.countryId
-
-    override fun key(): Int {
-        var result = countryCode.hashCode()
-        result = result * 31 + countryOsmId.hashCode()
-        result = result * 31 + countryCode.hashCode()
-        result = result * 31 + countryGeocode.hashCode()
-        return result
-    }
-
+    override fun key() = countryCode.hashCode()
     override fun toString(): String {
         val str = StringBuffer()
         str.append("Country Entity countryCode = '").append(countryCode)

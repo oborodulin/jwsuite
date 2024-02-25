@@ -22,15 +22,15 @@ class GeoLocalitiesRepositoryImpl @Inject constructor(
     private val csvMappers: GeoLocalityCsvMappers
 ) : GeoLocalitiesRepository {
     override fun getAll() = localLocalityDataSource.getAllLocalities()
-        .map(domainMappers.geoLocalityViewListToGeoLocalitiesListMapper::map)
+        .map(domainMappers.localityViewListToGeoLocalitiesListMapper::map)
 
     override fun getAllByRegion(regionId: UUID) =
         localLocalityDataSource.getRegionLocalities(regionId)
-            .map(domainMappers.geoLocalityViewListToGeoLocalitiesListMapper::map)
+            .map(domainMappers.localityViewListToGeoLocalitiesListMapper::map)
 
     override fun getAllByRegionDistrict(regionDistrictId: UUID) =
         localLocalityDataSource.getRegionDistrictLocalities(regionDistrictId)
-            .map(domainMappers.geoLocalityViewListToGeoLocalitiesListMapper::map)
+            .map(domainMappers.localityViewListToGeoLocalitiesListMapper::map)
 
     override fun get(localityId: UUID) = localLocalityDataSource.getLocality(localityId)
         .map(domainMappers.geoLocalityViewToGeoLocalityMapper::map)

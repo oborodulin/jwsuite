@@ -3,12 +3,13 @@ package com.oborodulin.jwsuite.data_geo.local.db.repositories.sources
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionDistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LocalGeoRegionDistrictDataSource {
-    fun getAllDistricts(): Flow<List<GeoRegionDistrictView>>
-    fun getRegionDistricts(regionId: UUID): Flow<List<GeoRegionDistrictView>>
+    fun getAllDistricts(): Flow<List<RegionDistrictView>>
+    fun getRegionDistricts(regionId: UUID): Flow<List<RegionDistrictView>>
     fun getRegionDistrict(regionDistrictId: UUID): Flow<GeoRegionDistrictView>
     suspend fun insertRegionDistrict(
         regionDistrict: GeoRegionDistrictEntity, textContent: GeoRegionDistrictTlEntity

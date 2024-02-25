@@ -18,7 +18,7 @@ import java.util.UUID
 @Entity(
     tableName = GeoMicrodistrictEntity.TABLE_NAME,
     indices = [Index(
-        value = ["mLocalitiesId", "mLocalityDistrictsId", "microdistrictType", "microdistrictOsmId", "microdistrictShortName"],
+        value = ["mLocalitiesId", "mLocalityDistrictsId", "microdistrictType", "microdistrictShortName"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
@@ -41,8 +41,9 @@ data class GeoMicrodistrictEntity(
     @PrimaryKey val microdistrictId: UUID = UUID.randomUUID(),
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
     val microdistrictShortName: String,
+    val microdistrictGeocode: String? = null,
     @ColumnInfo(index = true) val microdistrictOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val mLocalityDistrictsId: UUID,
     @Serializable(with = UUIDSerializer::class)
@@ -58,12 +59,13 @@ data class GeoMicrodistrictEntity(
             localityId: UUID = UUID.randomUUID(), localityDistrictId: UUID = UUID.randomUUID(),
             microdistrictId: UUID = UUID.randomUUID(),
             microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
-            microdistrictShortName: String,
-            microdistrictOsmId: Long? = null, coordinates: Coordinates? = null
+            microdistrictShortName: String, microdistrictGeocode: String? = null,
+            microdistrictOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoMicrodistrictEntity(
             mLocalitiesId = localityId, mLocalityDistrictsId = localityDistrictId,
             microdistrictId = microdistrictId, microdistrictType = microdistrictType,
             microdistrictShortName = microdistrictShortName,
+            microdistrictGeocode = microdistrictGeocode,
             microdistrictOsmId = microdistrictOsmId, coordinates = coordinates
         )
 
@@ -90,7 +92,6 @@ data class GeoMicrodistrictEntity(
     override fun key(): Int {
         var result = mLocalitiesId.hashCode()
         result = result * 31 + microdistrictType.hashCode()
-        result = result * 31 + microdistrictOsmId.hashCode()
         result = result * 31 + microdistrictShortName.hashCode()
         result = result * 31 + mLocalityDistrictsId.hashCode()
         return result
@@ -101,6 +102,7 @@ data class GeoMicrodistrictEntity(
         str.append("Microdistrict Entity ").append(microdistrictType).append(" '")
             .append(microdistrictShortName)
             .append("'. OSM: microdistrictOsmId = ").append(microdistrictOsmId)
+            .append("; microdistrictGeocode = ").append(microdistrictGeocode)
             .append("; coordinates = ").append(coordinates)
             .append(" [mLocalitiesId = ").append(mLocalitiesId)
             .append("; mLocalityDistrictsId = ").append(mLocalityDistrictsId)

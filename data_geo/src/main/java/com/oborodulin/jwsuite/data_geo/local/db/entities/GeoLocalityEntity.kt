@@ -17,10 +17,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityEntity.TABLE_NAME,
-    indices = [Index(
-        value = ["lRegionsId", "lRegionDistrictsId", "localityOsmId", "localityCode"],
-        unique = true
-    )],
+    indices = [Index(value = ["lRegionsId", "lRegionDistrictsId", "localityCode"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
@@ -41,8 +38,9 @@ data class GeoLocalityEntity(
     @PrimaryKey val localityId: UUID = UUID.randomUUID(),
     val localityCode: String,
     val localityType: LocalityType,
+    val localityGeocode: String? = null,
     @ColumnInfo(index = true) val localityOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val lRegionDistrictsId: UUID? = null,
     @Serializable(with = UUIDSerializer::class)
@@ -59,11 +57,12 @@ data class GeoLocalityEntity(
         fun defaultLocality(
             localityId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),
             districtId: UUID? = null,
-            localityCode: String, localityType: LocalityType,
-            localityOsmId: Long? = null, coordinates: Coordinates? = null
+            localityCode: String, localityType: LocalityType, localityGeocode: String? = null,
+            localityOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoLocalityEntity(
             localityId = localityId, lRegionsId = regionId, lRegionDistrictsId = districtId,
             localityCode = localityCode, localityType = localityType,
+            localityGeocode = localityGeocode,
             localityOsmId = localityOsmId, coordinates = coordinates
         )
 
@@ -108,7 +107,6 @@ data class GeoLocalityEntity(
 
     override fun key(): Int {
         var result = lRegionsId.hashCode()
-        result = result * 31 + localityOsmId.hashCode()
         result = result * 31 + localityCode.hashCode()
         result = result * 31 + lRegionDistrictsId.hashCode()
         return result
@@ -119,6 +117,7 @@ data class GeoLocalityEntity(
         str.append("Locality Entity ").append(localityType)
             .append(" '").append(localityCode)
             .append("'. OSM: localityOsmId = ").append(localityOsmId)
+            .append("; localityGeocode = ").append(localityGeocode)
             .append("; coordinates = ").append(coordinates)
         lRegionDistrictsId?.let { str.append(" [lRegionDistrictsId = ").append(it).append("]") }
         str.append(" localityId = ").append(localityId)

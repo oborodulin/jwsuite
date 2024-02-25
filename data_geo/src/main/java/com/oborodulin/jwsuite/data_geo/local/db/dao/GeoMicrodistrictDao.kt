@@ -12,6 +12,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictTlEntit
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.pojo.MicrodistrictWithStreets
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoMicrodistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -21,15 +22,16 @@ import java.util.UUID
 
 @Dao
 interface GeoMicrodistrictDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${GeoMicrodistrictEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<GeoMicrodistrictEntity>>
 
     @Query("SELECT * FROM ${GeoMicrodistrictTlEntity.TABLE_NAME}")
     fun selectTlEntities(): Flow<List<GeoMicrodistrictTlEntity>>
 
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE microdistrictLocCode = :locale ORDER BY mLocalitiesId, mLocalityDistrictsId, microdistrictName")
-    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoMicrodistrictView>>
+    // READS:
+    @Query("SELECT * FROM ${MicrodistrictView.VIEW_NAME} WHERE microdistrictLocCode = :locale ORDER BY mLocalitiesId, mLocalityDistrictsId, microdistrictName")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<MicrodistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
@@ -43,19 +45,19 @@ interface GeoMicrodistrictDao {
     fun findDistinctById(microdistrictId: UUID) = findById(microdistrictId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalitiesId = :localityId AND microdistrictLocCode = :locale ORDER BY microdistrictName")
+    @Query("SELECT * FROM ${MicrodistrictView.VIEW_NAME} WHERE mLocalitiesId = :localityId AND microdistrictLocCode = :locale ORDER BY microdistrictName")
     fun findByLocalityId(localityId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<GeoMicrodistrictView>>
+            Flow<List<MicrodistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityId(localityId: UUID) =
         findByLocalityId(localityId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} WHERE mLocalityDistrictsId = :localityDistrictId AND microdistrictLocCode = :locale ORDER BY microdistrictName")
+    @Query("SELECT * FROM ${MicrodistrictView.VIEW_NAME} WHERE mLocalityDistrictsId = :localityDistrictId AND microdistrictLocCode = :locale ORDER BY microdistrictName")
     fun findByLocalityDistrictId(
         localityDistrictId: UUID, locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoMicrodistrictView>>
+    ): Flow<List<MicrodistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByLocalityDistrictId(localityDistrictId: UUID) =
@@ -64,13 +66,13 @@ interface GeoMicrodistrictDao {
     //-----------------------------
     @Query(
         """
-    SELECT mv.* FROM ${GeoMicrodistrictView.VIEW_NAME} mv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} sd 
+    SELECT mv.* FROM ${MicrodistrictView.VIEW_NAME} mv JOIN ${GeoStreetDistrictEntity.TABLE_NAME} sd 
         ON sd.dsStreetsId = :streetId AND mv.microdistrictId = sd.dsMicrodistrictsId AND mv.microdistrictLocCode = :locale 
     ORDER BY mv.microdistrictName
         """
     )
     fun findByStreetId(streetId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<GeoMicrodistrictView>>
+            Flow<List<MicrodistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByStreetId(streetId: UUID) = findByStreetId(streetId).distinctUntilChanged()
@@ -78,14 +80,14 @@ interface GeoMicrodistrictDao {
     //-----------------------------
     @Query(
         """
-    SELECT mv.* FROM ${GeoMicrodistrictView.VIEW_NAME} mv JOIN ${StreetView.VIEW_NAME} sv 
+    SELECT mv.* FROM ${MicrodistrictView.VIEW_NAME} mv JOIN ${StreetView.VIEW_NAME} sv 
         ON sv.streetId = :streetId AND mv.mLocalitiesId = sv.sLocalitiesId AND mv.microdistrictLocCode = sv.streetLocCode AND sv.streetLocCode = :locale
     WHERE NOT EXISTS (SELECT streetDistrictId FROM ${GeoStreetDistrictEntity.TABLE_NAME} WHERE dsStreetsId = :streetId AND dsMicrodistrictsId = mv.microdistrictId) 
     ORDER BY mv.microdistrictName
         """
     )
     fun findForStreetByStreetId(streetId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<GeoMicrodistrictView>>
+            Flow<List<MicrodistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findForStreetDistinctByStreetId(streetId: UUID) =
@@ -94,7 +96,7 @@ interface GeoMicrodistrictDao {
     //-----------------------------
     @Query(
         """
-       SELECT * FROM ${GeoMicrodistrictView.VIEW_NAME} 
+       SELECT * FROM ${MicrodistrictView.VIEW_NAME} 
         WHERE mLocalitiesId = :localityId
             AND ifnull(mLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(mLocalityDistrictsId, '')) 
             AND microdistrictName LIKE '%' || :microdistrictName || '%' 
@@ -103,8 +105,9 @@ interface GeoMicrodistrictDao {
     )
     fun findByMicrodistrictName(
         localityId: UUID, localityDistrictId: UUID? = null, microdistrictName: String
-    ): Flow<List<GeoMicrodistrictView>>
+    ): Flow<List<MicrodistrictView>>
 
+    //-----------------------------
     @Transaction
     @Query("SELECT * FROM ${GeoMicrodistrictEntity.TABLE_NAME} WHERE microdistrictId = :microdistrictId")
     fun findDistrictStreetsById(microdistrictId: UUID): Flow<List<MicrodistrictWithStreets>>

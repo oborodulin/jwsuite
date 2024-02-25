@@ -3,11 +3,11 @@ package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
@@ -16,10 +16,10 @@ class TerritoriesAtWorkViewToTerritoryMapper(
     private val congregationMapper: CongregationViewToCongregationMapper,
     private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
     private val regionMapper: RegionViewToGeoRegionMapper,
-    private val regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
-    private val localityMapper: LocalityViewToGeoLocalityMapper,
-    private val localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
-    private val microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper,
+    private val regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
+    private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
+    private val localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
+    private val microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
     private val memberMapper: MemberViewToMemberMapper
 ) : Mapper<TerritoriesAtWorkView, Territory> {
     override fun map(input: TerritoriesAtWorkView): Territory {

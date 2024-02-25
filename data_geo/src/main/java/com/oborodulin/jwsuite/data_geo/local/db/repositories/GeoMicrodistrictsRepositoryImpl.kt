@@ -22,23 +22,23 @@ class GeoMicrodistrictsRepositoryImpl @Inject constructor(
     private val csvMappers: GeoMicrodistrictCsvMappers
 ) : GeoMicrodistrictsRepository {
     override fun getAll() = localMicrodistrictDataSource.getAllMicrodistricts()
-        .map(domainMappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+        .map(domainMappers.microdistrictViewListToGeoMicrodistrictsListMapper::map)
 
     override fun getAllByLocality(localityId: UUID) =
         localMicrodistrictDataSource.getLocalityMicrodistricts(localityId)
-            .map(domainMappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+            .map(domainMappers.microdistrictViewListToGeoMicrodistrictsListMapper::map)
 
     override fun getAllByLocalityDistrict(localityDistrictId: UUID) =
         localMicrodistrictDataSource.getLocalityDistrictMicrodistricts(localityDistrictId)
-            .map(domainMappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+            .map(domainMappers.microdistrictViewListToGeoMicrodistrictsListMapper::map)
 
     override fun getAllByStreet(streetId: UUID) =
         localMicrodistrictDataSource.getStreetMicrodistricts(streetId)
-            .map(domainMappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+            .map(domainMappers.microdistrictViewListToGeoMicrodistrictsListMapper::map)
 
     override fun getAllForStreet(streetId: UUID) =
         localMicrodistrictDataSource.getMicrodistrictsForStreet(streetId)
-            .map(domainMappers.geoMicrodistrictViewListToGeoMicrodistrictsListMapper::map)
+            .map(domainMappers.microdistrictViewListToGeoMicrodistrictsListMapper::map)
 
     override fun get(microdistrictId: UUID) =
         localMicrodistrictDataSource.getMicrodistrict(microdistrictId)

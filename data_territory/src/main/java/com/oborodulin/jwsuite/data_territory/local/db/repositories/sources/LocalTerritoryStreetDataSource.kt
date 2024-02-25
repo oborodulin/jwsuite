@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_territory.local.db.repositories.sources
 
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
+import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryStreetNamesAndHouseNumsView
@@ -13,7 +14,7 @@ interface LocalTerritoryStreetDataSource {
     fun getTerritoryStreet(territoryStreetId: UUID): Flow<TerritoryStreetView>
     fun getTerritoryStreets(territoryId: UUID): Flow<List<TerritoryStreetView>>
 
-    fun getStreetsForTerritory(territoryId: UUID): Flow<List<GeoStreetView>>
+    fun getStreetsForTerritory(territoryId: UUID): Flow<List<StreetView>>
 
     fun getTerritoryStreetNamesAndHouseNums(congregationId: UUID? = null): Flow<List<TerritoryStreetNamesAndHouseNumsView>>
 

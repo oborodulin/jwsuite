@@ -22,19 +22,19 @@ class GeoLocalityDistrictsRepositoryImpl @Inject constructor(
     private val csvMappers: GeoLocalityDistrictCsvMappers
 ) : GeoLocalityDistrictsRepository {
     override fun getAll() = localLocalityDistrictDataSource.getAllLocalityDistricts()
-        .map(domainMappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
+        .map(domainMappers.localityDistrictViewListToGeoLocalityDistrictsListMapper::map)
 
     override fun getAllByLocality(localityId: UUID) =
         localLocalityDistrictDataSource.getLocalityDistricts(localityId)
-            .map(domainMappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
+            .map(domainMappers.localityDistrictViewListToGeoLocalityDistrictsListMapper::map)
 
     override fun getAllByStreet(streetId: UUID) =
         localLocalityDistrictDataSource.getStreetLocalityDistricts(streetId)
-            .map(domainMappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
+            .map(domainMappers.localityDistrictViewListToGeoLocalityDistrictsListMapper::map)
 
     override fun getAllForStreet(streetId: UUID) =
         localLocalityDistrictDataSource.getLocalityDistrictsForStreet(streetId)
-            .map(domainMappers.geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper::map)
+            .map(domainMappers.localityDistrictViewListToGeoLocalityDistrictsListMapper::map)
 
     override fun get(localityDistrictId: UUID) =
         localLocalityDistrictDataSource.getLocalityDistrict(localityDistrictId)

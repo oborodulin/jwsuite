@@ -88,8 +88,6 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.Transf
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectEntityToTransferObjectMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.transfer.TransferObjectMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -110,13 +108,9 @@ object CongregationMappersModule {
     @Singleton
     @Provides
     fun provideCongregationViewToCongregationMapper(
-        regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         congregationMapper: CongregationEntityToCongregationMapper
     ): CongregationViewToCongregationMapper = CongregationViewToCongregationMapper(
-        regionMapper = regionMapper,
-        regionDistrictMapper = regionDistrictMapper,
         localityMapper = localityMapper,
         congregationMapper = congregationMapper
     )
@@ -235,16 +229,12 @@ object CongregationMappersModule {
     @Singleton
     @Provides
     fun provideMemberViewToMemberMapper(
-        regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         congregationMapper: CongregationEntityToCongregationMapper,
         groupMapper: GroupViewToGroupMapper,
         lastCongregationMapper: MemberLastCongregationViewToMemberCongregationMapper,
         movementMapper: MemberLastMovementViewToMemberMovementMapper
     ): MemberViewToMemberMapper = MemberViewToMemberMapper(
-        regionMapper = regionMapper,
-        regionDistrictMapper = regionDistrictMapper,
         localityMapper = localityMapper,
         congregationMapper = congregationMapper,
         groupMapper = groupMapper,

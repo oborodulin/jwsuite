@@ -16,10 +16,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoRegionDistrictEntity.TABLE_NAME,
-    indices = [Index(
-        value = ["rRegionsId", "regDistrictOsmId", "regDistrictShortName"],
-        unique = true
-    )],
+    indices = [Index(value = ["rRegionsId", "regDistrictShortName"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoRegionEntity::class,
         parentColumns = arrayOf("regionId"),
@@ -33,8 +30,9 @@ data class GeoRegionDistrictEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val regionDistrictId: UUID = UUID.randomUUID(),
     val regDistrictShortName: String,
+    val regDistrictGeocode: String? = null,
     @ColumnInfo(index = true) val regDistrictOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val rRegionsId: UUID
 ) : BaseEntity() {
@@ -49,10 +47,14 @@ data class GeoRegionDistrictEntity(
 
         fun defaultRegionDistrict(
             regionDistrictId: UUID = UUID.randomUUID(), regionId: UUID = UUID.randomUUID(),
-            districtShortName: String
+            districtShortName: String,
+            regDistrictGeocode: String? = null,
+            regDistrictOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoRegionDistrictEntity(
             rRegionsId = regionId, regionDistrictId = regionDistrictId,
-            regDistrictShortName = districtShortName
+            regDistrictShortName = districtShortName,
+            regDistrictGeocode = regDistrictGeocode, regDistrictOsmId = regDistrictOsmId,
+            coordinates = coordinates
         )
 
         fun maryinskyRegionDistrict(ctx: Context, regionId: UUID) = defaultRegionDistrict(
@@ -71,7 +73,6 @@ data class GeoRegionDistrictEntity(
 
     override fun key(): Int {
         var result = rRegionsId.hashCode()
-        result = result * 31 + regDistrictOsmId.hashCode()
         result = result * 31 + regDistrictShortName.hashCode()
         return result
     }
@@ -80,6 +81,7 @@ data class GeoRegionDistrictEntity(
         val str = StringBuffer()
         str.append("Region District Entity '").append(regDistrictShortName)
             .append("'. OSM: regDistrictOsmId = ").append(regDistrictOsmId)
+            .append("; regDistrictGeocode = ").append(regDistrictGeocode)
             .append("; coordinates = ").append(coordinates)
             .append(" [rRegionsId = ").append(rRegionsId)
             .append("] regionDistrictId = ").append(regionDistrictId)

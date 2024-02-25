@@ -24,4 +24,21 @@ class GeoRegionViewToGeoRegionMapper(
     }
 
     override fun nullableMap(input: GeoRegionView?) = input?.let { map(it) }
-}
+}/*    ConstructedMapper<RegionView, GeoRegion>,
+    NullableConstructedMapper<RegionView, GeoRegion> {
+    override fun map(input: RegionView, vararg properties: Any?): GeoRegion {
+                //properties.forEach { property ->
+                //    property?.let { Timber.tag(TAG).d("property class = %s", it::class) }
+                //}
+        if (properties.isEmpty() || properties[0] !is GeoCountry) throw IllegalArgumentException(
+            "GeoRegionViewToGeoRegionMapper: properties empty or properties[0] is not GeoCountry class: properties.isEmpty() = %s; regionId = %s".format(
+                properties.isEmpty(), input.data.regionId
+            )
+        )
+
+        return mapper.map(input).also { it.country = properties[0] as GeoCountry }
+    }
+
+    override fun nullableMap(input: RegionView?, vararg properties: Any?) =
+        input?.let { map(it, *properties) }
+}*/

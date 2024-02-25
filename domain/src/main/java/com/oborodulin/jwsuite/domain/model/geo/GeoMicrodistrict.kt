@@ -7,10 +7,13 @@ import com.oborodulin.jwsuite.domain.types.VillageType
 
 data class GeoMicrodistrict(
     val ctx: Context? = null,
-    val locality: GeoLocality,
-    val localityDistrict: GeoLocalityDistrict,
+    var locality: GeoLocality? = null,
+    var localityDistrict: GeoLocalityDistrict? = null,
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
     val microdistrictShortName: String,
+    val microdistrictGeocode: String? = null,
+    val microdistrictOsmId: Long? = null,
+    val coordinates: GeoCoordinates = GeoCoordinates(),
     val microdistrictName: String,
     val streets: List<GeoStreet> = emptyList()
 ) : DomainModel() {

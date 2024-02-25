@@ -10,6 +10,7 @@ import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoRegionDistrictView
+import com.oborodulin.jwsuite.data_geo.local.db.views.RegionDistrictView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,19 +19,21 @@ import java.util.UUID
 
 @Dao
 interface GeoRegionDistrictDao {
-    // READS:
+    // EXTRACTS:
     @Query("SELECT * FROM ${GeoRegionDistrictEntity.TABLE_NAME}")
     fun selectEntities(): Flow<List<GeoRegionDistrictEntity>>
 
     @Query("SELECT * FROM ${GeoRegionDistrictTlEntity.TABLE_NAME}")
     fun selectTlEntities(): Flow<List<GeoRegionDistrictTlEntity>>
 
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE ${GeoRegionDistrictEntity.PX}regDistrictLocCode = :locale ORDER BY ${GeoRegionDistrictEntity.PX}rRegionsId, ${GeoRegionDistrictEntity.PX}regDistrictName")
-    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoRegionDistrictView>>
+    // READS:
+    @Query("SELECT * FROM ${RegionDistrictView.VIEW_NAME} WHERE regDistrictLocCode = :locale ORDER BY rRegionsId, regDistrictName")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<RegionDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
+    //-----------------------------
     @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE ${GeoRegionDistrictEntity.PX}regionDistrictId = :regionDistrictId AND ${GeoRegionDistrictEntity.PX}regDistrictLocCode = :locale")
     fun findById(
         regionDistrictId: UUID, locale: String? = Locale.getDefault().language
@@ -39,17 +42,17 @@ interface GeoRegionDistrictDao {
     @ExperimentalCoroutinesApi
     fun findDistinctById(regionDistrictId: UUID) = findById(regionDistrictId).distinctUntilChanged()
 
-    @Query(
-        "SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE ${GeoRegionDistrictEntity.PX}rRegionsId = :regionId AND ${GeoRegionDistrictEntity.PX}regDistrictLocCode = :locale ORDER BY ${GeoRegionDistrictEntity.PX}regDistrictName"
-    )
+    //-----------------------------
+    @Query("SELECT * FROM ${RegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND regDistrictLocCode = :locale ORDER BY regDistrictName")
     fun findByRegionId(regionId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<GeoRegionDistrictView>>
+            Flow<List<RegionDistrictView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByRegionId(regionId: UUID) = findByRegionId(regionId).distinctUntilChanged()
 
-    @Query("SELECT * FROM ${GeoRegionDistrictView.VIEW_NAME} WHERE ${GeoRegionDistrictEntity.PX}rRegionsId = :regionId AND ${GeoRegionDistrictEntity.PX}regDistrictName LIKE '%' || :districtName || '%' ORDER BY ${GeoRegionDistrictEntity.PX}regDistrictName")
-    fun findByDistrictName(regionId: UUID, districtName: String): Flow<List<GeoRegionDistrictView>>
+    //-----------------------------
+    @Query("SELECT * FROM ${RegionDistrictView.VIEW_NAME} WHERE rRegionsId = :regionId AND regDistrictName LIKE '%' || :districtName || '%' ORDER BY regDistrictName")
+    fun findByDistrictName(regionId: UUID, districtName: String): Flow<List<RegionDistrictView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

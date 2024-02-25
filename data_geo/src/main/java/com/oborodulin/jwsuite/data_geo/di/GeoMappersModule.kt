@@ -76,22 +76,22 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalitie
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityToGeoLocalityEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityToGeoLocalityTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewListToGeoLocalitiesListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewListToGeoLocalitiesListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictToGeoLocalityDistrictEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictToGeoLocalityDistrictTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewListToGeoLocalityDistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictsListToGeoLocalityDistrictEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewListToGeoLocalityDistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictToGeoMicrodistrictEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictToGeoMicrodistrictTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewListToGeoMicrodistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictsListToGeoMicrodistrictEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewListToGeoMicrodistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionToGeoRegionEntityMapper
@@ -103,16 +103,17 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGe
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictToGeoRegionDistrictTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewListToGeoRegionDistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictsListToGeoRegionDistrictEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewListToGeoRegionDistrictsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.RegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetMappers
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetToGeoStreetEntityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetToGeoStreetTlEntityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetsListToGeoStreetEntityListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewListToGeoStreetsListMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementsListToGeoRegionsListMapper
@@ -184,8 +185,10 @@ object GeoMappersModule {
     // Regions:
     @Singleton
     @Provides
-    fun provideRegionViewToGeoRegionMapper(): RegionViewToGeoRegionMapper =
-        RegionViewToGeoRegionMapper()
+    fun provideRegionViewToGeoRegionMapper(
+        @ApplicationContext ctx: Context,
+        mapper: CoordinatesToGeoCoordinatesMapper
+    ): RegionViewToGeoRegionMapper = RegionViewToGeoRegionMapper(ctx = ctx, mapper = mapper)
 
     @Singleton
     @Provides
@@ -220,14 +223,12 @@ object GeoMappersModule {
     @Provides
     fun provideGeoRegionMappers(
         regionViewListToGeoRegionsListMapper: RegionViewListToGeoRegionsListMapper,
-        regionViewToGeoRegionMapper: RegionViewToGeoRegionMapper,
         geoRegionViewToGeoRegionMapper: GeoRegionViewToGeoRegionMapper,
         geoRegionsListToGeoRegionEntityListMapper: GeoRegionsListToGeoRegionEntityListMapper,
         geoRegionToGeoRegionEntityMapper: GeoRegionToGeoRegionEntityMapper,
         geoRegionToGeoRegionTlEntityMapper: GeoRegionToGeoRegionTlEntityMapper
     ): GeoRegionMappers = GeoRegionMappers(
         regionViewListToGeoRegionsListMapper,
-        regionViewToGeoRegionMapper,
         geoRegionViewToGeoRegionMapper,
         geoRegionsListToGeoRegionEntityListMapper,
         geoRegionToGeoRegionEntityMapper,
@@ -237,23 +238,31 @@ object GeoMappersModule {
     // RegionDistricts:
     @Singleton
     @Provides
-    fun provideRegionDistrictViewToGeoRegionDistrictMapper(): RegionDistrictViewToGeoRegionDistrictMapper =
-        RegionDistrictViewToGeoRegionDistrictMapper()
+    fun provideRegionDistrictViewToGeoRegionDistrictMapper(mapper: CoordinatesToGeoCoordinatesMapper): RegionDistrictViewToGeoRegionDistrictMapper =
+        RegionDistrictViewToGeoRegionDistrictMapper(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(mapper: RegionViewToGeoRegionMapper): GeoRegionDistrictViewToGeoRegionDistrictMapper =
-        GeoRegionDistrictViewToGeoRegionDistrictMapper(mapper = mapper)
+    fun provideRegionDistrictViewListToGeoRegionDistrictsListMapper(mapper: RegionDistrictViewToGeoRegionDistrictMapper): RegionDistrictViewListToGeoRegionDistrictsListMapper =
+        RegionDistrictViewListToGeoRegionDistrictsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
-    fun provideGeoRegionDistrictViewListToGeoRegionDistrictsListMapper(mapper: GeoRegionDistrictViewToGeoRegionDistrictMapper): GeoRegionDistrictViewListToGeoRegionDistrictsListMapper =
-        GeoRegionDistrictViewListToGeoRegionDistrictsListMapper(mapper = mapper)
+    fun provideGeoRegionDistrictViewToGeoRegionDistrictMapper(
+        countryMapper: GeoCountryViewToGeoCountryMapper,
+        regionMapper: RegionViewToGeoRegionMapper,
+        regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper
+    ): GeoRegionDistrictViewToGeoRegionDistrictMapper =
+        GeoRegionDistrictViewToGeoRegionDistrictMapper(
+            countryMapper = countryMapper,
+            regionMapper = regionMapper,
+            regionDistrictMapper = regionDistrictMapper
+        )
 
     @Singleton
     @Provides
-    fun provideGeoRegionDistrictToGeoRegionDistrictEntityMapper(): GeoRegionDistrictToGeoRegionDistrictEntityMapper =
-        GeoRegionDistrictToGeoRegionDistrictEntityMapper()
+    fun provideGeoRegionDistrictToGeoRegionDistrictEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoRegionDistrictToGeoRegionDistrictEntityMapper =
+        GeoRegionDistrictToGeoRegionDistrictEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -268,13 +277,13 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoRegionDistrictMappers(
-        geoRegionDistrictViewListToGeoRegionDistrictsListMapper: GeoRegionDistrictViewListToGeoRegionDistrictsListMapper,
+        regionDistrictViewListToGeoRegionDistrictsListMapper: RegionDistrictViewListToGeoRegionDistrictsListMapper,
         geoRegionDistrictViewToGeoRegionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
         geoRegionDistrictsListToGeoRegionDistrictEntityListMapper: GeoRegionDistrictsListToGeoRegionDistrictEntityListMapper,
         geoRegionDistrictToGeoRegionDistrictEntityMapper: GeoRegionDistrictToGeoRegionDistrictEntityMapper,
         geoRegionDistrictToGeoRegionDistrictTlEntityMapper: GeoRegionDistrictToGeoRegionDistrictTlEntityMapper
     ): GeoRegionDistrictMappers = GeoRegionDistrictMappers(
-        geoRegionDistrictViewListToGeoRegionDistrictsListMapper,
+        regionDistrictViewListToGeoRegionDistrictsListMapper,
         geoRegionDistrictViewToGeoRegionDistrictMapper,
         geoRegionDistrictsListToGeoRegionDistrictEntityListMapper,
         geoRegionDistrictToGeoRegionDistrictEntityMapper,
@@ -284,29 +293,34 @@ object GeoMappersModule {
     // Localities:
     @Singleton
     @Provides
-    fun provideLocalityViewToGeoLocalityMapper(@ApplicationContext ctx: Context): LocalityViewToGeoLocalityMapper =
-        LocalityViewToGeoLocalityMapper(ctx = ctx)
+    fun provideLocalityViewToGeoLocalityMapper(
+        @ApplicationContext ctx: Context, mapper: CoordinatesToGeoCoordinatesMapper
+    ): LocalityViewToGeoLocalityMapper =
+        LocalityViewToGeoLocalityMapper(ctx = ctx, mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideLocalityViewListToGeoLocalitiesListMapper(mapper: LocalityViewToGeoLocalityMapper): LocalityViewListToGeoLocalitiesListMapper =
+        LocalityViewListToGeoLocalitiesListMapper(mapper = mapper)
 
     @Singleton
     @Provides
     fun provideGeoLocalityViewToGeoLocalityMapper(
+        countryMapper: GeoCountryViewToGeoCountryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper
     ): GeoLocalityViewToGeoLocalityMapper = GeoLocalityViewToGeoLocalityMapper(
-        regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper,
+        countryMapper = countryMapper,
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
         localityMapper = localityMapper
     )
 
     @Singleton
     @Provides
-    fun provideGeoLocalityViewListToGeoLocalitiesListMapper(mapper: GeoLocalityViewToGeoLocalityMapper): GeoLocalityViewListToGeoLocalitiesListMapper =
-        GeoLocalityViewListToGeoLocalitiesListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGeoLocalityToGeoLocalityEntityMapper(): GeoLocalityToGeoLocalityEntityMapper =
-        GeoLocalityToGeoLocalityEntityMapper()
+    fun provideGeoLocalityToGeoLocalityEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoLocalityToGeoLocalityEntityMapper =
+        GeoLocalityToGeoLocalityEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -321,13 +335,13 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoLocalityMappers(
-        geoLocalityViewListToGeoLocalitiesListMapper: GeoLocalityViewListToGeoLocalitiesListMapper,
+        localityViewListToGeoLocalitiesListMapper: LocalityViewListToGeoLocalitiesListMapper,
         geoLocalityViewToGeoLocalityMapper: GeoLocalityViewToGeoLocalityMapper,
         geoLocalitiesListToGeoLocalityEntityListMapper: GeoLocalitiesListToGeoLocalityEntityListMapper,
         geoLocalityToGeoLocalityEntityMapper: GeoLocalityToGeoLocalityEntityMapper,
         geoLocalityToGeoLocalityTlEntityMapper: GeoLocalityToGeoLocalityTlEntityMapper
     ): GeoLocalityMappers = GeoLocalityMappers(
-        geoLocalityViewListToGeoLocalitiesListMapper,
+        localityViewListToGeoLocalitiesListMapper,
         geoLocalityViewToGeoLocalityMapper,
         geoLocalitiesListToGeoLocalityEntityListMapper,
         geoLocalityToGeoLocalityEntityMapper,
@@ -337,31 +351,35 @@ object GeoMappersModule {
     // LocalityDistricts:
     @Singleton
     @Provides
-    fun provideLocalityDistrictViewToGeoLocalityDistrictMapper(): LocalityDistrictViewToGeoLocalityDistrictMapper =
-        LocalityDistrictViewToGeoLocalityDistrictMapper()
+    fun provideLocalityDistrictViewToGeoLocalityDistrictMapper(mapper: CoordinatesToGeoCoordinatesMapper): LocalityDistrictViewToGeoLocalityDistrictMapper =
+        LocalityDistrictViewToGeoLocalityDistrictMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideLocalityDistrictViewListToGeoLocalityDistrictsListMapper(mapper: LocalityDistrictViewToGeoLocalityDistrictMapper): LocalityDistrictViewListToGeoLocalityDistrictsListMapper =
+        LocalityDistrictViewListToGeoLocalityDistrictsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
     fun provideGeoLocalityDistrictViewToGeoLocalityDistrictMapper(
+        countryMapper: GeoCountryViewToGeoCountryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper
     ): GeoLocalityDistrictViewToGeoLocalityDistrictMapper =
         GeoLocalityDistrictViewToGeoLocalityDistrictMapper(
-            regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper,
-            localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper
+            countryMapper = countryMapper,
+            regionMapper = regionMapper,
+            regionDistrictMapper = regionDistrictMapper,
+            localityMapper = localityMapper,
+            localityDistrictMapper = localityDistrictMapper
         )
 
     @Singleton
     @Provides
-    fun provideGeoLocalityDistrictViewListToGeoLocalityDistrictsListMapper(mapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper): GeoLocalityDistrictViewListToGeoLocalityDistrictsListMapper =
-        GeoLocalityDistrictViewListToGeoLocalityDistrictsListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGeoLocalityDistrictToGeoLocalityDistrictEntityMapper(): GeoLocalityDistrictToGeoLocalityDistrictEntityMapper =
-        GeoLocalityDistrictToGeoLocalityDistrictEntityMapper()
+    fun provideGeoLocalityDistrictToGeoLocalityDistrictEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoLocalityDistrictToGeoLocalityDistrictEntityMapper =
+        GeoLocalityDistrictToGeoLocalityDistrictEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -376,13 +394,13 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoLocalityDistrictMappers(
-        geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper: GeoLocalityDistrictViewListToGeoLocalityDistrictsListMapper,
+        localityDistrictViewListToGeoLocalityDistrictsListMapper: LocalityDistrictViewListToGeoLocalityDistrictsListMapper,
         geoLocalityDistrictViewToGeoLocalityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
         geoLocalityDistrictsListToGeoLocalityDistrictEntityListMapper: GeoLocalityDistrictsListToGeoLocalityDistrictEntityListMapper,
         geoLocalityDistrictToGeoLocalityDistrictEntityMapper: GeoLocalityDistrictToGeoLocalityDistrictEntityMapper,
         geoLocalityDistrictToGeoLocalityDistrictTlEntityMapper: GeoLocalityDistrictToGeoLocalityDistrictTlEntityMapper
     ): GeoLocalityDistrictMappers = GeoLocalityDistrictMappers(
-        geoLocalityDistrictViewListToGeoLocalityDistrictsListMapper,
+        localityDistrictViewListToGeoLocalityDistrictsListMapper,
         geoLocalityDistrictViewToGeoLocalityDistrictMapper,
         geoLocalityDistrictsListToGeoLocalityDistrictEntityListMapper,
         geoLocalityDistrictToGeoLocalityDistrictEntityMapper,
@@ -392,33 +410,38 @@ object GeoMappersModule {
     // Microdistricts:
     @Singleton
     @Provides
-    fun provideMicrodistrictViewToGeoMicrodistrictMapper(@ApplicationContext ctx: Context): MicrodistrictViewToGeoMicrodistrictMapper =
-        MicrodistrictViewToGeoMicrodistrictMapper(ctx = ctx)
+    fun provideMicrodistrictViewToGeoMicrodistrictMapper(
+        @ApplicationContext ctx: Context, mapper: CoordinatesToGeoCoordinatesMapper
+    ): MicrodistrictViewToGeoMicrodistrictMapper =
+        MicrodistrictViewToGeoMicrodistrictMapper(ctx = ctx, mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMicrodistrictViewListToGeoMicrodistrictsListMapper(mapper: MicrodistrictViewToGeoMicrodistrictMapper): MicrodistrictViewListToGeoMicrodistrictsListMapper =
+        MicrodistrictViewListToGeoMicrodistrictsListMapper(mapper = mapper)
 
     @Singleton
     @Provides
     fun provideGeoMicrodistrictViewToGeoMicrodistrictMapper(
+        countryMapper: GeoCountryViewToGeoCountryMapper,
         regionMapper: RegionViewToGeoRegionMapper,
         regionDistrictMapper: RegionDistrictViewToGeoRegionDistrictMapper,
         localityMapper: LocalityViewToGeoLocalityMapper,
         localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
         microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
-    ): GeoMicrodistrictViewToGeoMicrodistrictMapper =
-        GeoMicrodistrictViewToGeoMicrodistrictMapper(
-            regionMapper = regionMapper, regionDistrictMapper = regionDistrictMapper,
-            localityMapper = localityMapper, localityDistrictMapper = localityDistrictMapper,
-            microdistrictMapper = microdistrictMapper
-        )
+    ): GeoMicrodistrictViewToGeoMicrodistrictMapper = GeoMicrodistrictViewToGeoMicrodistrictMapper(
+        countryMapper = countryMapper,
+        regionMapper = regionMapper,
+        regionDistrictMapper = regionDistrictMapper,
+        localityMapper = localityMapper,
+        localityDistrictMapper = localityDistrictMapper,
+        microdistrictMapper = microdistrictMapper
+    )
 
     @Singleton
     @Provides
-    fun provideGeoMicrodistrictViewListToGeoMicrodistrictsListMapper(mapper: GeoMicrodistrictViewToGeoMicrodistrictMapper): GeoMicrodistrictViewListToGeoMicrodistrictsListMapper =
-        GeoMicrodistrictViewListToGeoMicrodistrictsListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGeoMicrodistrictToGeoMicrodistrictEntityMapper(): GeoMicrodistrictToGeoMicrodistrictEntityMapper =
-        GeoMicrodistrictToGeoMicrodistrictEntityMapper()
+    fun provideGeoMicrodistrictToGeoMicrodistrictEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoMicrodistrictToGeoMicrodistrictEntityMapper =
+        GeoMicrodistrictToGeoMicrodistrictEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -433,13 +456,13 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoMicrodistrictMappers(
-        geoMicrodistrictViewListToGeoMicrodistrictsListMapper: GeoMicrodistrictViewListToGeoMicrodistrictsListMapper,
+        microdistrictViewListToGeoMicrodistrictsListMapper: MicrodistrictViewListToGeoMicrodistrictsListMapper,
         geoMicrodistrictViewToGeoMicrodistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
         geoMicrodistrictsListToGeoMicrodistrictEntityListMapper: GeoMicrodistrictsListToGeoMicrodistrictEntityListMapper,
         geoMicrodistrictToGeoMicrodistrictEntityMapper: GeoMicrodistrictToGeoMicrodistrictEntityMapper,
         geoMicrodistrictToGeoMicrodistrictTlEntityMapper: GeoMicrodistrictToGeoMicrodistrictTlEntityMapper
     ): GeoMicrodistrictMappers = GeoMicrodistrictMappers(
-        geoMicrodistrictViewListToGeoMicrodistrictsListMapper,
+        microdistrictViewListToGeoMicrodistrictsListMapper,
         geoMicrodistrictViewToGeoMicrodistrictMapper,
         geoMicrodistrictsListToGeoMicrodistrictEntityListMapper,
         geoMicrodistrictToGeoMicrodistrictEntityMapper,
@@ -449,22 +472,28 @@ object GeoMappersModule {
     // Streets:
     @Singleton
     @Provides
+    fun provideStreetViewToGeoStreetMapper(
+        @ApplicationContext ctx: Context, mapper: CoordinatesToGeoCoordinatesMapper
+    ): StreetViewToGeoStreetMapper = StreetViewToGeoStreetMapper(ctx = ctx, mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideStreetViewListToGeoStreetsListMapper(mapper: StreetViewToGeoStreetMapper): StreetViewListToGeoStreetsListMapper =
+        StreetViewListToGeoStreetsListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideGeoStreetViewToGeoStreetMapper(
-        @ApplicationContext ctx: Context,
-        localityMapper: GeoLocalityViewToGeoLocalityMapper
+        localityMapper: GeoLocalityViewToGeoLocalityMapper,
+        streetMapper: StreetViewToGeoStreetMapper
     ): GeoStreetViewToGeoStreetMapper = GeoStreetViewToGeoStreetMapper(
-        ctx = ctx, localityMapper = localityMapper
+        localityMapper = localityMapper, streetMapper = streetMapper
     )
 
     @Singleton
     @Provides
-    fun provideGeoStreetViewListToGeoStreetsListMapper(mapper: GeoStreetViewToGeoStreetMapper): GeoStreetViewListToGeoStreetsListMapper =
-        GeoStreetViewListToGeoStreetsListMapper(mapper = mapper)
-
-    @Singleton
-    @Provides
-    fun provideGeoStreetToGeoStreetEntityMapper(): GeoStreetToGeoStreetEntityMapper =
-        GeoStreetToGeoStreetEntityMapper()
+    fun provideGeoStreetToGeoStreetEntityMapper(mapper: GeoCoordinatesToCoordinatesMapper): GeoStreetToGeoStreetEntityMapper =
+        GeoStreetToGeoStreetEntityMapper(mapper = mapper)
 
     @Singleton
     @Provides
@@ -479,13 +508,13 @@ object GeoMappersModule {
     @Singleton
     @Provides
     fun provideGeoStreetMappers(
-        geoStreetViewListToGeoStreetsListMapper: GeoStreetViewListToGeoStreetsListMapper,
+        streetViewListToGeoStreetsListMapper: StreetViewListToGeoStreetsListMapper,
         geoStreetViewToGeoStreetMapper: GeoStreetViewToGeoStreetMapper,
         geoStreetsListToGeoStreetEntityListMapper: GeoStreetsListToGeoStreetEntityListMapper,
         geoStreetToGeoStreetEntityMapper: GeoStreetToGeoStreetEntityMapper,
         geoStreetToGeoStreetTlEntityMapper: GeoStreetToGeoStreetTlEntityMapper
     ): GeoStreetMappers = GeoStreetMappers(
-        geoStreetViewListToGeoStreetsListMapper,
+        streetViewListToGeoStreetsListMapper,
         geoStreetViewToGeoStreetMapper,
         geoStreetsListToGeoStreetEntityListMapper,
         geoStreetToGeoStreetEntityMapper,

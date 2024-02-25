@@ -10,6 +10,7 @@ import androidx.room.Update
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoLocalityView
+import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -26,8 +27,8 @@ interface GeoLocalityDao {
     fun selectTlEntities(): Flow<List<GeoLocalityTlEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE ${GeoLocalityEntity.PX}localityLocCode = :locale ORDER BY ${GeoLocalityEntity.PX}lRegionsId, ${GeoLocalityEntity.PX}lRegionDistrictsId, ${GeoLocalityEntity.PX}localityName")
-    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GeoLocalityView>>
+    @Query("SELECT * FROM ${LocalityView.VIEW_NAME} WHERE localityLocCode = :locale ORDER BY lRegionsId, lRegionDistrictsId, localityName")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<LocalityView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
@@ -41,22 +42,18 @@ interface GeoLocalityDao {
     fun findDistinctById(localityId: UUID) = findById(localityId).distinctUntilChanged()
 
     //-----------------------------
-    @Query(
-        "SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE ${GeoLocalityEntity.PX}lRegionsId = :regionId AND ${GeoLocalityEntity.PX}localityLocCode = :locale ORDER BY ${GeoLocalityEntity.PX}localityName"
-    )
+    @Query("SELECT * FROM ${LocalityView.VIEW_NAME} WHERE lRegionsId = :regionId AND localityLocCode = :locale ORDER BY localityName")
     fun findByRegionId(regionId: UUID, locale: String? = Locale.getDefault().language):
-            Flow<List<GeoLocalityView>>
+            Flow<List<LocalityView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByRegionId(regionId: UUID) = findByRegionId(regionId).distinctUntilChanged()
 
     //-----------------------------
-    @Query(
-        "SELECT * FROM ${GeoLocalityView.VIEW_NAME} WHERE ${GeoLocalityEntity.PX}lRegionDistrictsId = :regionDistrictId AND ${GeoLocalityEntity.PX}localityLocCode = :locale ORDER BY ${GeoLocalityEntity.PX}localityName"
-    )
+    @Query("SELECT * FROM ${LocalityView.VIEW_NAME} WHERE lRegionDistrictsId = :regionDistrictId AND localityLocCode = :locale ORDER BY localityName")
     fun findByRegionDistrictId(
         regionDistrictId: UUID, locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoLocalityView>>
+    ): Flow<List<LocalityView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByRegionDistrictId(regionDistrictId: UUID) =
@@ -65,16 +62,16 @@ interface GeoLocalityDao {
     //-----------------------------
     @Query(
         """
-       SELECT * FROM ${GeoLocalityView.VIEW_NAME} 
-        WHERE ${GeoLocalityEntity.PX}lRegionsId = :regionId 
-            AND ifnull(${GeoLocalityEntity.PX}lRegionDistrictsId, '') = ifnull(:regionDistrictId, ifnull(${GeoLocalityEntity.PX}lRegionDistrictsId, '')) 
-            AND ${GeoLocalityEntity.PX}localityName LIKE '%' || :localityName || '%'
-        ORDER BY ${GeoLocalityEntity.PX}localityName
+       SELECT * FROM ${LocalityView.VIEW_NAME} 
+        WHERE lRegionsId = :regionId 
+            AND ifnull(lRegionDistrictsId, '') = ifnull(:regionDistrictId, ifnull(lRegionDistrictsId, '')) 
+            AND localityName LIKE '%' || :localityName || '%'
+        ORDER BY localityName
     """
     )
     fun findByLocalityName(
         regionId: UUID, regionDistrictId: UUID? = null, localityName: String
-    ): Flow<List<GeoLocalityView>>
+    ): Flow<List<LocalityView>>
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)

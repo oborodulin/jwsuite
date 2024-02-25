@@ -16,10 +16,7 @@ import java.util.UUID
 
 @Entity(
     tableName = GeoLocalityDistrictEntity.TABLE_NAME,
-    indices = [Index(
-        value = ["ldLocalitiesId", "locDistrictOsmId", "locDistrictShortName"],
-        unique = true
-    )],
+    indices = [Index(value = ["ldLocalitiesId", "locDistrictShortName"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = GeoLocalityEntity::class,
         parentColumns = arrayOf("localityId"),
@@ -33,8 +30,9 @@ data class GeoLocalityDistrictEntity(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val localityDistrictId: UUID = UUID.randomUUID(),
     val locDistrictShortName: String,
+    val locDistrictGeocode: String? = null,
     @ColumnInfo(index = true) val locDistrictOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates,
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val ldLocalitiesId: UUID,
 ) : BaseEntity() {
@@ -47,11 +45,11 @@ data class GeoLocalityDistrictEntity(
 
         fun defaultLocalityDistrict(
             localityDistrictId: UUID = UUID.randomUUID(), localityId: UUID = UUID.randomUUID(),
-            districtShortName: String,
-            locDistrictOsmId: Long? = null, coordinates: Coordinates? = null
+            districtShortName: String, locDistrictGeocode: String? = null,
+            locDistrictOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = GeoLocalityDistrictEntity(
             ldLocalitiesId = localityId, localityDistrictId = localityDistrictId,
-            locDistrictShortName = districtShortName,
+            locDistrictShortName = districtShortName, locDistrictGeocode = locDistrictGeocode,
             locDistrictOsmId = locDistrictOsmId, coordinates = coordinates
         )
 
@@ -80,7 +78,6 @@ data class GeoLocalityDistrictEntity(
 
     override fun key(): Int {
         var result = ldLocalitiesId.hashCode()
-        result = result * 31 + locDistrictOsmId.hashCode()
         result = result * 31 + locDistrictShortName.hashCode()
         return result
     }
@@ -89,6 +86,7 @@ data class GeoLocalityDistrictEntity(
         val str = StringBuffer()
         str.append("Locality District Entity '").append(locDistrictShortName)
             .append("'. OSM: locDistrictOsmId = ").append(locDistrictOsmId)
+            .append("; locDistrictGeocode = ").append(locDistrictGeocode)
             .append("; coordinates = ").append(coordinates)
             .append(" [ldLocalitiesId = ").append(ldLocalitiesId)
             .append("] localityDistrictId = ").append(localityDistrictId)
