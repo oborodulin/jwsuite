@@ -57,12 +57,12 @@ class TerritoriesHandOutViewToTerritoryMapper(
             return Territory(
                 congregation = congregationMapper.map(this.congregation),
                 territoryCategory = territoryCategoryMapper.map(this.territoryCategory),
-                locality = localityMapper.map(this.tLocality, region, regionDistrict),
+                locality = localityMapper.map(this.locality, region, regionDistrict),
                 localityDistrict = localityDistrictMapper.nullableMap(
-                    this.tLocalityDistrict, ldLocality
+                    this.localityDistrict, ldLocality
                 ),
                 microdistrict = microdistrictMapper.nullableMap(
-                    this.tMicrodistrict, mLocality, mLocalityDistrict
+                    this.microdistrict, mLocality, mLocalityDistrict
                 ),
                 territoryNum = this.territory.territoryNum,
                 isBusiness = this.territory.isBusinessTerritory,

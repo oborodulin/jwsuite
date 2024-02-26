@@ -5,5 +5,5 @@ import java.util.UUID
 
 sealed class RegionUiAction(override val isEmitJob: Boolean = true) : UiAction {
     data class Load(val regionId: UUID? = null) : RegionUiAction()
-    object Save : RegionUiAction()
+    data object Save : RegionUiAction()
 }

@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_territory.local.db.mappers.house
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.ConstructedMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.CoordinatesToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
@@ -9,7 +10,10 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.model.territory.House
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 
-class HouseEntityToHouseMapper(private val ctx: Context) : ConstructedMapper<HouseEntity, House> {
+class HouseEntityToHouseMapper(
+    private val ctx: Context,
+    private val mapper: CoordinatesToGeoCoordinatesMapper
+) : ConstructedMapper<HouseEntity, House> {
     override fun map(input: HouseEntity, vararg properties: Any?): House {
         if (properties.isEmpty() ||
             properties[0] !is GeoStreet || (properties[1] != null && properties[1] !is GeoLocalityDistrict) ||
@@ -41,7 +45,9 @@ class HouseEntityToHouseMapper(private val ctx: Context) : ConstructedMapper<Hou
             isForeignLanguage = input.isForeignLangHouse,
             isPrivateSector = input.isHousePrivateSector,
             buildingType = input.buildingType,
-            houseDesc = input.houseDesc
+            houseDesc = input.houseDesc,
+            houseOsmId = input.houseOsmId,
+            coordinates = mapper.map(input.coordinates)
         ).also { it.id = input.houseId }
     }
 }

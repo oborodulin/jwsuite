@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoStreetDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoStreetDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -22,23 +22,27 @@ class LocalGeoStreetDataSourceImpl @Inject constructor(
     private val streetDao: GeoStreetDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoStreetDataSource {
-    override fun getAllStreets() = streetDao.findAll()
+    override fun getAllStreets() = streetDao.findDistinctAll()
     override fun getLocalityStreets(localityId: UUID, isPrivateSector: Boolean?) =
-        streetDao.findByLocalityIdAndPrivateSectorMark(localityId, isPrivateSector)
+        streetDao.findDistinctByLocalityIdAndPrivateSectorMark(localityId, isPrivateSector)
 
     override fun getLocalityDistrictStreets(localityDistrictId: UUID, isPrivateSector: Boolean?) =
-        streetDao.findByLocalityDistrictIdAndPrivateSectorMark(localityDistrictId, isPrivateSector)
+        streetDao.findDistinctByLocalityDistrictIdAndPrivateSectorMark(
+            localityDistrictId, isPrivateSector
+        )
 
     override fun getMicrodistrictStreets(microdistrictId: UUID, isPrivateSector: Boolean?) =
-        streetDao.findByMicrodistrictIdAndPrivateSectorMark(microdistrictId, isPrivateSector)
+        streetDao.findDistinctByMicrodistrictIdAndPrivateSectorMark(
+            microdistrictId, isPrivateSector
+        )
 
     override fun getStreetsForTerritory(
         localityId: UUID, localityDistrictId: UUID?, microdistrictId: UUID?, excludes: List<UUID>
-    ) = streetDao.findByLocalityIdAndLocalityDistrictIdAndMicrodistrictIdWithExcludes(
+    ) = streetDao.findDistinctByLocalityIdAndLocalityDistrictIdAndMicrodistrictIdWithExcludes(
         localityId, localityDistrictId, microdistrictId, excludes
     )
 
-    override fun getStreet(streetId: UUID) = streetDao.findDistinctById(streetId)
+    override fun getStreet(streetId: UUID) = streetDao.findById(streetId)
     override suspend fun insertStreet(street: GeoStreetEntity, textContent: GeoStreetTlEntity) =
         withContext(dispatcher) {
             streetDao.insert(street, textContent)

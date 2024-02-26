@@ -25,15 +25,14 @@ import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryLocationVie
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryMemberView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryTotalView
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
-import com.oborodulin.jwsuite.data_territory.util.Constants.PX_TERRITORY_LOCALITY
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_ALL_VAL
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_DISTRICT_VAL
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_VAL
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_MICRO_DISTRICT_VAL
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FRACT_SEC_TIME
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_ALL_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_LOCALITY_DISTRICT_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_LOCALITY_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_MICRO_DISTRICT_VAL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -82,7 +81,7 @@ interface TerritoryDao {
     ): Flow<List<TerritoryMemberCrossRefEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${PX_TERRITORY_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryCategoryMark, territoryNum")
+    @Query("SELECT * FROM ${TerritoryView.VIEW_NAME} WHERE ${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale ORDER BY tCongregationsId, territoryCategoryMark, territoryNum")
     fun findAll(locale: String? = Locale.getDefault().language): Flow<List<TerritoryView>>
 
     @ExperimentalCoroutinesApi
@@ -106,7 +105,7 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct ON ct.ctTerritoriesId = t.territoryId 
-    WHERE ct.ctCongregationsId = :congregationId AND t.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+    WHERE ct.ctCongregationsId = :congregationId AND t.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale
     ORDER BY t.territoryCategoryMark, t.territoryNum
         """
     )
@@ -123,7 +122,7 @@ interface TerritoryDao {
     @Query(
         """
     SELECT t.* FROM ${TerritoryView.VIEW_NAME} t JOIN ${CongregationTerritoryCrossRefEntity.TABLE_NAME} ct 
-            ON ct.ctTerritoriesId = t.territoryId  AND t.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+            ON ct.ctTerritoriesId = t.territoryId  AND t.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale
         JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = ct.ctCongregationsId
     ORDER BY t.territoryCategoryMark, t.territoryNum            
         """
@@ -179,7 +178,7 @@ interface TerritoryDao {
     SELECT t.* FROM ${TerritoriesHandOutView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
     WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) 
         AND ifnull(t.isPrivateSector, $DB_FALSE) = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
-        AND t.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+        AND t.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale
         AND ((:territoryLocationType = $TDT_ALL_VAL) OR
             (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
@@ -200,7 +199,7 @@ interface TerritoryDao {
     SELECT t.* FROM ${TerritoriesAtWorkView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
     WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId) 
         AND ifnull(t.isPrivateSector, $DB_FALSE) = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
-        AND t.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+        AND t.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale
         AND ((:territoryLocationType = $TDT_ALL_VAL) OR
             (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
@@ -221,7 +220,7 @@ interface TerritoryDao {
     SELECT t.* FROM ${TerritoriesIdleView.VIEW_NAME} t LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = t.tCongregationsId
     WHERE t.ctCongregationsId = ifnull(:congregationId, fcv.congregationId)
         AND ifnull(t.isPrivateSector, $DB_FALSE) = (CASE WHEN ifnull(:isPrivateSector, $DB_FALSE) = $DB_TRUE THEN $DB_TRUE ELSE ifnull(t.isPrivateSector, $DB_FALSE) END) 
-        AND t.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+        AND t.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale
         AND ((:territoryLocationType = $TDT_ALL_VAL) OR
             (:territoryLocationType = $TDT_LOCALITY_VAL AND t.tLocalitiesId = :locationId AND t.tLocalityDistrictsId IS NULL AND t.tMicrodistrictsId IS NULL) OR
             (:territoryLocationType = $TDT_LOCALITY_DISTRICT_VAL AND t.tLocalityDistrictsId = :locationId AND t.tMicrodistrictsId IS NULL) OR
@@ -241,7 +240,7 @@ interface TerritoryDao {
     @Query(
         """
     SELECT tv.* FROM ${TerritoryView.VIEW_NAME} tv 
-    WHERE tv.${PX_TERRITORY_LOCALITY}localityLocCode = :locale 
+    WHERE tv.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale 
         AND ifnull(tv.tMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(tv.tMicrodistrictsId, '')) 
         AND ifnull(tv.tLocalityDistrictsId, '') = ifnull(:localityDistrictId, ifnull(tv.tLocalityDistrictsId, ''))
         AND tv.tLocalitiesId = :localityId
@@ -264,7 +263,7 @@ interface TerritoryDao {
     @Query(
         """
     SELECT tv.* FROM ${TerritoryView.VIEW_NAME} tv JOIN ${HouseEntity.TABLE_NAME} h 
-            ON h.houseId = :houseId AND tv.${PX_TERRITORY_LOCALITY}localityLocCode = :locale
+            ON h.houseId = :houseId AND tv.${TerritoryEntity.PX_LOCALITY}localityLocCode = :locale
                 AND ifnull(tv.tMicrodistrictsId, '') = ifnull(h.hMicrodistrictsId, ifnull(tv.tMicrodistrictsId, '')) 
                 AND ifnull(tv.tLocalityDistrictsId, '') = ifnull(h.hLocalityDistrictsId, ifnull(tv.tLocalityDistrictsId, ''))
         JOIN ${GeoStreetView.VIEW_NAME} sv ON sv.streetId = h.hStreetsId AND sv.sLocalitiesId = tv.tLocalitiesId AND sv.streetLocCode = :locale

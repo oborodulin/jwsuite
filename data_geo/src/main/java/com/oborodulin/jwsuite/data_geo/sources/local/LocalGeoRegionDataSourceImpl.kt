@@ -4,7 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDao
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoRegionDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -21,7 +21,7 @@ class LocalGeoRegionDataSourceImpl @Inject constructor(
 ) : LocalGeoRegionDataSource {
     override fun getRegions() = regionDao.findDistinctAll()
     override fun getCountryRegions(countryId: UUID) = regionDao.findDistinctByCountryId(countryId)
-    override fun getRegion(regionId: UUID) = regionDao.findDistinctById(regionId)
+    override fun getRegion(regionId: UUID) = regionDao.findById(regionId)
     //override fun getFavoriteCongregationRegion() = regionDao.findByFavoriteCongregation()
 
     override suspend fun insertRegion(region: GeoRegionEntity, textContent: GeoRegionTlEntity) =

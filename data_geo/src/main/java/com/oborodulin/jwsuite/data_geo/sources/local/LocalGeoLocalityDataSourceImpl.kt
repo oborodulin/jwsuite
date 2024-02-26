@@ -4,7 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDao
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLocalityDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoLocalityDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -19,12 +19,12 @@ class LocalGeoLocalityDataSourceImpl @Inject constructor(
     private val localityDao: GeoLocalityDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoLocalityDataSource {
-    override fun getAllLocalities() = localityDao.findAll()
-    override fun getRegionLocalities(regionId: UUID) = localityDao.findByRegionId(regionId)
+    override fun getAllLocalities() = localityDao.findDistinctAll()
+    override fun getRegionLocalities(regionId: UUID) = localityDao.findDistinctByRegionId(regionId)
     override fun getRegionDistrictLocalities(regionDistrictId: UUID) =
-        localityDao.findByRegionDistrictId(regionDistrictId)
+        localityDao.findDistinctByRegionDistrictId(regionDistrictId)
 
-    override fun getLocality(localityId: UUID) = localityDao.findDistinctById(localityId)
+    override fun getLocality(localityId: UUID) = localityDao.findById(localityId)
     override suspend fun insertLocality(
         locality: GeoLocalityEntity, textContent: GeoLocalityTlEntity
     ) = withContext(dispatcher) { localityDao.insert(locality, textContent) }

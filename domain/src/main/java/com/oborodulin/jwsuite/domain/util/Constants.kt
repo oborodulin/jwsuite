@@ -58,4 +58,10 @@ object Constants {
     const val TOT_MEMBERS_VAL = "'MEMBERS'"
     const val TOT_TERRITORIES_VAL = "'TERRITORIES'"
     const val TOT_BILLS_VAL = "'BILLS'"
+
+    // TerritoryLocationType:
+    const val TDT_ALL_VAL = "'ALL'"
+    const val TDT_LOCALITY_VAL = "'LOCALITY'"
+    const val TDT_LOCALITY_DISTRICT_VAL = "'LOCALITY_DISTRICT'"
+    const val TDT_MICRO_DISTRICT_VAL = "'MICRO_DISTRICT'"
 }

@@ -114,7 +114,11 @@ import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetViewT
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetsListToGeoStreetEntityListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewToGeoStreetMapper
-import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToCoordinatesMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.GeometryToGeoCoordinatesMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.CountryElementToGeoCountryMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.CountryElementsListToGeoCountriesListMapper
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.GeoCountryApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.GeoRegionApiMappers
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementToGeoRegionMapper
 import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.RegionElementsListToGeoRegionsListMapper
 import com.oborodulin.jwsuite.domain.usecases.*
@@ -917,17 +921,40 @@ object GeoMappersModule {
     // ------------------------------------------- API: -------------------------------------------
     @Singleton
     @Provides
-    fun provideGeometryToCoordinatesMapper(): GeometryToCoordinatesMapper =
-        GeometryToCoordinatesMapper()
+    fun provideGeometryToGeoCoordinatesMapper(): GeometryToGeoCoordinatesMapper =
+        GeometryToGeoCoordinatesMapper()
+
+    // CountryElement
+    @Singleton
+    @Provides
+    fun provideCountryElementToGeoCountryMapper(mapper: GeometryToGeoCoordinatesMapper): CountryElementToGeoCountryMapper =
+        CountryElementToGeoCountryMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideCountryElementsListToGeoCountriesListMapper(mapper: CountryElementToGeoCountryMapper): CountryElementsListToGeoCountriesListMapper =
+        CountryElementsListToGeoCountriesListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoCountryApiMappers(
+        countryElementsListToGeoCountriesListMapper: CountryElementsListToGeoCountriesListMapper
+    ): GeoCountryApiMappers = GeoCountryApiMappers(countryElementsListToGeoCountriesListMapper)
 
     // RegionElement
     @Singleton
     @Provides
-    fun provideRegionElementToGeoRegionMapper(): RegionElementToGeoRegionMapper =
-        RegionElementToGeoRegionMapper()
+    fun provideRegionElementToGeoRegionMapper(mapper: GeometryToGeoCoordinatesMapper): RegionElementToGeoRegionMapper =
+        RegionElementToGeoRegionMapper(mapper = mapper)
 
     @Singleton
     @Provides
     fun provideRegionElementsListToGeoRegionsListMapper(mapper: RegionElementToGeoRegionMapper): RegionElementsListToGeoRegionsListMapper =
         RegionElementsListToGeoRegionsListMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideGeoRegionApiMappers(
+        regionElementsListToGeoRegionsListMapper: RegionElementsListToGeoRegionsListMapper
+    ): GeoRegionApiMappers = GeoRegionApiMappers(regionElementsListToGeoRegionsListMapper)
 }

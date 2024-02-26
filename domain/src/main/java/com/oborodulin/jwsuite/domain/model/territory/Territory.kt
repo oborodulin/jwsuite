@@ -35,7 +35,7 @@ data class Territory(
 ) : DomainModel() {
     val cardNum =
         "${congregation.territoryMark}${territoryCategory.territoryCategoryMark}-$territoryNum".plus(
-            if (isBusiness) "-$territoryBusinessMark" else ""
+            "-$territoryBusinessMark".takeIf { isBusiness }.orEmpty()
         )
     val cardLocation =
         "[".plus(if (locality.id != congregation.locality.id) "${locality.localityShortName}:" else "")

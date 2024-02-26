@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTimeOrNull
 import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.extensions.toShortFormatString

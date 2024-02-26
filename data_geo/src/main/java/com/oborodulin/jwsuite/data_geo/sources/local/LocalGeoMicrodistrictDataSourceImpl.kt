@@ -4,7 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoMicrodistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoMicrodistrictDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoMicrodistrictDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -19,19 +19,21 @@ class LocalGeoMicrodistrictDataSourceImpl @Inject constructor(
     private val microdistrictDao: GeoMicrodistrictDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoMicrodistrictDataSource {
-    override fun getAllMicrodistricts() = microdistrictDao.findAll()
+    override fun getAllMicrodistricts() = microdistrictDao.findDistinctAll()
     override fun getLocalityMicrodistricts(localityId: UUID) =
-        microdistrictDao.findByLocalityId(localityId)
+        microdistrictDao.findDistinctByLocalityId(localityId)
 
     override fun getLocalityDistrictMicrodistricts(localityDistrictId: UUID) =
-        microdistrictDao.findByLocalityDistrictId(localityDistrictId)
+        microdistrictDao.findDistinctByLocalityDistrictId(localityDistrictId)
 
-    override fun getStreetMicrodistricts(streetId: UUID) = microdistrictDao.findByStreetId(streetId)
+    override fun getStreetMicrodistricts(streetId: UUID) =
+        microdistrictDao.findDistinctByStreetId(streetId)
+
     override fun getMicrodistrictsForStreet(streetId: UUID) =
         microdistrictDao.findForStreetByStreetId(streetId)
 
     override fun getMicrodistrict(microdistrictId: UUID) =
-        microdistrictDao.findDistinctById(microdistrictId)
+        microdistrictDao.findById(microdistrictId)
 
     override suspend fun insertMicrodistrict(
         microdistrict: GeoMicrodistrictEntity, textContent: GeoMicrodistrictTlEntity

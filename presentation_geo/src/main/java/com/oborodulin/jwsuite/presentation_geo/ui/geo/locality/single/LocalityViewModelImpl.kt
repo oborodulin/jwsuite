@@ -5,7 +5,7 @@ import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -112,16 +112,12 @@ class LocalityViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(LocalityUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalityUiAction.Load -> when (action.localityId) {
-                null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_new_subheader)
-                    submitState(UiState.Success(LocalityUi()))
+            is LocalityUiAction.Load -> {
+                when (action.localityId) {
+                    null -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_new_subheader)
+                    else -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_subheader)
                 }
-
-                else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_subheader)
-                    loadLocality(action.localityId)
-                }
+                loadLocality(action.localityId)
             }
 
             is LocalityUiAction.Save -> saveLocality()
@@ -129,8 +125,8 @@ class LocalityViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadLocality(localityId: UUID): Job {
-        Timber.tag(TAG).d("loadLocality(UUID) called: localityId = %s", localityId)
+    private fun loadLocality(localityId: UUID? = null): Job {
+        Timber.tag(TAG).d("loadLocality(UUID?) called: localityId = %s", localityId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getLocalityUseCase.execute(GetLocalityUseCase.Request(localityId))
                 .map {

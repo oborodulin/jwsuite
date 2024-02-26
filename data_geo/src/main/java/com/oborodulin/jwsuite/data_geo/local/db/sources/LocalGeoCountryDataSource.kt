@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_geo.local.db.repositories.sources
+package com.oborodulin.jwsuite.data_geo.local.db.sources
 
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
@@ -8,6 +8,7 @@ import java.util.UUID
 
 interface LocalGeoCountryDataSource {
     fun getCountries(): Flow<List<GeoCountryView>>
+    fun getDefaultCountry(): Flow<GeoCountryView?>
     fun getCountry(countryId: UUID): Flow<GeoCountryView>
     suspend fun insertCountry(country: GeoCountryEntity, textContent: GeoCountryTlEntity)
     suspend fun updateCountry(country: GeoCountryEntity, textContent: GeoCountryTlEntity)

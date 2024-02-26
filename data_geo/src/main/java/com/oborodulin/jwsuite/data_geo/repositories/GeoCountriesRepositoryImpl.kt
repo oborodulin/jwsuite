@@ -1,10 +1,14 @@
-package com.oborodulin.jwsuite.data_geo.local.db.repositories
+package com.oborodulin.jwsuite.data_geo.repositories
 
+import com.oborodulin.home.common.data.network.NetworkBoundResult
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geocountry.GeoCountryCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geocountry.GeoCountryMappers
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoCountryDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoCountryDataSource
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.geocountry.GeoCountryApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.country.CountryApiModel
+import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoCountryDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoCountry
 import com.oborodulin.jwsuite.domain.repositories.GeoCountriesRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
@@ -18,11 +22,28 @@ import javax.inject.Inject
 
 class GeoCountriesRepositoryImpl @Inject constructor(
     private val localCountryDataSource: LocalGeoCountryDataSource,
+    private val remoteCountryDataSource: RemoteGeoCountryDataSource,
     private val domainMappers: GeoCountryMappers,
+    private val apiMappers: GeoCountryApiMappers,
     private val csvMappers: GeoCountryCsvMappers
 ) : GeoCountriesRepository {
-    override fun getAll() = localCountryDataSource.getCountries()
-        .map(domainMappers.geoCountryViewListToGeoCountriesListMapper::map)
+    override fun getAll(isRemote: Boolean) =
+        object : NetworkBoundResult<List<GeoCountry>, CountryApiModel>(isRemote) {
+            override fun loadFromDB() = localCountryDataSource.getCountries()
+                .map(domainMappers.geoCountryViewListToGeoCountriesListMapper::map)
+
+            override fun shouldFetch(data: List<GeoCountry>?) = data.isNullOrEmpty()
+            override suspend fun createCall() = remoteCountryDataSource.getCountries()
+            override suspend fun saveCallResult(data: CountryApiModel) {
+                apiMappers.countryElementsListToGeoCountriesListMapper.map(data.elements)
+                    .forEach {
+                        save(it)
+                    }
+            }
+        }.asFlow()
+
+    override fun getDefault() = localCountryDataSource.getDefaultCountry()
+        .map(domainMappers.geoCountryViewToGeoCountryMapper::nullableMap)
 
     override fun get(countryId: UUID) = localCountryDataSource.getCountry(countryId)
         .map(domainMappers.geoCountryViewToGeoCountryMapper::map)
@@ -44,9 +65,7 @@ class GeoCountriesRepositoryImpl @Inject constructor(
 
     override fun delete(country: GeoCountry) = flow {
         localCountryDataSource.deleteCountry(
-            domainMappers.geoCountryToGeoCountryEntityMapper.map(
-                country
-            )
+            domainMappers.geoCountryToGeoCountryEntityMapper.map(country)
         )
         this.emit(country)
     }

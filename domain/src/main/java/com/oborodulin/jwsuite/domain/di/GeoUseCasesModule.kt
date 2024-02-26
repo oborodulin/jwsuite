@@ -83,8 +83,10 @@ object GeoUseCasesModule {
     @Singleton
     @Provides
     fun provideGetRegionUseCase(
-        configuration: UseCase.Configuration, regionsRepository: GeoRegionsRepository
-    ): GetRegionUseCase = GetRegionUseCase(configuration, regionsRepository)
+        configuration: UseCase.Configuration,
+        countriesRepository: GeoCountriesRepository,
+        regionsRepository: GeoRegionsRepository
+    ): GetRegionUseCase = GetRegionUseCase(configuration, countriesRepository, regionsRepository)
 
     @Singleton
     @Provides
@@ -109,8 +111,10 @@ object GeoUseCasesModule {
     @Provides
     fun provideGetRegionDistrictUseCase(
         configuration: UseCase.Configuration,
+        countriesRepository: GeoCountriesRepository,
         regionDistrictsRepository: GeoRegionDistrictsRepository
-    ): GetRegionDistrictUseCase = GetRegionDistrictUseCase(configuration, regionDistrictsRepository)
+    ): GetRegionDistrictUseCase =
+        GetRegionDistrictUseCase(configuration, countriesRepository, regionDistrictsRepository)
 
     @Singleton
     @Provides
@@ -146,8 +150,11 @@ object GeoUseCasesModule {
     @Singleton
     @Provides
     fun provideGetLocalityUseCase(
-        configuration: UseCase.Configuration, localitiesRepository: GeoLocalitiesRepository
-    ): GetLocalityUseCase = GetLocalityUseCase(configuration, localitiesRepository)
+        configuration: UseCase.Configuration,
+        countriesRepository: GeoCountriesRepository,
+        localitiesRepository: GeoLocalitiesRepository
+    ): GetLocalityUseCase =
+        GetLocalityUseCase(configuration, countriesRepository, localitiesRepository)
 
     @Singleton
     @Provides
@@ -172,9 +179,10 @@ object GeoUseCasesModule {
     @Provides
     fun provideGetLocalityDistrictUseCase(
         configuration: UseCase.Configuration,
+        countriesRepository: GeoCountriesRepository,
         regionDistrictsRepository: GeoLocalityDistrictsRepository
     ): GetLocalityDistrictUseCase =
-        GetLocalityDistrictUseCase(configuration, regionDistrictsRepository)
+        GetLocalityDistrictUseCase(configuration, countriesRepository, regionDistrictsRepository)
 
     @Singleton
     @Provides
@@ -204,8 +212,11 @@ object GeoUseCasesModule {
     @Singleton
     @Provides
     fun provideGetMicrodistrictUseCase(
-        configuration: UseCase.Configuration, microdistrictsRepository: GeoMicrodistrictsRepository
-    ): GetMicrodistrictUseCase = GetMicrodistrictUseCase(configuration, microdistrictsRepository)
+        configuration: UseCase.Configuration,
+        countriesRepository: GeoCountriesRepository,
+        microdistrictsRepository: GeoMicrodistrictsRepository
+    ): GetMicrodistrictUseCase =
+        GetMicrodistrictUseCase(configuration, countriesRepository, microdistrictsRepository)
 
     @Singleton
     @Provides
@@ -230,8 +241,10 @@ object GeoUseCasesModule {
     @Singleton
     @Provides
     fun provideGetStreetUseCase(
-        configuration: UseCase.Configuration, streetsRepository: GeoStreetsRepository
-    ): GetStreetUseCase = GetStreetUseCase(configuration, streetsRepository)
+        configuration: UseCase.Configuration,
+        countriesRepository: GeoCountriesRepository,
+        streetsRepository: GeoStreetsRepository
+    ): GetStreetUseCase = GetStreetUseCase(configuration, countriesRepository, streetsRepository)
 
     @Singleton
     @Provides

@@ -1,7 +1,7 @@
 package com.oborodulin.home.common.ui.state
 
 import com.oborodulin.home.common.BuildConfig
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 
 abstract class CommonResultConverter<T : Any, R : Any> {
 

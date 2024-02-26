@@ -19,7 +19,7 @@ import java.util.UUID
 @Entity(
     tableName = HouseEntity.TABLE_NAME,
     indices = [Index(
-        value = ["hStreetsId", "houseOsmId", "zipCode", "houseNum", "houseLetter", "buildingNum"],
+        value = ["hStreetsId", "zipCode", "houseNum", "houseLetter", "buildingNum"],
         unique = true
     )],
     foreignKeys = [ForeignKey(
@@ -66,7 +66,7 @@ data class HouseEntity(
     val isHousePrivateSector: Boolean = false,
     val houseDesc: String? = null,
     @ColumnInfo(index = true) val houseOsmId: Long? = null,
-    @Embedded(prefix = PREFIX) val coordinates: Coordinates? = null,
+    @Embedded(prefix = PREFIX) val coordinates: Coordinates = Coordinates(),
     @Serializable(with = UUIDSerializer::class)
     @ColumnInfo(index = true) val hTerritoriesId: UUID? = null,
     @Serializable(with = UUIDSerializer::class)
@@ -81,6 +81,26 @@ data class HouseEntity(
         const val TABLE_NAME = "houses"
         const val PREFIX = "house_"
 
+        // Regions:
+        const val PX_LD_REGION = "hlr_"
+        const val PX_M_REGION = "hmr_"
+
+        // Region Districts:
+        const val PX_LD_REGION_DISTRICT = "hlrd_"
+        const val PX_M_REGION_DISTRICT = "hmrd_"
+
+        // Localities:
+        const val PX_LOCALITY = "hl_"
+        const val PX_LD_LOCALITY = "hll_"
+        const val PX_M_LOCALITY = "hml_"
+
+        // Locality Districts:
+        const val PX_LD_LOCALITY_DISTRICT = "hlld_"
+        const val PX_M_LOCALITY_DISTRICT = "hmld_"
+
+        // Microdistricts:
+        const val PX_MICRODISTRICT = "hm_"
+
         fun defaultHouse(
             streetId: UUID = UUID.randomUUID(), microdistrictId: UUID? = null,
             localityDistrictId: UUID? = null, houseId: UUID = UUID.randomUUID(),
@@ -90,7 +110,7 @@ data class HouseEntity(
             estimatedRooms: Int? = null, isForeignLanguage: Boolean = false,
             isPrivateSector: Boolean = false, buildingType: BuildingType = BuildingType.HOUSE,
             territoryDesc: String? = null,
-            houseOsmId: Long? = null, coordinates: Coordinates? = null
+            houseOsmId: Long? = null, coordinates: Coordinates = Coordinates()
         ) = HouseEntity(
             hStreetsId = streetId, hLocalityDistrictsId = localityDistrictId,
             hMicrodistrictsId = microdistrictId,
@@ -104,14 +124,12 @@ data class HouseEntity(
             buildingType = buildingType, houseDesc = territoryDesc,
             houseOsmId = houseOsmId, coordinates = coordinates
         )
-
     }
 
     override fun id() = this.houseId
 
     override fun key(): Int {
         var result = hStreetsId.hashCode()
-        result = result * 31 + houseOsmId.hashCode()
         result = result * 31 + houseNum.hashCode()
         result = result * 31 + zipCode.hashCode()
         result = result * 31 + houseLetter.hashCode()

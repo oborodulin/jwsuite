@@ -1,10 +1,10 @@
-package com.oborodulin.jwsuite.data_geo.local.db.repositories
+package com.oborodulin.jwsuite.data_geo.repositories
 
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegiondistrict.GeoRegionDistrictCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictMappers
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDistrictDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoRegionDistrictDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegionDistrict
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionDistrictsRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract

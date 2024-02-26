@@ -4,7 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoCountryDao
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoCountryDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoCountryDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -20,6 +20,7 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoCountryDataSource {
     override fun getCountries() = countryDao.findDistinctAll()
+    override fun getDefaultCountry() = countryDao.findByDefaultLocale()
     override fun getCountry(countryId: UUID) = countryDao.findDistinctById(countryId)
     override suspend fun insertCountry(country: GeoCountryEntity, textContent: GeoCountryTlEntity) =
         withContext(dispatcher) {

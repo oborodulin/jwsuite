@@ -4,6 +4,7 @@ import com.oborodulin.home.common.extensions.toIntHouseNum
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.BuildingType
+import com.oborodulin.jwsuite.presentation_geo.ui.model.CoordinatesUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
@@ -29,6 +30,8 @@ data class HouseUi(
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
     val houseDesc: String? = null,
+    val houseOsmId: Long? = null,
+    val coordinates: CoordinatesUi = CoordinatesUi(),
     val houseFullNum: String = "",
     val calculatedRooms: Int? = null
 ) : ModelUi()

@@ -5,7 +5,7 @@ import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -113,16 +113,12 @@ class MicrodistrictViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(MicrodistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is MicrodistrictUiAction.Load -> when (action.microdistrictId) {
-                null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.microdistrict_new_subheader)
-                    submitState(UiState.Success(MicrodistrictUi()))
+            is MicrodistrictUiAction.Load -> {
+                when (action.microdistrictId) {
+                    null -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.microdistrict_new_subheader)
+                    else -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.microdistrict_subheader)
                 }
-
-                else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.microdistrict_subheader)
-                    loadMicrodistrict(action.microdistrictId)
-                }
+                loadMicrodistrict(action.microdistrictId)
             }
 
             is MicrodistrictUiAction.Save -> saveMicrodistrict()
@@ -130,8 +126,8 @@ class MicrodistrictViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadMicrodistrict(microdistrictId: UUID): Job {
-        Timber.tag(TAG).d("loadMicrodistrict(UUID) called: %s", microdistrictId)
+    private fun loadMicrodistrict(microdistrictId: UUID? = null): Job {
+        Timber.tag(TAG).d("loadMicrodistrict(UUID?) called: microdistrictId = %s", microdistrictId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getMicrodistrictUseCase.execute(GetMicrodistrictUseCase.Request(microdistrictId))
                 .map {

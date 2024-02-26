@@ -11,14 +11,14 @@ data class GeoStreet(
     var locality: GeoLocality? = null,
     //val localityDistrict: GeoLocalityDistrict?,
     //val microdistrict: GeoMicrodistrict?,
-    val streetHashCode: Int,
+    val streetHashCode: Int = 0,
     val roadType: RoadType = RoadType.STREET,
     val isPrivateSector: Boolean = false,
     val estimatedHouses: Int? = null,
     val streetGeocode: String? = null,
     val streetOsmId: Long? = null,
     val coordinates: GeoCoordinates = GeoCoordinates(),
-    val streetName: String,
+    val streetName: String = "",
     val houses: List<House> = emptyList()
 ) : DomainModel() {
     val streetFullName = "${
@@ -34,4 +34,9 @@ data class GeoStreet(
     val info = listOfNotNull(isPrivateSectorInfo, estHousesInfo)
     val streetInfo =
         ("$streetFullName ".plus(if (info.isNotEmpty()) "(${info.joinToString(", ")})" else "")).trim()
+
+    companion object {
+        fun default(locality: GeoLocality? = null, country: GeoCountry? = null) =
+            GeoStreet(locality = locality ?: GeoLocality.default(country))
+    }
 }

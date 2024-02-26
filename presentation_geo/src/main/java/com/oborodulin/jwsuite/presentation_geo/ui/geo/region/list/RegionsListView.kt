@@ -10,9 +10,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.oborodulin.home.common.ui.components.list.EditableListViewComponent
+import com.oborodulin.home.common.ui.components.list.ListViewComponent
 import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
-import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.RegionInput
+import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction
@@ -30,33 +31,50 @@ fun RegionsListView(
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
     localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
     navController: NavController,
-    regionInput: RegionInput? = null
+    countryInput: NavigationInput.CountryInput? = null,
+    isEditableList: Boolean = true
 ) {
-    Timber.tag(TAG).d("RegionsListView(...) called: regionInput = %s", regionInput)
-    LaunchedEffect(Unit) {
+    Timber.tag(TAG).d("RegionsListView(...) called: countryInput = %s", countryInput)
+    LaunchedEffect(countryInput?.countryId) {
         Timber.tag(TAG).d("RegionsListView -> LaunchedEffect()")
-        regionsListViewModel.submitAction(RegionsListUiAction.Load)
+        regionsListViewModel.submitAction(RegionsListUiAction.Load(countryInput?.countryId))
     }
     val searchText by regionsListViewModel.searchText.collectAsStateWithLifecycle()
     regionsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
         if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
         CommonScreen(state = state) {
-            EditableListViewComponent(
-                items = it,
-                searchedText = searchText.text,
-                dlgConfirmDelResId = R.string.dlg_confirm_del_region,
-                emptyListResId = R.string.regions_list_empty_text,
-                isEmptyListTextOutput = true,
-                onEdit = { region ->
-                    regionsListViewModel.submitAction(RegionsListUiAction.EditRegion(region.itemId!!))
-                },
-                onDelete = { region ->
-                    regionsListViewModel.submitAction(RegionsListUiAction.DeleteRegion(region.itemId!!))
+            when (isEditableList) {
+                true -> {
+                    EditableListViewComponent(
+                        items = it,
+                        searchedText = searchText.text,
+                        dlgConfirmDelResId = R.string.dlg_confirm_del_region,
+                        emptyListResId = R.string.regions_list_empty_text,
+                        isEmptyListTextOutput = true,
+                        onEdit = { region ->
+                            regionsListViewModel.submitAction(RegionsListUiAction.EditRegion(region.itemId!!))
+                        },
+                        onDelete = { region ->
+                            regionsListViewModel.submitAction(
+                                RegionsListUiAction.DeleteRegion(region.itemId!!)
+                            )
+                        }
+                    ) { region ->
+                        regionsListViewModel.singleSelectItem(region)
+                        regionDistrictsListViewModel.submitAction(
+                            RegionDistrictsListUiAction.Load(region.itemId!!)
+                        )
+                        localitiesListViewModel.submitAction(LocalitiesListUiAction.Load(regionId = region.itemId!!))
+                    }
                 }
-            ) { region ->
-                regionsListViewModel.singleSelectItem(region)
-                regionDistrictsListViewModel.submitAction(RegionDistrictsListUiAction.Load(region.itemId!!))
-                localitiesListViewModel.submitAction(LocalitiesListUiAction.Load(regionId = region.itemId!!))
+
+                false -> {
+                    ListViewComponent(
+                        items = it,
+                        emptyListResId = R.string.regions_list_empty_text,
+                        isEmptyListTextOutput = countryInput?.countryId != null
+                    )
+                }
             }
         }
     }

@@ -10,11 +10,11 @@ data class GeoMicrodistrict(
     var locality: GeoLocality? = null,
     var localityDistrict: GeoLocalityDistrict? = null,
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
-    val microdistrictShortName: String,
+    val microdistrictShortName: String = "",
     val microdistrictGeocode: String? = null,
     val microdistrictOsmId: Long? = null,
     val coordinates: GeoCoordinates = GeoCoordinates(),
-    val microdistrictName: String,
+    val microdistrictName: String = "",
     val streets: List<GeoStreet> = emptyList()
 ) : DomainModel() {
     val microdistrictFullName =
@@ -22,4 +22,20 @@ data class GeoMicrodistrict(
             ctx?.let { it.resources.getStringArray(R.array.village_types)[microdistrictType.ordinal] }
                 .orEmpty()
         } $microdistrictName".trim()
+
+    companion object {
+        fun default(
+            locality: GeoLocality? = null,
+            localityDistrict: GeoLocalityDistrict? = null,
+            country: GeoCountry? = null
+        ): GeoMicrodistrict {
+            val deflocality = GeoLocality.default(country)
+            return GeoMicrodistrict(
+                locality = locality ?: deflocality,
+                localityDistrict = localityDistrict ?: GeoLocalityDistrict.default(
+                    locality ?: deflocality
+                )
+            )
+        }
+    }
 }

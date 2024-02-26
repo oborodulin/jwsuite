@@ -7,8 +7,7 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 @DatabaseView(
     viewName = GeoStreetView.VIEW_NAME,
     value = """
-    SELECT lv.*, sv.* 
-    FROM ${StreetView.VIEW_NAME} sv JOIN ${GeoLocalityView.VIEW_NAME} lv 
+    SELECT lv.*, sv.* FROM ${StreetView.VIEW_NAME} sv JOIN ${GeoLocalityView.VIEW_NAME} lv 
         ON lv.${GeoLocalityEntity.PX}localityId = sv.sLocalitiesId AND lv.${GeoLocalityEntity.PX}localityLocCode = sv.streetLocCode
 """
 )

@@ -1,10 +1,10 @@
-package com.oborodulin.jwsuite.data_geo.local.db.repositories
+package com.oborodulin.jwsuite.data_geo.repositories
 
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.geostreet.GeoStreetCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.GeoStreetMappers
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoStreetDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoStreetDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
 import com.oborodulin.jwsuite.domain.repositories.GeoStreetsRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract

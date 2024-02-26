@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComponent
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
@@ -68,11 +69,14 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
     Timber.tag(TAG).d("Region: CollectAsStateWithLifecycle for all fields")
     val country by viewModel.country.collectAsStateWithLifecycle()
     val regionCode by viewModel.regionCode.collectAsStateWithLifecycle()
+    val regionType by viewModel.regionType.collectAsStateWithLifecycle()
     val regionName by viewModel.regionName.collectAsStateWithLifecycle()
     val regionGeocode by viewModel.regionGeocode.collectAsStateWithLifecycle()
     val regionOsmId by viewModel.regionOsmId.collectAsStateWithLifecycle()
     val latitude by viewModel.latitude.collectAsStateWithLifecycle()
     val longitude by viewModel.longitude.collectAsStateWithLifecycle()
+
+    val regionTypes by viewModel.regionTypes.collectAsStateWithLifecycle()
 
     Timber.tag(TAG).d("Region: Init Focus Requesters for all fields")
     val focusRequesters = EnumMap<RegionFields, InputFocusRequester>(RegionFields::class.java)
@@ -135,6 +139,26 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
             onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionCode(it)) },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
+        ExposedDropdownMenuBoxComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[RegionFields.REGION_TYPE]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = RegionFields.REGION_TYPE,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.type_hint,
+            leadingPainterResId = com.oborodulin.jwsuite.presentation_geo.R.drawable.ic_region_type_36,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
+            },
+            inputWrapper = regionType,
+            values = regionTypes.values.toList(), // resolve Enums to Resource
+            keys = regionTypes.keys.map { it.name }, // Enums
+            onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionType(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction,
+        )
         TextFieldComponent(
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionFields.REGION_NAME]!!.focusRequester)
@@ -178,7 +202,6 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                 )
             },
             inputWrapper = regionGeocode,
-            onValueChange = {},
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -201,7 +224,6 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                 )
             },
             inputWrapper = regionOsmId,
-            onValueChange = {},
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -220,7 +242,6 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = latitude,
-            onValueChange = {},
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(
@@ -239,7 +260,6 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
                 KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
             },
             inputWrapper = longitude,
-            onValueChange = {},
             onImeKeyAction = viewModel::moveFocusImeAction
         )
     }

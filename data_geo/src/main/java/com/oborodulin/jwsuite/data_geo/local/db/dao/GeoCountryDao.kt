@@ -33,6 +33,13 @@ interface GeoCountryDao {
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
+    @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE upper(countryCode) = upper(substr(:locale, 1, 2)) AND countryLocCode = :locale")
+    fun findByDefaultLocale(locale: String? = Locale.getDefault().language): Flow<GeoCountryView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByDefaultLocale() = findByDefaultLocale().distinctUntilChanged()
+
+    //-----------------------------
     @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE countryId = :countryId AND countryLocCode = :locale")
     fun findById(countryId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoCountryView>

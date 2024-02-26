@@ -151,6 +151,8 @@ import java.util.UUID
 //                    <a href="https://www.flaticon.com/free-icons/sync" title="sync icons">Sync icons created by Ayub Irawan - Flaticon</a>
 // ic_data_management.png - https://www.freepik.com/
 //                      <a href="https://www.flaticon.com/free-icons/data-management" title="data management icons">Data management icons created by Freepik - Flaticon</a>
+// ic_region_type.png - https://www.freepik.com/
+//                      <a href="https://www.flaticon.com/free-icons/map" title="map icons">Map icons created by Freepik - Flaticon</a>
 
 private const val TAG = "Presentation.NavRoutes"
 

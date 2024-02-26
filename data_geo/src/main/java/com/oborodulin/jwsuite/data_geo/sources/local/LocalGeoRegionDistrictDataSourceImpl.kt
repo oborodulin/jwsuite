@@ -4,7 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoRegionDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionDistrictTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoRegionDistrictDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoRegionDistrictDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -19,8 +19,10 @@ class LocalGeoRegionDistrictDataSourceImpl @Inject constructor(
     private val regionDistrictDao: GeoRegionDistrictDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoRegionDistrictDataSource {
-    override fun getAllDistricts() = regionDistrictDao.findAll()
-    override fun getRegionDistricts(regionId: UUID) = regionDistrictDao.findByRegionId(regionId)
+    override fun getAllDistricts() = regionDistrictDao.findDistinctAll()
+    override fun getRegionDistricts(regionId: UUID) =
+        regionDistrictDao.findDistinctByRegionId(regionId)
+
     override fun getRegionDistrict(regionDistrictId: UUID) =
         regionDistrictDao.findDistinctById(regionDistrictId)
 

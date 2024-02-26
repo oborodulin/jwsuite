@@ -6,6 +6,7 @@ enum class RegionFields : Focusable {
     REGION_ID,
     REGION_COUNTRY,
     REGION_CODE,
+    REGION_TYPE,
     REGION_NAME,
     REGION_GEOCODE,
     REGION_OSM_ID,

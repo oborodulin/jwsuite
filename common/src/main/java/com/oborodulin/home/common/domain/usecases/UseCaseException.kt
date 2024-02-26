@@ -15,6 +15,9 @@ sealed class UseCaseException(cause: Throwable) : Throwable(cause) {
     class GeoStreetLocalityDistrictsSaveException(cause: Throwable) : UseCaseException(cause)
     class GeoStreetMicrodistrictsSaveException(cause: Throwable) : UseCaseException(cause)
 
+    // GEO API:
+    class GeoCountryApiException(cause: Throwable) : UseCaseException(cause)
+
     // Congregation:
     class CongregationSaveException(cause: Throwable) : UseCaseException(cause)
     class GroupSaveException(cause: Throwable) : UseCaseException(cause)

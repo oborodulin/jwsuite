@@ -4,11 +4,9 @@ import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
 import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
+import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoryView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
@@ -17,13 +15,30 @@ class TerritoryViewToTerritoryMapper(
     private val ctx: Context,
     private val congregationMapper: CongregationViewToCongregationMapper,
     private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-    private val regionMapper: RegionViewToGeoRegionMapper,
-    private val regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
-    private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
-    private val localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
-    private val microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
+    private val localityMapper: LocalityViewToGeoLocalityMapper,
+    private val localityDistrictMapper: LocalityDistrictViewToGeoLocalityDistrictMapper,
+    private val microdistrictMapper: MicrodistrictViewToGeoMicrodistrictMapper
 ) : Mapper<TerritoryView, Territory>, NullableMapper<TerritoryView, Territory> {
-    override fun map(input: TerritoryView): Territory {
+    override fun map(input: TerritoryView) = Territory(
+        ctx = ctx,
+        congregation = congregationMapper.map(input.congregation),
+        territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
+        locality = localityMapper.map(input.locality),// region, regionDistrict),
+        localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),// ldLocality),
+        microdistrict = microdistrictMapper.nullableMap(input.microdistrict),//, mLocality, mLocalityDistrict),
+        territoryNum = input.territory.territoryNum,
+        isBusiness = input.territory.isBusinessTerritory,
+        isGroupMinistry = input.territory.isGroupMinistry,
+        //isInPerimeter = input.territory.isInPerimeter,
+        isProcessed = input.territory.isProcessed,
+        isActive = input.territory.isActive,
+        territoryDesc = input.territory.territoryDesc,
+        territoryBusinessMark = input.territoryBusinessMark
+    ).also { it.id = input.territory.territoryId }
+
+    override fun nullableMap(input: TerritoryView?) = input?.let { map(it) }
+}
+/*
         val region = regionMapper.map(input.tRegion)
         val regionDistrict = regionDistrictMapper.nullableMap(input.tDistrict, region)
 
@@ -37,27 +52,4 @@ class TerritoryViewToTerritoryMapper(
         val mLocalityDistrict = localityDistrictMapper.nullableMap(
             input.tmLocalityDistrict, mLocality
         )
-        return Territory(
-            ctx = ctx,
-            congregation = congregationMapper.map(input.congregation),
-            territoryCategory = territoryCategoryMapper.map(input.territoryCategory),
-            locality = localityMapper.map(input.tLocality, region, regionDistrict),
-            localityDistrict = localityDistrictMapper.nullableMap(
-                input.tLocalityDistrict, ldLocality
-            ),
-            microdistrict = microdistrictMapper.nullableMap(
-                input.tMicrodistrict, mLocality, mLocalityDistrict
-            ),
-            territoryNum = input.territory.territoryNum,
-            isBusiness = input.territory.isBusinessTerritory,
-            isGroupMinistry = input.territory.isGroupMinistry,
-            //isInPerimeter = input.territory.isInPerimeter,
-            isProcessed = input.territory.isProcessed,
-            isActive = input.territory.isActive,
-            territoryDesc = input.territory.territoryDesc,
-            territoryBusinessMark = input.territoryBusinessMark
-        ).also { it.id = input.territory.territoryId }
-    }
-
-    override fun nullableMap(input: TerritoryView?) = input?.let { map(it) }
-}
+ */

@@ -5,7 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -23,7 +23,6 @@ import com.oborodulin.jwsuite.domain.usecases.territory.street.SaveTerritoryStre
 import com.oborodulin.jwsuite.domain.usecases.territory.street.TerritoryStreetUseCases
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.single.StreetViewModelImpl
-import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetsListItem
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toStreetsListItem

@@ -8,10 +8,10 @@ import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.data_geo.local.db.views.MicrodistrictView
 import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_ALL_VAL
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_DISTRICT_VAL
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_LOCALITY_VAL
-import com.oborodulin.jwsuite.data_territory.util.Constants.TDT_MICRO_DISTRICT_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_ALL_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_LOCALITY_DISTRICT_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_LOCALITY_VAL
+import com.oborodulin.jwsuite.domain.util.Constants.TDT_MICRO_DISTRICT_VAL
 import com.oborodulin.jwsuite.domain.util.Constants.DB_FALSE
 import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import com.oborodulin.jwsuite.domain.util.Constants.PRM_ALL_ITEMS_VAL

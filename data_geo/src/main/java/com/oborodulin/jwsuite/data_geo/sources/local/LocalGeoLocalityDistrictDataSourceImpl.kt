@@ -4,7 +4,7 @@ import com.oborodulin.home.common.di.IoDispatcher
 import com.oborodulin.jwsuite.data_geo.local.db.dao.GeoLocalityDistrictDao
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
-import com.oborodulin.jwsuite.data_geo.local.db.repositories.sources.LocalGeoLocalityDistrictDataSource
+import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoLocalityDistrictDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -19,18 +19,18 @@ class LocalGeoLocalityDistrictDataSourceImpl @Inject constructor(
     private val localityDistrictDao: GeoLocalityDistrictDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoLocalityDistrictDataSource {
-    override fun getAllLocalityDistricts() = localityDistrictDao.findAll()
+    override fun getAllLocalityDistricts() = localityDistrictDao.findDistinctAll()
     override fun getLocalityDistricts(localityId: UUID) =
-        localityDistrictDao.findByLocalityId(localityId)
+        localityDistrictDao.findDistinctByLocalityId(localityId)
 
     override fun getStreetLocalityDistricts(streetId: UUID) =
-        localityDistrictDao.findByStreetId(streetId)
+        localityDistrictDao.findDistinctByStreetId(streetId)
 
     override fun getLocalityDistrictsForStreet(streetId: UUID) =
         localityDistrictDao.findForStreetByStreetId(streetId)
 
     override fun getLocalityDistrict(localityDistrictId: UUID) =
-        localityDistrictDao.findDistinctById(localityDistrictId)
+        localityDistrictDao.findById(localityDistrictId)
 
     override suspend fun insertLocalityDistrict(
         localityDistrict: GeoLocalityDistrictEntity, textContent: GeoLocalityDistrictTlEntity

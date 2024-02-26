@@ -13,6 +13,7 @@ class RegionToRegionUiMapper(
     override fun map(input: GeoRegion) = RegionUi(
         country = countryMapper.map(input.country!!),
         regionCode = input.regionCode,
+        regionType = input.regionType,
         regionGeocode = input.regionGeocode,
         regionOsmId = input.regionOsmId,
         coordinates = coordinatesMapper.map(input.coordinates),

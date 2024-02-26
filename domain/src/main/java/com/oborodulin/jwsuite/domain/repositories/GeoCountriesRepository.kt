@@ -1,5 +1,6 @@
 package com.oborodulin.jwsuite.domain.repositories
 
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.jwsuite.domain.model.geo.GeoCountry
 import com.oborodulin.jwsuite.domain.services.csv.CsvTransferableRepo
 import com.oborodulin.jwsuite.domain.services.csv.model.geo.GeoCountryCsv
@@ -8,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface GeoCountriesRepository : CsvTransferableRepo {
-    fun getAll(): Flow<List<GeoCountry>>
+    fun getAll(isRemote: Boolean = false): Flow<Result<List<GeoCountry>>>
+    fun getDefault(): Flow<GeoCountry?>
     fun get(countryId: UUID): Flow<GeoCountry>
     fun save(country: GeoCountry): Flow<GeoCountry>
     fun delete(country: GeoCountry): Flow<GeoCountry>

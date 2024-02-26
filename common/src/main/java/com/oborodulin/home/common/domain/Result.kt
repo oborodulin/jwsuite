@@ -1,4 +1,4 @@
-package com.oborodulin.home.common.domain.entities
+package com.oborodulin.home.common.domain
 
 import com.oborodulin.home.common.domain.usecases.UseCaseException
 

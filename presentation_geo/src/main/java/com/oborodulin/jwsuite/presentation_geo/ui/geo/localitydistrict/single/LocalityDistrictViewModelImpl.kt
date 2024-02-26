@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -87,16 +87,12 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(LocalityDistrictUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is LocalityDistrictUiAction.Load -> when (action.localityDistrictId) {
-                null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_district_new_subheader)
-                    submitState(UiState.Success(LocalityDistrictUi()))
+            is LocalityDistrictUiAction.Load -> {
+                when (action.localityDistrictId) {
+                    null -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_district_new_subheader)
+                    else -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_district_subheader)
                 }
-
-                else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.locality_district_subheader)
-                    loadLocalityDistrict(action.localityDistrictId)
-                }
+                loadLocalityDistrict(action.localityDistrictId)
             }
 
             is LocalityDistrictUiAction.Save -> saveLocalityDistrict()
@@ -104,8 +100,9 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadLocalityDistrict(localityDistrictId: UUID): Job {
-        Timber.tag(TAG).d("loadLocalityDistrict(UUID) called: %s", localityDistrictId)
+    private fun loadLocalityDistrict(localityDistrictId: UUID? = null): Job {
+        Timber.tag(TAG)
+            .d("loadLocalityDistrict(UUID?) called: localityDistrictId = %s", localityDistrictId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getLocalityDistrictUseCase.execute(
                 GetLocalityDistrictUseCase.Request(localityDistrictId)

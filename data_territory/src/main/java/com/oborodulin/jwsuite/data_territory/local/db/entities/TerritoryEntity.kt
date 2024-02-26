@@ -73,6 +73,29 @@ data class TerritoryEntity(
 
     companion object {
         const val TABLE_NAME = "territories"
+        const val PX = "t_"
+
+        // Regions:
+        const val PX_REGION = "tr_"
+        const val PX_LD_REGION = "tlr_"
+        const val PX_M_REGION = "tmr_"
+
+        // Region Districts:
+        const val PX_REGION_DISTRICT = "trd_"
+        const val PX_LD_REGION_DISTRICT = "tlrd_"
+        const val PX_M_REGION_DISTRICT = "tmrd_"
+
+        // Localities:
+        const val PX_LOCALITY = "tl_"
+        const val PX_LD_LOCALITY = "tll_"
+        const val PX_M_LOCALITY = "tml_"
+
+        // Locality Districts:
+        const val PX_LD_LOCALITY_DISTRICT = "tlld_"
+        const val PX_M_LOCALITY_DISTRICT = "tmld_"
+
+        // Microdistricts:
+        const val PX_MICRODISTRICT = "tm_"
 
         fun defaultTerritory(
             territoryId: UUID = UUID.randomUUID(),

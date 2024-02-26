@@ -5,7 +5,7 @@ import androidx.annotation.ArrayRes
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.oborodulin.home.common.domain.entities.Result
+import com.oborodulin.home.common.domain.Result
 import com.oborodulin.home.common.extensions.toUUIDOrNull
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
@@ -115,16 +115,12 @@ class StreetViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(StreetUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is StreetUiAction.Load -> when (action.streetId) {
-                null -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.street_new_subheader)
-                    submitState(UiState.Success(StreetUi()))
+            is StreetUiAction.Load -> {
+                when (action.streetId) {
+                    null -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.street_new_subheader)
+                    else -> setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.street_subheader)
                 }
-
-                else -> {
-                    setDialogTitleResId(com.oborodulin.jwsuite.presentation_geo.R.string.street_subheader)
-                    loadStreet(action.streetId)
-                }
+                loadStreet(action.streetId)
             }
 
             is StreetUiAction.Save -> saveStreet()
@@ -132,7 +128,7 @@ class StreetViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadStreet(streetId: UUID): Job {
+    private fun loadStreet(streetId: UUID? = null): Job {
         Timber.tag(TAG).d("loadStreet(UUID) called: streetId = %s", streetId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.getStreetUseCase.execute(GetStreetUseCase.Request(streetId))

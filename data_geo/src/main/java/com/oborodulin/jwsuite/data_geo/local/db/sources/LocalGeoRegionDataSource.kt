@@ -1,4 +1,4 @@
-package com.oborodulin.jwsuite.data_geo.local.db.repositories.sources
+package com.oborodulin.jwsuite.data_geo.local.db.sources
 
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity

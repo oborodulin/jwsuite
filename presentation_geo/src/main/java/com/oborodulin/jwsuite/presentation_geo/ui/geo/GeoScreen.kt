@@ -43,6 +43,8 @@ import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
 import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.country.list.CountriesListView
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.country.list.CountriesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.localitydistrict.list.LocalityDistrictsListView
@@ -68,6 +70,7 @@ private const val TAG = "Geo.GeoScreen"
 
 @Composable
 fun GeoScreen(
+    countriesListViewModel: CountriesListViewModelImpl = hiltViewModel(),
     regionsListViewModel: RegionsListViewModelImpl = hiltViewModel(),
     regionDistrictsListViewModel: RegionDistrictsListViewModelImpl = hiltViewModel(),
     localitiesListViewModel: LocalitiesListViewModelImpl = hiltViewModel(),
@@ -96,6 +99,7 @@ fun GeoScreen(
     val handleActionAdd = {
         appState.mainNavigate(
             when (GeoTabType.valueOf(tabType)) {
+                GeoTabType.COUNTRIES -> NavRoutes.Country.routeForCountry()
                 GeoTabType.REGIONS -> NavRoutes.Region.routeForRegion()
                 GeoTabType.REGION_DISTRICTS -> NavRoutes.RegionDistrict.routeForRegionDistrict()
                 GeoTabType.LOCALITIES -> NavRoutes.Locality.routeForLocality()
@@ -112,6 +116,11 @@ fun GeoScreen(
         true -> {
             onActionBarChange {
                 when (GeoTabType.valueOf(tabType)) {
+                    GeoTabType.COUNTRIES -> SearchViewModelComponent(
+                        viewModel = countriesListViewModel,
+                        placeholderResId = R.string.country_search_placeholder
+                    )
+
                     GeoTabType.REGIONS -> SearchViewModelComponent(
                         viewModel = regionsListViewModel,
                         placeholderResId = R.string.region_search_placeholder
@@ -217,6 +226,7 @@ fun GeoScreen(
             if (isShowSearchBar) {
                 isShowSearchBar = false
                 when (GeoTabType.valueOf(tabType)) {
+                    GeoTabType.COUNTRIES -> countriesListViewModel.clearSearchText()
                     GeoTabType.REGIONS -> regionsListViewModel.clearSearchText()
                     GeoTabType.REGION_DISTRICTS -> regionDistrictsListViewModel.clearSearchText()
                     GeoTabType.LOCALITIES -> localitiesListViewModel.clearSearchText()
@@ -254,10 +264,19 @@ fun GeoScreen(
             CustomScrollableTabRow(
                 listOf(
                     TabRowItem(
+                        title = stringResource(R.string.geo_tab_countries),
+                        onClick = { onTabChange(GeoTabType.COUNTRIES) }
+                    ) {
+                        CountriesWithRegionsView(
+                            appState = appState,
+                            countriesListViewModel = countriesListViewModel
+                        )
+                    },
+                    TabRowItem(
                         title = stringResource(R.string.geo_tab_regions),
                         onClick = { onTabChange(GeoTabType.REGIONS) }
                     ) {
-                        RegionWithRegionDistrictsAndLocalitiesView(
+                        RegionsWithRegionDistrictsAndLocalitiesView(
                             appState = appState,
                             regionsListViewModel = regionsListViewModel
                         )
@@ -330,7 +349,61 @@ fun GeoScreen(
 }
 
 @Composable
-fun RegionWithRegionDistrictsAndLocalitiesView(
+fun CountriesWithRegionsView(
+    appState: AppState,
+    countriesListViewModel: CountriesListViewModelImpl
+) {
+    Timber.tag(TAG).d("CountriesWithRegionsView(...) called")
+    val selectedCountryId: UUID? by remember { mutableStateOf(countriesListViewModel.singleSelectedItem()?.itemId) }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                //.background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(20.dp))
+                .weight(3.82f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            CountriesListView(navController = appState.mainNavController)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .weight(6.18f)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            RegionsListView(
+                navController = appState.mainNavController,
+                countryInput = selectedCountryId?.let { NavigationInput.CountryInput(it) },
+                isEditableList = false
+            )
+        }
+    }
+}
+
+@Composable
+fun RegionsWithRegionDistrictsAndLocalitiesView(
     appState: AppState,
     regionsListViewModel: RegionsListViewModelImpl
 ) {

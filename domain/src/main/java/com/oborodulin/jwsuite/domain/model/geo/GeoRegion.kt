@@ -8,12 +8,12 @@ import com.oborodulin.jwsuite.domain.types.RegionType
 data class GeoRegion(
     val ctx: Context? = null,
     var country: GeoCountry? = null,
-    val regionCode: String,
+    val regionCode: String = "",
     val regionType: RegionType = RegionType.REGION,
     val regionGeocode: String? = null,
     val regionOsmId: Long? = null,
     val coordinates: GeoCoordinates = GeoCoordinates(),
-    val regionName: String,
+    val regionName: String = "",
     val districts: List<GeoRegionDistrict> = emptyList(),
     val localities: List<GeoLocality> = emptyList()
 ) : DomainModel() {
@@ -22,4 +22,8 @@ data class GeoRegion(
             ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
                 .orEmpty()
         } $regionName".trim()
+
+    companion object {
+        fun default(country: GeoCountry?) = GeoRegion(country = country)
+    }
 }

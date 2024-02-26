@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.domain.model.territory
 import android.content.Context
 import com.oborodulin.home.common.domain.model.DomainModel
 import com.oborodulin.jwsuite.domain.R
+import com.oborodulin.jwsuite.domain.model.geo.GeoCoordinates
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocalityDistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoMicrodistrict
 import com.oborodulin.jwsuite.domain.model.geo.GeoStreet
@@ -30,6 +31,8 @@ data class House(
     val isForeignLanguage: Boolean = false,
     val isPrivateSector: Boolean = false,
     val houseDesc: String? = null,
+    val houseOsmId: Long? = null,
+    val coordinates: GeoCoordinates = GeoCoordinates(),
     val entrances: List<Entrance> = emptyList(),
     val rooms: List<Room> = emptyList()
 ) : DomainModel() {

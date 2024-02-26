@@ -7,5 +7,5 @@ import retrofit2.http.POST
 interface CountryService {
     @FormUrlEncoded
     @POST
-    suspend fun getCountries(@Body data: String): CountryApiModel
+    suspend fun getCountries(@Body data: String): CountryApiModel?
 }
