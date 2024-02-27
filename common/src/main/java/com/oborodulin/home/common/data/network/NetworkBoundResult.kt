@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-abstract class NetworkBoundResult<ResultType : Any, RequestType : Any>(private val isRemote: Boolean = false) {
+abstract class NetworkBoundResult<ResultType : Any, RequestType : Any> {
     private var result: Flow<Result<ResultType>> = flow {
         val dbSource = loadFromDB().first()
-        if (isRemote && shouldFetch(dbSource)) {
+        if (shouldFetch(dbSource)) {
             when (val apiResponse = createCall().first()) {
                 is ApiResponse.Success -> {
                     saveCallResult(apiResponse.data)

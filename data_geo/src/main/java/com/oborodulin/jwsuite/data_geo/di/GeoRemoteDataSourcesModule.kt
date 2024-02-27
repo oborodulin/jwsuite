@@ -1,7 +1,9 @@
 package com.oborodulin.jwsuite.data_geo.di
 
 import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoCountryDataSource
+import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
 import com.oborodulin.jwsuite.data_geo.sources.remote.RemoteGeoCountryDataSourceImpl
+import com.oborodulin.jwsuite.data_geo.sources.remote.RemoteGeoRegionDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Binds
 import dagger.Module
@@ -12,7 +14,10 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class GeoRemoteDataSourcesModule {
     @Binds
-    abstract fun bindRemoteGeoCountryDataSource(postDataSourceImpl: RemoteGeoCountryDataSourceImpl): RemoteGeoCountryDataSource
+    abstract fun bindRemoteGeoCountryDataSource(dataSourceImpl: RemoteGeoCountryDataSourceImpl): RemoteGeoCountryDataSource
+
+    @Binds
+    abstract fun bindRemoteGeoRegionDataSource(dataSourceImpl: RemoteGeoRegionDataSourceImpl): RemoteGeoRegionDataSource
 
     /*    @Singleton
         @Provides

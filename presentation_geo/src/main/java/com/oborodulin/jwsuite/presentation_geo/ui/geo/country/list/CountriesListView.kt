@@ -32,7 +32,7 @@ fun CountriesListView(
     Timber.tag(TAG).d("CountriesListView(...) called: countryInput = %s", countryInput)
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("CountriesListView -> LaunchedEffect()")
-        countriesListViewModel.submitAction(CountriesListUiAction.Load)
+        countriesListViewModel.submitAction(CountriesListUiAction.Load())
     }
     val searchText by countriesListViewModel.searchText.collectAsStateWithLifecycle()
     countriesListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->

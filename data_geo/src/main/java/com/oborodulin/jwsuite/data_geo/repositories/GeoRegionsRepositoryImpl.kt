@@ -1,10 +1,14 @@
 package com.oborodulin.jwsuite.data_geo.repositories
 
+import com.oborodulin.home.common.data.network.NetworkBoundResult
 import com.oborodulin.jwsuite.data_geo.local.csv.mappers.georegion.GeoRegionCsvMappers
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.GeoRegionMappers
 import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoRegionDataSource
+import com.oborodulin.jwsuite.data_geo.remote.osm.mappers.georegion.GeoRegionApiMappers
+import com.oborodulin.jwsuite.data_geo.remote.osm.model.region.RegionApiModel
+import com.oborodulin.jwsuite.data_geo.remote.sources.RemoteGeoRegionDataSource
 import com.oborodulin.jwsuite.domain.model.geo.GeoRegion
 import com.oborodulin.jwsuite.domain.repositories.GeoRegionsRepository
 import com.oborodulin.jwsuite.domain.services.csv.CsvExtract
@@ -18,15 +22,32 @@ import javax.inject.Inject
 
 class GeoRegionsRepositoryImpl @Inject constructor(
     private val localRegionDataSource: LocalGeoRegionDataSource,
+    private val remoteRegionDataSource: RemoteGeoRegionDataSource,
     private val domainMappers: GeoRegionMappers,
+    private val apiMappers: GeoRegionApiMappers,
     private val csvMappers: GeoRegionCsvMappers
 ) : GeoRegionsRepository {
     override fun getAll() = localRegionDataSource.getRegions()
         .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
 
-    override fun getAllByCountry(countryId: UUID) =
-        localRegionDataSource.getCountryRegions(countryId)
+    override fun getAllByCountry(
+        countryId: UUID, countryGeocodeArea: String, isRemoteFetch: Boolean
+    ) = object : NetworkBoundResult<List<GeoRegion>, RegionApiModel>() {
+        override fun loadFromDB() = localRegionDataSource.getCountryRegions(countryId)
             .map(domainMappers.regionViewListToGeoRegionsListMapper::map)
+
+        override fun shouldFetch(data: List<GeoRegion>?) =
+            isRemoteFetch && data.isNullOrEmpty()
+
+        override suspend fun createCall() =
+            remoteRegionDataSource.getCountryRegions(countryId, countryGeocodeArea)
+
+        override suspend fun saveCallResult(data: RegionApiModel) {
+            apiMappers.regionElementsListToGeoRegionsListMapper.map(data.elements)
+                .forEach { save(it) }
+        }
+    }.asFlow()
+
 
     override fun get(regionId: UUID) = localRegionDataSource.getRegion(regionId)
         .map(domainMappers.geoRegionViewToGeoRegionMapper::map)

@@ -43,7 +43,7 @@ class CountriesListViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(CountriesListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is CountriesListUiAction.Load -> loadCountries()
+            is CountriesListUiAction.Load -> loadCountries(action.isRemoteFetch)
 
             is CountriesListUiAction.EditCountry -> {
                 submitSingleEvent(
@@ -58,10 +58,10 @@ class CountriesListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadCountries(): Job {
-        Timber.tag(TAG).d("loadCountries() called")
+    private fun loadCountries(isRemoteFetch: Boolean = false): Job {
+        Timber.tag(TAG).d("loadCountries(...) called: isRemoteFetch = %s", isRemoteFetch)
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getCountriesUseCase.execute(GetCountriesUseCase.Request).map {
+            useCases.getCountriesUseCase.execute(GetCountriesUseCase.Request(isRemoteFetch)).map {
                 converter.convert(it)
             }.collect {
                 submitState(it)
@@ -71,7 +71,7 @@ class CountriesListViewModelImpl @Inject constructor(
     }
 
     private fun deleteCountry(countryId: UUID): Job {
-        Timber.tag(TAG).d("deleteCountry() called: countryId = %s", countryId)
+        Timber.tag(TAG).d("deleteCountry(...) called: countryId = %s", countryId)
         val job = viewModelScope.launch(errorHandler) {
             useCases.deleteCountryUseCase.execute(DeleteCountryUseCase.Request(countryId))
                 .collect {}

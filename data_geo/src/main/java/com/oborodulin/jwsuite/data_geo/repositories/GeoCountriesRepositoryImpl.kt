@@ -27,18 +27,18 @@ class GeoCountriesRepositoryImpl @Inject constructor(
     private val apiMappers: GeoCountryApiMappers,
     private val csvMappers: GeoCountryCsvMappers
 ) : GeoCountriesRepository {
-    override fun getAll(isRemote: Boolean) =
-        object : NetworkBoundResult<List<GeoCountry>, CountryApiModel>(isRemote) {
+    override fun getAll(isRemoteFetch: Boolean) =
+        object : NetworkBoundResult<List<GeoCountry>, CountryApiModel>() {
             override fun loadFromDB() = localCountryDataSource.getCountries()
                 .map(domainMappers.geoCountryViewListToGeoCountriesListMapper::map)
 
-            override fun shouldFetch(data: List<GeoCountry>?) = data.isNullOrEmpty()
+            override fun shouldFetch(data: List<GeoCountry>?) =
+                isRemoteFetch && data.isNullOrEmpty()
+
             override suspend fun createCall() = remoteCountryDataSource.getCountries()
             override suspend fun saveCallResult(data: CountryApiModel) {
                 apiMappers.countryElementsListToGeoCountriesListMapper.map(data.elements)
-                    .forEach {
-                        save(it)
-                    }
+                    .forEach { save(it) }
             }
         }.asFlow()
 

@@ -44,7 +44,9 @@ class RegionsListViewModelImpl @Inject constructor(
         if (LOG_FLOW_ACTION) Timber.tag(TAG)
             .d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
         val job = when (action) {
-            is RegionsListUiAction.Load -> loadRegions(action.countryId)
+            is RegionsListUiAction.Load -> loadRegions(
+                action.countryId, action.countryGeocodeArea, action.isRemoteFetch
+            )
 
             is RegionsListUiAction.EditRegion -> {
                 submitSingleEvent(
@@ -59,10 +61,19 @@ class RegionsListViewModelImpl @Inject constructor(
         return job
     }
 
-    private fun loadRegions(countryId: UUID? = null): Job {
-        Timber.tag(TAG).d("loadRegions(...) called: countryId = %s", countryId)
+    private fun loadRegions(
+        countryId: UUID? = null,
+        countryGeocodeArea: String = "",
+        isRemoteFetch: Boolean = false
+    ): Job {
+        Timber.tag(TAG).d(
+            "loadRegions(...) called: countryId = %s, countryGeocodeArea = %s, isRemoteFetch = %s",
+            countryId, countryGeocodeArea, isRemoteFetch
+        )
         val job = viewModelScope.launch(errorHandler) {
-            useCases.getRegionsUseCase.execute(GetRegionsUseCase.Request(countryId)).map {
+            useCases.getRegionsUseCase.execute(
+                GetRegionsUseCase.Request(countryId, countryGeocodeArea, isRemoteFetch)
+            ).map {
                 converter.convert(it)
             }.collect {
                 submitState(it)

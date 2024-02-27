@@ -55,7 +55,7 @@ fun CountryComboBox(
         modifier = modifier,
         enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = CountriesListUiAction.Load,
+        loadListUiAction = CountriesListUiAction.Load(),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

@@ -13,13 +13,13 @@ class GetCountriesUseCase(
     configuration: Configuration, private val countriesRepository: GeoCountriesRepository
 ) : UseCase<GetCountriesUseCase.Request, GetCountriesUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> =
-        countriesRepository.getAll(request.isRemote).map {
+        countriesRepository.getAll(request.isRemoteFetch).map {
             when (it) {
                 is Result.Success<List<GeoCountry>> -> Response(it.data)
                 else -> Response(emptyList())
             }
         }.catch { throw UseCaseException.GeoCountryApiException(it) }
 
-    data class Request(val isRemote: Boolean = false) : UseCase.Request
+    data class Request(val isRemoteFetch: Boolean = false) : UseCase.Request
     data class Response(val countries: List<GeoCountry>) : UseCase.Response
 }

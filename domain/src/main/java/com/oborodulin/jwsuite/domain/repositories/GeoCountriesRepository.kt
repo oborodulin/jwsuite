@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface GeoCountriesRepository : CsvTransferableRepo {
-    fun getAll(isRemote: Boolean = false): Flow<Result<List<GeoCountry>>>
+    fun getAll(isRemoteFetch: Boolean = false): Flow<Result<List<GeoCountry>>>
     fun getDefault(): Flow<GeoCountry?>
     fun get(countryId: UUID): Flow<GeoCountry>
     fun save(country: GeoCountry): Flow<GeoCountry>
