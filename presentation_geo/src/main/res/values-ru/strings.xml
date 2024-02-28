@@ -1,5 +1,7 @@
 <resources>
     <!--BUTTONS:-->
+    <string name="btn_fetch_lbl">Получить</string>
+
     <!--FAB:-->
     <string name="fab_street_locality_district_text">Добавить район</string>
     <string name="fab_street_microdistrict_text">Добавить микрорайон</string>
@@ -7,17 +9,17 @@
     <!--МЕНЮ географии-->
 
     <!--СПИСОК:-->
-    <string name="countries_list_empty_text">Стран пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="regions_list_empty_text">Областей пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="region_districts_list_empty_text">Районов областей пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="localities_list_empty_text">Населённых пунктов пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="locality_districts_list_empty_text">Районов населённых пунктов пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="microdistricts_list_empty_text">Микрорайонов пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="streets_list_empty_text">Улиц пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="street_locality_districts_list_empty_text">Районов улиц пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="street_microdistricts_list_empty_text">Микрорайонов улиц пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="for_streets_locality_districts_list_empty_text">Районы, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие районы</string>
-    <string name="for_streets_microdistricts_list_empty_text">Микрорайоны, через которые проходит улица, пока не указаны. Если необходимо, добавьте, пожалуйста, соответствующие микрорайоны</string>
+    <string name="countries_list_empty_text">Стран пока нет.\nДобавьте, пожалуйста, хотя бы одну или получите их из интернета</string>
+    <string name="regions_list_empty_text">Областей пока нет.\nДобавьте, пожалуйста, хотя бы одну или получите их из интернета</string>
+    <string name="region_districts_list_empty_text">Районов областей пока нет.\nДобавьте, пожалуйста, хотя бы один или получите их из интернета</string>
+    <string name="localities_list_empty_text">Населённых пунктов пока нет.\nДобавьте, пожалуйста, хотя бы один или получите их из интернета</string>
+    <string name="locality_districts_list_empty_text">Районов населённых пунктов пока нет.\nДобавьте, пожалуйста, хотя бы один или получите их из интернета</string>
+    <string name="microdistricts_list_empty_text">Микрорайонов пока нет.\nДобавьте, пожалуйста, хотя бы один или получите их из интернета</string>
+    <string name="streets_list_empty_text">Улиц пока нет.\nДобавьте, пожалуйста, хотя бы одну или получите их из интернета</string>
+    <string name="street_locality_districts_list_empty_text">Районов улиц пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="street_microdistricts_list_empty_text">Микрорайонов улиц пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="for_streets_locality_districts_list_empty_text">Районы, через которые проходит улица, пока не указаны.\nЕсли необходимо, добавьте, пожалуйста, соответствующие районы</string>
+    <string name="for_streets_microdistricts_list_empty_text">Микрорайоны, через которые проходит улица, пока не указаны.\nЕсли необходимо, добавьте, пожалуйста, соответствующие микрорайоны</string>
     <!--Поиск:-->
     <string name="country_search_placeholder">Поиск страны…</string>
     <string name="region_search_placeholder">Поиск области…</string>
@@ -160,5 +162,6 @@
     <string name="street_unique_constraint_error">Улица такого типа и с таким наименованием уже есть! Повторите, пожалуйста, ввод или пропустите ошибку (данные не сохранятся)</string>
 
     <!--ОПИСАНИЕ КОНТЕНТА-->
+    <string name="fetch_cnt_desc">Получить данные из интернета</string>
 
 </resources>

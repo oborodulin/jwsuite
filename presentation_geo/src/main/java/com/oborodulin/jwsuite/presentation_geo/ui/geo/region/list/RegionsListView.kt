@@ -16,6 +16,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_geo.R
+import com.oborodulin.jwsuite.presentation_geo.ui.components.FetchButtonComponent
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.locality.list.LocalitiesListViewModelImpl
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.RegionDistrictsListUiAction
@@ -72,7 +73,18 @@ fun RegionsListView(
                     ListViewComponent(
                         items = it,
                         emptyListResId = R.string.regions_list_empty_text,
-                        isEmptyListTextOutput = countryInput?.countryId != null
+                        isEmptyListTextOutput = countryInput?.countryId != null,
+                        fetchListControl = {
+                            countryInput?.let {
+                                FetchButtonComponent(enabled = true) {
+                                    regionsListViewModel.submitAction(
+                                        RegionsListUiAction.Load(
+                                            it.countryId, it.countryGeocodeArea, true
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     )
                 }
             }

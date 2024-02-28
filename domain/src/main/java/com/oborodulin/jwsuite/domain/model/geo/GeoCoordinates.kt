@@ -6,4 +6,7 @@ import java.math.BigDecimal
 data class GeoCoordinates(
     val latitude: BigDecimal? = null,
     val longitude: BigDecimal? = null
-) : DomainModel()
+) : DomainModel() {
+    override fun toString() =
+        latitude?.let { lat -> longitude?.let { lon -> "[$lat, $lon]" } } ?: ""
+}

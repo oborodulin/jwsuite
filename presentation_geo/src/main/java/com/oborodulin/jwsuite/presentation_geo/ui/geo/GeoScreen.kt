@@ -35,6 +35,7 @@ import com.oborodulin.home.common.ui.components.fab.ExtFabComponent
 import com.oborodulin.home.common.ui.components.search.SearchViewModelComponent
 import com.oborodulin.home.common.ui.components.tab.CustomScrollableTabRow
 import com.oborodulin.home.common.ui.components.tab.TabRowItem
+import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.jwsuite.domain.types.MemberRoleType
 import com.oborodulin.jwsuite.presentation.components.ScaffoldComponent
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
@@ -60,6 +61,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.geo.regiondistrict.list.Region
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListView
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModel
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.street.list.StreetsListViewModelImpl
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toCountriesListItem
 import timber.log.Timber
 import java.util.UUID
 
@@ -354,7 +356,7 @@ fun CountriesWithRegionsView(
     countriesListViewModel: CountriesListViewModelImpl
 ) {
     Timber.tag(TAG).d("CountriesWithRegionsView(...) called")
-    val selectedCountryId: UUID? by remember { mutableStateOf(countriesListViewModel.singleSelectedItem()?.itemId) }
+    val selectedCountry: ListItemModel? by remember { mutableStateOf(countriesListViewModel.singleSelectedItem()) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -395,7 +397,13 @@ fun CountriesWithRegionsView(
         ) {
             RegionsListView(
                 navController = appState.mainNavController,
-                countryInput = selectedCountryId?.let { NavigationInput.CountryInput(it) },
+                countryInput = selectedCountry?.let {
+                    val listItem = it.toCountriesListItem()
+                    NavigationInput.CountryInput(
+                        countryId = listItem.itemId!!,
+                        countryGeocodeArea = listItem.countryGeocode.orEmpty()
+                    )
+                },
                 isEditableList = false
             )
         }

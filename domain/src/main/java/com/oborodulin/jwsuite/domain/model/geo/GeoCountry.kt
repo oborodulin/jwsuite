@@ -8,4 +8,6 @@ data class GeoCountry(
     val countryOsmId: Long? = null,
     val coordinates: GeoCoordinates = GeoCoordinates(),
     val countryName: String
-) : DomainModel()
+) : DomainModel() {
+    val osmInfo = countryGeocode.orEmpty().plus(coordinates)
+}

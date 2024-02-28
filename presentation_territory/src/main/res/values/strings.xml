@@ -22,20 +22,20 @@
     <!--участки-->
 
     <!--СПИСОК:-->
-    <string name="territory_categories_list_empty_text">Категорий участков пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="territories_list_empty_text">Участков пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="territory_streets_list_empty_text">Улиц участка пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="territory_houses_list_empty_text">Домов участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="for_territory_houses_list_empty_text">На территории участка домов пока нет, или они все распределены между другими участками. Добавьте, пожалуйста, хотя бы один новый дом или перераспределите существующие дома других участков</string>
-    <string name="territory_entrances_list_empty_text">Подъездов участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="territory_floors_list_empty_text">Этажей участка пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="territory_rooms_list_empty_text">Квартир участка пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="for_territory_rooms_list_empty_text">На территории участка квартир пока нет, или они все распределены между другими участками. Добавьте, пожалуйста, хотя бы одну новую квартиру или перераспределите существующие квартиры других участков</string>
-    <string name="houses_list_empty_text">Домов на улице пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="entrances_list_empty_text">Подъездов дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="floors_list_empty_text">Этажей дома пока нет. Добавьте, пожалуйста, хотя бы один</string>
-    <string name="rooms_list_empty_text">Квартир дома пока нет. Добавьте, пожалуйста, хотя бы одну</string>
-    <string name="territory_reports_list_empty_text">Отчётов пока нет. Добавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_categories_list_empty_text">Категорий участков пока нет.\nДобавьте, пожалуйста, хотя бы одну</string>
+    <string name="territories_list_empty_text">Участков пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_streets_list_empty_text">Улиц участка пока нет.\nДобавьте, пожалуйста, хотя бы одну</string>
+    <string name="territory_houses_list_empty_text">Домов участка пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="for_territory_houses_list_empty_text">На территории участка домов пока нет, или они все распределены между другими участками.\nДобавьте, пожалуйста, хотя бы один новый дом или перераспределите существующие дома других участков</string>
+    <string name="territory_entrances_list_empty_text">Подъездов участка пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_floors_list_empty_text">Этажей участка пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="territory_rooms_list_empty_text">Квартир участка пока нет.\nДобавьте, пожалуйста, хотя бы одну</string>
+    <string name="for_territory_rooms_list_empty_text">На территории участка квартир пока нет, или они все распределены между другими участками.\nДобавьте, пожалуйста, хотя бы одну новую квартиру или перераспределите существующие квартиры других участков</string>
+    <string name="houses_list_empty_text">Домов на улице пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="entrances_list_empty_text">Подъездов дома пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="floors_list_empty_text">Этажей дома пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
+    <string name="rooms_list_empty_text">Квартир дома пока нет.\nДобавьте, пожалуйста, хотя бы одну</string>
+    <string name="territory_reports_list_empty_text">Отчётов пока нет.\nДобавьте, пожалуйста, хотя бы один</string>
     <!--Поиск:-->
     <string name="territory_search_placeholder">Поиск участка…</string>
 

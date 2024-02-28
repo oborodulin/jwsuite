@@ -98,7 +98,7 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
             )
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextFieldComponent(
             modifier = Modifier

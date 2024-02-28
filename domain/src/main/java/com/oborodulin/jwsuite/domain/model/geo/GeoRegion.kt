@@ -22,6 +22,7 @@ data class GeoRegion(
             ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
                 .orEmpty()
         } $regionName".trim()
+    val osmInfo = regionGeocode.orEmpty().plus(coordinates)
 
     companion object {
         fun default(country: GeoCountry?) = GeoRegion(country = country)

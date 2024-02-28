@@ -7,9 +7,19 @@ import java.util.UUID
 data class CountriesListItem(
     val id: UUID,
     val countryCode: String,
-    val countryName: String
+    val countryGeocode: String? = null,
+    val countryName: String,
+    val osmInfo: String
 ) : Parcelable, ListItemModel(
     itemId = id,
     headline = countryName,
-    supportingText = countryCode
+    supportingText = countryCode.plus(osmInfo.ifEmpty { null }?.let { ": $it" }.orEmpty())
+)
+
+fun ListItemModel.toCountriesListItem() = CountriesListItem(
+    id = this.itemId ?: UUID.randomUUID(),
+    countryCode = this.supportingText?.substringBefore(":").orEmpty(),
+    countryGeocode = this.supportingText?.substringAfter(":")?.substringBeforeLast("[").orEmpty(),
+    countryName = this.headline,
+    osmInfo = this.supportingText?.substringAfter(":").orEmpty()
 )
