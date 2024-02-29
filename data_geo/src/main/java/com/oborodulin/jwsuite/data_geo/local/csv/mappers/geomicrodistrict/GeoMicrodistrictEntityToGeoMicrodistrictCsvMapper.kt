@@ -11,8 +11,8 @@ class GeoMicrodistrictEntityToGeoMicrodistrictCsvMapper :
         microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
         microdistrictOsmId = input.microdistrictOsmId,
-        latitude = input.coordinates?.latitude,
-        longitude = input.coordinates?.longitude,
+        latitude = input.coordinates.latitude,
+        longitude = input.coordinates.longitude,
         mLocalityDistrictsId = input.mLocalityDistrictsId,
         mLocalitiesId = input.mLocalitiesId
     )

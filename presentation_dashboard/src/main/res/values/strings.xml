@@ -21,7 +21,8 @@
     <!--собрание-->
     <string name="total_groups_hint">Кол-во групп</string>
     <string name="total_members_hint">Всего возвещателей</string>
-    <string name="total_fulltime_members_hint">Из них полновременных</string>
+    <string name="total_active_members_hint">Кол-во активных</string>
+    <string name="total_fulltime_members_hint">Кол-во полновременных</string>
     <!--участки-->
     <string name="territories_title">Участки</string>
     <string name="total_territories_hint">Кол-во активных</string>

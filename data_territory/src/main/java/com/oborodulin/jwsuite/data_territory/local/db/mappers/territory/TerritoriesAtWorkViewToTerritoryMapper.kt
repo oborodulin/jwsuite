@@ -1,18 +1,22 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class TerritoriesAtWorkViewToTerritoryMapper(
+    private val territoryMapper: TerritoryViewToTerritoryMapper,
+    private val memberMapper: MemberViewToMemberMapper
+) : Mapper<TerritoriesAtWorkView, Territory> {
+    override fun map(input: TerritoriesAtWorkView) = territoryMapper.map(input.territory).copy(
+        member = memberMapper.nullableMap(input.member),
+        congregationId = input.ctCongregationsId,
+        isPrivateSector = input.isPrivateSector,
+        expiredTotalDays = input.expiredTotalDays
+    )
+}
+/*
     private val congregationMapper: CongregationViewToCongregationMapper,
     private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
     private val regionMapper: RegionViewToGeoRegionMapper,
@@ -20,9 +24,8 @@ class TerritoriesAtWorkViewToTerritoryMapper(
     private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
     private val localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
     private val microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
-    private val memberMapper: MemberViewToMemberMapper
-) : Mapper<TerritoriesAtWorkView, Territory> {
-    override fun map(input: TerritoriesAtWorkView): Territory {
+
+: Territory {
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
@@ -62,5 +65,4 @@ class TerritoriesAtWorkViewToTerritoryMapper(
                 territoryBusinessMark = input.atWorkTerritoryBusinessMark
             ).also { it.id = this.territory.territoryId }
         }
-    }
-}
+ */

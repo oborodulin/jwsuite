@@ -12,8 +12,8 @@ class GeoStreetEntityToGeoStreetCsvMapper : Mapper<GeoStreetEntity, GeoStreetCsv
         isStreetPrivateSector = input.isStreetPrivateSector,
         estStreetHouses = input.estStreetHouses,
         streetOsmId = input.streetOsmId,
-        latitude = input.coordinates?.latitude,
-        longitude = input.coordinates?.longitude,
+        latitude = input.coordinates.latitude,
+        longitude = input.coordinates.longitude,
         sLocalitiesId = input.sLocalitiesId
     )
 }

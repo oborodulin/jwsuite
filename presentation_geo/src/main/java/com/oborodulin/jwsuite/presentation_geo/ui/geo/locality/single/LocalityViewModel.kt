@@ -14,6 +14,7 @@ interface LocalityViewModel :
     DialogViewModeled<LocalityUi, LocalityUiAction, UiSingleEvent, LocalityFields> {
     val localityTypes: StateFlow<MutableMap<LocalityType, String>>
 
+    val country: StateFlow<InputListItemWrapper<ListItemModel>>
     val region: StateFlow<InputListItemWrapper<ListItemModel>>
     val regionDistrict: StateFlow<InputListItemWrapper<ListItemModel>>
     val localityCode: StateFlow<InputWrapper>

@@ -64,6 +64,11 @@ class RegionDistrictViewModelImpl @Inject constructor(
         state, RegionDistrictFields.REGION_DISTRICT_ID.name,
         RegionDistrictFields.REGION_DISTRICT_REGION
     ) {
+    override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
+        state.getStateFlow(
+            RegionDistrictFields.REGION_DISTRICT_COUNTRY.name, InputListItemWrapper()
+        )
+    }
     override val region: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(RegionDistrictFields.REGION_DISTRICT_REGION.name, InputListItemWrapper())
     }
@@ -74,9 +79,9 @@ class RegionDistrictViewModelImpl @Inject constructor(
         state.getStateFlow(RegionDistrictFields.DISTRICT_NAME.name, InputWrapper())
     }
 
-    override val areInputsValid = combine(region, districtShortName, districtName)
-    { region, districtShortName, districtName ->
-        region.errorId == null && districtShortName.errorId == null && districtName.errorId == null
+    override val areInputsValid = combine(country, region, districtShortName, districtName)
+    { country, region, districtShortName, districtName ->
+        country.errorId == null && region.errorId == null && districtShortName.errorId == null && districtName.errorId == null
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun initState() = UiState.Loading
@@ -145,6 +150,10 @@ class RegionDistrictViewModelImpl @Inject constructor(
             initStateValue(RegionDistrictFields.REGION_DISTRICT_ID, id, it.toString())
         }
         initStateValue(
+            RegionDistrictFields.REGION_DISTRICT_COUNTRY, country,
+            uiModel.region.country.toListItemModel()
+        )
+        initStateValue(
             RegionDistrictFields.REGION_DISTRICT_REGION, region, uiModel.region.toListItemModel()
         )
         initStateValue(
@@ -160,6 +169,11 @@ class RegionDistrictViewModelImpl @Inject constructor(
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
+                    is RegionDistrictInputEvent.Country -> setStateValue(
+                        RegionDistrictFields.REGION_DISTRICT_COUNTRY, country, event.input,
+                        RegionDistrictInputValidator.Country.isValid(event.input.headline)
+                    )
+
                     is RegionDistrictInputEvent.Region -> setStateValue(
                         RegionDistrictFields.REGION_DISTRICT_REGION, region, event.input,
                         RegionDistrictInputValidator.Region.isValid(event.input.headline)
@@ -180,6 +194,11 @@ class RegionDistrictViewModelImpl @Inject constructor(
             .debounce(350)
             .collect { event ->
                 when (event) {
+                    is RegionDistrictInputEvent.Country -> setStateValue(
+                        RegionDistrictFields.REGION_DISTRICT_COUNTRY, country,
+                        RegionDistrictInputValidator.Country.errorIdOrNull(event.input.headline)
+                    )
+
                     is RegionDistrictInputEvent.Region -> setStateValue(
                         RegionDistrictFields.REGION_DISTRICT_REGION, region,
                         RegionDistrictInputValidator.Region.errorIdOrNull(event.input.headline)
@@ -203,6 +222,13 @@ class RegionDistrictViewModelImpl @Inject constructor(
     override fun getInputErrorsOrNull(): List<InputError>? {
         if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
         val inputErrors: MutableList<InputError> = mutableListOf()
+        RegionDistrictInputValidator.Country.errorIdOrNull(country.value.item?.headline)?.let {
+            inputErrors.add(
+                InputError(
+                    fieldName = RegionDistrictFields.REGION_DISTRICT_COUNTRY.name, errorId = it
+                )
+            )
+        }
         RegionDistrictInputValidator.Region.errorIdOrNull(region.value.item?.headline)?.let {
             inputErrors.add(
                 InputError(
@@ -231,6 +257,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
             .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
         for (error in inputErrors) {
             state[error.fieldName] = when (RegionDistrictFields.valueOf(error.fieldName)) {
+                RegionDistrictFields.REGION_DISTRICT_COUNTRY -> country.value.copy(errorId = error.errorId)
                 RegionDistrictFields.REGION_DISTRICT_REGION -> region.value.copy(errorId = error.errorId)
                 RegionDistrictFields.DISTRICT_SHORT_NAME -> districtShortName.value.copy(
                     errorId = error.errorId
@@ -264,6 +291,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 
                 override val id = MutableStateFlow(InputWrapper())
                 override fun id() = null
+                override val country = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val region = MutableStateFlow(InputListItemWrapper<ListItemModel>())
                 override val districtShortName = MutableStateFlow(InputWrapper())
                 override val districtName = MutableStateFlow(InputWrapper())

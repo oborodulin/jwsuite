@@ -119,7 +119,7 @@ interface HouseDao {
         """
         SELECT hv.* FROM ${HouseView.VIEW_NAME} hv JOIN ${TerritoryEntity.TABLE_NAME} t 
             ON t.territoryId = :territoryId AND hv.hTerritoriesId IS NULL 
-                AND hv.${PX_LOCALITY}localityId = t.tLocalitiesId 
+                AND hv.${HouseEntity.PX_LOCALITY}localityId = t.tLocalitiesId 
                 AND ifnull(hv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(hv.hMicrodistrictsId, '')) 
                 AND ifnull(hv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(hv.hLocalityDistrictsId , ''))
                 AND hv.streetLocCode = :locale

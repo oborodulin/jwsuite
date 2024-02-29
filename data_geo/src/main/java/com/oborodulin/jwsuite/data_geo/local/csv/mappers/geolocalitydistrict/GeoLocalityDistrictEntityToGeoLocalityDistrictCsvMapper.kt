@@ -10,8 +10,8 @@ class GeoLocalityDistrictEntityToGeoLocalityDistrictCsvMapper :
         localityDistrictId = input.localityDistrictId,
         locDistrictShortName = input.locDistrictShortName,
         locDistrictOsmId = input.locDistrictOsmId,
-        latitude = input.coordinates?.latitude,
-        longitude = input.coordinates?.longitude,
+        latitude = input.coordinates.latitude,
+        longitude = input.coordinates.longitude,
         ldLocalitiesId = input.ldLocalitiesId
     )
 }

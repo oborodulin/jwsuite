@@ -1,17 +1,18 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesIdleView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class TerritoriesIdleViewToTerritoryMapper(
+    private val territoryMapper: TerritoryViewToTerritoryMapper
+) : Mapper<TerritoriesIdleView, Territory> {
+    override fun map(input: TerritoriesIdleView) = territoryMapper.map(input.territory).copy(
+        congregationId = input.ctCongregationsId,
+        isPrivateSector = input.isPrivateSector
+    )
+}
+/*
     private val congregationMapper: CongregationViewToCongregationMapper,
     private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
     private val regionMapper: RegionViewToGeoRegionMapper,
@@ -19,8 +20,8 @@ class TerritoriesIdleViewToTerritoryMapper(
     private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
     private val localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
     private val microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
-) : Mapper<TerritoriesIdleView, Territory> {
-    override fun map(input: TerritoriesIdleView): Territory {
+
+: Territory {
         with(input.territory) {
             val region = regionMapper.map(this.tRegion)
             val regionDistrict = regionDistrictMapper.nullableMap(this.tDistrict, region)
@@ -59,4 +60,4 @@ class TerritoriesIdleViewToTerritoryMapper(
             ).also { it.id = this.territory.territoryId }
         }
     }
-}
+ */

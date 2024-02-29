@@ -7,9 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.oborodulin.jwsuite.data_congregation.local.db.views.FavoriteCongregationView
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoStreetView
+import com.oborodulin.jwsuite.data_geo.local.db.views.StreetView
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryStreetEntity
 import com.oborodulin.jwsuite.data_territory.local.db.views.CongregationTerritoryView
@@ -67,8 +69,8 @@ interface TerritoryStreetDao {
     //-----------------------------
     @Query(
         """
-    SELECT sv.* FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${GeoStreetView.VIEW_NAME} sv 
-        ON t.territoryId = :territoryId AND sv.streetLocCode = :locale AND sv.${PX_LOCALITY}localityId = t.tLocalitiesId
+    SELECT sv.* FROM ${TerritoryEntity.TABLE_NAME} t JOIN ${StreetView.VIEW_NAME} sv 
+        ON t.territoryId = :territoryId AND sv.streetLocCode = :locale AND sv.sLocalitiesId = t.tLocalitiesId
         LEFT JOIN ${GeoStreetDistrictEntity.TABLE_NAME} ds ON ds.dsStreetsId = sv.streetId 
                                                             AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(ds.dsMicrodistrictsId, ''))
                                                             AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(ds.dsLocalityDistrictsId , '')) 
@@ -80,7 +82,7 @@ interface TerritoryStreetDao {
     )
     fun findStreetsForTerritoryByTerritoryId(
         territoryId: UUID, locale: String? = Locale.getDefault().language
-    ): Flow<List<GeoStreetView>>
+    ): Flow<List<StreetView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctStreetsForTerritoryByTerritoryId(territoryId: UUID) =

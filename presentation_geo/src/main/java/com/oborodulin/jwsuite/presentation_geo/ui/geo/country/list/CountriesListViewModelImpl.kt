@@ -112,12 +112,14 @@ class CountriesListViewModelImpl @Inject constructor(
             CountriesListItem(
                 id = UUID.randomUUID(),
                 countryCode = ctx.resources.getString(R.string.def_country_ukraine_code),
-                countryName = ctx.resources.getString(R.string.def_country_ukraine_name)
+                countryName = ctx.resources.getString(R.string.def_country_ukraine_name),
+                osmInfo = "Ukraine[75.2145698, 98.5545665]"
             ),
             CountriesListItem(
                 id = UUID.randomUUID(),
                 countryCode = ctx.resources.getString(R.string.def_country_russia_code),
-                countryName = ctx.resources.getString(R.string.def_country_russia_name)
+                countryName = ctx.resources.getString(R.string.def_country_russia_name),
+                osmInfo = "Russia[78.2145698, 95.5545665]"
             )
         )
     }

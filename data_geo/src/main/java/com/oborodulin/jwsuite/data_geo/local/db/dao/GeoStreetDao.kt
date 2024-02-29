@@ -109,7 +109,7 @@ interface GeoStreetDao {
         WHERE sv.streetLocCode = :locale
             AND ifnull(ds.dsMicrodistrictsId, '') = ifnull(:microdistrictId, ifnull(ds.dsMicrodistrictsId, '')) 
             AND ifnull(ds.dsLocalityDistrictsId , '') = ifnull(:localityDistrictId, ifnull(ds.dsLocalityDistrictsId , ''))
-            AND sv.localityId = :localityId
+            AND sv.sLocalitiesId = :localityId
             AND sv.isStreetPrivateSector = $DB_TRUE
             AND sv.streetId NOT IN (:excludes)
         ORDER BY sv.streetName

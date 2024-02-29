@@ -45,6 +45,7 @@ import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
+import com.oborodulin.jwsuite.presentation_geo.ui.geo.country.single.CountryComboBox
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.single.RegionComboBox
 import timber.log.Timber
 import java.util.EnumMap
@@ -68,6 +69,7 @@ fun RegionDistrictView(
     }
 
     Timber.tag(TAG).d("Region District: CollectAsStateWithLifecycle for all fields")
+    val country by viewModel.country.collectAsStateWithLifecycle()
     val region by viewModel.region.collectAsStateWithLifecycle()
     val districtShortName by viewModel.districtShortName.collectAsStateWithLifecycle()
     val districtName by viewModel.districtName.collectAsStateWithLifecycle()
@@ -102,6 +104,20 @@ fun RegionDistrictView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        CountryComboBox(
+            modifier = Modifier
+                .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_COUNTRY]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    viewModel.onTextFieldFocusChanged(
+                        focusedField = RegionDistrictFields.REGION_DISTRICT_COUNTRY,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            //enabled = districtOsmId.value.isEmpty(),
+            inputWrapper = country,
+            onValueChange = { viewModel.onTextFieldEntered(RegionDistrictInputEvent.Country(it)) },
+            onImeKeyAction = viewModel::moveFocusImeAction
+        )
         RegionComboBox(
             modifier = Modifier
                 .focusRequester(focusRequesters[RegionDistrictFields.REGION_DISTRICT_REGION]!!.focusRequester)
@@ -111,6 +127,7 @@ fun RegionDistrictView(
                         isFocused = focusState.isFocused
                     )
                 },
+            countryId = country.item?.itemId,
             inputWrapper = region,
             onValueChange = {
                 viewModel.onTextFieldEntered(RegionDistrictInputEvent.Region(it))

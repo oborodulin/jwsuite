@@ -6,14 +6,9 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.Fa
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.CoordinatesToGeoCoordinatesMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.MicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewListToGeoStreetsListMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geostreet.StreetViewToGeoStreetMapper
 import com.oborodulin.jwsuite.data_territory.local.csv.mappers.entrance.EntranceCsvListToEntranceEntityListMapper
@@ -642,23 +637,10 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideTerritoriesAtWorkViewToTerritoryMapper(
-        congregationMapper: CongregationViewToCongregationMapper,
-        territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: GeoLocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
+        territoryMapper: TerritoryViewToTerritoryMapper,
         memberMapper: MemberViewToMemberMapper
     ): TerritoriesAtWorkViewToTerritoryMapper = TerritoriesAtWorkViewToTerritoryMapper(
-        congregationMapper = congregationMapper,
-        territoryCategoryMapper = territoryCategoryMapper,
-        regionMapper = regionMapper,
-        regionDistrictMapper = regionDistrictMapper,
-        localityMapper = localityMapper,
-        localityDistrictMapper = localityDistrictMapper,
-        microdistrictMapper = microdistrictMapper,
-        memberMapper = memberMapper
+        territoryMapper = territoryMapper, memberMapper = memberMapper
     )
 
     @Singleton
@@ -669,23 +651,10 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideTerritoriesHandOutViewToTerritoryMapper(
-        congregationMapper: CongregationViewToCongregationMapper,
-        territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: GeoLocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
+        territoryMapper: TerritoryViewToTerritoryMapper,
         memberMapper: MemberViewToMemberMapper
     ): TerritoriesHandOutViewToTerritoryMapper = TerritoriesHandOutViewToTerritoryMapper(
-        congregationMapper = congregationMapper,
-        territoryCategoryMapper = territoryCategoryMapper,
-        regionMapper = regionMapper,
-        regionDistrictMapper = regionDistrictMapper,
-        localityMapper = localityMapper,
-        localityDistrictMapper = localityDistrictMapper,
-        microdistrictMapper = microdistrictMapper,
-        memberMapper = memberMapper
+        territoryMapper = territoryMapper, memberMapper = memberMapper
     )
 
     @Singleton
@@ -696,21 +665,9 @@ object TerritoryMappersModule {
     @Singleton
     @Provides
     fun provideTerritoriesIdleViewToTerritoryMapper(
-        congregationMapper: CongregationViewToCongregationMapper,
-        territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
-        regionMapper: RegionViewToGeoRegionMapper,
-        regionDistrictMapper: GeoRegionDistrictViewToGeoRegionDistrictMapper,
-        localityMapper: GeoLocalityViewToGeoLocalityMapper,
-        localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
-        microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper
+        territoryMapper: TerritoryViewToTerritoryMapper
     ): TerritoriesIdleViewToTerritoryMapper = TerritoriesIdleViewToTerritoryMapper(
-        congregationMapper = congregationMapper,
-        territoryCategoryMapper = territoryCategoryMapper,
-        regionMapper = regionMapper,
-        regionDistrictMapper = regionDistrictMapper,
-        localityMapper = localityMapper,
-        localityDistrictMapper = localityDistrictMapper,
-        microdistrictMapper = microdistrictMapper
+        territoryMapper = territoryMapper
     )
 
     @Singleton

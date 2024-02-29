@@ -14,7 +14,7 @@ class StreetToStreetUiMapper(
 ) : Mapper<GeoStreet, StreetUi> {
     override fun map(input: GeoStreet): StreetUi {
         val streetUi = StreetUi(
-            locality = localityMapper.map(input.locality),
+            locality = localityMapper.map(input.locality!!),
             //localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
             //microdistrict = microdistrictMapper.nullableMap(input.microdistrict),
             roadType = input.roadType,

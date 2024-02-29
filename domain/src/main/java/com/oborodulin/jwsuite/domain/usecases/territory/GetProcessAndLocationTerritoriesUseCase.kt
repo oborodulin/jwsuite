@@ -33,10 +33,8 @@ class GetProcessAndLocationTerritoriesUseCase(
                 val streetNamesAndHouseNums =
                     territoryStreetNamesAndHouseNums.firstOrNull { it.territoryId == territory.id }
                 streetNamesAndHouseNums?.let {
-                    territory.streetNames = it.streetNames
-                    territory.houseNums = it.houseFullNums
-                }
-                territory
+                    territory.copy(streetNames = it.streetNames, houseNums = it.houseFullNums)
+                } ?: territory
             }
         }.map {
             Response(it)

@@ -1,22 +1,24 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.home.common.util.LogLevel.LOG_DB_MAPPER
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.GeoLocalityViewToGeoLocalityMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.GeoLocalityDistrictViewToGeoLocalityDistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.geomicrodistrict.GeoMicrodistrictViewToGeoMicrodistrictMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegion.RegionViewToGeoRegionMapper
-import com.oborodulin.jwsuite.data_geo.local.db.mappers.georegiondistrict.GeoRegionDistrictViewToGeoRegionDistrictMapper
-import com.oborodulin.jwsuite.data_territory.local.db.mappers.territorycategory.TerritoryCategoryEntityToTerritoryCategoryMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
-import timber.log.Timber
 
 private const val TAG = "Data.TerritoriesHandOutViewToTerritoryMapper"
 
 class TerritoriesHandOutViewToTerritoryMapper(
+    private val territoryMapper: TerritoryViewToTerritoryMapper,
+    private val memberMapper: MemberViewToMemberMapper
+) : Mapper<TerritoriesHandOutView, Territory> {
+    override fun map(input: TerritoriesHandOutView) = territoryMapper.map(input.territory).copy(
+        member = memberMapper.nullableMap(input.member),
+        congregationId = input.ctCongregationsId,
+        isPrivateSector = input.isPrivateSector,
+        handOutTotalDays = input.handOutTotalDays
+    )
+}
+/*
     private val congregationMapper: CongregationViewToCongregationMapper,
     private val territoryCategoryMapper: TerritoryCategoryEntityToTerritoryCategoryMapper,
     private val regionMapper: RegionViewToGeoRegionMapper,
@@ -24,9 +26,8 @@ class TerritoriesHandOutViewToTerritoryMapper(
     private val localityMapper: GeoLocalityViewToGeoLocalityMapper,
     private val localityDistrictMapper: GeoLocalityDistrictViewToGeoLocalityDistrictMapper,
     private val microdistrictMapper: GeoMicrodistrictViewToGeoMicrodistrictMapper,
-    private val memberMapper: MemberViewToMemberMapper
-) : Mapper<TerritoriesHandOutView, Territory> {
-    override fun map(input: TerritoriesHandOutView): Territory {
+
+: Territory {
         if (LOG_DB_MAPPER) Timber.tag(TAG).d(
             "TerritoriesHandOutViewToTerritoryMapper(...) called: territoryId = %s",
             input.territory.territory.territoryId
@@ -79,4 +80,4 @@ class TerritoriesHandOutViewToTerritoryMapper(
             ).also { it.id = this.territory.territoryId }
         }
     }
-}
+ */

@@ -22,19 +22,21 @@ import com.oborodulin.jwsuite.presentation_geo.R
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListUiAction
 import com.oborodulin.jwsuite.presentation_geo.ui.geo.region.list.RegionsListViewModelImpl
 import timber.log.Timber
+import java.util.UUID
 
 private const val TAG = "Geo.RegionComboBox"
 
 @Composable
 fun RegionComboBox(
     modifier: Modifier = Modifier,
+    countryId: UUID?,
     listViewModel: RegionsListViewModelImpl = hiltViewModel(),
     singleViewModel: RegionViewModelImpl = hiltViewModel(),
     inputWrapper: InputListItemWrapper<ListItemModel>,
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    Timber.tag(TAG).d("RegionComboBox(...) called")
+    Timber.tag(TAG).d("RegionComboBox(...) called: countryId = %s", countryId)
     var isShowListDialog by rememberSaveable { mutableStateOf(false) }
     val onShowListDialog = { isShowListDialog = true }
     val onDismissListDialog = { isShowListDialog = false }
@@ -45,18 +47,14 @@ fun RegionComboBox(
         loadUiAction = RegionUiAction.Load(),
         confirmUiAction = RegionUiAction.Save,
         dialogView = { _, handleConfirmAction ->
-            RegionView(
-                viewModel = singleViewModel,
-                handleSaveAction = handleConfirmAction
-            )
+            RegionView(viewModel = singleViewModel, handleSaveAction = handleConfirmAction)
         },
-        onValueChange = onValueChange,
-        //onShowListDialog = onShowListDialog
+        onValueChange = onValueChange//,onShowListDialog = onShowListDialog
     )
     ComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = RegionsListUiAction.Load,
+        loadListUiAction = RegionsListUiAction.Load(countryId = countryId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

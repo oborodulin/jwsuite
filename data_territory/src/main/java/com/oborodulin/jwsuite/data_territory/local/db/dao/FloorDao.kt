@@ -105,7 +105,7 @@ interface FloorDao {
         """
         SELECT fv.* FROM ${FloorView.VIEW_NAME} fv JOIN ${TerritoryEntity.TABLE_NAME} t 
                 ON t.territoryId = :territoryId AND fv.hTerritoriesId IS NULL 
-                    AND fv.${GeoLocalityEntity.PX}localityId = t.tLocalitiesId 
+                    AND fv.sLocalitiesId = t.tLocalitiesId 
                     AND ifnull(fv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(fv.hMicrodistrictsId, '')) 
                     AND ifnull(fv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(fv.hLocalityDistrictsId , ''))
                     AND fv.streetLocCode = :locale

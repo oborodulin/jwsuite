@@ -11,7 +11,7 @@ class LocalityDistrictToLocalityDistrictUiMapper(private val mapper: LocalityToL
     Mapper<GeoLocalityDistrict, LocalityDistrictUi> {
     override fun map(input: GeoLocalityDistrict): LocalityDistrictUi {
         val localityDistrictUi = LocalityDistrictUi(
-            locality = mapper.map(input.locality),
+            locality = mapper.map(input.locality!!),
             districtShortName = input.districtShortName,
             districtName = input.districtName
         )

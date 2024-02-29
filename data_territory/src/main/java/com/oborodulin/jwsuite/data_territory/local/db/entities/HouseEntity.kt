@@ -95,7 +95,7 @@ data class HouseEntity(
         const val PX_M_LOCALITY = "hml_"
 
         // Locality Districts:
-        const val PX_LD_LOCALITY_DISTRICT = "hlld_"
+        const val PX_LOCALITY_DISTRICT = "hld_"
         const val PX_M_LOCALITY_DISTRICT = "hmld_"
 
         // Microdistricts:

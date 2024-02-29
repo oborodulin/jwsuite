@@ -168,13 +168,21 @@ object GeoModule {
     // RegionDistricts:
     @Singleton
     @Provides
-    fun provideRegionDistrictToRegionDistrictUiMapper(mapper: RegionToRegionUiMapper): RegionDistrictToRegionDistrictUiMapper =
-        RegionDistrictToRegionDistrictUiMapper(regionMapper = mapper)
+    fun provideRegionDistrictToRegionDistrictUiMapper(
+        regionMapper: RegionToRegionUiMapper,
+        coordinatesMapper: GeoCoordinatesToCoordinatesUiMapper
+    ): RegionDistrictToRegionDistrictUiMapper = RegionDistrictToRegionDistrictUiMapper(
+        regionMapper = regionMapper, coordinatesMapper = coordinatesMapper
+    )
 
     @Singleton
     @Provides
-    fun provideRegionDistrictUiToRegionDistrictMapper(mapper: RegionUiToRegionMapper): RegionDistrictUiToRegionDistrictMapper =
-        RegionDistrictUiToRegionDistrictMapper(regionUiMapper = mapper)
+    fun provideRegionDistrictUiToRegionDistrictMapper(
+        regionUiMapper: RegionUiToRegionMapper,
+        coordinatesUiMapper: CoordinatesUiToGeoCoordinatesMapper
+    ): RegionDistrictUiToRegionDistrictMapper = RegionDistrictUiToRegionDistrictMapper(
+        regionUiMapper = regionUiMapper, coordinatesUiMapper = coordinatesUiMapper
+    )
 
     @Singleton
     @Provides

@@ -97,9 +97,10 @@ class RegionViewModelImpl @Inject constructor(
         state.getStateFlow(RegionFields.REGION_LONGITUDE.name, InputWrapper())
     }
 
-    override val areInputsValid = combine(regionCode, regionName) { regionCode, regionName ->
-        regionCode.errorId == null && regionName.errorId == null
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    override val areInputsValid =
+        combine(country, regionCode, regionName) { country, regionCode, regionName ->
+            country.errorId == null && regionCode.errorId == null && regionName.errorId == null
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
         initRegionTypes(com.oborodulin.jwsuite.domain.R.array.region_types)

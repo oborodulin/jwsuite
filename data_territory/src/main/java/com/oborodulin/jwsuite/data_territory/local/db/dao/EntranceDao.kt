@@ -98,7 +98,7 @@ interface EntranceDao {
         """
         SELECT ev.* FROM ${EntranceView.VIEW_NAME} ev JOIN ${TerritoryEntity.TABLE_NAME} t 
                 ON t.territoryId = :territoryId AND ev.hTerritoriesId IS NULL 
-                    AND ev.${PX_LOCALITY}localityId = t.tLocalitiesId 
+                    AND ev.${HouseEntity.PX_LOCALITY}localityId = t.tLocalitiesId 
                     AND ifnull(ev.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(ev.hMicrodistrictsId, '')) 
                     AND ifnull(ev.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(ev.hLocalityDistrictsId , ''))
                     AND ev.streetLocCode = :locale

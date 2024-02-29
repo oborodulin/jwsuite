@@ -115,7 +115,7 @@ interface RoomDao {
         SELECT rv.* FROM ${RoomView.VIEW_NAME} rv JOIN ${TerritoryEntity.TABLE_NAME} t 
             ON t.territoryId = :territoryId 
                 AND rv.hTerritoriesId IS NULL AND rv.eTerritoriesId IS NULL AND rv.fTerritoriesId IS NULL AND rv.rTerritoriesId IS NULL
-                AND rv.${PX_LOCALITY}localityId = t.tLocalitiesId 
+                AND rv.${HouseEntity.PX_LOCALITY}localityId = t.tLocalitiesId 
                 AND ifnull(rv.hMicrodistrictsId, '') = ifnull(t.tMicrodistrictsId, ifnull(rv.hMicrodistrictsId, '')) 
                 AND ifnull(rv.hLocalityDistrictsId , '') = ifnull(t.tLocalityDistrictsId, ifnull(rv.hLocalityDistrictsId , ''))
                 AND rv.streetLocCode = :locale

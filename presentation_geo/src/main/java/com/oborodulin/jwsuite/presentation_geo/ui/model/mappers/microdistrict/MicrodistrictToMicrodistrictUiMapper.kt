@@ -14,8 +14,8 @@ class MicrodistrictToMicrodistrictUiMapper(
     NullableMapper<GeoMicrodistrict, MicrodistrictUi> {
     override fun map(input: GeoMicrodistrict): MicrodistrictUi {
         val microdistrictUi = MicrodistrictUi(
-            locality = localityMapper.map(input.locality),
-            localityDistrict = localityDistrictMapper.map(input.localityDistrict),
+            locality = localityMapper.map(input.locality!!),
+            localityDistrict = localityDistrictMapper.map(input.localityDistrict!!),
             microdistrictType = input.microdistrictType,
             microdistrictShortName = input.microdistrictShortName,
             microdistrictName = input.microdistrictName,

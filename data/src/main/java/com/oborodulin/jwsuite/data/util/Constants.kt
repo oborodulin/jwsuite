@@ -10,5 +10,5 @@ object Constants {
     const val DATABASE_PASSPHRASE = "mAt_24:14!"
 
     // Remote
-    const val BASE_URL_OVERPASS_API = "https://overpass-api.de/api/interpreter"
+    const val BASE_URL_OVERPASS_API = "https://overpass-api.de/api/interpreter/"
 }

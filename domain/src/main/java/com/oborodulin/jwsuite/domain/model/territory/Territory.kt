@@ -24,13 +24,13 @@ data class Territory(
     val isActive: Boolean = true,
     val territoryDesc: String? = null,
     val territoryStreets: List<TerritoryStreet> = emptyList(),
-    var streetNames: String? = null,
-    var houseNums: String? = null,
+    val streetNames: String? = null,
+    val houseNums: String? = null,
     val member: Member? = null,
     val congregationId: UUID? = null,
     val isPrivateSector: Boolean? = null,
     val handOutTotalDays: Int? = null,
-    val expiredTotalDays: Int? = null,
+    var expiredTotalDays: Int? = null,
     val territoryBusinessMark: String? = null
 ) : DomainModel() {
     val cardNum =
