@@ -60,16 +60,19 @@ data class GeoRegionEntity(
             regionGeocode = regionGeocode, regionOsmId = regionOsmId, coordinates = coordinates
         )
 
-        fun defRegion(ctx: Context) = defaultRegion(
-            regionCode = ctx.resources.getString(R.string.def_reg_code)
+        fun defRegion(ctx: Context, countryId: UUID) = defaultRegion(
+            regionCode = ctx.resources.getString(R.string.def_reg_code),
+            countryId = countryId
         )
 
-        fun donetskRegion(ctx: Context) = defaultRegion(
-            regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code)
+        fun donetskRegion(ctx: Context, countryId: UUID) = defaultRegion(
+            regionCode = ctx.resources.getString(R.string.def_reg_donetsk_code),
+            countryId = countryId
         )
 
-        fun luganskRegion(ctx: Context) = defaultRegion(
-            regionCode = ctx.resources.getString(R.string.def_reg_luhansk_code)
+        fun luganskRegion(ctx: Context, countryId: UUID) = defaultRegion(
+            regionCode = ctx.resources.getString(R.string.def_reg_luhansk_code),
+            countryId = countryId
         )
     }
 

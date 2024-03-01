@@ -47,32 +47,32 @@ data class GeoCountryTlEntity(
         )
 
         private fun defCountryTl(ctx: Context, countryId: UUID) = defaultCountryTl(
-            countryName = ctx.resources.getString(R.string.def_reg_name), countryId = countryId
+            countryName = ctx.resources.getString(R.string.def_country_name), countryId = countryId
         )
 
-        private fun donetskCountryTl(ctx: Context, countryId: UUID) = defaultCountryTl(
-            countryName = ctx.resources.getString(R.string.def_reg_donetsk_name),
+        private fun ukraineCountryTl(ctx: Context, countryId: UUID) = defaultCountryTl(
+            countryName = ctx.resources.getString(R.string.def_country_ukraine_name),
             countryId = countryId
         )
 
-        private fun luganskCountryTl(ctx: Context, countryId: UUID) = defaultCountryTl(
-            countryName = ctx.resources.getString(R.string.def_reg_luhansk_name),
+        private fun russiaCountryTl(ctx: Context, countryId: UUID) = defaultCountryTl(
+            countryName = ctx.resources.getString(R.string.def_country_russia_name),
             countryId = countryId
         )
 
         fun countryTl(ctx: Context, countryCode: String, countryId: UUID) =
             when (countryCode) {
-                ctx.resources.getString(R.string.def_reg_code) -> defCountryTl(
+                ctx.resources.getString(R.string.def_country_code) -> defCountryTl(
                     ctx,
                     countryId
                 )
 
-                ctx.resources.getString(R.string.def_reg_donetsk_code) -> donetskCountryTl(
+                ctx.resources.getString(R.string.def_country_ukraine_code) -> ukraineCountryTl(
                     ctx,
                     countryId
                 )
 
-                ctx.resources.getString(R.string.def_reg_luhansk_code) -> luganskCountryTl(
+                ctx.resources.getString(R.string.def_country_russia_code) -> russiaCountryTl(
                     ctx,
                     countryId
                 )

@@ -6,6 +6,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoMicrodistrictEntity
@@ -24,6 +25,7 @@ interface Populable {
     suspend fun insertDefAppSettings()
 
     // GEO:
+    suspend fun insertDefCountry(country: GeoCountryEntity): GeoCountryEntity
     suspend fun insertDefRegion(region: GeoRegionEntity): GeoRegionEntity
     suspend fun insertDefRegionDistrict(regionDistrict: GeoRegionDistrictEntity): GeoRegionDistrictEntity
     suspend fun insertDeftLocality(locality: GeoLocalityEntity): GeoLocalityEntity

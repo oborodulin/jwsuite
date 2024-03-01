@@ -6,8 +6,10 @@ data class CongregationTotals(
     val congregation: Congregation,
     val totalGroups: Int,
     val totalMembers: Int,
+    val totalActiveMembers: Int,
     val totalFulltimeMembers: Int,
     val diffGroups: Int,
     val diffMembers: Int,
+    val diffTotalActiveMembers: Int,
     val diffFulltimeMembers: Int
 ) : DomainModel()

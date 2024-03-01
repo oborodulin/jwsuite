@@ -1,7 +1,7 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberEntityToMemberMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesHandOutView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 
@@ -9,7 +9,7 @@ private const val TAG = "Data.TerritoriesHandOutViewToTerritoryMapper"
 
 class TerritoriesHandOutViewToTerritoryMapper(
     private val territoryMapper: TerritoryViewToTerritoryMapper,
-    private val memberMapper: MemberViewToMemberMapper
+    private val memberMapper: MemberEntityToMemberMapper
 ) : Mapper<TerritoriesHandOutView, Territory> {
     override fun map(input: TerritoriesHandOutView) = territoryMapper.map(input.territory).copy(
         member = memberMapper.nullableMap(input.member),

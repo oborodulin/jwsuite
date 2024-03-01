@@ -2,6 +2,7 @@ package com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality
 
 import android.content.Context
 import com.oborodulin.home.common.mapping.Mapper
+import com.oborodulin.home.common.mapping.NullableMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.CoordinatesToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
 import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
@@ -9,7 +10,7 @@ import com.oborodulin.jwsuite.domain.model.geo.GeoLocality
 class LocalityViewToGeoLocalityMapper(
     private val ctx: Context,
     private val mapper: CoordinatesToGeoCoordinatesMapper
-) : Mapper<LocalityView, GeoLocality> {
+) : Mapper<LocalityView, GeoLocality>, NullableMapper<LocalityView, GeoLocality> {
     override fun map(input: LocalityView) = GeoLocality(
         ctx = ctx,
         localityCode = input.data.localityCode,
@@ -23,4 +24,6 @@ class LocalityViewToGeoLocalityMapper(
         it.id = input.data.localityId
         it.tlId = input.tl.localityTlId
     }
+
+    override fun nullableMap(input: LocalityView?) = input?.let { map(it) }
 }

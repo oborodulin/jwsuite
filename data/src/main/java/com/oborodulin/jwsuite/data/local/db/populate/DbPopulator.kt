@@ -16,6 +16,8 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEnti
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
@@ -152,6 +154,28 @@ class DbPopulator(
     }
 
     // GEO:
+    override suspend fun insertDefCountry(country: GeoCountryEntity): GeoCountryEntity {
+        val textContent =
+            GeoCountryTlEntity.countryTl(ctx, country.countryCode, country.countryId)
+        db.insert(
+            GeoCountryEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+            Mapper.toContentValues(country)
+        )
+        db.insert(
+            GeoCountryTlEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
+            Mapper.toContentValues(textContent)
+        )
+        Timber.tag(TAG).i("GEO: Default country imported")
+        jsonLogger?.let {
+            Timber.tag(TAG).i(
+                ": {\"country\": {%s}, \"tl\": {%s}}",
+                it.encodeToString(country),
+                it.encodeToString(textContent)
+            )
+        }
+        return country
+    }
+
     override suspend fun insertDefRegion(region: GeoRegionEntity): GeoRegionEntity {
         val textContent =
             GeoRegionTlEntity.regionTl(ctx, region.regionCode, region.regionId)
@@ -694,9 +718,12 @@ class DbPopulator(
             insertDefAppSettings()
             // ==============================
             // GEO:
+            // Default country:
+            val russia = insertDefCountry(GeoCountryEntity.russiaCountry(ctx))
+
             // Default regions:
-            val donRegion = insertDefRegion(GeoRegionEntity.donetskRegion(ctx))
-            val lugRegion = insertDefRegion(GeoRegionEntity.luganskRegion(ctx))
+            val donRegion = insertDefRegion(GeoRegionEntity.donetskRegion(ctx, russia.countryId))
+            val lugRegion = insertDefRegion(GeoRegionEntity.luganskRegion(ctx, russia.countryId))
 
             // DON districts:
             val maryinskyDistrict = insertDefRegionDistrict(

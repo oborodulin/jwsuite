@@ -62,7 +62,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
 ) : RegionDistrictViewModel,
     DialogViewModel<RegionDistrictUi, UiState<RegionDistrictUi>, RegionDistrictUiAction, UiSingleEvent, RegionDistrictFields, InputWrapper>(
         state, RegionDistrictFields.REGION_DISTRICT_ID.name,
-        RegionDistrictFields.REGION_DISTRICT_REGION
+        RegionDistrictFields.REGION_DISTRICT_COUNTRY
     ) {
     override val country: StateFlow<InputListItemWrapper<ListItemModel>> by lazy {
         state.getStateFlow(

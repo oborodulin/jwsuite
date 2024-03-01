@@ -13,6 +13,8 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberRoleEnti
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.role.RoleTransferObjectEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.transfer.TransferObjectEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
+import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityDistrictTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
@@ -26,7 +28,6 @@ import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoRegionTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetDistrictEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoStreetTlEntity
-import com.oborodulin.jwsuite.data_territory.local.db.entities.CongregationTerritoryCrossRefEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.HouseEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryCategoryEntity
 import com.oborodulin.jwsuite.data_territory.local.db.entities.TerritoryEntity
@@ -116,6 +117,22 @@ class DaoPopulator(
     }
 
     // GEO:
+    override suspend fun insertDefCountry(country: GeoCountryEntity): GeoCountryEntity {
+        val countryDao = db.geoCountryDao()
+        val textContent =
+            GeoCountryTlEntity.countryTl(ctx, country.countryCode, country.countryId)
+        countryDao.insert(country, textContent)
+        Timber.tag(TAG).i("GEO: Default country imported")
+        jsonLogger?.let {
+            Timber.tag(TAG).i(
+                ": {\"country\": {%s}, \"tl\": {%s}}",
+                it.encodeToString(country),
+                it.encodeToString(textContent)
+            )
+        }
+        return country
+    }
+
     override suspend fun insertDefRegion(region: GeoRegionEntity): GeoRegionEntity {
         val regionDao = db.geoRegionDao()
         val textContent =
@@ -548,9 +565,12 @@ class DaoPopulator(
         insertDefAppSettings()
         // ==============================
         // GEO:
+        // Default country:
+        val russia = insertDefCountry(GeoCountryEntity.russiaCountry(ctx))
+
         // Default regions:
-        val donRegion = insertDefRegion(GeoRegionEntity.donetskRegion(ctx))
-        val lugRegion = insertDefRegion(GeoRegionEntity.luganskRegion(ctx))
+        val donRegion = insertDefRegion(GeoRegionEntity.donetskRegion(ctx, russia.countryId))
+        val lugRegion = insertDefRegion(GeoRegionEntity.luganskRegion(ctx, russia.countryId))
 
         // DON districts:
         val maryinskyDistrict = insertDefRegionDistrict(
@@ -797,8 +817,11 @@ class DaoPopulator(
         insertDefAppSettings()
         // ==============================
         // GEO:
+        // Default country:
+        val defCountry = insertDefCountry(GeoCountryEntity.defCountry(ctx))
+
         // Default region:
-        val defRegion = insertDefRegion(GeoRegionEntity.defRegion(ctx))
+        val defRegion = insertDefRegion(GeoRegionEntity.defRegion(ctx, defCountry.countryId))
 
         // Default locality:
         val defLocality = insertDeftLocality(GeoLocalityEntity.defLocality(ctx, defRegion.regionId))

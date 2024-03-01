@@ -32,6 +32,7 @@ data class CongregationTotalEntity(
     val lastVisitDate: OffsetDateTime? = null,
     val totalGroups: Int = 0,
     val totalMembers: Int = 0,
+    val totalActiveMembers: Int = 0,
     val totalFulltimeMembers: Int = 0,
     val totalTerritories: Int = 0,
     val totalTerritoryIssued: Int = 0,
@@ -56,6 +57,7 @@ data class CongregationTotalEntity(
         val str = StringBuffer()
         str.append("Congregation Total Entity totalGroups = ").append(totalGroups)
             .append("; totalMembers = ").append(totalMembers)
+            .append("; totalActiveMembers = ").append(totalFulltimeMembers)
             .append("; totalFulltimeMembers = ").append(totalFulltimeMembers)
             .append("; totalTerritories = ").append(totalTerritories)
             .append("; totalTerritoryIssued = ").append(totalTerritoryIssued)

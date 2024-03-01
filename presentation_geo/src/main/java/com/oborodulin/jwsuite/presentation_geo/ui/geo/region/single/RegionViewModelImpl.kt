@@ -66,7 +66,7 @@ class RegionViewModelImpl @Inject constructor(
     private val regionUiMapper: RegionUiToRegionMapper
 ) : RegionViewModel,
     DialogViewModel<RegionUi, UiState<RegionUi>, RegionUiAction, UiSingleEvent, RegionFields, InputWrapper>(
-        state, RegionFields.REGION_ID.name, RegionFields.REGION_CODE
+        state, RegionFields.REGION_ID.name, RegionFields.REGION_COUNTRY
     ) {
     private val _regionTypes: MutableStateFlow<MutableMap<RegionType, String>> =
         MutableStateFlow(mutableMapOf())

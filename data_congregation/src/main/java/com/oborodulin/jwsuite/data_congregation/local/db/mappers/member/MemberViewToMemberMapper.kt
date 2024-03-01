@@ -15,23 +15,15 @@ class MemberViewToMemberMapper(
     private val congregationMapper: CongregationEntityToCongregationMapper,
     private val groupMapper: GroupViewToGroupMapper,
     private val lastCongregationMapper: MemberLastCongregationViewToMemberCongregationMapper,
-    private val movementMapper: MemberLastMovementViewToMemberMovementMapper
+    private val movementMapper: MemberLastMovementViewToMemberMovementMapper,
+    private val memberMapper: MemberEntityToMemberMapper
 ) : NullableMapper<MemberView, Member>, Mapper<MemberView, Member> {
-    override fun map(input: MemberView) = Member(
-        congregation = congregationMapper.map(
-            input.memberCongregation, localityMapper.map(input.locality)
+    override fun map(input: MemberView) = memberMapper.map(input.member).copy(
+        congregation = congregationMapper.nullableMap(
+            input.memberCongregation, localityMapper.nullableMap(input.locality)
         ),
         group = groupMapper.nullableMap(input.group),
-        memberNum = input.member.memberNum,
-        memberName = input.member.memberName,
-        surname = input.member.surname,
-        patronymic = input.member.patronymic,
-        pseudonym = input.member.pseudonym,
-        phoneNumber = input.member.phoneNumber,
-        dateOfBirth = input.member.dateOfBirth,
-        dateOfBaptism = input.member.dateOfBaptism,
-        loginExpiredDate = input.member.loginExpiredDate,
-        lastCongregation = lastCongregationMapper.map(input.lastCongregation),
+        lastCongregation = lastCongregationMapper.nullableMap(input.lastCongregation),
         lastMovement = movementMapper.map(input.lastMovement)
     ).also { it.id = input.member.memberId }
 

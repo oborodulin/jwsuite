@@ -1,13 +1,13 @@
 package com.oborodulin.jwsuite.data_territory.local.db.mappers.territory
 
 import com.oborodulin.home.common.mapping.Mapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberEntityToMemberMapper
 import com.oborodulin.jwsuite.data_territory.local.db.views.TerritoriesAtWorkView
 import com.oborodulin.jwsuite.domain.model.territory.Territory
 
 class TerritoriesAtWorkViewToTerritoryMapper(
     private val territoryMapper: TerritoryViewToTerritoryMapper,
-    private val memberMapper: MemberViewToMemberMapper
+    private val memberMapper: MemberEntityToMemberMapper
 ) : Mapper<TerritoriesAtWorkView, Territory> {
     override fun map(input: TerritoriesAtWorkView) = territoryMapper.map(input.territory).copy(
         member = memberMapper.nullableMap(input.member),

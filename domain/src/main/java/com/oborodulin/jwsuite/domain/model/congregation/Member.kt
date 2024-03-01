@@ -4,7 +4,7 @@ import com.oborodulin.home.common.domain.model.DomainModel
 import java.time.OffsetDateTime
 
 data class Member(
-    val congregation: Congregation,
+    val congregation: Congregation? = null,
     val group: Group? = null,
     val memberNum: String? = null,
     val memberName: String? = null,
@@ -15,9 +15,10 @@ data class Member(
     val dateOfBirth: OffsetDateTime? = null,
     val dateOfBaptism: OffsetDateTime? = null,
     val loginExpiredDate: OffsetDateTime? = null,
-    val lastCongregation: MemberCongregation,
-    val lastMovement: MemberMovement
+    val lastCongregation: MemberCongregation? = null,
+    val lastMovement: MemberMovement? = null
 ) : DomainModel() {
+    val fullNum = group?.groupNum?.let { "$it.${memberNum.orEmpty()}" }.orEmpty()
     val fullName =
         "${surname.orEmpty()} ${memberName.orEmpty()} ${patronymic.orEmpty()} [$pseudonym]".trim()
     val shortName = ("$surname"

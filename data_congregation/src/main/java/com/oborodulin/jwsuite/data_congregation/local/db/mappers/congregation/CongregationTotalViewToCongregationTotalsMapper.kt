@@ -13,9 +13,11 @@ class CongregationTotalViewToCongregationTotalsMapper(
         congregation = mapper.map(input.congregation),
         totalGroups = input.totalGroups,
         totalMembers = input.totalMembers,
+        totalActiveMembers = input.totalActiveMembers,
         totalFulltimeMembers = input.totalFulltimeMembers,
         diffGroups = input.diffGroups,
         diffMembers = input.diffMembers,
+        diffTotalActiveMembers = input.diffTotalActiveMembers,
         diffFulltimeMembers = input.diffFulltimeMembers
     )
 

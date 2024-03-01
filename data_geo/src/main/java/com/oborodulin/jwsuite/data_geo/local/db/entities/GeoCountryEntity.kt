@@ -49,15 +49,15 @@ data class GeoCountryEntity(
         )
 
         fun defCountry(ctx: Context) = defaultCountry(
-            countryCode = ctx.resources.getString(R.string.def_reg_code)
+            countryCode = ctx.resources.getString(R.string.def_country_code)
         )
 
         fun ukraineCountry(ctx: Context) = defaultCountry(
-            countryCode = ctx.resources.getString(R.string.def_reg_donetsk_code)
+            countryCode = ctx.resources.getString(R.string.def_country_ukraine_code)
         )
 
         fun russiaCountry(ctx: Context) = defaultCountry(
-            countryCode = ctx.resources.getString(R.string.def_reg_luhansk_code)
+            countryCode = ctx.resources.getString(R.string.def_country_russia_code)
         )
     }
 

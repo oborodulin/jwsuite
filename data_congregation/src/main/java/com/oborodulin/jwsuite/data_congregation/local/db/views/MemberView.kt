@@ -21,22 +21,22 @@ SELECT c.congregationId AS ${MemberEntity.PX_CONGREGATION}congregationId, c.cong
             lv.lRegionDistrictsId AS ${MemberEntity.PX_LOCALITY}lRegionDistrictsId, lv.lRegionsId AS ${MemberEntity.PX_LOCALITY}lRegionsId,
             lv.localityTlId AS ${MemberEntity.PX_LOCALITY}localityTlId, lv.localityLocCode AS ${MemberEntity.PX_LOCALITY}localityLocCode, lv.localityShortName AS ${MemberEntity.PX_LOCALITY}localityShortName, 
             lv.localityName AS ${MemberEntity.PX_LOCALITY}localityName, lv.localitiesId AS ${MemberEntity.PX_LOCALITY}localitiesId,
-        gv.*, m.*, mlcv.*, mlmv.* FROM ${MemberEntity.TABLE_NAME} m 
-    LEFT JOIN ${GroupView.VIEW_NAME} gv ON gv.groupId = m.mGroupsId
-    JOIN ${MemberLastCongregationView.VIEW_NAME} mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  
-    JOIN ${CongregationEntity.TABLE_NAME} c ON c.congregationId = mlcv.mcCongregationsId
-        JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = c.cLocalitiesId 
+        gv.*, m.*, mlcv.*, mlmv.*
+FROM ${MemberEntity.TABLE_NAME} m LEFT JOIN ${GroupView.VIEW_NAME} gv ON gv.groupId = m.mGroupsId
+    LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  
+    LEFT JOIN ${CongregationEntity.TABLE_NAME} c ON c.congregationId = mlcv.mcCongregationsId
+        LEFT JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = c.cLocalitiesId 
     JOIN ${MemberLastMovementView.VIEW_NAME} mlmv ON mlmv.mMembersId = m.memberId
 """
 )
 class MemberView(
-    @Embedded(prefix = MemberEntity.PX_CONGREGATION) val memberCongregation: CongregationEntity,
+    @Embedded(prefix = MemberEntity.PX_CONGREGATION) val memberCongregation: CongregationEntity?,
     //@Embedded(prefix = MemberEntity.PX_REGION) val region: GeoRegionView,
     //@Embedded(prefix = MemberEntity.PX_REGION_DISTRICT) val district: RegionDistrictView?,
-    @Embedded(prefix = MemberEntity.PX_LOCALITY) val locality: LocalityView,
+    @Embedded(prefix = MemberEntity.PX_LOCALITY) val locality: LocalityView?,
     @Embedded val group: GroupView? = null,
     @Embedded val member: MemberEntity,
-    @Embedded val lastCongregation: MemberLastCongregationView,
+    @Embedded val lastCongregation: MemberLastCongregationView?,
     @Embedded val lastMovement: MemberLastMovementView
 ) {
     companion object {

@@ -58,6 +58,7 @@ import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupToGr
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupViewListToGroupsListMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupViewToGroupMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.group.GroupsListToGroupEntityListMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberEntityToMemberMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberMappers
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewListToMembersListMapper
@@ -228,18 +229,25 @@ object CongregationMappersModule {
     // Member:
     @Singleton
     @Provides
+    fun provideMemberEntityToMemberMapper(): MemberEntityToMemberMapper =
+        MemberEntityToMemberMapper()
+
+    @Singleton
+    @Provides
     fun provideMemberViewToMemberMapper(
         localityMapper: LocalityViewToGeoLocalityMapper,
         congregationMapper: CongregationEntityToCongregationMapper,
         groupMapper: GroupViewToGroupMapper,
         lastCongregationMapper: MemberLastCongregationViewToMemberCongregationMapper,
-        movementMapper: MemberLastMovementViewToMemberMovementMapper
+        movementMapper: MemberLastMovementViewToMemberMovementMapper,
+        memberMapper: MemberEntityToMemberMapper
     ): MemberViewToMemberMapper = MemberViewToMemberMapper(
         localityMapper = localityMapper,
         congregationMapper = congregationMapper,
         groupMapper = groupMapper,
         lastCongregationMapper = lastCongregationMapper,
-        movementMapper = movementMapper
+        movementMapper = movementMapper,
+        memberMapper = memberMapper
     )
 
     @Singleton

@@ -15,16 +15,14 @@ class CongregationEntityToCongregationMapper :
                 properties.size, input.congregationId
             )
         )
-        val congregation = Congregation(
+        return Congregation(
             congregationNum = input.congregationNum,
             congregationName = input.congregationName,
             territoryMark = input.territoryMark,
             isFavorite = input.isFavorite,
             lastVisitDate = input.lastVisitDate,
             locality = properties[0] as GeoLocality
-        )
-        congregation.id = input.congregationId
-        return congregation
+        ).also { it.id = input.congregationId }
     }
 
     override fun nullableMap(input: CongregationEntity?, vararg properties: Any?) =

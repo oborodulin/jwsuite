@@ -3,8 +3,8 @@ package com.oborodulin.jwsuite.data_territory.di
 import android.content.Context
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.CongregationViewToCongregationMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.congregation.FavoriteCongregationViewToCongregationMapper
+import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberEntityToMemberMapper
 import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberToMemberEntityMapper
-import com.oborodulin.jwsuite.data_congregation.local.db.mappers.member.MemberViewToMemberMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.CoordinatesToGeoCoordinatesMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocality.LocalityViewToGeoLocalityMapper
 import com.oborodulin.jwsuite.data_geo.local.db.mappers.geolocalitydistrict.LocalityDistrictViewToGeoLocalityDistrictMapper
@@ -638,7 +638,7 @@ object TerritoryMappersModule {
     @Provides
     fun provideTerritoriesAtWorkViewToTerritoryMapper(
         territoryMapper: TerritoryViewToTerritoryMapper,
-        memberMapper: MemberViewToMemberMapper
+        memberMapper: MemberEntityToMemberMapper
     ): TerritoriesAtWorkViewToTerritoryMapper = TerritoriesAtWorkViewToTerritoryMapper(
         territoryMapper = territoryMapper, memberMapper = memberMapper
     )
@@ -652,7 +652,7 @@ object TerritoryMappersModule {
     @Provides
     fun provideTerritoriesHandOutViewToTerritoryMapper(
         territoryMapper: TerritoryViewToTerritoryMapper,
-        memberMapper: MemberViewToMemberMapper
+        memberMapper: MemberEntityToMemberMapper
     ): TerritoriesHandOutViewToTerritoryMapper = TerritoriesHandOutViewToTerritoryMapper(
         territoryMapper = territoryMapper, memberMapper = memberMapper
     )

@@ -7,10 +7,11 @@ import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationTo
 @DatabaseView(
     viewName = CongregationTotalView.VIEW_NAME,
     value = """
-    SELECT c.*, ct.sumTotalGroups AS totalGroups, ct.sumTotalMembers AS totalMembers, ct.sumTotalFulltimeMembers AS totalFulltimeMembers,
-        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffMembers, ctd.totalFulltimeMembers AS diffFulltimeMembers  
+    SELECT c.*, ct.sumTotalGroups AS totalGroups, ct.sumTotalMembers AS totalMembers, ct.sumTotalActiveMembers AS totalActiveMembers, ct.sumTotalFulltimeMembers AS totalFulltimeMembers,
+        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffMembers, ctd.totalActiveMembers AS diffTotalActiveMembers, ctd.totalFulltimeMembers AS diffFulltimeMembers  
     FROM ${FavoriteCongregationView.VIEW_NAME} c 
-        JOIN (SELECT ctlCongregationsId, SUM(totalGroups) AS sumTotalGroups, SUM(totalMembers) AS sumTotalMembers, SUM(totalFulltimeMembers) AS sumTotalFulltimeMembers
+        JOIN (SELECT ctlCongregationsId, SUM(totalGroups) AS sumTotalGroups, SUM(totalMembers) AS sumTotalMembers, 
+                                        SUM(totalActiveMembers) AS sumTotalActiveMembers, SUM(totalFulltimeMembers) AS sumTotalFulltimeMembers
                 FROM ${CongregationTotalEntity.TABLE_NAME}
                 GROUP BY ctlCongregationsId
             ) ct ON ct.ctlCongregationsId = c.congregationId
@@ -21,9 +22,11 @@ class CongregationTotalView(
     @Embedded val congregation: FavoriteCongregationView,
     val totalGroups: Int,
     val totalMembers: Int,
+    val totalActiveMembers: Int,
     val totalFulltimeMembers: Int,
     val diffGroups: Int,
     val diffMembers: Int,
+    val diffTotalActiveMembers: Int,
     val diffFulltimeMembers: Int
 ) {
     companion object {
