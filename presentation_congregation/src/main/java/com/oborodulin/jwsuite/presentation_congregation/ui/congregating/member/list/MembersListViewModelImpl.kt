@@ -3,18 +3,17 @@ package com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
-import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.jwsuite.data_congregation.R
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberInput
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.GroupUi
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.MembersListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -133,8 +132,10 @@ class MembersListViewModelImpl @Inject constructor(
         fun previewList(ctx: Context) = listOf(
             MembersListItem(
                 id = UUID.randomUUID(),
-                group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_ivanov_member_num),
+                fullNum = "${ctx.resources.getInteger(R.integer.def_group1)}.${
+                    ctx.resources.getString(R.string.def_ivanov_member_num)
+                }",
                 memberFullName = "${ctx.resources.getString(R.string.def_ivanov_member_surname)} ${
                     ctx.resources.getString(
                         R.string.def_ivanov_member_name
@@ -157,8 +158,10 @@ class MembersListViewModelImpl @Inject constructor(
             ),
             MembersListItem(
                 id = UUID.randomUUID(),
-                group = GroupUi(),
                 memberNum = ctx.resources.getString(R.string.def_tarasova_member_num),
+                fullNum = "${ctx.resources.getInteger(R.integer.def_group2)}.${
+                    ctx.resources.getString(R.string.def_tarasova_member_num)
+                }",
                 memberFullName = "${ctx.resources.getString(R.string.def_tarasova_member_surname)} ${
                     ctx.resources.getString(
                         R.string.def_tarasova_member_name

@@ -3,29 +3,30 @@ package com.oborodulin.jwsuite.domain.usecases.member
 import com.oborodulin.home.common.domain.usecases.UseCase
 import com.oborodulin.jwsuite.domain.model.congregation.Member
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
+import kotlinx.coroutines.flow.combine
 import java.util.UUID
 
 class GetMembersUseCase(
-    configuration: Configuration, private val membersRepository: MembersRepository
+    configuration: Configuration,
+    private val membersRepository: MembersRepository,
+    private val sessionManagerRepository: SessionManagerRepository
 ) : UseCase<GetMembersUseCase.Request, GetMembersUseCase.Response>(configuration) {
+    override fun process(request: Request) = combine(
+        sessionManagerRepository.username(), when (request.byCongregation) {
+            true -> when (request.congregationId) {
+                null -> membersRepository.getAllByFavoriteCongregation(request.isService)
+                else -> membersRepository.getAllByCongregation(
+                    request.congregationId, request.isService
+                )
+            }
 
-    override fun process(request: Request): Flow<Response> = when (request.byCongregation) {
-        true -> when (request.congregationId) {
-            null -> membersRepository.getAllByFavoriteCongregation(request.isService)
-            else -> membersRepository.getAllByCongregation(
-                request.congregationId, request.isService
-            )
+            false -> when (request.groupId) {
+                null -> membersRepository.getAllByFavoriteCongregationGroup(request.isService)
+                else -> membersRepository.getAllByGroup(request.groupId, request.isService)
+            }
         }
-
-        false -> when (request.groupId) {
-            null -> membersRepository.getAllByFavoriteCongregationGroup(request.isService)
-            else -> membersRepository.getAllByGroup(request.groupId, request.isService)
-        }
-    }.map {
-        Response(it)
-    }
+    ) { username, members -> Response(members) }
 
     data class Request(
         val congregationId: UUID? = null, val groupId: UUID? = null,

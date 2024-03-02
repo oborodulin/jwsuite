@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Person
@@ -358,6 +359,12 @@ fun CongregationSection(
                         subheadResId = R.string.total_members_hint,
                         totalValue = totals.totalMembers,
                         diffTotal = totals.diffMembers
+                    )
+                    TotalsRow(
+                        imageVector = Icons.Outlined.CheckCircle,
+                        subheadResId = R.string.total_active_members_hint,
+                        totalValue = totals.totalActiveMembers,
+                        diffTotal = totals.diffActiveMembers
                     )
                     TotalsRow(
                         imageVector = Icons.Outlined.DateRange,

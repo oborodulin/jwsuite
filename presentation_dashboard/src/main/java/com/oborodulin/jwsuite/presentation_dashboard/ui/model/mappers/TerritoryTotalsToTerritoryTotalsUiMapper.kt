@@ -9,19 +9,15 @@ import com.oborodulin.jwsuite.presentation_dashboard.ui.model.TerritoryTotalsUi
 class TerritoryTotalsToTerritoryTotalsUiMapper(private val mapper: CongregationToCongregationUiMapper) :
     NullableMapper<TerritoryTotals, TerritoryTotalsUi>,
     Mapper<TerritoryTotals, TerritoryTotalsUi> {
-    override fun map(input: TerritoryTotals): TerritoryTotalsUi {
-        val totalsUi = TerritoryTotalsUi(
-            congregation = mapper.map(input.congregation),
-            totalTerritories = input.totalTerritories,
-            totalTerritoryIssued = input.totalTerritoryIssued,
-            totalTerritoryProcessed = input.totalTerritoryProcessed,
-            diffTerritories = input.diffTerritories,
-            diffTerritoryIssued = input.diffTerritoryIssued,
-            diffTerritoryProcessed = input.diffTerritoryProcessed
-        )
-        totalsUi.id = input.id
-        return totalsUi
-    }
+    override fun map(input: TerritoryTotals) = TerritoryTotalsUi(
+        congregation = mapper.map(input.congregation),
+        totalTerritories = input.totalTerritories,
+        totalTerritoryIssued = input.totalTerritoryIssued,
+        totalTerritoryProcessed = input.totalTerritoryProcessed,
+        diffTerritories = input.diffTerritories,
+        diffTerritoryIssued = input.diffTerritoryIssued,
+        diffTerritoryProcessed = input.diffTerritoryProcessed
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: TerritoryTotals?) = input?.let { map(it) }
 }

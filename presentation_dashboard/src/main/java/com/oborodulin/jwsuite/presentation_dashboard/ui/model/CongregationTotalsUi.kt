@@ -11,6 +11,6 @@ data class CongregationTotalsUi(
     val totalFulltimeMembers: Int = 0,
     val diffGroups: Int = 0,
     val diffMembers: Int = 0,
-    val diffTotalActiveMembers: Int = 0,
+    val diffActiveMembers: Int = 0,
     val diffFulltimeMembers: Int = 0
 ) : ModelUi()

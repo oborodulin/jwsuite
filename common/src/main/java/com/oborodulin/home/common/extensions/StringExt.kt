@@ -32,6 +32,11 @@ fun String.toFullFormatOffsetDateTimeOrNull() = if (this.isNotEmpty())
     this.toFullFormatOffsetDateTime()
 else null
 
+inline fun String?.ifNotEmpty(value: (String) -> String) =
+    if (this?.isNotEmpty() == true) value(this) else this
+
+fun String?.firstCapitalLetterOrEmpty() = this?.getOrNull(0)?.uppercase().orEmpty()
+
 // DOMAIN:
 // Geo:
 fun String?.toRegionName() = this?.substringAfter(' ').orEmpty()

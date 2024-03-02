@@ -371,6 +371,18 @@ interface MemberDao {
     )
     suspend fun decTotalMembersByMemberId(memberId: UUID, diff: Int = -1)
 
+    // totalActiveMembers:
+    @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalActiveMembers = totalActiveMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
+    suspend fun updateTotalActiveMembersByCongregationId(congregationId: UUID, diff: Int)
+
+    @Query(
+        """
+    UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalActiveMembers = totalActiveMembers + :diff
+    WHERE lastVisitDate IS NULL AND ctlCongregationsId = (SELECT mcCongregationsId FROM ${MemberLastCongregationView.VIEW_NAME} WHERE mcMembersId = :memberId) 
+    """
+    )
+    suspend fun decTotalActiveMembersByMemberId(memberId: UUID, diff: Int = -1)
+
     // totalFulltimeMembers:
     @Query("UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff WHERE ctlCongregationsId = :congregationId AND lastVisitDate IS NULL")
     suspend fun updateTotalFulltimeMembersByCongregationId(congregationId: UUID, diff: Int)
@@ -378,8 +390,7 @@ interface MemberDao {
     @Query(
         """
     UPDATE ${CongregationTotalEntity.TABLE_NAME} SET totalFulltimeMembers = totalFulltimeMembers + :diff
-    WHERE lastVisitDate IS NULL
-        AND ctlCongregationsId = (SELECT mcCongregationsId FROM ${MemberLastCongregationView.VIEW_NAME} WHERE mcMembersId = :memberId) 
+    WHERE lastVisitDate IS NULL AND ctlCongregationsId = (SELECT mcCongregationsId FROM ${MemberLastCongregationView.VIEW_NAME} WHERE mcMembersId = :memberId) 
     """
     )
     suspend fun decTotalFulltimeMembersByMemberId(memberId: UUID, diff: Int = -1)
@@ -435,10 +446,21 @@ interface MemberDao {
         insert(memberCongregation)
         if (memberMovement.memberType != MemberType.SERVICE) {
             updateTotalMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+            if (memberMovement.memberType != MemberType.IN_ACTIVE) {
+                updateTotalActiveMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+            }
         }
         insert(memberMovement)
         if (memberMovement.memberType == MemberType.FULL_TIME) {
             updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+        }
+    }
+
+    @Transaction
+    suspend fun insert(member: MemberEntity, memberMovement: MemberMovementEntity) {
+        if (memberMovement.memberType == MemberType.SERVICE) {
+            insert(member)
+            insert(memberMovement)
         }
     }
 
@@ -485,11 +507,28 @@ interface MemberDao {
         }
         if (lastMovement.lastMemberMovement.memberType != memberMovement.memberType) {
             insert(memberMovement)  // OnConflictStrategy.REPLACE
-            if (memberMovement.memberType == MemberType.FULL_TIME) {
-                updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, 1)
+            when (memberMovement.memberType) {
+                MemberType.FULL_TIME -> updateTotalFulltimeMembersByCongregationId(
+                    memberCongregation.mcCongregationsId, 1
+                )
+
+                MemberType.IN_ACTIVE -> updateTotalActiveMembersByCongregationId(
+                    memberCongregation.mcCongregationsId, -1
+                )
+
+                else -> {}
             }
-            if (lastMovement.lastMemberMovement.memberType == MemberType.FULL_TIME) {
-                updateTotalFulltimeMembersByCongregationId(memberCongregation.mcCongregationsId, -1)
+            when (lastMovement.lastMemberMovement.memberType) {
+                MemberType.FULL_TIME ->
+                    updateTotalFulltimeMembersByCongregationId(
+                        memberCongregation.mcCongregationsId, -1
+                    )
+
+                MemberType.IN_ACTIVE -> updateTotalActiveMembersByCongregationId(
+                    memberCongregation.mcCongregationsId, 1
+                )
+
+                else -> {}
             }
         } else {
             update(memberMovement)
@@ -547,6 +586,9 @@ interface MemberDao {
         val lastMovement = findLastMovementByMemberId(memberId).first()
         if (lastMovement.lastMemberMovement.memberType != MemberType.SERVICE) {
             decTotalMembersByMemberId(memberId)
+            if (lastMovement.lastMemberMovement.memberType != MemberType.IN_ACTIVE) {
+                decTotalActiveMembersByMemberId(memberId)
+            }
         }
         if (lastMovement.lastMemberMovement.memberType == MemberType.FULL_TIME) {
             decTotalFulltimeMembersByMemberId(memberId)

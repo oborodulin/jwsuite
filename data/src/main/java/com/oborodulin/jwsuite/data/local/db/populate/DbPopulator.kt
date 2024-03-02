@@ -482,21 +482,11 @@ class DbPopulator(
         return member!!
     }
 
-    override suspend fun insertDefAdminMember(
-        congregation: CongregationEntity,
-        roles: List<RoleEntity>
-    ): MemberEntity {
+    override suspend fun insertDefAdminMember(roles: List<RoleEntity>): MemberEntity {
         val member = MemberEntity.adminMember(ctx)
         db.insert(
             MemberEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
             Mapper.toContentValues(member)
-        )
-        val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
-            congregationId = congregation.congregationId, memberId = member.memberId
-        )
-        db.insert(
-            MemberCongregationCrossRefEntity.TABLE_NAME, SQLiteDatabase.CONFLICT_REPLACE,
-            Mapper.toContentValues(memberCongregation)
         )
         val memberMovement = MemberMovementEntity.defaultMemberMovement(
             memberId = member.memberId, memberType = MemberType.SERVICE
@@ -508,9 +498,8 @@ class DbPopulator(
         Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
         jsonLogger?.let { logger ->
             Timber.tag(TAG).i(
-                ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRoles\": [",
+                ": {\"member\": {%s}, \"memberMovement\": {%s}, \"memberRoles\": [",
                 logger.encodeToString(member),
-                logger.encodeToString(memberCongregation),
                 logger.encodeToString(memberMovement)
             )
         }
@@ -886,7 +875,7 @@ class DbPopulator(
             jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
 
             // Default Administrator:
-            val adminMember = insertDefAdminMember(congregation1, listOf(adminRole))
+            val adminMember = insertDefAdminMember(listOf(adminRole))
 
             // 2
             val congregation2 = CongregationEntity.secondCongregation(

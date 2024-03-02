@@ -20,7 +20,7 @@ open class ListItemModel(
     val value: BigDecimal? = null,
     private var initChecked: Boolean = false,
     private var initSelected: Boolean = false
-) : Parcelable, Searchable {
+) : Parcelable, Searchable, Editable {
     @IgnoredOnParcel
     var checked by mutableStateOf(initChecked)
 
@@ -44,6 +44,8 @@ open class ListItemModel(
         )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
+
+    override fun isEditable() = true
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

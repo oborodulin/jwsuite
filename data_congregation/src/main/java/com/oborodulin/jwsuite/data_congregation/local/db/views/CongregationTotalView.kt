@@ -26,7 +26,7 @@ class CongregationTotalView(
     val totalFulltimeMembers: Int,
     val diffGroups: Int,
     val diffMembers: Int,
-    val diffTotalActiveMembers: Int,
+    val diffActiveMembers: Int,
     val diffFulltimeMembers: Int
 ) {
     companion object {

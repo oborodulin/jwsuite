@@ -12,18 +12,14 @@ class RegionDistrictToRegionDistrictUiMapper(
     private val coordinatesMapper: GeoCoordinatesToCoordinatesUiMapper
 ) : NullableMapper<GeoRegionDistrict, RegionDistrictUi>,
     Mapper<GeoRegionDistrict, RegionDistrictUi> {
-    override fun map(input: GeoRegionDistrict): RegionDistrictUi {
-        val regionDistrictUi = RegionDistrictUi(
-            region = regionMapper.map(input.region!!),
-            districtShortName = input.districtShortName,
-            districtGeocode = input.districtGeocode,
-            districtOsmId = input.districtOsmId,
-            coordinates = coordinatesMapper.map(input.coordinates),
-            districtName = input.districtName
-        )
-        regionDistrictUi.id = input.id
-        return regionDistrictUi
-    }
+    override fun map(input: GeoRegionDistrict) = RegionDistrictUi(
+        region = regionMapper.map(input.region!!),
+        districtShortName = input.districtShortName,
+        districtGeocode = input.districtGeocode,
+        districtOsmId = input.districtOsmId,
+        coordinates = coordinatesMapper.map(input.coordinates),
+        districtName = input.districtName
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: GeoRegionDistrict?) = input?.let { map(it) }
 }

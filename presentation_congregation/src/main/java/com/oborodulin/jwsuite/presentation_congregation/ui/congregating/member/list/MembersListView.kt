@@ -79,8 +79,14 @@ fun MembersListView(
                         dlgConfirmDelResId = R.string.dlg_confirm_del_member,
                         emptyListResId = R.string.members_list_empty_text,
                         isEmptyListTextOutput = congregationId != null || groupInput?.groupId != null,
+                        isEditable = { member ->
+                            //member.headline.contains("[${session.}]").not()
+                            true
+                        },
                         onEdit = { member ->
-                            membersListViewModel.submitAction(MembersListUiAction.EditMember(member.itemId!!))
+                            membersListViewModel.submitAction(
+                                MembersListUiAction.EditMember(member.itemId!!)
+                            )
                         },
                         onDelete = { member ->
                             membersListViewModel.submitAction(

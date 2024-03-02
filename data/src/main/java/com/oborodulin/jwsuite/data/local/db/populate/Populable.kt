@@ -50,10 +50,7 @@ interface Populable {
         roles: List<RoleEntity> = emptyList()
     ): MemberEntity
 
-    suspend fun insertDefAdminMember(
-        congregation: CongregationEntity,
-        roles: List<RoleEntity> = emptyList()
-    ): MemberEntity
+    suspend fun insertDefAdminMember(roles: List<RoleEntity> = emptyList()): MemberEntity
 
     // TERRITORIES:
     suspend fun insertDefTerritoryCategory(territoryCategory: TerritoryCategoryEntity): TerritoryCategoryEntity

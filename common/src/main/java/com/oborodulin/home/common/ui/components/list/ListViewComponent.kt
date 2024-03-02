@@ -26,6 +26,7 @@ fun ListViewComponent(
         emptyListResId = emptyListResId,
         isEmptyListTextOutput = isEmptyListTextOutput,
         fetchListControl = fetchListControl,
+        isEditable = { false },
         onClick = onClick
     )
 }

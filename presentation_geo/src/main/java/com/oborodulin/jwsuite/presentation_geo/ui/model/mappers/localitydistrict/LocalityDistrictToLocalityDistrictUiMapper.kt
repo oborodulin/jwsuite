@@ -9,15 +9,11 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.locality.Localit
 class LocalityDistrictToLocalityDistrictUiMapper(private val mapper: LocalityToLocalityUiMapper) :
     NullableMapper<GeoLocalityDistrict, LocalityDistrictUi>,
     Mapper<GeoLocalityDistrict, LocalityDistrictUi> {
-    override fun map(input: GeoLocalityDistrict): LocalityDistrictUi {
-        val localityDistrictUi = LocalityDistrictUi(
-            locality = mapper.map(input.locality!!),
-            districtShortName = input.districtShortName,
-            districtName = input.districtName
-        )
-        localityDistrictUi.id = input.id
-        return localityDistrictUi
-    }
+    override fun map(input: GeoLocalityDistrict) = LocalityDistrictUi(
+        locality = mapper.map(input.locality!!),
+        districtShortName = input.districtShortName,
+        districtName = input.districtName
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: GeoLocalityDistrict?) = input?.let { map(it) }
 }

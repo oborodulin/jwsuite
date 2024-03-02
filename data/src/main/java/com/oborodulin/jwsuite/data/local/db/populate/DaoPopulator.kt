@@ -382,24 +382,18 @@ class DaoPopulator(
         return member!!
     }
 
-    override suspend fun insertDefAdminMember(
-        congregation: CongregationEntity, roles: List<RoleEntity>
-    ): MemberEntity {
+    override suspend fun insertDefAdminMember(roles: List<RoleEntity>): MemberEntity {
         val memberDao = db.memberDao()
         val member = MemberEntity.adminMember(ctx)
-        val memberCongregation = MemberCongregationCrossRefEntity.defaultCongregationMember(
-            congregationId = congregation.congregationId, memberId = member.memberId
-        )
         val memberMovement = MemberMovementEntity.defaultMemberMovement(
             memberId = member.memberId, memberType = MemberType.SERVICE
         )
-        memberDao.insert(member, memberCongregation, memberMovement)
+        memberDao.insert(member, memberMovement)
         Timber.tag(TAG).i("CONGREGATION: Default Administrator imported")
         jsonLogger?.let { logger ->
             Timber.tag(TAG).i(
-                ": {\"member\": {%s}, \"memberCongregation\": {%s}, \"memberMovement\": {%s}, \"memberRoles\": [",
+                ": {\"member\": {%s}, \"memberMovement\": {%s}, \"memberRoles\": [",
                 logger.encodeToString(member),
-                logger.encodeToString(memberCongregation),
                 logger.encodeToString(memberMovement)
             )
         }
@@ -725,7 +719,7 @@ class DaoPopulator(
         jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(congregation1)) }
 
         // Default Administrator:
-        val adminMember = insertDefAdminMember(congregation1, listOf(adminRole, reportsRole))
+        val adminMember = insertDefAdminMember(listOf(adminRole, reportsRole))
 
         // 2
         val congregation2 = CongregationEntity.secondCongregation(ctx, donetsk.localityId)
@@ -815,6 +809,7 @@ class DaoPopulator(
         if (LOG_DATABASE) Timber.tag(TAG).d("init() called")
         // Default settings:
         insertDefAppSettings()
+        /*
         // ==============================
         // GEO:
         // Default country:
@@ -825,7 +820,7 @@ class DaoPopulator(
 
         // Default locality:
         val defLocality = insertDeftLocality(GeoLocalityEntity.defLocality(ctx, defRegion.regionId))
-
+        */
         // ==============================
         // CONGREGATION:
         // Default member roles:
@@ -834,7 +829,7 @@ class DaoPopulator(
         val territoriesRole = insertDefMemberRole(MemberRoleType.TERRITORIES)
         val billsRole = insertDefMemberRole(MemberRoleType.BILLS)
         val reportsRole = insertDefMemberRole(MemberRoleType.REPORTS)
-
+        /*
         // Default congregation:
         val congregationDao = db.congregationDao()
         // 1
@@ -842,9 +837,9 @@ class DaoPopulator(
         congregationDao.insertWithFavoriteAndTotals(defCongregation)
         Timber.tag(TAG).i("CONGREGATION: Default Congregation imported")
         jsonLogger?.let { Timber.tag(TAG).i(": {%s}", it.encodeToString(defCongregation)) }
-
+        */
         // Default Administrator:
-        insertDefAdminMember(defCongregation, listOf(adminRole))
+        insertDefAdminMember(listOf(adminRole))
 
         // ==============================
         // TRANSFERS:

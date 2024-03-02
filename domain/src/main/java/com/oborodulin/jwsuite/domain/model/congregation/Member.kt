@@ -1,6 +1,8 @@
 package com.oborodulin.jwsuite.domain.model.congregation
 
 import com.oborodulin.home.common.domain.model.DomainModel
+import com.oborodulin.home.common.extensions.firstCapitalLetterOrEmpty
+import com.oborodulin.home.common.extensions.ifNotEmpty
 import java.time.OffsetDateTime
 
 data class Member(
@@ -18,20 +20,26 @@ data class Member(
     val lastCongregation: MemberCongregation? = null,
     val lastMovement: MemberMovement? = null
 ) : DomainModel() {
-    val fullNum = group?.groupNum?.let { "$it.${memberNum.orEmpty()}" }.orEmpty()
+    val fullNum = fullNum(group?.groupNum, memberNum)
     val fullName =
-        "${surname.orEmpty()} ${memberName.orEmpty()} ${patronymic.orEmpty()} [$pseudonym]".trim()
-    val shortName = ("$surname"
-        .plus(if (!memberName.isNullOrEmpty()) " ${memberName[0]}." else "")
-        .plus(if (!patronymic.isNullOrEmpty()) "${patronymic[0]}." else "")
-        .plus(" [$pseudonym]")).trim()
+        "${surname.orEmpty()} ${memberName.orEmpty()} ${patronymic.orEmpty()} [$pseudonym]"
+            .replace(spacesPattern, " ").trim()
+    val shortName = ("$surname ${
+        memberName.firstCapitalLetterOrEmpty().ifNotEmpty { "$it." }
+    }${patronymic.firstCapitalLetterOrEmpty().ifNotEmpty { "$it." }}"
+        .plus(" [$pseudonym]")).replace(spacesPattern, " ").trim()
 
     companion object {
+        // https://stackoverflow.com/questions/37070352/how-do-i-replace-duplicate-whitespaces-in-a-string-in-kotlin
+        val spacesPattern = "\\s+".toRegex()
+
+        fun fullNum(groupNum: Int?, memberNum: String?) =
+            groupNum?.let { gn -> "$gn${memberNum.ifNotEmpty { mn -> ".$mn" }}" }.orEmpty()
+
         fun pseudonym(
             surname: String?, memberName: String?, groupNum: Int?, memberNum: String?
-        ) =
-            "${surname?.firstOrNull() ?: ""}${memberName?.firstOrNull() ?: ""}${groupNum?.toString() ?: "0"}${
-                memberNum?.let { ".$it" }.orEmpty()
-            }"
+        ) = "${surname.firstCapitalLetterOrEmpty()}${memberName.firstCapitalLetterOrEmpty()}${
+            fullNum(groupNum, memberNum)
+        }"
     }
 }

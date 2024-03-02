@@ -1,7 +1,6 @@
 package com.oborodulin.jwsuite.domain.model.session
 
 import com.oborodulin.home.common.data.OffsetDateTimeSerializer
-import com.oborodulin.jwsuite.domain.model.congregation.Role
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 

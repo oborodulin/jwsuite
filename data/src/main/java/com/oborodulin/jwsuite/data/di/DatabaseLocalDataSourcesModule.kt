@@ -1,23 +1,25 @@
 package com.oborodulin.jwsuite.data.di
 
-import com.oborodulin.home.common.di.IoDispatcher
-import com.oborodulin.jwsuite.data.local.db.dao.DatabaseDao
-import com.oborodulin.jwsuite.data.local.db.dao.EventDao
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalDatabaseDataSource
 import com.oborodulin.jwsuite.data.local.db.repositories.sources.LocalEventDataSource
 import com.oborodulin.jwsuite.data.sources.local.LocalDatabaseDataSourceImpl
 import com.oborodulin.jwsuite.data.sources.local.LocalEventDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseLocalDataSourcesModule {
+//object DatabaseLocalDataSourcesModule {
+abstract class DatabaseLocalDataSourcesModule {
+    @Binds
+    abstract fun bindLocalDatabaseDataSource(dataSourceImpl: LocalDatabaseDataSourceImpl): LocalDatabaseDataSource
+
+    @Binds
+    abstract fun bindLocalEventDataSource(dataSourceImpl: LocalEventDataSourceImpl): LocalEventDataSource
+    /*
     @Singleton
     @Provides
     fun provideDatabaseDataSource(
@@ -29,4 +31,5 @@ object DatabaseLocalDataSourcesModule {
     fun provideLocalEventDataSource(
         eventDao: EventDao, @IoDispatcher dispatcher: CoroutineDispatcher
     ): LocalEventDataSource = LocalEventDataSourceImpl(eventDao, dispatcher)
+     */
 }

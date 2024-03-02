@@ -36,6 +36,7 @@ fun EditableListViewComponent(
     @StringRes emptyListResId: Int,
     isEmptyListTextOutput: Boolean = true,
     fetchListControl: @Composable (() -> Unit)? = null,
+    isEditable: (ListItemModel) -> Boolean = { true },
     onEdit: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     onDelete: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT
@@ -72,13 +73,18 @@ fun EditableListViewComponent(
             itemsIndexed(filteredItems, key = { _, item -> item.itemId!! }) { _, item ->
                 ListItemComponent(
                     item = item,
-                    itemActions = listOfNotNull(
-                        if (onEdit !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.EditListItem {
-                            onEdit(item)
-                        } else null,
-                        if (onDelete !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.DeleteListItem(
-                            dlgConfirmDelResId?.let { stringResource(it, item.headline) }.orEmpty()
-                        ) { onDelete(item) } else null),
+                    itemActions = if (isEditable(item)) {
+                        listOfNotNull(
+                            if (onEdit !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.EditListItem {
+                                onEdit(item)
+                            } else null,
+                            if (onDelete !== EMPTY_LIST_ITEM_EVENT) ComponentUiAction.DeleteListItem(
+                                dlgConfirmDelResId?.let { stringResource(it, item.headline) }
+                                    .orEmpty()
+                            ) { onDelete(item) } else null)
+                    } else {
+                        emptyList()
+                    },
                     selected = item.selected,  //isSelected,
                     //background = (if (isSelected) Color.LightGray else Color.Transparent),
                     onClick = { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(item) } //if (selectedIndex != index) selectedIndex = index

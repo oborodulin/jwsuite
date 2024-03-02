@@ -1,14 +1,5 @@
 package com.oborodulin.jwsuite.data_territory.di
 
-import com.oborodulin.home.common.di.IoDispatcher
-import com.oborodulin.jwsuite.data_territory.local.db.dao.EntranceDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.FloorDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.HouseDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.RoomDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryCategoryDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryReportDao
-import com.oborodulin.jwsuite.data_territory.local.db.dao.TerritoryStreetDao
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalEntranceDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalFloorDataSource
 import com.oborodulin.jwsuite.data_territory.local.db.repositories.sources.LocalHouseDataSource
@@ -26,64 +17,88 @@ import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryDataSou
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryReportDataSourceImpl
 import com.oborodulin.jwsuite.data_territory.sources.local.LocalTerritoryStreetDataSourceImpl
 import com.oborodulin.jwsuite.domain.usecases.*
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object TerritoryLocalDataSourcesModule {
-    @Singleton
-    @Provides
-    fun provideLocalTerritoryCategoryDataSource(
-        territoryCategoryDao: TerritoryCategoryDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalTerritoryCategoryDataSource =
-        LocalTerritoryCategoryDataSourceImpl(territoryCategoryDao, dispatcher)
+//object TerritoryLocalDataSourcesModule {
+abstract class TerritoryLocalDataSourcesModule {
+    @Binds
+    abstract fun bindLocalTerritoryCategoryDataSource(dataSourceImpl: LocalTerritoryCategoryDataSourceImpl): LocalTerritoryCategoryDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalHouseDataSource(
-        houseDao: HouseDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalHouseDataSource = LocalHouseDataSourceImpl(houseDao, dispatcher)
+    @Binds
+    abstract fun bindLocalHouseDataSource(dataSourceImpl: LocalHouseDataSourceImpl): LocalHouseDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalEntranceDataSource(
-        entranceDao: EntranceDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalEntranceDataSource = LocalEntranceDataSourceImpl(entranceDao, dispatcher)
+    @Binds
+    abstract fun bindLocalEntranceDataSource(dataSourceImpl: LocalEntranceDataSourceImpl): LocalEntranceDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalFloorDataSource(
-        floorDao: FloorDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalFloorDataSource = LocalFloorDataSourceImpl(floorDao, dispatcher)
+    @Binds
+    abstract fun bindLocalFloorDataSource(dataSourceImpl: LocalFloorDataSourceImpl): LocalFloorDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalRoomDataSource(
-        roomDao: RoomDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalRoomDataSource = LocalRoomDataSourceImpl(roomDao, dispatcher)
+    @Binds
+    abstract fun bindLocalRoomDataSource(dataSourceImpl: LocalRoomDataSourceImpl): LocalRoomDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalTerritoryDataSource(
-        territoryDao: TerritoryDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalTerritoryDataSource = LocalTerritoryDataSourceImpl(territoryDao, dispatcher)
+    @Binds
+    abstract fun bindLocalTerritoryDataSource(dataSourceImpl: LocalTerritoryDataSourceImpl): LocalTerritoryDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalTerritoryStreetDataSource(
-        territoryStreetDao: TerritoryStreetDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalTerritoryStreetDataSource =
-        LocalTerritoryStreetDataSourceImpl(territoryStreetDao, dispatcher)
+    @Binds
+    abstract fun bindLocalTerritoryStreetDataSource(dataSourceImpl: LocalTerritoryStreetDataSourceImpl): LocalTerritoryStreetDataSource
 
-    @Singleton
-    @Provides
-    fun provideLocalTerritoryReportDataSource(
-        territoryReportDao: TerritoryReportDao, @IoDispatcher dispatcher: CoroutineDispatcher
-    ): LocalTerritoryReportDataSource =
-        LocalTerritoryReportDataSourceImpl(territoryReportDao, dispatcher)
+    @Binds
+    abstract fun bindLocalTerritoryReportDataSource(dataSourceImpl: LocalTerritoryReportDataSourceImpl): LocalTerritoryReportDataSource
+    /*
+        @Singleton
+        @Provides
+        fun provideLocalTerritoryCategoryDataSource(
+            territoryCategoryDao: TerritoryCategoryDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalTerritoryCategoryDataSource =
+            LocalTerritoryCategoryDataSourceImpl(territoryCategoryDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalHouseDataSource(
+            houseDao: HouseDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalHouseDataSource = LocalHouseDataSourceImpl(houseDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalEntranceDataSource(
+            entranceDao: EntranceDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalEntranceDataSource = LocalEntranceDataSourceImpl(entranceDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalFloorDataSource(
+            floorDao: FloorDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalFloorDataSource = LocalFloorDataSourceImpl(floorDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalRoomDataSource(
+            roomDao: RoomDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalRoomDataSource = LocalRoomDataSourceImpl(roomDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalTerritoryDataSource(
+            territoryDao: TerritoryDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalTerritoryDataSource = LocalTerritoryDataSourceImpl(territoryDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalTerritoryStreetDataSource(
+            territoryStreetDao: TerritoryStreetDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalTerritoryStreetDataSource =
+            LocalTerritoryStreetDataSourceImpl(territoryStreetDao, dispatcher)
+
+        @Singleton
+        @Provides
+        fun provideLocalTerritoryReportDataSource(
+            territoryReportDao: TerritoryReportDao, @IoDispatcher dispatcher: CoroutineDispatcher
+        ): LocalTerritoryReportDataSource =
+            LocalTerritoryReportDataSourceImpl(territoryReportDao, dispatcher)
+     */
 }

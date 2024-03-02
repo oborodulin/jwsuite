@@ -9,6 +9,7 @@ import java.util.UUID
 data class MembersListItem(
     val id: UUID,
     val memberNum: String? = null,
+    val fullNum: String,
     val memberFullName: String,
     val memberShortName: String,
     val phoneNumber: String? = null,
@@ -16,8 +17,7 @@ data class MembersListItem(
     val dateOfBaptism: OffsetDateTime? = null,
     val memberType: MemberType? = MemberType.PREACHER,
     val movementDate: OffsetDateTime? = null,
-    val loginExpiredDate: OffsetDateTime? = null,
-    val fullNum: String
+    val loginExpiredDate: OffsetDateTime? = null
 ) : Parcelable, ListItemModel(
     itemId = id,
     headline = memberFullName,
@@ -32,4 +32,5 @@ data class MembersListItem(
         )
         return matchingCombinations.any { it.contains(query, ignoreCase = true) }
     }
+    override fun isEditable() = true
 }
