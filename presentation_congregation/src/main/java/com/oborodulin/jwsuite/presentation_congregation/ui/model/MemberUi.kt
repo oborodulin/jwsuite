@@ -14,6 +14,7 @@ data class MemberUi(
     val surname: String? = null,
     val patronymic: String? = null,
     val pseudonym: String = "",
+    val fullNum: String = "",
     val memberFullName: String? = null,
     val memberShortName: String? = null,
     val phoneNumber: String? = null,
@@ -21,7 +22,7 @@ data class MemberUi(
     val dateOfBaptism: OffsetDateTime? = null,
     val memberCongregationId: UUID? = null,
     val congregationId: UUID? = null,
-    val activityDate: OffsetDateTime = OffsetDateTime.now(),
+    val activityDate: OffsetDateTime? = OffsetDateTime.now(),
     val memberMovementId: UUID? = null,
     val memberType: MemberType = MemberType.PREACHER,
     val movementDate: OffsetDateTime = OffsetDateTime.now(),
@@ -30,8 +31,8 @@ data class MemberUi(
 
 fun MemberUi.toMembersListItem() = MembersListItem(
     id = this.id ?: UUID.randomUUID(),
-    group = this.group,
     memberNum = this.memberNum,
+    fullNum = this.fullNum,
     memberFullName = this.memberFullName.orEmpty(),
     memberShortName = this.memberShortName.orEmpty(),
     phoneNumber = this.phoneNumber,

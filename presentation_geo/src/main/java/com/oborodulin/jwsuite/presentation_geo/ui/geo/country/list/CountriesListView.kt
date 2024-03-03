@@ -63,7 +63,7 @@ fun CountriesListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("CountriesListView -> LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("CountriesListView -> LaunchedEffect() -> collect single Event Flow")
         countriesListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

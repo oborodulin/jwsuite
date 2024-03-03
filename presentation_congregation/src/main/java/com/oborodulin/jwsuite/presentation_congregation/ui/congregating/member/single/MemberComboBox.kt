@@ -65,7 +65,7 @@ fun MemberComboBox(
         modifier = modifier,
         enabled = enabled,
         listViewModel = listViewModel,
-        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.itemId),
+        loadListUiAction = MembersListUiAction.Load(congregationId = currentCongregation?.itemId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

@@ -79,7 +79,7 @@ fun RegionDistrictsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("RegionDistrictsListView -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("RegionDistrictsListView -> LaunchedEffect() -> collect single Event Flow")
         regionDistrictsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

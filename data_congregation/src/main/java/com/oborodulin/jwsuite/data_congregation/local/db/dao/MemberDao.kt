@@ -128,7 +128,7 @@ interface MemberDao {
     @Query(
         """
     SELECT mv.* FROM ${MemberView.VIEW_NAME} mv 
-    WHERE (mv.mcCongregationsId = :congregationId OR (mv.mcCongregationsId IS NULL AND AND mv.memberType IN ($MT_SERVICE_VAL)))
+    WHERE (mv.mcCongregationsId = :congregationId OR (mv.mcCongregationsId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
         """
@@ -145,7 +145,7 @@ interface MemberDao {
     @Query(
         """
     SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
-    WHERE (fcv.congregationId IS NOT NULL OR (fcv.congregationId IS NULL AND AND mv.memberType IN ($MT_SERVICE_VAL)))
+    WHERE (fcv.congregationId IS NOT NULL OR (fcv.congregationId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
     """
@@ -162,7 +162,7 @@ interface MemberDao {
     SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
         LEFT JOIN (SELECT g.gCongregationsId, MIN(g.groupNum) minGroupNum FROM ${GroupEntity.TABLE_NAME} g GROUP BY g.gCongregationsId) mg 
             ON mg.gCongregationsId = fcv.congregationId AND mg.minGroupNum = mv.groupNum
-    WHERE ((fcv.congregationId IS NOT NULL AND mg.gCongregationsId IS NOT NULL) OR (fcv.congregationId IS NULL AND AND mv.memberType IN ($MT_SERVICE_VAL)))
+    WHERE ((fcv.congregationId IS NOT NULL AND mg.gCongregationsId IS NOT NULL) OR (fcv.congregationId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY surname, memberName, patronymic, pseudonym
     """
@@ -194,7 +194,7 @@ interface MemberDao {
     @Query(
         """
     SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
-    WHERE (mv.mcCongregationsId = ifnull(:congregationId, mv.mcCongregationsId) AND mv.mGroupsId IS NULL)
+    WHERE ((mv.mcCongregationsId = ifnull(:congregationId, mv.mcCongregationsId) AND mv.mGroupsId IS NULL)
             OR (mv.mcCongregationsId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
     ORDER BY surname, memberName, patronymic, pseudonym

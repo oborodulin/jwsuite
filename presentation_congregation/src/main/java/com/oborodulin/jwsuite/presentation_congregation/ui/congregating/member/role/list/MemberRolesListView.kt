@@ -51,7 +51,7 @@ fun MemberRolesListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MemberRolesListView -> LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("MemberRolesListView -> LaunchedEffect() -> collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

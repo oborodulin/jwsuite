@@ -101,7 +101,7 @@ fun ReportHousesGridView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("ReportHousesGridView -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("ReportHousesGridView -> LaunchedEffect() -> collect single Event Flow")
         reportHousesViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

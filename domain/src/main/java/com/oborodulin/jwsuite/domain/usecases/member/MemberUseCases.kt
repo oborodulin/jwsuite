@@ -8,6 +8,7 @@ import com.oborodulin.jwsuite.domain.usecases.member.role.SaveMemberRoleUseCase
 data class MemberUseCases(
     val getMembersUseCase: GetMembersUseCase,
     val getMemberUseCase: GetMemberUseCase,
+    val getMembersWithUsernameUseCase: GetMembersWithUsernameUseCase,
     val saveMemberUseCase: SaveMemberUseCase,
     val deleteMemberUseCase: DeleteMemberUseCase,
     val getMemberRolesUseCase: GetMemberRolesUseCase,

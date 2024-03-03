@@ -16,7 +16,7 @@ class MemberUiToMemberMapper(
         val congregation = MemberCongregation(
             memberId = input.id!!,
             congregationId = input.congregationId!!,
-            activityDate = input.activityDate
+            activityDate = input.activityDate!!
         ).also { it.id = input.memberCongregationId }
         val movement = MemberMovement(
             memberId = input.id!!,

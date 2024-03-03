@@ -125,7 +125,7 @@ fun LocalityDistrictsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("LocalityDistrictsListView -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("LocalityDistrictsListView -> LaunchedEffect() -> collect single Event Flow")
         localityDistrictsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

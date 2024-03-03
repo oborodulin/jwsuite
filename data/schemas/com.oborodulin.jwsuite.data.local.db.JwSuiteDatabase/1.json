@@ -1,0 +1,4008 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "d4711b9eff80a5f2a0992bd12ce09288",
+    "entities": [
+      {
+        "tableName": "app_settings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`settingId` TEXT NOT NULL, `paramName` TEXT NOT NULL, `paramValue` TEXT NOT NULL, PRIMARY KEY(`settingId`))",
+        "fields": [
+          {
+            "fieldPath": "settingId",
+            "columnName": "settingId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paramName",
+            "columnName": "paramName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paramValue",
+            "columnName": "paramValue",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "settingId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_app_settings_paramName",
+            "unique": true,
+            "columnNames": [
+              "paramName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_app_settings_paramName` ON `${TABLE_NAME}` (`paramName`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "roles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roleId` TEXT NOT NULL, `roleType` TEXT NOT NULL, `roleName` TEXT NOT NULL, PRIMARY KEY(`roleId`))",
+        "fields": [
+          {
+            "fieldPath": "roleId",
+            "columnName": "roleId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleType",
+            "columnName": "roleType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleName",
+            "columnName": "roleName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "roleId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_roles_roleType",
+            "unique": true,
+            "columnNames": [
+              "roleType"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_roles_roleType` ON `${TABLE_NAME}` (`roleType`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "geo_countries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryId` TEXT NOT NULL, `countryCode` TEXT NOT NULL, `countryGeocode` TEXT, `countryOsmId` INTEGER, `country_latitude` INTEGER, `country_longitude` INTEGER, PRIMARY KEY(`countryId`))",
+        "fields": [
+          {
+            "fieldPath": "countryId",
+            "columnName": "countryId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "countryCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryGeocode",
+            "columnName": "countryGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "countryOsmId",
+            "columnName": "countryOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "country_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "country_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "countryId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_countries_countryCode",
+            "unique": true,
+            "columnNames": [
+              "countryCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_countries_countryCode` ON `${TABLE_NAME}` (`countryCode`)"
+          },
+          {
+            "name": "index_geo_countries_countryOsmId",
+            "unique": false,
+            "columnNames": [
+              "countryOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_countries_countryOsmId` ON `${TABLE_NAME}` (`countryOsmId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "geo_countries_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`countryTlId` TEXT NOT NULL, `countryLocCode` TEXT NOT NULL, `countryTlCode` TEXT, `countryName` TEXT NOT NULL, `countriesId` TEXT NOT NULL, PRIMARY KEY(`countryTlId`), FOREIGN KEY(`countriesId`) REFERENCES `geo_countries`(`countryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "countryTlId",
+            "columnName": "countryTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryLocCode",
+            "columnName": "countryLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryTlCode",
+            "columnName": "countryTlCode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "countryName",
+            "columnName": "countryName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countriesId",
+            "columnName": "countriesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "countryTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_countries_tl_countriesId_countryLocCode_countryTlCode",
+            "unique": true,
+            "columnNames": [
+              "countriesId",
+              "countryLocCode",
+              "countryTlCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_countries_tl_countriesId_countryLocCode_countryTlCode` ON `${TABLE_NAME}` (`countriesId`, `countryLocCode`, `countryTlCode`)"
+          },
+          {
+            "name": "index_geo_countries_tl_countriesId",
+            "unique": false,
+            "columnNames": [
+              "countriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_countries_tl_countriesId` ON `${TABLE_NAME}` (`countriesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_countries",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "countriesId"
+            ],
+            "referencedColumns": [
+              "countryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_regions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionId` TEXT NOT NULL, `regionCode` TEXT NOT NULL, `regionType` TEXT NOT NULL, `regionGeocode` TEXT, `regionOsmId` INTEGER, `rCountriesId` TEXT NOT NULL, `region_latitude` INTEGER, `region_longitude` INTEGER, PRIMARY KEY(`regionId`), FOREIGN KEY(`rCountriesId`) REFERENCES `geo_countries`(`countryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "regionId",
+            "columnName": "regionId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionCode",
+            "columnName": "regionCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionType",
+            "columnName": "regionType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionGeocode",
+            "columnName": "regionGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "regionOsmId",
+            "columnName": "regionOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rCountriesId",
+            "columnName": "rCountriesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "region_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "region_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "regionId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_regions_rCountriesId_regionCode",
+            "unique": true,
+            "columnNames": [
+              "rCountriesId",
+              "regionCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_regions_rCountriesId_regionCode` ON `${TABLE_NAME}` (`rCountriesId`, `regionCode`)"
+          },
+          {
+            "name": "index_geo_regions_regionOsmId",
+            "unique": false,
+            "columnNames": [
+              "regionOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_regions_regionOsmId` ON `${TABLE_NAME}` (`regionOsmId`)"
+          },
+          {
+            "name": "index_geo_regions_rCountriesId",
+            "unique": false,
+            "columnNames": [
+              "rCountriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_regions_rCountriesId` ON `${TABLE_NAME}` (`rCountriesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_countries",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rCountriesId"
+            ],
+            "referencedColumns": [
+              "countryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_regions_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionTlId` TEXT NOT NULL, `regionLocCode` TEXT NOT NULL, `regionTlCode` TEXT, `regionName` TEXT NOT NULL, `regionsId` TEXT NOT NULL, PRIMARY KEY(`regionTlId`), FOREIGN KEY(`regionsId`) REFERENCES `geo_regions`(`regionId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "regionTlId",
+            "columnName": "regionTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionLocCode",
+            "columnName": "regionLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionTlCode",
+            "columnName": "regionTlCode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "regionName",
+            "columnName": "regionName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionsId",
+            "columnName": "regionsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "regionTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_regions_tl_regionsId_regionLocCode_regionTlCode",
+            "unique": true,
+            "columnNames": [
+              "regionsId",
+              "regionLocCode",
+              "regionTlCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_regions_tl_regionsId_regionLocCode_regionTlCode` ON `${TABLE_NAME}` (`regionsId`, `regionLocCode`, `regionTlCode`)"
+          },
+          {
+            "name": "index_geo_regions_tl_regionsId",
+            "unique": false,
+            "columnNames": [
+              "regionsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_regions_tl_regionsId` ON `${TABLE_NAME}` (`regionsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_regions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "regionsId"
+            ],
+            "referencedColumns": [
+              "regionId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_region_districts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionDistrictId` TEXT NOT NULL, `regDistrictShortName` TEXT NOT NULL, `regDistrictGeocode` TEXT, `regDistrictOsmId` INTEGER, `rRegionsId` TEXT NOT NULL, `regDistrict_latitude` INTEGER, `regDistrict_longitude` INTEGER, PRIMARY KEY(`regionDistrictId`), FOREIGN KEY(`rRegionsId`) REFERENCES `geo_regions`(`regionId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "regionDistrictId",
+            "columnName": "regionDistrictId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regDistrictShortName",
+            "columnName": "regDistrictShortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regDistrictGeocode",
+            "columnName": "regDistrictGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "regDistrictOsmId",
+            "columnName": "regDistrictOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rRegionsId",
+            "columnName": "rRegionsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "regDistrict_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "regDistrict_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "regionDistrictId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_region_districts_rRegionsId_regDistrictShortName",
+            "unique": true,
+            "columnNames": [
+              "rRegionsId",
+              "regDistrictShortName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_region_districts_rRegionsId_regDistrictShortName` ON `${TABLE_NAME}` (`rRegionsId`, `regDistrictShortName`)"
+          },
+          {
+            "name": "index_geo_region_districts_regDistrictOsmId",
+            "unique": false,
+            "columnNames": [
+              "regDistrictOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_region_districts_regDistrictOsmId` ON `${TABLE_NAME}` (`regDistrictOsmId`)"
+          },
+          {
+            "name": "index_geo_region_districts_rRegionsId",
+            "unique": false,
+            "columnNames": [
+              "rRegionsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_region_districts_rRegionsId` ON `${TABLE_NAME}` (`rRegionsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_regions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rRegionsId"
+            ],
+            "referencedColumns": [
+              "regionId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_region_districts_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regionDistrictTlId` TEXT NOT NULL, `regDistrictLocCode` TEXT NOT NULL, `regDistrictTlShortName` TEXT, `regDistrictName` TEXT NOT NULL, `regionDistrictsId` TEXT NOT NULL, PRIMARY KEY(`regionDistrictTlId`), FOREIGN KEY(`regionDistrictsId`) REFERENCES `geo_region_districts`(`regionDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "regionDistrictTlId",
+            "columnName": "regionDistrictTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regDistrictLocCode",
+            "columnName": "regDistrictLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regDistrictTlShortName",
+            "columnName": "regDistrictTlShortName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "regDistrictName",
+            "columnName": "regDistrictName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionDistrictsId",
+            "columnName": "regionDistrictsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "regionDistrictTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_region_districts_tl_regionDistrictsId_regDistrictLocCode_regDistrictTlShortName",
+            "unique": true,
+            "columnNames": [
+              "regionDistrictsId",
+              "regDistrictLocCode",
+              "regDistrictTlShortName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_region_districts_tl_regionDistrictsId_regDistrictLocCode_regDistrictTlShortName` ON `${TABLE_NAME}` (`regionDistrictsId`, `regDistrictLocCode`, `regDistrictTlShortName`)"
+          },
+          {
+            "name": "index_geo_region_districts_tl_regionDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "regionDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_region_districts_tl_regionDistrictsId` ON `${TABLE_NAME}` (`regionDistrictsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_region_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "regionDistrictsId"
+            ],
+            "referencedColumns": [
+              "regionDistrictId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_localities",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`localityId` TEXT NOT NULL, `localityCode` TEXT NOT NULL, `localityType` TEXT NOT NULL, `localityGeocode` TEXT, `localityOsmId` INTEGER, `lRegionDistrictsId` TEXT, `lRegionsId` TEXT NOT NULL, `locality_latitude` INTEGER, `locality_longitude` INTEGER, PRIMARY KEY(`localityId`), FOREIGN KEY(`lRegionsId`) REFERENCES `geo_regions`(`regionId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`lRegionDistrictsId`) REFERENCES `geo_region_districts`(`regionDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "localityId",
+            "columnName": "localityId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityCode",
+            "columnName": "localityCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityType",
+            "columnName": "localityType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityGeocode",
+            "columnName": "localityGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "localityOsmId",
+            "columnName": "localityOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lRegionDistrictsId",
+            "columnName": "lRegionDistrictsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lRegionsId",
+            "columnName": "lRegionsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "locality_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "locality_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "localityId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_localities_lRegionsId_lRegionDistrictsId_localityCode",
+            "unique": true,
+            "columnNames": [
+              "lRegionsId",
+              "lRegionDistrictsId",
+              "localityCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_localities_lRegionsId_lRegionDistrictsId_localityCode` ON `${TABLE_NAME}` (`lRegionsId`, `lRegionDistrictsId`, `localityCode`)"
+          },
+          {
+            "name": "index_geo_localities_localityOsmId",
+            "unique": false,
+            "columnNames": [
+              "localityOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_localities_localityOsmId` ON `${TABLE_NAME}` (`localityOsmId`)"
+          },
+          {
+            "name": "index_geo_localities_lRegionDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "lRegionDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_localities_lRegionDistrictsId` ON `${TABLE_NAME}` (`lRegionDistrictsId`)"
+          },
+          {
+            "name": "index_geo_localities_lRegionsId",
+            "unique": false,
+            "columnNames": [
+              "lRegionsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_localities_lRegionsId` ON `${TABLE_NAME}` (`lRegionsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_regions",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "lRegionsId"
+            ],
+            "referencedColumns": [
+              "regionId"
+            ]
+          },
+          {
+            "table": "geo_region_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "lRegionDistrictsId"
+            ],
+            "referencedColumns": [
+              "regionDistrictId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_localities_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`localityTlId` TEXT NOT NULL, `localityLocCode` TEXT NOT NULL, `localityShortName` TEXT NOT NULL, `localityName` TEXT NOT NULL, `localitiesId` TEXT NOT NULL, PRIMARY KEY(`localityTlId`), FOREIGN KEY(`localitiesId`) REFERENCES `geo_localities`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "localityTlId",
+            "columnName": "localityTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityLocCode",
+            "columnName": "localityLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityShortName",
+            "columnName": "localityShortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityName",
+            "columnName": "localityName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localitiesId",
+            "columnName": "localitiesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "localityTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_localities_tl_localitiesId_localityLocCode",
+            "unique": true,
+            "columnNames": [
+              "localitiesId",
+              "localityLocCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_localities_tl_localitiesId_localityLocCode` ON `${TABLE_NAME}` (`localitiesId`, `localityLocCode`)"
+          },
+          {
+            "name": "index_geo_localities_tl_localitiesId",
+            "unique": false,
+            "columnNames": [
+              "localitiesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_localities_tl_localitiesId` ON `${TABLE_NAME}` (`localitiesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_localities",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "localitiesId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_locality_districts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`localityDistrictId` TEXT NOT NULL, `locDistrictShortName` TEXT NOT NULL, `locDistrictGeocode` TEXT, `locDistrictOsmId` INTEGER, `ldLocalitiesId` TEXT NOT NULL, `locDistrict_latitude` INTEGER, `locDistrict_longitude` INTEGER, PRIMARY KEY(`localityDistrictId`), FOREIGN KEY(`ldLocalitiesId`) REFERENCES `geo_localities`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "localityDistrictId",
+            "columnName": "localityDistrictId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locDistrictShortName",
+            "columnName": "locDistrictShortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locDistrictGeocode",
+            "columnName": "locDistrictGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "locDistrictOsmId",
+            "columnName": "locDistrictOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ldLocalitiesId",
+            "columnName": "ldLocalitiesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "locDistrict_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "locDistrict_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "localityDistrictId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_locality_districts_ldLocalitiesId_locDistrictShortName",
+            "unique": true,
+            "columnNames": [
+              "ldLocalitiesId",
+              "locDistrictShortName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_locality_districts_ldLocalitiesId_locDistrictShortName` ON `${TABLE_NAME}` (`ldLocalitiesId`, `locDistrictShortName`)"
+          },
+          {
+            "name": "index_geo_locality_districts_locDistrictOsmId",
+            "unique": false,
+            "columnNames": [
+              "locDistrictOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_locality_districts_locDistrictOsmId` ON `${TABLE_NAME}` (`locDistrictOsmId`)"
+          },
+          {
+            "name": "index_geo_locality_districts_ldLocalitiesId",
+            "unique": false,
+            "columnNames": [
+              "ldLocalitiesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_locality_districts_ldLocalitiesId` ON `${TABLE_NAME}` (`ldLocalitiesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_localities",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "ldLocalitiesId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_locality_districts_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`localityDistrictTlId` TEXT NOT NULL, `locDistrictLocCode` TEXT NOT NULL, `locDistrictName` TEXT NOT NULL, `localityDistrictsId` TEXT NOT NULL, PRIMARY KEY(`localityDistrictTlId`), FOREIGN KEY(`localityDistrictsId`) REFERENCES `geo_locality_districts`(`localityDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "localityDistrictTlId",
+            "columnName": "localityDistrictTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locDistrictLocCode",
+            "columnName": "locDistrictLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locDistrictName",
+            "columnName": "locDistrictName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityDistrictsId",
+            "columnName": "localityDistrictsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "localityDistrictTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_locality_districts_tl_localityDistrictsId_locDistrictLocCode",
+            "unique": true,
+            "columnNames": [
+              "localityDistrictsId",
+              "locDistrictLocCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_locality_districts_tl_localityDistrictsId_locDistrictLocCode` ON `${TABLE_NAME}` (`localityDistrictsId`, `locDistrictLocCode`)"
+          },
+          {
+            "name": "index_geo_locality_districts_tl_localityDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "localityDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_locality_districts_tl_localityDistrictsId` ON `${TABLE_NAME}` (`localityDistrictsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_locality_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "localityDistrictsId"
+            ],
+            "referencedColumns": [
+              "localityDistrictId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_microdistricts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`microdistrictId` TEXT NOT NULL, `microdistrictType` TEXT NOT NULL, `microdistrictShortName` TEXT NOT NULL, `microdistrictGeocode` TEXT, `microdistrictOsmId` INTEGER, `mLocalityDistrictsId` TEXT NOT NULL, `mLocalitiesId` TEXT NOT NULL, `microdistrict_latitude` INTEGER, `microdistrict_longitude` INTEGER, PRIMARY KEY(`microdistrictId`), FOREIGN KEY(`mLocalityDistrictsId`) REFERENCES `geo_locality_districts`(`localityDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`mLocalitiesId`) REFERENCES `geo_localities`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "microdistrictId",
+            "columnName": "microdistrictId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "microdistrictType",
+            "columnName": "microdistrictType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "microdistrictShortName",
+            "columnName": "microdistrictShortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "microdistrictGeocode",
+            "columnName": "microdistrictGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "microdistrictOsmId",
+            "columnName": "microdistrictOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mLocalityDistrictsId",
+            "columnName": "mLocalityDistrictsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mLocalitiesId",
+            "columnName": "mLocalitiesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "microdistrict_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "microdistrict_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "microdistrictId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_microdistricts_mLocalitiesId_mLocalityDistrictsId_microdistrictType_microdistrictShortName",
+            "unique": true,
+            "columnNames": [
+              "mLocalitiesId",
+              "mLocalityDistrictsId",
+              "microdistrictType",
+              "microdistrictShortName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_microdistricts_mLocalitiesId_mLocalityDistrictsId_microdistrictType_microdistrictShortName` ON `${TABLE_NAME}` (`mLocalitiesId`, `mLocalityDistrictsId`, `microdistrictType`, `microdistrictShortName`)"
+          },
+          {
+            "name": "index_geo_microdistricts_microdistrictOsmId",
+            "unique": false,
+            "columnNames": [
+              "microdistrictOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_microdistricts_microdistrictOsmId` ON `${TABLE_NAME}` (`microdistrictOsmId`)"
+          },
+          {
+            "name": "index_geo_microdistricts_mLocalityDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "mLocalityDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_microdistricts_mLocalityDistrictsId` ON `${TABLE_NAME}` (`mLocalityDistrictsId`)"
+          },
+          {
+            "name": "index_geo_microdistricts_mLocalitiesId",
+            "unique": false,
+            "columnNames": [
+              "mLocalitiesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_microdistricts_mLocalitiesId` ON `${TABLE_NAME}` (`mLocalitiesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_locality_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mLocalityDistrictsId"
+            ],
+            "referencedColumns": [
+              "localityDistrictId"
+            ]
+          },
+          {
+            "table": "geo_localities",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mLocalitiesId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_microdistricts_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`microdistrictTlId` TEXT NOT NULL, `microdistrictLocCode` TEXT NOT NULL, `microdistrictName` TEXT NOT NULL, `microdistrictsId` TEXT NOT NULL, PRIMARY KEY(`microdistrictTlId`), FOREIGN KEY(`microdistrictsId`) REFERENCES `geo_microdistricts`(`microdistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "microdistrictTlId",
+            "columnName": "microdistrictTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "microdistrictLocCode",
+            "columnName": "microdistrictLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "microdistrictName",
+            "columnName": "microdistrictName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "microdistrictsId",
+            "columnName": "microdistrictsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "microdistrictTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_microdistricts_tl_microdistrictsId_microdistrictLocCode",
+            "unique": true,
+            "columnNames": [
+              "microdistrictsId",
+              "microdistrictLocCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_microdistricts_tl_microdistrictsId_microdistrictLocCode` ON `${TABLE_NAME}` (`microdistrictsId`, `microdistrictLocCode`)"
+          },
+          {
+            "name": "index_geo_microdistricts_tl_microdistrictsId",
+            "unique": false,
+            "columnNames": [
+              "microdistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_microdistricts_tl_microdistrictsId` ON `${TABLE_NAME}` (`microdistrictsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_microdistricts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "microdistrictsId"
+            ],
+            "referencedColumns": [
+              "microdistrictId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_streets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`streetId` TEXT NOT NULL, `streetHashCode` INTEGER NOT NULL, `roadType` TEXT NOT NULL, `isStreetPrivateSector` INTEGER NOT NULL, `estStreetHouses` INTEGER, `streetGeocode` TEXT, `streetOsmId` INTEGER, `sLocalitiesId` TEXT NOT NULL, `street_latitude` INTEGER, `street_longitude` INTEGER, PRIMARY KEY(`streetId`), FOREIGN KEY(`sLocalitiesId`) REFERENCES `geo_localities`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "streetId",
+            "columnName": "streetId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "streetHashCode",
+            "columnName": "streetHashCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roadType",
+            "columnName": "roadType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isStreetPrivateSector",
+            "columnName": "isStreetPrivateSector",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estStreetHouses",
+            "columnName": "estStreetHouses",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "streetGeocode",
+            "columnName": "streetGeocode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "streetOsmId",
+            "columnName": "streetOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sLocalitiesId",
+            "columnName": "sLocalitiesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "street_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "street_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "streetId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_streets_sLocalitiesId_streetHashCode_roadType_isStreetPrivateSector",
+            "unique": true,
+            "columnNames": [
+              "sLocalitiesId",
+              "streetHashCode",
+              "roadType",
+              "isStreetPrivateSector"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_streets_sLocalitiesId_streetHashCode_roadType_isStreetPrivateSector` ON `${TABLE_NAME}` (`sLocalitiesId`, `streetHashCode`, `roadType`, `isStreetPrivateSector`)"
+          },
+          {
+            "name": "index_geo_streets_streetOsmId",
+            "unique": false,
+            "columnNames": [
+              "streetOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_streets_streetOsmId` ON `${TABLE_NAME}` (`streetOsmId`)"
+          },
+          {
+            "name": "index_geo_streets_sLocalitiesId",
+            "unique": false,
+            "columnNames": [
+              "sLocalitiesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_streets_sLocalitiesId` ON `${TABLE_NAME}` (`sLocalitiesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_localities",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sLocalitiesId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_streets_tl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`streetTlId` TEXT NOT NULL, `streetLocCode` TEXT NOT NULL, `streetName` TEXT NOT NULL, `streetsId` TEXT NOT NULL, PRIMARY KEY(`streetTlId`), FOREIGN KEY(`streetsId`) REFERENCES `geo_streets`(`streetId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "streetTlId",
+            "columnName": "streetTlId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "streetLocCode",
+            "columnName": "streetLocCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "streetName",
+            "columnName": "streetName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "streetsId",
+            "columnName": "streetsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "streetTlId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_streets_tl_streetsId_streetLocCode",
+            "unique": true,
+            "columnNames": [
+              "streetsId",
+              "streetLocCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_streets_tl_streetsId_streetLocCode` ON `${TABLE_NAME}` (`streetsId`, `streetLocCode`)"
+          },
+          {
+            "name": "index_geo_streets_tl_streetsId",
+            "unique": false,
+            "columnNames": [
+              "streetsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_streets_tl_streetsId` ON `${TABLE_NAME}` (`streetsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_streets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "streetsId"
+            ],
+            "referencedColumns": [
+              "streetId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "geo_street_districts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`streetDistrictId` TEXT NOT NULL, `dsStreetsId` TEXT NOT NULL, `dsLocalityDistrictsId` TEXT NOT NULL, `dsMicrodistrictsId` TEXT, PRIMARY KEY(`streetDistrictId`), FOREIGN KEY(`dsMicrodistrictsId`) REFERENCES `geo_microdistricts`(`microdistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`dsLocalityDistrictsId`) REFERENCES `geo_locality_districts`(`localityDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`dsStreetsId`) REFERENCES `geo_streets`(`streetId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "streetDistrictId",
+            "columnName": "streetDistrictId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dsStreetsId",
+            "columnName": "dsStreetsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dsLocalityDistrictsId",
+            "columnName": "dsLocalityDistrictsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dsMicrodistrictsId",
+            "columnName": "dsMicrodistrictsId",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "streetDistrictId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_geo_street_districts_dsStreetsId_dsLocalityDistrictsId_dsMicrodistrictsId",
+            "unique": true,
+            "columnNames": [
+              "dsStreetsId",
+              "dsLocalityDistrictsId",
+              "dsMicrodistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_geo_street_districts_dsStreetsId_dsLocalityDistrictsId_dsMicrodistrictsId` ON `${TABLE_NAME}` (`dsStreetsId`, `dsLocalityDistrictsId`, `dsMicrodistrictsId`)"
+          },
+          {
+            "name": "index_geo_street_districts_dsStreetsId",
+            "unique": false,
+            "columnNames": [
+              "dsStreetsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_street_districts_dsStreetsId` ON `${TABLE_NAME}` (`dsStreetsId`)"
+          },
+          {
+            "name": "index_geo_street_districts_dsLocalityDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "dsLocalityDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_street_districts_dsLocalityDistrictsId` ON `${TABLE_NAME}` (`dsLocalityDistrictsId`)"
+          },
+          {
+            "name": "index_geo_street_districts_dsMicrodistrictsId",
+            "unique": false,
+            "columnNames": [
+              "dsMicrodistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_geo_street_districts_dsMicrodistrictsId` ON `${TABLE_NAME}` (`dsMicrodistrictsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_microdistricts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "dsMicrodistrictsId"
+            ],
+            "referencedColumns": [
+              "microdistrictId"
+            ]
+          },
+          {
+            "table": "geo_locality_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "dsLocalityDistrictsId"
+            ],
+            "referencedColumns": [
+              "localityDistrictId"
+            ]
+          },
+          {
+            "table": "geo_streets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "dsStreetsId"
+            ],
+            "referencedColumns": [
+              "streetId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "congregations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`congregationId` TEXT NOT NULL, `congregationNum` TEXT NOT NULL, `congregationName` TEXT NOT NULL, `territoryMark` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `lastVisitDate` TEXT, `cLocalitiesId` TEXT NOT NULL, PRIMARY KEY(`congregationId`), FOREIGN KEY(`cLocalitiesId`) REFERENCES `geo_localities`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "congregationId",
+            "columnName": "congregationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "congregationNum",
+            "columnName": "congregationNum",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "congregationName",
+            "columnName": "congregationName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryMark",
+            "columnName": "territoryMark",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastVisitDate",
+            "columnName": "lastVisitDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "cLocalitiesId",
+            "columnName": "cLocalitiesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "congregationId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_congregations_congregationNum",
+            "unique": true,
+            "columnNames": [
+              "congregationNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_congregations_congregationNum` ON `${TABLE_NAME}` (`congregationNum`)"
+          },
+          {
+            "name": "index_congregations_cLocalitiesId",
+            "unique": false,
+            "columnNames": [
+              "cLocalitiesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_congregations_cLocalitiesId` ON `${TABLE_NAME}` (`cLocalitiesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_localities",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "cLocalitiesId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "congregation_totals",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`congregationTotalId` TEXT NOT NULL, `lastVisitDate` TEXT, `totalGroups` INTEGER NOT NULL, `totalMembers` INTEGER NOT NULL, `totalActiveMembers` INTEGER NOT NULL, `totalFulltimeMembers` INTEGER NOT NULL, `totalTerritories` INTEGER NOT NULL, `totalTerritoryIssued` INTEGER NOT NULL, `totalTerritoryProcessed` INTEGER NOT NULL, `ctlCongregationsId` TEXT NOT NULL, PRIMARY KEY(`congregationTotalId`), FOREIGN KEY(`ctlCongregationsId`) REFERENCES `congregations`(`congregationId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "congregationTotalId",
+            "columnName": "congregationTotalId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastVisitDate",
+            "columnName": "lastVisitDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "totalGroups",
+            "columnName": "totalGroups",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalMembers",
+            "columnName": "totalMembers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalActiveMembers",
+            "columnName": "totalActiveMembers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalFulltimeMembers",
+            "columnName": "totalFulltimeMembers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTerritories",
+            "columnName": "totalTerritories",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTerritoryIssued",
+            "columnName": "totalTerritoryIssued",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTerritoryProcessed",
+            "columnName": "totalTerritoryProcessed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ctlCongregationsId",
+            "columnName": "ctlCongregationsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "congregationTotalId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_congregation_totals_ctlCongregationsId_lastVisitDate",
+            "unique": true,
+            "columnNames": [
+              "ctlCongregationsId",
+              "lastVisitDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_congregation_totals_ctlCongregationsId_lastVisitDate` ON `${TABLE_NAME}` (`ctlCongregationsId`, `lastVisitDate`)"
+          },
+          {
+            "name": "index_congregation_totals_ctlCongregationsId",
+            "unique": false,
+            "columnNames": [
+              "ctlCongregationsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_congregation_totals_ctlCongregationsId` ON `${TABLE_NAME}` (`ctlCongregationsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "congregations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "ctlCongregationsId"
+            ],
+            "referencedColumns": [
+              "congregationId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "groups",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` TEXT NOT NULL, `groupNum` INTEGER NOT NULL, `gCongregationsId` TEXT NOT NULL, PRIMARY KEY(`groupId`), FOREIGN KEY(`gCongregationsId`) REFERENCES `congregations`(`congregationId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "groupId",
+            "columnName": "groupId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupNum",
+            "columnName": "groupNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gCongregationsId",
+            "columnName": "gCongregationsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "groupId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_groups_gCongregationsId_groupNum",
+            "unique": true,
+            "columnNames": [
+              "gCongregationsId",
+              "groupNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_groups_gCongregationsId_groupNum` ON `${TABLE_NAME}` (`gCongregationsId`, `groupNum`)"
+          },
+          {
+            "name": "index_groups_gCongregationsId",
+            "unique": false,
+            "columnNames": [
+              "gCongregationsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_groups_gCongregationsId` ON `${TABLE_NAME}` (`gCongregationsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "congregations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gCongregationsId"
+            ],
+            "referencedColumns": [
+              "congregationId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "members",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`memberId` TEXT NOT NULL, `memberNum` TEXT, `memberName` TEXT, `surname` TEXT, `patronymic` TEXT, `pseudonym` TEXT NOT NULL, `phoneNumber` TEXT, `dateOfBirth` TEXT, `dateOfBaptism` TEXT, `loginExpiredDate` TEXT, `mGroupsId` TEXT, PRIMARY KEY(`memberId`), FOREIGN KEY(`mGroupsId`) REFERENCES `groups`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "memberId",
+            "columnName": "memberId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "memberNum",
+            "columnName": "memberNum",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "memberName",
+            "columnName": "memberName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "surname",
+            "columnName": "surname",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "patronymic",
+            "columnName": "patronymic",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pseudonym",
+            "columnName": "pseudonym",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneNumber",
+            "columnName": "phoneNumber",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateOfBirth",
+            "columnName": "dateOfBirth",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateOfBaptism",
+            "columnName": "dateOfBaptism",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "loginExpiredDate",
+            "columnName": "loginExpiredDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mGroupsId",
+            "columnName": "mGroupsId",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "memberId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_members_pseudonym",
+            "unique": true,
+            "columnNames": [
+              "pseudonym"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_members_pseudonym` ON `${TABLE_NAME}` (`pseudonym`)"
+          },
+          {
+            "name": "index_members_mGroupsId",
+            "unique": false,
+            "columnNames": [
+              "mGroupsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_members_mGroupsId` ON `${TABLE_NAME}` (`mGroupsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "groups",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mGroupsId"
+            ],
+            "referencedColumns": [
+              "groupId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "member_movements",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`memberMovementId` TEXT NOT NULL, `memberType` TEXT NOT NULL, `movementDate` TEXT NOT NULL, `mMembersId` TEXT NOT NULL, PRIMARY KEY(`memberMovementId`), FOREIGN KEY(`mMembersId`) REFERENCES `members`(`memberId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "memberMovementId",
+            "columnName": "memberMovementId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "memberType",
+            "columnName": "memberType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "movementDate",
+            "columnName": "movementDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mMembersId",
+            "columnName": "mMembersId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "memberMovementId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_member_movements_mMembersId_memberType_movementDate",
+            "unique": true,
+            "columnNames": [
+              "mMembersId",
+              "memberType",
+              "movementDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_member_movements_mMembersId_memberType_movementDate` ON `${TABLE_NAME}` (`mMembersId`, `memberType`, `movementDate`)"
+          },
+          {
+            "name": "index_member_movements_mMembersId",
+            "unique": false,
+            "columnNames": [
+              "mMembersId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_member_movements_mMembersId` ON `${TABLE_NAME}` (`mMembersId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "members",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mMembersId"
+            ],
+            "referencedColumns": [
+              "memberId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "member_roles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`memberRoleId` TEXT NOT NULL, `roleExpiredDate` TEXT, `mrMembersId` TEXT NOT NULL, `mrRolesId` TEXT NOT NULL, PRIMARY KEY(`memberRoleId`), FOREIGN KEY(`mrMembersId`) REFERENCES `members`(`memberId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`mrRolesId`) REFERENCES `roles`(`roleId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "memberRoleId",
+            "columnName": "memberRoleId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleExpiredDate",
+            "columnName": "roleExpiredDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mrMembersId",
+            "columnName": "mrMembersId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mrRolesId",
+            "columnName": "mrRolesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "memberRoleId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_member_roles_mrMembersId_mrRolesId",
+            "unique": true,
+            "columnNames": [
+              "mrMembersId",
+              "mrRolesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_member_roles_mrMembersId_mrRolesId` ON `${TABLE_NAME}` (`mrMembersId`, `mrRolesId`)"
+          },
+          {
+            "name": "index_member_roles_mrMembersId",
+            "unique": false,
+            "columnNames": [
+              "mrMembersId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_member_roles_mrMembersId` ON `${TABLE_NAME}` (`mrMembersId`)"
+          },
+          {
+            "name": "index_member_roles_mrRolesId",
+            "unique": false,
+            "columnNames": [
+              "mrRolesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_member_roles_mrRolesId` ON `${TABLE_NAME}` (`mrRolesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "members",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mrMembersId"
+            ],
+            "referencedColumns": [
+              "memberId"
+            ]
+          },
+          {
+            "table": "roles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mrRolesId"
+            ],
+            "referencedColumns": [
+              "roleId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "member_congregations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`memberCongregationId` TEXT NOT NULL, `activityDate` TEXT NOT NULL, `mcMembersId` TEXT NOT NULL, `mcCongregationsId` TEXT NOT NULL, PRIMARY KEY(`memberCongregationId`), FOREIGN KEY(`mcMembersId`) REFERENCES `members`(`memberId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`mcCongregationsId`) REFERENCES `congregations`(`congregationId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "memberCongregationId",
+            "columnName": "memberCongregationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activityDate",
+            "columnName": "activityDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mcMembersId",
+            "columnName": "mcMembersId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mcCongregationsId",
+            "columnName": "mcCongregationsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "memberCongregationId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_member_congregations_mcCongregationsId_mcMembersId_activityDate",
+            "unique": true,
+            "columnNames": [
+              "mcCongregationsId",
+              "mcMembersId",
+              "activityDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_member_congregations_mcCongregationsId_mcMembersId_activityDate` ON `${TABLE_NAME}` (`mcCongregationsId`, `mcMembersId`, `activityDate`)"
+          },
+          {
+            "name": "index_member_congregations_mcMembersId",
+            "unique": false,
+            "columnNames": [
+              "mcMembersId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_member_congregations_mcMembersId` ON `${TABLE_NAME}` (`mcMembersId`)"
+          },
+          {
+            "name": "index_member_congregations_mcCongregationsId",
+            "unique": false,
+            "columnNames": [
+              "mcCongregationsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_member_congregations_mcCongregationsId` ON `${TABLE_NAME}` (`mcCongregationsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "members",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mcMembersId"
+            ],
+            "referencedColumns": [
+              "memberId"
+            ]
+          },
+          {
+            "table": "congregations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mcCongregationsId"
+            ],
+            "referencedColumns": [
+              "congregationId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "member_ministries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`memberMinistryId` TEXT NOT NULL, `ministryDate` TEXT NOT NULL, `hoursQty` INTEGER, `returnVisitsQty` INTEGER, `mediaQty` INTEGER, `publicationsQty` INTEGER, `studiesQty` INTEGER, `ministryDesc` TEXT, `mmMembersId` TEXT NOT NULL, PRIMARY KEY(`memberMinistryId`), FOREIGN KEY(`mmMembersId`) REFERENCES `members`(`memberId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "memberMinistryId",
+            "columnName": "memberMinistryId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ministryDate",
+            "columnName": "ministryDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hoursQty",
+            "columnName": "hoursQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "returnVisitsQty",
+            "columnName": "returnVisitsQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mediaQty",
+            "columnName": "mediaQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "publicationsQty",
+            "columnName": "publicationsQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "studiesQty",
+            "columnName": "studiesQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ministryDesc",
+            "columnName": "ministryDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mmMembersId",
+            "columnName": "mmMembersId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "memberMinistryId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_member_ministries_mmMembersId_ministryDate",
+            "unique": true,
+            "columnNames": [
+              "mmMembersId",
+              "ministryDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_member_ministries_mmMembersId_ministryDate` ON `${TABLE_NAME}` (`mmMembersId`, `ministryDate`)"
+          },
+          {
+            "name": "index_member_ministries_mmMembersId",
+            "unique": false,
+            "columnNames": [
+              "mmMembersId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_member_ministries_mmMembersId` ON `${TABLE_NAME}` (`mmMembersId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "members",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mmMembersId"
+            ],
+            "referencedColumns": [
+              "memberId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "territory_categories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`territoryCategoryId` TEXT NOT NULL, `territoryCategoryCode` TEXT NOT NULL, `territoryCategoryMark` TEXT NOT NULL, `territoryCategoryName` TEXT NOT NULL, PRIMARY KEY(`territoryCategoryId`))",
+        "fields": [
+          {
+            "fieldPath": "territoryCategoryId",
+            "columnName": "territoryCategoryId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryCategoryCode",
+            "columnName": "territoryCategoryCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryCategoryMark",
+            "columnName": "territoryCategoryMark",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryCategoryName",
+            "columnName": "territoryCategoryName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "territoryCategoryId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_territory_categories_territoryCategoryCode",
+            "unique": true,
+            "columnNames": [
+              "territoryCategoryCode"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_territory_categories_territoryCategoryCode` ON `${TABLE_NAME}` (`territoryCategoryCode`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "territories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`territoryId` TEXT NOT NULL, `territoryNum` INTEGER NOT NULL, `isActive` INTEGER NOT NULL, `isBusinessTerritory` INTEGER NOT NULL, `isGroupMinistry` INTEGER NOT NULL, `isProcessed` INTEGER NOT NULL, `territoryDesc` TEXT, `tMicrodistrictsId` TEXT, `tLocalityDistrictsId` TEXT, `tLocalitiesId` TEXT NOT NULL, `tTerritoryCategoriesId` TEXT NOT NULL, `tCongregationsId` TEXT NOT NULL, PRIMARY KEY(`territoryId`), FOREIGN KEY(`tMicrodistrictsId`) REFERENCES `geo_microdistricts`(`microdistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tLocalityDistrictsId`) REFERENCES `geo_locality_districts`(`localityDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tLocalitiesId`) REFERENCES `geo_localities`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tTerritoryCategoriesId`) REFERENCES `territory_categories`(`territoryCategoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tCongregationsId`) REFERENCES `congregations`(`congregationId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "territoryId",
+            "columnName": "territoryId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryNum",
+            "columnName": "territoryNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isActive",
+            "columnName": "isActive",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBusinessTerritory",
+            "columnName": "isBusinessTerritory",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isGroupMinistry",
+            "columnName": "isGroupMinistry",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isProcessed",
+            "columnName": "isProcessed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryDesc",
+            "columnName": "territoryDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tMicrodistrictsId",
+            "columnName": "tMicrodistrictsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tLocalityDistrictsId",
+            "columnName": "tLocalityDistrictsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tLocalitiesId",
+            "columnName": "tLocalitiesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tTerritoryCategoriesId",
+            "columnName": "tTerritoryCategoriesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tCongregationsId",
+            "columnName": "tCongregationsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "territoryId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_territories_tCongregationsId_tTerritoryCategoriesId_tLocalitiesId_tLocalityDistrictsId_tMicrodistrictsId_territoryNum",
+            "unique": true,
+            "columnNames": [
+              "tCongregationsId",
+              "tTerritoryCategoriesId",
+              "tLocalitiesId",
+              "tLocalityDistrictsId",
+              "tMicrodistrictsId",
+              "territoryNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_territories_tCongregationsId_tTerritoryCategoriesId_tLocalitiesId_tLocalityDistrictsId_tMicrodistrictsId_territoryNum` ON `${TABLE_NAME}` (`tCongregationsId`, `tTerritoryCategoriesId`, `tLocalitiesId`, `tLocalityDistrictsId`, `tMicrodistrictsId`, `territoryNum`)"
+          },
+          {
+            "name": "index_territories_tMicrodistrictsId",
+            "unique": false,
+            "columnNames": [
+              "tMicrodistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_tMicrodistrictsId` ON `${TABLE_NAME}` (`tMicrodistrictsId`)"
+          },
+          {
+            "name": "index_territories_tLocalityDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "tLocalityDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_tLocalityDistrictsId` ON `${TABLE_NAME}` (`tLocalityDistrictsId`)"
+          },
+          {
+            "name": "index_territories_tLocalitiesId",
+            "unique": false,
+            "columnNames": [
+              "tLocalitiesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_tLocalitiesId` ON `${TABLE_NAME}` (`tLocalitiesId`)"
+          },
+          {
+            "name": "index_territories_tTerritoryCategoriesId",
+            "unique": false,
+            "columnNames": [
+              "tTerritoryCategoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_tTerritoryCategoriesId` ON `${TABLE_NAME}` (`tTerritoryCategoriesId`)"
+          },
+          {
+            "name": "index_territories_tCongregationsId",
+            "unique": false,
+            "columnNames": [
+              "tCongregationsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_tCongregationsId` ON `${TABLE_NAME}` (`tCongregationsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_microdistricts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tMicrodistrictsId"
+            ],
+            "referencedColumns": [
+              "microdistrictId"
+            ]
+          },
+          {
+            "table": "geo_locality_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tLocalityDistrictsId"
+            ],
+            "referencedColumns": [
+              "localityDistrictId"
+            ]
+          },
+          {
+            "table": "geo_localities",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tLocalitiesId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          },
+          {
+            "table": "territory_categories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tTerritoryCategoriesId"
+            ],
+            "referencedColumns": [
+              "territoryCategoryId"
+            ]
+          },
+          {
+            "table": "congregations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tCongregationsId"
+            ],
+            "referencedColumns": [
+              "congregationId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "territory_streets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`territoryStreetId` TEXT NOT NULL, `isEvenSide` INTEGER, `isTerStreetPrivateSector` INTEGER, `estTerStreetHouses` INTEGER, `tsStreetsId` TEXT NOT NULL, `tsTerritoriesId` TEXT NOT NULL, PRIMARY KEY(`territoryStreetId`), FOREIGN KEY(`tsTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tsStreetsId`) REFERENCES `geo_streets`(`streetId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "territoryStreetId",
+            "columnName": "territoryStreetId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isEvenSide",
+            "columnName": "isEvenSide",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isTerStreetPrivateSector",
+            "columnName": "isTerStreetPrivateSector",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "estTerStreetHouses",
+            "columnName": "estTerStreetHouses",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tsStreetsId",
+            "columnName": "tsStreetsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tsTerritoriesId",
+            "columnName": "tsTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "territoryStreetId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_territory_streets_tsTerritoriesId_tsStreetsId_isEvenSide_isTerStreetPrivateSector",
+            "unique": true,
+            "columnNames": [
+              "tsTerritoriesId",
+              "tsStreetsId",
+              "isEvenSide",
+              "isTerStreetPrivateSector"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_territory_streets_tsTerritoriesId_tsStreetsId_isEvenSide_isTerStreetPrivateSector` ON `${TABLE_NAME}` (`tsTerritoriesId`, `tsStreetsId`, `isEvenSide`, `isTerStreetPrivateSector`)"
+          },
+          {
+            "name": "index_territory_streets_tsStreetsId",
+            "unique": false,
+            "columnNames": [
+              "tsStreetsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territory_streets_tsStreetsId` ON `${TABLE_NAME}` (`tsStreetsId`)"
+          },
+          {
+            "name": "index_territory_streets_tsTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "tsTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territory_streets_tsTerritoriesId` ON `${TABLE_NAME}` (`tsTerritoriesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tsTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          },
+          {
+            "table": "geo_streets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tsStreetsId"
+            ],
+            "referencedColumns": [
+              "streetId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "transfer_objects",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transferObjectId` TEXT NOT NULL, `transferObjectType` TEXT NOT NULL, `transferObjectName` TEXT NOT NULL, PRIMARY KEY(`transferObjectId`))",
+        "fields": [
+          {
+            "fieldPath": "transferObjectId",
+            "columnName": "transferObjectId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transferObjectType",
+            "columnName": "transferObjectType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transferObjectName",
+            "columnName": "transferObjectName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "transferObjectId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_transfer_objects_transferObjectType",
+            "unique": true,
+            "columnNames": [
+              "transferObjectType"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_transfer_objects_transferObjectType` ON `${TABLE_NAME}` (`transferObjectType`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "role_transfer_objects",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roleTransferObjectId` TEXT NOT NULL, `isPersonalData` INTEGER NOT NULL, `rtoRolesId` TEXT NOT NULL, `rtoTransferObjectsId` TEXT NOT NULL, PRIMARY KEY(`roleTransferObjectId`), FOREIGN KEY(`rtoRolesId`) REFERENCES `roles`(`roleId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`rtoTransferObjectsId`) REFERENCES `transfer_objects`(`transferObjectId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "roleTransferObjectId",
+            "columnName": "roleTransferObjectId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPersonalData",
+            "columnName": "isPersonalData",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rtoRolesId",
+            "columnName": "rtoRolesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rtoTransferObjectsId",
+            "columnName": "rtoTransferObjectsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "roleTransferObjectId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_role_transfer_objects_rtoRolesId_rtoTransferObjectsId",
+            "unique": true,
+            "columnNames": [
+              "rtoRolesId",
+              "rtoTransferObjectsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_role_transfer_objects_rtoRolesId_rtoTransferObjectsId` ON `${TABLE_NAME}` (`rtoRolesId`, `rtoTransferObjectsId`)"
+          },
+          {
+            "name": "index_role_transfer_objects_rtoRolesId",
+            "unique": false,
+            "columnNames": [
+              "rtoRolesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_role_transfer_objects_rtoRolesId` ON `${TABLE_NAME}` (`rtoRolesId`)"
+          },
+          {
+            "name": "index_role_transfer_objects_rtoTransferObjectsId",
+            "unique": false,
+            "columnNames": [
+              "rtoTransferObjectsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_role_transfer_objects_rtoTransferObjectsId` ON `${TABLE_NAME}` (`rtoTransferObjectsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "roles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rtoRolesId"
+            ],
+            "referencedColumns": [
+              "roleId"
+            ]
+          },
+          {
+            "table": "transfer_objects",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rtoTransferObjectsId"
+            ],
+            "referencedColumns": [
+              "transferObjectId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "territories_members",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`territoryMemberId` TEXT NOT NULL, `receivingDate` TEXT NOT NULL, `deliveryDate` TEXT, `tmcTerritoriesId` TEXT NOT NULL, `tmcMembersId` TEXT NOT NULL, PRIMARY KEY(`territoryMemberId`), FOREIGN KEY(`tmcTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tmcMembersId`) REFERENCES `members`(`memberId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "territoryMemberId",
+            "columnName": "territoryMemberId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "receivingDate",
+            "columnName": "receivingDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deliveryDate",
+            "columnName": "deliveryDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tmcTerritoriesId",
+            "columnName": "tmcTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tmcMembersId",
+            "columnName": "tmcMembersId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "territoryMemberId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_territories_members_tmcTerritoriesId_tmcMembersId_receivingDate",
+            "unique": true,
+            "columnNames": [
+              "tmcTerritoriesId",
+              "tmcMembersId",
+              "receivingDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_territories_members_tmcTerritoriesId_tmcMembersId_receivingDate` ON `${TABLE_NAME}` (`tmcTerritoriesId`, `tmcMembersId`, `receivingDate`)"
+          },
+          {
+            "name": "index_territories_members_tmcTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "tmcTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_members_tmcTerritoriesId` ON `${TABLE_NAME}` (`tmcTerritoriesId`)"
+          },
+          {
+            "name": "index_territories_members_tmcMembersId",
+            "unique": false,
+            "columnNames": [
+              "tmcMembersId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territories_members_tmcMembersId` ON `${TABLE_NAME}` (`tmcMembersId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tmcTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          },
+          {
+            "table": "members",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tmcMembersId"
+            ],
+            "referencedColumns": [
+              "memberId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "houses",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`houseId` TEXT NOT NULL, `zipCode` TEXT, `houseNum` INTEGER NOT NULL, `houseLetter` TEXT, `buildingNum` INTEGER, `buildingType` TEXT NOT NULL, `isBusinessHouse` INTEGER NOT NULL, `isSecurityHouse` INTEGER NOT NULL, `isIntercomHouse` INTEGER, `isResidentialHouse` INTEGER NOT NULL, `houseEntrancesQty` INTEGER, `floorsByEntrance` INTEGER, `roomsByHouseFloor` INTEGER, `estHouseRooms` INTEGER, `isForeignLangHouse` INTEGER NOT NULL, `isHousePrivateSector` INTEGER NOT NULL, `houseDesc` TEXT, `houseOsmId` INTEGER, `hTerritoriesId` TEXT, `hMicrodistrictsId` TEXT, `hLocalityDistrictsId` TEXT, `hStreetsId` TEXT NOT NULL, `house_latitude` INTEGER, `house_longitude` INTEGER, PRIMARY KEY(`houseId`), FOREIGN KEY(`hStreetsId`) REFERENCES `geo_streets`(`streetId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`hMicrodistrictsId`) REFERENCES `geo_microdistricts`(`microdistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`hLocalityDistrictsId`) REFERENCES `geo_locality_districts`(`localityDistrictId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`hTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "houseId",
+            "columnName": "houseId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zipCode",
+            "columnName": "zipCode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "houseNum",
+            "columnName": "houseNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "houseLetter",
+            "columnName": "houseLetter",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "buildingNum",
+            "columnName": "buildingNum",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "buildingType",
+            "columnName": "buildingType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBusinessHouse",
+            "columnName": "isBusinessHouse",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSecurityHouse",
+            "columnName": "isSecurityHouse",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isIntercomHouse",
+            "columnName": "isIntercomHouse",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isResidentialHouse",
+            "columnName": "isResidentialHouse",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "houseEntrancesQty",
+            "columnName": "houseEntrancesQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "floorsByEntrance",
+            "columnName": "floorsByEntrance",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "roomsByHouseFloor",
+            "columnName": "roomsByHouseFloor",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "estHouseRooms",
+            "columnName": "estHouseRooms",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isForeignLangHouse",
+            "columnName": "isForeignLangHouse",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isHousePrivateSector",
+            "columnName": "isHousePrivateSector",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "houseDesc",
+            "columnName": "houseDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "houseOsmId",
+            "columnName": "houseOsmId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hTerritoriesId",
+            "columnName": "hTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hMicrodistrictsId",
+            "columnName": "hMicrodistrictsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hLocalityDistrictsId",
+            "columnName": "hLocalityDistrictsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hStreetsId",
+            "columnName": "hStreetsId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coordinates.latitude",
+            "columnName": "house_latitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coordinates.longitude",
+            "columnName": "house_longitude",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "houseId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_houses_hStreetsId_zipCode_houseNum_houseLetter_buildingNum",
+            "unique": true,
+            "columnNames": [
+              "hStreetsId",
+              "zipCode",
+              "houseNum",
+              "houseLetter",
+              "buildingNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_houses_hStreetsId_zipCode_houseNum_houseLetter_buildingNum` ON `${TABLE_NAME}` (`hStreetsId`, `zipCode`, `houseNum`, `houseLetter`, `buildingNum`)"
+          },
+          {
+            "name": "index_houses_houseOsmId",
+            "unique": false,
+            "columnNames": [
+              "houseOsmId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_houses_houseOsmId` ON `${TABLE_NAME}` (`houseOsmId`)"
+          },
+          {
+            "name": "index_houses_hTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "hTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_houses_hTerritoriesId` ON `${TABLE_NAME}` (`hTerritoriesId`)"
+          },
+          {
+            "name": "index_houses_hMicrodistrictsId",
+            "unique": false,
+            "columnNames": [
+              "hMicrodistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_houses_hMicrodistrictsId` ON `${TABLE_NAME}` (`hMicrodistrictsId`)"
+          },
+          {
+            "name": "index_houses_hLocalityDistrictsId",
+            "unique": false,
+            "columnNames": [
+              "hLocalityDistrictsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_houses_hLocalityDistrictsId` ON `${TABLE_NAME}` (`hLocalityDistrictsId`)"
+          },
+          {
+            "name": "index_houses_hStreetsId",
+            "unique": false,
+            "columnNames": [
+              "hStreetsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_houses_hStreetsId` ON `${TABLE_NAME}` (`hStreetsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "geo_streets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "hStreetsId"
+            ],
+            "referencedColumns": [
+              "streetId"
+            ]
+          },
+          {
+            "table": "geo_microdistricts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "hMicrodistrictsId"
+            ],
+            "referencedColumns": [
+              "microdistrictId"
+            ]
+          },
+          {
+            "table": "geo_locality_districts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "hLocalityDistrictsId"
+            ],
+            "referencedColumns": [
+              "localityDistrictId"
+            ]
+          },
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "hTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "entrances",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`entranceId` TEXT NOT NULL, `entranceNum` INTEGER NOT NULL, `isSecurityEntrance` INTEGER NOT NULL, `isIntercomEntrance` INTEGER, `isResidentialEntrance` INTEGER NOT NULL, `entranceFloorsQty` INTEGER, `roomsByEntranceFloor` INTEGER, `estEntranceRooms` INTEGER, `entranceDesc` TEXT, `eTerritoriesId` TEXT, `eHousesId` TEXT NOT NULL, PRIMARY KEY(`entranceId`), FOREIGN KEY(`eHousesId`) REFERENCES `houses`(`houseId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`eTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "entranceId",
+            "columnName": "entranceId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entranceNum",
+            "columnName": "entranceNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSecurityEntrance",
+            "columnName": "isSecurityEntrance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isIntercomEntrance",
+            "columnName": "isIntercomEntrance",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isResidentialEntrance",
+            "columnName": "isResidentialEntrance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entranceFloorsQty",
+            "columnName": "entranceFloorsQty",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "roomsByEntranceFloor",
+            "columnName": "roomsByEntranceFloor",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "estEntranceRooms",
+            "columnName": "estEntranceRooms",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "entranceDesc",
+            "columnName": "entranceDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "eTerritoriesId",
+            "columnName": "eTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "eHousesId",
+            "columnName": "eHousesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "entranceId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_entrances_eHousesId_entranceNum",
+            "unique": true,
+            "columnNames": [
+              "eHousesId",
+              "entranceNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_entrances_eHousesId_entranceNum` ON `${TABLE_NAME}` (`eHousesId`, `entranceNum`)"
+          },
+          {
+            "name": "index_entrances_eTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "eTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_entrances_eTerritoriesId` ON `${TABLE_NAME}` (`eTerritoriesId`)"
+          },
+          {
+            "name": "index_entrances_eHousesId",
+            "unique": false,
+            "columnNames": [
+              "eHousesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_entrances_eHousesId` ON `${TABLE_NAME}` (`eHousesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "houses",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "eHousesId"
+            ],
+            "referencedColumns": [
+              "houseId"
+            ]
+          },
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "eTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "floors",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`floorId` TEXT NOT NULL, `floorNum` INTEGER NOT NULL, `isSecurityFloor` INTEGER NOT NULL, `isIntercomFloor` INTEGER, `isResidentialFloor` INTEGER NOT NULL, `roomsByFloor` INTEGER, `estFloorRooms` INTEGER, `floorDesc` TEXT, `fTerritoriesId` TEXT, `fEntrancesId` TEXT, `fHousesId` TEXT NOT NULL, PRIMARY KEY(`floorId`), FOREIGN KEY(`fEntrancesId`) REFERENCES `entrances`(`entranceId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`fHousesId`) REFERENCES `houses`(`houseId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`fTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "floorId",
+            "columnName": "floorId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "floorNum",
+            "columnName": "floorNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSecurityFloor",
+            "columnName": "isSecurityFloor",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isIntercomFloor",
+            "columnName": "isIntercomFloor",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isResidentialFloor",
+            "columnName": "isResidentialFloor",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roomsByFloor",
+            "columnName": "roomsByFloor",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "estFloorRooms",
+            "columnName": "estFloorRooms",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "floorDesc",
+            "columnName": "floorDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fTerritoriesId",
+            "columnName": "fTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fEntrancesId",
+            "columnName": "fEntrancesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fHousesId",
+            "columnName": "fHousesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "floorId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_floors_fHousesId_fEntrancesId_floorNum",
+            "unique": true,
+            "columnNames": [
+              "fHousesId",
+              "fEntrancesId",
+              "floorNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_floors_fHousesId_fEntrancesId_floorNum` ON `${TABLE_NAME}` (`fHousesId`, `fEntrancesId`, `floorNum`)"
+          },
+          {
+            "name": "index_floors_fTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "fTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_floors_fTerritoriesId` ON `${TABLE_NAME}` (`fTerritoriesId`)"
+          },
+          {
+            "name": "index_floors_fEntrancesId",
+            "unique": false,
+            "columnNames": [
+              "fEntrancesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_floors_fEntrancesId` ON `${TABLE_NAME}` (`fEntrancesId`)"
+          },
+          {
+            "name": "index_floors_fHousesId",
+            "unique": false,
+            "columnNames": [
+              "fHousesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_floors_fHousesId` ON `${TABLE_NAME}` (`fHousesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "entrances",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fEntrancesId"
+            ],
+            "referencedColumns": [
+              "entranceId"
+            ]
+          },
+          {
+            "table": "houses",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fHousesId"
+            ],
+            "referencedColumns": [
+              "houseId"
+            ]
+          },
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "rooms",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roomId` TEXT NOT NULL, `roomNum` INTEGER NOT NULL, `isIntercomRoom` INTEGER, `isResidentialRoom` INTEGER NOT NULL, `isForeignLangRoom` INTEGER NOT NULL, `roomDesc` TEXT, `rTerritoriesId` TEXT, `rFloorsId` TEXT, `rEntrancesId` TEXT, `rHousesId` TEXT NOT NULL, PRIMARY KEY(`roomId`), FOREIGN KEY(`rHousesId`) REFERENCES `houses`(`houseId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`rEntrancesId`) REFERENCES `entrances`(`entranceId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`rFloorsId`) REFERENCES `floors`(`floorId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`rTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "roomId",
+            "columnName": "roomId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roomNum",
+            "columnName": "roomNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isIntercomRoom",
+            "columnName": "isIntercomRoom",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isResidentialRoom",
+            "columnName": "isResidentialRoom",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isForeignLangRoom",
+            "columnName": "isForeignLangRoom",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roomDesc",
+            "columnName": "roomDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rTerritoriesId",
+            "columnName": "rTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rFloorsId",
+            "columnName": "rFloorsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rEntrancesId",
+            "columnName": "rEntrancesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rHousesId",
+            "columnName": "rHousesId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "roomId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_rooms_rHousesId_roomNum",
+            "unique": true,
+            "columnNames": [
+              "rHousesId",
+              "roomNum"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_rooms_rHousesId_roomNum` ON `${TABLE_NAME}` (`rHousesId`, `roomNum`)"
+          },
+          {
+            "name": "index_rooms_rTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "rTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rooms_rTerritoriesId` ON `${TABLE_NAME}` (`rTerritoriesId`)"
+          },
+          {
+            "name": "index_rooms_rFloorsId",
+            "unique": false,
+            "columnNames": [
+              "rFloorsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rooms_rFloorsId` ON `${TABLE_NAME}` (`rFloorsId`)"
+          },
+          {
+            "name": "index_rooms_rEntrancesId",
+            "unique": false,
+            "columnNames": [
+              "rEntrancesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rooms_rEntrancesId` ON `${TABLE_NAME}` (`rEntrancesId`)"
+          },
+          {
+            "name": "index_rooms_rHousesId",
+            "unique": false,
+            "columnNames": [
+              "rHousesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rooms_rHousesId` ON `${TABLE_NAME}` (`rHousesId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "houses",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rHousesId"
+            ],
+            "referencedColumns": [
+              "houseId"
+            ]
+          },
+          {
+            "table": "entrances",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rEntrancesId"
+            ],
+            "referencedColumns": [
+              "entranceId"
+            ]
+          },
+          {
+            "table": "floors",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rFloorsId"
+            ],
+            "referencedColumns": [
+              "floorId"
+            ]
+          },
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "territory_member_reports",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`territoryMemberReportId` TEXT NOT NULL, `territoryReportMark` TEXT NOT NULL, `languageCode` TEXT, `gender` INTEGER, `age` INTEGER, `isReportProcessed` INTEGER NOT NULL, `reportSentTime` TEXT, `territoryReportDesc` TEXT, `tmrRoomsId` TEXT, `tmrHousesId` TEXT, `tmrTerritoryStreetsId` TEXT, `tmrTerritoryMembersId` TEXT NOT NULL, PRIMARY KEY(`territoryMemberReportId`), FOREIGN KEY(`tmrTerritoryMembersId`) REFERENCES `territories_members`(`territoryMemberId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tmrRoomsId`) REFERENCES `rooms`(`roomId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tmrHousesId`) REFERENCES `houses`(`houseId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`tmrTerritoryStreetsId`) REFERENCES `territory_streets`(`territoryStreetId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "territoryMemberReportId",
+            "columnName": "territoryMemberReportId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "territoryReportMark",
+            "columnName": "territoryReportMark",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "languageCode",
+            "columnName": "languageCode",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "age",
+            "columnName": "age",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isReportProcessed",
+            "columnName": "isReportProcessed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reportSentTime",
+            "columnName": "reportSentTime",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "territoryReportDesc",
+            "columnName": "territoryReportDesc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tmrRoomsId",
+            "columnName": "tmrRoomsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tmrHousesId",
+            "columnName": "tmrHousesId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tmrTerritoryStreetsId",
+            "columnName": "tmrTerritoryStreetsId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tmrTerritoryMembersId",
+            "columnName": "tmrTerritoryMembersId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "territoryMemberReportId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_territory_member_reports_tmrTerritoryMembersId_tmrTerritoryStreetsId_tmrHousesId_tmrRoomsId",
+            "unique": true,
+            "columnNames": [
+              "tmrTerritoryMembersId",
+              "tmrTerritoryStreetsId",
+              "tmrHousesId",
+              "tmrRoomsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_territory_member_reports_tmrTerritoryMembersId_tmrTerritoryStreetsId_tmrHousesId_tmrRoomsId` ON `${TABLE_NAME}` (`tmrTerritoryMembersId`, `tmrTerritoryStreetsId`, `tmrHousesId`, `tmrRoomsId`)"
+          },
+          {
+            "name": "index_territory_member_reports_tmrRoomsId",
+            "unique": false,
+            "columnNames": [
+              "tmrRoomsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territory_member_reports_tmrRoomsId` ON `${TABLE_NAME}` (`tmrRoomsId`)"
+          },
+          {
+            "name": "index_territory_member_reports_tmrHousesId",
+            "unique": false,
+            "columnNames": [
+              "tmrHousesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territory_member_reports_tmrHousesId` ON `${TABLE_NAME}` (`tmrHousesId`)"
+          },
+          {
+            "name": "index_territory_member_reports_tmrTerritoryStreetsId",
+            "unique": false,
+            "columnNames": [
+              "tmrTerritoryStreetsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territory_member_reports_tmrTerritoryStreetsId` ON `${TABLE_NAME}` (`tmrTerritoryStreetsId`)"
+          },
+          {
+            "name": "index_territory_member_reports_tmrTerritoryMembersId",
+            "unique": false,
+            "columnNames": [
+              "tmrTerritoryMembersId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_territory_member_reports_tmrTerritoryMembersId` ON `${TABLE_NAME}` (`tmrTerritoryMembersId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "territories_members",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tmrTerritoryMembersId"
+            ],
+            "referencedColumns": [
+              "territoryMemberId"
+            ]
+          },
+          {
+            "table": "rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tmrRoomsId"
+            ],
+            "referencedColumns": [
+              "roomId"
+            ]
+          },
+          {
+            "table": "houses",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tmrHousesId"
+            ],
+            "referencedColumns": [
+              "houseId"
+            ]
+          },
+          {
+            "table": "territory_streets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tmrTerritoryStreetsId"
+            ],
+            "referencedColumns": [
+              "territoryStreetId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "congregations_territories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`congregationTerritoryId` TEXT NOT NULL, `startUsingDate` TEXT NOT NULL, `endUsingDate` TEXT, `ctTerritoriesId` TEXT NOT NULL, `ctCongregationsId` TEXT NOT NULL, PRIMARY KEY(`congregationTerritoryId`), FOREIGN KEY(`ctCongregationsId`) REFERENCES `congregations`(`congregationId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(`ctTerritoriesId`) REFERENCES `territories`(`territoryId`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "fields": [
+          {
+            "fieldPath": "congregationTerritoryId",
+            "columnName": "congregationTerritoryId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startUsingDate",
+            "columnName": "startUsingDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endUsingDate",
+            "columnName": "endUsingDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ctTerritoriesId",
+            "columnName": "ctTerritoriesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ctCongregationsId",
+            "columnName": "ctCongregationsId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "congregationTerritoryId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_congregations_territories_ctCongregationsId_ctTerritoriesId_startUsingDate",
+            "unique": true,
+            "columnNames": [
+              "ctCongregationsId",
+              "ctTerritoriesId",
+              "startUsingDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_congregations_territories_ctCongregationsId_ctTerritoriesId_startUsingDate` ON `${TABLE_NAME}` (`ctCongregationsId`, `ctTerritoriesId`, `startUsingDate`)"
+          },
+          {
+            "name": "index_congregations_territories_ctTerritoriesId",
+            "unique": false,
+            "columnNames": [
+              "ctTerritoriesId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_congregations_territories_ctTerritoriesId` ON `${TABLE_NAME}` (`ctTerritoriesId`)"
+          },
+          {
+            "name": "index_congregations_territories_ctCongregationsId",
+            "unique": false,
+            "columnNames": [
+              "ctCongregationsId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_congregations_territories_ctCongregationsId` ON `${TABLE_NAME}` (`ctCongregationsId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "congregations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "ctCongregationsId"
+            ],
+            "referencedColumns": [
+              "congregationId"
+            ]
+          },
+          {
+            "table": "territories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "ctTerritoriesId"
+            ],
+            "referencedColumns": [
+              "territoryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` TEXT NOT NULL, `eventType` TEXT NOT NULL, `eventTime` TEXT NOT NULL, `isManual` INTEGER NOT NULL, `isSuccess` INTEGER NOT NULL, PRIMARY KEY(`eventId`))",
+        "fields": [
+          {
+            "fieldPath": "eventId",
+            "columnName": "eventId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventType",
+            "columnName": "eventType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventTime",
+            "columnName": "eventTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isManual",
+            "columnName": "isManual",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSuccess",
+            "columnName": "isSuccess",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "eventId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_events_eventType_eventTime_isManual",
+            "unique": true,
+            "columnNames": [
+              "eventType",
+              "eventTime",
+              "isManual"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_events_eventType_eventTime_isManual` ON `${TABLE_NAME}` (`eventType`, `eventTime`, `isManual`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [
+      {
+        "viewName": "geo_countries_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.countryId, ifnull(ctl.countryTlCode, c.countryCode) AS countryCode, c.countryGeocode,\n            c.countryOsmId, c.country_latitude, c.country_longitude,\n            ctl.countryTlId, ctl.countryLocCode, ctl.countryTlCode, ctl.countryName, ctl.countriesId \n    FROM geo_countries c JOIN geo_countries_tl ctl ON ctl.countriesId = c.countryId"
+      },
+      {
+        "viewName": "regions_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT r.regionId, ifnull(rtl.regionTlCode, r.regionCode) AS regionCode, r.regionType, r.regionGeocode,\n            r.regionOsmId, r.region_latitude, r.region_longitude,\n            r.rCountriesId,\n            rtl.regionTlId, rtl.regionLocCode, rtl.regionTlCode, rtl.regionName, rtl.regionsId \n    FROM geo_regions r JOIN geo_regions_tl rtl ON rtl.regionsId = r.regionId"
+      },
+      {
+        "viewName": "region_districts_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT rd.regionDistrictId, ifnull(rdtl.regDistrictTlShortName, rd.regDistrictShortName) AS regDistrictShortName, rd.regDistrictGeocode,\n            rd.regDistrictOsmId, rd.regDistrict_latitude, rd.regDistrict_longitude, rd.rRegionsId, \n            rdtl.regionDistrictTlId, rdtl.regDistrictLocCode, rdtl.regDistrictTlShortName, rdtl.regDistrictName, rdtl.regionDistrictsId \n    FROM geo_region_districts rd JOIN geo_region_districts_tl rdtl ON rdtl.regionDistrictsId = rd.regionDistrictId"
+      },
+      {
+        "viewName": "localities_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT l.*, ltl.* FROM geo_localities l JOIN geo_localities_tl ltl ON ltl.localitiesId = l.localityId"
+      },
+      {
+        "viewName": "locality_districts_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT ld.*, ldtl.* FROM geo_locality_districts ld JOIN geo_locality_districts_tl ldtl ON ldtl.localityDistrictsId = ld.localityDistrictId"
+      },
+      {
+        "viewName": "microdistricts_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT md.*, mdtl.* FROM geo_microdistricts md JOIN geo_microdistricts_tl mdtl ON mdtl.microdistrictsId = md.microdistrictId"
+      },
+      {
+        "viewName": "streets_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT s.*, stl.* FROM geo_streets s JOIN geo_streets_tl stl ON stl.streetsId = s.streetId"
+      },
+      {
+        "viewName": "member_last_congregations_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT mcr.*, mcm.pseudonym AS memberPseudonym FROM member_congregations mcr\n    JOIN (SELECT mc.mcMembersId, m.pseudonym, MAX(strftime('%Y-%m-%dT%H:%M:%f', mc.activityDate)) AS maxActivityDate \n            FROM member_congregations mc JOIN members m ON mc.mcMembersId = m.memberId\n            GROUP BY mc.mcMembersId, m.pseudonym) mcm \n        ON mcr.mcMembersId = mcm.mcMembersId AND strftime('%Y-%m-%dT%H:%M:%f', mcr.activityDate) = mcm.maxActivityDate"
+      },
+      {
+        "viewName": "member_last_movements_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT mm.* FROM member_movements mm\n        JOIN (SELECT mMembersId, MAX(strftime('%Y-%m-%dT%H:%M:%f', movementDate)) AS maxMovementDate FROM member_movements GROUP BY mMembersId) mmx \n            ON mm.mMembersId = mmx.mMembersId AND strftime('%Y-%m-%dT%H:%M:%f', mm.movementDate) = mmx.maxMovementDate"
+      },
+      {
+        "viewName": "member_actual_roles_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT mr.*, r.* FROM member_roles mr JOIN roles r ON r.roleId = mr.mrRolesId\n    WHERE ifnull(strftime('%Y-%m-%dT%H:%M:%f', mr.roleExpiredDate), strftime('%Y-%m-%dT%H:%M:%f', 'now', 'localtime')) >= strftime('%Y-%m-%dT%H:%M:%f', 'now', 'localtime')"
+      },
+      {
+        "viewName": "member_movements_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT m.*, mm.*, g.* FROM members m JOIN groups g ON g.groupId = m.mGroupsId\n     JOIN member_movements mm ON mm.mMembersId = m.memberId"
+      },
+      {
+        "viewName": "congregation_territories_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT ct.*, c.* FROM congregations_territories ct JOIN congregations c ON ct.ctCongregationsId = c.congregationId"
+      },
+      {
+        "viewName": "territory_members_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tm.*, m.* FROM territories_members tm JOIN members m ON tm.tmcMembersId = m.memberId"
+      },
+      {
+        "viewName": "territory_member_last_receiving_date_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tmc.*,\n    (julianday(datetime('now', 'localtime')) - julianday(ifnull(tmc.deliveryDate, datetime('now', 'localtime')))) handOutTotalDays,\n    (julianday(ifnull(tmc.deliveryDate, datetime('now', 'localtime'))) - julianday(tmc.receivingDate)) atWorkTotalDays,\n    (CASE WHEN tmc.deliveryDate IS NULL\n        THEN -1\n        ELSE (strftime('%Y', datetime('now', 'localtime'), 'start of month', '-1 day') * 12 + strftime('%m', datetime('now', 'localtime'), 'start of month', '-1 day') -\n            strftime('%Y', tmc.deliveryDate) * 12 - strftime('%m', tmc.deliveryDate) + \n                (strftime('%d', datetime('now', 'localtime'), '+1 day') = '01' OR \n                strftime('%d', datetime('now', 'localtime')) >= strftime('%d', tmc.deliveryDate)))\n    END) AS fullIdleMonths,\n    (SELECT CAST(paramValue AS INTEGER) FROM app_settings WHERE paramName = 'TERRITORY_IDLE_PERIOD') AS territoryIdlePeriod,\n    (SELECT CAST(paramValue AS INTEGER) FROM app_settings WHERE paramName = 'TERRITORY_AT_HAND_PERIOD') AS territoryAtHandPeriod\nFROM territories_members tmc\n    JOIN (SELECT tm.tmcTerritoriesId AS territoryId, MAX(strftime('%Y-%m-%dT%H:%M:%f', tm.receivingDate)) AS maxReceivingDate \n            FROM territories_members tm \n            GROUP BY tm.tmcTerritoriesId) mtm ON mtm.territoryId = tmc.tmcTerritoriesId AND mtm.maxReceivingDate = strftime('%Y-%m-%dT%H:%M:%f', tmc.receivingDate)"
+      },
+      {
+        "viewName": "territory_private_sectors_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT ts.tsTerritoriesId AS territoryId, ifnull(s.isStreetPrivateSector, ts.isTerStreetPrivateSector) isPrivateSector\nFROM territory_streets ts JOIN geo_streets s ON s.streetId = ts.tsStreetsId\nUNION ALL\nSELECT h.hTerritoriesId AS territoryId, ifnull(h.isHousePrivateSector, s.isStreetPrivateSector) isPrivateSector\nFROM houses h JOIN geo_streets s ON s.streetId = h.hStreetsId WHERE h.hTerritoriesId IS NOT NULL \nUNION ALL\nSELECT e.eTerritoriesId AS territoryId, 0 AS isPrivateSector FROM entrances e WHERE e.eTerritoriesId IS NOT NULL \nUNION ALL\nSELECT f.fTerritoriesId AS territoryId, 0 AS isPrivateSector FROM floors f WHERE f.fTerritoriesId IS NOT NULL \nUNION ALL\nSELECT r.rTerritoriesId AS territoryId, 0 AS isPrivateSector FROM rooms r WHERE r.rTerritoriesId IS NOT NULL \nGROUP BY territoryId, isPrivateSector"
+      },
+      {
+        "viewName": "role_transfer_objects_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT rto.*, o.* FROM role_transfer_objects rto JOIN transfer_objects o ON o.transferObjectId = rto.rtoTransferObjectsId"
+      },
+      {
+        "viewName": "territory_member_reports_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tmc.*, tmr.*, \n    LTRIM(RTRIM((CASE WHEN m.surname IS NOT NULL THEN m.surname || ' ' ELSE '' END) ||\n    (CASE WHEN m.memberName IS NOT NULL THEN SUBSTRING(m.memberName, 1, 1) || '.' ELSE '' END) ||\n    (CASE WHEN m.patronymic IS NOT NULL THEN SUBSTRING(m.patronymic, 1, 1) || '.' ELSE '' END)) ||\n    ' [' || m.pseudonym || ']') AS memberShortName \nFROM territories_members tmc JOIN territory_member_reports tmr \n        ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId\n    JOIN members m ON m.memberId = tmc.tmcMembersId"
+      },
+      {
+        "viewName": "geo_regions_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nr_countryId, nv.countryCode AS nr_countryCode, \n            nv.countryGeocode AS nr_countryGeocode, nv.countryOsmId AS nr_countryOsmId, \n            nv.country_latitude AS nr_country_latitude,\n            nv.country_longitude AS nr_country_longitude,\n            nv.countryTlId AS nr_countryTlId, nv.countryLocCode AS nr_countryLocCode, nv.countryTlCode AS nr_countryTlCode,  \n            nv.countryName AS nr_countryName, nv.countriesId AS nr_countriesId, \n        rv.regionId AS r_regionId, rv.regionCode AS r_regionCode, rv.regionType AS r_regionType,\n            rv.regionGeocode AS r_regionGeocode, rv.regionOsmId AS r_regionOsmId, \n            rv.region_latitude AS r_region_latitude,\n            rv.region_longitude AS r_region_longitude, \n            rv.rCountriesId AS r_rCountriesId,\n            rv.regionTlId AS r_regionTlId, rv.regionLocCode AS r_regionLocCode, rv.regionTlCode AS r_regionTlCode,  \n            rv.regionName AS r_regionName, rv.regionsId AS r_regionsId\n    FROM regions_view rv JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = rv.regionLocCode"
+      },
+      {
+        "viewName": "geo_region_districts_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS ndr_countryId, nv.countryCode AS ndr_countryCode, \n            nv.countryGeocode AS ndr_countryGeocode, nv.countryOsmId AS ndr_countryOsmId, \n            nv.country_latitude AS ndr_country_latitude,\n            nv.country_longitude AS ndr_country_longitude,\n            nv.countryTlId AS ndr_countryTlId, nv.countryLocCode AS ndr_countryLocCode, nv.countryTlCode AS ndr_countryTlCode,  \n            nv.countryName AS ndr_countryName, nv.countriesId AS ndr_countriesId,\n        rv.regionId AS dr_regionId, rv.regionCode AS dr_regionCode, rv.regionType AS dr_regionType,\n            rv.regionGeocode AS dr_regionGeocode, rv.regionOsmId AS dr_regionOsmId, \n            rv.region_latitude AS dr_region_latitude,\n            rv.region_longitude AS dr_region_longitude, \n            rv.rCountriesId AS dr_rCountriesId,\n            rv.regionTlId AS dr_regionTlId, rv.regionLocCode AS dr_regionLocCode, rv.regionTlCode AS dr_regionTlCode,  \n            rv.regionName AS dr_regionName, rv.regionsId AS dr_regionsId, \n        rdv.regionDistrictId AS rd_regionDistrictId, rdv.regDistrictShortName  AS rd_regDistrictShortName, \n            rdv.regDistrictGeocode AS rd_regDistrictGeocode, rdv.regDistrictOsmId AS rd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS rd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS rd_regDistrict_longitude, \n            rdv.rRegionsId AS rd_rRegionsId,\n            rdv.regionDistrictTlId  AS rd_regionDistrictTlId, rdv.regDistrictLocCode  AS rd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS rd_regDistrictTlShortName,\n            rdv.regDistrictName  AS rd_regDistrictName, rdv.regionDistrictsId  AS rd_regionDistrictsId\n    FROM region_districts_view rdv JOIN regions_view rv ON rv.regionId = rdv.rRegionsId AND rv.regionLocCode = rdv.regDistrictLocCode\n        JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = rdv.regDistrictLocCode"
+      },
+      {
+        "viewName": "geo_localities_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS n_countryId, nv.countryCode AS n_countryCode, \n            nv.countryGeocode AS n_countryGeocode, nv.countryOsmId AS n_countryOsmId, \n            nv.country_latitude AS n_country_latitude,\n            nv.country_longitude AS n_country_longitude,\n            nv.countryTlId AS n_countryTlId, nv.countryLocCode AS n_countryLocCode, nv.countryTlCode AS n_countryTlCode,  \n            nv.countryName AS n_countryName, nv.countriesId AS n_countriesId,\n        rv.regionId AS r_regionId, rv.regionCode AS r_regionCode, rv.regionType AS r_regionType,\n            rv.regionGeocode AS r_regionGeocode, rv.regionOsmId AS r_regionOsmId, \n            rv.region_latitude AS r_region_latitude,\n            rv.region_longitude AS r_region_longitude, \n            rv.rCountriesId AS r_rCountriesId, \n            rv.regionTlId AS r_regionTlId, rv.regionLocCode AS r_regionLocCode, rv.regionTlCode AS r_regionTlCode, \n            rv.regionName AS r_regionName, rv.regionsId AS r_regionsId, \n        rdv.regionDistrictId AS rd_regionDistrictId, rdv.regDistrictShortName  AS rd_regDistrictShortName, \n            rdv.regDistrictGeocode AS rd_regDistrictGeocode, rdv.regDistrictOsmId AS rd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS rd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS rd_regDistrict_longitude, \n            rdv.rRegionsId  AS rd_rRegionsId,\n            rdv.regionDistrictTlId  AS rd_regionDistrictTlId, rdv.regDistrictLocCode  AS rd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS rd_regDistrictTlShortName, \n            rdv.regDistrictName  AS rd_regDistrictName, rdv.regionDistrictsId  AS rd_regionDistrictsId, \n        lv.localityId AS l_localityId, lv.localityCode AS l_localityCode, lv.localityType AS l_localityType, \n            lv.localityGeocode AS l_localityGeocode, lv.localityOsmId AS l_localityOsmId, \n            lv.locality_latitude AS l_locality_latitude,\n            lv.locality_longitude AS l_locality_longitude, \n            lv.lRegionDistrictsId AS l_lRegionDistrictsId, lv.lRegionsId AS l_lRegionsId,\n            lv.localityTlId AS l_localityTlId, lv.localityLocCode AS l_localityLocCode, lv.localityShortName AS l_localityShortName, \n            lv.localityName AS l_localityName, lv.localitiesId AS l_localitiesId\n    FROM localities_view lv JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = lv.localityLocCode\n        JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = lv.localityLocCode\n        LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = lv.localityLocCode"
+      },
+      {
+        "viewName": "geo_locality_districts_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nld_countryId, nv.countryCode AS nld_countryCode, \n            nv.countryGeocode AS nld_countryGeocode, nv.countryOsmId AS nld_countryOsmId, \n            nv.country_latitude AS nld_country_latitude,\n            nv.country_longitude AS nld_country_longitude,\n            nv.countryTlId AS nld_countryTlId, nv.countryLocCode AS nld_countryLocCode, nv.countryTlCode AS nld_countryTlCode,  \n            nv.countryName AS nld_countryName, nv.countriesId AS nld_countriesId,\n        rv.regionId AS ldr_regionId, rv.regionCode AS ldr_regionCode, rv.regionType AS ldr_regionType,\n            rv.regionGeocode AS ldr_regionGeocode, rv.regionOsmId AS ldr_regionOsmId, \n            rv.region_latitude AS ldr_region_latitude,\n            rv.region_longitude AS ldr_region_longitude, \n            rv.rCountriesId AS ldr_rCountriesId, \n            rv.regionTlId AS ldr_regionTlId, rv.regionLocCode AS ldr_regionLocCode, rv.regionTlCode AS ldr_regionTlCode, \n            rv.regionName AS ldr_regionName, rv.regionsId AS ldr_regionsId, \n        rdv.regionDistrictId AS ldrd_regionDistrictId, rdv.regDistrictShortName  AS ldrd_regDistrictShortName, \n            rdv.regDistrictGeocode AS ldrd_regDistrictGeocode, rdv.regDistrictOsmId AS ldrd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS ldrd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS ldrd_regDistrict_longitude, \n            rdv.rRegionsId AS ldrd_rRegionsId,\n            rdv.regionDistrictTlId  AS ldrd_regionDistrictTlId, rdv.regDistrictLocCode  AS ldrd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS ldrd_regDistrictTlShortName,\n            rdv.regDistrictName  AS ldrd_regDistrictName, rdv.regionDistrictsId  AS ldrd_regionDistrictsId, \n        lv.localityId AS ldl_localityId, lv.localityCode AS ldl_localityCode, lv.localityType AS ldl_localityType, \n            lv.localityGeocode AS ldl_localityGeocode, lv.localityOsmId AS ldl_localityOsmId, \n            lv.locality_latitude AS ldl_locality_latitude,\n            lv.locality_longitude AS ldl_locality_longitude, \n            lv.lRegionDistrictsId AS ldl_lRegionDistrictsId, lv.lRegionsId AS ldl_lRegionsId,\n            lv.localityTlId AS ldl_localityTlId, lv.localityLocCode AS ldl_localityLocCode, lv.localityShortName AS ldl_localityShortName, \n            lv.localityName AS ldl_localityName, lv.localitiesId AS ldl_localitiesId, \n        ldv.localityDistrictId AS ld_localityDistrictId, ldv.locDistrictShortName AS ld_locDistrictShortName, \n            ldv.locDistrictGeocode AS ld_locDistrictGeocode, ldv.locDistrictOsmId AS ld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS ld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS ld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS ld_ldLocalitiesId, ldv.localityDistrictTlId AS ld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS ld_locDistrictLocCode, ldv.locDistrictName AS ld_locDistrictName, \n            ldv.localityDistrictsId AS ld_localityDistrictsId\nFROM locality_districts_view ldv JOIN localities_view lv ON lv.localityId = ldv.ldLocalitiesId AND lv.localityLocCode = ldv.locDistrictLocCode \n    JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = ldv.locDistrictLocCode\n    JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = ldv.locDistrictLocCode\n    LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = ldv.locDistrictLocCode"
+      },
+      {
+        "viewName": "geo_microdistricts_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT nv.countryId AS nm_countryId, nv.countryCode AS nm_countryCode, \n            nv.countryGeocode AS nm_countryGeocode, nv.countryOsmId AS nm_countryOsmId, \n            nv.country_latitude AS nm_country_latitude,\n            nv.country_longitude AS nm_country_longitude,\n            nv.countryTlId AS nm_countryTlId, nv.countryLocCode AS nm_countryLocCode, nv.countryTlCode AS nm_countryTlCode,  \n            nv.countryName AS nm_countryName, nv.countriesId AS nm_countriesId,\n        rv.regionId AS mr_regionId, rv.regionCode AS mr_regionCode, rv.regionType AS mr_regionType,\n            rv.regionGeocode AS mr_regionGeocode, rv.regionOsmId AS mr_regionOsmId, \n            rv.region_latitude AS mr_region_latitude,\n            rv.region_longitude AS mr_region_longitude,\n            rv.rCountriesId AS mr_rCountriesId,\n            rv.regionTlId AS mr_regionTlId, rv.regionLocCode AS mr_regionLocCode, rv.regionTlCode AS mr_regionTlCode,\n            rv.regionName AS mr_regionName, rv.regionsId AS mr_regionsId, \n        rdv.regionDistrictId AS mrd_regionDistrictId, rdv.regDistrictShortName  AS mrd_regDistrictShortName, \n            rdv.regDistrictGeocode AS mrd_regDistrictGeocode, rdv.regDistrictOsmId AS mrd_regDistrictOsmId, \n            rdv.regDistrict_latitude AS mrd_regDistrict_latitude,\n            rdv.regDistrict_longitude AS mrd_regDistrict_longitude, \n            rdv.rRegionsId AS mrd_rRegionsId,\n            rdv.regionDistrictTlId AS mrd_regionDistrictTlId, rdv.regDistrictLocCode  AS mrd_regDistrictLocCode,\n            rdv.regDistrictTlShortName AS mrd_regDistrictTlShortName, \n            rdv.regDistrictName AS mrd_regDistrictName, rdv.regionDistrictsId  AS mrd_regionDistrictsId, \n        lv.localityId AS ml_localityId, lv.localityCode AS ml_localityCode, lv.localityType AS ml_localityType, \n            lv.localityGeocode AS ml_localityGeocode, lv.localityOsmId AS ml_localityOsmId, \n            lv.locality_latitude AS ml_locality_latitude,\n            lv.locality_longitude AS ml_locality_longitude, \n            lv.lRegionDistrictsId AS ml_lRegionDistrictsId, lv.lRegionsId AS ml_lRegionsId,\n            lv.localityTlId AS ml_localityTlId, lv.localityLocCode AS ml_localityLocCode, lv.localityShortName AS ml_localityShortName, \n            lv.localityName AS ml_localityName, lv.localitiesId AS ml_localitiesId, \n        ldv.localityDistrictId AS mld_localityDistrictId, ldv.locDistrictShortName AS mld_locDistrictShortName, \n            ldv.locDistrictGeocode AS mld_locDistrictGeocode, ldv.locDistrictOsmId AS mld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS mld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS mld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS mld_ldLocalitiesId, ldv.localityDistrictTlId AS mld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS mld_locDistrictLocCode, ldv.locDistrictName AS mld_locDistrictName, \n            ldv.localityDistrictsId AS mld_localityDistrictsId, \n        mdv.* \nFROM microdistricts_view mdv JOIN locality_districts_view ldv ON ldv.localityDistrictId = mdv.mLocalityDistrictsId AND ldv.locDistrictLocCode = mdv.microdistrictLocCode \n    JOIN localities_view lv ON lv.localityId = ldv.ldLocalitiesId AND lv.localityLocCode = mdv.microdistrictLocCode\n    JOIN regions_view rv ON rv.regionId = lv.lRegionsId AND rv.regionLocCode = mdv.microdistrictLocCode\n    JOIN geo_countries_view nv ON nv.countryId = rv.rCountriesId AND nv.countryLocCode = mdv.microdistrictLocCode\n    LEFT JOIN region_districts_view rdv ON rdv.regionDistrictId = lv.lRegionDistrictsId AND rdv.regDistrictLocCode = mdv.microdistrictLocCode"
+      },
+      {
+        "viewName": "congregations_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.*, \n        lv.localityId AS cl_localityId, lv.localityCode AS cl_localityCode, lv.localityType AS cl_localityType, \n            lv.localityGeocode AS cl_localityGeocode, lv.localityOsmId AS cl_localityOsmId, \n            lv.locality_latitude AS cl_locality_latitude,\n            lv.locality_longitude AS cl_locality_longitude, \n            lv.lRegionDistrictsId AS cl_lRegionDistrictsId, lv.lRegionsId AS cl_lRegionsId,\n            lv.localityTlId AS cl_localityTlId, lv.localityLocCode AS cl_localityLocCode, lv.localityShortName AS cl_localityShortName, \n            lv.localityName AS cl_localityName, lv.localitiesId AS cl_localitiesId\nFROM congregations c JOIN localities_view lv ON lv.localityId = c.cLocalitiesId"
+      },
+      {
+        "viewName": "member_service_roles_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT m.*, marv.* FROM members m JOIN member_actual_roles_view marv \n        ON m.memberId = marv.mrMembersId AND marv.roleType IN ('TERRITORIES')"
+      },
+      {
+        "viewName": "territory_streets_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT sv.*, ts.* FROM territory_streets ts JOIN streets_view sv ON sv.streetId = ts.tsStreetsId"
+      },
+      {
+        "viewName": "territory_locations_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT 0 AS orderPos, 'ALL' AS territoryLocationType, c.congregationId, NULL AS locationId,\n        (SELECT paramValue FROM app_settings WHERE paramName = 'ALL_ITEMS') AS locationShortName,\n        NULL AS isPrivateSector\nFROM congregations c\nUNION ALL\nSELECT 1 AS orderPos, td.territoryLocationType, td.congregationId, td.locationId, td.locationShortName, \n        ifnull(tpsv.isPrivateSector, 0) AS isPrivateSector \nFROM (SELECT (CASE\n                WHEN md.microdistrictId IS NOT NULL THEN 'MICRO_DISTRICT'\n                WHEN ld.localityDistrictId IS NOT NULL THEN 'LOCALITY_DISTRICT'\n                ELSE 'LOCALITY'\n            END) AS territoryLocationType, \n            t.territoryId, ct.ctCongregationsId AS congregationId, \n            ifnull(md.microdistrictId, ifnull(ld.localityDistrictId, l.localityId))  AS locationId,\n            ifnull(md.microdistrictShortName, ifnull(ld.locDistrictShortName, l.localityShortName)) AS locationShortName  \n    FROM congregations_territories ct JOIN territories t \n            ON t.territoryId = ct.ctTerritoriesId AND t.isActive = 1 AND ct.endUsingDate IS NULL\n        JOIN localities_view l ON l.localityId = t.tLocalitiesId\n        LEFT JOIN locality_districts_view ld ON ld.localityDistrictId = t.tLocalityDistrictsId\n        LEFT JOIN microdistricts_view md ON md.microdistrictId = t.tMicrodistrictsId) td\n            LEFT JOIN territory_private_sectors_view tpsv ON tpsv.territoryId = td.territoryId\nGROUP BY orderPos, territoryLocationType, congregationId, locationId, locationShortName, isPrivateSector"
+      },
+      {
+        "viewName": "geo_streets_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT lv.*, sv.* FROM streets_view sv JOIN geo_localities_view lv \n        ON lv.l_localityId = sv.sLocalitiesId AND lv.l_localityLocCode = sv.streetLocCode"
+      },
+      {
+        "viewName": "favorite_congregation_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT * FROM congregations_view WHERE isFavorite = 1"
+      },
+      {
+        "viewName": "groups_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT g.*, \n    c.congregationId AS gc_congregationId, c.congregationNum AS gc_congregationNum, \n        c.congregationName AS gc_congregationName, c.territoryMark AS gc_territoryMark,\n        c.isFavorite AS gc_isFavorite, c.lastVisitDate AS gc_lastVisitDate, \n        c.cLocalitiesId AS gc_cLocalitiesId,\n    c.cl_localityId AS gc_cl_localityId, c.cl_localityCode AS gc_cl_localityCode,\n        c.cl_localityType AS gc_cl_localityType, \n        c.cl_localityGeocode AS gc_cl_localityGeocode, c.cl_localityOsmId AS gc_cl_localityOsmId, \n        c.cl_locality_latitude AS gc_cl_locality_latitude,\n        c.cl_locality_longitude AS gc_cl_locality_longitude, \n        c.cl_lRegionDistrictsId AS gc_cl_lRegionDistrictsId, c.cl_lRegionsId AS gc_cl_lRegionsId,\n        c.cl_localityTlId AS gc_cl_localityTlId, c.cl_localityLocCode AS gc_cl_localityLocCode,\n        c.cl_localityShortName AS gc_cl_localityShortName, \n        c.cl_localityName AS gc_cl_localityName, c.cl_localitiesId AS gc_cl_localitiesId\nFROM groups g JOIN congregations_view c ON c.congregationId = g.gCongregationsId"
+      },
+      {
+        "viewName": "territories_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT t.*, cv.*, tc.*,\n        lv.localityId AS tl_localityId, lv.localityCode AS tl_localityCode, lv.localityType AS tl_localityType, \n            lv.localityGeocode AS tl_localityGeocode, lv.localityOsmId AS tl_localityOsmId, \n            lv.locality_latitude AS tl_locality_latitude,\n            lv.locality_longitude AS tl_locality_longitude, \n            lv.lRegionDistrictsId AS tl_lRegionDistrictsId, lv.lRegionsId AS tl_lRegionsId,\n            lv.localityTlId AS tl_localityTlId, lv.localityLocCode AS tl_localityLocCode, lv.localityShortName AS tl_localityShortName, \n            lv.localityName AS tl_localityName, lv.localitiesId AS tl_localitiesId,\n        ldv.localityDistrictId AS tlld_localityDistrictId, ldv.locDistrictShortName AS tlld_locDistrictShortName, \n            ldv.locDistrictGeocode AS tlld_locDistrictGeocode, ldv.locDistrictOsmId AS tlld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS tlld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS tlld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS tlld_ldLocalitiesId, ldv.localityDistrictTlId AS tlld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS tlld_locDistrictLocCode, ldv.locDistrictName AS tlld_locDistrictName, \n            ldv.localityDistrictsId AS tlld_localityDistrictsId, \n        mdv.microdistrictId AS tm_microdistrictId, mdv.microdistrictType AS tm_microdistrictType, \n            mdv.microdistrictShortName AS tm_microdistrictShortName,\n            mdv.microdistrictGeocode AS tm_microdistrictGeocode, mdv.microdistrictOsmId AS tm_microdistrictOsmId, \n            mdv.microdistrict_latitude AS tm_microdistrict_latitude,\n            mdv.microdistrict_longitude AS tm_microdistrict_longitude, \n            mdv.mLocalityDistrictsId AS tm_mLocalityDistrictsId, \n            mdv.mLocalitiesId AS tm_mLocalitiesId, mdv.microdistrictTlId AS tm_microdistrictTlId, \n            mdv.microdistrictLocCode AS tm_microdistrictLocCode, mdv.microdistrictName AS tm_microdistrictName, \n            mdv.microdistrictsId AS tm_microdistrictsId,\n        s.paramValue AS territoryBusinessMark\nFROM territories t JOIN congregations_view cv ON cv.congregationId = t.tCongregationsId\n    JOIN territory_categories tc ON tc.territoryCategoryId = t.tTerritoryCategoriesId\n    JOIN localities_view lv ON lv.localityId = t.tLocalitiesId AND lv.localityLocCode = cv.cl_localityLocCode\n    LEFT JOIN locality_districts_view ldv ON ldv.localityDistrictId = t.tLocalityDistrictsId AND ldv.locDistrictLocCode = cv.cl_localityLocCode\n    LEFT JOIN microdistricts_view mdv ON mdv.microdistrictId = t.tMicrodistrictsId AND mdv.microdistrictLocCode = cv.cl_localityLocCode\n    JOIN app_settings s ON s.paramName = 'TERRITORY_BUSINESS_MARK'"
+      },
+      {
+        "viewName": "territory_street_names_and_house_nums_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tsh.tCongregationsId AS congregationId, tsh.territoryId, tsh.streetName AS streetNames, tsh.streetLocCode, GROUP_CONCAT(tsh.houseFullNum, ',') AS houseFullNums\nFROM (SELECT t.tCongregationsId, t.territoryId, tsv.streetName, tsv.streetLocCode, '' AS houseFullNum\n    FROM territories t JOIN territory_streets_view tsv ON tsv.tsTerritoriesId = t.territoryId\n    UNION ALL\n    SELECT t.tCongregationsId, t.territoryId, sv.streetName, sv.streetLocCode, \n            (CASE WHEN h.buildingNum IS NOT NULL THEN h.houseNum || h.houseLetter || '-' || h.buildingNum ELSE h.houseNum || h.houseLetter END) AS houseFullNum \n    FROM territories t JOIN houses h ON h.hTerritoriesId = t.territoryId \n        JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    UNION ALL\n    SELECT t.tCongregationsId, t.territoryId, sv.streetName, sv.streetLocCode, \n            (CASE WHEN h.buildingNum IS NOT NULL THEN h.houseNum || h.houseLetter || '-' || h.buildingNum ELSE h.houseNum || h.houseLetter END) AS houseFullNum \n    FROM territories t JOIN entrances e ON e.eTerritoriesId = t.territoryId \n        JOIN houses h ON h.houseId = e.eHousesId \n        JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    UNION ALL\n    SELECT t.tCongregationsId, t.territoryId, sv.streetName, sv.streetLocCode, \n            (CASE WHEN h.buildingNum IS NOT NULL THEN h.houseNum || h.houseLetter || '-' || h.buildingNum ELSE h.houseNum || h.houseLetter END) AS houseFullNum \n    FROM territories t JOIN floors f ON f.fTerritoriesId = t.territoryId \n        JOIN houses h ON h.houseId = f.fHousesId \n        JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    UNION ALL\n    SELECT t.tCongregationsId, t.territoryId, sv.streetName, sv.streetLocCode, \n            (CASE WHEN h.buildingNum IS NOT NULL THEN h.houseNum || h.houseLetter || '-' || h.buildingNum ELSE h.houseNum || h.houseLetter END) AS houseFullNum\n    FROM territories t JOIN rooms r ON r.rTerritoriesId = t.territoryId \n        JOIN houses h ON h.houseId = r.rHousesId \n        JOIN streets_view sv ON sv.streetId = h.hStreetsId) tsh\nGROUP BY tsh.tCongregationsId, tsh.territoryId, tsh.streetName, tsh.streetLocCode"
+      },
+      {
+        "viewName": "territory_report_streets_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tsv.*, tmc.*, tmr.*\nFROM territory_streets_view tsv JOIN territories_members tmc ON tmc.tmcTerritoriesId = tsv.tsTerritoriesId AND tmc.deliveryDate IS NULL  \n    LEFT JOIN territory_member_reports tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrTerritoryStreetsId = tsv.territoryStreetId"
+      },
+      {
+        "viewName": "members_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.congregationId AS mc_congregationId, c.congregationNum AS mc_congregationNum, \n            c.congregationName AS mc_congregationName, c.territoryMark AS mc_territoryMark, \n            c.isFavorite AS mc_isFavorite, c.lastVisitDate AS mc_lastVisitDate, \n            c.cLocalitiesId AS mc_cLocalitiesId, \n        lv.localityId AS mc_cl_localityId, lv.localityCode AS mc_cl_localityCode, lv.localityType AS mc_cl_localityType, \n            lv.localityGeocode AS mc_cl_localityGeocode, lv.localityOsmId AS mc_cl_localityOsmId, \n            lv.locality_latitude AS mc_cl_locality_latitude,\n            lv.locality_longitude AS mc_cl_locality_longitude, \n            lv.lRegionDistrictsId AS mc_cl_lRegionDistrictsId, lv.lRegionsId AS mc_cl_lRegionsId,\n            lv.localityTlId AS mc_cl_localityTlId, lv.localityLocCode AS mc_cl_localityLocCode, lv.localityShortName AS mc_cl_localityShortName, \n            lv.localityName AS mc_cl_localityName, lv.localitiesId AS mc_cl_localitiesId,\n        gv.*, m.*, mlcv.*, mlmv.*\nFROM members m LEFT JOIN groups_view gv ON gv.groupId = m.mGroupsId\n    LEFT JOIN member_last_congregations_view mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  \n    LEFT JOIN congregations c ON c.congregationId = mlcv.mcCongregationsId\n        LEFT JOIN localities_view lv ON lv.localityId = c.cLocalitiesId \n    JOIN member_last_movements_view mlmv ON mlmv.mMembersId = m.memberId"
+      },
+      {
+        "viewName": "congregation_totals_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.*,\n        ct.sumTotalGroups AS totalGroups, ct.sumTotalMembers AS totalMembers, ct.sumTotalActiveMembers AS totalActiveMembers, ct.sumTotalFulltimeMembers AS totalFulltimeMembers,\n        ctd.totalGroups AS diffGroups, ctd.totalMembers AS diffMembers, ctd.totalActiveMembers AS diffActiveMembers, ctd.totalFulltimeMembers AS diffFulltimeMembers  \n    FROM favorite_congregation_view c \n        JOIN (SELECT ctlCongregationsId, SUM(totalGroups) AS sumTotalGroups, SUM(totalMembers) AS sumTotalMembers, \n                                        SUM(totalActiveMembers) AS sumTotalActiveMembers, SUM(totalFulltimeMembers) AS sumTotalFulltimeMembers\n                FROM congregation_totals\n                GROUP BY ctlCongregationsId\n            ) ct ON ct.ctlCongregationsId = c.congregationId\n    JOIN congregation_totals ctd ON ctd.ctlCongregationsId = c.congregationId AND ctd.lastVisitDate IS NULL"
+      },
+      {
+        "viewName": "territory_street_houses_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tsv.*, tv.*, h.* \nFROM territory_streets_view tsv JOIN territories_view tv ON tv.territoryId = tsv.tsTerritoriesId AND tv.tl_localityLocCode  = tsv.streetLocCode\n    LEFT JOIN houses h ON h.hStreetsId = tsv.tsStreetsId AND h.hTerritoriesId = tsv.tsTerritoriesId\n        AND ifnull(h.hLocalityDistrictsId, \"\") = ifnull(tv.tLocalityDistrictsId, \"\") AND ifnull(h.hMicrodistrictsId, \"\") = ifnull(tv.tMicrodistrictsId, \"\")"
+      },
+      {
+        "viewName": "territories_hand_out_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT tv.*, m.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, 0) AS isPrivateSector, rld.handOutTotalDays, \n        s.paramValue AS handOutTerritoryBusinessMark\nFROM territories_view tv JOIN congregations_territories ct \n        ON ct.ctTerritoriesId = tv.territoryId AND tv.isActive = 1 AND tv.isProcessed = 1\n    LEFT JOIN territory_private_sectors_view tps ON tps.territoryId = tv.territoryId\n    LEFT JOIN territory_member_last_receiving_date_view rld ON rld.tmcTerritoriesId = tv.territoryId\n    LEFT JOIN members m ON m.memberId = rld.tmcMembersId\n    JOIN app_settings s ON s.paramName = 'TERRITORY_BUSINESS_MARK'\nWHERE rld.fullIdleMonths IS NULL OR rld.fullIdleMonths >= rld.territoryIdlePeriod\nORDER BY ifnull(rld.fullIdleMonths - rld.territoryIdlePeriod, 1000) DESC"
+      },
+      {
+        "viewName": "territories_at_work_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT t.*, m.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, 0) AS isPrivateSector, \n    (rld.atWorkTotalDays - rld.territoryAtHandPeriod * 30) AS expiredTotalDays, s.paramValue AS atWorkTerritoryBusinessMark\nFROM territories_view t JOIN congregations_territories ct \n        ON ct.ctTerritoriesId = t.territoryId AND t.isActive = 1 AND t.isProcessed = 0\n    LEFT JOIN territory_private_sectors_view tps ON tps.territoryId = t.territoryId\n    JOIN territory_member_last_receiving_date_view rld ON rld.tmcTerritoriesId = t.territoryId AND rld.fullIdleMonths < 0\n    JOIN members m ON m.memberId = rld.tmcMembersId\n    JOIN app_settings s ON s.paramName = 'TERRITORY_BUSINESS_MARK'\nORDER BY (rld.atWorkTotalDays - rld.territoryAtHandPeriod * 30) DESC"
+      },
+      {
+        "viewName": "territories_idle_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT t.*, ct.ctCongregationsId, ifnull(tps.isPrivateSector, 0) AS isPrivateSector, s.paramValue AS idleTerritoryBusinessMark\nFROM territories_view t JOIN congregations_territories ct \n        ON ct.ctTerritoriesId = t.territoryId AND t.isActive = 1 AND t.isProcessed = 1\n    LEFT JOIN territory_private_sectors_view tps ON tps.territoryId = t.territoryId\n    JOIN territory_member_last_receiving_date_view rld ON rld.tmcTerritoriesId = t.territoryId AND rld.fullIdleMonths < rld.territoryIdlePeriod\n    JOIN app_settings s ON s.paramName = 'TERRITORY_BUSINESS_MARK'\nORDER BY (rld.territoryIdlePeriod - rld.fullIdleMonths)"
+      },
+      {
+        "viewName": "houses_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT sv.*,\n        lv.localityId AS hl_localityId, lv.localityCode AS hl_localityCode, lv.localityType AS hl_localityType, \n            lv.localityGeocode AS hl_localityGeocode, lv.localityOsmId AS hl_localityOsmId, \n            lv.locality_latitude AS hl_locality_latitude,\n            lv.locality_longitude AS hl_locality_longitude, \n            lv.lRegionDistrictsId AS hl_lRegionDistrictsId, lv.lRegionsId AS hl_lRegionsId,\n            lv.localityTlId AS hl_localityTlId, lv.localityLocCode AS hl_localityLocCode, lv.localityShortName AS hl_localityShortName, \n            lv.localityName AS hl_localityName, lv.localitiesId AS hl_localitiesId,\n        ldv.localityDistrictId AS hld_localityDistrictId, ldv.locDistrictShortName AS hld_locDistrictShortName, \n            ldv.locDistrictGeocode AS hld_locDistrictGeocode, ldv.locDistrictOsmId AS hld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS hld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS hld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS hld_ldLocalitiesId, ldv.localityDistrictTlId AS hld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS hld_locDistrictLocCode, ldv.locDistrictName AS hld_locDistrictName, \n            ldv.localityDistrictsId AS hld_localityDistrictsId, \n        mdv.microdistrictId AS hm_microdistrictId, mdv.microdistrictType AS hm_microdistrictType, \n            mdv.microdistrictShortName AS hm_microdistrictShortName, \n            mdv.microdistrictGeocode AS hm_microdistrictGeocode, mdv.microdistrictOsmId AS hm_microdistrictOsmId, \n            mdv.microdistrict_latitude AS hm_microdistrict_latitude,\n            mdv.microdistrict_longitude AS hm_microdistrict_longitude, \n            mdv.mLocalityDistrictsId AS hm_mLocalityDistrictsId, \n            mdv.mLocalitiesId AS hm_mLocalitiesId, mdv.microdistrictTlId AS hm_microdistrictTlId, \n            mdv.microdistrictLocCode AS hm_microdistrictLocCode, mdv.microdistrictName AS hm_microdistrictName, \n            mdv.microdistrictsId AS hm_microdistrictsId,\n        tv.*, h.*\nFROM houses h JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    JOIN localities_view lv ON lv.localityId = sv.sLocalitiesId AND lv.localityLocCode = sv.streetLocCode \n    LEFT JOIN locality_districts_view ldv ON ldv.localityDistrictId = h.hLocalityDistrictsId AND ldv.locDistrictLocCode = sv.streetLocCode\n    LEFT JOIN microdistricts_view mdv ON mdv.microdistrictId = h.hMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode\n    LEFT JOIN territories_view tv ON tv.territoryId = h.hTerritoriesId AND tv.tl_localityLocCode  = sv.streetLocCode"
+      },
+      {
+        "viewName": "entrances_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT sv.*,\n        lv.localityId AS hl_localityId, lv.localityCode AS hl_localityCode, lv.localityType AS hl_localityType, \n            lv.localityGeocode AS hl_localityGeocode, lv.localityOsmId AS hl_localityOsmId, \n            lv.locality_latitude AS hl_locality_latitude,\n            lv.locality_longitude AS hl_locality_longitude, \n            lv.lRegionDistrictsId AS hl_lRegionDistrictsId, lv.lRegionsId AS hl_lRegionsId,\n            lv.localityTlId AS hl_localityTlId, lv.localityLocCode AS hl_localityLocCode, lv.localityShortName AS hl_localityShortName, \n            lv.localityName AS hl_localityName, lv.localitiesId AS hl_localitiesId,\n        ldv.localityDistrictId AS hld_localityDistrictId, ldv.locDistrictShortName AS hld_locDistrictShortName, \n            ldv.locDistrictGeocode AS hld_locDistrictGeocode, ldv.locDistrictOsmId AS hld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS hld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS hld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS hld_ldLocalitiesId, ldv.localityDistrictTlId AS hld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS hld_locDistrictLocCode, ldv.locDistrictName AS hld_locDistrictName, \n            ldv.localityDistrictsId AS hld_localityDistrictsId, \n        mdv.microdistrictId AS hm_microdistrictId, mdv.microdistrictType AS hm_microdistrictType, \n            mdv.microdistrictShortName AS hm_microdistrictShortName,\n            mdv.microdistrictGeocode AS hm_microdistrictGeocode, mdv.microdistrictOsmId AS hm_microdistrictOsmId, \n            mdv.microdistrict_latitude AS hm_microdistrict_latitude,\n            mdv.microdistrict_longitude AS hm_microdistrict_longitude, \n            mdv.mLocalityDistrictsId AS hm_mLocalityDistrictsId, \n            mdv.mLocalitiesId AS hm_mLocalitiesId, mdv.microdistrictTlId AS hm_microdistrictTlId, \n            mdv.microdistrictLocCode AS hm_microdistrictLocCode, mdv.microdistrictName AS hm_microdistrictName, \n            mdv.microdistrictsId AS hm_microdistrictsId,\n        tv.*, h.*, e.* \nFROM entrances e JOIN houses h ON h.houseId = e.eHousesId \n    JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    JOIN localities_view lv ON lv.localityId = sv.sLocalitiesId AND lv.localityLocCode = sv.streetLocCode \n    LEFT JOIN locality_districts_view ldv ON ldv.localityDistrictId = h.hLocalityDistrictsId AND ldv.locDistrictLocCode = sv.streetLocCode\n    LEFT JOIN microdistricts_view mdv ON mdv.microdistrictId = h.hMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode\n    LEFT JOIN territories_view tv ON tv.territoryId = e.eTerritoriesId AND tv.tl_localityLocCode  = sv.streetLocCode"
+      },
+      {
+        "viewName": "floors_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT sv.*,\n        lv.localityId AS hl_localityId, lv.localityCode AS hl_localityCode, lv.localityType AS hl_localityType, \n            lv.localityGeocode AS hl_localityGeocode, lv.localityOsmId AS hl_localityOsmId, \n            lv.locality_latitude AS hl_locality_latitude,\n            lv.locality_longitude AS hl_locality_longitude, \n            lv.lRegionDistrictsId AS hl_lRegionDistrictsId, lv.lRegionsId AS hl_lRegionsId,\n            lv.localityTlId AS hl_localityTlId, lv.localityLocCode AS hl_localityLocCode, lv.localityShortName AS hl_localityShortName, \n            lv.localityName AS hl_localityName, lv.localitiesId AS hl_localitiesId,\n        ldv.localityDistrictId AS hld_localityDistrictId, ldv.locDistrictShortName AS hld_locDistrictShortName, \n            ldv.locDistrictGeocode AS hld_locDistrictGeocode, ldv.locDistrictOsmId AS hld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS hld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS hld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS hld_ldLocalitiesId, ldv.localityDistrictTlId AS hld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS hld_locDistrictLocCode, ldv.locDistrictName AS hld_locDistrictName, \n            ldv.localityDistrictsId AS hld_localityDistrictsId, \n        mdv.microdistrictId AS hm_microdistrictId, mdv.microdistrictType AS hm_microdistrictType, \n            mdv.microdistrictShortName AS hm_microdistrictShortName,\n            mdv.microdistrictGeocode AS hm_microdistrictGeocode, mdv.microdistrictOsmId AS hm_microdistrictOsmId, \n            mdv.microdistrict_latitude AS hm_microdistrict_latitude,\n            mdv.microdistrict_longitude AS hm_microdistrict_longitude, \n            mdv.mLocalityDistrictsId AS hm_mLocalityDistrictsId, \n            mdv.mLocalitiesId AS hm_mLocalitiesId, mdv.microdistrictTlId AS hm_microdistrictTlId, \n            mdv.microdistrictLocCode AS hm_microdistrictLocCode, mdv.microdistrictName AS hm_microdistrictName, \n            mdv.microdistrictsId AS hm_microdistrictsId,\n        tv.*, h.*, e.*, f.*\nFROM floors f JOIN houses h ON h.houseId = f.fHousesId \n    JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    JOIN localities_view lv ON lv.localityId = sv.sLocalitiesId AND lv.localityLocCode = sv.streetLocCode \n    LEFT JOIN entrances e ON e.eHousesId = h.houseId AND e.entranceId = f.fEntrancesId\n    LEFT JOIN locality_districts_view ldv ON ldv.localityDistrictId = h.hLocalityDistrictsId AND ldv.locDistrictLocCode = sv.streetLocCode\n    LEFT JOIN microdistricts_view mdv ON mdv.microdistrictId = h.hMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode\n    LEFT JOIN territories_view tv ON tv.territoryId = f.fTerritoriesId AND tv.tl_localityLocCode  = sv.streetLocCode"
+      },
+      {
+        "viewName": "rooms_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT sv.*,\n        lv.localityId AS hl_localityId, lv.localityCode AS hl_localityCode, lv.localityType AS hl_localityType, \n            lv.localityGeocode AS hl_localityGeocode, lv.localityOsmId AS hl_localityOsmId, \n            lv.locality_latitude AS hl_locality_latitude,\n            lv.locality_longitude AS hl_locality_longitude, \n            lv.lRegionDistrictsId AS hl_lRegionDistrictsId, lv.lRegionsId AS hl_lRegionsId,\n            lv.localityTlId AS hl_localityTlId, lv.localityLocCode AS hl_localityLocCode, lv.localityShortName AS hl_localityShortName, \n            lv.localityName AS hl_localityName, lv.localitiesId AS hl_localitiesId,\n        ldv.localityDistrictId AS hld_localityDistrictId, ldv.locDistrictShortName AS hld_locDistrictShortName, \n            ldv.locDistrictGeocode AS hld_locDistrictGeocode, ldv.locDistrictOsmId AS hld_locDistrictOsmId, \n            ldv.locDistrict_latitude AS hld_locDistrict_latitude,\n            ldv.locDistrict_longitude AS hld_locDistrict_longitude, \n            ldv.ldLocalitiesId AS hld_ldLocalitiesId, ldv.localityDistrictTlId AS hld_localityDistrictTlId, \n            ldv.locDistrictLocCode AS hld_locDistrictLocCode, ldv.locDistrictName AS hld_locDistrictName, \n            ldv.localityDistrictsId AS hld_localityDistrictsId, \n        mdv.microdistrictId AS hm_microdistrictId, mdv.microdistrictType AS hm_microdistrictType, \n            mdv.microdistrictShortName AS hm_microdistrictShortName,\n            mdv.microdistrictGeocode AS hm_microdistrictGeocode, mdv.microdistrictOsmId AS hm_microdistrictOsmId, \n            mdv.microdistrict_latitude AS hm_microdistrict_latitude,\n            mdv.microdistrict_longitude AS hm_microdistrict_longitude, \n            mdv.mLocalityDistrictsId AS hm_mLocalityDistrictsId, \n            mdv.mLocalitiesId AS hm_mLocalitiesId, mdv.microdistrictTlId AS hm_microdistrictTlId, \n            mdv.microdistrictLocCode AS hm_microdistrictLocCode, mdv.microdistrictName AS hm_microdistrictName, \n            mdv.microdistrictsId AS hm_microdistrictsId,\n        tv.*, h.*, e.*, f.*, r.*\nFROM rooms r JOIN houses h ON h.houseId = r.rHousesId\n    JOIN streets_view sv ON sv.streetId = h.hStreetsId\n    JOIN localities_view lv ON lv.localityId = sv.sLocalitiesId AND lv.localityLocCode = sv.streetLocCode \n    LEFT JOIN entrances e ON e.eHousesId = h.houseId AND e.entranceId = r.rEntrancesId  \n    LEFT JOIN floors f ON f.fHousesId = h.houseId AND f.fEntrancesId = e.entranceId AND f.floorId = r.rFloorsId  \n    LEFT JOIN locality_districts_view ldv ON ldv.localityDistrictId = h.hLocalityDistrictsId AND ldv.locDistrictLocCode = sv.streetLocCode\n    LEFT JOIN microdistricts_view mdv ON mdv.microdistrictId = h.hMicrodistrictsId AND mdv.microdistrictLocCode = sv.streetLocCode\n    LEFT JOIN territories_view tv ON tv.territoryId = r.rTerritoriesId AND tv.tl_localityLocCode  = sv.streetLocCode"
+      },
+      {
+        "viewName": "territory_totals_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.*, ct.sumTotalTerritories AS totalTerritories, \n        ctm.sumTotalTerritoryIssued AS totalTerritoryIssued, ctm.sumTotalTerritoryProcessed AS totalTerritoryProcessed,\n        ctd.totalTerritories AS diffTerritories, \n        ctd.totalTerritoryIssued - ifnull(cmx.totalTerritoryIssued, 0) AS diffTerritoryIssued,\n        ctd.totalTerritoryProcessed - ifnull(cmx.totalTerritoryProcessed, 0) AS diffTerritoryProcessed\n    FROM favorite_congregation_view c \n        JOIN (SELECT ctlCongregationsId, SUM(totalTerritories) AS sumTotalTerritories\n                FROM congregation_totals\n                GROUP BY ctlCongregationsId\n            ) ct ON ct.ctlCongregationsId = c.congregationId\n        JOIN (SELECT ct.ctlCongregationsId, SUM(ct.totalTerritoryIssued) AS sumTotalTerritoryIssued, SUM(ct.totalTerritoryProcessed) AS sumTotalTerritoryProcessed\n                FROM congregation_totals ct LEFT JOIN (SELECT ctlCongregationsId, MAX(strftime('%Y-%m-%dT%H:%M:%f', lastVisitDate)) AS maxLastVisitDate \n                                                                        FROM congregation_totals WHERE lastVisitDate IS NOT NULL\n                                                                        GROUP BY ctlCongregationsId) cm\n                    ON ct.ctlCongregationsId = ifnull(cm.ctlCongregationsId, ct.ctlCongregationsId)\n                        AND (cm.maxLastVisitDate IS NULL\n                            OR strftime('%Y-%m-%dT%H:%M:%f', ct.lastVisitDate) BETWEEN cm.maxLastVisitDate AND strftime('%Y-%m-%dT%H:%M:%f', datetime('now', 'localtime')))\n                GROUP BY ct.ctlCongregationsId\n            ) ctm ON ctm.ctlCongregationsId = c.congregationId\n    LEFT JOIN (SELECT ct.ctlCongregationsId, ct.totalTerritoryIssued, ct.totalTerritoryProcessed\n                FROM congregation_totals ct JOIN (SELECT ctlCongregationsId, MAX(strftime('%Y-%m-%dT%H:%M:%f', lastVisitDate)) AS maxLastVisitDate \n                                                                    FROM congregation_totals WHERE lastVisitDate IS NOT NULL\n                                                                    GROUP BY ctlCongregationsId) cm\n                    ON ct.ctlCongregationsId = cm.ctlCongregationsId AND strftime('%Y-%m-%dT%H:%M:%f', ct.lastVisitDate) = cm.maxLastVisitDate\n            ) cmx ON cmx.ctlCongregationsId = c.congregationId\n    JOIN congregation_totals ctd ON ctd.ctlCongregationsId = c.congregationId AND ctd.lastVisitDate IS NULL"
+      },
+      {
+        "viewName": "member_roles_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT mv.*, marv.* FROM members_view mv JOIN member_actual_roles_view marv ON mv.memberId = marv.mrMembersId"
+      },
+      {
+        "viewName": "territory_report_houses_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT hv.*, tmc.*, tmr.*, ts.*\nFROM houses_view hv JOIN territories_members tmc ON tmc.tmcTerritoriesId = hv.hTerritoriesId AND tmc.deliveryDate IS NULL  \n    LEFT JOIN territory_member_reports tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrHousesId = hv.houseId\n    LEFT JOIN territory_streets ts ON ts.tsStreetsId = hv.hStreetsId AND ts.tsTerritoriesId = hv.hTerritoriesId\nUNION ALL     \nSELECT hv.*, tmc.*, tmr.*, ts.*\nFROM territories t JOIN territory_streets ts ON ts.tsTerritoriesId = t.territoryId\n    JOIN houses_view hv ON hv.hStreetsId = ts.tsStreetsId AND hv.territoryId IS NULL\n    JOIN territories_members tmc ON tmc.tmcTerritoriesId = t.territoryId AND tmc.deliveryDate IS NULL  \n    LEFT JOIN territory_member_reports tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrHousesId = hv.houseId"
+      },
+      {
+        "viewName": "territory_report_rooms_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT rv.*, tmc.*, tmr.*\nFROM rooms_view rv JOIN territories_members tmc ON tmc.tmcTerritoriesId = rv.territoryId AND tmc.deliveryDate IS NULL  \n    LEFT JOIN territory_member_reports tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrRoomsId = rv.roomId\nUNION ALL\nSELECT rv.*, tmc.*, tmr.*\nFROM territories t JOIN houses h ON h.hTerritoriesId = t.territoryId \n    JOIN rooms_view rv ON rv.rHousesId = h.houseId AND rv.territoryId IS NULL\n    JOIN territories_members tmc ON tmc.tmcTerritoriesId = t.territoryId AND tmc.deliveryDate IS NULL  \n    LEFT JOIN territory_member_reports tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrRoomsId = rv.roomId\nUNION ALL\nSELECT rv.*, tmc.*, tmr.*\nFROM territories t JOIN entrances e ON e.eTerritoriesId = t.territoryId \n    JOIN rooms_view rv ON rv.rEntrancesId = e.entranceId AND rv.territoryId IS NULL\n    JOIN territories_members tmc ON tmc.tmcTerritoriesId = t.territoryId AND tmc.deliveryDate IS NULL  \n    LEFT JOIN territory_member_reports tmr ON tmr.tmrTerritoryMembersId = tmc.territoryMemberId AND tmr.tmrRoomsId = rv.roomId"
+      },
+      {
+        "viewName": "member_role_transfer_objects_view",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT mrv.*, rtov.* FROM member_roles_view mrv JOIN role_transfer_objects_view rtov ON rtov.rtoRolesId = mrv.roleId"
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4711b9eff80a5f2a0992bd12ce09288')"
+    ]
+  }
+}

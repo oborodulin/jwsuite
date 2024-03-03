@@ -7,11 +7,11 @@ import java.util.UUID
 
 class MemberToMemberMovementEntityMapper : Mapper<Member, MemberMovementEntity> {
     override fun map(input: Member) = MemberMovementEntity(
-        memberMovementId = input.lastMovement.id ?: input.lastMovement.apply {
+        memberMovementId = input.lastMovement?.id ?: input.lastMovement?.apply {
             id = UUID.randomUUID()
-        }.id!!,
-        memberType = input.lastMovement.memberType,
-        movementDate = input.lastMovement.movementDate,
+        }?.id!!,
+        memberType = input.lastMovement?.memberType!!,
+        movementDate = input.lastMovement?.movementDate!!,
         mMembersId = input.id!!
     )
 }

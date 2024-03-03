@@ -182,7 +182,7 @@ fun TerritoryDetailsScreen(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("TerritoryDetailsScreen -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("TerritoryDetailsScreen -> LaunchedEffect() -> collect single Event Flow")
         viewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

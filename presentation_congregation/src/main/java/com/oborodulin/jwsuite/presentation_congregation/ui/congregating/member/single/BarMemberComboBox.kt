@@ -48,8 +48,7 @@ fun BarMemberComboBox(
         confirmUiAction = MemberUiAction.Save,
         dialogView = { _, handleConfirmAction ->
             MemberView(
-                sharedViewModel = sharedViewModel,
-                singleViewModel,
+                sharedViewModel = sharedViewModel, singleViewModel,
                 handleSaveAction = handleConfirmAction
             )
         },
@@ -61,7 +60,7 @@ fun BarMemberComboBox(
     BarComboBoxComponent(
         modifier = modifier,
         listViewModel = listViewModel,
-        loadListUiAction = MembersListUiAction.LoadByCongregation(currentCongregation?.itemId),
+        loadListUiAction = MembersListUiAction.Load(congregationId = currentCongregation?.itemId),
         isShowListDialog = isShowListDialog,
         onShowListDialog = onShowListDialog,
         onDismissListDialog = onDismissListDialog,

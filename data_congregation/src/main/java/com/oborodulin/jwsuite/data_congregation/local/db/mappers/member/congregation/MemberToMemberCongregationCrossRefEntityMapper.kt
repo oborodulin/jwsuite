@@ -8,11 +8,11 @@ import java.util.UUID
 class MemberToMemberCongregationCrossRefEntityMapper :
     Mapper<Member, MemberCongregationCrossRefEntity> {
     override fun map(input: Member) = MemberCongregationCrossRefEntity(
-        memberCongregationId = input.lastCongregation.id ?: input.lastCongregation.apply {
+        memberCongregationId = input.lastCongregation?.id ?: input.lastCongregation?.apply {
             id = UUID.randomUUID()
-        }.id!!,
-        activityDate = input.lastCongregation.activityDate,
-        mcCongregationsId = input.lastCongregation.congregationId,
-        mcMembersId = input.lastCongregation.memberId
+        }?.id!!,
+        activityDate = input.lastCongregation?.activityDate!!,
+        mcCongregationsId = input.lastCongregation?.congregationId!!,
+        mcMembersId = input.lastCongregation?.memberId!!
     )
 }

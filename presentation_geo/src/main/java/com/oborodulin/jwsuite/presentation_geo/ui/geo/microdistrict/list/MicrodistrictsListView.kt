@@ -124,7 +124,7 @@ fun MicrodistrictsListView(
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("MicrodistrictsListView -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("MicrodistrictsListView -> LaunchedEffect() -> collect single Event Flow")
         microdistrictsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

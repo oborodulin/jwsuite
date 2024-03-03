@@ -46,7 +46,7 @@ import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.single.MemberComboBox
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.role.single.RoleComboBox
 import timber.log.Timber
@@ -59,7 +59,7 @@ private const val TAG = "Congregating.MemberRoleView"
 @Composable
 fun MemberRoleView(
     memberRoleViewModel: MemberRoleViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersWithUsernameViewModelImpl = hiltViewModel(),
     handleSaveAction: OnImeKeyAction
 ) {
     Timber.tag(TAG).d("MemberRoleView(...) called")

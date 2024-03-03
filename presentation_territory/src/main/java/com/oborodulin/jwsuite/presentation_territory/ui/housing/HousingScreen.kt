@@ -238,7 +238,7 @@ fun HousingScreen(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("HousingScreen -> LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("HousingScreen -> LaunchedEffect() -> collect single Event Flow")
         housesViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

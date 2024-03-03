@@ -51,8 +51,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.congrega
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListView
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModel
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameViewModel
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.list.MemberRolesListView
 import timber.log.Timber
 
@@ -67,7 +66,7 @@ fun CongregatingScreen(
     congregatingViewModel: CongregatingViewModelImpl = hiltViewModel(),
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersWithUsernameViewModel = hiltViewModel(),
     defTopBarActions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
@@ -288,7 +287,7 @@ fun CongregationMembersView(
     //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel,
+    membersListViewModel: MembersWithUsernameViewModel,
     isService: Boolean = false//,
     //onActionBarSubtitleChange: (String) -> Unit
 ) {
@@ -353,7 +352,7 @@ fun GroupMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModel,
+    membersListViewModel: MembersWithUsernameViewModel,
     isService: Boolean = false
 ) {
     Timber.tag(TAG).d("GroupMembersView(...) called")
@@ -411,7 +410,7 @@ fun GroupMembersView(
 @Composable
 fun MemberRolesView(
     appState: AppState,
-    membersListViewModel: MembersListViewModel,
+    membersListViewModel: MembersWithUsernameViewModel,
     isService: Boolean = false
 ) {
     Timber.tag(TAG).d("MemberRolesView(...) called")
@@ -466,7 +465,7 @@ fun MemberRolesView(
 fun MembersView(
     //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel
+    membersListViewModel: MembersWithUsernameViewModel
 ) {
     Timber.tag(TAG).d("MembersView(...) called")
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()

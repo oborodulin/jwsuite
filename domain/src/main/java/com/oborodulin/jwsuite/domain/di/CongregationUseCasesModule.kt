@@ -5,6 +5,7 @@ import com.oborodulin.jwsuite.domain.repositories.CongregationsRepository
 import com.oborodulin.jwsuite.domain.repositories.GroupsRepository
 import com.oborodulin.jwsuite.domain.repositories.MembersRepository
 import com.oborodulin.jwsuite.domain.repositories.RolesRepository
+import com.oborodulin.jwsuite.domain.repositories.SessionManagerRepository
 import com.oborodulin.jwsuite.domain.usecases.*
 import com.oborodulin.jwsuite.domain.usecases.congregation.DeleteCongregationUseCase
 import com.oborodulin.jwsuite.domain.usecases.congregation.GetCongregationUseCase
@@ -21,6 +22,7 @@ import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.GetMembersWithUsernameUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRoleUseCase
@@ -125,6 +127,14 @@ object CongregationUseCasesModule {
     fun provideGetMembersUseCase(
         configuration: UseCase.Configuration, membersRepository: MembersRepository
     ): GetMembersUseCase = GetMembersUseCase(configuration, membersRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetMembersWithUsernameUseCase(
+        configuration: UseCase.Configuration,
+        membersRepository: MembersRepository, sessionManagerRepository: SessionManagerRepository
+    ): GetMembersWithUsernameUseCase =
+        GetMembersWithUsernameUseCase(configuration, membersRepository, sessionManagerRepository)
 
     @Singleton
     @Provides

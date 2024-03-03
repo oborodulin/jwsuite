@@ -16,8 +16,8 @@ import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.GroupInput
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameUiAction
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameViewModelImpl
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -27,7 +27,7 @@ private const val TAG = "Congregating.GroupsListView"
 fun GroupsListView(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel(),
+    membersListViewModel: MembersWithUsernameViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null
 ) {
@@ -78,13 +78,13 @@ fun GroupsListView(
             ) { group ->
                 groupsListViewModel.singleSelectItem(group)
                 with(membersListViewModel) {
-                    submitAction(MembersListUiAction.LoadByGroup(groupId = group.itemId!!))
+                    submitAction(MembersWithUsernameUiAction.LoadByGroup(groupId = group.itemId!!))
                 }
             }
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("GroupsListView -> LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("GroupsListView -> LaunchedEffect() -> collect single Event Flow")
         groupsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

@@ -25,12 +25,11 @@ import com.oborodulin.home.common.ui.state.CommonScreen
 import com.oborodulin.home.common.util.Constants.EMPTY_LIST_ITEM_EVENT
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_STATE
 import com.oborodulin.home.common.util.OnListItemEvent
-import com.oborodulin.jwsuite.presentation.ui.AppState
 import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.theme.JWSuiteTheme
 import com.oborodulin.jwsuite.presentation_congregation.R
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListUiAction
-import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListViewModelImpl
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameUiAction
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.CongregationsListItem
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -42,7 +41,7 @@ fun CongregationsListView(
     //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersListViewModelImpl = hiltViewModel()//,
+    membersListViewModel: MembersWithUsernameViewModelImpl = hiltViewModel()//,
     //onActionBarSubtitleChange: (String) -> Unit
 ) {
     Timber.tag(TAG).d("CongregationsListView(...) called")
@@ -85,14 +84,14 @@ fun CongregationsListView(
                 //onActionBarSubtitleChange(congregation.congregationName)
                 congregationsListViewModel.singleSelectItem(congregation)
                 membersListViewModel.submitAction(
-                    MembersListUiAction.LoadByCongregation(congregation.id)
+                    MembersWithUsernameUiAction.LoadByCongregation(congregation.id)
                 )
             }
         }
     }
     LaunchedEffect(Unit) {
         Timber.tag(TAG)
-            .d("CongregationsListView -> LaunchedEffect() AFTER collect single Event Flow")
+            .d("CongregationsListView -> LaunchedEffect() -> collect single Event Flow")
         congregationsListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {

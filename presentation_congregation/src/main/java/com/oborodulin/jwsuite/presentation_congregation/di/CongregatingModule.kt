@@ -17,6 +17,7 @@ import com.oborodulin.jwsuite.domain.usecases.group.SaveGroupUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.DeleteMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.GetMembersUseCase
+import com.oborodulin.jwsuite.domain.usecases.member.GetMembersWithUsernameUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.MemberUseCases
 import com.oborodulin.jwsuite.domain.usecases.member.SaveMemberUseCase
 import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCase
@@ -35,6 +36,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.Memb
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRoleConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRolesListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersListConverter
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MembersWithUsernameConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.RolesListConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveCongregationConverter
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.SaveGroupConverter
@@ -51,6 +53,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberToMembersListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MemberUiToMemberMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MembersListToMembersListItemMapper
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.MembersWithUsernameToMembersWithUsernameUiMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRoleUiMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleToMemberRolesListItemMapper
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.mappers.member.role.MemberRoleUiToMemberRoleMapper
@@ -135,13 +138,18 @@ object CongregatingModule {
 
     @Singleton
     @Provides
-    fun provideMemberToMembersListItemMapper(mapper: GroupToGroupUiMapper): MemberToMembersListItemMapper =
-        MemberToMembersListItemMapper(groupMapper = mapper)
+    fun provideMemberToMembersListItemMapper(): MemberToMembersListItemMapper =
+        MemberToMembersListItemMapper()
 
     @Singleton
     @Provides
     fun provideMembersListToMembersListItemMapper(mapper: MemberToMembersListItemMapper): MembersListToMembersListItemMapper =
         MembersListToMembersListItemMapper(mapper = mapper)
+
+    @Singleton
+    @Provides
+    fun provideMembersWithUsernameToMembersWithUsernameUiMapper(mapper: MembersListToMembersListItemMapper): MembersWithUsernameToMembersWithUsernameUiMapper =
+        MembersWithUsernameToMembersWithUsernameUiMapper(mapper = mapper)
 
     // Roles:
     @Singleton
@@ -242,6 +250,11 @@ object CongregatingModule {
 
     @Singleton
     @Provides
+    fun provideMembersWithUsernameConverter(mapper: MembersWithUsernameToMembersWithUsernameUiMapper): MembersWithUsernameConverter =
+        MembersWithUsernameConverter(mapper = mapper)
+
+    @Singleton
+    @Provides
     fun provideMemberConverter(mapper: MemberToMemberUiMapper): MemberConverter =
         MemberConverter(mapper = mapper)
 
@@ -310,6 +323,7 @@ object CongregatingModule {
     fun provideMemberUseCases(
         getMembersUseCase: GetMembersUseCase,
         getMemberUseCase: GetMemberUseCase,
+        getMembersWithUsernameUseCase: GetMembersWithUsernameUseCase,
         saveMemberUseCase: SaveMemberUseCase,
         deleteMemberUseCase: DeleteMemberUseCase,
         getMemberRolesUseCase: GetMemberRolesUseCase,
@@ -319,6 +333,7 @@ object CongregatingModule {
     ): MemberUseCases = MemberUseCases(
         getMembersUseCase,
         getMemberUseCase,
+        getMembersWithUsernameUseCase,
         saveMemberUseCase,
         deleteMemberUseCase,
         getMemberRolesUseCase,

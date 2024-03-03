@@ -27,7 +27,7 @@ private const val TAG = "Congregating.MembersListView"
 @Composable
 fun MembersListView(
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
-    membersListViewModel: MembersListViewModel,//Impl = hiltViewModel(),
+    membersListViewModel: MembersWithUsernameViewModel,//Impl = hiltViewModel(),
     memberRolesListViewModel: MemberRolesListViewModelImpl = hiltViewModel(),
     congregationInput: CongregationInput? = null,
     groupInput: GroupInput? = null,
@@ -50,11 +50,11 @@ fun MembersListView(
         Timber.tag(TAG).d("MembersListView -> LaunchedEffect()")
         when (groupInput?.groupId) {
             null -> membersListViewModel.submitAction(
-                MembersListUiAction.LoadByCongregation(congregationId, isService)
+                MembersWithUsernameUiAction.LoadByCongregation(congregationId, isService)
             )
 
             else -> membersListViewModel.submitAction(
-                MembersListUiAction.LoadByGroup(groupInput.groupId, isService)
+                MembersWithUsernameUiAction.LoadByGroup(groupInput.groupId, isService)
             )
         }
         /*membersListViewModel.handleActionJob({
@@ -74,23 +74,22 @@ fun MembersListView(
             when (isEditableList) {
                 true -> {
                     EditableListViewComponent(
-                        items = it,
+                        items = it.members,
                         searchedText = searchText.text,
                         dlgConfirmDelResId = R.string.dlg_confirm_del_member,
                         emptyListResId = R.string.members_list_empty_text,
                         isEmptyListTextOutput = congregationId != null || groupInput?.groupId != null,
                         isEditable = { member ->
-                            //member.headline.contains("[${session.}]").not()
-                            true
+                            member.headline.contains("[${it.username}]").not()
                         },
                         onEdit = { member ->
                             membersListViewModel.submitAction(
-                                MembersListUiAction.EditMember(member.itemId!!)
+                                MembersWithUsernameUiAction.EditMember(member.itemId!!)
                             )
                         },
                         onDelete = { member ->
                             membersListViewModel.submitAction(
-                                MembersListUiAction.DeleteMember(member.itemId!!)
+                                MembersWithUsernameUiAction.DeleteMember(member.itemId!!)
                             )
                         }
                     ) { member ->
@@ -105,7 +104,7 @@ fun MembersListView(
 
                 false -> {
                     ListViewComponent(
-                        items = it,
+                        items = it.members,
                         emptyListResId = R.string.members_list_empty_text,
                         isEmptyListTextOutput = congregationId != null || groupInput?.groupId != null
                     )
@@ -114,11 +113,11 @@ fun MembersListView(
         }
     }
     LaunchedEffect(Unit) {
-        Timber.tag(TAG).d("MembersListView -> LaunchedEffect() AFTER collect single Event Flow")
+        Timber.tag(TAG).d("MembersListView -> LaunchedEffect() -> collect single Event Flow")
         membersListViewModel.singleEventFlow.collectLatest {
             Timber.tag(TAG).d("Collect Latest UiSingleEvent: %s", it.javaClass.name)
             when (it) {
-                is MembersListUiSingleEvent.OpenMemberScreen -> {
+                is MembersWithUsernameUiSingleEvent.OpenMemberScreen -> {
                     appState.mainNavigate(it.navRoute)
                 }
             }
