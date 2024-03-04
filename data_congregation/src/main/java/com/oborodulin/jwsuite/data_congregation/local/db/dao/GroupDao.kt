@@ -19,6 +19,7 @@ import com.oborodulin.jwsuite.domain.util.Constants.DB_TRUE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.util.Locale
 import java.util.UUID
 
 @Dao
@@ -42,30 +43,35 @@ interface GroupDao {
     ): Flow<List<GroupEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${GroupView.VIEW_NAME} ORDER BY ${GroupEntity.PX_CONGREGATION}congregationName, groupNum")
-    fun findAll(): Flow<List<GroupView>>
+    @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE ${GroupEntity.PX_LOCALITY}localityLocCode = :locale ORDER BY ${GroupEntity.PX_CONGREGATION}congregationName, groupNum")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE groupId = :groupId")
-    fun findById(groupId: UUID): Flow<GroupView>
+    @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE groupId = :groupId AND ${GroupEntity.PX_LOCALITY}localityLocCode = :locale")
+    fun findById(groupId: UUID, locale: String? = Locale.getDefault().language): Flow<GroupView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE gCongregationsId = :congregationId ORDER BY groupNum")
-    fun findByCongregationId(congregationId: UUID): Flow<List<GroupView>>
+    @Query("SELECT * FROM ${GroupView.VIEW_NAME} WHERE gCongregationsId = :congregationId AND ${GroupEntity.PX_LOCALITY}localityLocCode = :locale ORDER BY groupNum")
+    fun findByCongregationId(congregationId: UUID, locale: String? = Locale.getDefault().language): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByCongregationId(congregationId: UUID) =
         findByCongregationId(congregationId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT g.* FROM ${GroupView.VIEW_NAME} g JOIN ${FavoriteCongregationView.VIEW_NAME} fc ON fc.congregationId = g.gCongregationsId ORDER BY groupNum")
-    fun findByFavoriteCongregation(): Flow<List<GroupView>>
+    @Query("""
+    SELECT g.* FROM ${GroupView.VIEW_NAME} g JOIN ${FavoriteCongregationView.VIEW_NAME} fc
+        ON fc.congregationId = g.gCongregationsId AND g.${GroupEntity.PX_LOCALITY}localityLocCode = fc.${CongregationEntity.PX_LOCALITY}localityLocCode
+            AND g.${GroupEntity.PX_LOCALITY}localityLocCode = :locale
+    ORDER BY groupNum
+    """)
+    fun findByFavoriteCongregation(locale: String? = Locale.getDefault().language): Flow<List<GroupView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFavoriteCongregation() = findByFavoriteCongregation().distinctUntilChanged()

@@ -3,6 +3,7 @@ package com.oborodulin.jwsuite.data_congregation.local.db.views
 import androidx.room.DatabaseView
 import androidx.room.Embedded
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.CongregationEntity
+import com.oborodulin.jwsuite.data_congregation.local.db.entities.GroupEntity
 import com.oborodulin.jwsuite.data_congregation.local.db.entities.MemberEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoLocalityEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.LocalityView
@@ -25,7 +26,7 @@ SELECT c.congregationId AS ${MemberEntity.PX_CONGREGATION}congregationId, c.cong
 FROM ${MemberEntity.TABLE_NAME} m LEFT JOIN ${GroupView.VIEW_NAME} gv ON gv.groupId = m.mGroupsId
     LEFT JOIN ${MemberLastCongregationView.VIEW_NAME} mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  
     LEFT JOIN ${CongregationEntity.TABLE_NAME} c ON c.congregationId = mlcv.mcCongregationsId
-        LEFT JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = c.cLocalitiesId 
+        LEFT JOIN ${LocalityView.VIEW_NAME} lv ON lv.localityId = c.cLocalitiesId AND lv.localityLocCode = gv.${GroupEntity.PX_LOCALITY}localityLocCode
     JOIN ${MemberLastMovementView.VIEW_NAME} mlmv ON mlmv.mMembersId = m.memberId
 """
 )

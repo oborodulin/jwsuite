@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import java.time.OffsetDateTime
+import java.util.Locale
 import java.util.UUID
 
 private const val TAG = "Data.CongregationDao"
@@ -52,15 +53,18 @@ interface CongregationDao {
     ): Flow<List<CongregationTotalEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} ORDER BY isFavorite DESC")
-    fun findAll(): Flow<List<CongregationView>>
+    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE ${CongregationEntity.PX_LOCALITY}localityLocCode = :locale ORDER BY isFavorite DESC")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<CongregationView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE congregationId = :congregationId")
-    fun findById(congregationId: UUID): Flow<CongregationView>
+    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE congregationId = :congregationId AND ${CongregationEntity.PX_LOCALITY}localityLocCode = :locale")
+    fun findById(
+        congregationId: UUID,
+        locale: String? = Locale.getDefault().language
+    ): Flow<CongregationView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
@@ -72,11 +76,14 @@ interface CongregationDao {
     @Query("SELECT EXISTS (SELECT * FROM ${CongregationEntity.TABLE_NAME} WHERE congregationNum = :congregationNum LIMIT 1)")
     fun existsByCongregationNum(congregationNum: String): Boolean
 
-    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE congregationName LIKE '%' || :congregationName || '%'")
-    fun findByCongregationName(congregationName: String): Flow<List<CongregationView>>
+    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE congregationName LIKE '%' || :congregationName || '%' AND ${CongregationEntity.PX_LOCALITY}localityLocCode = :locale")
+    fun findByCongregationName(
+        congregationName: String,
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<CongregationView>>
 
-    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE isFavorite = $DB_TRUE")
-    fun findFavoriteCongregation(): Flow<CongregationView?>
+    @Query("SELECT * FROM ${CongregationView.VIEW_NAME} WHERE isFavorite = $DB_TRUE AND ${CongregationEntity.PX_LOCALITY}localityLocCode = :locale")
+    fun findFavoriteCongregation(locale: String? = Locale.getDefault().language): Flow<CongregationView?>
 
     //fun findFavorite() = flow { emit(findFavoriteCongregation()) }
 
@@ -89,8 +96,8 @@ interface CongregationDao {
     fun findCongregationWithGroupMembers(): Flow<List<CongregationWithGroupMembers>>
 
     //-----------------------------
-    @Query("SELECT * FROM ${CongregationTotalView.VIEW_NAME}")
-    fun findTotals(): Flow<CongregationTotalView?>
+    @Query("SELECT * FROM ${CongregationTotalView.VIEW_NAME} WHERE ${CongregationEntity.PX_LOCALITY}localityLocCode = :locale")
+    fun findTotals(locale: String? = Locale.getDefault().language): Flow<CongregationTotalView?>
 
     @ExperimentalCoroutinesApi
     fun findDistinctTotals() = findTotals().distinctUntilChanged()

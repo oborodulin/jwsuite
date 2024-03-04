@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
+import java.util.Locale
 import java.util.UUID
 
 @Dao
@@ -104,25 +105,34 @@ interface MemberDao {
     ): Flow<List<MemberRoleEntity>>
 
     // READS:
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} ORDER BY groupNum, surname, memberName, patronymic, pseudonym")
-    fun findAll(): Flow<List<MemberView>>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale ORDER BY groupNum, surname, memberName, patronymic, pseudonym")
+    fun findAll(locale: String? = Locale.getDefault().language): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE memberId = :memberId")
-    fun findById(memberId: UUID): Flow<MemberView>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE memberId = :memberId AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale")
+    fun findById(memberId: UUID, locale: String? = Locale.getDefault().language): Flow<MemberView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%')")
-    fun findByFullName(groupId: UUID, fullName: String): Flow<List<MemberView>>
+    @Query(
+        """
+    SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND (surname || ' ' || memberName || ' ' || patronymic LIKE '%' || :fullName || '%') 
+        AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
+    """
+    )
+    fun findByFullName(
+        groupId: UUID, fullName: String, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberView>>
 
-    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND pseudonym LIKE '%' || :pseudonym || '%'")
-    fun findByPseudonym(groupId: UUID, pseudonym: String): Flow<List<MemberView>>
+    @Query("SELECT * FROM ${MemberView.VIEW_NAME} WHERE mGroupsId = :groupId AND pseudonym LIKE '%' || :pseudonym || '%' AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale")
+    fun findByPseudonym(
+        groupId: UUID, pseudonym: String, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberView>>
 
     //----------------------------- Members by Congregation:
     @Query(
@@ -130,11 +140,13 @@ interface MemberDao {
     SELECT mv.* FROM ${MemberView.VIEW_NAME} mv 
     WHERE (mv.mcCongregationsId = :congregationId OR (mv.mcCongregationsId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
+        AND ifnull(mv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
         """
     )
     fun findByCongregationId(
-        congregationId: UUID, isService: Boolean = false
+        congregationId: UUID, isService: Boolean = false,
+        locale: String? = Locale.getDefault().language
     ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
@@ -144,13 +156,17 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv 
+        ON fcv.congregationId = mv.mcCongregationsId AND fcv.${CongregationEntity.PX_LOCALITY}localityLocCode = mv.${MemberEntity.PX_LOCALITY}localityLocCode 
     WHERE (fcv.congregationId IS NOT NULL OR (fcv.congregationId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
+        AND ifnull(mv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
     ORDER BY groupNum, surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByFavoriteCongregationAndIsServiceMark(isService: Boolean = false): Flow<List<MemberView>>
+    fun findByFavoriteCongregationAndIsServiceMark(
+        isService: Boolean = false, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFavoriteCongregationAndIsServiceMark(isService: Boolean = false) =
@@ -159,15 +175,19 @@ interface MemberDao {
     //----------------------------- Members by Groups:
     @Query(
         """
-    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv
+            ON fcv.congregationId = mv.mcCongregationsId AND fcv.${CongregationEntity.PX_LOCALITY}localityLocCode = mv.${MemberEntity.PX_LOCALITY}localityLocCode
         LEFT JOIN (SELECT g.gCongregationsId, MIN(g.groupNum) minGroupNum FROM ${GroupEntity.TABLE_NAME} g GROUP BY g.gCongregationsId) mg 
             ON mg.gCongregationsId = fcv.congregationId AND mg.minGroupNum = mv.groupNum
     WHERE ((fcv.congregationId IS NOT NULL AND mg.gCongregationsId IS NOT NULL) OR (fcv.congregationId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
+        AND ifnull(mv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
     ORDER BY surname, memberName, patronymic, pseudonym
     """
     )
-    fun findByFavoriteCongregationGroupAndIsServiceMark(isService: Boolean = false): Flow<List<MemberView>>
+    fun findByFavoriteCongregationGroupAndIsServiceMark(
+        isService: Boolean = false, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFavoriteCongregationGroupAndIsServiceMark(isService: Boolean = false) =
@@ -179,11 +199,12 @@ interface MemberDao {
     SELECT * FROM ${MemberView.VIEW_NAME}
     WHERE (mGroupsId = :groupId OR (mcCongregationsId IS NULL AND memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND memberType IN ($MT_SERVICE_VAL))
+        AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
     ORDER BY surname, memberName, patronymic, pseudonym 
     """
     )
     fun findByGroupIdAndIsServiceMark(
-        groupId: UUID, isService: Boolean = false
+        groupId: UUID, isService: Boolean = false, locale: String? = Locale.getDefault().language
     ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
@@ -193,15 +214,19 @@ interface MemberDao {
     //-----------------------------
     @Query(
         """
-    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
+    SELECT mv.* FROM ${MemberView.VIEW_NAME} mv LEFT JOIN ${FavoriteCongregationView.VIEW_NAME} fcv
+        ON fcv.congregationId = mv.mcCongregationsId AND fcv.${CongregationEntity.PX_LOCALITY}localityLocCode = mv.${MemberEntity.PX_LOCALITY}localityLocCode
     WHERE ((mv.mcCongregationsId = ifnull(:congregationId, mv.mcCongregationsId) AND mv.mGroupsId IS NULL)
             OR (mv.mcCongregationsId IS NULL AND mv.memberType IN ($MT_SERVICE_VAL)))
         AND (:isService = $DB_FALSE AND mv.memberType NOT IN ($MT_SERVICE_VAL) OR :isService = $DB_TRUE AND mv.memberType IN ($MT_SERVICE_VAL))
+        AND ifnull(mv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
     ORDER BY surname, memberName, patronymic, pseudonym
     """
     )
     fun findByCongregationIdAndGroupIdIsNullAndIsServiceMark(
-        congregationId: UUID? = null, isService: Boolean = false
+        congregationId: UUID? = null,
+        isService: Boolean = false,
+        locale: String? = Locale.getDefault().language
     ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
@@ -218,42 +243,55 @@ interface MemberDao {
     SELECT mv.* FROM ${MemberView.VIEW_NAME} mv JOIN ${MemberActualRoleView.VIEW_NAME} marv 
             ON mv.memberId = marv.mrMembersId AND marv.roleType IN (:roleTypes)
         JOIN ${FavoriteCongregationView.VIEW_NAME} fcv ON fcv.congregationId = mv.mcCongregationsId
+                                                        AND fcv.${CongregationEntity.PX_LOCALITY}localityLocCode = mv.${MemberEntity.PX_LOCALITY}localityLocCode
+    WHERE ifnull(mv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale
     ORDER BY CASE marv.roleExpiredDate WHEN NULL THEN 0 ELSE 1 END, strftime($DB_FRACT_SEC_TIME, marv.roleExpiredDate)        
         """
     )
-    fun findByFavoriteCongregationAndRoleTypes(roleTypes: List<MemberRoleType> = emptyList()): Flow<List<MemberView>>
+    fun findByFavoriteCongregationAndRoleTypes(
+        roleTypes: List<MemberRoleType> = emptyList(),
+        locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctByFavoriteCongregationAndRoleTypes(roleTypes: List<MemberRoleType>) =
         findByFavoriteCongregationAndRoleTypes(roleTypes).distinctUntilChanged()
 
     //----------------------------- Member Roles:
-    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE memberRoleId = :memberRoleId")
-    fun findMemberRoleById(memberRoleId: UUID): Flow<MemberRoleView>
+    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE memberRoleId = :memberRoleId AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale")
+    fun findMemberRoleById(
+        memberRoleId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<MemberRoleView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctMemberRoleById(memberRoleId: UUID) =
         findMemberRoleById(memberRoleId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId ORDER BY roleName")
-    fun findMemberRolesByMemberId(memberId: UUID): Flow<List<MemberRoleView>>
+    @Query("SELECT * FROM ${MemberRoleView.VIEW_NAME} WHERE mrMembersId = :memberId AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale ORDER BY roleName")
+    fun findMemberRolesByMemberId(
+        memberId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberRoleView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctMemberRolesByMemberId(memberId: UUID) =
         findMemberRolesByMemberId(memberId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT mrv.* FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym")
-    fun findMemberRolesByPseudonym(pseudonym: String): Flow<List<MemberRoleView>>
+    @Query("SELECT mrv.* FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym AND ifnull(mrv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale")
+    fun findMemberRolesByPseudonym(
+        pseudonym: String, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberRoleView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctMemberRolesByPseudonym(pseudonym: String) =
         findMemberRolesByPseudonym(pseudonym).distinctUntilChanged()
 
     //----------------------------- Roles:
-    @Query("SELECT mrv.roleId, mrv.roleType, mrv.roleName FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym")
-    fun findRolesByPseudonym(pseudonym: String): Flow<List<RoleEntity>>
+    @Query("SELECT mrv.roleId, mrv.roleType, mrv.roleName FROM ${MemberRoleView.VIEW_NAME} mrv WHERE mrv.pseudonym = :pseudonym AND ifnull(mrv.${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale")
+    fun findRolesByPseudonym(
+        pseudonym: String, locale: String? = Locale.getDefault().language
+    ): Flow<List<RoleEntity>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctRolesByPseudonym(pseudonym: String) =
@@ -326,32 +364,38 @@ interface MemberDao {
         findRoleTransferObjectByPseudonym(pseudonym).distinctUntilChanged()
 
     //----------------------------- Member Role Transfer Objects:
-    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} ORDER BY transferObjectName")
-    fun findAllMemberRoleTransferObjects(): Flow<List<MemberRoleTransferObjectView>>
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale ORDER BY transferObjectName")
+    fun findAllMemberRoleTransferObjects(locale: String? = Locale.getDefault().language): Flow<List<MemberRoleTransferObjectView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctAllMemberRoleTransferObjects() =
         findAllMemberRoleTransferObjects().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE transferObjectId = :transferObjectId")
-    fun findMemberRoleTransferObjectById(transferObjectId: UUID): Flow<MemberRoleTransferObjectView>
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE transferObjectId = :transferObjectId AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale")
+    fun findMemberRoleTransferObjectById(
+        transferObjectId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<MemberRoleTransferObjectView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctMemberRoleTransferObjectById(id: UUID) =
         findMemberRoleTransferObjectById(id).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE memberId = :memberId ORDER BY transferObjectName")
-    fun findMemberRoleTransferObjectsByMemberId(memberId: UUID): Flow<List<MemberRoleTransferObjectView>>
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE memberId = :memberId AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale ORDER BY transferObjectName")
+    fun findMemberRoleTransferObjectsByMemberId(
+        memberId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberRoleTransferObjectView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctMemberRoleTransferObjectsByMemberId(memberId: UUID) =
         findMemberRoleTransferObjectsByMemberId(memberId).distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE rtoRolesId = :roleId ORDER BY transferObjectName")
-    fun findMemberRoleTransferObjectsByRoleId(roleId: UUID): Flow<List<MemberRoleTransferObjectView>>
+    @Query("SELECT * FROM ${MemberRoleTransferObjectView.VIEW_NAME} WHERE rtoRolesId = :roleId AND ifnull(${MemberEntity.PX_LOCALITY}localityLocCode, :locale) = :locale ORDER BY transferObjectName")
+    fun findMemberRoleTransferObjectsByRoleId(
+        roleId: UUID, locale: String? = Locale.getDefault().language
+    ): Flow<List<MemberRoleTransferObjectView>>
 
     @ExperimentalCoroutinesApi
     fun findDistinctMemberRoleTransferObjectsByRoleId(roleId: UUID) =
