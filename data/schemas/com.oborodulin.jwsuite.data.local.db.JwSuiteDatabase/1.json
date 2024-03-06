@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d4711b9eff80a5f2a0992bd12ce09288",
+    "identityHash": "d781be1ae3668d09edee117559be48b6",
     "entities": [
       {
         "tableName": "app_settings",
@@ -3941,7 +3941,7 @@
       },
       {
         "viewName": "members_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.congregationId AS mc_congregationId, c.congregationNum AS mc_congregationNum, \n            c.congregationName AS mc_congregationName, c.territoryMark AS mc_territoryMark, \n            c.isFavorite AS mc_isFavorite, c.lastVisitDate AS mc_lastVisitDate, \n            c.cLocalitiesId AS mc_cLocalitiesId, \n        lv.localityId AS mc_cl_localityId, lv.localityCode AS mc_cl_localityCode, lv.localityType AS mc_cl_localityType, \n            lv.localityGeocode AS mc_cl_localityGeocode, lv.localityOsmId AS mc_cl_localityOsmId, \n            lv.locality_latitude AS mc_cl_locality_latitude,\n            lv.locality_longitude AS mc_cl_locality_longitude, \n            lv.lRegionDistrictsId AS mc_cl_lRegionDistrictsId, lv.lRegionsId AS mc_cl_lRegionsId,\n            lv.localityTlId AS mc_cl_localityTlId, lv.localityLocCode AS mc_cl_localityLocCode, lv.localityShortName AS mc_cl_localityShortName, \n            lv.localityName AS mc_cl_localityName, lv.localitiesId AS mc_cl_localitiesId,\n        gv.*, m.*, mlcv.*, mlmv.*\nFROM members m LEFT JOIN groups_view gv ON gv.groupId = m.mGroupsId\n    LEFT JOIN member_last_congregations_view mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  \n    LEFT JOIN congregations c ON c.congregationId = mlcv.mcCongregationsId\n        LEFT JOIN localities_view lv ON lv.localityId = c.cLocalitiesId \n    JOIN member_last_movements_view mlmv ON mlmv.mMembersId = m.memberId"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.congregationId AS mc_congregationId, c.congregationNum AS mc_congregationNum, \n            c.congregationName AS mc_congregationName, c.territoryMark AS mc_territoryMark, \n            c.isFavorite AS mc_isFavorite, c.lastVisitDate AS mc_lastVisitDate, \n            c.cLocalitiesId AS mc_cLocalitiesId, \n        lv.localityId AS mc_cl_localityId, lv.localityCode AS mc_cl_localityCode, lv.localityType AS mc_cl_localityType, \n            lv.localityGeocode AS mc_cl_localityGeocode, lv.localityOsmId AS mc_cl_localityOsmId, \n            lv.locality_latitude AS mc_cl_locality_latitude,\n            lv.locality_longitude AS mc_cl_locality_longitude, \n            lv.lRegionDistrictsId AS mc_cl_lRegionDistrictsId, lv.lRegionsId AS mc_cl_lRegionsId,\n            lv.localityTlId AS mc_cl_localityTlId, lv.localityLocCode AS mc_cl_localityLocCode, lv.localityShortName AS mc_cl_localityShortName, \n            lv.localityName AS mc_cl_localityName, lv.localitiesId AS mc_cl_localitiesId,\n        gv.*, m.*, mlcv.*, mlmv.*\nFROM members m LEFT JOIN groups_view gv ON gv.groupId = m.mGroupsId\n    LEFT JOIN member_last_congregations_view mlcv ON mlcv.mcMembersId = m.memberId AND mlcv.mcCongregationsId = ifnull(gv.gCongregationsId, mlcv.mcCongregationsId)  \n    LEFT JOIN congregations c ON c.congregationId = mlcv.mcCongregationsId\n        LEFT JOIN localities_view lv ON lv.localityId = c.cLocalitiesId AND lv.localityLocCode = gv.gc_cl_localityLocCode\n    JOIN member_last_movements_view mlmv ON mlmv.mMembersId = m.memberId"
       },
       {
         "viewName": "congregation_totals_view",
@@ -4002,7 +4002,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4711b9eff80a5f2a0992bd12ce09288')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd781be1ae3668d09edee117559be48b6')"
     ]
   }
 }

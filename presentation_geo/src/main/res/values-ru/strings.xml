@@ -41,6 +41,7 @@
 
     <!--ФОРМЫ:-->
     <!--география-->
+    <string name="osm_data_title">OSM-данные</string>
     <string name="geocode_hint">Географический код</string>
     <string name="geocode_helper">Географический код области в системе OpenStreetMap</string>
     <string name="osm_id_hint">ИД OSM</string>
