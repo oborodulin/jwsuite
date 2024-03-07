@@ -4,8 +4,8 @@ import com.oborodulin.home.common.ui.model.ModelUi
 import com.oborodulin.jwsuite.domain.types.VillageType
 
 data class MicrodistrictUi(
-    val locality: LocalityUi = LocalityUi(),
-    val localityDistrict: LocalityDistrictUi = LocalityDistrictUi(),
+    val locality: LocalityUi? = null,
+    val localityDistrict: LocalityDistrictUi? = null,
     val microdistrictType: VillageType = VillageType.MICRO_DISTRICT,
     val microdistrictShortName: String = "",
     val microdistrictName: String = "",

@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +35,7 @@ import timber.log.Timber
 private const val TAG = "Common.ui.ExpandableColumnComponent"
 
 // https://codingwithrashid.com/create-expandable-card-in-android-jetpack-compose/
+// https://stackoverflow.com/questions/69951212/how-can-i-keep-expand-item-of-a-column-control-in-compose
 @Composable
 fun ExpandableColumnComponent(
     modifier: Modifier = Modifier,
@@ -43,7 +44,9 @@ fun ExpandableColumnComponent(
     @StringRes titleResId: Int,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("ExpandableColumnComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("ExpandableColumnComponent(...) called")
+    }
     var expanded by rememberSaveable { mutableStateOf(isExpanded) }
     Column(
         modifier = Modifier
@@ -63,8 +66,11 @@ fun ExpandableColumnComponent(
                     .weight(1f)
             )
             IconButton(onClick = { if (enabled) expanded = !expanded }) {
-                if (expanded) Icon(Icons.Outlined.KeyboardArrowUp, null)
-                else Icon(Icons.Outlined.ArrowDropDown, null)
+                if (expanded) {
+                    Icon(Icons.Outlined.KeyboardArrowUp, null)
+                } else {
+                    Icon(Icons.Outlined.KeyboardArrowDown, null)
+                }
             }
         }
         if (expanded) {
@@ -90,7 +96,7 @@ fun PreviewExpandableColumnComponent() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
-                titleResId = R.string.preview_blank_title,
+                titleResId = R.string.preview_blank_column_title
             ) {}
         }
     }

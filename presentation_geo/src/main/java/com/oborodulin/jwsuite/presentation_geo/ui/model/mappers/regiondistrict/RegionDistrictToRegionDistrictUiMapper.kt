@@ -10,10 +10,10 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.region.RegionToR
 class RegionDistrictToRegionDistrictUiMapper(
     private val regionMapper: RegionToRegionUiMapper,
     private val coordinatesMapper: GeoCoordinatesToCoordinatesUiMapper
-) : NullableMapper<GeoRegionDistrict, RegionDistrictUi>,
-    Mapper<GeoRegionDistrict, RegionDistrictUi> {
+) : Mapper<GeoRegionDistrict, RegionDistrictUi>,
+    NullableMapper<GeoRegionDistrict, RegionDistrictUi> {
     override fun map(input: GeoRegionDistrict) = RegionDistrictUi(
-        region = regionMapper.map(input.region!!),
+        region = regionMapper.nullableMap(input.region),
         districtShortName = input.districtShortName,
         districtGeocode = input.districtGeocode,
         districtOsmId = input.districtOsmId,

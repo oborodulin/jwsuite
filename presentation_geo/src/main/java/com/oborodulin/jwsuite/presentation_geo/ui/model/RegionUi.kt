@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.domain.types.RegionType
 import java.util.UUID
 
 data class RegionUi(
-    val country: CountryUi = CountryUi(),
+    val country: CountryUi? = null,
     val regionCode: String = "",
     val regionType: RegionType = RegionType.REGION,
     val regionGeocode: String? = null,
@@ -17,10 +17,10 @@ data class RegionUi(
     val regionFullName: String = ""
 ) : ModelUi()
 
-fun RegionUi.toListItemModel() = ListItemModel(
-    itemId = this.id ?: UUID.randomUUID(),
-    headline = this.regionFullName,
-    supportingText = this.regionCode
+fun RegionUi?.toListItemModel() = ListItemModel(
+    itemId = this?.id ?: UUID.randomUUID(),
+    headline = this?.regionFullName.orEmpty(),
+    supportingText = this?.regionCode
 )
 
 fun ListItemModel?.toRegionUi() =

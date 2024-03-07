@@ -96,7 +96,7 @@ fun GeoScreen(
 
     //var viewModel: ListViewModeled<List<ListItemModel>, UiAction, UiSingleEvent>
     //var placeholderResId: Int
-    var tabType by rememberSaveable { mutableStateOf(GeoTabType.REGIONS.name) }
+    var tabType by rememberSaveable { mutableStateOf(GeoTabType.COUNTRIES.name) }
     val onTabChange: (GeoTabType) -> Unit = { tabType = it.name }
     val handleActionAdd = {
         appState.mainNavigate(

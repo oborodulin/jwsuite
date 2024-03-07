@@ -26,6 +26,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.LocalityDistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictToLocalityDistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.localitydistrict.LocalityDistrictUiToLocalityDistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -151,7 +152,7 @@ class LocalityDistrictViewModelImpl @Inject constructor(
         }
         initStateValue(
             LocalityDistrictFields.LOCALITY_DISTRICT_LOCALITY, locality,
-            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
+            uiModel.locality.toListItemModel()
         )
         initStateValue(
             LocalityDistrictFields.LOCALITY_DISTRICT_SHORT_NAME, districtShortName,

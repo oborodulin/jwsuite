@@ -13,19 +13,15 @@ class StreetUiToStreetMapper(
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper,
     private val microdistrictUiMapper: MicrodistrictUiToMicrodistrictMapper
 ) : Mapper<StreetUi, GeoStreet> {
-    override fun map(input: StreetUi): GeoStreet {
-        val street = GeoStreet(
-            ctx = ctx,
-            locality = localityUiMapper.map(input.locality),
-            //localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
-            //microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
-            streetHashCode = 0,
-            roadType = input.roadType,
-            isPrivateSector = input.isPrivateSector,
-            estimatedHouses = input.estimatedHouses,
-            streetName = input.streetName
-        )
-        street.id = input.id
-        return street
-    }
+    override fun map(input: StreetUi) = GeoStreet(
+        ctx = ctx,
+        locality = localityUiMapper.map(input.locality!!),
+        //localityDistrict = localityDistrictUiMapper.nullableMap(input.localityDistrict),
+        //microdistrict = microdistrictUiMapper.nullableMap(input.microdistrict),
+        streetHashCode = 0,
+        roadType = input.roadType,
+        isPrivateSector = input.isPrivateSector,
+        estimatedHouses = input.estimatedHouses,
+        streetName = input.streetName
+    ).also { it.id = input.id }
 }

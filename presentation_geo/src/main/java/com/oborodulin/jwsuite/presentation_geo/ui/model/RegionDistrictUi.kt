@@ -6,7 +6,7 @@ import com.oborodulin.home.common.ui.model.ModelUi
 import java.util.UUID
 
 data class RegionDistrictUi(
-    val region: RegionUi = RegionUi(),
+    val region: RegionUi? = null,
     val districtShortName: String = "",
     val districtGeocode: String? = null,
     val districtOsmId: Long? = null,

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -43,6 +45,8 @@ import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
 import com.oborodulin.home.common.ui.theme.Typography
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
+import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
+import com.oborodulin.jwsuite.presentation.ui.LocalAppState
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutButtonComponent
 import com.oborodulin.jwsuite.presentation.ui.components.SignoutConfirmDialogComponent
 import com.oborodulin.jwsuite.presentation.ui.model.LocalSession
@@ -67,6 +71,7 @@ fun DashboardSettingView(
     sessionViewModel: SessionViewModel//Impl = hiltViewModel()
 ) {
     Timber.tag(TAG).d("DashboardSettingView(...) called")
+    val appState = LocalAppState.current
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
@@ -180,6 +185,39 @@ fun DashboardSettingView(
                         )
                     })*/
         }
+        Divider(Modifier.fillMaxWidth())
+        ClickableText(
+            text = AnnotatedString(stringResource(R.string.data_management_hint)),
+            onClick = { appState.mainNavigate(NavRoutes.DataManagement.route) },
+            style = Typography.bodyLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 8.dp)
+        )
+        Divider(Modifier.fillMaxWidth())
+        Text(
+            text = stringResource(R.string.legal_info_subhead),
+            style = Typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
+        )
+        ClickableText(
+            text = AnnotatedString(stringResource(R.string.licenses_hint)),
+            onClick = { offset ->
+                Timber.tag(TAG).d("%s-th character is clicked.", offset)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+        ClickableText(
+            text = AnnotatedString(stringResource(R.string.icons_attribution_hint)),
+            onClick = { offset ->
+                Timber.tag(TAG).d("%s-th character is clicked.", offset)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         Divider(Modifier.fillMaxWidth())
         Text(
             text = stringResource(R.string.about_subhead),

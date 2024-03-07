@@ -12,10 +12,10 @@ data class CountryUi(
     val countryName: String = ""
 ) : ModelUi()
 
-fun CountryUi.toListItemModel() = ListItemModel(
-    itemId = this.id ?: UUID.randomUUID(),
-    headline = this.countryName,
-    supportingText = this.countryCode
+fun CountryUi?.toListItemModel() = ListItemModel(
+    itemId = this?.id ?: UUID.randomUUID(),
+    headline = this?.countryName.orEmpty(),
+    supportingText = this?.countryCode
 )
 
 fun ListItemModel?.toCountryUi() =

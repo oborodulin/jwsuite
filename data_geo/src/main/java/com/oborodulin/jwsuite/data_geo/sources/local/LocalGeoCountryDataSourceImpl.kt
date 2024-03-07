@@ -8,8 +8,11 @@ import com.oborodulin.jwsuite.data_geo.local.db.sources.LocalGeoCountryDataSourc
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+
+private const val TAG = "Data.geo.LocalGeoCountryDataSourceImpl"
 
 /**
  * Created by o.borodulin on 08.August.2022
@@ -19,7 +22,7 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
     private val countryDao: GeoCountryDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : LocalGeoCountryDataSource {
-    override fun getCountries() = countryDao.findDistinctAll()
+    override fun getCountries() = countryDao.findAll()
     override fun getDefaultCountry() = countryDao.findByDefaultLocale()
     override fun getCountry(countryId: UUID) = countryDao.findDistinctById(countryId)
     override suspend fun insertCountry(country: GeoCountryEntity, textContent: GeoCountryTlEntity) =
@@ -29,6 +32,11 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
 
     override suspend fun updateCountry(country: GeoCountryEntity, textContent: GeoCountryTlEntity) =
         withContext(dispatcher) {
+            Timber.tag(TAG).d(
+                "updateCountry(...) called: country = %s; textContent = %s",
+                country,
+                textContent
+            )
             countryDao.update(country, textContent)
         }
 

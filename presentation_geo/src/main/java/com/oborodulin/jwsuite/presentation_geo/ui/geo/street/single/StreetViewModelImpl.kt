@@ -30,6 +30,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.StreetUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.StreetConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetToStreetsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.street.StreetUiToStreetMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -179,8 +180,7 @@ class StreetViewModelImpl @Inject constructor(
             .d("initFieldStatesByUiModel(StreetUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(StreetFields.STREET_ID, id, it.toString()) }
         initStateValue(
-            StreetFields.STREET_LOCALITY, locality,
-            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
+            StreetFields.STREET_LOCALITY, locality, uiModel.locality.toListItemModel()
         )/*
         initStateValue(
             StreetFields.STREET_LOCALITY_DISTRICT, localityDistrict,

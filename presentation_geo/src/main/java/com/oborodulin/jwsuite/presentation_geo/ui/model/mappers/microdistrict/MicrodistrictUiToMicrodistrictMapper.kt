@@ -13,18 +13,14 @@ class MicrodistrictUiToMicrodistrictMapper(
     private val localityUiMapper: LocalityUiToLocalityMapper,
     private val localityDistrictUiMapper: LocalityDistrictUiToLocalityDistrictMapper
 ) : Mapper<MicrodistrictUi, GeoMicrodistrict>, NullableMapper<MicrodistrictUi, GeoMicrodistrict> {
-    override fun map(input: MicrodistrictUi): GeoMicrodistrict {
-        val locality = GeoMicrodistrict(
-            ctx = ctx,
-            locality = localityUiMapper.map(input.locality),
-            localityDistrict = localityDistrictUiMapper.map(input.localityDistrict),
-            microdistrictType = input.microdistrictType,
-            microdistrictShortName = input.microdistrictShortName,
-            microdistrictName = input.microdistrictName
-        )
-        locality.id = input.id
-        return locality
-    }
+    override fun map(input: MicrodistrictUi) = GeoMicrodistrict(
+        ctx = ctx,
+        locality = localityUiMapper.map(input.locality!!),
+        localityDistrict = localityDistrictUiMapper.map(input.localityDistrict!!),
+        microdistrictType = input.microdistrictType,
+        microdistrictShortName = input.microdistrictShortName,
+        microdistrictName = input.microdistrictName
+    ).also { it.id = input.id }
 
     override fun nullableMap(input: MicrodistrictUi?) = input?.let { map(it) }
 }

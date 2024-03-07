@@ -174,7 +174,7 @@ class LocalityViewModelImpl @Inject constructor(
         Timber.tag(TAG).d("initFieldStatesByUiModel(LocalityUi) called: uiModel = %s", uiModel)
         uiModel.id?.let { initStateValue(LocalityFields.LOCALITY_ID, id, it.toString()) }
         initStateValue(
-            LocalityFields.LOCALITY_COUNTRY, country, uiModel.region.country.toListItemModel()
+            LocalityFields.LOCALITY_COUNTRY, country, uiModel.region?.country.toListItemModel()
         )
         initStateValue(LocalityFields.LOCALITY_REGION, region, uiModel.region.toListItemModel())
         initStateValue(

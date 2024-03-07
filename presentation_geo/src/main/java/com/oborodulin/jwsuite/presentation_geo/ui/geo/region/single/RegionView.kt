@@ -43,6 +43,7 @@ import com.oborodulin.home.common.ui.components.field.ExposedDropdownMenuBoxComp
 import com.oborodulin.home.common.ui.components.field.TextFieldComponent
 import com.oborodulin.home.common.ui.components.field.util.InputFocusRequester
 import com.oborodulin.home.common.ui.components.field.util.inputProcess
+import com.oborodulin.home.common.ui.components.layout.ExpandableColumnComponent
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.jwsuite.presentation.R
@@ -182,86 +183,88 @@ fun RegionView(viewModel: RegionViewModel, handleSaveAction: OnImeKeyAction) {
             onValueChange = { viewModel.onTextFieldEntered(RegionInputEvent.RegionName(it)) },
             onImeKeyAction = handleSaveAction
         )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[RegionFields.REGION_GEOCODE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = RegionFields.REGION_GEOCODE,
-                        isFocused = focusState.isFocused
+        ExpandableColumnComponent(titleResId = com.oborodulin.jwsuite.presentation_geo.R.string.osm_data_title) {
+            TextFieldComponent(
+                modifier = Modifier
+                    .focusRequester(focusRequesters[RegionFields.REGION_GEOCODE]!!.focusRequester)
+                    .onFocusChanged { focusState ->
+                        viewModel.onTextFieldFocusChanged(
+                            focusedField = RegionFields.REGION_GEOCODE,
+                            isFocused = focusState.isFocused
+                        )
+                    },
+                enabled = false,
+                labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_hint,
+                helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_helper,
+                leadingPainterResId = R.drawable.ic_abc_36,
+                keyboardOptions = remember {
+                    KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
                     )
                 },
-            enabled = false,
-            labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_hint,
-            helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.geocode_helper,
-            leadingPainterResId = R.drawable.ic_abc_36,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = regionGeocode,
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[RegionFields.REGION_OSM_ID]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = RegionFields.REGION_OSM_ID,
-                        isFocused = focusState.isFocused
+                inputWrapper = regionGeocode,
+                onImeKeyAction = viewModel::moveFocusImeAction
+            )
+            TextFieldComponent(
+                modifier = Modifier
+                    .focusRequester(focusRequesters[RegionFields.REGION_OSM_ID]!!.focusRequester)
+                    .onFocusChanged { focusState ->
+                        viewModel.onTextFieldFocusChanged(
+                            focusedField = RegionFields.REGION_OSM_ID,
+                            isFocused = focusState.isFocused
+                        )
+                    },
+                enabled = false,
+                labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.osm_id_hint,
+                helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.osm_id_helper,
+                leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
+                keyboardOptions = remember {
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword,
+                        imeAction = ImeAction.Next
                     )
                 },
-            enabled = false,
-            labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.osm_id_hint,
-            helperResId = com.oborodulin.jwsuite.presentation_geo.R.string.osm_id_helper,
-            leadingPainterResId = com.oborodulin.home.common.R.drawable.ic_123_36,
-            keyboardOptions = remember {
-                KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword,
-                    imeAction = ImeAction.Next
-                )
-            },
-            inputWrapper = regionOsmId,
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[RegionFields.REGION_LATITUDE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = RegionFields.REGION_LATITUDE,
-                        isFocused = focusState.isFocused
-                    )
+                inputWrapper = regionOsmId,
+                onImeKeyAction = viewModel::moveFocusImeAction
+            )
+            TextFieldComponent(
+                modifier = Modifier
+                    .focusRequester(focusRequesters[RegionFields.REGION_LATITUDE]!!.focusRequester)
+                    .onFocusChanged { focusState ->
+                        viewModel.onTextFieldFocusChanged(
+                            focusedField = RegionFields.REGION_LATITUDE,
+                            isFocused = focusState.isFocused
+                        )
+                    },
+                enabled = false,
+                labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.latitude_hint,
+                leadingImageVector = Icons.Outlined.LocationOn,
+                keyboardOptions = remember {
+                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
                 },
-            enabled = false,
-            labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.latitude_hint,
-            leadingImageVector = Icons.Outlined.LocationOn,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-            },
-            inputWrapper = latitude,
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
-        TextFieldComponent(
-            modifier = Modifier
-                .focusRequester(focusRequesters[RegionFields.REGION_LONGITUDE]!!.focusRequester)
-                .onFocusChanged { focusState ->
-                    viewModel.onTextFieldFocusChanged(
-                        focusedField = RegionFields.REGION_LONGITUDE,
-                        isFocused = focusState.isFocused
-                    )
+                inputWrapper = latitude,
+                onImeKeyAction = viewModel::moveFocusImeAction
+            )
+            TextFieldComponent(
+                modifier = Modifier
+                    .focusRequester(focusRequesters[RegionFields.REGION_LONGITUDE]!!.focusRequester)
+                    .onFocusChanged { focusState ->
+                        viewModel.onTextFieldFocusChanged(
+                            focusedField = RegionFields.REGION_LONGITUDE,
+                            isFocused = focusState.isFocused
+                        )
+                    },
+                enabled = false,
+                labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.longitude_hint,
+                leadingImageVector = Icons.Outlined.LocationOn,
+                keyboardOptions = remember {
+                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
                 },
-            enabled = false,
-            labelResId = com.oborodulin.jwsuite.presentation_geo.R.string.longitude_hint,
-            leadingImageVector = Icons.Outlined.LocationOn,
-            keyboardOptions = remember {
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-            },
-            inputWrapper = longitude,
-            onImeKeyAction = viewModel::moveFocusImeAction
-        )
+                inputWrapper = longitude,
+                onImeKeyAction = viewModel::moveFocusImeAction
+            )
+        }
     }
 }
 

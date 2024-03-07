@@ -62,7 +62,7 @@ private const val TAG = "App.Navigation.MainNavigationHost"
 fun MainNavigationHost(
     sessionViewModel: SessionViewModel,
     defTopBarActions: @Composable RowScope.() -> Unit = {},
-    bottomBar: @Composable () -> Unit = {},
+    bottomBar: @Composable () -> Unit = {}
     /*innerPadding: PaddingValues,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
     onActionBarTitleChange: (String) -> Unit,

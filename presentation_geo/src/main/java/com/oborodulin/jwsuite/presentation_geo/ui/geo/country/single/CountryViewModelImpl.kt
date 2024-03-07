@@ -144,7 +144,7 @@ class CountryViewModelImpl @Inject constructor(
                     if (it is UiState.Success) {
                         setSavedListItem(it.data.toListItemModel())
                     }
-                    submitState(it)
+                    //submitState(it)
                 }
         }
         return job

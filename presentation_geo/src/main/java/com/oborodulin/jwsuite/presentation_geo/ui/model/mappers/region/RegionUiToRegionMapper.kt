@@ -11,7 +11,7 @@ class RegionUiToRegionMapper(
     private val coordinatesUiMapper: CoordinatesUiToGeoCoordinatesMapper
 ) : Mapper<RegionUi, GeoRegion> {
     override fun map(input: RegionUi) = GeoRegion(
-        country = countryUiMapper.map(input.country),
+        country = countryUiMapper.map(input.country!!),
         regionCode = input.regionCode,
         regionType = input.regionType,
         regionGeocode = input.regionGeocode,

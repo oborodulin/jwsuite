@@ -13,8 +13,8 @@ class MicrodistrictToMicrodistrictUiMapper(
 ) : Mapper<GeoMicrodistrict, MicrodistrictUi>,
     NullableMapper<GeoMicrodistrict, MicrodistrictUi> {
     override fun map(input: GeoMicrodistrict) = MicrodistrictUi(
-        locality = localityMapper.map(input.locality!!),
-        localityDistrict = localityDistrictMapper.map(input.localityDistrict!!),
+        locality = localityMapper.nullableMap(input.locality),
+        localityDistrict = localityDistrictMapper.nullableMap(input.localityDistrict),
         microdistrictType = input.microdistrictType,
         microdistrictShortName = input.microdistrictShortName,
         microdistrictName = input.microdistrictName,

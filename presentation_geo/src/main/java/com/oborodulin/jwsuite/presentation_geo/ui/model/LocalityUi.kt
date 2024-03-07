@@ -7,7 +7,7 @@ import com.oborodulin.jwsuite.domain.types.LocalityType
 import java.util.UUID
 
 data class LocalityUi(
-    val region: RegionUi = RegionUi(),
+    val region: RegionUi? = null,
     val regionDistrict: RegionDistrictUi? = null,
     val localityCode: String = "",
     val localityType: LocalityType = LocalityType.CITY,
@@ -17,10 +17,10 @@ data class LocalityUi(
     val localityFullName: String = ""
 ) : ModelUi()
 
-fun LocalityUi.toListItemModel() = ListItemModel(
-    itemId = this.id ?: UUID.randomUUID(),
-    headline = this.localityFullName,
-    supportingText = "${this.localityCode}: ${this.localityShortName}"
+fun LocalityUi?.toListItemModel() = ListItemModel(
+    itemId = this?.id ?: UUID.randomUUID(),
+    headline = this?.localityFullName.orEmpty(),
+    supportingText = "${this?.localityCode}: ${this?.localityShortName}"
 )
 
 fun ListItemModel?.toLocalityUi() =

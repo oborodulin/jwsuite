@@ -33,6 +33,10 @@
     <string name="username_hint">Логин</string>
     <string name="role_header_hint">Роль</string>
     <string name="expired_header_hint">Истекает</string>
+    <string name="data_management_hint">Управление данными</string>
+    <string name="legal_info_subhead">ЮРИДИЧЕСКАЯ ИНФОРМАЦИЯ</string>
+    <string name="licenses_hint">Лицензии открытого ПО</string>
+    <string name="icons_attribution_hint">Атрибуция изображений</string>
     <string name="about_subhead">О ПРОГРАММЕ</string>
     <string name="app_version_hint">Версия ПО</string>
     <string name="framework_api_version_hint">Framework API v.</string>

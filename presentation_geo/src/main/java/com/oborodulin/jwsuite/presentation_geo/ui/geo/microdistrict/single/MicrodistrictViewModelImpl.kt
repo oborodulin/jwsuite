@@ -30,6 +30,7 @@ import com.oborodulin.jwsuite.presentation_geo.ui.model.MicrodistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.converters.MicrodistrictConverter
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictToMicrodistrictsListItemMapper
 import com.oborodulin.jwsuite.presentation_geo.ui.model.mappers.microdistrict.MicrodistrictUiToMicrodistrictMapper
+import com.oborodulin.jwsuite.presentation_geo.ui.model.toListItemModel
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityDistrictUi
 import com.oborodulin.jwsuite.presentation_geo.ui.model.toLocalityUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -147,8 +148,7 @@ class MicrodistrictViewModelImpl @Inject constructor(
             microdistrictType = VillageType.valueOf(microdistrictType.value.value),
             microdistrictShortName = microdistrictShortName.value.value,
             microdistrictName = microdistrictName.value.value
-        )
-        microdistrictUi.id = id.value.value.toUUIDOrNull()
+        ).also { it.id = id.value.value.toUUIDOrNull() }
         Timber.tag(TAG).d("saveMicrodistrict() called: UI model %s", microdistrictUi)
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveMicrodistrictUseCase.execute(
@@ -175,14 +175,11 @@ class MicrodistrictViewModelImpl @Inject constructor(
         uiModel.id?.let { initStateValue(MicrodistrictFields.MICRODISTRICT_ID, id, it.toString()) }
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_LOCALITY, locality,
-            ListItemModel(uiModel.locality.id, uiModel.locality.localityName)
+            uiModel.locality.toListItemModel()
         )
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_LOCALITY_DISTRICT, localityDistrict,
-            ListItemModel(
-                uiModel.localityDistrict.id,
-                uiModel.localityDistrict.districtName
-            )
+            uiModel.localityDistrict.toListItemModel()
         )
         initStateValue(
             MicrodistrictFields.MICRODISTRICT_SHORT_NAME, microdistrictShortName,

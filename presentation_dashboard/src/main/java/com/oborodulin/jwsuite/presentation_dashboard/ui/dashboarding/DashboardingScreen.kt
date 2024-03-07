@@ -5,7 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.DateRange
@@ -103,11 +105,11 @@ fun DashboardingScreen(
             BarActionItem(
                 iconImageVector = NavRoutes.DashboardSettings.iconImageVector,
                 cntDescResId = NavRoutes.DashboardSettings.titleResId
-            ) { appState.mainNavigate(NavRoutes.DashboardSettings.route) },
+            ) { appState.mainNavigate(NavRoutes.DashboardSettings.route) }/*,
             BarActionItem(
                 iconPainterResId = NavRoutes.DataManagement.iconPainterResId,
                 cntDescResId = NavRoutes.DataManagement.titleResId
-            ) { appState.mainNavigate(NavRoutes.DataManagement.route) }
+            ) { appState.mainNavigate(NavRoutes.DataManagement.route) }*/
         ),
         bottomBar = bottomBar,
         userRoles = session.userRoles
@@ -132,44 +134,50 @@ fun DashboardingScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Column {
-                        CommonScreen(state = state) { dashboardingUi ->
-                            dashboardingUi.favoriteCongregation?.let { favorite ->
-                                appState.congregationSharedViewModel.value?.submitData(favorite.toCongregationsListItem())
-                                appState.actionBarSubtitle.value = favorite.congregationName
-                                //onActionBarSubtitleChange(favorite.congregationName)
-                                val currentCongregation =
-                                    appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
-                                Timber.tag(TAG).d(
-                                    "DashboardingScreen: appState.sharedViewModel.value = %s; currentCongregation = %s",
-                                    appState.congregationSharedViewModel.value, currentCongregation
-                                )
-                            }
-                            dashboardingUi.favoriteCongregation?.let { favoriteCongregation ->
-                                if (session.containsRole(MemberRoleType.REPORTS)) {
-                                    CongregationSection(
-                                        navController = appState.mainNavController,
-                                        congregation = favoriteCongregation,
-                                        congregationTotals = dashboardingUi.congregationTotals
-                                    )
-                                }
-                                if (session.containsAnyRoles(
-                                        listOf(MemberRoleType.REPORTS, MemberRoleType.TERRITORIES)
-                                    )
-                                ) {
-                                    TerritorySection(
-                                        navController = appState.mainNavController,
-                                        congregation = favoriteCongregation,
-                                        territoryTotals = dashboardingUi.territoryTotals
-                                    )
-                                }
-
-                            }
+//                Box(modifier = Modifier.fillMaxWidth()) {
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(4.dp)
+//                    ) {
+                CommonScreen(state = state) { dashboardingUi ->
+                    dashboardingUi.favoriteCongregation?.let { favorite ->
+                        appState.congregationSharedViewModel.value?.submitData(favorite.toCongregationsListItem())
+                        appState.actionBarSubtitle.value = favorite.congregationName
+                        //onActionBarSubtitleChange(favorite.congregationName)
+                        val currentCongregation =
+                            appState.congregationSharedViewModel.value?.sharedFlow?.collectAsStateWithLifecycle()?.value
+                        Timber.tag(TAG).d(
+                            "DashboardingScreen: appState.sharedViewModel.value = %s; currentCongregation = %s",
+                            appState.congregationSharedViewModel.value, currentCongregation
+                        )
+                    }
+                    dashboardingUi.favoriteCongregation?.let { favoriteCongregation ->
+                        if (session.containsRole(MemberRoleType.REPORTS)) {
+                            CongregationSection(
+                                navController = appState.mainNavController,
+                                congregation = favoriteCongregation,
+                                congregationTotals = dashboardingUi.congregationTotals
+                            )
+                        }
+                        if (session.containsAnyRoles(
+                                listOf(MemberRoleType.REPORTS, MemberRoleType.TERRITORIES)
+                            )
+                        ) {
+                            TerritorySection(
+                                navController = appState.mainNavController,
+                                congregation = favoriteCongregation,
+                                territoryTotals = dashboardingUi.territoryTotals
+                            )
                         }
                     }
                 }
+                //                  }
+                //              }
             }
         }
     }

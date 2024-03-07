@@ -6,7 +6,7 @@ import com.oborodulin.jwsuite.domain.types.RoadType
 import java.util.UUID
 
 data class StreetUi(
-    val locality: LocalityUi = LocalityUi(),
+    val locality: LocalityUi? = null,
 //    val localityDistrict: LocalityDistrictUi? = null,
 //    val microdistrict: MicrodistrictUi? = null,
     val roadType: RoadType = RoadType.STREET,

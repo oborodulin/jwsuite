@@ -52,6 +52,7 @@ import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.li
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.group.list.GroupsListViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersListView
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameViewModel
+import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.list.MembersWithUsernameViewModelImpl
 import com.oborodulin.jwsuite.presentation_congregation.ui.congregating.member.role.list.MemberRolesListView
 import timber.log.Timber
 
@@ -66,7 +67,7 @@ fun CongregatingScreen(
     congregatingViewModel: CongregatingViewModelImpl = hiltViewModel(),
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
-    membersListViewModel: MembersWithUsernameViewModel = hiltViewModel(),
+    membersListViewModel: MembersWithUsernameViewModelImpl = hiltViewModel(),
     defTopBarActions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = {}/*,
     onActionBarChange: (@Composable (() -> Unit)?) -> Unit,
@@ -229,7 +230,7 @@ fun CongregatingScreen(
                         title = stringResource(R.string.congregation_tab_congregations),
                         onClick = { onTabChange(CongregatingTabType.CONGREGATIONS) }
                     ) {
-                        CongregationMembersView(
+                        CongregationsWithMembersView(
                             //appState = appState,
                             //sharedViewModel = sharedViewModel,
                             membersListViewModel = membersListViewModel,
@@ -241,7 +242,7 @@ fun CongregatingScreen(
                         title = stringResource(R.string.congregation_tab_groups),
                         onClick = { onTabChange(CongregatingTabType.GROUPS) }
                     ) {
-                        GroupMembersView(
+                        GroupsWithMembersView(
                             appState = appState,
                             //sharedViewModel = sharedViewModel,
                             membersListViewModel = membersListViewModel,
@@ -253,7 +254,7 @@ fun CongregatingScreen(
                         onClick = { onTabChange(CongregatingTabType.MEMBERS) }
                     ) {
                         when {
-                            session.containsRole(MemberRoleType.ADMIN) -> MemberRolesView(
+                            session.containsRole(MemberRoleType.ADMIN) -> MembersWithRolesView(
                                 appState = appState, membersListViewModel = membersListViewModel,
                                 isService = isService.value.toBoolean()
                             )
@@ -283,7 +284,7 @@ fun CongregatingScreen(
 }
 
 @Composable
-fun CongregationMembersView(
+fun CongregationsWithMembersView(
     //appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     congregationsListViewModel: CongregationsListViewModelImpl = hiltViewModel(),
@@ -291,7 +292,7 @@ fun CongregationMembersView(
     isService: Boolean = false//,
     //onActionBarSubtitleChange: (String) -> Unit
 ) {
-    Timber.tag(TAG).d("CongregationMembersView(...) called")
+    Timber.tag(TAG).d("CongregationsWithMembersView(...) called")
     val selectedCongregationId = congregationsListViewModel.singleSelectedItem()?.itemId
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
@@ -348,14 +349,14 @@ fun CongregationMembersView(
 }
 
 @Composable
-fun GroupMembersView(
+fun GroupsWithMembersView(
     appState: AppState,
     //sharedViewModel: SharedViewModeled<CongregationsListItem?>,
     groupsListViewModel: GroupsListViewModelImpl = hiltViewModel(),
     membersListViewModel: MembersWithUsernameViewModel,
     isService: Boolean = false
 ) {
-    Timber.tag(TAG).d("GroupMembersView(...) called")
+    Timber.tag(TAG).d("GroupsWithMembersView(...) called")
     val selectedGroupId = groupsListViewModel.singleSelectedItem()?.itemId
     //val searchText by membersListViewModel.searchText.collectAsStateWithLifecycle()
     Column(
@@ -408,12 +409,12 @@ fun GroupMembersView(
 }
 
 @Composable
-fun MemberRolesView(
+fun MembersWithRolesView(
     appState: AppState,
     membersListViewModel: MembersWithUsernameViewModel,
     isService: Boolean = false
 ) {
-    Timber.tag(TAG).d("MemberRolesView(...) called")
+    Timber.tag(TAG).d("MembersWithRolesView(...) called")
     val selectedMemberId = membersListViewModel.singleSelectedItem()?.itemId
     Column(
         modifier = Modifier

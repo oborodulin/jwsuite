@@ -13,7 +13,7 @@ class RegionDistrictUiToRegionDistrictMapper(
 ) : Mapper<RegionDistrictUi, GeoRegionDistrict>,
     NullableMapper<RegionDistrictUi, GeoRegionDistrict> {
     override fun map(input: RegionDistrictUi) = GeoRegionDistrict(
-        region = regionUiMapper.map(input.region),
+        region = regionUiMapper.map(input.region!!),
         districtShortName = input.districtShortName,
         districtGeocode = input.districtGeocode,
         districtOsmId = input.districtOsmId,

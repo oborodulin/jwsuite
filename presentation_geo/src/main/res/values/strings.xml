@@ -42,9 +42,9 @@
     <!--география-->
     <string name="osm_data_title">OSM-данные</string>
     <string name="geocode_hint">Географический код</string>
-    <string name="geocode_helper">Географический код области в системе OpenStreetMap</string>
+    <string name="geocode_helper">Географический код в OpenStreetMap</string>
     <string name="osm_id_hint">ИД OSM</string>
-    <string name="osm_id_helper">Уникальный идентификатор узла в системе OpenStreetMap</string>
+    <string name="osm_id_helper">Идентификатор узла в OpenStreetMap</string>
     <string name="latitude_hint">Широта, \u00B0</string>
     <string name="longitude_hint">Долгота, \u00B0</string>
     <string name="country_hint">Страна</string>
@@ -58,12 +58,12 @@
     <!--Страна-->
     <string name="country_subheader">Страна</string>
     <string name="country_new_subheader">Новая страна</string>
-    <string name="country_code_helper">Уникальный код страны, например, AB, AU, …, JP</string>
+    <string name="country_code_helper">Код страны, например, AB, AU, …, JP</string>
     <string name="country_name_helper">Наименование страны</string>
     <!--Область-->
     <string name="region_subheader">Область</string>
     <string name="region_new_subheader">Новая область</string>
-    <string name="region_code_helper">Уникальный код региона, например, 01, 02, …, 99</string>
+    <string name="region_code_helper">Код региона, например, 01, 02, …, 99</string>
     <string name="region_name_helper">Наименование республики, края, области и др.</string>
     <!--Район области-->
     <string name="region_district_subheader">Район области</string>

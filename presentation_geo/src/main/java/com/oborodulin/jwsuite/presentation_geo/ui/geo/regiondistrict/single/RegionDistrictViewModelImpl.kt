@@ -151,7 +151,7 @@ class RegionDistrictViewModelImpl @Inject constructor(
         }
         initStateValue(
             RegionDistrictFields.REGION_DISTRICT_COUNTRY, country,
-            uiModel.region.country.toListItemModel()
+            uiModel.region?.country.toListItemModel()
         )
         initStateValue(
             RegionDistrictFields.REGION_DISTRICT_REGION, region, uiModel.region.toListItemModel()
