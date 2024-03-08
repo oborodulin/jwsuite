@@ -114,8 +114,9 @@ class AppState(
         get() = this.mainNavController.currentDestination?.route
 
     fun mainNavigateUp(destination: String? = null) {
-        if (LOG_NAVIGATION) Timber.tag(TAG)
-            .d("mainNavigateUp(...) called: destination = %s", destination)
+        if (LOG_NAVIGATION) {
+            Timber.tag(TAG).d("mainNavigateUp(...) called: destination = %s", destination)
+        }
         this.mainNavController.navigateUp()
         destination?.let { route ->
             this.setActionBarTitle(allAggregationNavTabs.toList(), route)
@@ -141,7 +142,9 @@ class AppState(
         destination?.let {
             if (!bottomNavBarRoutes.contains(it)) throw IllegalArgumentException(dbgMsg)
         }
-        if (LOG_NAVIGATION) Timber.tag(TAG).d(dbgMsg)
+        if (LOG_NAVIGATION) {
+            Timber.tag(TAG).d(dbgMsg)
+        }
         this.mainNavController.popBackStack()
         destination?.let { route ->
             this.setActionBarTitle(bottomNavBarTabs, route)
@@ -153,14 +156,17 @@ class AppState(
     }
 
     fun mainNavigate(route: String) {
-        if (LOG_NAVIGATION) Timber.tag(TAG).d("mainNavigate(...) called: route = %s", route)
+        if (LOG_NAVIGATION) {
+            Timber.tag(TAG).d("mainNavigate(...) called: route = %s", route)
+        }
         this.mainNavController.navigate(route)
         this.setActionBarTitle(allAggregationNavTabs.toList(), route)
     }
 
     fun navigateByDestination(destination: String) {
-        if (LOG_NAVIGATION) Timber.tag(TAG)
-            .d("navigateByRoute(...) called: destination = %s", destination)
+        if (LOG_NAVIGATION) {
+            Timber.tag(TAG).d("navigateByRoute(...) called: destination = %s", destination)
+        }
         when {
             NavRoutes.authRoutes().map { it.route }
                 .contains(destination) -> this.rootNavController.navigate(destination) {
@@ -184,11 +190,13 @@ class AppState(
     // https://stackoverflow.com/questions/66845899/compose-navigation-remove-previous-composable-from-stack-before-navigating
     // https://stackoverflow.com/questions/75978612/skip-back-stack-items-on-jetpack-compose-navigation
     fun mainNavigateToRoute(route: String, skippedPrevRoute: String? = null) {
-        if (LOG_NAVIGATION) Timber.tag(TAG)
-            .d(
-                "mainNavigateToRoute(...) called: route = %s; skippedPrevRoute = %s",
-                route, skippedPrevRoute
-            )
+        if (LOG_NAVIGATION) {
+            Timber.tag(TAG)
+                .d(
+                    "mainNavigateToRoute(...) called: route = %s; skippedPrevRoute = %s",
+                    route, skippedPrevRoute
+                )
+        }
         this.mainNavController.navigate(route) {
             skippedPrevRoute?.let {
                 popUpTo(it) { inclusive = true }
@@ -200,7 +208,9 @@ class AppState(
     fun navigateToBarRoute(route: String) {
         val dbgMsg = "navigateToBarRoute(...) called: route = %s".format(route)
         if (!bottomNavBarRoutes.contains(route)) throw IllegalArgumentException(dbgMsg)
-        if (LOG_NAVIGATION) Timber.tag(TAG).d(dbgMsg)
+        if (LOG_NAVIGATION) {
+            Timber.tag(TAG).d(dbgMsg)
+        }
         this.setActionBarTitle(bottomNavBarTabs, route)
         if (route != this.barNavCurrentRoute) {
             this.barNavController.navigate(route) {

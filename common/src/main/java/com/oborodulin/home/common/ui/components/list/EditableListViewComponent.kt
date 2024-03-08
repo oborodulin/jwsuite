@@ -41,8 +41,10 @@ fun EditableListViewComponent(
     onDelete: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-        .d("EditableListViewComponent(...) called: size = %d", items.size)
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG)
+            .d("EditableListViewComponent(...) called: size = %d", items.size)
+    }
     if (items.isNotEmpty()) {
         // https://developer.android.com/jetpack/compose/performance/bestpractices
         val filteredItems = remember(items, searchedText) {
@@ -54,8 +56,10 @@ fun EditableListViewComponent(
         }
         val firstVisibleItem = filteredItems.filter { it.selected }.getOrNull(0)
         LaunchedEffect(firstVisibleItem) {
-            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("EditableListViewComponent -> LaunchedEffect()")
+            if (LOG_UI_COMPONENTS) {
+                Timber.tag(TAG)
+                    .d("EditableListViewComponent -> LaunchedEffect()")
+            }
             firstVisibleItem?.let { if (onClick !== EMPTY_LIST_ITEM_EVENT) onClick(it) }
         }
         val listState = rememberLazyListState(initialFirstVisibleItemIndex = firstVisibleItem?.let {

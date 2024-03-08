@@ -40,8 +40,10 @@ class CountriesListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: CountriesListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(CountriesListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(CountriesListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is CountriesListUiAction.Load -> loadCountries(action.isRemoteFetch)
 

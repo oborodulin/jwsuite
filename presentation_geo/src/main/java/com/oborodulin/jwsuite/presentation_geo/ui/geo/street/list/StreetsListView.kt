@@ -64,7 +64,9 @@ fun StreetsListView(
     }
     val searchText by streetsListViewModel.searchText.collectAsStateWithLifecycle()
     streetsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             when (isEditableList) {
                 true -> {
@@ -78,7 +80,11 @@ fun StreetsListView(
                             streetsListViewModel.submitAction(StreetsListUiAction.EditStreet(street.itemId!!))
                         },
                         onDelete = { street ->
-                            streetsListViewModel.submitAction(StreetsListUiAction.DeleteStreet(street.itemId!!))
+                            streetsListViewModel.submitAction(
+                                StreetsListUiAction.DeleteStreet(
+                                    street.itemId!!
+                                )
+                            )
                         }
                     ) { street ->
                         streetsListViewModel.singleSelectItem(street)

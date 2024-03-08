@@ -43,8 +43,10 @@ class TerritoryStreetsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryStreetsListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoryStreetsListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(TerritoryStreetsListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is TerritoryStreetsListUiAction.Load -> loadTerritoryStreets(action.territoryId)
             is TerritoryStreetsListUiAction.EditTerritoryStreet -> {

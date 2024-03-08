@@ -56,11 +56,15 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
     dismissOnClickOutside: Boolean = false,
     onConfirmButtonClick: () -> Unit = {}
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("FullScreenDialog(...) called: isShow = %s", isShow)
+    }
     if (isShow) {
         LaunchedEffect(Unit) {
-            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("SearchSingleSelectDialog -> LaunchedEffect()")
+            if (LOG_UI_COMPONENTS) {
+                Timber.tag(TAG)
+                    .d("SearchSingleSelectDialog -> LaunchedEffect()")
+            }
             viewModel.submitAction(loadUiAction)
         }
         val handleConfirmAction = {
@@ -75,8 +79,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                     // hide single dialog and onConfirmButtonClick
                     viewModel.onDialogConfirm(onConfirmButtonClick)
                     val savedListItem = viewModel.savedListItem.value
-                    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                        .d("Done: savedListItem = %s", savedListItem.itemId)
+                    if (LOG_UI_COMPONENTS) {
+                        Timber.tag(TAG)
+                            .d("Done: savedListItem = %s", savedListItem.itemId)
+                    }
                     onValueChange(savedListItem)
                     // show list dialog (option)
                     onShowListDialog()
@@ -104,7 +110,9 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> FullScreenDialog(
                         .verticalScroll(rememberScrollState())
                 ) {
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        if (LOG_UI_STATE) {
+                            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        }
                         CommonScreen(state = state) {
                             TopAppBar(
                                 title = {

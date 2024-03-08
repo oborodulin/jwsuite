@@ -5,10 +5,10 @@ object LogLevel {
     const val LOG_UI_COMPONENTS = true
     const val LOG_UI_STATE = true
     const val LOG_MVI = false
-    const val LOG_MVI_SINGLE = false
-    const val LOG_MVI_DIALOG = false
-    const val LOG_MVI_LIST = false
-    const val LOG_MVI_SHARED = false
+    const val LOG_MVI_SINGLE = true
+    const val LOG_MVI_DIALOG = true
+    const val LOG_MVI_LIST = true
+    const val LOG_MVI_SHARED = true
     const val LOG_MVI_UI_STATE = true
 
     // Flows:

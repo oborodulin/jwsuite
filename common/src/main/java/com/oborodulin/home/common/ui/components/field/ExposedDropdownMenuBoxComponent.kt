@@ -9,9 +9,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -23,7 +36,6 @@ import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.IconComponent
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnValueChange
@@ -52,7 +64,9 @@ fun ExposedDropdownMenuBoxComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("ExposedDropdownMenuBoxComponent(...) called")
+    }
     val value =
         if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     val fieldValue = rememberSaveable { mutableStateOf(value) } // resource
@@ -112,7 +126,10 @@ fun ExposedDropdownMenuBoxComponent(
                 // menu item: Enums to resources
                 val option =
                     if (values.isNotEmpty()) values[keys.indexOf(selectedOption)] else selectedOption // resource
-                if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("selectedOption = %s; option = %s", selectedOption, option)
+                if (LOG_UI_COMPONENTS) {
+                    Timber.tag(TAG)
+                        .d("selectedOption = %s; option = %s", selectedOption, option)
+                }
                 DropdownMenuItem(text = { Text(text = option) },
                     onClick = {
                         fieldValue.value = option

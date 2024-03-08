@@ -111,8 +111,10 @@ class MicrodistrictViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MicrodistrictUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(MicrodistrictUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(MicrodistrictUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is MicrodistrictUiAction.Load -> {
                 when (action.microdistrictId) {
@@ -197,7 +199,9 @@ class MicrodistrictViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -268,7 +272,9 @@ class MicrodistrictViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         MicrodistrictInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
@@ -306,8 +312,10 @@ class MicrodistrictViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (MicrodistrictFields.valueOf(error.fieldName)) {
                 MicrodistrictFields.MICRODISTRICT_LOCALITY -> locality.value.copy(errorId = error.errorId)

@@ -83,8 +83,9 @@ fun GroupView(
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("GroupView -> LaunchedEffect()")
         events.collect { event ->
-            if (LOG_FLOW_INPUT) Timber.tag(TAG)
-                .d("IF# Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) {
+                Timber.tag(TAG).d("IF# Collect input events flow: %s", event.javaClass.name)
+            }
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }

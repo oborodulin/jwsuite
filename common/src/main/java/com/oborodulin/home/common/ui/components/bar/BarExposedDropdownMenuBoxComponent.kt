@@ -6,9 +6,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -19,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.oborodulin.home.common.R
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
 import com.oborodulin.home.common.ui.theme.HomeComposableTheme
-import com.oborodulin.home.common.util.LogLevel
 import com.oborodulin.home.common.util.LogLevel.LOG_UI_COMPONENTS
 import com.oborodulin.home.common.util.OnImeKeyAction
 import com.oborodulin.home.common.util.OnTextFieldValueChange
@@ -44,7 +52,9 @@ fun BarExposedDropdownMenuBoxComponent(
     onValueChange: OnValueChange,
     onImeKeyAction: OnImeKeyAction
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("BarExposedDropdownMenuBoxComponent(...) called")
+    }
     val value =
         if (values.isNotEmpty()) values[keys.indexOf(inputWrapper.value)] else inputWrapper.value // resource
     // set the correct cursor position when this composable is first initialized
@@ -87,8 +97,10 @@ fun BarExposedDropdownMenuBoxComponent(
                 // menu item: Enums to resources
                 val option =
                     if (values.isNotEmpty()) values[keys.indexOf(selectedOption)] else selectedOption // resource
-                if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                    .d("selectedOption = %s; option = %s", selectedOption, option)
+                if (LOG_UI_COMPONENTS) {
+                    Timber.tag(TAG)
+                        .d("selectedOption = %s; option = %s", selectedOption, option)
+                }
                 DropdownMenuItem(text = { Text(text = option) },
                     onClick = {
                         onFieldValueChange(TextFieldValue(option, TextRange(option.length)))

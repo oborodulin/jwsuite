@@ -42,7 +42,9 @@ fun RegionsListView(
     }
     val searchText by regionsListViewModel.searchText.collectAsStateWithLifecycle()
     regionsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             when (isEditableList) {
                 true -> {

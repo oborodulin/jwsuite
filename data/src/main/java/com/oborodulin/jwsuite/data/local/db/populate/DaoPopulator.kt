@@ -554,7 +554,9 @@ class DaoPopulator(
 
     // Init database:
     override suspend fun prePopulateDb() {
-        if (LOG_DATABASE) Timber.tag(TAG).d("prePopulateDb() called")
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("prePopulateDb() called")
+        }
         // Default settings:
         insertDefAppSettings()
         // ==============================
@@ -802,11 +804,15 @@ class DaoPopulator(
         insertDefRoleTransferObject(territoriesRole, territoriesTransferObject, false)
         insertDefRoleTransferObject(billsRole, billsTransferObject, true)
 
-        if (LOG_DATABASE) Timber.tag(TAG).d("prePopulateDb() successful ended")
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("prePopulateDb() successful ended")
+        }
     }
 
     override suspend fun init() {
-        if (LOG_DATABASE) Timber.tag(TAG).d("init() called")
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("init() called")
+        }
         // Default settings:
         insertDefAppSettings()
         /*
@@ -856,6 +862,8 @@ class DaoPopulator(
         insertDefRoleTransferObject(territoriesRole, territoriesTransferObject, false)
         insertDefRoleTransferObject(billsRole, billsTransferObject, true)
 
-        if (LOG_DATABASE) Timber.tag(TAG).d("init() successful ended")
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("init() successful ended")
+        }
     }
 }

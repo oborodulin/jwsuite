@@ -8,10 +8,10 @@ import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.jwsuite.data_geo.R
+import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.domain.usecases.geolocality.DeleteLocalityUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.GetLocalitiesUseCase
 import com.oborodulin.jwsuite.domain.usecases.geolocality.LocalityUseCases
-import com.oborodulin.jwsuite.domain.types.LocalityType
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.LocalityInput
 import com.oborodulin.jwsuite.presentation_geo.ui.model.LocalitiesListItem
@@ -42,8 +42,9 @@ class LocalitiesListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: LocalitiesListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(LocalitiesListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(LocalitiesListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is LocalitiesListUiAction.Load -> {
                 loadLocalities(action.regionId, action.regionDistrictId)
@@ -128,7 +129,12 @@ class LocalitiesListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: LocalitiesListUiAction): Job? = null
             }
 

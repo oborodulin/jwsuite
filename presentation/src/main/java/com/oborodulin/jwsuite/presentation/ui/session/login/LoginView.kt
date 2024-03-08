@@ -86,8 +86,9 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
         Timber.tag(TAG).d("LoginView -> LaunchedEffect(Unit)")
         viewModel.setSessionMode(SessionModeType.LOGIN)
         events.collect { event ->
-            if (LOG_FLOW_INPUT) Timber.tag(TAG)
-                .d("IF# Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) {
+                Timber.tag(TAG).d("IF# Collect input events flow: %s", event.javaClass.name)
+            }
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -121,8 +122,10 @@ fun LoginView(viewModel: SessionViewModel, handleCheckPasswordValid: () -> Unit 
             inputWrapper = pin,
             otpCount = PASS_MIN_LENGTH
         ) { value, otpInputFilled ->
-            if (LOG_SECURE) Timber.tag(TAG)
-                .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
+            if (LOG_SECURE) {
+                Timber.tag(TAG)
+                    .d("LoginView: value = %s; otpInputFilled = %s", value, otpInputFilled)
+            }
             viewModel.onTextFieldEntered(SessionInputEvent.Pin(value))
             if (otpInputFilled) {
                 handleCheckPasswordValid()

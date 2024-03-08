@@ -49,7 +49,9 @@ fun <LT : Any, ST : Any, LA : UiAction, SA : UiAction, E : UiSingleEvent, LF : F
     @StringRes emptyListTextResId: Int,
     dialogView: @Composable (ST, () -> Unit) -> Unit
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SearchMultiCheckViewComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("SearchMultiCheckViewComponent(...) called")
+    }
     val searchText by listViewModel.searchText.collectAsStateWithLifecycle()
     val isShowNewSingleDialog by singleViewModel.showDialog.collectAsStateWithLifecycle()
     FullScreenDialog(
@@ -95,8 +97,10 @@ fun SearchMultiCheckList(
     onChecked: (Boolean) -> Unit,
     onClick: (ListItemModel) -> Unit = {}
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-        .d("SearchMultiCheckList(...) called: size = %d", items.size)
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG)
+            .d("SearchMultiCheckList(...) called: size = %d", items.size)
+    }
     if (items.isNotEmpty()) {
         val listState =
             rememberLazyListState(initialFirstVisibleItemIndex = items.filter { it.selected }

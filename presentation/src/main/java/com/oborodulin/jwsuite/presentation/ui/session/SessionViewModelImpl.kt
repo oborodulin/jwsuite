@@ -6,9 +6,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oborodulin.home.common.domain.Result
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.DialogViewModel
 import com.oborodulin.home.common.ui.state.UiState
@@ -35,11 +36,26 @@ import com.oborodulin.jwsuite.presentation.ui.model.converters.SignupSessionConv
 import com.oborodulin.jwsuite.presentation.util.Constants.PASS_MIN_LENGTH
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "Presentation.SessionViewModelImpl"
@@ -117,8 +133,9 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     override suspend fun handleAction(action: SessionUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(SessionUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is SessionUiAction.Load -> loadSession()
             is SessionUiAction.Signup -> signup()
@@ -221,7 +238,9 @@ class SessionViewModelImpl @Inject constructor(
                         _isPasswordValid.value = it.data.isPasswordValid
                         if (it.data.isPasswordValid) {
                             // https://stackoverflow.com/questions/41188042/how-to-recreate-a-database-on-an-android-application-update
-                            if (LOG_DATABASE) Timber.tag(TAG).d("checkPasswordValid: Init Database")
+                            if (LOG_DATABASE) {
+                                Timber.tag(TAG).d("checkPasswordValid: Init Database")
+                            }
                             db.openHelper.readableDatabase
                         }
                     }
@@ -266,8 +285,10 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: SessionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(SessionUi) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d("initFieldStatesByUiModel(SessionUi) called: uiModel = %s", uiModel)
+        }
         initStateValue(
             SessionFields.SESSION_USERNAME, username,
             ctx.resources.getString(com.oborodulin.jwsuite.data_congregation.R.string.def_admin_member_pseudonym)
@@ -276,7 +297,9 @@ class SessionViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow().onEach { event ->
             when (event) {
                 is SessionInputEvent.Username -> setStateValue(
@@ -320,7 +343,9 @@ class SessionViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         when (sessionMode.value) {
             SessionModeType.SIGNUP -> {

@@ -60,7 +60,9 @@ fun ReportHousesGridView(
     }
     val searchText by reportHousesViewModel.searchText.collectAsStateWithLifecycle()
     reportHousesViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             TerritoryReportHousesGrid(
                 reportHouses = it,

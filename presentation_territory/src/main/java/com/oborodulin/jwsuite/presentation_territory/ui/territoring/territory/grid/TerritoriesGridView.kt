@@ -97,7 +97,9 @@ fun TerritoriesGridView(
         TerritoryProcessType.ALL -> territoriesGridViewModel.searchText.collectAsStateWithLifecycle().value
     }
     territoriesGridViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             if (listOf(
                     TerritoryProcessType.HAND_OUT,

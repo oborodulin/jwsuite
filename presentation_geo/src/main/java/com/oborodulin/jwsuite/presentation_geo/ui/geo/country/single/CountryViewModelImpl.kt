@@ -87,8 +87,9 @@ class CountryViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: CountryUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(CountryUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(CountryUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is CountryUiAction.Load -> when (action.countryId) {
                 null -> {
@@ -144,7 +145,7 @@ class CountryViewModelImpl @Inject constructor(
                     if (it is UiState.Success) {
                         setSavedListItem(it.data.toListItemModel())
                     }
-                    //submitState(it)
+                    submitState(it)
                 }
         }
         return job
@@ -154,8 +155,10 @@ class CountryViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: CountryUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(CountryUi) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d("initFieldStatesByUiModel(CountryUi) called: uiModel = %s", uiModel)
+        }
         uiModel.id?.let { initStateValue(CountryFields.COUNTRY_ID, id, it.toString()) }
         initStateValue(CountryFields.COUNTRY_CODE, countryCode, uiModel.countryCode)
         initStateValue(CountryFields.COUNTRY_NAME, countryName, uiModel.countryName)
@@ -177,7 +180,9 @@ class CountryViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -211,7 +216,9 @@ class CountryViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         CountryInputValidator.CountryCode.errorIdOrNull(countryCode.value.value)?.let {
             inputErrors.add(InputError(fieldName = CountryFields.COUNTRY_CODE.name, errorId = it))
@@ -223,8 +230,10 @@ class CountryViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (CountryFields.valueOf(error.fieldName)) {
                 CountryFields.COUNTRY_CODE -> countryCode.value.copy(errorId = error.errorId)

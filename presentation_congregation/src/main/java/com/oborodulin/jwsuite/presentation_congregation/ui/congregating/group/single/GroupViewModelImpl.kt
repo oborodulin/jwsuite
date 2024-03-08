@@ -84,8 +84,9 @@ class GroupViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: GroupUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(GroupUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(GroupUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is GroupUiAction.Load -> when (action.groupId) {
                 null -> {
@@ -157,8 +158,10 @@ class GroupViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: GroupUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d("initFieldStatesByUiModel(GroupModel) called: groupUi = %s", uiModel)
+        }
         uiModel.id?.let { initStateValue(GroupFields.GROUP_ID, id, it.toString()) }
         initStateValue(
             GroupFields.GROUP_CONGREGATION, congregation,
@@ -169,7 +172,9 @@ class GroupViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -197,7 +202,9 @@ class GroupViewModelImpl @Inject constructor(
     override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         GroupInputValidator.GroupNum.errorIdOrNull(groupNum.value.value)?.let {
             inputErrors.add(InputError(fieldName = GroupFields.GROUP_NUM.name, errorId = it))
@@ -206,8 +213,10 @@ class GroupViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (GroupFields.valueOf(error.fieldName)) {
                 GroupFields.GROUP_NUM -> groupNum.value.copy(errorId = error.errorId)

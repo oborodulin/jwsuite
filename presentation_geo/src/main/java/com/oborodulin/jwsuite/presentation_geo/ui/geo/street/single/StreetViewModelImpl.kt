@@ -113,8 +113,10 @@ class StreetViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: StreetUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(StreetUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(StreetUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is StreetUiAction.Load -> {
                 when (action.streetId) {
@@ -176,8 +178,10 @@ class StreetViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: StreetUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(StreetUi) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d("initFieldStatesByUiModel(StreetUi) called: uiModel = %s", uiModel)
+        }
         uiModel.id?.let { initStateValue(StreetFields.STREET_ID, id, it.toString()) }
         initStateValue(
             StreetFields.STREET_LOCALITY, locality, uiModel.locality.toListItemModel()
@@ -208,7 +212,9 @@ class StreetViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -282,7 +288,9 @@ class StreetViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         StreetInputValidator.Locality.errorIdOrNull(locality.value.item?.headline)?.let {
             inputErrors.add(
@@ -296,8 +304,10 @@ class StreetViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (StreetFields.valueOf(error.fieldName)) {
                 StreetFields.STREET_LOCALITY -> locality.value.copy(errorId = error.errorId)

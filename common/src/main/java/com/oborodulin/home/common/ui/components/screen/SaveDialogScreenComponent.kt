@@ -31,8 +31,10 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> SaveDialogScreenCo
     innerPadding: PaddingValues,
     dialogView: @Composable (T, (Boolean) -> Unit, (String) -> Unit, () -> Unit) -> Unit
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-        .d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG)
+            .d("SaveDialogScreenComponent(...) called: inputId = %s", inputId)
+    }
     DialogScreenComponent(
         viewModel = viewModel,
         inputId = inputId,

@@ -47,7 +47,9 @@ fun MemberReportsListView(
     }
     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             when (isEditableList) {
                 true -> {

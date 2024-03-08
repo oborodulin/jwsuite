@@ -24,7 +24,7 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
 ) : LocalGeoCountryDataSource {
     override fun getCountries() = countryDao.findAll()
     override fun getDefaultCountry() = countryDao.findByDefaultLocale()
-    override fun getCountry(countryId: UUID) = countryDao.findDistinctById(countryId)
+    override fun getCountry(countryId: UUID) = countryDao.findById(countryId)
     override suspend fun insertCountry(country: GeoCountryEntity, textContent: GeoCountryTlEntity) =
         withContext(dispatcher) {
             countryDao.insert(country, textContent)

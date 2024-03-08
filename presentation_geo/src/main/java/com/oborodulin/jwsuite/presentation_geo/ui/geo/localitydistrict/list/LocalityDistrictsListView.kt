@@ -49,7 +49,9 @@ fun LocalityDistrictsListView(
     }
     val searchText by localityDistrictsListViewModel.searchText.collectAsStateWithLifecycle()
     localityDistrictsListViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             when (streetInput?.streetId) {
                 null -> when (isEditableList) {

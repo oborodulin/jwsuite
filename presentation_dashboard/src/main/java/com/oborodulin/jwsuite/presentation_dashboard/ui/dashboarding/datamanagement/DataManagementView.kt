@@ -122,8 +122,9 @@ fun DataManagementView(
         Timber.tag(TAG).d("DataManagementView -> LaunchedEffect()")
         databaseViewModel.submitAction(DatabaseUiAction.Init)
         events.collect { event ->
-            if (LOG_FLOW_INPUT) Timber.tag(TAG)
-                .d("IF# Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) {
+                Timber.tag(TAG).d("IF# Collect input events flow: %s", event.javaClass.name)
+            }
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -257,7 +258,9 @@ fun DataManagementView(
                     databaseViewModel.submitAction(DatabaseUiAction.Restore)
                 }
                 databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                    if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                    if (LOG_UI_STATE) {
+                        Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                    }
                     CommonScreen(state = state) { databaseUi ->
                         if (databaseUi.isDone.not()) {
                             Text(

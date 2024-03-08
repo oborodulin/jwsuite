@@ -81,8 +81,9 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("CountryView -> LaunchedEffect()")
         events.collect { event ->
-            if (LOG_FLOW_INPUT) Timber.tag(TAG)
-                .d("IF# Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) {
+                Timber.tag(TAG).d("IF# Collect input events flow: %s", event.javaClass.name)
+            }
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
@@ -121,7 +122,11 @@ fun CountryView(viewModel: CountryViewModel, handleSaveAction: OnImeKeyAction) {
                 )
             },
             inputWrapper = countryCode,
-            onValueChange = { viewModel.onTextFieldEntered(CountryInputEvent.CountryCode(it)) },
+            onValueChange = {
+                Timber.tag(TAG)
+                    .d("TextFieldComponent -> COUNTRY_CODE -> onValueChange(...): %s", it)
+                viewModel.onTextFieldEntered(CountryInputEvent.CountryCode(it))
+            },
             onImeKeyAction = viewModel::moveFocusImeAction
         )
         TextFieldComponent(

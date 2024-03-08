@@ -128,8 +128,10 @@ class MemberReportViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberReportUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(MemberReportUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(MemberReportUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is MemberReportUiAction.Load -> when (action.territoryMemberReportId) {
                 null -> {
@@ -208,8 +210,13 @@ class MemberReportViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: TerritoryMemberReportUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(TerritoryMemberReportUi) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d(
+                    "initFieldStatesByUiModel(TerritoryMemberReportUi) called: uiModel = %s",
+                    uiModel
+                )
+        }
         uiModel.id?.let { initStateValue(MemberReportFields.MEMBER_REPORT_ID, id, it.toString()) }
         initStateValue(
             MemberReportFields.MEMBER_REPORT_TERRITORY_STREET, territoryStreet,

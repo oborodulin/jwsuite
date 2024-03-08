@@ -18,7 +18,9 @@ fun <F : Focusable> inputProcess(
     event: ScreenEvent,
     focusRequesters: Map<F, InputFocusRequester>
 ) {
-    if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# inputProcess(...) called")
+    if (LOG_FLOW_INPUT) {
+        Timber.tag(TAG).d("IF# inputProcess(...) called")
+    }
     when (event) {
         is ScreenEvent.ShowToast -> context.toast(event.messageId)
         is ScreenEvent.UpdateKeyboard -> {

@@ -77,26 +77,30 @@ fun TextFieldComponent(
     onImeKeyAction: OnImeKeyAction,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("TextFieldComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("TextFieldComponent(...) called")
+    }
     var fieldValue by remember {
         mutableStateOf(TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length)))
     }
     fieldValue = fieldValue.copy(text = inputWrapper.value) // make sure to keep the value updated
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
-        "TextFieldComponent: fieldValue.text = %s; inputWrapper.value = %s",
-        fieldValue.text,
-        inputWrapper.value
-    )
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d(
+            "TextFieldComponent: fieldValue.text = %s; inputWrapper.value = %s",
+            fieldValue.text,
+            inputWrapper.value
+        )
+    }
     // https://stackoverflow.com/questions/69036917/text-field-text-goes-below-the-ime-in-lazycolum-jetpack-compose/69120348#69120348
     val relocation = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
     /*    if (fieldValue.text != inputWrapper.value) fieldValue =
             TextFieldValue(inputWrapper.value, TextRange(inputWrapper.value.length))
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
+        if (LOG_UI_COMPONENTS) {Timber.tag(TAG).d(
             "TextFieldComponent: fieldValue = %s; inputWrapper = %s",
             fieldValue,
             inputWrapper
-        )*/
+        )}*/
     Column {
         OutlinedTextField(
             modifier = modifier

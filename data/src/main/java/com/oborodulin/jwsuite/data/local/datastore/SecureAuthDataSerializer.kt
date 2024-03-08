@@ -23,7 +23,9 @@ class SecureAuthDataSerializer @Inject constructor(private val crypto: Crypto) :
         return try {
             Json.decodeFromString(decryptedBytes.decodeToString())
         } catch (e: SerializationException) {
-            if (LOG_SECURE) Timber.tag(TAG).e(e)
+            if (LOG_SECURE) {
+                Timber.tag(TAG).e(e)
+            }
             this.defaultValue
         }
     }

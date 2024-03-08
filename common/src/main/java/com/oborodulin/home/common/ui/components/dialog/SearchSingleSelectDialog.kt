@@ -54,8 +54,10 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
 ) {
     if (isShow) {
         LaunchedEffect(Unit) {
-            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("SearchSingleSelectDialog -> LaunchedEffect()")
+            if (LOG_UI_COMPONENTS) {
+                Timber.tag(TAG)
+                    .d("SearchSingleSelectDialog -> LaunchedEffect()")
+            }
             viewModel.submitAction(loadUiAction)
         }
         Dialog(onDismissRequest = onDismissRequest) {
@@ -71,7 +73,9 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                     val searchText by viewModel.searchText.collectAsStateWithLifecycle()
                     val isSearching by viewModel.isSearching.collectAsStateWithLifecycle()
                     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        if (LOG_UI_STATE) {
+                            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                        }
                         CommonScreen(state = state) { items ->
                             if (items.isNotEmpty()) {
                                 /*var searchState by rememberSaveable {
@@ -110,8 +114,10 @@ fun <T : ListItemModel, L : List<T>, A : UiAction, E : UiSingleEvent> SearchSing
                                     }*/
                                     items(filteredItems.size) { index ->
                                         SingleSelectListItemComponent(filteredItems[index]) { selectedItem ->
-                                            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                                                .d("onClick() selectedItem = %s", selectedItem)
+                                            if (LOG_UI_COMPONENTS) {
+                                                Timber.tag(TAG)
+                                                    .d("onClick() selectedItem = %s", selectedItem)
+                                            }
                                             onDismissRequest()
                                             onListItemClick(selectedItem)
                                         }

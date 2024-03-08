@@ -3,12 +3,12 @@ package com.oborodulin.jwsuite.presentation_territory.ui.territoring.territory.l
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.ListViewModel
 import com.oborodulin.home.common.ui.state.UiSingleEvent
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
-import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.usecases.territory.GetCongregationTerritoriesUseCase
 import com.oborodulin.jwsuite.domain.usecases.territory.TerritoryUseCases
@@ -45,8 +45,10 @@ class TerritoriesListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoriesListUiAction): Job? {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is TerritoriesListUiAction.Load -> {
                 loadTerritories(action.congregationId)

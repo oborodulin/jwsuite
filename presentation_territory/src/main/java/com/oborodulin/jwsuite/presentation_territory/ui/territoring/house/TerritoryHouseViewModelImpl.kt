@@ -75,21 +75,27 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     )
 
     override fun observeCheckedListItems() {
-        if (LOG_MVI_LIST) Timber.tag(TAG).d("observeCheckedListItems() called")
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("observeCheckedListItems() called")
+        }
         uiState()?.let { uiState ->
             _checkedListItems.value = uiState.houses.filter { it.checked }
-            if (LOG_MVI_LIST) Timber.tag(TAG).d(
-                "checked %d List Items; areInputsValid = %s",
-                _checkedListItems.value.size, areInputsValid.value
-            )
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d(
+                    "checked %d List Items; areInputsValid = %s",
+                    _checkedListItems.value.size, areInputsValid.value
+                )
+            }
         }
     }
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryHouseUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(TerritoryHouseUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is TerritoryHouseUiAction.Load -> {
                 setDialogTitleResId(com.oborodulin.jwsuite.presentation_territory.R.string.territory_house_new_subheader)
@@ -148,7 +154,9 @@ class TerritoryHouseViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow().onEach { event ->
             when (event) {
                 is TerritoryHouseInputEvent.Territory -> setStateValue(

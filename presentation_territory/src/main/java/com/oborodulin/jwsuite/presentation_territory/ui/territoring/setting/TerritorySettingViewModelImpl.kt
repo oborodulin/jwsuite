@@ -90,8 +90,9 @@ class TerritorySettingViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritorySettingUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(AppSettingUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is TerritorySettingUiAction.Load -> loadTerritorySettings()
             is TerritorySettingUiAction.Save -> saveTerritorySettings()
@@ -155,8 +156,13 @@ class TerritorySettingViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: List<AppSettingsListItem>): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(List<AppSettingsListItem>) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d(
+                    "initFieldStatesByUiModel(List<AppSettingsListItem>) called: uiModel = %s",
+                    uiModel
+                )
+        }
         initStateValue(
             TerritorySettingFields.TERRITORY_PROCESSING_PERIOD, territoryProcessingPeriod,
             uiModel.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
@@ -181,7 +187,9 @@ class TerritorySettingViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -261,7 +269,9 @@ class TerritorySettingViewModelImpl @Inject constructor(
     override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
 
         TerritorySettingInputValidator.TerritoryProcessingPeriod.errorIdOrNull(
@@ -313,8 +323,10 @@ class TerritorySettingViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritorySettingFields.valueOf(error.fieldName)) {
                 TerritorySettingFields.TERRITORY_PROCESSING_PERIOD -> territoryProcessingPeriod.value.copy(

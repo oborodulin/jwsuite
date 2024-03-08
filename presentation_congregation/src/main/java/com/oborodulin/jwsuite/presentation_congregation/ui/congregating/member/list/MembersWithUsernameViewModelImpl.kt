@@ -47,18 +47,24 @@ class MembersWithUsernameViewModelImpl @Inject constructor(
 
     // https://medium.com/@wunder.saqib/compose-single-selection-with-data-binding-37a12cf51bc8
     override fun singleSelectItem(selectedItem: ListItemModel) {
-        if (LOG_MVI_LIST) Timber.tag(TAG).d("singleSelectItem(...) called")
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("singleSelectItem(...) called")
+        }
         uiState()?.let { uiState ->
             uiState.members.forEach { it.selected = false }
             val item = uiState.members.find { it.itemId == selectedItem.itemId }
             item?.selected = true
             _selectedItem.value = item
-            if (LOG_MVI_LIST) Timber.tag(TAG).d("selected %s list item", item)
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d("selected %s list item", item)
+            }
         }
     }
 
     override fun singleSelectedItem(): ListItemModel? {
-        if (LOG_MVI_LIST) Timber.tag(TAG).d("singleSelectedItem() called")
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("singleSelectedItem() called")
+        }
         var selectedItem: ListItemModel? = null
         uiState()?.let { uiState ->
             selectedItem = try {
@@ -67,7 +73,9 @@ class MembersWithUsernameViewModelImpl @Inject constructor(
                 uiState.members.getOrNull(0)
                 //Timber.tag(TAG).e(e)
             }
-            if (LOG_MVI_LIST) Timber.tag(TAG).d("selected %s list item", selectedItem)
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d("selected %s list item", selectedItem)
+            }
         }
         return selectedItem
     }

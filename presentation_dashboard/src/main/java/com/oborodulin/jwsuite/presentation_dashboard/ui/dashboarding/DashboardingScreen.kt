@@ -115,7 +115,9 @@ fun DashboardingScreen(
         userRoles = session.userRoles
     ) { innerPadding ->
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-            if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            if (LOG_UI_STATE) {
+                Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            }
             /*onActionBarChange(null)
             onActionBarTitleChange(stringResource(R.string.nav_item_dashboarding))
             onTopBarActionsChange(true) {

@@ -52,34 +52,49 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     }
 
     init {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG).d("init called: %s", isInitialized)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("init called: %s", isInitialized)
+        }
         isInitialized = true
         viewModelScope.launch(errorHandler) {
-            if (LOG_FLOW_ACTION) Timber.tag(TAG).d("AF# init: Start actionFlow.collect on thread '%s':", Thread.currentThread().name)
+            if (LOG_FLOW_ACTION) {
+                Timber.tag(TAG).d(
+                    "AF# init: Start actionFlow.collect on thread '%s':",
+                    Thread.currentThread().name
+                )
+            }
             _actionsFlow.collect {
                 val job = handleAction(it)
                 if (it.isEmitJob) {
                     _actionsJobFlow.emit(job)
-                    if (LOG_FLOW_ACTION || LOG_FLOW_JOB) Timber.tag(TAG)
-                        .d("AF# init -> actionFlow.collect: emitted job = %s", job)
+                    if (LOG_FLOW_ACTION || LOG_FLOW_JOB) {
+                        Timber.tag(TAG)
+                            .d("AF# init -> actionFlow.collect: emitted job = %s", job)
+                    }
                 }
             }
         }
-        if (LOG_FLOW_ACTION) Timber.tag(TAG).d("AF# init ended")
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("AF# init ended")
+        }
     }
 
     abstract fun initState(): S
 
     private fun redirectUiStateErrorMessage(errorMessage: String?) {
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG)
-            .d("redirectUiStateErrorMessage(...) called: errorMessage = %s", errorMessage)
+        if (LOG_MVI_UI_STATE) {
+            Timber.tag(TAG)
+                .d("redirectUiStateErrorMessage(...) called: errorMessage = %s", errorMessage)
+        }
         _uiStateErrorMsg.value = errorMessage
     }
 
     override fun redirectedErrorMessage() = _uiStateErrorMsg.value
 
     private fun clearUiStateErrorMessage() {
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("clearUiStateErrorMessage() called")
+        if (LOG_MVI_UI_STATE) {
+            Timber.tag(TAG).d("clearUiStateErrorMessage() called")
+        }
         redirectUiStateErrorMessage(null)
     }
 
@@ -98,15 +113,20 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     fun viewModelScope() = viewModelScope
 
     override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {
-        if (LOG_FLOW_JOB) Timber.tag(TAG).d("JF# handleActionJob(...) called on thread '%s':", Thread.currentThread().name)
+        if (LOG_FLOW_JOB) {
+            Timber.tag(TAG)
+                .d("JF# handleActionJob(...) called on thread '%s':", Thread.currentThread().name)
+        }
         //viewModelScope.launch(Dispatchers.Main) {
         // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
         viewModelScope.launch(errorHandler) {
             _actionsJobFlow.collectLatest { job ->
-                if (LOG_FLOW_JOB) Timber.tag(TAG).d(
-                    "JF# handleActionJob: Start actionsJobFlow.collectLatest [job = %s]",
-                    job?.toString()
-                )
+                if (LOG_FLOW_JOB) {
+                    Timber.tag(TAG).d(
+                        "JF# handleActionJob: Start actionsJobFlow.collectLatest [job = %s]",
+                        job?.toString()
+                    )
+                }
                 job?.join()
                 afterAction(this)
                 if (this.isActive) this.cancel()
@@ -114,12 +134,15 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
         }
         clearUiStateErrorMessage()
         action()
-        if (LOG_FLOW_JOB) Timber.tag(TAG).d("JF# handleActionJob(...) ended")
+        if (LOG_FLOW_JOB) {
+            Timber.tag(TAG).d("JF# handleActionJob(...) ended")
+        }
     }
 
     override fun submitAction(action: A): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("AF# submitAction(action): emit action = %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("AF# submitAction(action): emit action = %s", action.javaClass.name)
+        }
         val job = viewModelScope.launch(errorHandler) {
             _actionsFlow.emit(action)
         }
@@ -127,18 +150,22 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     }
 
     open fun submitState(state: S): Job {
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG)
-            .d("submitState(S): ui state = %s", state.javaClass.name)
+        if (LOG_MVI_UI_STATE) {
+            Timber.tag(TAG)
+                .d("submitState(S): ui state = %s", state.javaClass.name)
+        }
         return submitStateWithErrorStateMessageRedirection(state, false)
     }
 
     fun submitStateWithErrorStateMessageRedirection(
         state: S, redirectErrorStateMessage: Boolean
     ): Job {
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG).d(
-            "submitStateWithErrorStateMessageRedirection(S): redirectErrorStateMessage = %s; change ui state = %s",
-            redirectErrorStateMessage, state.javaClass.name
-        )
+        if (LOG_MVI_UI_STATE) {
+            Timber.tag(TAG).d(
+                "submitStateWithErrorStateMessageRedirection(S): redirectErrorStateMessage = %s; change ui state = %s",
+                redirectErrorStateMessage, state.javaClass.name
+            )
+        }
         val job = viewModelScope.launch(errorHandler) {
             if (!redirectErrorStateMessage) {
                 _uiStateFlow.value = state
@@ -147,18 +174,24 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
                 if (redirectErrorStateMessage) {
                     _uiStateFlow.value = state
                 }
-                if (LOG_MVI_UI_STATE) Timber.tag(TAG)
-                    .d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
+                if (LOG_MVI_UI_STATE) {
+                    Timber.tag(TAG)
+                        .d("submitStateWithErrorStateMessageRedirection: state.data = %s", it)
+                }
                 initFieldStatesByUiModel(it)
             }
         }
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG)
-            .d("submitStateWithErrorStateMessageRedirection(S) ended")
+        if (LOG_MVI_UI_STATE) {
+            Timber.tag(TAG)
+                .d("submitStateWithErrorStateMessageRedirection(S) ended")
+        }
         return job
     }
 
     fun uiState(state: S? = null): T? {
-        if (LOG_MVI_UI_STATE) Timber.tag(TAG).d("uiState(S?) called")
+        if (LOG_MVI_UI_STATE) {
+            Timber.tag(TAG).d("uiState(S?) called")
+        }
         //clearUiStateErrorMessage()
         return when (val uiState = state ?: _uiStateFlow.value) {
             is UiState.Success<*> -> (uiState as UiState.Success<*>).data as T
@@ -172,12 +205,16 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     }
 
     fun submitSingleEvent(event: E): Job {
-        if (LOG_FLOW_EVENT) Timber.tag(TAG)
-            .d("EF# submitSingleEvent(E): send single event = %s", event.javaClass.name)
+        if (LOG_FLOW_EVENT) {
+            Timber.tag(TAG)
+                .d("EF# submitSingleEvent(E): send single event = %s", event.javaClass.name)
+        }
         val job = viewModelScope.launch(errorHandler) {
             _singleEventFlow.send(event)
         }
-        if (LOG_FLOW_EVENT) Timber.tag(TAG).d("EF# submitSingleEvent(E) ended")
+        if (LOG_FLOW_EVENT) {
+            Timber.tag(TAG).d("EF# submitSingleEvent(E) ended")
+        }
         return job
     }
 

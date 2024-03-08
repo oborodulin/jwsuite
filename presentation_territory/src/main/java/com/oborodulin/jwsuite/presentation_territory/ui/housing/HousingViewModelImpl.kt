@@ -3,20 +3,28 @@ package com.oborodulin.jwsuite.presentation_territory.ui.housing
 import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
-import com.oborodulin.home.common.ui.components.*
-import com.oborodulin.home.common.ui.components.field.*
-import com.oborodulin.home.common.ui.components.field.util.*
+import com.oborodulin.home.common.ui.components.field.util.InputError
+import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
+import com.oborodulin.home.common.ui.components.field.util.InputWrapper
+import com.oborodulin.home.common.ui.components.field.util.Inputable
+import com.oborodulin.home.common.ui.components.field.util.ScreenEvent
 import com.oborodulin.home.common.ui.model.ListItemModel
 import com.oborodulin.home.common.ui.state.SingleViewModel
 import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
-import com.oborodulin.jwsuite.presentation_territory.ui.model.TerritoringUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "Housing.HousingViewModelImpl"
@@ -42,7 +50,7 @@ class HousingViewModelImpl @Inject constructor(
 
     override suspend fun handleAction(action: HousingUiAction) = null
 
-    /*        if (LOG_FLOW_ACTION) Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)
+    /*        if (LOG_FLOW_ACTION) {Timber.tag(TAG).d("handleAction(TerritoringUiAction) called: %s", action.javaClass.name)}
             val job = when (action) {
                 is HousingUiAction.LoadLocations -> loadTerritoryLocations(
                     action.congregationId,
@@ -109,7 +117,9 @@ class HousingViewModelImpl @Inject constructor(
      */
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -159,7 +169,12 @@ class HousingViewModelImpl @Inject constructor(
                 override val street = MutableStateFlow(InputListItemWrapper<ListItemModel>())
 
                 override fun submitAction(action: HousingUiAction): Job? = null
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun onTextFieldEntered(inputEvent: Inputable) {}
                 override fun onTextFieldFocusChanged(
                     focusedField: HousingFields, isFocused: Boolean

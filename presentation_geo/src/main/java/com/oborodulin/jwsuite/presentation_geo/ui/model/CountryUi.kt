@@ -10,7 +10,18 @@ data class CountryUi(
     val countryOsmId: Long? = null,
     val coordinates: CoordinatesUi = CoordinatesUi(),
     val countryName: String = ""
-) : ModelUi()
+) : ModelUi() {
+    override fun toString(): String {
+        val str = StringBuffer()
+        str.append("CountryUi countryName = ").append(countryName)
+            .append(" (countryCode = '").append(countryCode)
+            .append("'). OSM: countryOsmId = ").append(countryOsmId)
+            .append("; countryGeocode = ").append(countryGeocode)
+            .append("; coordinates = ").append(coordinates)
+            .append(" countryId = ").append(id)
+        return str.toString()
+    }
+}
 
 fun CountryUi?.toListItemModel() = ListItemModel(
     itemId = this?.id ?: UUID.randomUUID(),

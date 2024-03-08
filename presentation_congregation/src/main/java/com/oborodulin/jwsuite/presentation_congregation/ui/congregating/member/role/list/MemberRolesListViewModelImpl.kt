@@ -13,8 +13,8 @@ import com.oborodulin.jwsuite.domain.usecases.member.role.DeleteMemberRoleUseCas
 import com.oborodulin.jwsuite.domain.usecases.member.role.GetMemberRolesUseCase
 import com.oborodulin.jwsuite.presentation.navigation.NavRoutes
 import com.oborodulin.jwsuite.presentation.navigation.NavigationInput.MemberRoleInput
-import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRolesListItem
 import com.oborodulin.jwsuite.presentation.ui.model.RolesListItem
+import com.oborodulin.jwsuite.presentation_congregation.ui.model.MemberRolesListItem
 import com.oborodulin.jwsuite.presentation_congregation.ui.model.converters.MemberRolesListConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -42,8 +42,10 @@ class MemberRolesListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MemberRolesListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(MemberRolesListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(MemberRolesListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is MemberRolesListUiAction.Load -> loadMemberRoles(action.memberId)
 

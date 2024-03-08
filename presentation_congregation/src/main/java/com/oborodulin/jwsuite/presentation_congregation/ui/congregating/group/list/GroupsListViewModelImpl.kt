@@ -41,8 +41,10 @@ class GroupsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: GroupsListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(GroupsListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(GroupsListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is GroupsListUiAction.Load -> {
                 loadGroups(action.congregationId)
@@ -109,7 +111,12 @@ class GroupsListViewModelImpl @Inject constructor(
                 override fun singleSelectedItem() = null
 
                 //fun viewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: GroupsListUiAction): Job? = null
             }
 

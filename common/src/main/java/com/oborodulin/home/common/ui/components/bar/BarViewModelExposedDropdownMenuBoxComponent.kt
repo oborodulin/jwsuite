@@ -55,11 +55,15 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     onValueChange: OnListItemEvent,
     onImeKeyAction: OnImeKeyAction
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-        .d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG)
+            .d("BarViewModelExposedDropdownMenuBoxComponent(...) called")
+    }
     LaunchedEffect(Unit) {
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-            .d("BarViewModelExposedDropdownMenuBoxComponent -> LaunchedEffect()")
+        if (LOG_UI_COMPONENTS) {
+            Timber.tag(TAG)
+                .d("BarViewModelExposedDropdownMenuBoxComponent -> LaunchedEffect()")
+        }
         listViewModel.submitAction(loadListUiAction)
     }
     // set the correct cursor position when this composable is first initialized
@@ -74,11 +78,13 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
     val onFieldValueChange: OnTextFieldValueChange = { fieldValue = it }
     // make sure to keep the value updated
     onFieldValueChange(fieldValue.copy(text = inputWrapper.item?.headline.orEmpty()))
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
-        "fieldValue.text = %s; inputWrapper.item.headline = %s",
-        fieldValue.text,
-        inputWrapper.item?.headline
-    )
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d(
+            "fieldValue.text = %s; inputWrapper.item.headline = %s",
+            fieldValue.text,
+            inputWrapper.item?.headline
+        )
+    }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     // the box
@@ -108,11 +114,15 @@ fun <T : ListItemModel, L : List<*>, A : UiAction, E : UiSingleEvent> BarViewMod
             onDismissRequest = { expanded = false }
         ) {
             listViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                if (LOG_UI_STATE) {
+                    Timber.tag(TAG).d("Collect ui state flow: %s", state)
+                }
                 CommonScreen(state = state) { items ->
                     items as List<ListItemModel>
                     items.forEach { option ->
-                        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("option = %s", option)
+                        if (LOG_UI_COMPONENTS) {
+                            Timber.tag(TAG).d("option = %s", option)
+                        }
                         DropdownMenuItem(text = { Text(text = option.headline) },
                             onClick = {
                                 expanded = false

@@ -123,8 +123,9 @@ class TerritoryViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoryUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoryUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(TerritoryUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is TerritoryUiAction.Load -> when (action.territoryId) {
                 null -> {
@@ -228,8 +229,10 @@ class TerritoryViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: TerritoryUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(TerritoryUi) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d("initFieldStatesByUiModel(TerritoryUi) called: uiModel = %s", uiModel)
+        }
         uiModel.id?.let { initStateValue(TerritoryFields.TERRITORY_ID, id, it.toString()) }
         initStateValue(
             TerritoryFields.TERRITORY_CONGREGATION, congregation,
@@ -273,7 +276,9 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -381,7 +386,9 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         TerritoryInputValidator.Category.errorIdOrNull(category.value.item?.headline)?.let {
             inputErrors.add(
@@ -402,8 +409,10 @@ class TerritoryViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoryFields.valueOf(error.fieldName)) {
                 TerritoryFields.TERRITORY_CATEGORY -> category.value.copy(errorId = error.errorId)

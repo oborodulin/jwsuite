@@ -240,15 +240,19 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 var databasePassphrase = ""
                 // If instance is `null` make a new database instance.
                 if (instance == null) {
-                    if (LOG_SECURE) Timber.tag(TAG).d("databasePassphrase getting")
+                    if (LOG_SECURE) {
+                        Timber.tag(TAG).d("databasePassphrase getting")
+                    }
                     runBlocking {
                         // https://stackoverflow.com/questions/57088428/kotlin-flow-how-to-unsubscribe-stop
                         //.takeWhile { it.isNotEmpty() }.collect {= it}
                         databasePassphrase =
                             localSessionManagerDataSource.databasePassphrase().first()
                     }
-                    if (LOG_SECURE) Timber.tag(TAG)
-                        .d("databasePassphrase got: %s", databasePassphrase)
+                    if (LOG_SECURE) {
+                        Timber.tag(TAG)
+                            .d("databasePassphrase got: %s", databasePassphrase)
+                    }
                     val roomBuilder = Room.databaseBuilder(
                         ctx,
                         JwSuiteDatabase::class.java,
@@ -262,7 +266,7 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                             DatabaseCallback(ctx, jsonLogger, localSessionManagerDataSource)
                         )
                     /*if (databasePassphrase.isNotEmpty()) {
-                        if (LOG_SECURE) Timber.tag(TAG).d("databasePassphrase isNotEmpty")
+                        if (LOG_SECURE) {Timber.tag(TAG).d("databasePassphrase isNotEmpty")}
                         roomBuilder.openHelperFactory(
                             SupportFactory(
                                 net.sqlcipher.database.SQLiteDatabase.getBytes(
@@ -273,7 +277,9 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                     }*/
                     // Assign INSTANCE to the newly created database.
                     instance = roomBuilder.build()
-                    if (LOG_DATABASE) Timber.tag(TAG).d("Room database built")
+                    if (LOG_DATABASE) {
+                        Timber.tag(TAG).d("Room database built")
+                    }
                     INSTANCE = instance
                 }
                 // Return instance; smart cast to be non-null.
@@ -391,16 +397,20 @@ abstract class JwSuiteDatabase : RoomDatabase() {
             //CoroutineScope(Dispatchers.Main).launch {
             //GlobalScope.launch(Dispatchers.Main) {
             importJob = CoroutineScope(Dispatchers.IO).async {
-                if (LOG_DATABASE) Timber.tag(TAG)
-                    .d("onCreate -> CoroutineScope(Dispatchers.IO).async")
+                if (LOG_DATABASE) {
+                    Timber.tag(TAG)
+                        .d("onCreate -> CoroutineScope(Dispatchers.IO).async")
+                }
                 val database = getInstance(ctx, jsonLogger, localSessionManagerDataSource)
-                if (LOG_DATABASE) Timber.tag(TAG).d(
-                    "onCreate -> Start thread '%s': database.getInstance(...)",
-                    Thread.currentThread().name
-                )
+                if (LOG_DATABASE) {
+                    Timber.tag(TAG).d(
+                        "onCreate -> Start thread '%s': database.getInstance(...)",
+                        Thread.currentThread().name
+                    )
+                }
                 prePopulator = DaoPopulator(database, ctx, jsonLogger)
                 //database.runInTransaction(Runnable {
-                //if (LOG_DATABASE) Timber.tag(TAG).d("onCreate -> database.runInTransaction -> run()")
+                //if (LOG_DATABASE) {Timber.tag(TAG).d("onCreate -> database.runInTransaction -> run()")}
                 //runBlocking {
                 with(prePopulator) {
                     if (BuildConfig.DEBUG) {
@@ -425,8 +435,10 @@ abstract class JwSuiteDatabase : RoomDatabase() {
                 prePopulateDb(db)
                 true
             }*/
-            if (LOG_DATABASE) Timber.tag(TAG)
-                .d("Database onCreate(...) ended on thread '%s':", Thread.currentThread().name)
+            if (LOG_DATABASE) {
+                Timber.tag(TAG)
+                    .d("Database onCreate(...) ended on thread '%s':", Thread.currentThread().name)
+            }
         }
     }
 }

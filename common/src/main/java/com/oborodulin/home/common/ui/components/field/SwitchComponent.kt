@@ -63,19 +63,23 @@ fun SwitchComponent(
     onCheckedChange: OnCheckedChange,
     colors: SwitchColors = SwitchDefaults.colors()
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("SwitchComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("SwitchComponent(...) called")
+    }
     var isChecked by remember { mutableStateOf(inputWrapper.value.toBoolean()) } // boolean
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
-        "SwitchComponent: isChecked = %s; inputWrapper.value = %s",
-        isChecked,
-        inputWrapper.value
-    )
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d(
+            "SwitchComponent: isChecked = %s; inputWrapper.value = %s",
+            isChecked,
+            inputWrapper.value
+        )
+    }
     /*    if (isChecked != inputWrapper.value.toBoolean()) isChecked = inputWrapper.value.toBoolean()
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG).d(
+        if (LOG_UI_COMPONENTS) {Timber.tag(TAG).d(
             "SwitchComponent: isChecked = %s; inputWrapper = %s",
             isChecked,
             inputWrapper
-        )*/
+        )}*/
     Column {
         Row(modifier = Modifier
             .clip(MaterialTheme.shapes.small)

@@ -33,7 +33,9 @@ fun IconComponent(
     @StringRes contentDescriptionResId: Int? = null,
     size: Dp = 24.dp
 ): Unit? {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("IconComponent(...) called")
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("IconComponent(...) called")
+    }
     return icon?.let { it() } ?: when (painterResId) {
         null -> imageVector?.let { iv ->
             Icon(

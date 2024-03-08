@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
+import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.home.common.ui.components.field.util.InputError
 import com.oborodulin.home.common.ui.components.field.util.InputListItemWrapper
 import com.oborodulin.home.common.ui.components.field.util.InputWrapper
@@ -15,8 +17,6 @@ import com.oborodulin.home.common.ui.state.UiState
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_ACTION
 import com.oborodulin.home.common.util.LogLevel.LOG_FLOW_INPUT
 import com.oborodulin.home.common.util.LogLevel.LOG_MVI_LIST
-import com.oborodulin.home.common.extensions.toFullFormatOffsetDateTime
-import com.oborodulin.home.common.extensions.toOffsetDateTime
 import com.oborodulin.jwsuite.data_territory.R
 import com.oborodulin.jwsuite.domain.types.TerritoryLocationType
 import com.oborodulin.jwsuite.domain.types.TerritoryProcessType
@@ -129,22 +129,28 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun observeCheckedListItems() {
-        if (LOG_MVI_LIST) Timber.tag(TAG).d("observeCheckedListItems() called")
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("observeCheckedListItems() called")
+        }
         uiState()?.let { uiState ->
             _checkedListItems.value = uiState.filter { it.checked }
-            if (LOG_MVI_LIST) Timber.tag(TAG).d(
-                "checked %s territories; areHandOutInputsValid = %s",
-                _checkedListItems.value.size,
-                areHandOutInputsValid.value
-            )
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d(
+                    "checked %s territories; areHandOutInputsValid = %s",
+                    _checkedListItems.value.size,
+                    areHandOutInputsValid.value
+                )
+            }
         }
     }
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: TerritoriesGridUiAction): Job? {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(TerritoriesListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is TerritoriesGridUiAction.Load -> loadTerritories(
                 action.congregationId,
@@ -285,7 +291,9 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     override fun initFieldStatesByUiModel(uiModel: List<TerritoriesListItem>): Job? = null
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -328,7 +336,9 @@ class TerritoriesGridViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         TerritoriesInputValidator.Member.errorIdOrNull(member.value.item?.headline)?.let {
             inputErrors.add(
@@ -351,8 +361,10 @@ class TerritoriesGridViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (TerritoriesFields.valueOf(error.fieldName)) {
                 TerritoriesFields.TERRITORY_MEMBER -> member.value.copy(errorId = error.errorId)

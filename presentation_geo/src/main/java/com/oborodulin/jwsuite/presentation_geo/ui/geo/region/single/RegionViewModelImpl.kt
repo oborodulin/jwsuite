@@ -114,8 +114,9 @@ class RegionViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RegionUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(RegionUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(RegionUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is RegionUiAction.Load -> {
                 when (action.regionId) {
@@ -176,8 +177,10 @@ class RegionViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: RegionUi): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(RegionUi) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d("initFieldStatesByUiModel(RegionUi) called: uiModel = %s", uiModel)
+        }
         uiModel.id?.let { initStateValue(RegionFields.REGION_ID, id, it.toString()) }
         initStateValue(RegionFields.REGION_COUNTRY, country, uiModel.country.toListItemModel())
         initStateValue(RegionFields.REGION_CODE, regionCode, uiModel.regionCode)
@@ -201,7 +204,9 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -253,7 +258,9 @@ class RegionViewModelImpl @Inject constructor(
 
     override fun performValidation() {}
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
         RegionInputValidator.Country.errorIdOrNull(country.value.item?.headline)?.let {
             inputErrors.add(InputError(fieldName = RegionFields.REGION_COUNTRY.name, errorId = it))
@@ -268,8 +275,10 @@ class RegionViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (RegionFields.valueOf(error.fieldName)) {
                 RegionFields.REGION_COUNTRY -> country.value.copy(errorId = error.errorId)

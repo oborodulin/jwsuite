@@ -44,8 +44,10 @@ class LocalityDistrictsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: LocalityDistrictsListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(LocalityDistrictsListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(LocalityDistrictsListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is LocalityDistrictsListUiAction.Load -> loadLocalityDistricts(
                 localityId = action.localityId, streetId = action.streetId

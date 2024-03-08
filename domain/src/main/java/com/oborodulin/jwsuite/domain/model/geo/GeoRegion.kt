@@ -18,10 +18,10 @@ data class GeoRegion(
     val localities: List<GeoLocality> = emptyList()
 ) : DomainModel() {
     val regionFullName =
-        "${
+        "$regionName ${
             ctx?.let { it.resources.getStringArray(R.array.region_types)[regionType.ordinal] }
                 .orEmpty()
-        } $regionName".trim()
+        }".trim()
     val osmInfo = regionGeocode.orEmpty().plus(coordinates)
 
     companion object {

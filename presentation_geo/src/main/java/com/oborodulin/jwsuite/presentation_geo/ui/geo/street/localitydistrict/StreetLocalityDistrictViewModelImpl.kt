@@ -75,19 +75,25 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     override fun observeCheckedListItems() {
-        if (LOG_MVI_LIST) Timber.tag(TAG).d("observeCheckedListItems() called")
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("observeCheckedListItems() called")
+        }
         uiState()?.let { uiState ->
             _checkedListItems.value = uiState.localityDistricts.filter { it.checked }
-            if (LOG_MVI_LIST) Timber.tag(TAG)
-                .d("checked %d List Items", _checkedListItems.value.size)
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG)
+                    .d("checked %d List Items", _checkedListItems.value.size)
+            }
         }
     }
 
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: StreetLocalityDistrictUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(StreetLocalityDistrictUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(StreetLocalityDistrictUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is StreetLocalityDistrictUiAction.Load -> {
                 setDialogTitleResId(R.string.street_locality_district_new_subheader)
@@ -149,7 +155,9 @@ class StreetLocalityDistrictViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {

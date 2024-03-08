@@ -35,8 +35,10 @@ class DashboardingViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: DashboardingUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(DashboardingUiAction) called: %s ", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(DashboardingUiAction) called: %s ", action.javaClass.name)
+        }
         /*
         if (JwSuiteDatabase.isImportExecute) JwSuiteDatabase.isImportDone?.await()
         Timber.tag(TAG)

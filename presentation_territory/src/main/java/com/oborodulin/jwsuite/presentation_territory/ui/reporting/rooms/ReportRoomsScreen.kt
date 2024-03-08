@@ -99,8 +99,9 @@ fun ReportRoomsScreen(
             .d("ReportRoomsScreen -> LaunchedEffect(): events.collect")
         territoryViewModel.submitAction(TerritoryUiAction.Load(territoryInput.territoryId))
         events.collect { event ->
-            if (LOG_FLOW_INPUT) Timber.tag(TAG)
-                .d("IF# Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) {
+                Timber.tag(TAG).d("IF# Collect input events flow: %s", event.javaClass.name)
+            }
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }

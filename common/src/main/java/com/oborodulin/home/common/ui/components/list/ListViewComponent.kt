@@ -20,7 +20,9 @@ fun ListViewComponent(
     fetchListControl: @Composable (() -> Unit)? = null,
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG).d("ListViewComponent(...) called: size = %d", items.size)
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG).d("ListViewComponent(...) called: size = %d", items.size)
+    }
     EditableListViewComponent(
         items = items,
         emptyListResId = emptyListResId,

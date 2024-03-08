@@ -41,8 +41,9 @@ class RegionsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RegionsListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(RegionsListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is RegionsListUiAction.Load -> loadRegions(
                 action.countryId, action.countryGeocodeArea, action.isRemoteFetch

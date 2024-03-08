@@ -42,8 +42,9 @@ class RoomsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: RoomsListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(RoomsListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG).d("handleAction(RoomsListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is RoomsListUiAction.Load -> loadRooms(action.houseId, action.territoryId)
             is RoomsListUiAction.EditRoom -> {
@@ -112,7 +113,12 @@ class RoomsListViewModelImpl @Inject constructor(
                 override fun singleSelectItem(selectedItem: ListItemModel) {}
                 override fun singleSelectedItem() = null
 
-                override fun handleActionJob(action: () -> Unit, afterAction: (CoroutineScope) -> Unit) {}
+                override fun handleActionJob(
+                    action: () -> Unit,
+                    afterAction: (CoroutineScope) -> Unit
+                ) {
+                }
+
                 override fun submitAction(action: RoomsListUiAction): Job? = null
             }
 

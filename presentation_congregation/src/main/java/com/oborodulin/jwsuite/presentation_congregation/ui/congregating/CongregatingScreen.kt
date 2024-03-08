@@ -111,7 +111,7 @@ fun CongregatingScreen(
             viewModel.submitAction(CongregatingUiAction.Init)
         }
         viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-            if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+            if (LOG_UI_STATE) {Timber.tag(TAG).d("Collect ui state flow: %s", state)}
 
      */
     //onActionBarChange(null)

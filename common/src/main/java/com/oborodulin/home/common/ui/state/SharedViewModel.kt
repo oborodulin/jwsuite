@@ -22,7 +22,9 @@ abstract class SharedViewModel<T : Any?> : SharedViewModeled<T>, ViewModel() {
 
     override fun submitData(data: T): Job {
         return viewModelScope.launch {
-            if (LOG_MVI_SHARED) Timber.tag(TAG).d("submitData(): data = %s", data)
+            if (LOG_MVI_SHARED) {
+                Timber.tag(TAG).d("submitData(): data = %s", data)
+            }
             //_sharedFlow.emit(data)
             _sharedFlow.value = data
         }
@@ -32,7 +34,9 @@ abstract class SharedViewModel<T : Any?> : SharedViewModeled<T>, ViewModel() {
         var data: T? = null
         viewModelScope.launch {
             sharedFlow.collectLatest { data = it }
-            if (LOG_MVI_SHARED) Timber.tag(TAG).d("sharedData(): data = %s", data)
+            if (LOG_MVI_SHARED) {
+                Timber.tag(TAG).d("sharedData(): data = %s", data)
+            }
         }
         return data
     }

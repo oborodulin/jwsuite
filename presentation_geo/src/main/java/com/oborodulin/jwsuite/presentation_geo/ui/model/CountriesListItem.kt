@@ -19,7 +19,8 @@ data class CountriesListItem(
 fun ListItemModel.toCountriesListItem() = CountriesListItem(
     id = this.itemId ?: UUID.randomUUID(),
     countryCode = this.supportingText?.substringBefore(":").orEmpty(),
-    countryGeocode = this.supportingText?.substringAfter(":")?.substringBeforeLast("[").orEmpty(),
+    countryGeocode = this.supportingText?.takeIf { it.contains(':') }?.substringAfter(":")
+        ?.substringBeforeLast("[").orEmpty(),
     countryName = this.headline,
     osmInfo = this.supportingText?.substringAfter(":").orEmpty()
 )

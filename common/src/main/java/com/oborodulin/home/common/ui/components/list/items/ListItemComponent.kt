@@ -70,15 +70,17 @@ fun ListItemComponent(
     onClick: OnListItemEvent = EMPTY_LIST_ITEM_EVENT,
     content: @Composable (() -> Unit)? = null
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-        .d(
-            "ListItemComponent(...) called: {\"listItem\": {\"icon\": %s, \"itemId\": \"%s\", \"headline\": \"%s\", \"supportingText\": \"%s\", \"value\": \"%s\"}}",
-            iconResId,
-            item.itemId,
-            item.headline,
-            item.supportingText,
-            item.value
-        )
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG)
+            .d(
+                "ListItemComponent(...) called: {\"listItem\": {\"icon\": %s, \"itemId\": \"%s\", \"headline\": \"%s\", \"supportingText\": \"%s\", \"value\": \"%s\"}}",
+                iconResId,
+                item.itemId,
+                item.headline,
+                item.supportingText,
+                item.value
+            )
+    }
     // https://m3.material.io/components/lists/specs
     // https://stackoverflow.com/questions/69707827/jetpack-compose-find-how-many-lines-a-text-will-take-before-composition
     val cardHeight = when {

@@ -43,7 +43,9 @@ fun TerritoryDetailsListView(
         territoryInput?.let { viewModel.submitAction(TerritoryDetailsListUiAction.Load(it.territoryId)) }
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         CommonScreen(state = state) {
             TerritoryDetails(details = it)
         }

@@ -63,7 +63,9 @@ class ReportHousesViewModelImpl @Inject constructor(
     }
 
     override fun singleSelectedItem(): ListItemModel? {
-        if (LOG_MVI_LIST) Timber.tag(TAG).d("singleSelectedItem() called")
+        if (LOG_MVI_LIST) {
+            Timber.tag(TAG).d("singleSelectedItem() called")
+        }
         var selectedItem: ListItemModel? = null
         uiState()?.let { uiState ->
             selectedItem = try {
@@ -72,7 +74,9 @@ class ReportHousesViewModelImpl @Inject constructor(
                 uiState.getOrNull(0)
                 //Timber.tag(TAG).e(e)
             }
-            if (LOG_MVI_LIST) Timber.tag(TAG).d("selected %s list item", selectedItem)
+            if (LOG_MVI_LIST) {
+                Timber.tag(TAG).d("selected %s list item", selectedItem)
+            }
         }
         return selectedItem
     }
@@ -80,8 +84,10 @@ class ReportHousesViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: ReportHousesUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(ReportHousesUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(ReportHousesUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is ReportHousesUiAction.Load -> loadReportHouses(
                 action.territoryId, action.territoryStreetId

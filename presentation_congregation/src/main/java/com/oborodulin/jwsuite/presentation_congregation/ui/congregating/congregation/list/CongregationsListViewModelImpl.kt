@@ -43,8 +43,10 @@ class CongregationsListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: CongregationsListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(CongregationsListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(CongregationsListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is CongregationsListUiAction.Load -> loadCongregations()
 

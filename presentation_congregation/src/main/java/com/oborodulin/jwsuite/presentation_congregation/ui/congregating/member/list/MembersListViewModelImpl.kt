@@ -39,8 +39,10 @@ class MembersListViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: MembersListUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(MembersListUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is MembersListUiAction.Load -> loadMembers(
                 congregationId = action.congregationId, isService = action.isService,

@@ -43,11 +43,11 @@ fun TerritoryScreen(
     Timber.tag(TAG).d("TerritoryScreen: territoryId (id) = %s", territoryId)
     /*
     LaunchedEffect(Unit) {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
+        if (LOG_FLOW_ACTION) {Timber.tag(TAG)
             .d(
                 "TerritoryScreen -> LaunchedEffect(Unit): territoryId = %s; territoryInput.territoryId = %s",
                 territoryId, territoryInput?.territoryId
-            )
+            )}
         territoryId?.let {
             if (territoryInput?.territoryId == null) viewModel.submitAction(TerritoryUiAction.Load())
         }

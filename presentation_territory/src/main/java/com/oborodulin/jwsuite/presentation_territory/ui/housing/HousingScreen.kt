@@ -125,13 +125,16 @@ fun HousingScreen(
         Timber.tag(TAG)
             .d("HousingScreen -> LaunchedEffect(): events.collect")
         events.collect { event ->
-            if (LOG_FLOW_INPUT) Timber.tag(TAG)
-                .d("IF# Collect input events flow: %s", event.javaClass.name)
+            if (LOG_FLOW_INPUT) {
+                Timber.tag(TAG).d("IF# Collect input events flow: %s", event.javaClass.name)
+            }
             inputProcess(context, focusManager, keyboardController, event, focusRequesters)
         }
     }
     housesViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         ScaffoldComponent(
             topBarTitle = stringResource(com.oborodulin.jwsuite.presentation.R.string.nav_item_housing),
             topBarSubtitle = "",

@@ -70,24 +70,30 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
     innerPadding: PaddingValues,
     dialogView: @Composable (T, (Boolean) -> Unit, (String) -> Unit, () -> Unit) -> Unit
 ) {
-    if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-        .d("DialogScreenComponent(...) called: inputId = %s", inputId)
+    if (LOG_UI_COMPONENTS) {
+        Timber.tag(TAG)
+            .d("DialogScreenComponent(...) called: inputId = %s", inputId)
+    }
     val ctx = LocalContext.current
     var errorMessage: String? by rememberSaveable { mutableStateOf(null) }
     val isErrorShowAlert = rememberSaveable { mutableStateOf(false) }
     val handleDialogConfirmAction = {
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-            .d("DialogScreenComponent: Top Bar Action Button click...")
+        if (LOG_UI_COMPONENTS) {
+            Timber.tag(TAG)
+                .d("DialogScreenComponent: Top Bar Action Button click...")
+        }
         viewModel.onContinueClick {
             // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
             viewModel.handleActionJob({ viewModel.submitAction(confirmUiAction) }) { scope ->
-                errorMessage = viewModel.redirectedErrorMessage()
+                /*errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
-                    if (LOG_FLOW_JOB) Timber.tag(TAG)
-                        .d(
-                            "DialogScreenComponent -> viewModel.onContinueClick -> After action: (no errors) nextUiAction = %s",
-                            nextUiAction
-                        )
+                    if (LOG_FLOW_JOB) {
+                        Timber.tag(TAG)
+                            .d(
+                                "DialogScreenComponent -> viewModel.onContinueClick -> After action: (no errors) nextUiAction = %s",
+                                nextUiAction
+                            )
+                    }
                     if (isNextActionPerform) {
                         nextUiAction?.let { viewModel.submitAction(it) }
                             ?: nextAction?.invoke() ?: upNavigation()
@@ -103,22 +109,28 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
 
                         else -> errorMessage
                     }
-                    if (LOG_FLOW_JOB) Timber.tag(TAG)
-                        .d("DialogScreenComponent -> viewModel.onContinueClick -> After action: cancel flow by errors")
+                    if (LOG_FLOW_JOB) {
+                        Timber.tag(TAG)
+                            .d("DialogScreenComponent -> viewModel.onContinueClick -> After action: cancel flow by errors")
+                    }
                     scope.cancel()
-                }
+                }*/
             }
         }
     }
     LaunchedEffect(inputId) {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("DialogScreenComponent -> LaunchedEffect(inputId): inputId = %s", inputId)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("DialogScreenComponent -> LaunchedEffect(inputId): inputId = %s", inputId)
+        }
         //inputId?.let {
         viewModel.submitAction(loadUiAction)
         //}
     }
     viewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-        if (LOG_UI_STATE) Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG).d("Collect ui state flow: %s", state)
+        }
         viewModel.dialogTitleResId.collectAsStateWithLifecycle().value?.let {
             onActionBarSubtitleChange(stringResource(it))
         }
@@ -136,15 +148,6 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         ErrorAlertDialogComponent(isShow = isErrorShowAlert, text = errorMessage) {
             isErrorShowAlert.value = false; upNavigation()
         }
-        if (isControlsShow) {
-            onTopBarActionsChange {
-                IconButton(enabled = areInputsValid, onClick = handleDialogConfirmAction) {
-                    Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
-                }
-            }
-        } else {
-            onTopBarActionsChange {}
-        }
         // Confirmation
         var isConfirmAction by rememberSaveable { mutableStateOf(false) }
         val isDoneConfirmShowAlert = rememberSaveable { mutableStateOf(false) }
@@ -154,34 +157,56 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         }
         var confirmText by rememberSaveable { mutableStateOf("") }
         val onConfirmTextChange: (String) -> Unit = { confirmText = it }
-        if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-            .d(
-                "DialogScreenComponent: isConfirmAction = %s; isDoneConfirmShowAlert.value = %s; confirmText = %s",
-                isConfirmAction, isDoneConfirmShowAlert.value, confirmText
-            )
+        if (LOG_UI_COMPONENTS) {
+            Timber.tag(TAG)
+                .d(
+                    "DialogScreenComponent: isConfirmAction = %s; isDoneConfirmShowAlert.value = %s; confirmText = %s",
+                    isConfirmAction, isDoneConfirmShowAlert.value, confirmText
+                )
+        }
         DoneConfirmDialogComponent(isShow = isDoneConfirmShowAlert,
             text = confirmText,
             onDismiss = {
-                if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                    .d("DoneConfirmDialogComponent -> onDismiss()")
+                if (LOG_UI_COMPONENTS) {
+                    Timber.tag(TAG)
+                        .d("DoneConfirmDialogComponent -> onDismiss()")
+                }
                 isDoneConfirmShowAlert.value = false
                 isConfirmAction = false
             }) {
-            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("DoneConfirmDialogComponent -> onConfirm()")
+            if (LOG_UI_COMPONENTS) {
+                Timber.tag(TAG)
+                    .d("DoneConfirmDialogComponent -> onConfirm()")
+            }
             isDoneConfirmShowAlert.value = false
             isConfirmAction = true
         }
         if (isConfirmAction) {
-            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("DialogScreenComponent -> handleDialogConfirmAction()")
+            if (LOG_UI_COMPONENTS) {
+                Timber.tag(TAG)
+                    .d("DialogScreenComponent -> handleDialogConfirmAction()")
+            }
             isConfirmAction = false
             handleDialogConfirmAction()
         }
         val handleConfirmAction = {
-            if (LOG_UI_COMPONENTS) Timber.tag(TAG)
-                .d("DialogScreenComponent -> handleConfirmAction()")
+            if (LOG_UI_COMPONENTS) {
+                Timber.tag(TAG)
+                    .d("DialogScreenComponent -> handleConfirmAction()")
+            }
             isConfirmAction = isDoneConfirmShowAlert.value.not()
+        }
+        if (isControlsShow) {
+            onTopBarActionsChange {
+                IconButton(
+                    enabled = areInputsValid,
+                    onClick = handleDialogConfirmAction
+                ) { //handleConfirmAction
+                    Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
+                }
+            }
+        } else {
+            onTopBarActionsChange {}
         }
         CommonScreen(paddingValues = innerPadding, state = state) {
             Column(

@@ -71,8 +71,10 @@ class DashboardSettingViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: DashboardSettingUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(DashboardSettingUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(DashboardSettingUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is DashboardSettingUiAction.Load -> loadDashboardSettings()
             is DashboardSettingUiAction.Save -> saveDashboardSettings()
@@ -111,8 +113,13 @@ class DashboardSettingViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: DashboardSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d("initFieldStatesByUiModel(DashboardSettingsUiModel) called: uiModel = %s", uiModel)
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d(
+                    "initFieldStatesByUiModel(DashboardSettingsUiModel) called: uiModel = %s",
+                    uiModel
+                )
+        }
         initStateValue(
             DashboardSettingFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
             uiModel.settings.first { it.paramName == AppSettingParam.TERRITORY_PROCESSING_PERIOD }.paramValue
@@ -121,7 +128,9 @@ class DashboardSettingViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -146,7 +155,9 @@ class DashboardSettingViewModelImpl @Inject constructor(
     override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
 
         DashboardSettingInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseBackupPeriod.value.value)
@@ -161,8 +172,10 @@ class DashboardSettingViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (DashboardSettingFields.valueOf(error.fieldName)) {
                 DashboardSettingFields.DATABASE_BACKUP_PERIOD -> databaseBackupPeriod.value.copy(

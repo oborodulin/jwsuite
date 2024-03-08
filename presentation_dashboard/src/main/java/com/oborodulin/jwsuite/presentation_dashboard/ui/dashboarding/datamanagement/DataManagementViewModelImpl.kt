@@ -70,8 +70,10 @@ class DataManagementViewModelImpl @Inject constructor(
     override fun initState() = UiState.Loading
 
     override suspend fun handleAction(action: DataManagementUiAction): Job {
-        if (LOG_FLOW_ACTION) Timber.tag(TAG)
-            .d("handleAction(DataManagementUiAction) called: %s", action.javaClass.name)
+        if (LOG_FLOW_ACTION) {
+            Timber.tag(TAG)
+                .d("handleAction(DataManagementUiAction) called: %s", action.javaClass.name)
+        }
         val job = when (action) {
             is DataManagementUiAction.Load -> loadDataManagementSettings()
             is DataManagementUiAction.Save -> saveDataManagementSettings()
@@ -110,11 +112,13 @@ class DataManagementViewModelImpl @Inject constructor(
 
     override fun initFieldStatesByUiModel(uiModel: DataManagementSettingsUiModel): Job? {
         super.initFieldStatesByUiModel(uiModel)
-        if (LOG_UI_STATE) Timber.tag(TAG)
-            .d(
-                "initFieldStatesByUiModel(DataManagementSettingsUiModel) called: uiModel = %s",
-                uiModel
-            )
+        if (LOG_UI_STATE) {
+            Timber.tag(TAG)
+                .d(
+                    "initFieldStatesByUiModel(DataManagementSettingsUiModel) called: uiModel = %s",
+                    uiModel
+                )
+        }
         initStateValue(
             DataManagementFields.DATABASE_BACKUP_PERIOD, databaseBackupPeriod,
             uiModel.settings.first { it.paramName == AppSettingParam.DATABASE_BACKUP_PERIOD }.paramValue
@@ -123,7 +127,9 @@ class DataManagementViewModelImpl @Inject constructor(
     }
 
     override suspend fun observeInputEvents() {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# observeInputEvents() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# observeInputEvents() called")
+        }
         inputEvents.receiveAsFlow()
             .onEach { event ->
                 when (event) {
@@ -148,7 +154,9 @@ class DataManagementViewModelImpl @Inject constructor(
     override fun performValidation() {}
 
     override fun getInputErrorsOrNull(): List<InputError>? {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG).d("IF# getInputErrorsOrNull() called")
+        }
         val inputErrors: MutableList<InputError> = mutableListOf()
 
         DataManagementInputValidator.DatabaseBackupPeriod.errorIdOrNull(databaseBackupPeriod.value.value)
@@ -163,8 +171,10 @@ class DataManagementViewModelImpl @Inject constructor(
     }
 
     override fun displayInputErrors(inputErrors: List<InputError>) {
-        if (LOG_FLOW_INPUT) Timber.tag(TAG)
-            .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        if (LOG_FLOW_INPUT) {
+            Timber.tag(TAG)
+                .d("IF# displayInputErrors(...) called: inputErrors.count = %d", inputErrors.size)
+        }
         for (error in inputErrors) {
             state[error.fieldName] = when (DataManagementFields.valueOf(error.fieldName)) {
                 DataManagementFields.DATABASE_BACKUP_PERIOD -> databaseBackupPeriod.value.copy(

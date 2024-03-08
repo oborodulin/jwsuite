@@ -30,30 +30,40 @@ abstract class DialogViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSing
     override val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
 
     override fun setDialogTitleResId(@StringRes dialogTitleResId: Int) {
-        if (LOG_MVI_DIALOG) Timber.tag(TAG)
-            .d("setDialogTitleResId() called: dialogTitleResId = %s", dialogTitleResId)
+        if (LOG_MVI_DIALOG) {
+            Timber.tag(TAG)
+                .d("setDialogTitleResId(...) called: dialogTitleResId = %s", dialogTitleResId)
+        }
         _dialogTitleResId.value = dialogTitleResId
     }
 
     override fun setSavedListItem(savedListItem: ListItemModel) {
-        if (LOG_MVI_DIALOG) Timber.tag(TAG)
-            .d("setSavedListItem() called: savedListItem = %s", savedListItem)
+        if (LOG_MVI_DIALOG) {
+            Timber.tag(TAG)
+                .d("setSavedListItem(...) called: savedListItem = %s", savedListItem)
+        }
         _savedListItem.value = savedListItem
     }
 
     override fun onOpenDialogClicked() {
-        if (LOG_MVI_DIALOG) Timber.tag(TAG).d("onOpenDialogClicked() called")
+        if (LOG_MVI_DIALOG) {
+            Timber.tag(TAG).d("onOpenDialogClicked() called")
+        }
         _showDialog.value = true
     }
 
     override fun onDialogConfirm(onConfirm: () -> Unit) {
-        if (LOG_MVI_DIALOG) Timber.tag(TAG).d("onDialogConfirm() called")
+        if (LOG_MVI_DIALOG) {
+            Timber.tag(TAG).d("onDialogConfirm() called")
+        }
         _showDialog.value = false
         onConfirm()
     }
 
     override fun onDialogDismiss(onDismiss: () -> Unit) {
-        if (LOG_MVI_DIALOG) Timber.tag(TAG).d("onDialogDismiss() called")
+        if (LOG_MVI_DIALOG) {
+            Timber.tag(TAG).d("onDialogDismiss() called")
+        }
         _showDialog.value = false
         onDismiss()
     }
