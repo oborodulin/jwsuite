@@ -60,7 +60,7 @@ private fun TitleAndButton(title: String, dialogState: MutableState<Boolean>) {
                 )
             }
         }
-        Divider(color = Color.DarkGray, thickness = 1.dp)
+        HorizontalDivider(color = Color.DarkGray, thickness = 1.dp)
     }
 }
 

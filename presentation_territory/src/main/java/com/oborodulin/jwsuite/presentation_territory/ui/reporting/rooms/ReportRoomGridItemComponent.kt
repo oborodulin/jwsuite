@@ -21,7 +21,7 @@ import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -109,7 +109,7 @@ fun ReportRoomGridItemComponent(
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Start
                 )
-                Divider(Modifier.fillMaxWidth(), thickness = 2.dp)
+                HorizontalDivider(Modifier.fillMaxWidth(), thickness = 2.dp)
                 Text(
                     modifier = Modifier.padding(2.dp),
                     text = reportRoom.streetFullName,

@@ -125,7 +125,7 @@ fun DatePickerComponent(
             }
             DatePicker(
                 state = datePickerState,
-                dateValidator = dateValidator,
+                //dateValidator = dateValidator,
                 title = datePickerTitleResId?.let {
                     {
                         Text(

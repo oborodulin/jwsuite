@@ -7,14 +7,20 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.oborodulin.home.common.util.LogLevel.LOG_DATABASE
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryEntity
 import com.oborodulin.jwsuite.data_geo.local.db.entities.GeoCountryTlEntity
 import com.oborodulin.jwsuite.data_geo.local.db.views.GeoCountryView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import timber.log.Timber
+import java.math.BigDecimal
 import java.util.Locale
 import java.util.UUID
+
+private const val TAG = "Data.geo.GeoCountryDao"
 
 @Dao
 interface GeoCountryDao {
@@ -33,19 +39,19 @@ interface GeoCountryDao {
     fun findDistinctAll() = findAll().distinctUntilChanged()
 
     //-----------------------------
-    @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE upper(countryCode) = upper(substr(:locale, 1, 2)) AND countryLocCode = :locale")
-    fun findByDefaultLocale(locale: String? = Locale.getDefault().language): Flow<GeoCountryView?>
-
-    @ExperimentalCoroutinesApi
-    fun findDistinctByDefaultLocale() = findByDefaultLocale().distinctUntilChanged()
-
-    //-----------------------------
     @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE countryId = :countryId AND countryLocCode = :locale")
     fun findById(countryId: UUID, locale: String? = Locale.getDefault().language):
             Flow<GeoCountryView>
 
     @ExperimentalCoroutinesApi
     fun findDistinctById(id: UUID) = findById(id).distinctUntilChanged()
+
+    //-----------------------------
+    @Query("SELECT * FROM ${GeoCountryView.VIEW_NAME} WHERE upper(countryCode) = upper(substr(:locale, 1, 2)) AND countryLocCode = :locale")
+    fun findByDefaultLocale(locale: String? = Locale.getDefault().language): Flow<GeoCountryView?>
+
+    @ExperimentalCoroutinesApi
+    fun findDistinctByDefaultLocale() = findByDefaultLocale().distinctUntilChanged()
 
     // INSERTS:
     @Insert(onConflict = OnConflictStrategy.ABORT)
@@ -70,19 +76,65 @@ interface GeoCountryDao {
     }
 
     // UPDATES:
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(country: GeoCountryEntity)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(vararg countries: GeoCountryEntity)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(vararg textContent: GeoCountryTlEntity)
 
     @Transaction
     suspend fun update(country: GeoCountryEntity, textContent: GeoCountryTlEntity) {
-        update(country)
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("country = %s; textContent = %s", country, textContent)
+        }
+        //update(country)
         update(textContent)
+        val updatedCountry = findById(country.countryId).first()
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("updatedCountry = %s", updatedCountry)
+        }
+    }
+
+    @Query(
+        """
+    UPDATE ${GeoCountryEntity.TABLE_NAME}
+        SET countryCode = :countryCode, 
+            countryGeocode = :countryGeocode, countryOsmId = :countryOsmId,
+            ${GeoCountryEntity.PREFIX}latitude = :latitude, ${GeoCountryEntity.PREFIX}longitude = :longitude
+    WHERE countryId = :countryId
+    """
+    )
+    suspend fun updateGeoCountryEntity(
+        countryId: UUID, countryCode: String,
+        countryGeocode: String? = null, countryOsmId: Long? = null,
+        latitude: BigDecimal? = null, longitude: BigDecimal? = null
+    )
+
+    @Query("UPDATE ${GeoCountryTlEntity.TABLE_NAME} SET countryTlCode = :countryTlCode, countryName = :countryName WHERE countryTlId = :countryTlId")
+    suspend fun updateGeoCountryTlEntity(
+        countryTlId: UUID, countryTlCode: String? = null, countryName: String,
+    )
+
+    @Transaction
+    suspend fun updateEntities(country: GeoCountryEntity, textContent: GeoCountryTlEntity) {
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("country = %s; textContent = %s", country, textContent)
+        }
+        updateGeoCountryEntity(
+            country.countryId, country.countryCode,
+            country.countryGeocode, country.countryOsmId,
+            country.coordinates.latitude, country.coordinates.longitude
+        )
+        updateGeoCountryTlEntity(
+            textContent.countryTlId, textContent.countryTlCode, textContent.countryName
+        )
+        val updatedCountry = findById(country.countryId).first()
+        if (LOG_DATABASE) {
+            Timber.tag(TAG).d("updatedCountry = %s", updatedCountry)
+        }
     }
 
     // DELETES:

@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>, userRoles: List<String> = emptyList()) {
-    val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     // https://medium.com/@sukhdip_sandhu/jetpack-compose-scrollabletabrow-indicator-matches-width-of-text-e79c0e5826fe
     // https://stackoverflow.com/questions/70923243/how-to-adjust-tabrow-indicator-width-according-to-the-text-above-it
@@ -35,6 +34,7 @@ fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>, userRoles: List<String
             userRoles.contains(role)
         }
     }
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
     val tabWidths = remember {
         val tabWidthStateList = mutableStateListOf<Dp>()
         repeat(tabs.size) {
@@ -87,7 +87,7 @@ fun CustomScrollableTabRow(tabRowItems: List<TabRowItem>, userRoles: List<String
         }
     }
     HorizontalPager(
-        pageCount = tabs.size,
-        state = pagerState,
+        //pageCount = tabs.size,
+        state = pagerState
     ) { tabs[pagerState.currentPage].view() }
 }

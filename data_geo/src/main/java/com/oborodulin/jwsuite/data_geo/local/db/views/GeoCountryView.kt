@@ -21,4 +21,10 @@ class GeoCountryView(
     companion object {
         const val VIEW_NAME = "geo_countries_view"
     }
+
+    override fun toString(): String {
+        val str = StringBuffer()
+        str.append("GeoCountryView(data = ").append(data).append("; tl = ").append(tl).append(")")
+        return str.toString()
+    }
 }

@@ -34,10 +34,10 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
         withContext(dispatcher) {
             Timber.tag(TAG).d(
                 "updateCountry(...) called: country = %s; textContent = %s",
-                country,
-                textContent
+                country, textContent
             )
-            countryDao.update(country, textContent)
+            //countryDao.update(country, textContent)
+            countryDao.updateEntities(country, textContent)
         }
 
     override suspend fun deleteCountry(country: GeoCountryEntity) = withContext(dispatcher) {

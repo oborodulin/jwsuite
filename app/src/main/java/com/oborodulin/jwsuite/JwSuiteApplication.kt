@@ -12,7 +12,6 @@ import com.oborodulin.home.common.util.ReleaseTree
 import com.oborodulin.home.common.util.ResourcesHelper
 import com.oborodulin.home.common.util.getAppVersion
 import com.oborodulin.home.common.util.setLocale
-import com.oborodulin.jwsuite.data.local.db.JwSuiteDatabase
 import com.oborodulin.jwsuite.domain.repositories.WorkerProviderRepository
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -28,6 +27,13 @@ class JwSuiteApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var workerProviderRepository: WorkerProviderRepository
+
+    // https://bbluecoder.medium.com/how-to-use-workmanager-with-hilt-in-android-b60046ff7f02
+    // https://medium.com/@santimattius/workmanager-with-hilt-and-app-startup-80b34062e144
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     init {
         app = this
@@ -86,10 +92,6 @@ class JwSuiteApplication : Application(), Configuration.Provider {
     private fun initialiseDagger() {
         Timber.tag(TAG).i("Initialise Dagger")
     }
-
-    override fun getWorkManagerConfiguration() = Configuration.Builder()
-        .setWorkerFactory(workerFactory)
-        .build()
 
     /*    override fun getWorkManagerConfiguration(): Configuration =
             Configuration.Builder()

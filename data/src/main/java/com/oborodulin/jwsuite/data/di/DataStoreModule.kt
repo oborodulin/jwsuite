@@ -3,13 +3,11 @@ package com.oborodulin.jwsuite.data.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.core.ExperimentalMultiProcessDataStore
 import androidx.datastore.dataStoreFile
 import com.oborodulin.home.common.secure.Crypto
 import com.oborodulin.jwsuite.data.local.datastore.SecureAuthDataSerializer
 import com.oborodulin.jwsuite.data.util.Constants.DATA_STORE_NAME
 import com.oborodulin.jwsuite.domain.model.session.AuthData
-import com.oborodulin.jwsuite.domain.usecases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
-    @OptIn(ExperimentalMultiProcessDataStore::class)
     @Singleton
     @Provides
     fun provideAuthDataStore(@ApplicationContext ctx: Context, crypto: Crypto):

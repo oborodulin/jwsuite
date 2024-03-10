@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -186,7 +186,7 @@ fun DashboardSettingView(
                         )
                     })*/
         }
-        Divider(Modifier.fillMaxWidth())
+        HorizontalDivider(Modifier.fillMaxWidth())
         ClickableText(
             text = AnnotatedString(stringResource(R.string.data_management_hint)),
             onClick = { appState.mainNavigate(NavRoutes.DataManagement.route) },
@@ -195,7 +195,7 @@ fun DashboardSettingView(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 8.dp)
         )
-        Divider(Modifier.fillMaxWidth())
+        HorizontalDivider(Modifier.fillMaxWidth())
         Text(
             text = stringResource(R.string.legal_info_subhead),
             style = Typography.titleMedium,
@@ -206,6 +206,7 @@ fun DashboardSettingView(
             onClick = { offset ->
                 Timber.tag(TAG).d("%s-th character is clicked.", offset)
             },
+            style = Typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -215,11 +216,12 @@ fun DashboardSettingView(
             onClick = { offset ->
                 Timber.tag(TAG).d("%s-th character is clicked.", offset)
             },
+            style = Typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        Divider(Modifier.fillMaxWidth())
+        HorizontalDivider(Modifier.fillMaxWidth())
         Text(
             text = stringResource(R.string.about_subhead),
             style = Typography.titleMedium,

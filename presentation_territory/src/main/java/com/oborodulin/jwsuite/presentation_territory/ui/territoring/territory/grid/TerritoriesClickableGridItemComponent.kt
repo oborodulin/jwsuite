@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -115,7 +116,7 @@ fun TerritoriesClickableGridItemComponent(
                     }
                 )
             }
-            Divider(Modifier.width(cellSize.times(0.9f)), thickness = 2.dp)
+            HorizontalDivider(Modifier.width(cellSize.times(0.9f)), thickness = 2.dp)
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -185,7 +186,7 @@ fun TerritoriesClickableGridItemComponent(
                     )
                 }
                 territory.territoryDesc?.let {
-                    Divider(
+                    HorizontalDivider(
                         Modifier
                             .width(cellSize.times(0.9f))
                             .align(Alignment.CenterHorizontally), thickness = 2.dp

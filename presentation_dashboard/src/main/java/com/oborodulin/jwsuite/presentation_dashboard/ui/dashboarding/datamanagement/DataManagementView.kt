@@ -12,16 +12,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -96,7 +98,7 @@ fun DataManagementView(
     Timber.tag(TAG).d("DataManagementView(...) called")
     val session = LocalSession.current
     val context = LocalContext.current
-    val tooltipState = RichTooltipState()
+    //val tooltipState = RichTooltipState()
     val scope = rememberCoroutineScope()
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -117,7 +119,6 @@ fun DataManagementView(
     enumValues<DataManagementFields>().forEach {
         focusRequesters[it] = InputFocusRequester(it, remember { FocusRequester() })
     }
-
     LaunchedEffect(Unit) {
         Timber.tag(TAG).d("DataManagementView -> LaunchedEffect()")
         databaseViewModel.submitAction(DatabaseUiAction.Init)
@@ -160,12 +161,19 @@ fun DataManagementView(
                 "${stringResource(com.oborodulin.jwsuite.data_congregation.R.string.def_trans_obj_name_bills)}: ",
                 "${stringResource(com.oborodulin.jwsuite.data_congregation.R.string.def_trans_obj_name_reports)}: "
             )
-            RichTooltipBox(
-                text = { Text(text = makeBulletedList(items)) },
-                title = { Text(text = stringResource(R.string.transfer_subhead_tooltip)) },
-                tooltipState = tooltipState
-            ) {
-                IconButton(onClick = {}, modifier = Modifier.tooltipAnchor()) {
+            // https://www.develou.com/tooltips-android/
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                tooltip = {
+                    RichTooltip(
+                        title = { Text(text = stringResource(R.string.transfer_subhead_tooltip)) },
+                        text = { Text(text = makeBulletedList(items)) }
+                    )
+                },
+                state = rememberTooltipState()
+            )
+            {
+                IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Outlined.Info,
                         contentDescription = "",
@@ -173,111 +181,111 @@ fun DataManagementView(
                     )
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                val transferObjects =
-                    MutableList(uiModel.transferObjects.size) { emptyList<String>() }
-                uiModel.transferObjects.forEach {
-                    transferObjects.add(
-                        listOf(
-                            it.transferObject.transferObjectName,
-                            if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
-                            else stringResource(com.oborodulin.home.common.R.string.no_expr)
-                        )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            val transferObjects =
+                MutableList(uiModel.transferObjects.size) { emptyList<String>() }
+            uiModel.transferObjects.forEach {
+                transferObjects.add(
+                    listOf(
+                        it.transferObject.transferObjectName,
+                        if (it.isPersonalData) stringResource(com.oborodulin.home.common.R.string.yes_expr)
+                        else stringResource(com.oborodulin.home.common.R.string.no_expr)
                     )
-                }
-                SimpleDataTableComponent(
-                    columnHeaders = listOf(
-                        stringResource(R.string.transfer_objects_header_hint),
-                        stringResource(R.string.is_personal_header_hint)
-                    ), rows = transferObjects
                 )
             }
-            val isSendButtonShow = session.containsAnyRoles(
-                listOf(
-                    MemberRoleType.TERRITORIES,
-                    MemberRoleType.BILLS
-                )
+            SimpleDataTableComponent(
+                columnHeaders = listOf(
+                    stringResource(R.string.transfer_objects_header_hint),
+                    stringResource(R.string.is_personal_header_hint)
+                ), rows = transferObjects
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
-            ) {
-                if (isSendButtonShow) {
-                    SendButtonComponent(
-                        modifier = Modifier
-                            .weight(1f)
-                            .alignByBaseline()
-                    )
-                }
-                ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
-            }
-            Divider(Modifier.fillMaxWidth())
-            TextFieldComponent(
-                modifier = Modifier
-                    .focusRequester(focusRequesters[DataManagementFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
-                    .onFocusChanged { focusState ->
-                        dataManagementViewModel.onTextFieldFocusChanged(
-                            focusedField = DataManagementFields.DATABASE_BACKUP_PERIOD,
-                            isFocused = focusState.isFocused
-                        )
-                    },
-                labelResId = R.string.database_backup_period_hint,
-                keyboardOptions = remember {
-                    KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
-                },
-                inputWrapper = databaseBackupPeriod,
-                onValueChange = {
-                    dataManagementViewModel.onTextFieldEntered(
-                        DataManagementInputEvent.DatabaseBackupPeriod(it)
-                    )
-                },
-                onImeKeyAction = handleSaveAction
+        }
+        val isSendButtonShow = session.containsAnyRoles(
+            listOf(
+                MemberRoleType.TERRITORIES,
+                MemberRoleType.BILLS
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                BackupButtonComponent(
-                    enabled = true,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = if (isSendButtonShow) Arrangement.SpaceBetween else Arrangement.End,
+        ) {
+            if (isSendButtonShow) {
+                SendButtonComponent(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(vertical = 8.dp)
-                ) {
-                    Timber.tag(TAG).d("DataManagementView: Backup Button click...")
-                    databaseViewModel.submitAction(DatabaseUiAction.Backup)
+                        .alignByBaseline()
+                )
+            }
+            ReceiveButtonComponent(modifier = Modifier.alignByBaseline())
+        }
+        HorizontalDivider(Modifier.fillMaxWidth())
+        TextFieldComponent(
+            modifier = Modifier
+                .focusRequester(focusRequesters[DataManagementFields.DATABASE_BACKUP_PERIOD]!!.focusRequester)
+                .onFocusChanged { focusState ->
+                    dataManagementViewModel.onTextFieldFocusChanged(
+                        focusedField = DataManagementFields.DATABASE_BACKUP_PERIOD,
+                        isFocused = focusState.isFocused
+                    )
+                },
+            labelResId = R.string.database_backup_period_hint,
+            keyboardOptions = remember {
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
+            },
+            inputWrapper = databaseBackupPeriod,
+            onValueChange = {
+                dataManagementViewModel.onTextFieldEntered(
+                    DataManagementInputEvent.DatabaseBackupPeriod(it)
+                )
+            },
+            onImeKeyAction = handleSaveAction
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            BackupButtonComponent(
+                enabled = true,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 8.dp)
+            ) {
+                Timber.tag(TAG).d("DataManagementView: Backup Button click...")
+                databaseViewModel.submitAction(DatabaseUiAction.Backup)
+            }
+            RestoreButtonComponent(
+                enabled = true,
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Timber.tag(TAG).d("DataManagementView: Restore Button click...")
+                databaseViewModel.submitAction(DatabaseUiAction.Restore)
+            }
+            databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
+                if (LOG_UI_STATE) {
+                    Timber.tag(TAG).d("Collect ui state flow: %s", state)
                 }
-                RestoreButtonComponent(
-                    enabled = true,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Timber.tag(TAG).d("DataManagementView: Restore Button click...")
-                    databaseViewModel.submitAction(DatabaseUiAction.Restore)
-                }
-                databaseViewModel.uiStateFlow.collectAsStateWithLifecycle().value.let { state ->
-                    if (LOG_UI_STATE) {
-                        Timber.tag(TAG).d("Collect ui state flow: %s", state)
-                    }
-                    CommonScreen(state = state) { databaseUi ->
-                        if (databaseUi.isDone.not()) {
-                            Text(
-                                text = databaseUi.entityDesc,
-                                fontSize = 14.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(horizontal = 16.dp)
+                CommonScreen(state = state) { databaseUi ->
+                    if (databaseUi.isDone.not()) {
+                        Text(
+                            text = databaseUi.entityDesc,
+                            fontSize = 14.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        databaseUi.progress?.let {
+                            LinearProgressIndicator(
+                                progress = { it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
                             )
-                            databaseUi.progress?.let {
-                                LinearProgressIndicator(
-                                    progress = it,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp)
-                                )
-                            }
                         }
                     }
                 }
