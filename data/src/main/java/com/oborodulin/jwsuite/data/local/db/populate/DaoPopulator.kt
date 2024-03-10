@@ -130,7 +130,24 @@ class DaoPopulator(
                 it.encodeToString(textContent)
             )
         }
-        return country
+        val updatedCountry =
+            GeoCountryEntity.ukraineCountry(ctx).copy(countryId = country.countryId)
+        val updatedTextContent =
+            GeoCountryTlEntity.countryTl(ctx, updatedCountry.countryCode, updatedCountry.countryId)
+                .copy(
+                    countryTlId = textContent.countryTlId,
+                    countriesId = textContent.countriesId
+                )
+        countryDao.update(updatedCountry, updatedTextContent)
+        Timber.tag(TAG).i("GEO: Default country updated")
+        jsonLogger?.let {
+            Timber.tag(TAG).i(
+                ": {\"country\": {%s}, \"tl\": {%s}}",
+                it.encodeToString(updatedCountry),
+                it.encodeToString(updatedTextContent)
+            )
+        }
+        return updatedCountry //country
     }
 
     override suspend fun insertDefRegion(region: GeoRegionEntity): GeoRegionEntity {

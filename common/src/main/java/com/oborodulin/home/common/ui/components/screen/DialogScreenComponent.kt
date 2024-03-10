@@ -85,7 +85,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         viewModel.onContinueClick {
             // https://stackoverflow.com/questions/72987545/how-to-navigate-to-another-screen-after-call-a-viemodelscope-method-in-viewmodel
             viewModel.handleActionJob({ viewModel.submitAction(confirmUiAction) }) { scope ->
-                /*errorMessage = viewModel.redirectedErrorMessage()
+                errorMessage = viewModel.redirectedErrorMessage()
                 if (errorMessage == null) {
                     if (LOG_FLOW_JOB) {
                         Timber.tag(TAG)
@@ -114,7 +114,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
                             .d("DialogScreenComponent -> viewModel.onContinueClick -> After action: cancel flow by errors")
                     }
                     scope.cancel()
-                }*/
+                }
             }
         }
     }
@@ -198,10 +198,7 @@ fun <T : Any, A : UiAction, E : UiSingleEvent, F : Focusable> DialogScreenCompon
         }
         if (isControlsShow) {
             onTopBarActionsChange {
-                IconButton(
-                    enabled = areInputsValid,
-                    onClick = handleDialogConfirmAction
-                ) { //handleConfirmAction
+                IconButton(enabled = areInputsValid, onClick = handleConfirmAction) {
                     Icon(topBarActionImageVector, stringResource(topBarActionCntDescResId))
                 }
             }

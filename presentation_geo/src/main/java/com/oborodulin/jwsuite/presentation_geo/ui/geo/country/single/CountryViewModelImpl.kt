@@ -116,6 +116,7 @@ class CountryViewModelImpl @Inject constructor(
                     getConverter.convert(it)
                 }
                 .collect {
+                    Timber.tag(TAG).d("loadCountry(): CountryUi = %s", it)
                     submitState(it)
                 }
         }
@@ -138,15 +139,15 @@ class CountryViewModelImpl @Inject constructor(
         val job = viewModelScope.launch(errorHandler) {
             useCases.saveCountryUseCase.execute(
                 SaveCountryUseCase.Request(countryUiMapper.map(countryUi))
-            )
-                .map { saveConverter.convert(it) }
+            ).collect {}
+             /*   .map { saveConverter.convert(it) }
                 .collect {
                     Timber.tag(TAG).d("saveCountry() collect: %s", it)
                     if (it is UiState.Success) {
                         setSavedListItem(it.data.toListItemModel())
                     }
-                    submitState(it)
-                }
+                    //submitState(it)
+                }*/
         }
         return job
     }

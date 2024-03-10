@@ -36,8 +36,8 @@ class LocalGeoCountryDataSourceImpl @Inject constructor(
                 "updateCountry(...) called: country = %s; textContent = %s",
                 country, textContent
             )
-            //countryDao.update(country, textContent)
-            countryDao.updateEntities(country, textContent)
+            countryDao.update(country, textContent)
+            //countryDao.updateEntities(country, textContent)
         }
 
     override suspend fun deleteCountry(country: GeoCountryEntity) = withContext(dispatcher) {
